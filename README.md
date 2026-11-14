@@ -8,7 +8,14 @@ RK3326 handhelds (the R36S, the XF35H and their clones) and on PC.
 - **Less grinding, same journey.** The late game arrives around level 40-50, where most players used to stop.
 - **A reason to roam.** Every battle can drop Hunt Materials, a long winning streak in one region brings out its Rare
   Target, and what you collect pays for forged gear, Black Market replicas and the DRI Gauntlet.
-- **Nothing hidden.** Enemy weaknesses, digivolution requirements and what each technique really does are on screen.
+- **Nothing hidden.** Enemy weaknesses, digivolution requirements, quest/auction progress (`GUIDE`) and what each
+  technique really does are all on screen.
+- **New Game choices.** Play as **Kaili** or Junior (**Girls Power**), and optionally turn on **Hard Mode** (two-Digimon
+  party).
+- **Cross-play saves.** Free **Cloud Sync** (`SAVES & CLOUD`) with 6-digit device pairing keeps `card1.mcd` synced across
+  handhelds and PC, backed by up to 100 local rotating snapshots.
+- **Play anywhere cleanly.** Console-first C launcher (`dw3-launcher`), modern controls, and on PC: GPU hardware
+  rendering, shaders, **16:9 Widescreen** (battles and field) and edge-to-edge **Fullscreen `FILL`** scaling.
 - **Your old save still works.**
 
 It is built on the [Digimon World 2003 decompilation](https://github.com/gascarcella/dw2003recomp) and its PC port,
@@ -23,6 +30,7 @@ which are the upstream project's work; this fork adds the handheld path and the 
 
 ## Quick start
 
+### Handhelds (PortMaster)
 1. Download `dw3.zip` from the [releases](https://github.com/al4xdev/digimon-world-3-definitive-edition/releases) and unpack it into your PortMaster
    `ports` directory.
 2. Copy your disc image into `ports/dw3/game/`.
@@ -30,14 +38,22 @@ which are the upstream project's work; this fork adds the handheld path and the 
 
 Install details, tested devices and known issues are on the player page, [`portmaster/README.md`](portmaster/README.md).
 
+### PC (Linux & Windows)
+1. Build or unpack the PC release (AppImage on Linux, `.zip` on Windows) or run `./launcher/dw3-launcher --sdl` from a built checkout.
+2. Pick your `.cue` / `.bin` disc image on first launch (or change it anytime under `GAME > DISC IMAGE` — hidden on PortMaster).
+3. Open `VIDEO` to toggle **Widescreen (16:9)**, **Fullscreen**, **`FILL` vs `INTEGER`** scaling, **GPU / Software** renderer and screen **Filters**.
+
 **Coming from an older version?** Your save opens and plays. To give it the new MP and TP tables, run
 `tools/convert_save_mp.py card1.mcd` once (it keeps a backup).
 
 ## Where it runs
 
-The work is focused on **RK3326 handhelds** for now: that is where everything is measured and tuned, on an XF35H. The
-PC build works too. Once the Definitive Edition is finished, the focus moves to opening it up to more devices. If you
-try it on another handheld, a report in the [issue tracker](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues) helps a lot.
+- **RK3326 handhelds** (XF35H, R36S and clones, 640×480 `/dev/fb0` + GLES): tuned end-to-end on real hardware.
+- **Linux & Windows PC** (Wayland, X11, Windows x86_64): runs with an SDL3 **GPU hardware renderer** (Vulkan/D3D12/Metal),
+  16:9 Widescreen in battles and the field, HighDPI fullscreen `FILL` scaling and shader filters (`SHARP`, `SCANLINES`,
+  `CRT`, `SMOOTH`).
+
+If you try it on another device, a report in the [issue tracker](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues) helps a lot.
 
 ## Combat
 
@@ -193,9 +209,7 @@ way round, an enemy's magic of power 100 (stat scale 16, so × 1) with Spirit 15
 
 ### Battle HUD
 
-A direct-button HUD replaces the battle's list menu: each action (Fight, Tech, Digivolve, Tag, Item, Run, Inspect) has
-its own button in a pad-shaped layout, rebindable from the launcher. It remembers the last technique and item, and
-buffers a press made just before the menu opens.
+A direct-button HUD replaces the battle's list menu: each action has its own button in a pad-shaped layout (**Item** on `L1` left, **Tech** on `R1` right, **Fight** on `B`, **Run** on `X`, **Digivolve** on `Y`, **Tag** on `A`, **Inspect** on `L2`), rebindable from `BATTLE HUD` in the launcher. It remembers the last technique and item, buffers presses made just before the menu opens, and skips battle message boxes by default (`BATTLE TEXT: SKIP`). Controls use the modern **Circle ↔ Triangle** rotation by default (`Confirm` at the bottom, `Back` on the right), with selectable **Xbox / Nintendo / PS1** button glyphs.
 
 ![Persona-style Direct Battle HUD](docs/images/battle_hud.png)
 
@@ -372,10 +386,30 @@ Every stage you fell reaches a tier of the line's Power accessory (one stage: 1,
 lose afterwards. Each tier is given once, the first time you reach it, so a first full clear gives all three; the list
 keeps your best stage. A replay pays the battle's experience and Bits, but no accessory.
 
-## Comfort and fixes
+## Comfort, Cross-Play and PC Features
 
+- **Playable Kaili (Girls Power).** On New Game, choose **Kaili** or **Junior** right after the difficulty prompt: Kaili
+  and Junior swap roles across field sprites, cutscenes, field actions (tree kick, fishing) and menus (`port/game/girls_power.c`),
+  saved per slot without altering old saves.
+- **In-game Guide (`GUIDE`).** Open `GUIDE` from the field menu for two tabs (`L1`/`R1`): your current main quest step
+  and open side missions (El Dorado ID, Folder Bag, Tree Boots, Fishing Pole), plus all 16 Asuka City Cargo Tower
+  auctions (confirm twice on an open auction to travel straight to El Dorado). Live banners also slide in when quest
+  steps advance or auctions open.
+- **Cross-Play Cloud Sync & Local Backups (`SAVES & CLOUD`).** Sync `card1.mcd` across handhelds and PC through a
+  zero-cost Cloudflare Worker (`cloud-sync/`): register a device, pair a second device via a **6-digit 2FA code** with
+  explicit host approval, resolve conflicts cleanly, revoke lost devices, and keep **1–100 automatic local rotating
+  snapshots** with one-button restore.
+- **PC Graphics, Widescreen & Fullscreen `FILL`.** On PC (`--sdl`), the GPU renderer enables **16:9 Widescreen** in
+  both **battles and the field** (menus and movies stay 4:3), **HighDPI** Wayland/X11/Windows windowing, shader filters
+  (`NONE`, `SHARP`, `SCANLINES`, `CRT`, `SMOOTH`) and **`SCALING: FILL / INTEGER`** so fullscreen fills your monitor
+  cleanly instead of stopping at integer 240p multiples.
+- **Console-First C Launcher (`dw3-launcher`).** A lightweight C99 dashboard (`launcher/`) with zero Python runtime
+  dependency on the menu: animated splash screen, sliding cursor, Xbox-style zoom transitions, live Digital World
+  backdrop, strict duplicate-button protection on `CONTROLS` and `BATTLE HUD` (`START` to rebind, `SELECT` to reset),
+  live remapped navigation, built-in D-Pad `.cue`/`.bin` browser (outside PortMaster), and the **Trio Runner** Chrome-Dino-style
+  loading minigame (Kumamon, Guilmon and Agumon) while the disc verifies.
 - **The Blast Gauge is saved.** The original reset it every time the game was closed, even after saving.
-- **Battle text that does not stop the fight**: message boxes no longer wait for a button.
+- **Battle text that does not stop the fight**: message boxes skip by default (`BATTLE TEXT: SKIP`) without waiting for a button.
 - **Overlevel Rush**: when your strongest Digimon is 15 or more levels above every enemy of a random battle, the game
   offers to skip it. Take it and the rewards a win by your lead Digimon would give (experience, Bits, the drop and
   Hunt Materials) are yours at once: a small panel over your Digimon lists them for two seconds while you keep walking
@@ -383,7 +417,7 @@ keeps your best stage. A replay pays the battle's experience and Bits, but no ac
   still ends on the results screen.
 - **A Guardromon network**: at any Guardromon, `SAVE` or `TELEPORT` to the others you have met, a **map objective
   marker**, **fast-forward**, button glyphs that match your pad, and full remapping.
-- **A gamepad menu** for every setting, with no keyboard needed.
+- **50/60 Hz support**: `--refresh 60` / `video.refresh: 60` engages the game's compensated 60 Hz mode (`records_60hz`).
 
 ## Building and documentation
 
