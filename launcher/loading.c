@@ -165,7 +165,7 @@ static const char *letter_for(const Cfg *c, int code, char *buf) {
 }
 
 void load_draw(const Cfg *c, long tick_ms, const char *stage, int percent) {
-    background(0);
+    background((int)(tick_ms & 0x7fffffff));
     text(28, 20, "DIGIMON WORLD 3", 26, C_TEXT);
     text(28, 50, "LOADING", 16, C_CYAN);
     char sc[64];

@@ -1,12 +1,13 @@
 #ifndef DW3_UI_H
 #define DW3_UI_H
-/* A 640x480 software canvas (0x00RRGGBB) and the few primitives the launcher's screens are made of. */
+/* A logical 640x480 canvas (0x00RRGGBB) rendered at ui_scale (1x on handheld fbdev, 2x/3x on desktop monitors). */
 #include <stdint.h>
 
 #define W 640
 #define H 480
 
-extern uint32_t fb[W * H];
+extern uint32_t *fb;
+extern int ui_scale, ui_w, ui_h;
 
 #define RGB(r, g, b) (((uint32_t)(r) << 16) | ((uint32_t)(g) << 8) | (uint32_t)(b))
 
@@ -27,7 +28,7 @@ extern uint32_t fb[W * H];
 #define C_OFF RGB(110, 132, 148)
 
 uint32_t mix(uint32_t a, uint32_t b, int t256);                  /* a + (b-a)*t/256 */
-void px_blend(int x, int y, uint32_t c, int a256);
+void px_raw(int px, int py, uint32_t c, int a256);
 void rect(int x, int y, int w, int h, uint32_t c, int a256);
 void rrect(int x, int y, int w, int h, int r, uint32_t c, int a256);
 void rrect_line(int x, int y, int w, int h, int r, uint32_t c);
@@ -37,13 +38,13 @@ void line(int x0, int y0, int x1, int y1, uint32_t c);
 void tri(int x0, int y0, int x1, int y1, int x2, int y2, uint32_t c);
 void background(int tick);                                       /* the Digital World backdrop */
 
-/* Text: size in pixels; returns the width. Drawn with stb_truetype from the embedded font. */
+/* Text: size in logical pixels; returns the logical width. Drawn with stb_truetype from the embedded font. */
 int text_w(const char *s, int size);
 int text(int x, int y, const char *s, int size, uint32_t c);      /* y = top of the line */
 int text_c(int cx, int y, const char *s, int size, uint32_t c);   /* centred on cx */
 int text_r(int rx, int y, const char *s, int size, uint32_t c);   /* right-aligned to rx */
 
-/* A button as the pad prints it: a disc for one character, a pill for "L1" or "START". Returns its width. */
+/* A button as the pad prints it: a disc for one character, a pill for "L1" or "START". Returns its logical width. */
 int keycap(int x, int cy, const char *label, uint32_t c);
-void ui_init(void);
+void ui_init(int scale);
 #endif

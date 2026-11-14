@@ -14,6 +14,8 @@ int plat_poll(Ev *ev, int timeout_ms);         /* 1 when an event was filled in,
 void plat_present(void);
 void plat_release(void);                       /* stop using the screen and the pad, leaving the last picture up */
 long plat_now_ms(void);                        /* monotonic; virtual (33 ms a poll) under PLAT_NULL */
+void plat_desktop_size(int *w, int *h);        /* detected monitor size (1280x720 fallback if headless) */
+void plat_toggle_fullscreen(void);
 extern const char *plat_shot_dir;
 
 #define K_SOUTH 304

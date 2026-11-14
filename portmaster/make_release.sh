@@ -9,8 +9,8 @@
 #     gameinfo.xml            EmulationStation's entry (this directory)
 #     screenshot.png          640x480, gameplay (this directory; capture it on the device)
 #     cover.png               the box art (this directory; optional)
-#     dw3/                    the port: the binary plus everything in handheld/ except the launcher and README.md
-#                             (dw3-menu.py, ledd.py, probe.sh, README.txt)
+#     dw3/                    the port: the binary, dw3-launcher and everything in handheld/ except the launcher and README.md
+#                             (ledd.py, probe.sh, README.txt)
 #       licenses/             what the port borrows and its licences (portmaster/licenses/)
 #
 # It refuses to build when one of those is missing, when the port directory's name differs from the port's, or when the
@@ -52,11 +52,14 @@ for f in "$REPO"/handheld/*; do
     cp "$f" "$OUT/$NAME/"
 done
 chmod -x "$OUT/$NAME/README.txt" 2>/dev/null || true
-chmod +x "$OUT/$NAME/dw3-menu.py"
 [ -f "$OUT/$NAME/ledd.py" ] && chmod +x "$OUT/$NAME/ledd.py"
 [ -f "$OUT/$NAME/probe.sh" ] && chmod +x "$OUT/$NAME/probe.sh"
 cp "$BINARY" "$OUT/$NAME/dw2003"
 chmod +x "$OUT/$NAME/dw2003"
+LAUNCHER_BIN="$REPO/build/armhf-sdl2/dw3-launcher"
+[ -x "$LAUNCHER_BIN" ] || { echo "missing $LAUNCHER_BIN: run tools/build_arm.sh first" >&2; exit 1; }
+cp "$LAUNCHER_BIN" "$OUT/$NAME/dw3-launcher"
+chmod +x "$OUT/$NAME/dw3-launcher"
 if [ -d "$REPO/build/armhf-sdl2/mods" ]; then
     mkdir -p "$OUT/$NAME/mods"
     cp -r "$REPO/build/armhf-sdl2/mods/"* "$OUT/$NAME/mods/"
@@ -99,7 +102,7 @@ names = z.namelist()
 with z.open("port.json") as f:
     port = json.load(f)
 missing = [n for n in ("Digimon World 3.sh", "port.json", "README.md", "gameinfo.xml",
-                       "screenshot.png", "dw3/dw2003", "dw3/dw3-menu.py")
+                       "screenshot.png", "dw3/dw2003", "dw3/dw3-launcher")
            if n not in names]
 if missing:
     sys.exit("missing from the zip: " + ", ".join(missing))

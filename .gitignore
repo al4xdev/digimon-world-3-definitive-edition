@@ -4,7 +4,7 @@
 /extracted
 # Generated from the game binary by splat (regenerable, and derived from copyrighted code)
 asm/
-assets/
+/assets/
 *.bin
 *.iso
 *.img
@@ -89,3 +89,11 @@ __pycache__
 
 # The console launcher built by launcher/Makefile (tools/build_arm.sh builds the package's into build/)
 launcher/dw3-launcher
+
+# Cloud sync worker local dependencies & wrangler state, and runtime client sync state
+cloud-sync/node_modules/
+cloud-sync/.wrangler/
+cloud-sync/.dev.vars
+cloud_sync.json
+saves_backup/
+loading.best

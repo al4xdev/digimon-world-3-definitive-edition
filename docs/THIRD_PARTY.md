@@ -30,4 +30,8 @@ Ours; theirs; the idea taken:
 - `src/fieldstg/fieldstg_80085590.c` `fieldstg_background_update_visible`; `src/fieldstg/map_streamer.c` `FIELDSTG_pickViewTiles`: y's offset as y less its tile's start, `col` reused by the clearing loop (FAKE).
 - `src/fieldstg/fieldstg_80087DB0.c` `fieldstg_manager_update`; `src/fieldstg/field.c` `FIELDSTG_updateField` and its step helpers: the update split into per-step inline helpers with two `LOOP_BLOCK` early exits.
 
+| `launcher/stb_truetype.h` (single-header TrueType rasterizer, v1.28) | nothings/stb | `stb_truetype.h` | Public Domain / MIT | Used by the console-first C launcher (`launcher/ui.c`) to render the embedded font without external `SDL2_ttf`. |
+| `LiberationSans-Bold.ttf` (digitized font data embedded into `launcher/assets/assets.c` via `launcher/tools/gen_assets.py`) | liberationfonts/liberation-fonts | `LiberationSans-Bold.ttf` | SIL Open Font License 1.1 | Bundled as static byte array in `dw3-launcher`. |
+| `launcher/assets/assets.c` (1-bit loading runner sprites `a1..a4`, `g1..g4`, `k1..k3`) | Digimon D-Tector LCD V-Pet sprites (owner-supplied) | `a1..a4`, `g1..g4`, `k1..k3` | Bandai IP (fan-project loading animation) | Embedded as 1-bit pixel masks for the loading minigame (`launcher/loading.c`); keep note before submitting to strict third-party catalogues. |
+
 Tools used but not vendored (installed by `scripts/setup.sh`) don't need entries.

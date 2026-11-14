@@ -22,6 +22,25 @@
 
 static int kind_open = -1;
 const char *plat_shot_dir = ".";
+static int desk_w = 1280, desk_h = 720;
+
+void plat_desktop_size(int *w, int *h) {
+    if (w) *w = desk_w;
+    if (h) *h = desk_h;
+}
+
+#ifdef HAVE_SDL2
+static SDL_Window *win;
+#endif
+
+void plat_toggle_fullscreen(void) {
+#ifdef HAVE_SDL2
+    if (kind_open == PLAT_SDL && win) {
+        Uint32 f = SDL_GetWindowFlags(win);
+        SDL_SetWindowFullscreen(win, (f & SDL_WINDOW_FULLSCREEN_DESKTOP) ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP);
+    }
+#endif
+}
 
 long plat_now_ms(void);
 static long virt_ms;
@@ -86,7 +105,6 @@ static int ev_open(void) {
 }
 
 #ifdef HAVE_SDL2
-static SDL_Window *win;
 static SDL_Renderer *ren;
 static SDL_Texture *tex;
 static SDL_GameController *pad;
@@ -96,14 +114,31 @@ static int sdl_open(void) {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER | SDL_INIT_EVENTS) < 0) {
         return -1;
     }
-    win = SDL_CreateWindow("Digimon World 3", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, W * 2, H * 2,
-                           SDL_WINDOW_RESIZABLE);
+    SDL_DisplayMode dm;
+    if (SDL_GetDesktopDisplayMode(0, &dm) == 0 && dm.w > 0 && dm.h > 0) {
+        desk_w = dm.w;
+        desk_h = dm.h;
+    }
+    /* Pick crisp internal UI render scale (2x = 1280x960, 3x = 1920x1440) and fit window comfortably on monitor. */
+    int sc = (desk_h >= 1350 && desk_w >= 1800) ? 3 : 2;
+    ui_init(sc);
+    int win_h = desk_h * 82 / 100;
+    if (win_h < 480) win_h = 480;
+    if (win_h > ui_h) win_h = ui_h;
+    int win_w = win_h * 4 / 3;
+    if (win_w > desk_w * 90 / 100) {
+        win_w = desk_w * 90 / 100;
+        win_h = win_w * 3 / 4;
+    }
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+    win = SDL_CreateWindow("Digimon World 3", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, win_w, win_h,
+                           SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
     if (!win) {
         return -1;
     }
     ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_PRESENTVSYNC);
-    SDL_RenderSetLogicalSize(ren, W, H);
-    tex = SDL_CreateTexture(ren, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, W, H);
+    SDL_RenderSetLogicalSize(ren, ui_w, ui_h);
+    tex = SDL_CreateTexture(ren, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, ui_w, ui_h);
     for (int i = 0; i < SDL_NumJoysticks(); i++) {
         if (SDL_IsGameController(i) && (pad = SDL_GameControllerOpen(i))) {
             break;
@@ -175,8 +210,8 @@ static void save_ppm(const char *name) {
     if (!f) {
         return;
     }
-    fprintf(f, "P6\n%d %d\n255\n", W, H);
-    for (int i = 0; i < W * H; i++) {
+    fprintf(f, "P6\n%d %d\n255\n", ui_w, ui_h);
+    for (int i = 0; i < ui_w * ui_h; i++) {
         fputc((fb[i] >> 16) & 255, f);
         fputc((fb[i] >> 8) & 255, f);
         fputc(fb[i] & 255, f);
@@ -191,11 +226,14 @@ static int wait_ticks;
 int plat_open(int kind, const char *script) {
     kind_open = kind;
     if (kind == PLAT_NULL) {
+        const char *sc = getenv("DW3_UI_SCALE");
+        ui_init(sc ? atoi(sc) : 1);
         script_text = strdup(script ? script : "");
         script_pos = script_text;
         return 0;
     }
     if (kind == PLAT_FB) {
+        ui_init(1);
         if (fb_open() != 0) {
             return -1;
         }
@@ -230,7 +268,8 @@ void plat_present(void) {
     }
 #ifdef HAVE_SDL2
     if (kind_open == PLAT_SDL && ren) {
-        SDL_UpdateTexture(tex, NULL, fb, W * 4);
+        SDL_UpdateTexture(tex, NULL, fb, ui_w * 4);
+        SDL_SetRenderDrawColor(ren, 7, 16, 25, 255);
         SDL_RenderClear(ren);
         SDL_RenderCopy(ren, tex, NULL, NULL);
         SDL_RenderPresent(ren);
@@ -317,6 +356,10 @@ int plat_poll(Ev *ev, int timeout_ms) {
         case SDL_QUIT: return -1;
         case SDL_KEYDOWN: case SDL_KEYUP:
             if (e.key.repeat) {
+                return 0;
+            }
+            if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_F11) {
+                plat_toggle_fullscreen();
                 return 0;
             }
             ev->code = key_code(e.key.keysym.sym);

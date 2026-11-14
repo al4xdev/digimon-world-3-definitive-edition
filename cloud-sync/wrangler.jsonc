@@ -1,0 +1,23 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "dw3-cloud-sync",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-04-05",
+  "workers_dev": true,
+  "vars": {
+    "RETENTION_DAYS": "40",
+    "PAIRING_TTL_SEC": "300",
+    "MAX_DEVICES_PER_ACCOUNT": "10",
+    "ALLOW_TEST_ENDPOINTS": "0"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "dw3-cloud-sync-db",
+      "database_id": "4f38ebdd-98bb-401d-8757-3538c5ba23cf"
+    }
+  ],
+  "triggers": {
+    "crons": ["0 4 * * *"]
+  }
+}

@@ -8,7 +8,7 @@ publishing checklist is [`portmaster/PUBLISHING.md`](../portmaster/PUBLISHING.md
 | file | what it is |
 |---|---|
 | `Digimon World 3.sh` | the one launcher. It sits beside `dw3/` (flow below). |
-| `dw3-menu.py` | the framebuffer menu: pad only, 640x480, its own 5x7 glyphs. Writes `settings.json` (how the mods and the pad mapping reach the game) and `pad.map`. |
+| `dw3-launcher` | the console-first C menu (`launcher/`): pad only, 640x480 framebuffer (or SDL2 on desktop), writes `settings.json`, `pad.map`, `tui.state`, and runs `./dw2003` behind an animated loading screen until `DW3_STATUS_FD` signals start. |
 | `ledd.py` | the LED bar's daemon: the only process that writes `/dev/ttyS2`, started by the game's `led_bar` mod ([`docs/LAUNCHER.md`](../docs/LAUNCHER.md), "LED bar"). Holds an `flock` so there is one at a time, and turns the bar off when the pid that asked for the animation goes away. Timings: [`docs/XF35H.md`](../docs/XF35H.md). |
 | `probe.sh` | a passive environment probe (OS, framebuffer, Wayland, audio, CPU part, Mali, `ldd` of the binary, PortMaster variables). Writes `logs/probe.txt` and changes nothing else. |
 | `README.txt` | the short file guide that ships on the card, inside `dw3/`. |

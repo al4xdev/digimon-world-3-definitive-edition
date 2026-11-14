@@ -21,16 +21,34 @@ typedef struct Cfg {
     int bmem, bbuf;          /* remember cursor; buffer input 0 off 1 short 2 long */
     int logs;                /* 0 off 1 soft 2 heavy */
     int led;                 /* the led_bar mod's switch in settings.json */
+    int widescreen;          /* 0 off, 1 16:9 battles (needs GPU renderer on PC) */
+    int fullscreen;          /* 1 on handheld, 0/1 on PC */
+    int scale;               /* PC window scale: 0 = auto from monitor, 2..6 manual */
+    int renderer_pc;         /* 0 gpu, 1 software (PC only) */
+    int filter;              /* 0 none, 1 sharp, 2 scanlines, 3 crt, 4 smooth (PC GPU) */
+    int backup_max;          /* 1..100 local rotating card1.mcd snapshots */
+    int sync_enabled;        /* 0 off, 1 cloud cross-play sync active */
+    int sync_interval_min;   /* 0 = start/exit only, else 5, 10, 15, 20, 30 min */
     int hud[H_COUNT];        /* evdev code of each battle action's button */
     Bind pad[A_COUNT];
 } Cfg;
 
+extern int is_pc, is_portmaster;
 extern char game_dir[512];
 extern char disc_path[1200];  /* "" when there is none */
+
+typedef struct {
+    char name[256];
+    int is_dir;
+} BrowseItem;
 
 void cfg_defaults(Cfg *c);
 void cfg_load(Cfg *c);
 int cfg_save(const Cfg *c);          /* tui.state, pad.map and (with a disc) settings.json; 0 on success */
+int cfg_auto_scale(const Cfg *c);    /* integer game scale fitting the detected monitor */
+int browse_disc(void);               /* opens OS file picker on PC; 0 when disc_path updated */
+int browse_read(const char *dir, BrowseItem *out, int max_items);
+void browse_start_dir(char *out, size_t n);
 void cfg_set_layout(Cfg *c, int layout);
 int cfg_layout(const Cfg *c);
 char layout_letter(int layout, int code);

@@ -30,7 +30,7 @@ APPIMAGE = [r"AppRun", r"\.DirIcon", r"dw2003recomp\.desktop", r"dw2003recomp\.s
 WINDOWS = [r"dw2003\.exe", r"dw2003-launcher\.exe", r"README\.txt", MOD, LICENCE]
 SYMBOLS = [r"dw2003\.pdb", r"dw2003-launcher\.pdb", r"README\.txt"]
 PORTMASTER = [r"Digimon World 3\.sh", r"port\.json", r"README\.md", r"gameinfo\.xml", r"screenshot\.png",
-              r"cover\.png", r"dw3/dw2003", r"dw3/dw3-menu\.py", r"dw3/ledd\.py", r"dw3/probe\.sh",
+              r"cover\.png", r"dw3/dw2003", r"dw3/dw3-launcher", r"dw3/ledd\.py", r"dw3/probe\.sh",
               r"dw3/README\.txt", r"dw3/" + MOD, r"dw3/licenses/[A-Za-z0-9._-]+"]
 VERSION = r"[A-Za-z0-9._+-]+"
 ASSETS = [rf"dw2003-{VERSION}-x86_64\.AppImage", rf"dw2003-{VERSION}-x86_64\.debug", r"SHA256SUMS",
