@@ -15,6 +15,7 @@ typedef struct Bind {
 
 typedef struct Cfg {
     int hz;                  /* 50 or 60: kept from the file, no screen edits it any more */
+    int lang;                /* 0 english, 1 portuguese, 2 french, 3 german, 4 italian, 5 spanish, 6 usa, 7 japanese */
     int ff;                  /* 0 off, 1 2x, 2 4x, 3 8x, 4 unlimited */
     int skip, battles, hit;  /* skip dialogues, skip battle animations, hit reaction */
     int btext;               /* 0 off, 1 skip, 2 async */

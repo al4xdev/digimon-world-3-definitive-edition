@@ -50,13 +50,29 @@ def text_file(name):
     return [dt.decode(d, o, tables, latin=False)[0].replace("−", "-").replace("’", "'") for o in offs]
 
 
-# The four techniques the owner remade (definitive combat PRD, layer 6), by ID: their new descriptions.
-REMADE = {202: "Reveals the enemy's weaknesses.", 203: "Relay: the next swap is free.",
-          207: "Lowers a resist of the enemy.", 208: "Lowers two resists of the enemy.",
-          # PRD 2, layer B: attack buffs count for magic, defence ones against both kinds of hit
-          198: "User's attack up: phys and magic.", 199: "Allies' attack up: phys and magic.",
-          200: "User's defense up vs all damage.", 201: "Allies' defense up vs all damage.",
-          205: "Enemy defense down vs all damage.", 206: "Enemy defense down vs all damage."}
+# The techniques remade or standardized onto the 3-tier buff/debuff system (definitive combat PRD + layer H):
+REMADE = {
+    202: "Reveals the enemy's weaknesses.",
+    203: "Relay: the next swap is free.",
+    207: "Foe best Elem Resist-1, 3 turns.",
+    208: "Foe 2 Elem Resists-2, 3 turns.",
+    81: "Dark magic. Foe Atk-2, 3 turns.",
+    108: "Ice phys. Foe Atk-1, 2 turns.",
+    131: "Physical. Foe Def-1, 2 turns.",
+    132: "Physical. Foe Atk-1, 2 turns.",
+    134: "Mach phys. Foe Atk-2, 3 turns.",
+    136: "Mach phys. Foe Def-2, 3 turns.",
+    194: "Enemy Atk-2 (phys/mag), 3 turns.",
+    195: "Enemy Atk-3 (phys/mag), 3 turns.",
+    198: "User Atk+2 (phys/mag), 4 turns.",
+    199: "Allies Atk+3 (phys/mag), 3 turns.",
+    200: "User Def+2 vs all dmg, 4 turns.",
+    201: "Allies Def+3 vs all dmg, 3 turns.",
+    205: "Enemy Def-2 vs all dmg, 3 turns.",
+    206: "Enemy Def-3 vs all dmg, 3 turns.",
+    209: "Next attack deals extra dmg.",
+    210: "Next attack deals max extra dmg.",
+}
 
 
 def describe(t):

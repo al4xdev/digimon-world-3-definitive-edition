@@ -100,14 +100,24 @@ typedef struct StdwtitlQuestion {
     u8 colour[2][3];
 } StdwtitlQuestion;
 
+#include "port/game/definitive.h"
+
 static const StdwtitlQuestion stdwtitl_q_difficulty = {
     "CHOOSE YOUR FATE!", { "EASY", "HARD" }, { "3 DIGIMON", "2 DIGIMON  NO THIRD WHEEL" },
     { "AWW! WANT A BLANKET TOO?", "NOW WE ARE TALKING!" }, 78, { { 96, 200, 255 }, { 255, 72, 56 } },
+};
+static const StdwtitlQuestion stdwtitl_q_difficulty_pt = {
+    "ESCOLHA SEU DESTINO!", { "FACIL", "DIFICIL" }, { "3 DIGIMON", "2 DIGIMON  MODO DUPLA" },
+    { "QUER UM COBERTOR TAMBEM?", "AGORA SIM!" }, 90, { { 96, 200, 255 }, { 255, 72, 56 } },
 };
 /* Girls Power (port/game/girls_power.c): who the hero is. Kaili first: the question exists for her. */
 static const StdwtitlQuestion stdwtitl_q_hero = {
     "CHOOSE YOUR HERO!", { "KAILI", "JUNIOR" }, { "GIRLS POWER", "THE ORIGINAL" },
     { "GIRLS RULE THE WORLD!", "OLD SCHOOL IS GOLD!" }, 104, { { 255, 120, 170 }, { 96, 160, 255 } },
+};
+static const StdwtitlQuestion stdwtitl_q_hero_pt = {
+    "ESCOLHA SEU HEROI!", { "KAILI", "JUNIOR" }, { "GAROTAS NO PODER", "O CLASSICO" },
+    { "AS GAROTAS MANDAM!", "RAIZ E OUTRO NIVEL!" }, 104, { { 255, 120, 170 }, { 96, 160, 255 } },
 };
 static s32 hero_cursor; /* 0 Kaili, 1 Junior */
 
@@ -116,6 +126,14 @@ static s32 hero_cursor; /* 0 Kaili, 1 Junior */
 static s32 stdwtitl_question(StdwtitlMenu *obj, const StdwtitlQuestion *q, s32 *cursor) {
     static const u8 white[3] = { 255, 255, 255 }, grey[3] = { 120, 128, 150 }, title[3] = { 255, 208, 64 };
     s32 i;
+
+    if (def_is_ptbr()) {
+        if (q == &stdwtitl_q_difficulty) {
+            q = &stdwtitl_q_difficulty_pt;
+        } else if (q == &stdwtitl_q_hero) {
+            q = &stdwtitl_q_hero_pt;
+        }
+    }
 
     diff_ticks++;
     stdwtitl_diff_text(obj, DIFF_X + 12, DIFF_Y + 5, 128, q->title, title);

@@ -266,6 +266,12 @@ const unsigned char *def_tp_full_text(void);
 int def_magic_attack(u8 side);
 int def_magic_defense(u8 side);
 int def_debuff_scale(int k, int amount);
+/* 3-tier fixed stat buff/debuff system (definitive.c): no stacking, turn-based duration. */
+int def_mod_level_from_amount(int amount);
+int def_mod_apply(u8 side, s32 member, s32 kind, s32 level, s32 turns, s32 blocked_idx);
+int def_mod_apply_tech(u8 side, s32 member, s32 kind, s32 tech, s32 amount, s32 blocked_idx);
+int def_mod_start_event(void);
+void def_member_knockout(s32 side, s32 member);
 void def_party_turn_begins(void);
 void def_action_resolved(u8 side, s32 id, s32 value);
 void def_enemy_turn_begins(void);

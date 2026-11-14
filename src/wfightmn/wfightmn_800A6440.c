@@ -1233,6 +1233,9 @@ void wfightmn_knockout(WfightmnMain *obj, WfightmnMainData *data) {
         member->confusion_power = 0;
         member->sleep_power = 0;
         member->paralysis_power = 0;
+#ifdef PC_PORT
+        def_member_knockout(side, fightstg_battle.state.current[side]);
+#endif
         obj->base.substep++;
         break;
     case 1:

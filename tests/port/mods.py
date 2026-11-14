@@ -353,7 +353,7 @@ def global_save(binary, out):
           f"with the mod off the menu has no SAVE: the press opens STATUS (map 0x1000) and the wait for STGMCARD times out (exit {rc3})")
 
 
-PL_CODES = {"english": 2, "french": 3, "german": 5, "italian": 4, "spanish": 6, "usa": 1, "japanese": 0}
+PL_CODES = {"english": 2, "portuguese": 2, "french": 3, "german": 5, "italian": 4, "spanish": 6, "usa": 1, "japanese": 0}
 PL_DECKS = 0x628  # gamestate_data.decks[3]: GamestateDeck (0x66 bytes), its name first
 NEW_GAME = SCRIPTS / "new_game.json"
 NG_EXPECTED = ROOT / "tests/replay/expected/new_game.json"

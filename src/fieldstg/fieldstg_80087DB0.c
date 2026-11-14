@@ -5100,10 +5100,11 @@ static void fieldstg_rush_update(FieldstgRush *obj) {
             return;
         }
         if (obj->active == 1) {
-            fieldstg_rush_text(layer, 82, 96, 128, "EASY FIGHT! RUSH IT?", gold);
-            fieldstg_rush_text(layer, 112, 114, 160, "YES", obj->yes ? white : grey);
-            fieldstg_rush_text(layer, 182, 114, 160, "NO", obj->yes ? grey : white);
-            fieldstg_rush_quad(layer, obj->yes ? 106 : 176, 112, obj->yes ? 44 : 34, 14, 1, 24, 40, 96);
+            s32 pt = def_is_ptbr();
+            fieldstg_rush_text(layer, pt ? 78 : 82, 96, 128, pt ? "LUTA FACIL! ATROPELAR?" : "EASY FIGHT! RUSH IT?", gold);
+            fieldstg_rush_text(layer, 112, 114, 160, pt ? "SIM" : "YES", obj->yes ? white : grey);
+            fieldstg_rush_text(layer, pt ? 178 : 182, 114, 160, pt ? "NAO" : "NO", obj->yes ? grey : white);
+            fieldstg_rush_quad(layer, obj->yes ? 106 : 176, 112, obj->yes ? 44 : (pt ? 42 : 34), 14, 1, 24, 40, 96);
             fieldstg_rush_quad(layer, 70, 90, 180, 1, 1, 60, 130, 230);
             fieldstg_rush_quad(layer, 70, 133, 180, 1, 1, 60, 130, 230);
             fieldstg_rush_quad(layer, 70, 90, 180, 44, 2, 225, 215, 160);

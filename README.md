@@ -410,7 +410,7 @@ keeps your best stage. A replay pays the battle's experience and Bits, but no ac
   loading minigame (Kumamon, Guilmon and Agumon) while the disc verifies.
 - **The Blast Gauge is saved.** The original reset it every time the game was closed, even after saving.
 - **Battle text that does not stop the fight**: message boxes skip by default (`BATTLE TEXT: SKIP`) without waiting for a button.
-- **Overlevel Rush**: when your strongest Digimon is 15 or more levels above every enemy of a random battle, the game
+- **Overlevel Rush**: when your strongest Digimon is 8 or more levels above every enemy of a random battle, the game
   offers to skip it. Take it and the rewards a win by your lead Digimon would give (experience, Bits, the drop and
   Hunt Materials) are yours at once: a small panel over your Digimon lists them for two seconds while you keep walking
   (+EXP and LV UP! for each member, NEW TECH!, TP FULL!, the Bits, the item and the materials). A battle you fight

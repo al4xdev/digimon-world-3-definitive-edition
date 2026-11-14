@@ -1756,6 +1756,18 @@ void message_load_font(void) {
     img.load_all(cdload_module.get_subfile_by_id(0x2870000));
     cdload_module.files.free_file(0x287);
     cdload_module.queue_file(0x286);
+#ifdef PC_PORT
+    {
+        s32 i;
+
+        for (i = 0; i < 114; i++) {
+            if (font_glyphs_9_ext[i].tpage_x == 0xFF && font_glyphs_11_ext[i].tpage_x != 0xFF) {
+                font_glyphs_9_ext[i] = font_glyphs_11_ext[i];
+                font_glyphs_9_ext[i].unk_A = 8;
+            }
+        }
+    }
+#endif
 }
 
 s16 message_decode_char(u8 *text, u8 arg1, MessageFont *font) {

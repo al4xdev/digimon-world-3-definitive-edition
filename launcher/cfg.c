@@ -267,6 +267,7 @@ static int json_enabled(const char *text, const char *mod) {
 }
 
 static const char *ff_names[] = {"off", "2x", "4x", "8x", "unlimited"};
+static const char *lang_names[] = {"english", "portuguese", "french", "german", "italian", "spanish", "usa", "japanese"};
 static const char *bbuf_names[] = {"off", "short", "long"};
 static const char *btext_names[] = {"off", "skip", "async"};
 static const char *log_names[] = {"off", "soft", "heavy"};
@@ -304,6 +305,7 @@ void cfg_load(Cfg *c) {
         v[strcspn(v, "\r\n")] = 0;
         int n = atoi(v);
         if (!strcmp(line, "hz")) c->hz = n == 60 ? 60 : 50;
+        else if (!strcmp(line, "lang")) c->lang = n < 0 ? 0 : n > 7 ? 7 : n;
         else if (!strcmp(line, "ff")) ffon = n;
         else if (!strcmp(line, "ff_speed")) snprintf(ffspeed, sizeof(ffspeed), "%s", v);
         else if (!strcmp(line, "skip")) c->skip = n != 0;
@@ -362,6 +364,11 @@ void cfg_load(Cfg *c) {
     if (j) {
         int e = json_enabled(j, "led_bar");
         if (e >= 0) c->led = e;
+        if (!f) {
+            char lstr[32] = "";
+            if (json_str(j, "\"preset_language\"", "language", lstr, sizeof(lstr)))
+                c->lang = idx_of(lang_names, 8, lstr, 0);
+        }
         free(j);
     }
 }
@@ -422,7 +429,7 @@ static int write_settings(const Cfg *c) {
         "    \"battle_animations\": { \"enabled\": %s, \"hit_reaction\": %s },\n"
         "    \"battle_text\": { \"enabled\": true, \"mode\": \"%s\" },\n"
         "    \"global_save\": { \"enabled\": true, \"restore_map_state\": true },\n"
-        "    \"preset_language\": { \"enabled\": true, \"language\": \"english\" },\n"
+        "    \"preset_language\": { \"enabled\": true, \"language\": \"%s\" },\n"
         "    \"widescreen\": { \"enabled\": %s },\n"
         "    \"battle_menu\": { \"enabled\": true, \"fight\": \"%s\", \"tech\": \"%s\", \"digivolve\": \"%s\", \"tag\": \"%s\", "
         "\"item\": \"%s\", \"run\": \"%s\", \"inspect\": \"%s\", \"remember_cursor\": %s, \"buffer_input\": \"%s\" },\n"
@@ -430,7 +437,7 @@ static int write_settings(const Cfg *c) {
         disc_esc, vscale, vfull ? "true" : "false", vfill ? "true" : "false", c->hz, renderer, vfilt,
         log_names[c->logs], c->ff ? "true" : "false", ff_names[c->ff ? c->ff : 3],
         c->skip ? "true" : "false", c->battles ? "true" : "false", c->battles && c->hit ? "true" : "false",
-        btext_names[c->btext], vw ? "true" : "false",
+        btext_names[c->btext], lang_names[c->lang < 0 || c->lang > 7 ? 0 : c->lang], vw ? "true" : "false",
         hud_name(c->hud[H_FIGHT]), hud_name(c->hud[H_TECH]), hud_name(c->hud[H_DV]),
         hud_name(c->hud[H_TAG]), hud_name(c->hud[H_ITEM]), hud_name(c->hud[H_RUN]), hud_name(c->hud[H_INSPECT]),
         c->bmem ? "true" : "false", bbuf_names[c->bbuf], (!is_pc && c->led) ? "true" : "false", pads);
@@ -453,8 +460,8 @@ int cfg_save(const Cfg *c) {
         snprintf(line, sizeof(line), "%s=%s\n", keys[i], hud_name(c->hud[i]));
         strcat(text, line);
     }
-    snprintf(line, sizeof(line), "logs=%d\nlang=0\nlang_on=0\nbackup_max=%d\nsync_enabled=%d\nsync_interval=%d\n",
-             c->logs, c->backup_max, c->sync_enabled, c->sync_interval_min);
+    snprintf(line, sizeof(line), "logs=%d\nlang=%d\nlang_on=1\nbackup_max=%d\nsync_enabled=%d\nsync_interval=%d\n",
+             c->logs, c->lang, c->backup_max, c->sync_enabled, c->sync_interval_min);
     strcat(text, line);
     path_of(path, sizeof(path), "tui.state");
     rc |= write_atomic(path, text);

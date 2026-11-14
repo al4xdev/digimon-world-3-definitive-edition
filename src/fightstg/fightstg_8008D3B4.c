@@ -502,29 +502,41 @@ s32 fightstg_item_run_script(FightstgItem *obj, FightstgScript **data) {
             if (p->stats[0] > p->stats[1]) {
                 if (FIGHTSTG_STAT_BLOCKED(8) == 0) {
                     obj->lowered = 1;
-                    a = p->stats[0];
-                    b = p->stats[1];
-                    if (member->modifiers[0] != 0) {
-                        p->stats[0] -= member->modifiers[0];
+#ifdef PC_PORT
+                    if (!def_mod_apply(0x10, fightstg_battle.state.current[1], 0, -2, DEF_MOD_TURNS_BASE, 8)) {
+#endif
+                        a = p->stats[0];
+                        b = p->stats[1];
+                        if (member->modifiers[0] != 0) {
+                            p->stats[0] -= member->modifiers[0];
+                        }
+                        lim = -(p->stats[0] / 2);
+                        member->modifiers[0] -= a - b;
+                        if (member->modifiers[0] < lim) {
+                            member->modifiers[0] = lim;
+                        }
+#ifdef PC_PORT
                     }
-                    lim = -(p->stats[0] / 2);
-                    member->modifiers[0] -= a - b;
-                    if (member->modifiers[0] < lim) {
-                        member->modifiers[0] = lim;
-                    }
+#endif
                 }
             } else if (p->stats[0] < p->stats[1] && FIGHTSTG_STAT_BLOCKED(9) == 0) {
                 obj->lowered = 2;
-                a = p->stats[0];
-                b = p->stats[1];
-                if (member->modifiers[1] != 0) {
-                    p->stats[1] -= member->modifiers[1];
+#ifdef PC_PORT
+                if (!def_mod_apply(0x10, fightstg_battle.state.current[1], 1, -2, DEF_MOD_TURNS_BASE, 9)) {
+#endif
+                    a = p->stats[0];
+                    b = p->stats[1];
+                    if (member->modifiers[1] != 0) {
+                        p->stats[1] -= member->modifiers[1];
+                    }
+                    lim = -(p->stats[1] / 2);
+                    member->modifiers[1] -= b - a;
+                    if (member->modifiers[1] < lim) {
+                        member->modifiers[1] = lim;
+                    }
+#ifdef PC_PORT
                 }
-                lim = -(p->stats[1] / 2);
-                member->modifiers[1] -= b - a;
-                if (member->modifiers[1] < lim) {
-                    member->modifiers[1] = lim;
-                }
+#endif
             }
             (*data)->script = 0x11;
             (*data)->stage = -1;
@@ -800,20 +812,26 @@ void fightstg_item_update(FightstgItem *obj, FightstgMessage **data) {
                 break;
             }
             case 0x48: {
-                RecordsUsable *item = records_funcs.get_item(obj->item)->data;
-                FightstgMember *member = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
-                FightstgStats *p = fightstg_rules.get_stats(0, 1, fightstg_battle.state.current[0]);
-                s32 lim;
+#ifdef PC_PORT
+                if (!def_mod_apply(0, fightstg_battle.state.current[0], 2, 1, DEF_MOD_TURNS_BASE, 0)) {
+#endif
+                    RecordsUsable *item = records_funcs.get_item(obj->item)->data;
+                    FightstgMember *member = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
+                    FightstgStats *p = fightstg_rules.get_stats(0, 1, fightstg_battle.state.current[0]);
+                    s32 lim;
 
-                if (member->modifiers[2] != 0) {
-                    p->stats[4] -= member->modifiers[2];
+                    if (member->modifiers[2] != 0) {
+                        p->stats[4] -= member->modifiers[2];
+                    }
+                    lim = p->stats[4];
+                    member->modifiers[2] += lim * item->amount / 128;
+                    if (member->modifiers[2] > lim) {
+                        member->modifiers[2] = lim;
+                    }
+                    fightstg_events_start_modifier(0, fightstg_battle.state.current[0], 2, 0);
+#ifdef PC_PORT
                 }
-                lim = p->stats[4];
-                member->modifiers[2] += lim * item->amount / 128;
-                if (member->modifiers[2] > lim) {
-                    member->modifiers[2] = lim;
-                }
-                fightstg_events_start_modifier(0, fightstg_battle.state.current[0], 2, 0);
+#endif
                 *data = fightstg_message_create();
                 obj->args[0] = 0x32;
                 obj->args[1] = 0;
@@ -823,30 +841,37 @@ void fightstg_item_update(FightstgItem *obj, FightstgMessage **data) {
                 break;
             }
             case 0x49: {
-                RecordsUsable *item = records_funcs.get_item(obj->item)->data;
-                FightstgMember *member = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
-                FightstgStats *p = fightstg_rules.get_stats(0, 1, fightstg_battle.state.current[0]);
-                s32 max;
-                s32 min;
+#ifdef PC_PORT
+                if (!def_mod_apply(0, fightstg_battle.state.current[0], 0, 1, DEF_MOD_TURNS_BASE, 0) ||
+                    !def_mod_apply(0, fightstg_battle.state.current[0], 1, -1, DEF_MOD_TURNS_BASE, 0)) {
+#endif
+                    RecordsUsable *item = records_funcs.get_item(obj->item)->data;
+                    FightstgMember *member = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
+                    FightstgStats *p = fightstg_rules.get_stats(0, 1, fightstg_battle.state.current[0]);
+                    s32 max;
+                    s32 min;
 
-                if (member->modifiers[0] != 0) {
-                    p->stats[0] -= member->modifiers[0];
+                    if (member->modifiers[0] != 0) {
+                        p->stats[0] -= member->modifiers[0];
+                    }
+                    if (member->modifiers[1] != 0) {
+                        p->stats[1] -= member->modifiers[1];
+                    }
+                    max = p->stats[0];
+                    member->modifiers[0] += max * item->amount / 128;
+                    if (member->modifiers[0] > max) {
+                        member->modifiers[0] = max;
+                    }
+                    min = -(p->stats[1] / 2);
+                    member->modifiers[1] -= p->stats[1] * item->amount / 512;
+                    if (member->modifiers[1] < min) {
+                        member->modifiers[1] = min;
+                    }
+                    fightstg_events_start_modifier(0, fightstg_battle.state.current[0], 0, 0);
+                    fightstg_events_start_modifier(0, fightstg_battle.state.current[0], 1, 0);
+#ifdef PC_PORT
                 }
-                if (member->modifiers[1] != 0) {
-                    p->stats[1] -= member->modifiers[1];
-                }
-                max = p->stats[0];
-                member->modifiers[0] += max * item->amount / 128;
-                if (member->modifiers[0] > max) {
-                    member->modifiers[0] = max;
-                }
-                min = -(p->stats[1] / 2);
-                member->modifiers[1] -= p->stats[1] * item->amount / 512;
-                if (member->modifiers[1] < min) {
-                    member->modifiers[1] = min;
-                }
-                fightstg_events_start_modifier(0, fightstg_battle.state.current[0], 0, 0);
-                fightstg_events_start_modifier(0, fightstg_battle.state.current[0], 1, 0);
+#endif
                 *data = fightstg_message_create();
                 obj->args[0] = 0x3C;
                 obj->args[1] = 0;
@@ -855,30 +880,37 @@ void fightstg_item_update(FightstgItem *obj, FightstgMessage **data) {
                 break;
             }
             case 0x4A: {
-                RecordsUsable *item = records_funcs.get_item(obj->item)->data;
-                FightstgMember *member = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
-                FightstgStats *p = fightstg_rules.get_stats(0, 1, fightstg_battle.state.current[0]);
-                s32 max;
-                s32 min;
+#ifdef PC_PORT
+                if (!def_mod_apply(0, fightstg_battle.state.current[0], 1, 1, DEF_MOD_TURNS_BASE, 0) ||
+                    !def_mod_apply(0, fightstg_battle.state.current[0], 0, -1, DEF_MOD_TURNS_BASE, 0)) {
+#endif
+                    RecordsUsable *item = records_funcs.get_item(obj->item)->data;
+                    FightstgMember *member = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
+                    FightstgStats *p = fightstg_rules.get_stats(0, 1, fightstg_battle.state.current[0]);
+                    s32 max;
+                    s32 min;
 
-                if (member->modifiers[0] != 0) {
-                    p->stats[0] -= member->modifiers[0];
+                    if (member->modifiers[0] != 0) {
+                        p->stats[0] -= member->modifiers[0];
+                    }
+                    if (member->modifiers[1] != 0) {
+                        p->stats[1] -= member->modifiers[1];
+                    }
+                    max = p->stats[1];
+                    member->modifiers[1] += max * item->amount / 128;
+                    if (member->modifiers[1] > max) {
+                        member->modifiers[1] = max;
+                    }
+                    min = -(p->stats[0] / 2);
+                    member->modifiers[0] -= p->stats[0] * item->amount / 512;
+                    if (member->modifiers[0] < min) {
+                        member->modifiers[0] = min;
+                    }
+                    fightstg_events_start_modifier(0, fightstg_battle.state.current[0], 0, 0);
+                    fightstg_events_start_modifier(0, fightstg_battle.state.current[0], 1, 0);
+#ifdef PC_PORT
                 }
-                if (member->modifiers[1] != 0) {
-                    p->stats[1] -= member->modifiers[1];
-                }
-                max = p->stats[1];
-                member->modifiers[1] += max * item->amount / 128;
-                if (member->modifiers[1] > max) {
-                    member->modifiers[1] = max;
-                }
-                min = -(p->stats[0] / 2);
-                member->modifiers[0] -= p->stats[0] * item->amount / 512;
-                if (member->modifiers[0] < min) {
-                    member->modifiers[0] = min;
-                }
-                fightstg_events_start_modifier(0, fightstg_battle.state.current[0], 0, 0);
-                fightstg_events_start_modifier(0, fightstg_battle.state.current[0], 1, 0);
+#endif
                 *data = fightstg_message_create();
                 obj->args[0] = 0x3D;
                 obj->args[1] = 0;
@@ -1004,29 +1036,36 @@ void fightstg_item_update(FightstgItem *obj, FightstgMessage **data) {
             }
             case 0x57:
                 if (FIGHTSTG_STAT_BLOCKED(9) == 0) {
-                    FightstgMember *member = &fightstg_battle.state.members[1][fightstg_battle.state.current[1]];
-                    FightstgStats *p = fightstg_rules.get_stats(0x10, 0, fightstg_battle.state.current[1]);
-                    s32 a = p->stats[0];
-                    s32 b = p->stats[1];
-                    s32 max;
+#ifdef PC_PORT
+                    if (!def_mod_apply(0x10, fightstg_battle.state.current[1], 0, 2, DEF_MOD_TURNS_BASE, 0) ||
+                        !def_mod_apply(0x10, fightstg_battle.state.current[1], 1, -2, DEF_MOD_TURNS_BASE, 9)) {
+#endif
+                        FightstgMember *member = &fightstg_battle.state.members[1][fightstg_battle.state.current[1]];
+                        FightstgStats *p = fightstg_rules.get_stats(0x10, 0, fightstg_battle.state.current[1]);
+                        s32 a = p->stats[0];
+                        s32 b = p->stats[1];
+                        s32 max;
 
-                    if (member->modifiers[0] != 0) {
-                        p->stats[0] -= member->modifiers[0];
+                        if (member->modifiers[0] != 0) {
+                            p->stats[0] -= member->modifiers[0];
+                        }
+                        if (member->modifiers[1] != 0) {
+                            p->stats[1] -= member->modifiers[1];
+                        }
+                        member->modifiers[0] += a * 3 / 10;
+                        member->modifiers[1] -= b / 2;
+                        max = p->stats[0];
+                        if (member->modifiers[0] > max) {
+                            member->modifiers[0] = max;
+                        }
+                        if (member->modifiers[1] < -p->stats[1] / 2) {
+                            member->modifiers[1] = -p->stats[1] / 2;
+                        }
+                        fightstg_events_start_modifier(0x10, fightstg_battle.state.current[1], 0, 0);
+                        fightstg_events_start_modifier(0x10, fightstg_battle.state.current[1], 1, 0);
+#ifdef PC_PORT
                     }
-                    if (member->modifiers[1] != 0) {
-                        p->stats[1] -= member->modifiers[1];
-                    }
-                    member->modifiers[0] += a * 3 / 10;
-                    member->modifiers[1] -= b / 2;
-                    max = p->stats[0];
-                    if (member->modifiers[0] > max) {
-                        member->modifiers[0] = max;
-                    }
-                    if (member->modifiers[1] < -p->stats[1] / 2) {
-                        member->modifiers[1] = -p->stats[1] / 2;
-                    }
-                    fightstg_events_start_modifier(0x10, fightstg_battle.state.current[1], 0, 0);
-                    fightstg_events_start_modifier(0x10, fightstg_battle.state.current[1], 1, 0);
+#endif
                     *data = fightstg_message_create();
                     obj->args[0] = 0x40;
                     obj->args[1] = 0x10;
@@ -1067,20 +1106,26 @@ void fightstg_item_update(FightstgItem *obj, FightstgMessage **data) {
                 break;
             case 0x59:
                 if (FIGHTSTG_STAT_BLOCKED(10) == 0) {
-                    RecordsUsable *item = records_funcs.get_item(obj->item)->data;
-                    FightstgMember *member = &fightstg_battle.state.members[1][fightstg_battle.state.current[1]];
-                    FightstgStats *p = fightstg_rules.get_stats(0x10, 0, fightstg_battle.state.current[1]);
-                    s32 lim;
+#ifdef PC_PORT
+                    if (!def_mod_apply(0x10, fightstg_battle.state.current[1], 2, -1, DEF_MOD_TURNS_BASE, 10)) {
+#endif
+                        RecordsUsable *item = records_funcs.get_item(obj->item)->data;
+                        FightstgMember *member = &fightstg_battle.state.members[1][fightstg_battle.state.current[1]];
+                        FightstgStats *p = fightstg_rules.get_stats(0x10, 0, fightstg_battle.state.current[1]);
+                        s32 lim;
 
-                    if (member->modifiers[2] != 0) {
-                        p->stats[4] -= member->modifiers[2];
+                        if (member->modifiers[2] != 0) {
+                            p->stats[4] -= member->modifiers[2];
+                        }
+                        lim = -(p->stats[4] / 2);
+                        member->modifiers[2] -= p->stats[4] * item->amount / 128;
+                        if (member->modifiers[2] < lim) {
+                            member->modifiers[2] = lim;
+                        }
+                        fightstg_events_start_modifier(0x10, fightstg_battle.state.current[1], 2, 0);
+#ifdef PC_PORT
                     }
-                    lim = -(p->stats[4] / 2);
-                    member->modifiers[2] -= p->stats[4] * item->amount / 128;
-                    if (member->modifiers[2] < lim) {
-                        member->modifiers[2] = lim;
-                    }
-                    fightstg_events_start_modifier(0x10, fightstg_battle.state.current[1], 2, 0);
+#endif
                     *data = fightstg_message_create();
                     obj->args[0] = 0x35;
                     obj->args[1] = 0x10;
@@ -1362,8 +1407,15 @@ void fightstg_revive_member(s32 rec, s32 i) {
         }
         party[i].status = 0;
         party[i].hp = party[i].max_hp;
+#ifdef PC_PORT
+        if (!def_mod_apply_tech(0, i, 1, rec, item->effect_power, 0)) {
+            fightstg_rules.change_modifier(0, i, 1, item->effect_power);
+            fightstg_events_start_modifier(0, i, 1, rec);
+        }
+#else
         fightstg_rules.change_modifier(0, i, 1, item->effect_power);
         fightstg_events_start_modifier(0, i, 1, rec);
+#endif
     }
 }
 
@@ -1723,6 +1775,10 @@ void fightstg_tech_update(FightstgTech *obj, FightstgMessage **data) {
                     }
 #endif
                     switch (obj->tech) {
+#ifdef PC_PORT
+                    case 0xC2:
+                    case 0xC3:
+#endif
                     case 0xC6:
                     case 0xC8:
                     case 0xCA:
@@ -1740,6 +1796,16 @@ void fightstg_tech_update(FightstgTech *obj, FightstgMessage **data) {
                                 break;
                             }
                         }
+#ifdef PC_PORT
+                        {
+                            static const FightstgTechStatEffect extra_effects[2] = {
+                                { 194, -1, 0, 51 }, { 195, -1, 0, 51 },
+                            };
+                            if (e->technique == -1) {
+                                e = (FightstgTechStatEffect *)(obj->tech == 194 ? &extra_effects[0] : &extra_effects[1]);
+                            }
+                        }
+#endif
                         ok = 1;
                         side = obj->side >> 4;
                         if (e->factor <= 0) {
@@ -1752,13 +1818,18 @@ void fightstg_tech_update(FightstgTech *obj, FightstgMessage **data) {
                         }
                         if (ok) {
 #ifdef PC_PORT
-                            fightstg_rules.change_modifier(side << 4, fightstg_battle.state.current[side], e->stat,
-                                                           e->factor > 0 || obj->side != 0 ? e->factor * rec->effect_power
-                                                               : FIGHTSTG_DEBUFF(e->stat + 8, e->factor * rec->effect_power));
+                            if (!def_mod_apply_tech(side << 4, fightstg_battle.state.current[side], e->stat, obj->tech,
+                                                    e->factor * rec->effect_power,
+                                                    (e->factor <= 0 && obj->side == 0) ? e->stat + 8 : 0)) {
+                                fightstg_rules.change_modifier(side << 4, fightstg_battle.state.current[side], e->stat,
+                                                               e->factor > 0 || obj->side != 0 ? e->factor * rec->effect_power
+                                                                   : FIGHTSTG_DEBUFF(e->stat + 8, e->factor * rec->effect_power));
+                                fightstg_events_start_modifier(side << 4, fightstg_battle.state.current[side], e->stat, obj->tech);
+                            }
 #else
                             fightstg_rules.change_modifier(side << 4, fightstg_battle.state.current[side], e->stat, e->factor * rec->effect_power);
-#endif
                             fightstg_events_start_modifier(side << 4, fightstg_battle.state.current[side], e->stat, obj->tech);
+#endif
                             obj->args[0] = e->message;
                             obj->args[1] = side << 4;
                             obj->args[2] = fightstg_battle.state.current[side];
@@ -1780,8 +1851,15 @@ void fightstg_tech_update(FightstgTech *obj, FightstgMessage **data) {
                         for (i = 0; i < 3; i++) {
                             if (fightstg_battle.state.members[0][(obj->side >> 4) * 3 + i].digimon != 0 &&
                                 fightstg_battle.state.members[0][(obj->side >> 4) * 3 + i].hp > 0) {
+#ifdef PC_PORT
+                                if (!def_mod_apply_tech(obj->side, i, e->stat, obj->tech, e->factor * rec->effect_power, 0)) {
+                                    fightstg_rules.change_modifier(obj->side, i, e->stat, e->factor * rec->effect_power);
+                                    fightstg_events_start_modifier(obj->side, i, e->stat, obj->tech);
+                                }
+#else
                                 fightstg_rules.change_modifier(obj->side, i, e->stat, e->factor * rec->effect_power);
                                 fightstg_events_start_modifier(obj->side, i, e->stat, obj->tech);
+#endif
                             }
                         }
                         obj->args[0] = obj->side;
@@ -7304,6 +7382,11 @@ void fightstg_events_start_modifier(u8 side, s32 member, s32 kind, s32 tech) {
     s32 i = fightstg_events_find_member(fightstg_modifier_event_types[kind], side, member);
     s32 delay;
 
+#ifdef PC_PORT
+    if (def_mod_start_event()) {
+        return;
+    }
+#endif
     if (tech != 0) {
         delay = fightstg_events_get_delay(side, 12);
     } else {
@@ -7604,12 +7687,16 @@ void fightstg_action_lower_attack(void) {
     if (enemy || FIGHTSTG_STAT_BLOCKED(8) == 0) {
         rec = &records_techniques[state->tech - 1];
 #ifdef PC_PORT
-        fightstg_rules.change_modifier(0x10 - state->side, fightstg_battle.state.current[1 - enemy], 0,
-                                       enemy ? -rec->effect_power : FIGHTSTG_DEBUFF(8, -rec->effect_power));
+        if (!def_mod_apply_tech(0x10 - state->side, fightstg_battle.state.current[1 - enemy], 0, state->tech,
+                                -rec->effect_power, enemy ? 0 : 8)) {
+            fightstg_rules.change_modifier(0x10 - state->side, fightstg_battle.state.current[1 - enemy], 0,
+                                           enemy ? -rec->effect_power : FIGHTSTG_DEBUFF(8, -rec->effect_power));
+            fightstg_events_start_modifier(0x10 - state->side, fightstg_battle.state.current[1 - enemy], 0, state->tech);
+        }
 #else
         fightstg_rules.change_modifier(0x10 - state->side, fightstg_battle.state.current[1 - enemy], 0, -rec->effect_power);
-#endif
         fightstg_events_start_modifier(0x10 - state->side, fightstg_battle.state.current[1 - enemy], 0, state->tech);
+#endif
         state->effects[rec->kind] = rec->effect_power;
     }
 }
@@ -7619,9 +7706,20 @@ void fightstg_action_lower_defense(void) {
     s32 other = state->side == 0;
     RecordsTechnique *rec = &records_techniques[state->tech - 1];
 
+#ifdef PC_PORT
+    if (state->side != 0 || FIGHTSTG_STAT_BLOCKED(9) == 0) {
+        if (!def_mod_apply_tech(0x10 - state->side, fightstg_battle.state.current[other], 1, state->tech,
+                                -rec->effect_power, state->side != 0 ? 0 : 9)) {
+            fightstg_rules.change_modifier(0x10 - state->side, fightstg_battle.state.current[other], 1, -rec->effect_power);
+            fightstg_events_start_modifier(0x10 - state->side, fightstg_battle.state.current[other], 1, state->tech);
+        }
+        state->effects[rec->kind] = rec->effect_power;
+    }
+#else
     fightstg_rules.change_modifier(0x10 - state->side, fightstg_battle.state.current[other], 1, -rec->effect_power);
     fightstg_events_start_modifier(0x10 - state->side, fightstg_battle.state.current[other], 1, state->tech);
     state->effects[rec->kind] = rec->effect_power;
+#endif
 }
 
 void fightstg_action_drain_mp(void) {
@@ -9178,6 +9276,12 @@ void fightstg_rules_change_modifier(u8 side, s32 member, s32 kind, s32 amount) {
     s32 base;
     s32 min;
 
+#ifdef PC_PORT
+    if (def_mod_apply(side, member, kind, def_mod_level_from_amount(amount), DEF_MOD_TURNS_BASE,
+                      (side != 0 && amount < 0) ? kind + 8 : 0)) {
+        return;
+    }
+#endif
     if (side == 0) {
         stats = fightstg_rules_get_stats(0, 0, member);
         m = &fightstg_battle.state.members[0][member];

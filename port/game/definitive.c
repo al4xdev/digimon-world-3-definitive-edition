@@ -35,6 +35,8 @@ static s32 overfinish_damage;
 static DefChain chain; /* layer 4: stagger, window, free swap (definitive_mask.c) */
 static short resist_mod[2][3][7]; /* layer 6: per side (0 party, 1 enemy) and slot, what Resist Down took off each element */
 static unsigned char resist_turns[2][3]; /* and the turns of that side it still lasts */
+static signed char mod_level[2][3][3]; /* 3-tier stat buff/debuff level (-3..+3) per side, slot, kind (0 Atk, 1 Def, 2 Spd) */
+static unsigned char mod_turns[2][3][3]; /* turns of that side remaining before the stat modifier expires */
 static int baton_paid; /* Baton Pass was chosen in the switch menu (its MP is paid there) */
 
 static FILE *log_file;
@@ -77,6 +79,8 @@ void def_log_begin(void) {
     overfinish_damage = 0;
     memset(resist_mod, 0, sizeof(resist_mod));
     memset(resist_turns, 0, sizeof(resist_turns));
+    memset(mod_level, 0, sizeof(mod_level));
+    memset(mod_turns, 0, sizeof(mod_turns));
     if (!log_on()) {
         return;
     }
@@ -176,7 +180,12 @@ static void classify(u8 side, s32 id) {
 /* Hard Mode (the save's DEF_SAVE_HARD flag, chosen on New Game): the party is two Digimon. The third of the starting
  * pack is owned but stays out (the lab keeps it), and the third slot takes nobody: this empties it wherever a party
  * was just set (the starting pack, a loaded field), and the lab refuses the slot (def_hard_slot_closed). */
+static void patch_techniques(void);
+
 void def_hard_party_fix(void) {
+    if (def_on()) {
+        patch_techniques(); /* loaded save: ensure techniques & Digimon slots are patched before status/lab/rush */
+    }
     if (def_save_flag(DEF_SAVE_HARD) && gamestate_data.party[2] >= 0) {
         gamestate_data.party[2] = -1;
     }
@@ -285,33 +294,86 @@ void def_log_end(int result) {
     }
 }
 
+static const unsigned char *lookup_override_sorted(const DefTextOverride *tab, int count, int file, int index) {
+    int lo = 0, hi = count - 1;
+
+    while (lo <= hi) {
+        int mid = (lo + hi) >> 1;
+        int f = tab[mid].file;
+
+        if (f < file || (f == file && tab[mid].index < index)) {
+            lo = mid + 1;
+        } else if (f > file || tab[mid].index > index) {
+            hi = mid - 1;
+        } else {
+            return tab[mid].bytes;
+        }
+    }
+    return NULL;
+}
+
 /* ---- Text overrides (layer 1). font_get_entry only gets the file's buffer, so the file is found by looking the buffer
  * up in the CD module's loaded entries (no load, no side effect). Only the English sets (records_language 1, 2): the
- * other languages keep the disc's text. Returns the replacement entry or NULL. */
+ * other languages keep the disc's text. When Portuguese (PT-BR) is active, def_text_overrides_pt is searched first in
+ * O(log N) (including DMG200..DMG900 container sub-tables), falling back to def_text_overrides and then the disc's
+ * English entry. Returns the replacement entry or NULL. */
 void *def_text_override(void *data, s32 i) {
-    int e, k;
+    int e, k, s;
 
     if ((records_language != 1 && records_language != 2) || data == NULL) {
         return NULL;
     }
     for (e = 0; e < 64; e++) {
         const CdloadEntry *ent = &cdload_module.entries[e];
-        if (ent->state != 3 || ent->buffer != data) {
+        int base_id, match_file = -1;
+
+        if (ent->state != 3 || ent->buffer == NULL) {
             continue;
         }
-        for (k = 0; k < def_text_override_count; k++) {
-            if (def_text_overrides[k].file + records_language == ent->id && def_text_overrides[k].index == i) {
-                if (def_variant_text_hidden(def_text_overrides[k].file, i)) {
-                    return NULL; /* PRD 4 layer F: a variant's name and description go with its data (replay: the disc's) */
-                }
-                {
-                    static unsigned char seen[512]; /* one line per entry, not per frame it is drawn */
-                    if (k < 512 && !seen[k]) {
-                        seen[k] = 1;
-                        port_log("text override: file 0x%X entry %d", ent->id, i);
+        base_id = ent->id - records_language;
+        if (ent->buffer == data) {
+            match_file = base_id;
+        } else if (base_id >= 0x112 && base_id <= 0x158 && (const u8 *)data > (const u8 *)ent->buffer &&
+                   (const u8 *)data < (const u8 *)ent->buffer + 0x20000) {
+            const s32 *hdr = (const s32 *)ent->buffer;
+            s32 nsub = hdr[0] / 4;
+
+            if (nsub > 0 && nsub < 128) {
+                for (s = 0; s < nsub; s++) {
+                    if ((const u8 *)ent->buffer + hdr[s] == (const u8 *)data) {
+                        match_file = base_id | ((s + 1) << 16);
+                        break;
                     }
                 }
-                return (void *)def_text_overrides[k].bytes;
+            }
+        }
+        if (match_file < 0) {
+            continue;
+        }
+        if (def_is_ptbr() && def_text_override_pt_count > 0) {
+            if (!def_variant_text_hidden(base_id, i)) {
+                const unsigned char *pt = lookup_override_sorted(def_text_overrides_pt, def_text_override_pt_count,
+                                                                 match_file, i);
+                if (pt != NULL) {
+                    return (void *)pt;
+                }
+            }
+        }
+        if (match_file == base_id) {
+            for (k = 0; k < def_text_override_count; k++) {
+                if (def_text_overrides[k].file == base_id && def_text_overrides[k].index == i) {
+                    if (def_variant_text_hidden(def_text_overrides[k].file, i)) {
+                        return NULL; /* PRD 4 layer F: a variant's name and description go with its data (replay: the disc's) */
+                    }
+                    {
+                        static unsigned char seen[512]; /* one line per entry, not per frame it is drawn */
+                        if (k < 512 && !seen[k]) {
+                            seen[k] = 1;
+                            port_log("text override: file 0x%X entry %d", ent->id, i);
+                        }
+                    }
+                    return (void *)def_text_overrides[k].bytes;
+                }
             }
         }
         return NULL;
@@ -516,6 +578,8 @@ void def_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, baton_paid);
     PORT_STATE_VAR(s, resist_mod);
     PORT_STATE_VAR(s, resist_turns);
+    PORT_STATE_VAR(s, mod_level);
+    PORT_STATE_VAR(s, mod_turns);
     def_bestiary_savestate(s);
     def_hunt_savestate(s);
     def_rush_savestate(s); /* PRD 4 layer I: the floating Rush's panel and the field's heap it points into */
@@ -541,7 +605,7 @@ int def_target_staggered(void) {
 
 /* A party turn begins (wfightmn_party_turn): an extra action keeps the window, a normal one starts a new one. */
 void def_party_turn_begins(void) {
-    int m;
+    int m, k;
 
     if (!def_on()) {
         return;
@@ -551,6 +615,17 @@ void def_party_turn_begins(void) {
         memset(resist_mod[0][m], 0, sizeof(resist_mod[0][0]));
     }
     def_chain_party_turn(&chain);
+    if (!chain.cur_extra) {
+        for (k = 0; k < 3; k++) {
+            if (mod_turns[0][m][k] != 0 && --mod_turns[0][m][k] == 0) {
+                mod_level[0][m][k] = 0;
+                fightstg_battle.state.members[0][m].modifiers[k] = 0;
+                if (log_on()) {
+                    LOG("mod expired side 0 slot %d kind %d", m, k);
+                }
+            }
+        }
+    }
     if (log_on()) {
         LOG("window %s", chain.cur_extra ? "extra action" : "new (normal action)");
     }
@@ -587,14 +662,28 @@ void def_action_resolved(u8 side, s32 id, s32 value) {
 /* An enemy's turn begins (wfightmn_run_events, event 3): it closes. */
 void def_enemy_turn_begins(void) {
     int target = target_slot();
+    int slot = target % 3;
+    int k;
 
     if (!def_on()) {
         return;
     }
-    if (resist_turns[1][target % 3] != 0 && --resist_turns[1][target % 3] == 0) { /* the lowered resists wear off */
-        memset(resist_mod[1][target % 3], 0, sizeof(resist_mod[1][0]));
+    if (resist_turns[1][slot] != 0 && --resist_turns[1][slot] == 0) { /* the lowered resists wear off */
+        memset(resist_mod[1][slot], 0, sizeof(resist_mod[1][0]));
         if (log_on()) {
             LOG("resist down worn off slot %d", target);
+        }
+    }
+    for (k = 0; k < 3; k++) {
+        if (fightstg_battle.state.type == 6 && fightstg_battle.state.final_phase != 0 && k == 1) {
+            continue; /* final boss scripted phase owns modifiers[1] */
+        }
+        if (mod_turns[1][slot][k] != 0 && --mod_turns[1][slot][k] == 0) {
+            mod_level[1][slot][k] = 0;
+            fightstg_battle.state.members[1][slot].modifiers[k] = 0;
+            if (log_on()) {
+                LOG("mod expired side 1 slot %d kind %d", slot, k);
+            }
         }
     }
     if (chain.staggered[target]) {
@@ -779,10 +868,86 @@ const unsigned char *def_message(int i) {
     return m[i];
 }
 
-/* The records the four techniques change (written with the MP rows, every time: the reset restores the table). */
+/* The records the techniques and Digimon forms change (written with the MP rows, every time: the reset restores the table). */
 static void patch_techniques(void) {
+    int i;
+
+    /* Layer 6: Libra, Relay */
     records_techniques[202 - 1].target = 2;            /* Libra reads the enemy */
     records_techniques[203 - 1].mp_cost = DEF_RELAY_MP;
+
+    /* Layer H (tecnicas-v2): reworked damaging attacks with secondary debuffs (E=0) */
+    records_techniques[81 - 1].mp_cost = 84;           /* Grisly Wing: Atk-2, 3 turns */
+    records_techniques[81 - 1].effect_power = 40;
+    records_techniques[108 - 1].mp_cost = 38;          /* Cold Slash: Ice phys + Atk-1, 2 turns */
+    records_techniques[108 - 1].kind = 26;
+    records_techniques[108 - 1].effect_power = 28;
+    records_techniques[131 - 1].mp_cost = 32;          /* Armor Pierce (ex-Bug Buster): phys + Def-1, 2 turns */
+    records_techniques[131 - 1].kind = 27;
+    records_techniques[131 - 1].effect_power = 24;
+    records_techniques[132 - 1].mp_cost = 26;          /* Suppress Shot (ex-Wing Buster): phys + Atk-1, 2 turns */
+    records_techniques[132 - 1].power = 110;
+    records_techniques[132 - 1].kind = 26;
+    records_techniques[132 - 1].effect_power = 28;
+    records_techniques[134 - 1].mp_cost = 50;          /* Siege Salvo (ex-Dino Buster): Machine phys + Atk-2, 3 turns */
+    records_techniques[134 - 1].defense_stat = 7;
+    records_techniques[134 - 1].element_power = 48;
+    records_techniques[134 - 1].kind = 26;
+    records_techniques[134 - 1].effect_power = 36;
+    records_techniques[136 - 1].mp_cost = 64;          /* Fortress Salvo (ex-Devil Buster): Machine phys + Def-2, 3 turns */
+    records_techniques[136 - 1].power = 320;
+    records_techniques[136 - 1].defense_stat = 7;
+    records_techniques[136 - 1].element_power = 64;
+    records_techniques[136 - 1].kind = 27;
+    records_techniques[136 - 1].effect_power = 40;
+
+    /* Layer H: recycled unused confusion cures (P=0, E=0) -> dedicated Atk debuffs */
+    records_techniques[194 - 1].mp_cost = 34;          /* Power Seal (ex-Anti-Confuse): Foe Atk-2, 3 turns */
+    records_techniques[194 - 1].element = 5;
+    records_techniques[194 - 1].target = 2;
+    records_techniques[194 - 1].kind = 26;
+    records_techniques[194 - 1].effect_power = 36;
+    records_techniques[194 - 1].anim_effect = 37;
+    records_techniques[194 - 1].hit_sound = 49;
+    records_techniques[194 - 1].anim_script = 16;
+
+    records_techniques[195 - 1].mp_cost = 44;          /* Sapping Bloom (ex-Erase Confuse): Foe Atk-3, 3 turns */
+    records_techniques[195 - 1].element = 5;
+    records_techniques[195 - 1].target = 2;
+    records_techniques[195 - 1].kind = 26;
+    records_techniques[195 - 1].effect_power = 48;
+    records_techniques[195 - 1].anim_effect = 37;
+    records_techniques[195 - 1].hit_sound = 49;
+    records_techniques[195 - 1].anim_script = 16;
+
+    /* Layer H: MP adjustments on support / heal / charge / field skills (all E=0) */
+    records_techniques[188 - 1].mp_cost = 175;         /* Final Heal */
+    records_techniques[198 - 1].mp_cost = 36;          /* Double Power */
+    records_techniques[201 - 1].mp_cost = 72;          /* Mega Protection */
+    records_techniques[205 - 1].mp_cost = 32;          /* Armor Break */
+    records_techniques[206 - 1].mp_cost = 60;          /* Armor Off */
+    records_techniques[210 - 1].mp_cost = 44;          /* Misshukikou */
+    for (i = 213; i <= 219; i++) {
+        records_techniques[i - 1].mp_cost = 48;        /* Elemental Fields */
+    }
+
+    /* Layer H: Digimon form learnsets (records_digimon[idx], 0-indexed) */
+    records_digimon[12].techniques[4] = 194;           /* ExVeemon [4] (Lv 50): Antidote -> Power Seal */
+    records_digimon[18].techniques[1] = 184;           /* Angewomon [1] (Lv 15): Antidote -> Small Heal */
+    records_digimon[18].techniques[3] = 194;           /* Angewomon [3] (Lv 30): Anti-Paralysis -> Power Seal */
+    records_digimon[18].techniques[4] = 200;           /* Angewomon [4] (Lv 45): empty -> Double Guard */
+    records_digimon[18].technique_levels[3] = 45;
+    records_digimon[19].techniques[1] = 198;           /* Kyukimon [1] (Lv 5): Heat Cutter -> Double Power */
+    records_digimon[23].techniques[1] = 205;           /* SkullGreymon [1] (Lv 5): Flame Ball -> Armor Break */
+    records_digimon[24].techniques[5] = 197;           /* Paildramon [5] (Lv 65): Anti-Paralysis -> Erase Magic */
+    records_digimon[31].techniques[4] = 194;           /* Digitamamon [4] (Lv 40): empty -> Power Seal */
+    records_digimon[31].technique_levels[3] = 40;
+    records_digimon[33].techniques[1] = 201;           /* Cannondramon [1] (Lv 15): Fish Buster -> Mega Protection */
+    records_digimon[35].techniques[1] = 198;           /* WarGreymon [1] (Lv 5): Flame Lance -> Double Power */
+    records_digimon[41].techniques[2] = 195;           /* Rosemon [2] (Lv 20): Erase Poison -> Sapping Bloom */
+    records_digimon[41].techniques[5] = 197;           /* Rosemon [5] (Lv 70): Anti-Magic -> Erase Magic */
+    records_digimon[48].techniques[1] = 152;           /* Omnimon [1] (Lv 10): Flame Breath -> Giga Freeze */
+    records_digimon[48].techniques[3] = 199;           /* Omnimon [3] (Lv 35): Giga Fire -> Mega Strength */
 }
 
 /* Layer 8: the rookies' MP rows (definitive_mp.c) into records_digimon, written every time (the reset restores the table). */
@@ -853,6 +1018,208 @@ int def_debuff_scale(int k, int amount) {
         return amount * DEF_BOSS_DEBUFF_PCT / 100;
     }
     return amount;
+}
+
+/* ---- 3-tier fixed stat buff/debuff system: no stacking (stronger tier wins, same/weaker refreshes turns, opposite
+ * sign overwrites), exact % of base stat, turn-based expiration on the target's turn. */
+int def_mod_pct(int level) {
+    switch (level) {
+    case 1:
+        return DEF_BUFF_LV1_PCT;
+    case 2:
+        return DEF_BUFF_LV2_PCT;
+    case 3:
+        return DEF_BUFF_LV3_PCT;
+    case -1:
+        return -DEF_DEBUFF_LV1_PCT;
+    case -2:
+        return -DEF_DEBUFF_LV2_PCT;
+    case -3:
+        return -DEF_DEBUFF_LV3_PCT;
+    default:
+        return 0;
+    }
+}
+
+int def_mod_level_from_amount(int amount) {
+    int mag = amount < 0 ? -amount : amount;
+    int sign = amount < 0 ? -1 : 1;
+
+    if (amount == 0) {
+        return 0;
+    }
+    if (mag < 30) {
+        return sign * 1;
+    }
+    if (mag <= 45) {
+        return sign * 2;
+    }
+    return sign * 3;
+}
+
+void def_mod_tech_spec(int tech, int kind, int amount, int *out_level, int *out_turns) {
+    (void)kind;
+    switch (tech) {
+    case 198: /* Double Power: User Atk+2, 4 turns */
+    case 200: /* Double Guard: User Def+2, 4 turns */
+        *out_level = 2;
+        *out_turns = DEF_MOD_TURNS_LONG;
+        return;
+    case 199: /* Mega Strength: Allies Atk+3, 3 turns */
+    case 201: /* Mega Protection: Allies Def+3, 3 turns */
+        *out_level = 3;
+        *out_turns = DEF_MOD_TURNS_BASE;
+        return;
+    case 194: /* Power Seal: Foe Atk-2, 3 turns */
+    case 205: /* Armor Break: Foe Def-2, 3 turns */
+    case 134: /* Siege Salvo: Foe Atk-2, 3 turns */
+    case 81:  /* Grisly Wing: Foe Atk-2, 3 turns */
+    case 136: /* Fortress Salvo: Foe Def-2, 3 turns */
+        *out_level = -2;
+        *out_turns = DEF_MOD_TURNS_BASE;
+        return;
+    case 195: /* Sapping Bloom: Foe Atk-3, 3 turns */
+    case 204: /* Lovely Charm: Enemy Atk-3, 3 turns */
+    case 206: /* Armor Off: Foe Def-3, 3 turns */
+        *out_level = -3;
+        *out_turns = DEF_MOD_TURNS_BASE;
+        return;
+    case 132: /* Suppress Shot: Foe Atk-1, 2 turns */
+    case 108: /* Cold Slash: Foe Atk-1, 2 turns */
+    case 131: /* Armor Pierce: Foe Def-1, 2 turns */
+        *out_level = -1;
+        *out_turns = DEF_MOD_TURNS_SHORT;
+        return;
+    default: {
+        int lvl = def_mod_level_from_amount(amount);
+
+        *out_level = lvl;
+        if (lvl == 0) {
+            *out_turns = 0;
+        } else if (lvl == -1) {
+            *out_turns = DEF_MOD_TURNS_SHORT;
+        } else {
+            *out_turns = DEF_MOD_TURNS_BASE;
+        }
+        return;
+    }
+    }
+}
+
+int def_mod_apply(u8 side, s32 member, s32 kind, s32 level, s32 turns, s32 blocked_idx) {
+    static const int stat_idx[3] = { 0, 1, 4 };
+    int s = side != 0;
+    FightstgMember *m;
+    FightstgStats *stats;
+    int base, pct, cur_lvl, cur_turns;
+
+    if (!def_on()) {
+        return 0;
+    }
+    if (member < 0 || member > 2 || kind < 0 || kind > 2 || level == 0 || turns <= 0) {
+        return 1;
+    }
+    if (level < -3) {
+        level = -3;
+    } else if (level > 3) {
+        level = 3;
+    }
+    m = &fightstg_battle.state.members[s][member];
+    if (m->digimon == 0 || m->hp == 0) {
+        return 1;
+    }
+    if (s && fightstg_battle.state.type == 6 && fightstg_battle.state.final_phase != 0 && kind == 1) {
+        return 1;
+    }
+    stats = fightstg_rules.get_stats(s ? 0x10 : 0, 0, member);
+    if (m->modifiers[kind] != 0) {
+        stats->stats[stat_idx[kind]] -= m->modifiers[kind];
+    }
+    base = stats->stats[stat_idx[kind]];
+    if (base < 1) {
+        base = 1;
+    }
+    cur_lvl = mod_level[s][member][kind];
+    cur_turns = mod_turns[s][member][kind];
+    if (cur_lvl == 0 || cur_turns == 0) {
+        cur_lvl = level;
+        cur_turns = turns;
+    } else if (cur_lvl > 0 && level > 0) {
+        if (level > cur_lvl) {
+            cur_lvl = level;
+        }
+        if (turns > cur_turns) {
+            cur_turns = turns;
+        }
+    } else if (cur_lvl < 0 && level < 0) {
+        if (level < cur_lvl) {
+            cur_lvl = level;
+        }
+        if (turns > cur_turns) {
+            cur_turns = turns;
+        }
+    } else {
+        cur_lvl = level;
+        cur_turns = turns;
+    }
+    mod_level[s][member][kind] = (signed char)cur_lvl;
+    mod_turns[s][member][kind] = (unsigned char)cur_turns;
+    pct = def_mod_pct(cur_lvl);
+    if (cur_lvl < 0 && s && blocked_idx >= 8 && blocked_idx <= 10) {
+        pct = def_debuff_scale(blocked_idx, pct);
+    }
+    m->modifiers[kind] = (s16)(base * pct / 100);
+    if (log_on()) {
+        LOG("mod side %d slot %d kind %d level %d turns %d val %d (base %d)", s, (int)member, (int)kind,
+            cur_lvl, cur_turns, (int)m->modifiers[kind], base);
+    }
+    return 1;
+}
+
+int def_mod_apply_tech(u8 side, s32 member, s32 kind, s32 tech, s32 amount, s32 blocked_idx) {
+    int level, turns;
+
+    if (!def_on()) {
+        return 0;
+    }
+    def_mod_tech_spec(tech, kind, amount, &level, &turns);
+    return def_mod_apply(side, member, kind, level, turns, blocked_idx);
+}
+
+int def_mod_start_event(void) {
+    return def_on();
+}
+
+void def_member_knockout(s32 side, s32 member) {
+    int s = side != 0;
+    int k;
+
+    if (!def_on() || member < 0 || member > 2) {
+        return;
+    }
+    for (k = 0; k < 3; k++) {
+        mod_level[s][member][k] = 0;
+        mod_turns[s][member][k] = 0;
+        fightstg_battle.state.members[s][member].modifiers[k] = 0;
+    }
+}
+
+int def_mod_level(int side, int slot, int kind) {
+    int s = side != 0;
+
+    if (slot < 0 || slot > 2 || kind < 0 || kind > 2) {
+        return 0;
+    }
+    return mod_level[s][slot][kind];
+}
+
+int def_mod_turns_left(int side, int slot, int kind) {
+    int s = side != 0;
+
+    if (slot < 0 || slot > 2 || kind < 0 || kind > 2) {
+        return 0;
+    }
+    return mod_turns[s][slot][kind];
 }
 
 /* ---- PRD 2, layer B: the stat modifiers count for magic. The engine has none for Spirit; get_special_damage (with

@@ -136,6 +136,7 @@ for L in $LAYERS; do
             "$PY" "$ROOT/tests/port/battle.py"     # the battle scripts on the disc, for battle_animations
             "$PY" "$ROOT/tests/port/text_override.py"   # the generated text overrides are current (definitive combat)
             "$PY" "$ROOT/tests/port/definitive.py"       # the weakness rule, case by case (definitive combat)
+            "$PY" "$ROOT/tests/port/definitive_buffs.py" # 3-tier fixed stat buffs/debuffs & overlevel gap 8
             "$PY" "$ROOT/tests/port/definitive_mp.py"    # the rookies' MP patch and the save converter agree (definitive combat, layer 8)
             "$PY" "$ROOT/tests/port/definitive_bestiary.py"   # the bestiary's card record: magic/version/checksum, 3 slots (definitive combat, layer 9)
             "$PY" "$ROOT/tests/port/definitive_tp.py"    # TP table + save converter DFV2 (definitive progression, layer D)
