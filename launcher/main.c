@@ -68,7 +68,7 @@ static long trans_t0;
 #define TRANS_MS 210
 
 static const char *ff_label[] = {"OFF", "2X", "4X", "8X", "UNLIMITED"};
-static const char *lang_label[] = {"ENGLISH", "PORTUGUES (BR)", "FRANCAIS", "DEUTSCH", "ITALIANO", "ESPANOL", "ENGLISH (USA)", "JAPANESE"};
+static const char *lang_label[] = {"ENGLISH", "PORTUGUÊS (BR)", "FRANÇAIS", "DEUTSCH", "ITALIANO", "ESPAÑOL", "ENGLISH (USA)", "JAPANESE"};
 static const char *buf_label[] = {"OFF", "SHORT", "LONG"};
 static const char *bt_label[] = {"OFF", "SKIP", "ASYNC"};
 static const char *log_label[] = {"OFF", "SOFT", "HEAVY"};
@@ -244,7 +244,7 @@ static const char *home_value(int id, int *on) {
     static char sv[32];
     *on = 0;
     switch (id) {
-    case HI_GAME: return "SETTINGS";
+    case HI_GAME: return "TUNING";
     case HI_VIDEO: *on = c.widescreen; return c.widescreen ? "16:9 ON" : "SETTINGS";
     case HI_HUD: return "CUSTOMIZE";
     case HI_CONTROLS: return "REMAP";
@@ -963,6 +963,7 @@ static void start_trans(int dir, int focus_y) {
 
 /* Xbox-style screen zoom + cross-fade using 16.16 fixed-point sampling (zero float inside the pixel loop). */
 static void draw(void) {
+    ui_set_lang(c.lang);
     draw_screen();
     if (!trans_active || !trans_to) return;
     long dt = plat_now_ms() - trans_t0;

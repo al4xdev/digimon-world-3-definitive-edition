@@ -6,9 +6,15 @@
 #define STB_TRUETYPE_IMPLEMENTATION
 #include "stb_truetype.h"
 #include "assets/assets.h"
+#include "i18n.h"
 
 uint32_t *fb;
 int ui_scale = 1, ui_w = W, ui_h = H;
+static int ui_lang;
+
+void ui_set_lang(int lang) {
+    ui_lang = lang;
+}
 
 uint32_t mix(uint32_t a, uint32_t b, int t) {
     int ar = (a >> 16) & 255, ag = (a >> 8) & 255, ab = a & 255;
@@ -218,8 +224,24 @@ void background(int tick) {
 static stbtt_fontinfo finfo;
 static int font_ok;
 typedef struct { unsigned char *bm; int w, h, xo, yo, adv; } Glyph;
-static struct { int size; float scale; int ascent; Glyph g[96]; } fcache[FONT_SIZES];
+static struct { int size; float scale; int ascent; Glyph g[224]; } fcache[FONT_SIZES];
 static int fcount;
+
+static int next_cp(const char **p) {
+    const unsigned char *s = (const unsigned char *)*p;
+    if (!*s) return 0;
+    if (*s < 0x80) { *p += 1; return *s; }
+    if ((*s & 0xE0) == 0xC0 && (s[1] & 0xC0) == 0x80) {
+        *p += 2;
+        return ((s[0] & 0x1F) << 6) | (s[1] & 0x3F);
+    }
+    if ((*s & 0xF0) == 0xE0 && (s[1] & 0xC0) == 0x80 && (s[2] & 0xC0) == 0x80) {
+        *p += 3;
+        return ((s[0] & 0x0F) << 12) | ((s[1] & 0x3F) << 6) | (s[2] & 0x3F);
+    }
+    *p += 1;
+    return '?';
+}
 
 void ui_init(int scale) {
     ui_scale = scale < 1 ? 1 : scale > 3 ? 3 : scale;
@@ -248,7 +270,7 @@ static int fslot(int px_size) {
 }
 
 static Glyph *glyph(int slot, int ch) {
-    if (ch < 32 || ch > 127) {
+    if (ch < 32 || ch > 255) {
         ch = '?';
     }
     Glyph *g = &fcache[slot].g[ch - 32];
@@ -274,10 +296,11 @@ static Glyph *glyph(int slot, int ch) {
 }
 
 static int text_w_px(const char *s, int size) {
-    if (!font_ok) return 0;
-    int slot = fslot(size * ui_scale), w = 0;
-    for (; *s; s++) {
-        w += glyph(slot, (unsigned char)*s)->adv;
+    if (!font_ok || !s) return 0;
+    s = ui_tr_lookup(s, ui_lang);
+    int slot = fslot(size * ui_scale), w = 0, ch;
+    while ((ch = next_cp(&s)) != 0) {
+        w += glyph(slot, ch)->adv;
     }
     return w;
 }
@@ -287,11 +310,12 @@ int text_w(const char *s, int size) {
 }
 
 static int text_raw(int px, int py, const char *s, int size, uint32_t c) {
-    if (!font_ok) return px;
+    if (!font_ok || !s) return px;
+    s = ui_tr_lookup(s, ui_lang);
     int slot = fslot(size * ui_scale);
-    int base = py + fcache[slot].ascent;
-    for (; *s; s++) {
-        Glyph *g = glyph(slot, (unsigned char)*s);
+    int base = py + fcache[slot].ascent, ch;
+    while ((ch = next_cp(&s)) != 0) {
+        Glyph *g = glyph(slot, ch);
         for (int j = 0; j < g->h; j++)
             for (int i = 0; i < g->w; i++)
                 px_raw(px + g->xo + i, base + g->yo + j, c, g->bm[j * g->w + i] * 256 / 255);

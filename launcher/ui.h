@@ -47,4 +47,5 @@ int text_r(int rx, int y, const char *s, int size, uint32_t c);   /* right-align
 /* A button as the pad prints it: a disc for one character, a pill for "L1" or "START". Returns its logical width. */
 int keycap(int x, int cy, const char *label, uint32_t c);
 void ui_init(int scale);
+void ui_set_lang(int lang);
 #endif
