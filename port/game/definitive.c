@@ -194,9 +194,21 @@ void def_new_game_difficulty(int hard) {
     def_save_flag_set(DEF_SAVE_HARD, hard);
 }
 
+/* Girls Power: the hero New Game chose, kept the same way (the save's DEF_SAVE_KAILI). */
+static int new_game_kaili;
+
+void def_new_game_hero(int kaili) {
+    new_game_kaili = kaili;
+    def_save_flag_set(DEF_SAVE_KAILI, kaili);
+    port_girls_refresh();
+}
+
 void def_new_game_apply(void) {
     def_save_flag_set(DEF_SAVE_HARD, new_game_hard);
+    def_save_flag_set(DEF_SAVE_KAILI, new_game_kaili);
     new_game_hard = 0;
+    new_game_kaili = 0;
+    port_girls_refresh();
 }
 
 /* The Bits the battle's OVERFINISH blows earned, given once (the results screen adds them to the battle's money). */

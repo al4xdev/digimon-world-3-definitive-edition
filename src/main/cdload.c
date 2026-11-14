@@ -242,6 +242,9 @@ void cdload_update(void) {
             switch (entry->state) {
             case 2:
                 entry->state = 3;
+#ifdef PC_PORT
+                port_girls_loaded(entry->id, entry->buffer);
+#endif
                 pending = 1;
                 entry->last_use = gfx_module.funcs.get_time();
                 break;

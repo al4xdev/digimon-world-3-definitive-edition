@@ -572,6 +572,7 @@ void def_bestiary_reset(void);
 /* The slot's other port state, kept in the same card record: the Guardromon network's unlocked nodes (a bit each,
  * game_mods.c's table) and the save's flags. Reset with the table (a new game), read and written with it. */
 #define DEF_SAVE_HARD 1 /* the save is a Hard Mode one: the party is two Digimon */
+#define DEF_SAVE_KAILI 2 /* the save's hero is Kaili (Girls Power, port/game/girls_power.c); without it, Junior */
 unsigned int def_network_mask(void);
 void def_network_unlock(int node);
 int def_save_flag(int flag);

@@ -395,6 +395,7 @@ const unsigned char *def_hunt_material_name(int material);
 int def_record_material(int material);
 void def_new_game_difficulty(int hard);
 void def_new_game_apply(void);
+void def_new_game_hero(int kaili); /* Girls Power: New Game's hero (DEF_SAVE_KAILI), asked after the difficulty */
 void def_hard_party_fix(void);
 int def_hard_slot_closed(int slot);
 int def_bestiary_active(void);
@@ -422,6 +423,15 @@ int def_evo_form_seen(int form_id);
 void def_evo_form_mark(int form_id);
 int def_evo_skip_update(int *hold_frames, int skip_pressed);
 int def_train_no_stat_loss(void);
+
+/* Girls Power (port/game/girls_power.c; .plan/tasks/girls-power-kaili-prd.md): Kaili is the hero and Junior her friend,
+ * in a save whose New Game chose her (DEF_SAVE_KAILI). cdload calls port_girls_loaded when file `id` has just been read
+ * into `data`: the field sprite files of the two are repainted in place (the other's head, the clothes recoloured).
+ * port_girls_refresh: the save's hero may have changed (New Game, a save read from a card): the cached sprite files
+ * painted the other way are dropped, so they load again. Off under a replay script; DW3_GIRLS=0/1 forces it. */
+void port_girls_loaded(s32 id, u8 *data);
+void port_girls_refresh(void);
+void port_girls_tim(u8 *tim); /* tim_load_all, before each TIM's upload: Junior's portrait frame -> Kaili's */
 
 #endif /* PC_PORT */
 

@@ -52,9 +52,9 @@ void stdwtitl_menu_draw(StdwtitlMenu *obj) {
 #ifdef PC_PORT
 /* New Game's difficulty question (Hard Mode: a party of two; port/game/definitive.c). Asked between the title's choice
  * and the new game, on a panel where the title's two choices were: two lines to choose from and, under them, a remark
- * on the one the cursor is on (the easy one gets teased). The title has no message font (its windows draw nothing
- * here), so the words are the callouts' polygon letters (def_poly_text). Up/down move, circle confirms, cross goes
- * back to the title's choices. Not asked in a replay script. */
+ * on the one the cursor is on (the easy one gets teased). Then, on the same panel, who the hero is (Girls Power). The
+ * title has no message font (its windows draw nothing here), so the words are the callouts' polygon letters
+ * (def_poly_text). Up/down move, circle confirms, cross goes back a question. Not asked in a replay script. */
 #define DIFF_X 40
 #define DIFF_Y 135 /* under the logo, above the copyright lines */
 #define DIFF_W 240
@@ -89,32 +89,51 @@ static void stdwtitl_diff_text(StdwtitlMenu *obj, s32 x, s32 y, s32 size, const 
     def_poly_text(layer, 0, x + 1, y + 1, size, text, edge);
 }
 
-/* One frame of the question: 0 while it is open, 1 confirmed (diff_cursor), -1 cancelled. Everything is queued front
- * to back: the words, the frame's lines, the cursor's bar, then the dark panel. */
-static s32 stdwtitl_diff_update(StdwtitlMenu *obj) {
+/* A question of the panel: its title, two choices (a name, a line beside it from line_x, the name's colour) and the
+ * remark under them for each. */
+typedef struct StdwtitlQuestion {
+    const char *title;
+    const char *names[2];
+    const char *lines[2];
+    const char *tease[2];
+    s32 line_x;
+    u8 colour[2][3];
+} StdwtitlQuestion;
+
+static const StdwtitlQuestion stdwtitl_q_difficulty = {
+    "CHOOSE YOUR FATE!", { "EASY", "HARD" }, { "3 DIGIMON", "2 DIGIMON  NO THIRD WHEEL" },
+    { "AWW! WANT A BLANKET TOO?", "NOW WE ARE TALKING!" }, 78, { { 96, 200, 255 }, { 255, 72, 56 } },
+};
+/* Girls Power (port/game/girls_power.c): who the hero is. Kaili first: the question exists for her. */
+static const StdwtitlQuestion stdwtitl_q_hero = {
+    "CHOOSE YOUR HERO!", { "KAILI", "JUNIOR" }, { "GIRLS POWER", "THE ORIGINAL" },
+    { "GIRLS RULE THE WORLD!", "OLD SCHOOL IS GOLD!" }, 104, { { 255, 120, 170 }, { 96, 160, 255 } },
+};
+static s32 hero_cursor; /* 0 Kaili, 1 Junior */
+
+/* One frame of a question: 0 while it is open, 1 confirmed (*cursor), -1 cancelled. Everything is queued front to
+ * back: the words, the frame's lines, the cursor's bar, then the dark panel. */
+static s32 stdwtitl_question(StdwtitlMenu *obj, const StdwtitlQuestion *q, s32 *cursor) {
     static const u8 white[3] = { 255, 255, 255 }, grey[3] = { 120, 128, 150 }, title[3] = { 255, 208, 64 };
-    static const u8 easy[3] = { 96, 200, 255 }, hard[3] = { 255, 72, 56 };
-    static const char *const names[2] = { "EASY", "HARD" };
-    static const char *const lines[2] = { "3 DIGIMON", "2 DIGIMON  NO THIRD WHEEL" };
-    static const char *const tease[2] = { "AWW! WANT A BLANKET TOO?", "NOW WE ARE TALKING!" };
     s32 i;
 
     diff_ticks++;
-    stdwtitl_diff_text(obj, DIFF_X + 12, DIFF_Y + 5, 128, "CHOOSE YOUR FATE!", title);
+    stdwtitl_diff_text(obj, DIFF_X + 12, DIFF_Y + 5, 128, q->title, title);
     for (i = 0; i < 2; i++) {
         s32 y = DIFF_ROW_Y + i * DIFF_ROW_DY;
-        s32 on = diff_cursor == i;
+        s32 on = *cursor == i;
 
-        stdwtitl_diff_text(obj, DIFF_X + 26, y, 160, names[i], on ? (i ? hard : easy) : grey);
-        stdwtitl_diff_text(obj, DIFF_X + 78, y + 1, 128, lines[i], on ? white : grey);
+        stdwtitl_diff_text(obj, DIFF_X + 26, y, 160, q->names[i], on ? q->colour[i] : grey);
+        stdwtitl_diff_text(obj, DIFF_X + q->line_x, y + 1, 128, q->lines[i], on ? white : grey);
         if (on) { /* the cursor: a wedge that nudges, and the line's bar */
             s32 nudge = (diff_ticks >> 3) & 1;
 
-            stdwtitl_diff_text(obj, DIFF_X + 11 + nudge, y, 160, "!", i ? hard : easy);
-            stdwtitl_diff_quad(obj, DIFF_X + 6, y - 2, DIFF_W - 12, 13, 1, i ? 72 : 16, 24, i ? 16 : 72);
+            stdwtitl_diff_text(obj, DIFF_X + 11 + nudge, y, 160, "!", q->colour[i]);
+            stdwtitl_diff_quad(obj, DIFF_X + 6, y - 2, DIFF_W - 12, 13, 1, q->colour[i][0] / 4, q->colour[i][1] / 6 + 8,
+                               q->colour[i][2] / 4);
         }
     }
-    stdwtitl_diff_text(obj, DIFF_X + 12, DIFF_Y + 47, 128, tease[diff_cursor], diff_cursor ? hard : easy);
+    stdwtitl_diff_text(obj, DIFF_X + 12, DIFF_Y + 47, 128, q->tease[*cursor], q->colour[*cursor]);
     stdwtitl_diff_quad(obj, DIFF_X, DIFF_Y, DIFF_W, 1, 1, 60, 130, 230);
     stdwtitl_diff_quad(obj, DIFF_X, DIFF_Y + DIFF_H - 1, DIFF_W, 1, 1, 60, 130, 230);
     stdwtitl_diff_quad(obj, DIFF_X, DIFF_Y + 1, 1, DIFF_H - 2, 1, 60, 130, 230);
@@ -122,7 +141,7 @@ static s32 stdwtitl_diff_update(StdwtitlMenu *obj) {
     stdwtitl_diff_quad(obj, DIFF_X + 6, DIFF_Y + 15, DIFF_W - 12, 1, 1, 40, 80, 160);
     stdwtitl_diff_quad(obj, DIFF_X, DIFF_Y, DIFF_W, DIFF_H, 2, 225, 215, 160);
     if (PAD_PRESSED(4) || PAD_REPEAT(4) || PAD_PRESSED(6) || PAD_REPEAT(6)) {
-        diff_cursor = !diff_cursor;
+        *cursor = !*cursor;
         sound_module.play(0x8004513E);
     }
     if (PAD_PRESSED(13)) {
@@ -263,17 +282,29 @@ void stdwtitl_menu_update(StdwtitlMenu *obj) {
             break;
 #ifdef PC_PORT
         case 10:
-            switch (stdwtitl_diff_update(obj)) {
-            case 1:
-                def_new_game_difficulty(diff_cursor);
-                obj->result = 1;
-                obj->base.set_step(obj, 3);
+            switch (stdwtitl_question(obj, &stdwtitl_q_difficulty, &diff_cursor)) {
+            case 1: /* then who the hero is */
+                hero_cursor = 0;
+                obj->base.set_step(obj, 11);
                 break;
             case -1:
                 obj->base.set_step(obj, 1);
                 break;
             }
             return; /* the question stands where the title's choices are: they are not drawn under it */
+        case 11:
+            switch (stdwtitl_question(obj, &stdwtitl_q_hero, &hero_cursor)) {
+            case 1:
+                def_new_game_difficulty(diff_cursor);
+                def_new_game_hero(hero_cursor == 0);
+                obj->result = 1;
+                obj->base.set_step(obj, 3);
+                break;
+            case -1: /* back to the difficulty, as it was */
+                obj->base.set_step(obj, 10);
+                break;
+            }
+            return;
 #endif
         }
         stdwtitl_menu_draw(obj);

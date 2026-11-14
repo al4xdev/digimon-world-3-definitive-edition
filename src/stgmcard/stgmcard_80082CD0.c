@@ -1286,6 +1286,7 @@ void stgmcard_screen_run(StgmcardScreen *obj, StgmcardScreenData *data) {
                                           DEF_BESTIARY_PART | (stgmcard_module.slot << 8));
         if (ret != 0) {
             def_bestiary_record_read(ret == 1 ? def_bestiary_buffer() : NULL);
+            port_girls_refresh(); /* the save's hero (DEF_SAVE_KAILI) came with the record */
             obj->base.step = 0x49; /* PRD 4's second record next */
         }
         break;

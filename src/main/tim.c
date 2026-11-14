@@ -108,6 +108,9 @@ void tim_load_all(s32 *data) {
             }
             dst = buf;
         }
+#ifdef PC_PORT
+        port_girls_tim(dst);
+#endif
         tim_load((u32 *)dst);
         DrawSync(0);
         tim_module->image_x += 0x40;
