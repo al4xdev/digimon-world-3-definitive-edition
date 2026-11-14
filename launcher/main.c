@@ -177,7 +177,8 @@ static int row_target_y(int s, int idx) {
     switch (s) {
     case S_HOME: return 92 + idx * home_step() - 4;
     case S_GAME: return 90 + idx * game_step() - 4;
-    case S_VIDEO: case S_DEBUG: return 92 + idx * 48 - 4;
+    case S_VIDEO: return 90 + idx * 42 - 4;
+    case S_DEBUG: return 92 + idx * 48 - 4;
     case S_SAVES: return 86 + idx * 46 - 4;
     case S_CLOUD: return 206 + idx * 44 - 4;
     case S_CONFLICT: return 194 + idx * 52 - 4;
@@ -328,7 +329,7 @@ static void draw_home(void) {
     footer(k, w, 3);
 }
 
-#define VIDEO_N 5
+#define VIDEO_N 6
 static void draw_video(void) {
     header("DIGIMON WORLD 3", "VIDEO");
     int dw = 1280, dh = 720;
@@ -341,21 +342,23 @@ static void draw_video(void) {
     const char *v[VIDEO_N] = {
         (c.widescreen && c.renderer_pc == 0) ? "16:9 ON" : "OFF",
         c.fullscreen ? "ON" : "OFF",
+        c.fill ? "FILL" : "INTEGER",
         sc_val,
         c.renderer_pc ? "SOFTWARE" : "GPU",
         c.renderer_pc ? "-" : filt_label[c.filter],
     };
-    const char *lab[VIDEO_N] = {"WIDESCREEN BATTLES", "FULLSCREEN", "WINDOW SCALE", "RENDERER", "FILTER"};
+    const char *lab[VIDEO_N] = {"WIDESCREEN", "FULLSCREEN", "SCALING", "WINDOW SCALE", "RENDERER", "FILTER"};
     int gy = (int)(cur_y >= 0 && cur_screen == S_VIDEO ? cur_y : row_target_y(S_VIDEO, sel));
     draw_focus(40, gy, W - 80, 36, 8, 0);
     for (int i = 0; i < VIDEO_N; i++) {
-        row(92 + i * 48, lab[i], v[i], i == sel, 0, strcmp(v[i], "OFF") && strcmp(v[i], "-"), 0);
+        row(90 + i * 42, lab[i], v[i], i == sel, 0, strcmp(v[i], "OFF") && strcmp(v[i], "-"), 0);
     }
     static const char *desc[VIDEO_N] = {
-        "Battles fill 16:9 (auto-selects GPU renderer). Field/HUD stay 4:3.",
+        "Battles and field fill 16:9 (auto-selects GPU). Menus stay 4:3.",
         "Open the game in fullscreen (F11 also toggles).",
+        "FILL stretches cleanly to screen height; INTEGER uses exact multiples.",
         "Window resolution scale (AUTO fits the detected monitor).",
-        "GPU enables widescreen battles and shaders; SOFTWARE is exact PS1.",
+        "GPU enables widescreen and shaders; SOFTWARE is exact PS1.",
         "GPU screen filter (SHARP keeps crisp pixels)."
     };
     rect(40, 346, W - 80, 1, C_EDGE, 256);
@@ -1316,15 +1319,16 @@ static void on_press(int code) {
             switch (sel) {
             case 0: c.widescreen = !c.widescreen; if (c.widescreen) c.renderer_pc = 0; break;
             case 1: c.fullscreen = !c.fullscreen; break;
-            case 2: {
+            case 2: c.fill = !c.fill; break;
+            case 3: {
                 static const int scales[] = {0, 2, 3, 4, 5, 6};
                 int idx = 0;
                 for (; idx < 6; idx++) if (scales[idx] == c.scale) break;
                 c.scale = scales[((idx < 6 ? idx : 0) + s + 6) % 6];
                 break;
             }
-            case 3: c.renderer_pc = !c.renderer_pc; if (c.renderer_pc) c.widescreen = 0; break;
-            case 4: if (!c.renderer_pc) c.filter = (c.filter + s + 5) % 5; break;
+            case 4: c.renderer_pc = !c.renderer_pc; if (c.renderer_pc) c.widescreen = 0; break;
+            case 5: if (!c.renderer_pc) c.filter = (c.filter + s + 5) % 5; break;
             }
         }
         break;

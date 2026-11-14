@@ -146,6 +146,7 @@ void cfg_defaults(Cfg *c) {
     c->bbuf = 1;
     c->led = !is_pc;
     c->fullscreen = !is_pc;
+    c->fill = is_pc;
     c->scale = is_pc ? 0 : 2;
     c->renderer_pc = 0; /* gpu */
     c->filter = 1;      /* sharp */
@@ -314,6 +315,7 @@ void cfg_load(Cfg *c) {
         else if (!strcmp(line, "logs")) c->logs = n < 0 ? 0 : n > 2 ? 2 : n;
         else if (!strcmp(line, "widescreen")) c->widescreen = n != 0;
         else if (!strcmp(line, "fullscreen")) c->fullscreen = n != 0;
+        else if (!strcmp(line, "fill")) c->fill = n != 0;
         else if (!strcmp(line, "scale")) c->scale = n < 0 ? 0 : n > 8 ? 8 : n;
         else if (!strcmp(line, "renderer_pc")) c->renderer_pc = n != 0;
         else if (!strcmp(line, "filter")) c->filter = n < 0 ? 0 : n > 4 ? 4 : n;
@@ -406,12 +408,13 @@ static int write_settings(const Cfg *c) {
     }
     int vscale = is_pc ? (c->scale > 0 ? c->scale : cfg_auto_scale(c)) : 2;
     int vfull = is_pc ? c->fullscreen : 1;
+    int vfill = is_pc && c->fill;
     int vw = is_pc ? (c->widescreen && c->renderer_pc == 0) : 0;
     const char *vfilt = is_pc ? filter_names[c->filter] : "none";
     char text[4600];
     snprintf(text, sizeof(text),
         "{\n  \"schema\": 1,\n  \"disc\": { \"path\": \"%s\" },\n"
-        "  \"video\": { \"window\": true, \"scale\": %d, \"fullscreen\": %s, \"refresh\": %d, \"renderer\": \"%s\", \"filter\": \"%s\" },\n"
+        "  \"video\": { \"window\": true, \"scale\": %d, \"fullscreen\": %s, \"fill\": %s, \"refresh\": %d, \"renderer\": \"%s\", \"filter\": \"%s\" },\n"
         "  \"audio\": { \"mute\": false },\n  \"memcard1\": \"card1.mcd\",\n  \"memcard2\": \"card2.mcd\",\n"
         "  \"watchdog\": 0,\n  \"debug\": { \"logs\": \"%s\" },\n  \"mods\": {\n"
         "    \"fast_forward\": { \"enabled\": %s, \"speed\": \"%s\", \"mute\": true, \"hold\": \"\", \"toggle\": \"\" },\n"
@@ -424,7 +427,7 @@ static int write_settings(const Cfg *c) {
         "    \"battle_menu\": { \"enabled\": true, \"fight\": \"%s\", \"tech\": \"%s\", \"digivolve\": \"%s\", \"tag\": \"%s\", "
         "\"item\": \"%s\", \"run\": \"%s\", \"inspect\": \"%s\", \"remember_cursor\": %s, \"buffer_input\": \"%s\" },\n"
         "    \"led_bar\": { \"enabled\": %s }\n  },\n  \"input\": { \"gamepad\": %s }\n}\n",
-        disc_esc, vscale, vfull ? "true" : "false", c->hz, renderer, vfilt,
+        disc_esc, vscale, vfull ? "true" : "false", vfill ? "true" : "false", c->hz, renderer, vfilt,
         log_names[c->logs], c->ff ? "true" : "false", ff_names[c->ff ? c->ff : 3],
         c->skip ? "true" : "false", c->battles ? "true" : "false", c->battles && c->hit ? "true" : "false",
         btext_names[c->btext], vw ? "true" : "false",
@@ -438,9 +441,9 @@ int cfg_save(const Cfg *c) {
     char path[600], text[3600] = "", line[1400];
     int rc = 0;
     snprintf(text, sizeof(text), "hz=%d\nff=%d\nff_speed=%s\nskip=%d\nbattles=%d\nhit=%d\nbtext=%d\nsaveany=1\nbmenu=1\n"
-             "bmem=%d\nbbuf=%d\nwidescreen=%d\nfullscreen=%d\nscale=%d\nrenderer_pc=%d\nfilter=%d\n",
+             "bmem=%d\nbbuf=%d\nwidescreen=%d\nfullscreen=%d\nfill=%d\nscale=%d\nrenderer_pc=%d\nfilter=%d\n",
              c->hz, c->ff ? 1 : 0, ff_names[c->ff ? c->ff : 3], c->skip, c->battles, c->hit,
-             c->btext, c->bmem, c->bbuf, c->widescreen, c->fullscreen, c->scale, c->renderer_pc, c->filter);
+             c->btext, c->bmem, c->bbuf, c->widescreen, c->fullscreen, c->fill, c->scale, c->renderer_pc, c->filter);
     if (disc_path[0]) {
         snprintf(line, sizeof(line), "disc=%s\n", disc_path);
         strcat(text, line);
