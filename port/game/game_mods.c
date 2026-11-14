@@ -298,21 +298,40 @@ s32 port_party_xp_share(s32 slot, s32 took_part, s32 exp) {
     return gain;
 }
 
-/* ---- widescreen (docs/LAUNCHER.md "Widescreen battles"): the battle at 16:9 through the hardware renderer's wide
- * canvas (psxstack render_gpu_wide.c). FIGHTSTG already sends the 3D a 16:9 frame needs: its only screen-space cull,
- * fightstg_model_mesh_is_visible, keeps a mesh with a bounding point within the clip plus 64 pixels (x within 224 of
- * the centre; 16:9 reaches 213.5), and the GPU clips the rest to the 320-wide drawing area (issue #71). Nothing in the
- * game changes: the mod only tells the renderer which scenes to widen. The field and the menus are 320-wide 2D and stay
- * 4:3 (pillarboxed in a 16:9 window). */
+/* ---- widescreen (docs/LAUNCHER.md "Widescreen"): the battle, and with `field` the field, at the screen's shape up to
+ * 16:9 through the hardware renderer's wide canvas (psxstack render_gpu_wide.c), which draws what the game sends past
+ * the 320-wide screen's edges.
+ *  - The battle: FIGHTSTG already sends the 3D a 16:9 frame needs: its only screen-space cull,
+ *    fightstg_model_mesh_is_visible, keeps a mesh with a bounding point within the clip plus 64 pixels (x within 224
+ *    of the centre; 16:9 reaches 213.5), and the GPU clips the rest to the 320-wide drawing area (issue #71). Nothing in
+ *    the game changes: the mod only tells the renderer which scenes to widen.
+ *  - The field (issue #78): its map is streamed tiles, and the tile objects in RAM already cover a 426-wide view, but
+ *    it draws only the tiles a 320-wide screen shows. port_field_wide (include/port.h) is the canvas's columns past
+ *    each side while FIELDSTG runs; the field's hooks then draw that far, in 3 more tile slots (port_field_slots) in
+ *    the VRAM's extra rows (port_video_vram_extend). The game's state changes with it (the camera stops at the
+ *    picture's edge), so a run's record differs from the 4:3 one; with the software renderer it is 0 and nothing does.
+ * The menus and the other overlays are 320-wide 2D whose art ends at the screen's edge: they stay 4:3 (pillarboxed). */
+enum { WS_FIELD };
+static const PortModOption ws_options[] = {
+    { .id = "field", .type = PORT_MOD_BOOL, .def = "true", .applies = "restart" },
+};
+s32 port_field_wide;
+s32 port_field_slots[3][3];
+
 static void ws_start(struct PortMod *mod) {
     (void)mod;
     port_video_widescreen_enable();
+    port_video_vram_extend();
 }
 
 static void ws_frame(struct PortMod *mod) {
     const PortOverlay *ovl = port_overlay_current(1);
-    (void)mod;
-    port_video_widescreen(ovl != NULL && strcmp(ovl->name, "FIGHTSTG") == 0);
+    int field = mod->values[WS_FIELD].number != 0 && ovl != NULL && strcmp(ovl->name, "FIELDSTG") == 0;
+    int pad;
+
+    port_video_widescreen(ovl != NULL && (strcmp(ovl->name, "FIGHTSTG") == 0 || field));
+    pad = field ? port_video_widescreen_pad() : 0;
+    port_field_wide = pad < PORT_FIELD_WIDE_MAX ? pad : PORT_FIELD_WIDE_MAX;
 }
 
 /* ---- led_bar (docs/LAUNCHER.md "LED bar"): the acting member's health on the LED bar of the RK3326 handhelds, through
@@ -601,7 +620,8 @@ static PortMod game_mod_table[] = {
       .option_count = (int)(sizeof(gs_options) / sizeof(gs_options[0])), .start = gs_start },
     { .id = "preset_language", .version = "0.1", .options = pl_options,
       .option_count = (int)(sizeof(pl_options) / sizeof(pl_options[0])), .start = pl_start },
-    { .id = "widescreen", .version = "0.1", .start = ws_start, .frame = ws_frame },
+    { .id = "widescreen", .version = "0.2", .options = ws_options,
+      .option_count = (int)(sizeof(ws_options) / sizeof(ws_options[0])), .start = ws_start, .frame = ws_frame },
     { .id = "led_bar", .version = "0.1", .start = led_bar_start, .frame = led_bar_frame,
       .status = led_bar_status },
     { .id = "battle_menu", .version = "0.1", .options = bm_options, .option_count = BM_OPTIONS, .start = bm_start },
@@ -628,6 +648,8 @@ void game_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, bmb);
     PORT_STATE_VAR(s, bmb_n);
     PORT_STATE_VAR(s, bm_memory);
+    PORT_STATE_VAR(s, port_field_slots); /* widescreen's field tile slots and the width in force: the next vsync reads them */
+    PORT_STATE_VAR(s, port_field_wide);
     def_savestate(s); /* the definitive combat's battle state (port/game/definitive.c) */
 }
 
