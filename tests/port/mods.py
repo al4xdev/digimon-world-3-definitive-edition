@@ -47,9 +47,10 @@ back_on_field (party member 0 fights alone, 4 experience). With DW3_DEFINITIVE=1
 fighter's whole share (4, 4, 4) and the money stays 50 (no bits boost); without it, the original's (4, 0, 0) with the
 emulator's stable hashes up to battle_won. The 14x form experience is not reached by a scripted run (member 0 fights
 as its own form).
-widescreen (no script of its own): first_battle_save to back_on_field with the mod on, in the headless build
-(no GPU renderer): the frame log equals the run without the mod (the mod changes nothing the game does; the renderer
-draws its wide canvas, tests/port/render_gpu.py), and the run logs once that the picture stays 4:3.
+widescreen (no script of its own): first_battle_save to back_on_field with the mod on (`field` too, its default), in
+the headless build (no GPU renderer): the frame log equals the run without the mod (the battle's canvas changes nothing
+the game does, and the field's hooks and the extended VRAM do nothing without the canvas; the renderer's pictures are
+tests/port/render_gpu.py's), and the run logs once that the picture stays 4:3.
 battle_menu: from the first battle's start (a state of the build), at the command menu: each default button chooses
 its own action, the buttons not on the menu choose nothing, the mod off reads the original's menu, a pad.map that
 swaps cross and square moves the actions with the buttons, two actions on one button fall back to the defaults.
@@ -250,8 +251,8 @@ def battle_text(binary, out):
 
 
 def widescreen(binary, out):
-    """widescreen: the battle with the mod on in the headless build: the game's frame log unchanged, the software
-    picture's 4:3 logged once."""
+    """widescreen: the battle and the field with the mod on in the headless build: the game's frame log unchanged,
+    the software picture's 4:3 logged once."""
     print("mods: widescreen (first_battle_save to back_on_field, the headless build: no GPU renderer)")
     fbs = json.loads((SCRIPTS / "first_battle_save.json").read_text())["steps"]
     j = next(k for k, s in enumerate(fbs) if s.get("type") == "checkpoint" and s.get("name") == "back_on_field")
