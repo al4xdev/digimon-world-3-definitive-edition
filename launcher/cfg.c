@@ -632,18 +632,34 @@ int led_state(const Cfg *c) {
     return !cached ? LED_NONE : c->led ? LED_ON : LED_OFF;
 }
 
+static int read_dt_lower(const char *path, char *out, size_t n) {
+    FILE *f = fopen(path, "rb");
+    if (!f) return 0;
+    size_t r = fread(out, 1, n - 1, f);
+    fclose(f);
+    for (size_t i = 0; i < r; i++) {
+        out[i] = out[i] ? (char)tolower((unsigned char)out[i]) : ' ';
+    }
+    out[r] = 0;
+    return r > 0;
+}
+
 int led_compatible(void) {
     if (getenv("DW3_LED_FORCE")) return 1;
-    char model[256] = "";
-    FILE *f = fopen("/proc/device-tree/model", "r");
-    if (!f) f = fopen("/sys/firmware/devicetree/base/model", "r");
-    if (f) {
-        size_t n = fread(model, 1, sizeof(model) - 1, f);
-        model[n] = 0;
-        fclose(f);
+    if (access("/dev/ttyS2", F_OK) != 0) return 0;
+    char buf[512] = "";
+    const char *paths[] = {
+        "/proc/device-tree/compatible",
+        "/sys/firmware/devicetree/base/compatible",
+        "/proc/device-tree/model",
+        "/sys/firmware/devicetree/base/model",
+    };
+    for (unsigned i = 0; i < sizeof(paths) / sizeof(paths[0]); i++) {
+        if (read_dt_lower(paths[i], buf, sizeof(buf)) && strstr(buf, "rk3326")) {
+            return 1;
+        }
     }
-    for (char *p = model; *p; p++) *p = (char)tolower((unsigned char)*p);
-    return strstr(model, "rk3326") && access("/dev/ttyS2", F_OK) == 0;
+    return 0;
 }
 
 int led_install(char *why, size_t n) {

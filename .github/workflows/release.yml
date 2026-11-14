@@ -261,11 +261,11 @@ jobs:
           if-no-files-found: ignore
 
   portmaster:
-    name: PortMaster (armhf)
+    name: PortMaster (armhf + aarch64)
     needs: tests
     if: ${{ !cancelled() && needs.tests.result != 'failure' }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
         with:
@@ -276,7 +276,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build ARM cross-compile image (cached)
+      - name: Build ARM cross-compile image (armhf, cached)
         uses: docker/build-push-action@v6
         with:
           context: tools
@@ -286,14 +286,32 @@ jobs:
           cache-from: type=gha,scope=armhf-builder
           cache-to: type=gha,scope=armhf-builder,mode=max
 
-      - name: Cross-compile ARM binary (armhf)
+      - name: Build ARM64 cross-compile image (aarch64, cached)
+        uses: docker/build-push-action@v6
+        with:
+          context: tools
+          file: tools/Dockerfile.aarch64
+          load: true
+          tags: dw3-aarch64-builder:latest
+          cache-from: type=gha,scope=aarch64-builder
+          cache-to: type=gha,scope=aarch64-builder,mode=max
+
+      - name: Cross-compile ARM + ARM64 binaries (armhf + aarch64)
         env:
           DW3_BUILD_ONLY: "1"
           DW3_VERSION: ${{ github.ref_type == 'tag' && github.ref_name || inputs.tag }}
         run: |
           tools/build_arm.sh
-          file build/armhf-sdl2/dw2003
-          readelf -d build/armhf-sdl2/dw2003 | grep NEEDED
+          for bin in build/armhf-sdl2/dw2003 build/armhf-sdl2/dw3-launcher build/aarch64-sdl2/dw2003 build/aarch64-sdl2/dw3-launcher; do
+            file "$bin"
+            readelf -d "$bin" | grep NEEDED
+            bad_deps="$(readelf -d "$bin" | grep NEEDED | grep -E 'lib(EGL|GLESv2|gbm)' || true)"
+            [[ -z "$bad_deps" ]] || { echo "::error::$bin must not hard-link EGL/GLES/GBM: $bad_deps"; exit 1; }
+            bad_glibc="$(readelf -V "$bin" | grep -oE 'GLIBC_[0-9.]+' | sort -uV | awk -F_ '$2+0 > 2.28 {print}' || true)"
+            [[ -z "$bad_glibc" ]] || { echo "::error::$bin requires glibc > 2.28: $bad_glibc"; exit 1; }
+          done
+          file build/armhf-sdl2/dw2003 | grep -q "ELF 32-bit LSB.*ARM"
+          file build/aarch64-sdl2/dw2003 | grep -q "ELF 64-bit LSB.*ARM aarch64"
 
       - name: Assemble and check dw3.zip
         run: |
@@ -415,7 +433,7 @@ jobs:
           rm -rf pm-repo/ports/dw3
           mkdir -p pm-repo/ports/dw3
           unzip -oq dist/dw3.zip -d pm-repo/ports/dw3
-          chmod +x "pm-repo/ports/dw3/Digimon World 3.sh" pm-repo/ports/dw3/dw3/dw2003 pm-repo/ports/dw3/dw3/dw3-launcher
+          chmod +x "pm-repo/ports/dw3/Digimon World 3.sh" pm-repo/ports/dw3/dw3/dw2003.* pm-repo/ports/dw3/dw3/dw3-launcher.*
           [ -f pm-repo/ports/dw3/dw3/ledd.py ] && chmod +x pm-repo/ports/dw3/dw3/ledd.py
           [ -f pm-repo/ports/dw3/dw3/probe.sh ] && chmod +x pm-repo/ports/dw3/dw3/probe.sh
           cd pm-repo

@@ -6,13 +6,13 @@ A decompilation of a commercial game is not accepted by the main PortMaster cata
 **PortMaster-MV-New** (the multiverse repository, `https://github.com/PortsMaster-MV/PortMaster-MV-New`), under
 `ports/dw3/`. The portname is `dw3` (lowercase, starts with a letter).
 
-`portmaster/make_release.sh` builds `dist/dw3.zip` in the layout the PortMaster packaging page asks for. It refuses to
-build when a required file is missing, when `port.json` does not describe the layout, when the binary is not a 32-bit ARM
-ELF, or when a disc image is inside.
+`portmaster/make_release.sh` builds `dist/dw3.zip` (multi-arch: `armhf` + `aarch64`) in the layout the PortMaster packaging page asks for. It refuses to
+build when a required file is missing, when `port.json` does not describe the layout, when the binaries are not valid `armhf` / `aarch64`
+ELFs, or when a disc image is inside.
 
 ## Automated CI & Sync
 
-`.github/workflows/release.yml` also builds `dw3.zip` in the `portmaster` job using `tools/Dockerfile.armhf`. When the
+`.github/workflows/release.yml` also builds `dw3.zip` in the `portmaster` job using `tools/Dockerfile.armhf` and `tools/Dockerfile.aarch64`. When the
 repository secret `PORTMASTER_REPO_TOKEN` (`Contents: write` + `Actions: write` on `al4xdev/PortMaster-MV-New`) is
 configured, tagged releases (or manual `workflow_dispatch` runs with `sync_portmaster=true`) automatically unpack
 `dw3.zip` into `ports/dw3/` on `al4xdev/PortMaster-MV-New`, commit, push, and trigger its `release.yaml` workflow.

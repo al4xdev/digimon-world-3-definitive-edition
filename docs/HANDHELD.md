@@ -1,8 +1,6 @@
 # Running on a handheld
 
-How the port runs on RK3326 handhelds (R36S, XF35H and clones: 4x Cortex-A35 in AArch32, Mali-G31, 1 GB of RAM, a 640x480
-panel, a 32-bit Linux userspace), how to build and deploy the ARM package, and what is known not to work. It has been
-tested on one handheld with one firmware (EmuELEC).
+How the port runs on PortMaster ARM handhelds (`armhf` and `aarch64`: RK3326 R36S/XF35H and clones, H700, RK3566, A133P TrimUI, Mali-G31, PowerVR, Panfrost, across 480x320 to 1280x720 panels), how to build and deploy the multi-arch ARM package, and what is known not to work. Only one handheld with one firmware (XF35H, EmuELEC 4.7-Nexus) has been tested on physical hardware; all other CFWs and resolutions are verified synthetically (source audit + Docker/QEMU simulation; see `portmaster/README.md`).
 
 Related documents:
 
@@ -83,20 +81,15 @@ path, so the log is closed.
 
 ## Building
 
-The ARM build runs in Docker with a hard-float cross toolchain (`tools/Dockerfile.armhf`, built on first use), so nothing
-is installed on the host:
+The ARM cross-builds run in Docker (`tools/Dockerfile.armhf` for 32-bit `armhf` and `tools/Dockerfile.aarch64` for 64-bit `aarch64`, both on Debian 10 `buster` against glibc 2.28), so nothing is installed on the host:
 
 ```sh
-tools/build_arm.sh
+tools/build_arm.sh               # builds both armhf and aarch64 (DW3_ARCH=armhf|aarch64 for one)
 ```
 
-It configures `build/armhf-sdl2` through `cmake/armhf-linux.cmake` (Cortex-A35, NEON) and builds with Ninja. The binary is
-`build/armhf-sdl2/dw2003`.
+It configures `build/armhf-sdl2` (`cmake/armhf-linux.cmake`) and `build/aarch64-sdl2` (`cmake/aarch64-linux.cmake`) with Ninja (`dw2003` + `dw3-launcher`).
 
-It then assembles a package directory for deploying to a device: `Digimon World 3.sh` and `dw3/` (the binary, everything
-in `handheld/`, and the mods). That directory is `../portmaster`, a sibling of the repository checkout and not the
-repository's own `portmaster/`. Set `DW3_PACKAGE_DIR` to put it somewhere else. Do not pipe the script through `head`:
-the script stops on `SIGPIPE` before it copies the binary, and the next deploy would silently ship the previous one.
+It then assembles a multi-arch package directory for deploying to a device: `Digimon World 3.sh` and `dw3/` (`dw2003.armhf`, `dw2003.aarch64`, `dw3-launcher.armhf`, `dw3-launcher.aarch64`, everything in `handheld/`, and the mods — no symlinks, so FAT32/exFAT cards work). That directory is `../portmaster`, a sibling of the repository checkout and not the repository's own `portmaster/`. Set `DW3_PACKAGE_DIR` to put it somewhere else. Do not pipe the script through `head`: the script stops on `SIGPIPE` before it copies the binary, and the next deploy would silently ship the previous one.
 
 To build the zip for PortMaster, run the script after the build:
 
@@ -104,9 +97,7 @@ To build the zip for PortMaster, run the script after the build:
 portmaster/make_release.sh
 ```
 
-It writes `dist/dw3.zip` from `build/armhf-sdl2/dw2003`, `handheld/` and the metadata in `portmaster/`, refuses to build
-when a required file is missing or the binary is not a 32-bit ARM ELF, and never includes game data. Publishing steps are
-in [`../portmaster/PUBLISHING.md`](../portmaster/PUBLISHING.md).
+It writes `dist/dw3.zip` from `build/armhf-sdl2/` and `build/aarch64-sdl2/`, `handheld/` and the metadata in `portmaster/`, refuses to build when a required file is missing or the binaries are not valid `armhf` / `aarch64` ELFs, and never includes game data. Publishing steps are in [`../portmaster/PUBLISHING.md`](../portmaster/PUBLISHING.md).
 
 ## Deploying and rolling back
 

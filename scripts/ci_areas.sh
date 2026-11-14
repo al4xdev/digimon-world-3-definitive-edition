@@ -1,56 +1,44 @@
 #!/usr/bin/env bash
-# Which parts of CI a change needs (.github/workflows/ci.yml; DECISIONS "CI per area"). Prints game=, port= and
-# launcher= (true/false) for $GITHUB_OUTPUT, and each file's area on stderr.
+# Which parts of CI a change needs (.github/workflows/ci.yml; DECISIONS "CI per area"). Prints game=, port=,
+# launcher=, and portmaster= (true/false) for $GITHUB_OUTPUT, and each file's area on stderr.
 #
 # Usage: scripts/ci_areas.sh FILE...            the areas of these paths (as `git diff --name-only` prints them)
 #        scripts/ci_areas.sh --diff BASE [HEAD]  the areas of what changed from BASE to HEAD (default HEAD)
 #        scripts/ci_areas.sh --all               every area (manual runs, release tags, unknown history)
 #
 # The areas and the jobs each runs (ci.yml has the steps; the jobs run in parallel, each gated by its area):
-#   game      `check`'s workaround census (tools/hacks.py --check: reads src/, include/, config/, docs/STATUS.md),
-#             `game`: the toolchain smoke test, the byte-identical rebuild (build.sh --check), scripts/test.sh's
-#             layer 2 (the emulator's replays and SPU trace: nothing of port/)
-#   port      `check`'s probes (the host's gcc and llvm-mingw's clang), `port`: scripts/test.sh's layer 1 and port
-#             layer (every test that compiles or runs port/: the host replays of the gpu/gte/libgs_view/mdec goldens,
-#             tests/spu, tests/xa, tests/port, the -m32 build's M1 test), `port-mods`: layer 3 (the formats, the save
-#             round trips) and the mods, `windows`: the Windows cross-build of the game and the launcher, the launcher's
-#             self-test, the crash report and the layer-2 replays under Wine (scripts/build_windows.sh --test)
-#   launcher  `launcher`: the SDL game's build and input self-tests, the launcher's build (from psxstack/launcher with
-#             port/game/game.json) and self-test, and its run with the disc and the SDL game
-# Each implies the next: game => port (the port compiles the game's C, and its tests replay the game's scripts) =>
-# launcher (the launcher is built from the stack's pin with this game's description and mods, and its self-test starts
-# the game with --config: the settings contract). There is no path of its own for the launcher any more: it lives in
-# psxstack. A path no rule below names counts as game, so a new kind of file runs everything until it gets a rule (a
-# too-narrow filter that skips a needed test is worse than a broad one).
+#   game        `check`'s workaround census, `game`: toolchain smoke test, byte-identical rebuild, layer 2
+#   port        `check`'s probes, `port` (layer 1 + port), `port-mods`, `windows`, and `portmaster`
+#   launcher    `launcher` (SDL3 game + psxstack/launcher desktop build & self-test) and `windows`
+#   portmaster  `portmaster` (armhf Docker cross-build of dw2003 + dw3-launcher, dw3.zip packaging & checks)
+# Each implies the downstream areas it affects: game => port => launcher + portmaster.
 set -euo pipefail
 
-# The area of one path: all, game, port, launcher, or none (no CI step reads it).
+# The area of one path: all, game, port, launcher, portmaster, or none (no CI step reads it).
 area_of() {
     case "$1" in
         # CI itself (the workflow, its jobs' setup action), and this mapping: everything.
         .github/workflows/ci.yml|.github/actions/*|scripts/ci_areas.sh) echo all ;;
         # Documentation (ci.yml's paths-ignore too): no step reads it.
         docs/*|*.md|LICENSE|.gitignore|.github/ISSUE_TEMPLATE/*) echo none ;;
+        # PortMaster-specific packaging, handheld scripts, standalone C launcher, and armhf toolchain.
+        handheld/*|portmaster/*|launcher/*|tools/build_arm.sh|tools/Dockerfile.armhf|cmake/armhf-linux.cmake) echo portmaster ;;
         # The release's own files: release.yml tests them (a manual run); here only `bash -n`, which always runs.
         .github/workflows/release.yml|scripts/package_appimage.sh|scripts/check_release_contents.py|packaging/*) echo none ;;
-        # The port: its game side (port/: the adapter, game.json, the mods' manifests; the launcher is built from the
-        # stack with port/game/game.json, so port => launcher), the stack's pin (.gitmodules, the psxstack gitlink: a
-        # new runtime, shim or launcher), the tools that feed the stack (tools/port_inputs.py, the inventory wrapper,
-        # tools/mcp_game.py and .mcp.json; tests/port/debug.py runs the MCP self-test), and the tests that build or
-        # run the port's code.
+        # The port: its game side (port/, psxstack, port_inputs, port tests) => port + launcher + portmaster.
         port/*|.gitmodules|psxstack|tools/port_inputs.py|tools/port_inventory.py|tools/mcp_game.py|.mcp.json|tests/port/*|tests/spu/*|tests/xa/*|tests/saves/*|tests/host/*) echo port ;;
-        # Everything else: the game's C and headers, config/, configure.py, tools/, the other tests, scripts/ (setup.sh
-        # pins every tool), and anything new.
+        # Everything else: the game's C and headers, config/, configure.py, tools/, the other tests, scripts/.
         *) echo game ;;
     esac
 }
 
-game=false port=false launcher=false
+game=false port=false launcher=false portmaster=false
 mark() {
     case "$1" in
-        all|game) game=true; port=true; launcher=true ;;
-        port) port=true; launcher=true ;;
+        all|game) game=true; port=true; launcher=true; portmaster=true ;;
+        port) port=true; launcher=true; portmaster=true ;;
         launcher) launcher=true ;;
+        portmaster) portmaster=true ;;
     esac
 }
 
@@ -66,9 +54,10 @@ case "${1:-}" in
 esac
 for f in "${files[@]}"; do
     a="$(area_of "$f")"
-    printf '  %-9s %s\n' "$a" "$f" >&2
+    printf '  %-10s %s\n' "$a" "$f" >&2
     mark "$a"
 done
 echo "game=$game"
 echo "port=$port"
 echo "launcher=$launcher"
+echo "portmaster=$portmaster"

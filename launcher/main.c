@@ -1000,12 +1000,28 @@ static void draw(void) {
 /* ---- launching ---- */
 static void find_game_bin(char *out, size_t n) {
     char cand[1024];
+    const char *env_bin = getenv("DW3_GAME_BIN");
+    if (env_bin && env_bin[0] && access(env_bin, X_OK) == 0) {
+        snprintf(out, n, "%s", env_bin);
+        return;
+    }
     if (is_pc) {
         snprintf(cand, sizeof(cand), "%s/build/port-sdl/dw2003", game_dir);
         if (access(cand, X_OK) == 0) { snprintf(out, n, "%s", cand); return; }
         snprintf(cand, sizeof(cand), "%s/build/release/port-sdl/dw2003", game_dir);
         if (access(cand, X_OK) == 0) { snprintf(out, n, "%s", cand); return; }
     }
+#if defined(__aarch64__)
+    const char *arch_name = "dw2003.aarch64";
+#elif defined(__arm__)
+    const char *arch_name = "dw2003.armhf";
+#else
+    const char *arch_name = "dw2003";
+#endif
+    snprintf(cand, sizeof(cand), "%s/%s", game_dir, arch_name);
+    if (access(cand, X_OK) == 0) { snprintf(out, n, "%s", cand); return; }
+    snprintf(cand, sizeof(cand), "%s/%s", exe_dir, arch_name);
+    if (access(cand, X_OK) == 0) { snprintf(out, n, "%s", cand); return; }
     snprintf(cand, sizeof(cand), "%s/dw2003", game_dir);
     if (access(cand, X_OK) == 0) { snprintf(out, n, "%s", cand); return; }
     snprintf(cand, sizeof(cand), "%s/dw2003", exe_dir);
@@ -1014,7 +1030,7 @@ static void find_game_bin(char *out, size_t n) {
         snprintf(cand, sizeof(cand), "%s/build/port/dw2003", game_dir);
         if (access(cand, X_OK) == 0) { snprintf(out, n, "%s", cand); return; }
     }
-    snprintf(out, n, "./dw2003");
+    snprintf(out, n, "./%s", arch_name);
 }
 
 static void browse_load(const char *dir) {
@@ -1088,8 +1104,12 @@ static void start_game(void) {
                 (void)system("sh ./probe.sh >/dev/null 2>&1 || true");
             }
             const char *ex = getenv("DW3_EXEC");
+            const char *fr = getenv("DW3_FORCE_RENDERER");
             if (ex) execl("/bin/sh", "sh", "-c", ex, (char *)NULL);
-            else if (is_pc && !c.fullscreen) execl(bin_path, "dw2003", "--config", "./settings.json", "--window", "--watchdog", "0", (char *)NULL);
+            else if (fr && fr[0]) {
+                if (is_pc && !c.fullscreen) execl(bin_path, "dw2003", "--config", "./settings.json", "--window", "--watchdog", "0", "--renderer", fr, (char *)NULL);
+                else execl(bin_path, "dw2003", "--config", "./settings.json", "--window", "--fullscreen", "--watchdog", "0", "--renderer", fr, (char *)NULL);
+            } else if (is_pc && !c.fullscreen) execl(bin_path, "dw2003", "--config", "./settings.json", "--window", "--watchdog", "0", (char *)NULL);
             else execl(bin_path, "dw2003", "--config", "./settings.json", "--window", "--fullscreen", "--watchdog", "0", (char *)NULL);
             _exit(127);
         }
@@ -1704,12 +1724,28 @@ int main(int argc, char **argv) {
         cur_y = (float)row_target_y(S_HOME, 0);
     }
     signal(SIGPIPE, SIG_IGN);
+#if defined(DW3_TARGET_PORTMASTER)
+    is_portmaster = 1;
+    is_pc = 0;
+#elif defined(DW3_TARGET_PC)
+    is_pc = 1;
+    is_portmaster = 0;
+#else
+    if (getenv("DW3_PORTMASTER") || getenv("CFW_NAME")) is_portmaster = 1;
+    if (getenv("DW3_PC")) { is_pc = 1; is_portmaster = 0; }
+#endif
+    if (kind == PLAT_FB) {
+        const char *dv = getenv("DW3_VIDEO");
+        if (dv && !strcmp(dv, "sdl2")) kind = PLAT_SDL;
+    }
     if (plat_open(kind, script) != 0) {
         if (kind == PLAT_FB && plat_open(PLAT_SDL, NULL) == 0) kind = PLAT_SDL;
         else { fprintf(stderr, "dw3-launcher: no screen to draw on\n"); return 3; }
     }
-    if (kind == PLAT_SDL || getenv("DW3_PC")) is_pc = 1;
-    if (getenv("DW3_PORTMASTER") || getenv("CFW_NAME") || kind == PLAT_FB) is_portmaster = 1;
+#if !defined(DW3_TARGET_PORTMASTER) && !defined(DW3_TARGET_PC)
+    if (!is_portmaster && kind == PLAT_SDL) is_pc = 1;
+    if (!is_pc && kind == PLAT_FB) is_portmaster = 1;
+#endif
     build_home_list();
     find_disc();
     cfg_load(&c);

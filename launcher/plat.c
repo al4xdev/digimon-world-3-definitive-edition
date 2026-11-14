@@ -14,12 +14,14 @@
 #include "ui.h"
 
 #ifdef __linux__
+#include <linux/fb.h>
 #include <linux/input.h>
 #endif
 #ifdef HAVE_SDL2
 #include <SDL2/SDL.h>
 #endif
 
+extern int is_portmaster;
 static int kind_open = -1;
 const char *plat_shot_dir = ".";
 static int desk_w = 1280, desk_h = 720;
@@ -55,10 +57,15 @@ long plat_now_ms(void) {
 }
 
 /* ---- framebuffer + evdev ---- */
-static int fbfd = -1, evfd = -1;
+#define MAX_EV_FDS 16
+static int fbfd = -1;
+static int evfds[MAX_EV_FDS];
+static int ev_hat_x[MAX_EV_FDS], ev_hat_y[MAX_EV_FDS];
+static int ev_count;
 static unsigned char *fbmap;
 static size_t fbsize;
 static int fb_stride, fb_bpp = 32, fb_w = W, fb_h = H;
+static int fb_r_off = 16, fb_r_len = 8, fb_g_off = 8, fb_g_len = 8, fb_b_off = 0, fb_b_len = 8;
 
 static int fb_open(void) {
     const char *dev = getenv("DW3_FB");
@@ -66,22 +73,36 @@ static int fb_open(void) {
     if (fbfd < 0) {
         return -1;
     }
-    unsigned var[40] = {0}, fix[20] = {0};
-    if (ioctl(fbfd, 0x4600, var) == 0) { /* FBIOGET_VSCREENINFO: xres, yres, ..., bits_per_pixel at word 6 */
-        fb_w = (int)var[0];
-        fb_h = (int)var[1];
-        fb_bpp = (int)var[6];
+#ifdef __linux__
+    struct fb_var_screeninfo var;
+    struct fb_fix_screeninfo fix;
+    memset(&var, 0, sizeof(var));
+    memset(&fix, 0, sizeof(fix));
+    if (ioctl(fbfd, FBIOGET_VSCREENINFO, &var) == 0) {
+        fb_w = (int)var.xres;
+        fb_h = (int)var.yres;
+        fb_bpp = (int)var.bits_per_pixel;
+        if (var.red.length > 0 && var.green.length > 0 && var.blue.length > 0) {
+            fb_r_off = (int)var.red.offset;
+            fb_r_len = (int)var.red.length;
+            fb_g_off = (int)var.green.offset;
+            fb_g_len = (int)var.green.length;
+            fb_b_off = (int)var.blue.offset;
+            fb_b_len = (int)var.blue.length;
+        }
     }
     fb_stride = fb_w * (fb_bpp / 8);
-    if (ioctl(fbfd, 0x4602, fix) == 0 && fix[6] != 0) { /* FBIOGET_FSCREENINFO: line_length */
-        fb_stride = (int)fix[6];
+    if (ioctl(fbfd, FBIOGET_FSCREENINFO, &fix) == 0 && fix.line_length != 0) {
+        fb_stride = (int)fix.line_length;
     }
-    if (fb_w < W || fb_h < H || (fb_bpp != 32 && fb_bpp != 16)) {
+    /* Portrait hardware panels (e.g. 480x640 RG28XX-H / RGB10) need SDL rotation rather than raw fb0 writes. */
+    if (fb_w < 320 || fb_h < 240 || fb_w < fb_h || (fb_bpp != 32 && fb_bpp != 16)) {
         close(fbfd);
         fbfd = -1;
         return -1;
     }
-    fbsize = (size_t)fb_stride * fb_h;
+    size_t vis = (size_t)fb_stride * (size_t)fb_h;
+    fbsize = fix.smem_len >= vis ? (size_t)fix.smem_len : vis;
     fbmap = mmap(NULL, fbsize, PROT_READ | PROT_WRITE, MAP_SHARED, fbfd, 0);
     if (fbmap == MAP_FAILED) {
         fbmap = NULL;
@@ -89,19 +110,81 @@ static int fb_open(void) {
         fbfd = -1;
         return -1;
     }
+    memset(fbmap, 0, vis);
     return 0;
+#else
+    close(fbfd);
+    fbfd = -1;
+    return -1;
+#endif
 }
 
-static int ev_open(void) {
-    const char *dev = getenv("DW3_PAD");
-    evfd = open(dev ? dev : "/dev/input/event0", O_RDONLY | O_NONBLOCK);
-    if (evfd < 0) {
-        return -1;
+#ifdef __linux__
+static int has_bit(const unsigned long *bits, int bit) {
+    return (bits[bit / (8 * (int)sizeof(unsigned long))] >> (bit % (8 * (int)sizeof(unsigned long)))) & 1UL;
+}
+
+static int ev_is_pad(int fd) {
+    unsigned long evbits[2] = {0};
+    unsigned long keybits[(KEY_MAX + 8 * sizeof(unsigned long)) / (8 * sizeof(unsigned long))] = {0};
+    unsigned long absbits[(ABS_MAX + 8 * sizeof(unsigned long)) / (8 * sizeof(unsigned long))] = {0};
+    if (ioctl(fd, EVIOCGBIT(0, sizeof(evbits)), evbits) < 0) return 0;
+    if (has_bit(evbits, EV_KEY) && ioctl(fd, EVIOCGBIT(EV_KEY, sizeof(keybits)), keybits) >= 0) {
+        if (has_bit(keybits, BTN_SOUTH) || has_bit(keybits, BTN_EAST) ||
+            has_bit(keybits, BTN_START) || has_bit(keybits, BTN_DPAD_UP)) {
+            return 1;
+        }
     }
-    struct input_event e; /* the button that launched this must not count */
-    while (read(evfd, &e, sizeof(e)) > 0) {
+    if (has_bit(evbits, EV_ABS) && ioctl(fd, EVIOCGBIT(EV_ABS, sizeof(absbits)), absbits) >= 0) {
+        if (has_bit(absbits, ABS_HAT0X) || has_bit(absbits, ABS_HAT0Y)) {
+            return 1;
+        }
     }
     return 0;
+}
+#endif
+
+static int ev_open(void) {
+    ev_count = 0;
+    for (int i = 0; i < MAX_EV_FDS; i++) {
+        evfds[i] = -1;
+        ev_hat_x[i] = 0;
+        ev_hat_y[i] = 0;
+    }
+#ifdef __linux__
+    const char *dev = getenv("DW3_PAD");
+    if (dev && dev[0]) {
+        int fd = open(dev, O_RDONLY | O_NONBLOCK);
+        if (fd >= 0) {
+            struct input_event e;
+            while (read(fd, &e, sizeof(e)) > 0) {}
+            evfds[ev_count++] = fd;
+        }
+        return ev_count > 0 ? 0 : -1;
+    }
+    for (int i = 0; i < MAX_EV_FDS; i++) {
+        char path[32];
+        snprintf(path, sizeof(path), "/dev/input/event%d", i);
+        int fd = open(path, O_RDONLY | O_NONBLOCK);
+        if (fd < 0) continue;
+        if (!ev_is_pad(fd)) {
+            close(fd);
+            continue;
+        }
+        struct input_event e; /* the button that launched this must not count */
+        while (read(fd, &e, sizeof(e)) > 0) {}
+        evfds[ev_count++] = fd;
+    }
+    if (ev_count == 0) {
+        int fd = open("/dev/input/event0", O_RDONLY | O_NONBLOCK);
+        if (fd >= 0) {
+            struct input_event e;
+            while (read(fd, &e, sizeof(e)) > 0) {}
+            evfds[ev_count++] = fd;
+        }
+    }
+#endif
+    return ev_count > 0 ? 0 : -1;
 }
 
 #ifdef HAVE_SDL2
@@ -112,31 +195,50 @@ static int trig_l, trig_r;
 
 static int sdl_open(void) {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER | SDL_INIT_EVENTS) < 0) {
-        return -1;
+        if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0) {
+            return -1;
+        }
     }
     SDL_DisplayMode dm;
     if (SDL_GetDesktopDisplayMode(0, &dm) == 0 && dm.w > 0 && dm.h > 0) {
         desk_w = dm.w;
         desk_h = dm.h;
     }
-    /* Pick crisp internal UI render scale (2x = 1280x960, 3x = 1920x1440) and fit window comfortably on monitor. */
-    int sc = (desk_h >= 1350 && desk_w >= 1800) ? 3 : 2;
-    ui_init(sc);
-    int win_h = desk_h * 82 / 100;
-    if (win_h < 480) win_h = 480;
-    if (win_h > ui_h) win_h = ui_h;
-    int win_w = win_h * 4 / 3;
-    if (win_w > desk_w * 90 / 100) {
-        win_w = desk_w * 90 / 100;
-        win_h = win_w * 3 / 4;
+    int pm_mode = is_portmaster || getenv("DW3_PORTMASTER") != NULL || getenv("CFW_NAME") != NULL;
+    int win_w = W, win_h = H;
+    Uint32 wflags = 0;
+    if (pm_mode) {
+        ui_init(1);
+        wflags = SDL_WINDOW_FULLSCREEN_DESKTOP;
+    } else {
+        /* Pick crisp internal UI render scale (2x = 1280x960, 3x = 1920x1440) and fit window comfortably on monitor. */
+        int sc = (desk_h >= 1350 && desk_w >= 1800) ? 3 : 2;
+        ui_init(sc);
+        win_h = desk_h * 82 / 100;
+        if (win_h < 480) win_h = 480;
+        if (win_h > ui_h) win_h = ui_h;
+        win_w = win_h * 4 / 3;
+        if (win_w > desk_w * 90 / 100) {
+            win_w = desk_w * 90 / 100;
+            win_h = win_w * 3 / 4;
+        }
+        wflags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI;
     }
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
-    win = SDL_CreateWindow("Digimon World 3", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, win_w, win_h,
-                           SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+    win = SDL_CreateWindow(pm_mode ? "dw3-launcher" : "Digimon World 3", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                           win_w, win_h, wflags);
     if (!win) {
         return -1;
     }
     ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_PRESENTVSYNC);
+    if (!ren) {
+        ren = SDL_CreateRenderer(win, -1, 0);
+    }
+    if (!ren) {
+        SDL_DestroyWindow(win);
+        win = NULL;
+        return -1;
+    }
     SDL_RenderSetLogicalSize(ren, ui_w, ui_h);
     tex = SDL_CreateTexture(ren, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, ui_w, ui_h);
     for (int i = 0; i < SDL_NumJoysticks(); i++) {
@@ -252,16 +354,68 @@ int plat_open(int kind, const char *script) {
 #endif
 }
 
+static uint32_t fb_pack32(uint32_t c) {
+    if (fb_r_off == 16 && fb_g_off == 8 && fb_b_off == 0) {
+        return c & 0x00ffffffu;
+    }
+    uint32_t r = (c >> 16) & 0xffu, g = (c >> 8) & 0xffu, b = c & 0xffu;
+    return ((r >> (8 - fb_r_len)) << fb_r_off) | ((g >> (8 - fb_g_len)) << fb_g_off) | ((b >> (8 - fb_b_len)) << fb_b_off);
+}
+
+static uint16_t fb_pack16(uint32_t c) {
+    uint32_t r = (c >> 16) & 0xffu, g = (c >> 8) & 0xffu, b = c & 0xffu;
+    return (uint16_t)(((r >> (8 - fb_r_len)) << fb_r_off) | ((g >> (8 - fb_g_len)) << fb_g_off) | ((b >> (8 - fb_b_len)) << fb_b_off));
+}
+
 void plat_present(void) {
     if (kind_open == PLAT_FB && fbmap) {
-        for (int y = 0; y < H; y++) {
-            if (fb_bpp == 32) {
-                memcpy(fbmap + (size_t)y * fb_stride, &fb[y * W], W * 4);
+        int fast_xrgb = (fb_bpp == 32 && fb_r_off == 16 && fb_g_off == 8 && fb_b_off == 0);
+        if (fb_w >= W && fb_h >= H) {
+            int sx = fb_w / W, sy = fb_h / H;
+            int sc = sx < sy ? sx : sy;
+            if (sc < 1) sc = 1;
+            int ox = (fb_w - W * sc) / 2, oy = (fb_h - H * sc) / 2;
+            if (sc == 1 && fast_xrgb) {
+                for (int y = 0; y < H; y++) {
+                    memcpy((uint32_t *)(fbmap + (size_t)(oy + y) * fb_stride) + ox, &fb[y * W], W * 4);
+                }
             } else {
-                uint16_t *d = (uint16_t *)(fbmap + (size_t)y * fb_stride);
-                for (int x = 0; x < W; x++) {
-                    uint32_t c = fb[y * W + x];
-                    d[x] = (uint16_t)(((c >> 8) & 0xF800) | ((c >> 5) & 0x07E0) | ((c >> 3) & 0x1F));
+                for (int y = 0; y < H; y++) {
+                    for (int ry = 0; ry < sc; ry++) {
+                        unsigned char *rowp = fbmap + (size_t)(oy + y * sc + ry) * fb_stride;
+                        if (fb_bpp == 32) {
+                            uint32_t *d = (uint32_t *)rowp + ox;
+                            for (int x = 0; x < W; x++) {
+                                uint32_t p = fast_xrgb ? (fb[y * W + x] & 0x00ffffffu) : fb_pack32(fb[y * W + x]);
+                                for (int rx = 0; rx < sc; rx++) d[x * sc + rx] = p;
+                            }
+                        } else {
+                            uint16_t *d = (uint16_t *)rowp + ox;
+                            for (int x = 0; x < W; x++) {
+                                uint16_t p = fb_pack16(fb[y * W + x]);
+                                for (int rx = 0; rx < sc; rx++) d[x * sc + rx] = p;
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            /* Sub-640x480 panels (e.g. 480x320 RG351P/M): scale down cleanly to fit fb_w x fb_h. */
+            for (int y = 0; y < fb_h; y++) {
+                int sy = y * H / fb_h;
+                unsigned char *rowp = fbmap + (size_t)y * fb_stride;
+                if (fb_bpp == 32) {
+                    uint32_t *d = (uint32_t *)rowp;
+                    for (int x = 0; x < fb_w; x++) {
+                        int sx = x * W / fb_w;
+                        d[x] = fast_xrgb ? (fb[sy * W + sx] & 0x00ffffffu) : fb_pack32(fb[sy * W + sx]);
+                    }
+                } else {
+                    uint16_t *d = (uint16_t *)rowp;
+                    for (int x = 0; x < fb_w; x++) {
+                        int sx = x * W / fb_w;
+                        d[x] = fb_pack16(fb[sy * W + sx]);
+                    }
                 }
             }
         }
@@ -332,17 +486,43 @@ int plat_poll(Ev *ev, int timeout_ms) {
         return -1; /* the script ended */
     }
     if (kind_open == PLAT_FB) {
-        struct pollfd p = { evfd, POLLIN, 0 };
-        if (poll(&p, 1, timeout_ms) > 0) {
-            struct input_event e;
-            while (read(evfd, &e, sizeof(e)) == (ssize_t)sizeof(e)) {
-                if (e.type == EV_KEY && e.value != 2) {
-                    ev->code = e.code;
-                    ev->down = e.value;
-                    return 1;
+#ifdef __linux__
+        struct pollfd p[MAX_EV_FDS];
+        for (int i = 0; i < ev_count; i++) {
+            p[i].fd = evfds[i];
+            p[i].events = POLLIN;
+            p[i].revents = 0;
+        }
+        if (ev_count > 0 && poll(p, (nfds_t)ev_count, timeout_ms) > 0) {
+            for (int i = 0; i < ev_count; i++) {
+                if (!(p[i].revents & POLLIN)) continue;
+                struct input_event e;
+                while (read(evfds[i], &e, sizeof(e)) == (ssize_t)sizeof(e)) {
+                    if (e.type == EV_KEY && e.value != 2) {
+                        ev->code = e.code;
+                        ev->down = e.value;
+                        return 1;
+                    }
+                    if (e.type == EV_ABS && (e.code == ABS_HAT0X || e.code == ABS_HAT0Y)) {
+                        int *prev = e.code == ABS_HAT0X ? &ev_hat_x[i] : &ev_hat_y[i];
+                        int nv = e.value < 0 ? -1 : e.value > 0 ? 1 : 0;
+                        if (nv != *prev) {
+                            int old = *prev;
+                            *prev = nv;
+                            if (nv != 0) {
+                                ev->code = e.code == ABS_HAT0X ? (nv < 0 ? K_LEFT : K_RIGHT) : (nv < 0 ? K_UP : K_DOWN);
+                                ev->down = 1;
+                            } else {
+                                ev->code = e.code == ABS_HAT0X ? (old < 0 ? K_LEFT : K_RIGHT) : (old < 0 ? K_UP : K_DOWN);
+                                ev->down = 0;
+                            }
+                            return 1;
+                        }
+                    }
                 }
             }
         }
+#endif
         return 0;
     }
 #ifdef HAVE_SDL2
@@ -396,10 +576,13 @@ int plat_poll(Ev *ev, int timeout_ms) {
 }
 
 void plat_release(void) {
-    if (evfd >= 0) {
-        close(evfd);
-        evfd = -1;
+    for (int i = 0; i < ev_count; i++) {
+        if (evfds[i] >= 0) {
+            close(evfds[i]);
+            evfds[i] = -1;
+        }
     }
+    ev_count = 0;
     if (fbmap) {
         munmap(fbmap, fbsize);
         fbmap = NULL;

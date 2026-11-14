@@ -1,28 +1,23 @@
 #!/bin/bash
-# build_arm.sh: cross-compile this port for the ARM 32-bit handhelds (RK3326: XF35H, R36S and their clones) and assemble
-# the package the card runs. The toolchain is a Docker image built from tools/Dockerfile.armhf, so nothing host-wide is
-# installed; the output goes to build/armhf-sdl2/dw2003 and the package to ../portmaster (the device mirror).
+# build_arm.sh: cross-compile this port for ARM handhelds (PortMaster multi-arch: armhf + aarch64) and assemble
+# the package the card runs. The toolchains are Docker images built from tools/Dockerfile.armhf and
+# tools/Dockerfile.aarch64 (Debian 10 buster, glibc 2.28 floor), so nothing host-wide is installed.
 #
-#   tools/build_arm.sh                 build and package
+#   tools/build_arm.sh                 build both armhf + aarch64 and package into ../portmaster
+#   DW3_ARCH=armhf tools/build_arm.sh  build only armhf (or aarch64)
 #   DW3_PACKAGE_DIR=... tools/build_arm.sh   assemble the package somewhere else
 set -euo pipefail
 
 TOOLS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO="$(cd "$TOOLS_DIR/.." && pwd)"
-BUILD_DIR="$REPO/build/armhf-sdl2"
 PACKAGE_DIR="${DW3_PACKAGE_DIR:-$REPO/../portmaster}"
-IMAGE="dw3-armhf-builder:latest"
+TARGET_ARCH="${DW3_ARCH:-all}"
 
-echo "=== Building Digimon World 2003 for the RK3326 handhelds (armhf) ==="
+echo "=== Building Digimon World 2003 for PortMaster ($TARGET_ARCH) ==="
 
 if ! command -v docker &> /dev/null; then
     echo "Error: docker is required for the cross-compilation toolchain." >&2
     exit 1
-fi
-
-if [ "${DW3_REBUILD_IMAGE:-0}" = "1" ] || ! docker image inspect "$IMAGE" &> /dev/null; then
-    echo "Building the toolchain image $IMAGE from tools/Dockerfile.armhf..."
-    docker build -t "$IMAGE" -f "$TOOLS_DIR/Dockerfile.armhf" "$TOOLS_DIR"
 fi
 
 # The image has no git. Prefer DW3_VERSION (for tagged releases) over git describe.
@@ -39,40 +34,79 @@ PSXSTACK_COMMIT=$(git -C "$REPO" rev-parse HEAD)
 export PSXSTACK_VERSION PSXSTACK_COMMIT
 echo "Version stamp: $PSXSTACK_VERSION ($PSXSTACK_COMMIT)"
 
-echo "Configuring and compiling with CMake + Ninja inside Docker..."
-docker run --rm -u "$(id -u):$(id -g)" \
-    -e PSXSTACK_VERSION -e PSXSTACK_COMMIT \
-    -v "$REPO:/work" \
-    -w /work \
-    "$IMAGE" \
-    bash -c "
-        cmake -S port -B build/armhf-sdl2 -G Ninja \
-            -DCMAKE_TOOLCHAIN_FILE=/work/cmake/armhf-linux.cmake \
-            -DPSXSTACK_PYTHON=/usr/bin/python3 \
-            -DPSXSTACK_SDL2=ON -DPSXSTACK_EGL=ON && \
-        ninja -C build/armhf-sdl2 -j\$(nproc)
-    "
+build_one_arch() {
+    local arch="$1"
+    local image="dw3-${arch}-builder:latest"
+    local dockerfile="$TOOLS_DIR/Dockerfile.${arch}"
+    local build_sub="build/${arch}-sdl2"
+    local toolchain="/work/cmake/${arch}-linux.cmake"
+    local cc
+    if [ "$arch" = "armhf" ]; then
+        cc="arm-linux-gnueabihf-gcc"
+    else
+        cc="aarch64-linux-gnu-gcc"
+    fi
 
-# The launcher is plain C on the framebuffer (no SDL): one gcc call in the same image.
-docker run --rm -u "$(id -u):$(id -g)" -v "$REPO:/work" -w /work "$IMAGE" bash -c "
-    arm-linux-gnueabihf-gcc -std=gnu99 -D_GNU_SOURCE -O2 -s launcher/main.c launcher/ui.c launcher/plat.c launcher/cfg.c \\
-        launcher/loading.c launcher/cloud.c launcher/sha256.c launcher/assets/assets.c -o build/armhf-sdl2/dw3-launcher -lm
-"
-echo "Build complete: $BUILD_DIR/dw2003 and dw3-launcher"
+    if [ "${DW3_REBUILD_IMAGE:-0}" = "1" ] || ! docker image inspect "$image" &> /dev/null; then
+        echo "Building toolchain image $image from $dockerfile..."
+        docker build -t "$image" -f "$dockerfile" "$TOOLS_DIR"
+    fi
+
+    echo "Configuring and compiling ($arch) with CMake + Ninja inside Docker..."
+    docker run --rm -u "$(id -u):$(id -g)" \
+        -e PSXSTACK_VERSION -e PSXSTACK_COMMIT \
+        -v "$REPO:/work" \
+        -w /work \
+        "$image" \
+        bash -c "
+            cmake -S port -B ${build_sub} -G Ninja \
+                -DCMAKE_TOOLCHAIN_FILE=${toolchain} \
+                -DPSXSTACK_PYTHON=/usr/bin/python3 \
+                -DPSXSTACK_SDL2=ON -DPSXSTACK_EGL=ON && \
+            ninja -C ${build_sub} -j\$(nproc)
+        "
+
+    # PortMaster launcher (C99): compiled with -DDW3_TARGET_PORTMASTER and -DHAVE_SDL2 so fbdev is used by default
+    # and SDL2 (Wayland/KMSDRM/portrait panels) works as a seamless fallback on ROCKNIX/Knulli/muOS/480x320.
+    docker run --rm -u "$(id -u):$(id -g)" -v "$REPO:/work" -w /work "$image" bash -c "
+        ${cc} -std=gnu99 -D_GNU_SOURCE -O2 -s -DDW3_TARGET_PORTMASTER -DHAVE_SDL2 \
+            -I/usr/include/SDL2 launcher/main.c launcher/ui.c launcher/plat.c launcher/cfg.c \
+            launcher/loading.c launcher/cloud.c launcher/sha256.c launcher/assets/assets.c \
+            -o ${build_sub}/dw3-launcher -lSDL2 -lm
+    "
+    echo "Build complete ($arch): $REPO/${build_sub}/dw2003 and dw3-launcher"
+}
+
+case "$TARGET_ARCH" in
+    all)
+        build_one_arch armhf
+        build_one_arch aarch64
+        ;;
+    armhf|aarch64)
+        build_one_arch "$TARGET_ARCH"
+        ;;
+    *)
+        echo "Error: DW3_ARCH must be 'all', 'armhf', or 'aarch64' (got '$TARGET_ARCH')" >&2
+        exit 1
+        ;;
+esac
 
 if [ "${DW3_BUILD_ONLY:-0}" = "1" ]; then
     exit 0
 fi
 
-# The package is what the card holds: the binary plus everything in handheld/ (the launcher and the menu are versioned
-# there, so the package comes from the checkout and not from whatever is on the card). The player's own files -
-# settings.json, pad.map, the cards and the disc - are never touched.
+# The package is what the card holds: multi-arch binaries plus everything in handheld/ (no symlinks for exFAT/FAT32).
 echo "Assembling the package in $PACKAGE_DIR..."
 mkdir -p "$PACKAGE_DIR/dw3/game" "$PACKAGE_DIR/dw3/mods"
 
-cp "$BUILD_DIR/dw2003" "$PACKAGE_DIR/dw3/dw2003"
-cp "$BUILD_DIR/dw3-launcher" "$PACKAGE_DIR/dw3/dw3-launcher"
-chmod +x "$PACKAGE_DIR/dw3/dw2003" "$PACKAGE_DIR/dw3/dw3-launcher"
+for arch in armhf aarch64; do
+    bdir="$REPO/build/${arch}-sdl2"
+    if [ -f "$bdir/dw2003" ] && [ -f "$bdir/dw3-launcher" ]; then
+        cp "$bdir/dw2003" "$PACKAGE_DIR/dw3/dw2003.${arch}"
+        cp "$bdir/dw3-launcher" "$PACKAGE_DIR/dw3/dw3-launcher.${arch}"
+        chmod +x "$PACKAGE_DIR/dw3/dw2003.${arch}" "$PACKAGE_DIR/dw3/dw3-launcher.${arch}"
+    fi
+done
 
 # Retired files: the package is a mirror, so a file that left handheld/ has to leave it too (the copy loop only adds).
 rm -f "$PACKAGE_DIR/dw3/dw3-tui.sh" "$PACKAGE_DIR/dw3/dw3.sh" "$PACKAGE_DIR/dw3/detect-env.sh" "$PACKAGE_DIR/dw3/dw3-menu.py"
@@ -80,8 +114,6 @@ rm -f "$PACKAGE_DIR/dw3/dw3-tui.sh" "$PACKAGE_DIR/dw3/dw3.sh" "$PACKAGE_DIR/dw3/
 cp "$REPO/handheld/Digimon World 3.sh" "$PACKAGE_DIR/Digimon World 3.sh"
 chmod +x "$PACKAGE_DIR/Digimon World 3.sh"
 
-# Every file in handheld/ goes into dw3/, by rule and not by list: a list drops the next file somebody adds (that is how
-# the LED daemon nearly stayed behind). README.md is the repository's own document and the launcher sits above.
 for f in "$REPO"/handheld/*; do
     case "$(basename "$f")" in
         README.md|"Digimon World 3.sh"|__pycache__) continue ;;
@@ -91,10 +123,15 @@ done
 chmod -x "$PACKAGE_DIR/dw3/README.txt" 2>/dev/null || true
 chmod +x "$PACKAGE_DIR/dw3/ledd.py" 2>/dev/null || true
 
-if [ -d "$BUILD_DIR/mods" ]; then
-    cp -r "$BUILD_DIR/mods/"* "$PACKAGE_DIR/dw3/mods/" || true
+mods_src=""
+if [ -d "$REPO/build/armhf-sdl2/mods" ]; then
+    mods_src="$REPO/build/armhf-sdl2/mods"
+elif [ -d "$REPO/build/aarch64-sdl2/mods" ]; then
+    mods_src="$REPO/build/aarch64-sdl2/mods"
+fi
+if [ -n "$mods_src" ]; then
+    cp -r "$mods_src/"* "$PACKAGE_DIR/dw3/mods/" || true
 fi
 
 echo "=== Done ==="
-echo "  binary:  $BUILD_DIR/dw2003"
-echo "  package: $PACKAGE_DIR ($(md5sum "$PACKAGE_DIR/dw3/dw2003" | cut -d' ' -f1))"
+echo "  package: $PACKAGE_DIR"

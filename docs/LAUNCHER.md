@@ -1,15 +1,20 @@
 # The launcher and the mods: this game's part
 
-This page is mostly the reference for this game's built-in mods (including the LED bar) and its 60 Hz mode. Two
-programs are called "the launcher" in this repository:
+This page is mostly the reference for this game's built-in mods (including the LED bar) and its 60 Hz mode. Three
+separate build lines exist across CI/CD and releases:
 
-- The desktop launcher is psxstack's (`psxstack/launcher/`), built for this game from `port/game/game.json`
-  (`cmake -S psxstack/launcher -B build/launcher -G Ninja -DPSXSTACK_GAME_JSON=$PWD/port/game/game.json
-  -DPSXSTACK_VERSION_ROOT=$PWD -DPSXSTACK_TOOLS_DIR=$PWD/tools`; `build/launcher/dw2003-launcher`). The contract
-  between it and the game, the settings directory and file (schema 1), the mod manifest and runtime, its screens and
-  self-test, and the crash report are psxstack's `docs/LAUNCHER.md` and `launcher/README.md`.
-- The handheld launcher is the shell script `handheld/Digimon World 3.sh`, with the framebuffer menu `handheld/dw3-menu.py`
-  (`handheld/README.md`). Where it touches the mods (the DEBUG group, the LED bar), this page says so.
+- **Linux x86_64 & Windows x86_64 desktop releases** use psxstack's C++/ImGui+SDL3 launcher (`psxstack/launcher/`),
+  built for this game from `port/game/game.json` (`cmake -S psxstack/launcher -B build/launcher -G Ninja
+  -DPSXSTACK_GAME_JSON=$PWD/port/game/game.json -DPSXSTACK_VERSION_ROOT=$PWD -DPSXSTACK_TOOLS_DIR=$PWD/tools`;
+  `build/launcher/dw2003-launcher`). The contract between it and the game, the settings directory and file (schema 1),
+  the mod manifest and runtime, its screens and self-test, and the crash report are psxstack's `docs/LAUNCHER.md` and
+  `launcher/README.md`.
+- **PortMaster (armhf) releases** use the shell entry `handheld/Digimon World 3.sh` together with the C99 console-first
+  launcher `launcher/` (`dw3-launcher`, compiled with `-DDW3_TARGET_PORTMASTER -DHAVE_SDL2` by `tools/build_arm.sh` in
+  the Debian 10 `buster` armhf container for glibc >= 2.28). It runs on `/dev/fb0` + evdev by default and falls back to
+  SDL2 on Wayland/KMSDRM/portrait panels.
+- **Standalone C desktop build** (`launcher/Makefile`, `-DDW3_TARGET_PC`) compiles `launcher/` directly on Linux with
+  SDL2 for local desktop testing of the C99 UI and cloud sync without affecting the official AppImage/Windows releases.
 
 The decisions behind the design: DECISIONS "Launcher and mods".
 

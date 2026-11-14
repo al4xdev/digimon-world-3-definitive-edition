@@ -1,50 +1,57 @@
 #!/bin/bash
-# make_release.sh: assemble the PortMaster release of this port, in the layout
+# make_release.sh: assemble the multi-arch (armhf + aarch64) PortMaster release of this port, in the layout
 # https://portmaster.games/packaging.html asks for, and check it before it is offered:
 #
 #   dist/dw3.zip
-#     Digimon World 3.sh      the launcher (handheld/, versioned with the port)
-#     port.json               the metadata (this directory)
-#     README.md               the wiki page's notes (this directory)
-#     gameinfo.xml            EmulationStation's entry (this directory)
-#     screenshot.png          640x480, gameplay (this directory; capture it on the device)
-#     cover.png               the box art (this directory; optional)
-#     dw3/                    the port: the binary, dw3-launcher and everything in handheld/ except the launcher and README.md
-#                             (ledd.py, probe.sh, README.txt)
-#       licenses/             what the port borrows and its licences (portmaster/licenses/)
+#     Digimon World 3.sh        the launcher (handheld/, versioned with the port)
+#     port.json                 the metadata (this directory)
+#     README.md                 the wiki page's notes (this directory)
+#     gameinfo.xml              EmulationStation's entry (this directory)
+#     screenshot.png            640x480, gameplay (this directory; capture it on the device)
+#     cover.png                 the box art (this directory; optional)
+#     dw3/                      the port: dw2003.{armhf,aarch64}, dw3-launcher.{armhf,aarch64} and handheld/ extras
+#       licenses/               what the port borrows and its licences (portmaster/licenses/)
 #
-# It refuses to build when one of those is missing, when the port directory's name differs from the port's, or when the
-# binary is not the ARM 32-bit build the package ships. Nothing of the game's data is ever included: the user supplies
-# the disc.
+# It refuses to build when one of those is missing, when the port directory's name differs from the port's, or when
+# the binaries are not valid 32-bit ARM / 64-bit aarch64 ELFs. Nothing of the game's data is ever included.
 set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO="$(cd "$HERE/.." && pwd)"
 NAME="dw3"                             # the port's name: dist/<name>.zip, ports/<name>/, ports/<name>/<name>/
 SCRIPT="Digimon World 3.sh"
-BINARY="$REPO/build/armhf-sdl2/dw2003"
+BIN_ARMHF="$REPO/build/armhf-sdl2/dw2003"
+LAUNCHER_ARMHF="$REPO/build/armhf-sdl2/dw3-launcher"
+BIN_AARCH64="$REPO/build/aarch64-sdl2/dw2003"
+LAUNCHER_AARCH64="$REPO/build/aarch64-sdl2/dw3-launcher"
 DIST="$REPO/dist"
 OUT="$DIST/$NAME"
 
 fail() { echo "make_release: $*" >&2; exit 1; }
 
-[ -f "$BINARY" ] || fail "the binary is not built: $BINARY (run tools/build_arm.sh)"
-file "$BINARY" | grep -q "ELF 32-bit LSB.*ARM" || fail "$BINARY is not a 32-bit ARM ELF"
+[ -f "$BIN_ARMHF" ] || fail "armhf binary not built: $BIN_ARMHF (run tools/build_arm.sh)"
+[ -x "$LAUNCHER_ARMHF" ] || fail "armhf launcher not built: $LAUNCHER_ARMHF (run tools/build_arm.sh)"
+[ -f "$BIN_AARCH64" ] || fail "aarch64 binary not built: $BIN_AARCH64 (run tools/build_arm.sh)"
+[ -x "$LAUNCHER_AARCH64" ] || fail "aarch64 launcher not built: $LAUNCHER_AARCH64 (run tools/build_arm.sh)"
+
+file "$BIN_ARMHF" | grep -q "ELF 32-bit LSB.*ARM" || fail "$BIN_ARMHF is not a 32-bit ARM ELF"
+file "$LAUNCHER_ARMHF" | grep -q "ELF 32-bit LSB.*ARM" || fail "$LAUNCHER_ARMHF is not a 32-bit ARM ELF"
+file "$BIN_AARCH64" | grep -q "ELF 64-bit LSB.*ARM aarch64" || fail "$BIN_AARCH64 is not a 64-bit aarch64 ELF"
+file "$LAUNCHER_AARCH64" | grep -q "ELF 64-bit LSB.*ARM aarch64" || fail "$LAUNCHER_AARCH64 is not a 64-bit aarch64 ELF"
+
 for f in port.json README.md gameinfo.xml screenshot.png; do
     [ -f "$HERE/$f" ] || fail "missing $HERE/$f (the screenshot is captured on the device, 640x480 of gameplay)"
 done
 [ -f "$REPO/handheld/$SCRIPT" ] || fail "missing $REPO/handheld/$SCRIPT"
 
-echo "=== $NAME: assembling $OUT"
+echo "=== $NAME: assembling $OUT (armhf + aarch64) ==="
 rm -rf "$OUT"
 mkdir -p "$OUT/$NAME/licenses"
 cp "$HERE/port.json" "$HERE/README.md" "$HERE/gameinfo.xml" "$HERE/screenshot.png" "$OUT/"
-[ -f "$HERE/cover.png" ] && cp "$HERE/cover.png" "$OUT/"   # optional: the catalogue shows the screenshot without it
+[ -f "$HERE/cover.png" ] && cp "$HERE/cover.png" "$OUT/"
 cp "$REPO/handheld/$SCRIPT" "$OUT/$SCRIPT"
 chmod +x "$OUT/$SCRIPT"
-# Everything in handheld/ that belongs on the card, by rule rather than by list: a list here drops the next file
-# somebody adds (a LED daemon, a helper), and the zip would be silently incomplete. README.md is the repository's own
-# document and the launcher sits at the package's root, above.
+
 for f in "$REPO"/handheld/*; do
     case "$(basename "$f")" in
         README.md|"$SCRIPT"|__pycache__) continue ;;
@@ -54,25 +61,29 @@ done
 chmod -x "$OUT/$NAME/README.txt" 2>/dev/null || true
 [ -f "$OUT/$NAME/ledd.py" ] && chmod +x "$OUT/$NAME/ledd.py"
 [ -f "$OUT/$NAME/probe.sh" ] && chmod +x "$OUT/$NAME/probe.sh"
-cp "$BINARY" "$OUT/$NAME/dw2003"
-chmod +x "$OUT/$NAME/dw2003"
-LAUNCHER_BIN="$REPO/build/armhf-sdl2/dw3-launcher"
-[ -x "$LAUNCHER_BIN" ] || { echo "missing $LAUNCHER_BIN: run tools/build_arm.sh first" >&2; exit 1; }
-cp "$LAUNCHER_BIN" "$OUT/$NAME/dw3-launcher"
-chmod +x "$OUT/$NAME/dw3-launcher"
+
+cp "$BIN_ARMHF" "$OUT/$NAME/dw2003.armhf"
+cp "$LAUNCHER_ARMHF" "$OUT/$NAME/dw3-launcher.armhf"
+cp "$BIN_AARCH64" "$OUT/$NAME/dw2003.aarch64"
+cp "$LAUNCHER_AARCH64" "$OUT/$NAME/dw3-launcher.aarch64"
+chmod +x "$OUT/$NAME/dw2003.armhf" "$OUT/$NAME/dw3-launcher.armhf" \
+         "$OUT/$NAME/dw2003.aarch64" "$OUT/$NAME/dw3-launcher.aarch64"
+
+mods_src=""
 if [ -d "$REPO/build/armhf-sdl2/mods" ]; then
+    mods_src="$REPO/build/armhf-sdl2/mods"
+elif [ -d "$REPO/build/aarch64-sdl2/mods" ]; then
+    mods_src="$REPO/build/aarch64-sdl2/mods"
+fi
+if [ -n "$mods_src" ]; then
     mkdir -p "$OUT/$NAME/mods"
-    cp -r "$REPO/build/armhf-sdl2/mods/"* "$OUT/$NAME/mods/"
+    cp -r "$mods_src/"* "$OUT/$NAME/mods/"
 fi
 
-# The licences of what the port contains or links against, kept as files in portmaster/licenses/ (a text to maintain,
-# not a heredoc to keep in step): the project's own MIT, SDL2's zlib, and what the package borrows. The game's data is
-# not here, and its decompilation is not redistributed in this zip either.
 cp "$HERE"/licenses/* "$OUT/$NAME/licenses/"
 
 cd "$DIST"
 rm -f "$NAME.zip"
-# python's zipfile rather than zip(1), which this machine does not have: the archive is the tree as it is, compressed.
 python3 - "$NAME" <<'PY'
 import os
 import sys
@@ -102,12 +113,15 @@ names = z.namelist()
 with z.open("port.json") as f:
     port = json.load(f)
 missing = [n for n in ("Digimon World 3.sh", "port.json", "README.md", "gameinfo.xml",
-                       "screenshot.png", "dw3/dw2003", "dw3/dw3-launcher")
+                       "screenshot.png", "dw3/dw2003.armhf", "dw3/dw3-launcher.armhf",
+                       "dw3/dw2003.aarch64", "dw3/dw3-launcher.aarch64")
            if n not in names]
 if missing:
     sys.exit("missing from the zip: " + ", ".join(missing))
 if port["name"] != "dw3.zip" or port["items"] != ["Digimon World 3.sh", "dw3"]:
     sys.exit("port.json does not describe this layout: %r / %r" % (port["name"], port["items"]))
+if set(port["attr"]["arch"]) != {"armhf", "aarch64"}:
+    sys.exit("port.json arch does not match multi-arch build: %r" % (port["attr"]["arch"],))
 banned = [n for n in names if n.lower().endswith((".bin", ".cue", ".iso", ".chd", ".mcd", ".img"))]
 if banned:
     sys.exit("the package carries the game's data: " + ", ".join(banned))
