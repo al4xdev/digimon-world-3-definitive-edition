@@ -15,7 +15,7 @@
 
 #include "plat.h"
 
-int is_pc, is_portmaster;
+int is_pc, is_portmaster, is_android;
 char game_dir[512] = ".";
 char disc_path[1200];
 
@@ -144,10 +144,11 @@ void cfg_defaults(Cfg *c) {
     c->btext = 1; /* skip: the definitive HUD has no need of battle messages */
     c->bmem = 1;
     c->bbuf = 1;
-    c->led = !is_pc;
-    c->fullscreen = !is_pc;
-    c->fill = is_pc;
-    c->scale = is_pc ? 0 : 2;
+    c->led = (!is_pc && !is_android);
+    c->fullscreen = (is_pc && !is_android) ? 0 : 1;
+    c->touch_pad = is_android ? 1 : 0;
+    c->fill = (is_pc || is_android);
+    c->scale = (is_pc || is_android) ? 0 : 2;
     c->renderer_pc = 0; /* gpu */
     c->filter = 1;      /* sharp */
     c->backup_max = 10;
@@ -317,6 +318,7 @@ void cfg_load(Cfg *c) {
         else if (!strcmp(line, "logs")) c->logs = n < 0 ? 0 : n > 2 ? 2 : n;
         else if (!strcmp(line, "widescreen")) c->widescreen = n != 0;
         else if (!strcmp(line, "fullscreen")) c->fullscreen = n != 0;
+        else if (!strcmp(line, "touch_pad")) c->touch_pad = n != 0;
         else if (!strcmp(line, "fill")) c->fill = n != 0;
         else if (!strcmp(line, "scale")) c->scale = n < 0 ? 0 : n > 8 ? 8 : n;
         else if (!strcmp(line, "renderer_pc")) c->renderer_pc = n != 0;
@@ -433,14 +435,15 @@ static int write_settings(const Cfg *c) {
         "    \"widescreen\": { \"enabled\": %s },\n"
         "    \"battle_menu\": { \"enabled\": true, \"fight\": \"%s\", \"tech\": \"%s\", \"digivolve\": \"%s\", \"tag\": \"%s\", "
         "\"item\": \"%s\", \"run\": \"%s\", \"inspect\": \"%s\", \"remember_cursor\": %s, \"buffer_input\": \"%s\" },\n"
-        "    \"led_bar\": { \"enabled\": %s }\n  },\n  \"input\": { \"gamepad\": %s }\n}\n",
+        "    \"led_bar\": { \"enabled\": %s }\n  },\n  \"touch_pad\": %s,\n  \"input\": { \"gamepad\": %s }\n}\n",
         disc_esc, vscale, vfull ? "true" : "false", vfill ? "true" : "false", c->hz, renderer, vfilt,
         log_names[c->logs], c->ff ? "true" : "false", ff_names[c->ff ? c->ff : 3],
         c->skip ? "true" : "false", c->battles ? "true" : "false", c->battles && c->hit ? "true" : "false",
         btext_names[c->btext], lang_names[c->lang < 0 || c->lang > 7 ? 0 : c->lang], vw ? "true" : "false",
         hud_name(c->hud[H_FIGHT]), hud_name(c->hud[H_TECH]), hud_name(c->hud[H_DV]),
         hud_name(c->hud[H_TAG]), hud_name(c->hud[H_ITEM]), hud_name(c->hud[H_RUN]), hud_name(c->hud[H_INSPECT]),
-        c->bmem ? "true" : "false", bbuf_names[c->bbuf], (!is_pc && c->led) ? "true" : "false", pads);
+        c->bmem ? "true" : "false", bbuf_names[c->bbuf], (!is_pc && !is_android && c->led) ? "true" : "false",
+        c->touch_pad ? "true" : "false", pads);
     return write_atomic(path, text);
 }
 
@@ -448,9 +451,9 @@ int cfg_save(const Cfg *c) {
     char path[600], text[3600] = "", line[1400];
     int rc = 0;
     snprintf(text, sizeof(text), "hz=%d\nff=%d\nff_speed=%s\nskip=%d\nbattles=%d\nhit=%d\nbtext=%d\nsaveany=1\nbmenu=1\n"
-             "bmem=%d\nbbuf=%d\nwidescreen=%d\nfullscreen=%d\nfill=%d\nscale=%d\nrenderer_pc=%d\nfilter=%d\n",
+             "bmem=%d\nbbuf=%d\nwidescreen=%d\nfullscreen=%d\ntouch_pad=%d\nfill=%d\nscale=%d\nrenderer_pc=%d\nfilter=%d\n",
              c->hz, c->ff ? 1 : 0, ff_names[c->ff ? c->ff : 3], c->skip, c->battles, c->hit,
-             c->btext, c->bmem, c->bbuf, c->widescreen, c->fullscreen, c->fill, c->scale, c->renderer_pc, c->filter);
+             c->btext, c->bmem, c->bbuf, c->widescreen, c->fullscreen, c->touch_pad, c->fill, c->scale, c->renderer_pc, c->filter);
     if (disc_path[0]) {
         snprintf(line, sizeof(line), "disc=%s\n", disc_path);
         strcat(text, line);

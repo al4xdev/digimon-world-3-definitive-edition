@@ -1,0 +1,60 @@
+plugins {
+    id 'com.android.application'
+}
+
+def sdl2Dir = System.getenv("SDL2_ANDROID_DIR") ?: "/opt/SDL2"
+
+android {
+    namespace 'com.al4xdev.dw2003'
+    compileSdk 34
+    ndkVersion '27.2.12479018'
+
+    defaultConfig {
+        applicationId 'com.al4xdev.dw2003'
+        minSdk 24
+        targetSdk 34
+        versionCode 102
+        versionName System.getenv("DW3_VERSION") ?: '1.0.2'
+
+        ndk {
+            abiFilters 'arm64-v8a'
+        }
+        externalNativeBuild {
+            cmake {
+                arguments "-DSDL2_ANDROID_DIR=${sdl2Dir}"
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.debug
+        }
+        debug {
+            minifyEnabled false
+        }
+    }
+
+    sourceSets {
+        main {
+            java.srcDirs += ["${sdl2Dir}/android-project/app/src/main/java"]
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path '../CMakeLists.txt'
+            version '3.22.1'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    lint {
+        abortOnError false
+    }
+}

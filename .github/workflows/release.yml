@@ -329,11 +329,56 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+  android:
+    name: Android APK (arm64-v8a)
+    needs: tests
+    if: ${{ !cancelled() && needs.tests.result != 'failure' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+          token: ${{ secrets.PSXSTACK_TOKEN || github.token }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Android toolchain image (cached)
+        uses: docker/build-push-action@v6
+        with:
+          context: tools
+          file: tools/Dockerfile.android
+          load: true
+          tags: dw3-android-builder:latest
+          cache-from: type=gha,scope=android-builder
+          cache-to: type=gha,scope=android-builder,mode=max
+
+      - name: Build Android arm64-v8a APK
+        env:
+          DW3_VERSION: ${{ github.ref_type == 'tag' && github.ref_name || inputs.tag }}
+        run: |
+          tools/build_android.sh
+          apk="$(ls -1 dist/dw2003-*-android-arm64-v8a.apk)"
+          python3 scripts/check_release_contents.py android "$apk"
+          (cd dist && sha256sum -c SHA256SUMS-android)
+
+      - name: Keep the Android APK (the run's artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: dw2003-android
+          path: |
+            dist/dw2003-*-android-arm64-v8a.apk
+            dist/SHA256SUMS-android
+          if-no-files-found: error
+          retention-days: 30
+
   release:
     name: Publish the release
-    needs: [appimage, windows, portmaster]
+    needs: [appimage, windows, portmaster, android]
     # Explicit results: the default success() would skip this job whenever `tests` was skipped.
-    if: ${{ !cancelled() && needs.appimage.result == 'success' && needs.windows.result == 'success' && needs.portmaster.result == 'success' && (github.ref_type == 'tag' || inputs.tag != '') }}
+    if: ${{ !cancelled() && needs.appimage.result == 'success' && needs.windows.result == 'success' && needs.portmaster.result == 'success' && needs.android.result == 'success' && (github.ref_type == 'tag' || inputs.tag != '') }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     permissions:
@@ -360,10 +405,15 @@ jobs:
           name: dw2003-portmaster
           path: dist
 
+      - uses: actions/download-artifact@v4
+        with:
+          name: dw2003-android
+          path: dist
+
       - name: The release's files (names, checksums, the zips' contents)
         run: |
           python3 scripts/check_release_contents.py dist dist
-          cd dist && sha256sum -c SHA256SUMS && sha256sum -c SHA256SUMS-windows && sha256sum -c SHA256SUMS-portmaster
+          cd dist && sha256sum -c SHA256SUMS && sha256sum -c SHA256SUMS-windows && sha256sum -c SHA256SUMS-portmaster && sha256sum -c SHA256SUMS-android
 
       - name: Create or update the release
         env:
@@ -373,7 +423,7 @@ jobs:
         run: |
           [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+[A-Za-z0-9.+-]*$ ]] || { echo "::error::not a release tag: '$TAG' (vX.Y.Z...)"; exit 1; }
           cd dist
-          files=(./*.AppImage ./*.debug ./*-windows-x86_64.zip ./*-windows-x86_64-symbols.zip ./dw3.zip SHA256SUMS SHA256SUMS-windows SHA256SUMS-portmaster)
+          files=(./*.AppImage ./*.debug ./*-windows-x86_64.zip ./*-windows-x86_64-symbols.zip ./dw3.zip ./*-android-arm64-v8a.apk SHA256SUMS SHA256SUMS-windows SHA256SUMS-portmaster SHA256SUMS-android)
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release upload "$TAG" --repo "$GITHUB_REPOSITORY" --clobber "${files[@]}"
             echo "### Updated release $TAG" >> "$GITHUB_STEP_SUMMARY"

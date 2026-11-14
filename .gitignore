@@ -97,3 +97,9 @@ cloud-sync/.dev.vars
 cloud_sync.json
 saves_backup/
 loading.best
+
+# Android Gradle/NDK build outputs
+android/.gradle/
+android/.cxx/
+android/app/build/
+android/app/.cxx/

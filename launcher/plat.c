@@ -21,7 +21,7 @@
 #include <SDL2/SDL.h>
 #endif
 
-extern int is_portmaster;
+extern int is_portmaster, is_android;
 static int kind_open = -1;
 const char *plat_shot_dir = ".";
 static int desk_w = 1280, desk_h = 720;
@@ -204,7 +204,7 @@ static int sdl_open(void) {
         desk_w = dm.w;
         desk_h = dm.h;
     }
-    int pm_mode = is_portmaster || getenv("DW3_PORTMASTER") != NULL || getenv("CFW_NAME") != NULL;
+    int pm_mode = is_portmaster || is_android || getenv("DW3_PORTMASTER") != NULL || getenv("CFW_NAME") != NULL;
     int win_w = W, win_h = H;
     Uint32 wflags = 0;
     if (pm_mode) {
@@ -323,6 +323,7 @@ static void save_ppm(const char *name) {
 
 static int pending_release; /* a press token emits its release on the next poll */
 static int pending_code;
+static int pending_x, pending_y;
 static int wait_ticks;
 
 int plat_open(int kind, const char *script) {
@@ -438,6 +439,8 @@ int plat_poll(Ev *ev, int timeout_ms) {
             pending_release = 0;
             ev->code = pending_code;
             ev->down = 0;
+            ev->x = pending_x;
+            ev->y = pending_y;
             return 1;
         }
         if (wait_ticks > 0) {
@@ -468,18 +471,36 @@ int plat_poll(Ev *ev, int timeout_ms) {
                 wait_ticks = atoi(tok + 5);
                 return 0;
             }
+            if (strncmp(tok, "tap:", 4) == 0) {
+                int tx = 0, ty = 0;
+                if (sscanf(tok + 4, "%d:%d", &tx, &ty) == 2 || sscanf(tok + 4, "%d;%d", &tx, &ty) == 2) {
+                    pending_release = 1;
+                    pending_code = K_TOUCH_UP;
+                    pending_x = tx;
+                    pending_y = ty;
+                    ev->code = K_TOUCH_DOWN;
+                    ev->down = 1;
+                    ev->x = tx;
+                    ev->y = ty;
+                    return 1;
+                }
+                continue;
+            }
             if (strncmp(tok, "hold:", 5) == 0 || strncmp(tok, "release:", 8) == 0) {
                 int down = tok[0] == 'h';
                 ev->code = code_of(tok + (down ? 5 : 8));
                 ev->down = down;
+                ev->x = ev->y = 0;
                 return 1;
             }
             int c = code_of(tok);
             if (c) {
                 pending_release = 1;
                 pending_code = c;
+                pending_x = pending_y = 0;
                 ev->code = c;
                 ev->down = 1;
+                ev->x = ev->y = 0;
                 return 1;
             }
         }
@@ -532,8 +553,40 @@ int plat_poll(Ev *ev, int timeout_ms) {
             return 0;
         }
         ev->code = 0;
+        ev->x = ev->y = 0;
         switch (e.type) {
         case SDL_QUIT: return -1;
+        case SDL_FINGERDOWN:
+        case SDL_FINGERMOTION:
+        case SDL_FINGERUP: {
+            int ow = 0, oh = 0;
+            SDL_GetRendererOutputSize(ren, &ow, &oh);
+            if (ow <= 0 || oh <= 0) { ow = W; oh = H; }
+            float sx = (float)ow / (float)ui_w;
+            float sy = (float)oh / (float)ui_h;
+            float sc = sx < sy ? sx : sy;
+            float vw = (float)ui_w * sc, vh = (float)ui_h * sc;
+            float vx = ((float)ow - vw) * 0.5f, vy = ((float)oh - vh) * 0.5f;
+            int lx = (int)(((e.tfinger.x * (float)ow - vx) / vw) * (float)W);
+            int ly = (int)(((e.tfinger.y * (float)oh - vy) / vh) * (float)H);
+            if (lx < 0) lx = 0;
+            if (lx >= W) lx = W - 1;
+            if (ly < 0) ly = 0;
+            if (ly >= H) ly = H - 1;
+            ev->x = lx;
+            ev->y = ly;
+            ev->code = e.type == SDL_FINGERDOWN ? K_TOUCH_DOWN : e.type == SDL_FINGERUP ? K_TOUCH_UP : K_TOUCH_MOVE;
+            ev->down = e.type != SDL_FINGERUP;
+            return 1;
+        }
+        case SDL_MOUSEBUTTONDOWN:
+        case SDL_MOUSEBUTTONUP:
+            if (e.button.which == SDL_TOUCH_MOUSEID || e.button.button != SDL_BUTTON_LEFT) return 0;
+            ev->x = e.button.x * W / (ui_w > 0 ? ui_w : W);
+            ev->y = e.button.y * H / (ui_h > 0 ? ui_h : H);
+            ev->code = e.type == SDL_MOUSEBUTTONDOWN ? K_TOUCH_DOWN : K_TOUCH_UP;
+            ev->down = e.type == SDL_MOUSEBUTTONDOWN;
+            return 1;
         case SDL_KEYDOWN: case SDL_KEYUP:
             if (e.key.repeat) {
                 return 0;
@@ -593,11 +646,16 @@ void plat_release(void) {
     }
 #ifdef HAVE_SDL2
     if (kind_open == PLAT_SDL) {
+        if (pad) { SDL_GameControllerClose(pad); pad = NULL; }
         if (tex) SDL_DestroyTexture(tex);
         if (ren) SDL_DestroyRenderer(ren);
         if (win) SDL_DestroyWindow(win);
         tex = NULL; ren = NULL; win = NULL;
-        SDL_Quit();
+        if (is_android) {
+            SDL_QuitSubSystem(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER);
+        } else {
+            SDL_Quit();
+        }
     }
 #endif
     kind_open = -1;

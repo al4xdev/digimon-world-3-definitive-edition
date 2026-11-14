@@ -3,8 +3,9 @@
 /* The platform layer: where the canvas goes and where the buttons come from. Buttons are Linux evdev codes in the
  * handheld's own vocabulary (305 east ... see names in app.c); every backend translates to them. */
 typedef struct Ev {
-    int code; /* evdev code; 0 = nothing happened (a tick) */
+    int code; /* evdev code or K_TOUCH_*; 0 = nothing happened (a tick) */
     int down; /* 1 press, 0 release */
+    int x, y; /* logical 640x480 coordinates for K_TOUCH_* events */
 } Ev;
 
 enum { PLAT_FB, PLAT_SDL, PLAT_NULL };
@@ -32,4 +33,7 @@ extern const char *plat_shot_dir;
 #define K_DOWN 545
 #define K_LEFT 546
 #define K_RIGHT 547
+#define K_TOUCH_DOWN 0x1001
+#define K_TOUCH_MOVE 0x1002
+#define K_TOUCH_UP 0x1003
 #endif

@@ -13,6 +13,10 @@ separate build lines exist across CI/CD and releases:
   launcher `launcher/` (`dw3-launcher`, compiled with `-DDW3_TARGET_PORTMASTER -DHAVE_SDL2` by `tools/build_arm.sh` in
   the Debian 10 `buster` armhf container for glibc >= 2.28). It runs on `/dev/fb0` + evdev by default and falls back to
   SDL2 on Wayland/KMSDRM/portrait panels.
+- **Android (`arm64-v8a`) APK releases** (`tools/build_android.sh`, `android/`) link the parallel touch-first C99
+  launcher (`launcher/main_android.c`, with larger clickable rows, `< BACK` header/footer pills, SAF disc picker, and
+  the `FLOATING PAD` toggle in `GAME`) directly with the `PSXSTACK_SDL2` game and floating virtual gamepad
+  (`android/touch_pad.c`), using Android's native controller detection via SDL2.
 - **Standalone C desktop build** (`launcher/Makefile`, `-DDW3_TARGET_PC`) compiles `launcher/` directly on Linux with
   SDL2 for local desktop testing of the C99 UI and cloud sync without affecting the official AppImage/Windows releases.
 

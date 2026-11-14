@@ -12,6 +12,7 @@ allowed name.
 Usage: scripts/check_release_contents.py appimage DIR        an AppDir, or an extracted AppImage (squashfs-root)
        scripts/check_release_contents.py windows ZIP [SYMBOLS_ZIP]
        scripts/check_release_contents.py portmaster ZIP    the PortMaster ARM zip (dw3.zip)
+       scripts/check_release_contents.py android APK       the Android arm64-v8a APK
        scripts/check_release_contents.py dist DIR            the release's assets: their names and all zips' contents
 Exit 0 when every file is allowed, 1 otherwise (each offending path printed).
 """
@@ -33,10 +34,13 @@ PORTMASTER = [r"Digimon World 3\.sh", r"port\.json", r"README\.md", r"gameinfo\.
               r"cover\.png", r"dw3/dw2003\.(armhf|aarch64)", r"dw3/dw3-launcher\.(armhf|aarch64)",
               r"dw3/ledd\.py", r"dw3/probe\.sh",
               r"dw3/README\.txt", r"dw3/" + MOD, r"dw3/licenses/[A-Za-z0-9._-]+"]
+ANDROID = [r"AndroidManifest\.xml", r"classes\d*\.dex", r"resources\.arsc", r"res/.*",
+           r"lib/arm64-v8a/lib(SDL2|main)\.so", r"META-INF/.*", r"assets/.*", r"DebugProbesKt\.bin"]
 VERSION = r"[A-Za-z0-9._+-]+"
 ASSETS = [rf"dw2003-{VERSION}-x86_64\.AppImage", rf"dw2003-{VERSION}-x86_64\.debug", r"SHA256SUMS",
           rf"dw2003-{VERSION}-windows-x86_64\.zip", rf"dw2003-{VERSION}-windows-x86_64-symbols\.zip",
-          r"SHA256SUMS-windows", r"dw3\.zip", r"SHA256SUMS-portmaster"]
+          r"SHA256SUMS-windows", r"dw3\.zip", r"SHA256SUMS-portmaster",
+          rf"dw2003-{VERSION}-android-arm64-v8a\.apk", r"SHA256SUMS-android"]
 
 
 def allowed(rel, patterns):
@@ -84,7 +88,7 @@ def check_zip(path, patterns, what, cap=True, top_dir=True):
 
 
 def main(argv):
-    if len(argv) < 3 or argv[1] not in ("appimage", "windows", "portmaster", "dist"):
+    if len(argv) < 3 or argv[1] not in ("appimage", "windows", "portmaster", "android", "dist"):
         print(__doc__.strip(), file=sys.stderr)
         return 2
     kind, bad, said = argv[1], [], []
@@ -104,6 +108,10 @@ def main(argv):
         b, n = check_zip(argv[2], PORTMASTER, "PortMaster zip", top_dir=False)
         bad += b
         said.append(f"{Path(argv[2]).name}: {n} files")
+    elif kind == "android":
+        b, n = check_zip(argv[2], ANDROID, "Android APK", top_dir=False)
+        bad += b
+        said.append(f"{Path(argv[2]).name}: {n} files")
     else:
         dist = Path(argv[2])
         names = sorted(p.name for p in dist.iterdir())
@@ -120,6 +128,8 @@ def main(argv):
                 b, n = check_zip(dist / name, SYMBOLS, name, cap=False)
             elif name == "dw3.zip":
                 b, n = check_zip(dist / name, PORTMASTER, name, top_dir=False)
+            elif name.endswith("-android-arm64-v8a.apk"):
+                b, n = check_zip(dist / name, ANDROID, name, top_dir=False)
             else:
                 continue
             bad += b

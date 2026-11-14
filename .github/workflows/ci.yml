@@ -94,6 +94,7 @@ jobs:
       port: ${{ steps.areas.outputs.port }}
       launcher: ${{ steps.areas.outputs.launcher }}
       portmaster: ${{ steps.areas.outputs.portmaster }}
+      android: ${{ steps.areas.outputs.android }}
       data: ${{ steps.data.outputs.present }}
     steps:
       - uses: actions/checkout@v4
@@ -479,3 +480,41 @@ jobs:
           (cd portmaster && ./make_release.sh)
           python3 scripts/check_release_contents.py portmaster dist/dw3.zip
           (cd dist && sha256sum -c SHA256SUMS-portmaster)
+
+  # Android (arm64-v8a): fourth CI line alongside Linux, Windows, and PortMaster.
+  # Builds the parallel touch launcher + game + native controller + floating virtual pad into an arm64-v8a APK.
+  android:
+    needs: areas
+    if: needs.areas.outputs.android == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+          token: ${{ secrets.PSXSTACK_TOKEN || github.token }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Android toolchain image (cached)
+        uses: docker/build-push-action@v6
+        with:
+          context: tools
+          file: tools/Dockerfile.android
+          load: true
+          tags: dw3-android-builder:latest
+          cache-from: type=gha,scope=android-builder
+          cache-to: type=gha,scope=android-builder,mode=max
+
+      - name: Build and verify Android arm64-v8a APK
+        run: |
+          tools/build_android.sh
+          apk="$(ls -1 dist/dw2003-*-android-arm64-v8a.apk)"
+          python3 scripts/check_release_contents.py android "$apk"
+          (cd dist && sha256sum -c SHA256SUMS-android)
+          docker run --rm -v "$PWD:/work:ro" dw3-android-builder:latest bash -c "
+            /opt/android-sdk/build-tools/34.0.0/apksigner verify /work/$apk
+            /opt/android-sdk/build-tools/34.0.0/aapt2 dump badging /work/$apk | grep -q \"native-code: 'arm64-v8a'\"
+          "

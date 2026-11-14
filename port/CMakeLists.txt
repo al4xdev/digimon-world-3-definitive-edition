@@ -54,19 +54,53 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release" AND NOT DEFINED PSXSTACK_GAME_OPT)
     set(PSXSTACK_GAME_OPT -O0)
 endif()
 
-psxstack_add_game(dw2003
-    GAME_JSON "${CMAKE_CURRENT_SOURCE_DIR}/game/game.json"
-    UNITS "${DW3_INPUTS}/units.txt"
-    MAIN_UNIT "${DW3_ROOT}/src/main/main.c"
-    OVERLAYS "${DW3_INPUTS}/overlays.txt"
-    TAG_SITES "${DW3_INPUTS}/tag_sites.txt"
-    EXE_SYMBOLS "${DW3_ROOT}/config/symbol_addrs.txt"
-    VOLATILE "${DW3_INPUTS}/volatile.txt"
-    GTEMAC "${DW3_ROOT}/include/psyq/gtemac.h"
-    INCLUDE_DIRS "${DW3_ROOT}/include" "${DW3_ROOT}"
-    ADAPTER ${DW3_ADAPTER_SRCS}
-    MODS_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/mods"
-    DEFINES NON_MATCHING
-    CONFIGURE_DEPENDS "${DW3_ROOT}/tools/port_inputs.py" "${DW3_ROOT}/config/wstag.txt" "${DW3_ROOT}/config/wstag_c.txt"
-                      "${DW3_ROOT}/src/main/overlay.c" "${DW3_ROOT}/src/fieldstg/fieldstg_80087DB0.c"
-                      "${DW3_ROOT}/tests/replay/replay.py" ${DW3_CONFIG_DEPS})
+if(ANDROID)
+    psxstack_add_game(main
+        GAME_JSON "${CMAKE_CURRENT_SOURCE_DIR}/game/game.json"
+        UNITS "${DW3_INPUTS}/units.txt"
+        MAIN_UNIT "${DW3_ROOT}/src/main/main.c"
+        OVERLAYS "${DW3_INPUTS}/overlays.txt"
+        TAG_SITES "${DW3_INPUTS}/tag_sites.txt"
+        EXE_SYMBOLS "${DW3_ROOT}/config/symbol_addrs.txt"
+        VOLATILE "${DW3_INPUTS}/volatile.txt"
+        GTEMAC "${DW3_ROOT}/include/psyq/gtemac.h"
+        INCLUDE_DIRS "${DW3_ROOT}/include" "${DW3_ROOT}"
+        ADAPTER ${DW3_ADAPTER_SRCS}
+        MODS_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/mods"
+        DEFINES NON_MATCHING
+        CONFIGURE_DEPENDS "${DW3_ROOT}/tools/port_inputs.py" "${DW3_ROOT}/config/wstag.txt" "${DW3_ROOT}/config/wstag_c.txt"
+                          "${DW3_ROOT}/src/main/overlay.c" "${DW3_ROOT}/src/fieldstg/fieldstg_80087DB0.c"
+                          "${DW3_ROOT}/tests/replay/replay.py" ${DW3_CONFIG_DEPS})
+
+    target_sources(main PRIVATE
+        "${DW3_ROOT}/launcher/main_android.c"
+        "${DW3_ROOT}/launcher/ui.c"
+        "${DW3_ROOT}/launcher/plat.c"
+        "${DW3_ROOT}/launcher/cfg.c"
+        "${DW3_ROOT}/launcher/loading.c"
+        "${DW3_ROOT}/launcher/cloud.c"
+        "${DW3_ROOT}/launcher/sha256.c"
+        "${DW3_ROOT}/launcher/assets/assets.c"
+        "${DW3_ROOT}/android/android_entry.c"
+        "${DW3_ROOT}/android/touch_pad.c"
+    )
+    target_compile_definitions(main PRIVATE HAVE_SDL2 DW3_TARGET_ANDROID)
+    target_include_directories(main PRIVATE "${DW3_ROOT}/launcher" "${DW3_ROOT}/android")
+else()
+    psxstack_add_game(dw2003
+        GAME_JSON "${CMAKE_CURRENT_SOURCE_DIR}/game/game.json"
+        UNITS "${DW3_INPUTS}/units.txt"
+        MAIN_UNIT "${DW3_ROOT}/src/main/main.c"
+        OVERLAYS "${DW3_INPUTS}/overlays.txt"
+        TAG_SITES "${DW3_INPUTS}/tag_sites.txt"
+        EXE_SYMBOLS "${DW3_ROOT}/config/symbol_addrs.txt"
+        VOLATILE "${DW3_INPUTS}/volatile.txt"
+        GTEMAC "${DW3_ROOT}/include/psyq/gtemac.h"
+        INCLUDE_DIRS "${DW3_ROOT}/include" "${DW3_ROOT}"
+        ADAPTER ${DW3_ADAPTER_SRCS}
+        MODS_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/mods"
+        DEFINES NON_MATCHING
+        CONFIGURE_DEPENDS "${DW3_ROOT}/tools/port_inputs.py" "${DW3_ROOT}/config/wstag.txt" "${DW3_ROOT}/config/wstag_c.txt"
+                          "${DW3_ROOT}/src/main/overlay.c" "${DW3_ROOT}/src/fieldstg/fieldstg_80087DB0.c"
+                          "${DW3_ROOT}/tests/replay/replay.py" ${DW3_CONFIG_DEPS})
+endif()
