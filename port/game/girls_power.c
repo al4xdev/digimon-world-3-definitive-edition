@@ -353,7 +353,7 @@ typedef struct GpMatch {
 static int gp_match(const GpRefs *own, s32 hint, GpMatch *m) {
     s32 d, flip, k, dy, dx;
 
-    m->n = 0;
+    memset(m, 0, sizeof(*m));
     for (d = hint < 0 ? 0 : hint; d < (hint < 0 ? 5 : hint + 1); d++) {
         const GpHead *h = &own->head[d];
 
