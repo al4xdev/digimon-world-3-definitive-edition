@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Girls Power's head swap in Python (the prototype port/game/girls_power.c was written from; its frames are equal):
+"""Girls Power's sprite swap in Python (the prototype port/game/girls_power.c was written from; its frames are equal):
 before/after sheets of the field sprite files, to tune the algorithm by eye before touching the C.
 
   tools/venv/bin/python tools/girls_power_preview.py OUT_DIR [SCALE]
@@ -19,6 +19,11 @@ FILES = {0x186: ("P001PLAY", 0xCA, True), 0x187: ("P002PLAY", 0x70, True), 0x3C9
          0x190: ("P011MINO", 0xA8, False), 0x2F8: ("P012MINT", 0x26, False)}
 J2K = [0, 4, 7, 12, 6, 7, 5, 3, 1, 2, 10, 13, 14, 8, 9, 15]
 K2J = [0, 8, 9, 7, 3, 6, 2, 13, 13, 14, 10, 12, 3, 11, 2, 15]
+# The animations the two have drawn alike (standing, walking): there the other's own frames are used whole. The other
+# ids they share are not the same gesture (57, 58) or not facing the same way (7, 9), so those keep the head swap.
+WHOLE = (1, 4)
+# file id: the file the whole frames come from (Junior's scene file has his frames 24 wide, as most of hers are)
+SOURCE = {0x186: 0x190, 0x187: 0x190, 0x190: 0x186, 0x2F8: 0x186}
 
 
 def sub(d, i):
@@ -283,27 +288,113 @@ def sheet(imgs, path, scale):
     Path(path).write_bytes(b"P6 %d %d 255\n" % (W, H) + bytes(buf))
 
 
+def steps(d, idx):
+    """a script's entries up to its end: (offset of the entry, frame, x, y)"""
+    p, out = sub(d, idx), []
+    while len(out) < 256:
+        t, f, x, y = struct.unpack_from("<4i", d, p)
+        if t <= 0:
+            break
+        out.append((p, f, x, y))
+        p += 16
+    return out
+
+
+def whole(d, table, sd, stable):
+    """dst frame -> (src frame, tx, ty, ddx, ddy): the frames of the WHOLE animations that take the other's frame of
+    the same step of the same animation and direction, drawn at (tx, ty) in the frame, every script entry naming the
+    frame moved by (ddx, ddy) so it lands where the other's own script draws it. A script is taken whole or not at
+    all: it must be no longer than the other's, give each frame one source, and every source must fit its frame."""
+    got = {}
+    for a, sc in anims(d, table):
+        src = next((s for b, s in anims(sd, stable) if b == a), None)
+        if a not in WHOLE or src is None:
+            continue
+        for k in range(5):
+            ds, ss = steps(d, sc[k]), steps(sd, src[k])
+            if not ds or len(ds) > len(ss):
+                continue
+            trial = {}
+            for (_, f, x, y), (_, sf, sx, sy) in zip(ds, ss):
+                prev = got.get(f) or trial.get(f)
+                if prev:
+                    if prev[0] != sf:
+                        break
+                    continue
+                img, dst = tim(sd, sf)[1], tim(d, f)[1]
+                xs = [i for r in img for i, v in enumerate(r) if v]
+                ys = [j for j, r in enumerate(img) if any(r)]
+                H, W = len(dst), len(dst[0])
+                if not xs or max(xs) - min(xs) >= W or max(ys) - min(ys) >= H:
+                    break
+                # where the script's own offset would put it, moved only as far as the frame's sides ask
+                tx = min(max(sx - x, -min(xs)), W - 1 - max(xs))
+                ty = min(max(sy - y, -min(ys)), H - 1 - max(ys))
+                trial[f] = (sf, tx, ty, sx - tx - x, sy - ty - y)
+            else:
+                got.update(trial)
+    return got
+
+
+def repaint(fid):
+    """the file as Girls Power leaves it (what port/game/girls_power.c writes, byte for byte)"""
+    name, table, to_kaili = FILES[fid]
+    d0 = disc_files.read(fid)
+    d, hint = bytearray(d0), hints(d0, table)
+    jclut, jheads = JUNIOR.refs()
+    kclut, kheads = KAILI.refs()
+    sd = disc_files.read(SOURCE[fid]) if fid in SOURCE else None
+    full = whole(d0, table, sd, FILES[SOURCE[fid]][1]) if sd else {}
+    for f in frames_of(d0, table):
+        _, idx = tim(d0, f)
+        if f in full:
+            sf, tx, ty, _, _ = full[f]
+            o = [[0] * len(idx[0]) for _ in idx]
+            for y, r in enumerate(tim(sd, sf)[1]):
+                for x, v in enumerate(r):
+                    if v:
+                        o[y + ty][x + tx] = v
+        elif to_kaili:
+            o = swap(idx, JUNIOR, kheads, J2K, hint.get(f))
+        else:
+            o = swap(idx, KAILI, jheads, K2J, hint.get(f))
+        q = sub(d0, f) + 8
+        struct.pack_into("<16H", d, q + 12, *(kclut if to_kaili else jclut))
+        q += struct.unpack_from("<I", d0, q)[0] + 12
+        for y, r in enumerate(o):
+            for x in range(0, len(r), 2):
+                d[q + y * (len(r) // 2) + x // 2] = r[x] | (r[x + 1] << 4)
+    done = set()
+    for _, sc in anims(d0, table):
+        for si in sc:
+            if si in done:
+                continue
+            done.add(si)
+            for p, f, x, y in steps(d0, si):
+                if f in full:
+                    struct.pack_into("<2i", d, p + 8, x + full[f][3], y + full[f][4])
+    return bytes(d), full
+
+
 def main():
     out = Path(sys.argv[1])
     scale = int(sys.argv[2]) if len(sys.argv) > 2 else 2
     out.mkdir(parents=True, exist_ok=True)
-    jclut, jheads = JUNIOR.refs()
-    kclut, kheads = KAILI.refs()
     for fid, (name, table, to_kaili) in FILES.items():
         data = disc_files.read(fid)
-        before, after, hint = [], [], hints(data, table)
+        new, full = repaint(fid)
+        before, after = [], []
         for f in frames_of(data, table):
-            clut, idx = tim(data, f)
-            o = swap(idx, JUNIOR, kheads, J2K, hint.get(f)) if to_kaili else swap(idx, KAILI, jheads, K2J, hint.get(f))
-            nclut = kclut if to_kaili else jclut
-            before.append([[rgb(clut[v]) if v else None for v in r] for r in idx])
-            after.append([[rgb(nclut[v]) if v else None for v in r] for r in o])
+            for d, to in ((data, before), (new, after)):
+                clut, idx = tim(d, f)
+                to.append([[rgb(clut[v]) if v else None for v in r] for r in idx])
         imgs, blank = [], [[None]]
         for k in range(0, len(before), 16):
             a, b = before[k:k + 16], after[k:k + 16]
             imgs += a + [blank] * (16 - len(a)) + b + [blank] * (16 - len(b))
         sheet(imgs, out / f"{name}.ppm", scale)
-        print(name, len(before), "frames")
+        moved = sorted((f, v[3], v[4]) for f, v in full.items() if v[3] or v[4])
+        print(name, len(before), "frames,", len(full), "whole; script offsets moved:", moved)
 
 
 if __name__ == "__main__":

@@ -29,6 +29,11 @@ as ações. Por isso a solução não aponta o ator para o arquivo dela. Ela **r
 
 - **Quando:** assim que o `cdload` termina de ler um dos 8 arquivos (`src/main/cdload.c`, transição 2→3), cada quadro
   que as tabelas de animação citam é repintado no próprio buffer.
+- **Parado e andando (animações 1 e 4):** os dois têm essas animações desenhadas do mesmo jeito, então o quadro
+  recebe o quadro inteiro do outro (mesmo passo, direção e animação), lido do disco: os dela do `P011MINO`, os dele do
+  `P001PLAY`. As entradas de script que citam o quadro são deslocadas para ele cair onde o script do outro o desenha.
+  As outras animações com o mesmo id não são o mesmo gesto ou não olham para o mesmo lado (7, 9, 57, 58): seguem com
+  a troca de cabeça, como todas as que só um dos dois tem (correr, chute, pesca, cenas).
 - **A cabeça:** as cabeças paradas do próprio personagem (animação 1, 5 direções) são casadas com o quadro, pixel a
   pixel, também espelhadas. A direção é o slot do quadro na tabela de animação (os 5 slots são as 5 direções) quando
   um script de slot único cita o quadro; senão, a da cabeça casada. Com pelo menos metade dos pixels iguais, a cabeça

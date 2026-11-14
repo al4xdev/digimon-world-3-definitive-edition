@@ -22,6 +22,12 @@
  * it down to the chin (the last row with skin), stray hair beside it (the pigtails), and the small pieces that
  * removal cuts loose from the body. The two heads are put face on face: a head's axis is the mean x of its skin.
  *
+ * Standing and walking (animations 1 and 4) the two have drawn alike, so there no head is swapped: the frame takes the
+ * other's own frame of the same step, direction and animation, read from the disc (hers from P011MINO, his from
+ * P001PLAY, whose frames are 24 wide as most of hers), and the script entries naming it move so it lands where the
+ * other's own script draws it. The other animation ids they share are not the same gesture or not facing the same way
+ * (7, 9, 57, 58), and the rest only one has: those keep the head swap.
+ *
  * Prototyped in Python over the disc's frames (tools/girls_power_preview.py); this is the same algorithm.
  * Off under a replay script (shared with the emulator) like the definitive rules; DW3_GIRLS=0 or 1 forces it. */
 #include <stdio.h>
@@ -481,9 +487,21 @@ static int gp_read_refs(const GpWho *who, GpRefs *r) {
     return 1;
 }
 
+/* The files the whole frames come from, as on the disc (kept: every load of a file repaints from them). */
+#define GP_SRC_KAILI 0x190  /* P011MINO, table 0xA8 */
+#define GP_SRC_JUNIOR 0x186 /* P001PLAY, table 0xCA */
+static u8 *gp_src_kaili, *gp_src_junior;
+
 static int gp_refs(void) {
     if (gp_refs_state == 0) {
         gp_refs_state = gp_read_refs(&gp_junior, &gp_ref_junior) && gp_read_refs(&gp_kaili, &gp_ref_kaili) ? 1 : -1;
+        if (gp_refs_state > 0) {
+            gp_src_kaili = gp_read_file(GP_SRC_KAILI);
+            gp_src_junior = gp_read_file(GP_SRC_JUNIOR);
+            if (gp_src_kaili == NULL || gp_src_junior == NULL) {
+                gp_refs_state = -1;
+            }
+        }
         if (gp_refs_state < 0) {
             port_log("girls power: could not read the reference heads from the disc; sprites left as they are");
         } else if (getenv("DW3_GIRLS_DUMP") != NULL) {
@@ -702,25 +720,187 @@ static void gp_frame(u8 *data, s32 i, const GpWho *src, const GpRefs *own, const
     memcpy(clut, dst->clut, sizeof(dst->clut));
 }
 
-/* Repaints every frame the animation table's scripts name, once each. */
-static void gp_file(u8 *data, s32 table, const GpWho *src, const GpRefs *own, const GpRefs *dst, const u8 *map) {
-    static u8 done[1024];
-    static s8 hint[1024];
+/* ---- whole frames ---- */
+
+#define GP_FRAMES 1024 /* the most sub-files a sprite file may have */
+
+/* The frames that take the other's own frame: its sub-file in the source (-1: none, the head is swapped), where it is
+ * drawn in the frame, and how far the script entries naming the frame move. */
+static s16 gp_whole_src[GP_FRAMES];
+static s8 gp_whole_tx[GP_FRAMES], gp_whole_ty[GP_FRAMES], gp_whole_dx[GP_FRAMES], gp_whole_dy[GP_FRAMES];
+
+static const s16 *gp_anim(const u8 *data, s32 table, s32 id) {
+    const s16 *a;
+
+    for (a = (const s16 *)gp_sub(data, table); a[0] != 0; a += 6) {
+        if (a[0] == id) {
+            return a;
+        }
+    }
+    return NULL;
+}
+
+/* Plans gp_whole_*: for animations 1 and 4, each script of `data` takes the frames of the source's script of the same
+ * animation and direction, step by step. A script is taken whole or not at all: it must be no longer than the
+ * source's, give each of its frames one source frame (also against the scripts taken before), and every source
+ * frame's drawing must fit the frame it goes into. */
+static void gp_whole_plan(u8 *data, s32 table, u8 *sd, s32 stable) {
+    static const s32 ids[2] = { 1, 4 };
+    static struct {
+        s32 f, sf, tx, ty, dx, dy;
+    } trial[256];
+    s32 n = gp_count(data), sn, i, k, e, j;
+    const s16 *a;
+
+    memset(gp_whole_src, -1, sizeof(gp_whole_src));
+    if (sd == NULL) {
+        return;
+    }
+    sn = gp_count(sd);
+    if (stable >= sn) {
+        return;
+    }
+    for (a = (const s16 *)gp_sub(data, table); a[0] != 0; a += 6) {
+        const s16 *sa = NULL;
+
+        for (i = 0; i < 2; i++) {
+            if (a[0] == ids[i]) {
+                sa = gp_anim(sd, stable, a[0]);
+            }
+        }
+        if (sa == NULL) {
+            continue;
+        }
+        for (k = 0; k < 5; k++) {
+            const s32 *d, *s;
+            s32 nt = 0, ok = 1;
+
+            if (a[1 + k] < 0 || a[1 + k] >= n || sa[1 + k] < 0 || sa[1 + k] >= sn) {
+                continue;
+            }
+            d = (const s32 *)gp_sub(data, a[1 + k]);
+            s = (const s32 *)gp_sub(sd, sa[1 + k]);
+            for (e = 0; ok && e < 256 && d[0] > 0; e++, d += 4, s += 4) {
+                s32 f = d[1], sf = s[1], known = -2, w, h, sw, sh, y, x, x0, x1, y0, y1, tx, ty;
+                u16 *clut;
+                u8 *px;
+
+                if (s[0] <= 0 || f < 0 || f >= n || sf < 0 || sf >= sn) {
+                    ok = 0;
+                    break;
+                }
+                if (gp_whole_src[f] >= 0) {
+                    known = gp_whole_src[f];
+                }
+                for (j = 0; j < nt; j++) {
+                    if (trial[j].f == f) {
+                        known = trial[j].sf;
+                    }
+                }
+                if (known != -2) {
+                    ok = known == sf;
+                    continue;
+                }
+                if (!gp_tim(data, f, &clut, &px, &w, &h) || !gp_tim(sd, sf, &clut, &px, &sw, &sh)) {
+                    ok = 0;
+                    break;
+                }
+                x0 = y0 = GP_MAX;
+                x1 = y1 = -1;
+                for (y = 0; y < sh; y++) {
+                    for (x = 0; x < sw; x++) {
+                        if ((px[y * (sw / 2) + x / 2] >> ((x & 1) ? 4 : 0)) & 15) {
+                            x0 = x < x0 ? x : x0;
+                            x1 = x > x1 ? x : x1;
+                            y0 = y < y0 ? y : y0;
+                            y1 = y > y1 ? y : y1;
+                        }
+                    }
+                }
+                if (x1 < 0 || x1 - x0 >= w || y1 - y0 >= h) {
+                    ok = 0;
+                    break;
+                }
+                /* where the frame's own offset would put it, moved only as far as the frame's sides ask */
+                tx = s[2] - d[2];
+                tx = tx < -x0 ? -x0 : tx;
+                tx = tx > w - 1 - x1 ? w - 1 - x1 : tx;
+                ty = s[3] - d[3];
+                ty = ty < -y0 ? -y0 : ty;
+                ty = ty > h - 1 - y1 ? h - 1 - y1 : ty;
+                trial[nt].f = f;
+                trial[nt].sf = sf;
+                trial[nt].tx = tx;
+                trial[nt].ty = ty;
+                trial[nt].dx = s[2] - tx - d[2];
+                trial[nt].dy = s[3] - ty - d[3];
+                nt++;
+            }
+            if (!ok || e == 0) {
+                continue;
+            }
+            for (j = 0; j < nt; j++) {
+                gp_whole_src[trial[j].f] = (s16)trial[j].sf;
+                gp_whole_tx[trial[j].f] = (s8)trial[j].tx;
+                gp_whole_ty[trial[j].f] = (s8)trial[j].ty;
+                gp_whole_dx[trial[j].f] = (s8)trial[j].dx;
+                gp_whole_dy[trial[j].f] = (s8)trial[j].dy;
+            }
+        }
+    }
+}
+
+/* Frame `i` becomes the source's frame gp_whole_src[i]. */
+static void gp_whole_frame(u8 *data, s32 i, u8 *sd, const GpRefs *dst) {
+    u16 *clut;
+    u8 *pixels, *spx;
+    s32 y, x, sw, sh;
+
+    if (!gp_tim(sd, gp_whole_src[i], &clut, &spx, &gp_w, &gp_h)) {
+        return;
+    }
+    gp_unpack(spx);
+    sw = gp_w;
+    sh = gp_h;
+    if (!gp_tim(data, i, &clut, &pixels, &gp_w, &gp_h)) {
+        return;
+    }
+    memset(gp_out, 0, sizeof(gp_out));
+    for (y = 0; y < sh; y++) {
+        for (x = 0; x < sw; x++) {
+            if (gp_img[y][x]) { /* the plan made it fit */
+                gp_out[y + gp_whole_ty[i]][x + gp_whole_tx[i]] = gp_img[y][x];
+            }
+        }
+    }
+    gp_pack(pixels);
+    memcpy(clut, dst->clut, sizeof(dst->clut));
+}
+
+/* Repaints every frame the animation table's scripts name, once each. `sd`, `stable`: the other's file and table,
+ * for the whole frames (NULL: none, as for the action files only he has). */
+static void gp_file(u8 *data, s32 table, const GpWho *src, const GpRefs *own, const GpRefs *dst, const u8 *map,
+                    u8 *sd, s32 stable) {
+    static u8 done[GP_FRAMES], moved[GP_FRAMES];
+    static s8 hint[GP_FRAMES];
     s32 n = gp_count(data), k, e, j, pass;
     const s16 *a;
 
-    if (n <= 0 || n > (s32)sizeof(done) || table >= n) {
+    if (n <= 0 || n > GP_FRAMES || table >= n) {
         return;
     }
     memset(done, 0, sizeof(done));
+    memset(moved, 0, sizeof(moved));
     memset(hint, -1, sizeof(hint));
+    gp_whole_plan(data, table, sd, stable);
     /* pass 0: a frame's direction is the slot of the first script naming it that only one slot of its animation uses
-     * (a scene's animation often has one script in several slots, whatever way it faces); pass 1: the repaint */
+     * (a scene's animation often has one script in several slots, whatever way it faces); pass 1: the repaint, and
+     * each script's entries moved for the whole frames (once: slots and animations share scripts) */
     for (pass = 0; pass < 2; pass++) {
         for (a = (const s16 *)gp_sub(data, table); a[0] != 0; a += 6) {
             for (k = 0; k < 5; k++) {
-                const s32 *s;
-                s32 uses = 0;
+                s32 *s;
+                s32 uses = 0, move;
 
                 if (a[1 + k] < 0 || a[1 + k] >= n) {
                     continue;
@@ -728,7 +908,9 @@ static void gp_file(u8 *data, s32 table, const GpWho *src, const GpRefs *own, co
                 for (j = 0; j < 5; j++) {
                     uses += a[1 + j] == a[1 + k];
                 }
-                s = (const s32 *)gp_sub(data, a[1 + k]);
+                move = pass == 1 && !moved[a[1 + k]];
+                moved[a[1 + k]] |= (u8)(pass == 1);
+                s = (s32 *)gp_sub(data, a[1 + k]);
                 for (e = 0; e < 256 && s[0] > 0; e++, s += 4) {
                     if (s[1] < 0 || s[1] >= n) {
                         continue;
@@ -737,9 +919,19 @@ static void gp_file(u8 *data, s32 table, const GpWho *src, const GpRefs *own, co
                         if (uses == 1 && hint[s[1]] < 0) {
                             hint[s[1]] = (s8)k;
                         }
-                    } else if (!done[s[1]]) {
+                        continue;
+                    }
+                    if (move && gp_whole_src[s[1]] >= 0) {
+                        s[2] += gp_whole_dx[s[1]];
+                        s[3] += gp_whole_dy[s[1]];
+                    }
+                    if (!done[s[1]]) {
                         done[s[1]] = 1;
-                        gp_frame(data, s[1], src, own, dst, map, hint[s[1]]);
+                        if (gp_whole_src[s[1]] >= 0) {
+                            gp_whole_frame(data, s[1], sd, dst);
+                        } else {
+                            gp_frame(data, s[1], src, own, dst, map, hint[s[1]]);
+                        }
                     }
                 }
             }
@@ -749,22 +941,25 @@ static void gp_file(u8 *data, s32 table, const GpWho *src, const GpRefs *own, co
 
 static const struct {
     s32 id, table, to_kaili;
+    s32 whole; /* has the animations whose frames the other's file gives whole */
 } gp_files[] = {
-        { 0x186, 0xCA, 1 }, /* P001PLAY: Junior in the scenes */
-        { 0x187, 0x70, 1 }, /* P002PLAY: Junior walking */
-        { 0x3C9, 0x0B, 1 }, /* P002PLYD */
-        { 0x3CA, 0x64, 1 }, /* P002PLYF: fishing */
-        { 0x3CB, 0x1E, 1 }, /* P002PLYK: the kick */
-        { 0x3CC, 0x17, 1 }, /* P002PLYL */
-        { 0x190, 0xA8, 0 }, /* P011MINO: Kaili */
-    { 0x2F8, 0x26, 0 }, /* P012MINT: Kaili, the short set */
+        { 0x186, 0xCA, 1, 1 }, /* P001PLAY: Junior in the scenes */
+        { 0x187, 0x70, 1, 1 }, /* P002PLAY: Junior walking */
+        { 0x3C9, 0x0B, 1, 0 }, /* P002PLYD */
+        { 0x3CA, 0x64, 1, 0 }, /* P002PLYF: fishing */
+        { 0x3CB, 0x1E, 1, 0 }, /* P002PLYK: the kick */
+        { 0x3CC, 0x17, 1, 0 }, /* P002PLYL */
+        { 0x190, 0xA8, 0, 1 }, /* P011MINO: Kaili */
+        { 0x2F8, 0x26, 0, 1 }, /* P012MINT: Kaili, the short set */
 };
 
 static void gp_apply(u32 i, u8 *data) {
     if (gp_files[i].to_kaili) {
-        gp_file(data, gp_files[i].table, &gp_junior, &gp_ref_junior, &gp_ref_kaili, gp_j2k);
+        gp_file(data, gp_files[i].table, &gp_junior, &gp_ref_junior, &gp_ref_kaili, gp_j2k,
+                gp_files[i].whole ? gp_src_kaili : NULL, 0xA8);
     } else {
-        gp_file(data, gp_files[i].table, &gp_kaili, &gp_ref_kaili, &gp_ref_junior, gp_k2j);
+        gp_file(data, gp_files[i].table, &gp_kaili, &gp_ref_kaili, &gp_ref_junior, gp_k2j,
+                gp_files[i].whole ? gp_src_junior : NULL, 0xCA);
     }
 }
 
