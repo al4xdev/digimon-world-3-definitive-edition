@@ -53,7 +53,12 @@ docker run --rm -u "$(id -u):$(id -g)" \
         ninja -C build/armhf-sdl2 -j\$(nproc)
     "
 
-echo "Build complete: $BUILD_DIR/dw2003"
+# The launcher is plain C on the framebuffer (no SDL): one gcc call in the same image.
+docker run --rm -u "$(id -u):$(id -g)" -v "$REPO:/work" -w /work "$IMAGE" bash -c "
+    arm-linux-gnueabihf-gcc -std=gnu99 -D_GNU_SOURCE -O2 -s launcher/main.c launcher/ui.c launcher/plat.c launcher/cfg.c \\
+        launcher/loading.c launcher/assets/assets.c -o build/armhf-sdl2/dw3-launcher -lm
+"
+echo "Build complete: $BUILD_DIR/dw2003 and dw3-launcher"
 
 if [ "${DW3_BUILD_ONLY:-0}" = "1" ]; then
     exit 0
@@ -66,7 +71,8 @@ echo "Assembling the package in $PACKAGE_DIR..."
 mkdir -p "$PACKAGE_DIR/dw3/game" "$PACKAGE_DIR/dw3/mods"
 
 cp "$BUILD_DIR/dw2003" "$PACKAGE_DIR/dw3/dw2003"
-chmod +x "$PACKAGE_DIR/dw3/dw2003"
+cp "$BUILD_DIR/dw3-launcher" "$PACKAGE_DIR/dw3/dw3-launcher"
+chmod +x "$PACKAGE_DIR/dw3/dw2003" "$PACKAGE_DIR/dw3/dw3-launcher"
 
 # Retired files: the package is a mirror, so a file that left handheld/ has to leave it too (the copy loop only adds).
 rm -f "$PACKAGE_DIR/dw3/dw3-tui.sh" "$PACKAGE_DIR/dw3/dw3.sh" "$PACKAGE_DIR/dw3/detect-env.sh"

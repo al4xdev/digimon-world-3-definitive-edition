@@ -110,8 +110,16 @@ blank_fb() {
   fi
 }
 
+# The C launcher (dw3-launcher) is the menu and starts the game itself, so the loading screen never goes black. It is
+# used when it is there and the framebuffer is ours; DW3_PYMENU=1 brings the old python menu back.
+if [ "$menu" = "fb" ] && [ -x ./dw3-launcher ] && [ -z "${DW3_PYMENU:-}" ]; then
+  menu=c
+fi
+
 menu_rc=0
-if [ "$menu" = "fb" ]; then
+if [ "$menu" = "c" ]; then
+  echo "menu: dw3-launcher" > ./menu.log
+elif [ "$menu" = "fb" ]; then
   python3 ./dw3-menu.py > ./menu.log 2>&1
   menu_rc=$?
   if [ "$menu_rc" -eq 3 ]; then
@@ -170,6 +178,15 @@ elif [ "${DW3_DEFAULT_RENDERER:-}" = "gles" ] && [ ! -f ./settings.json ]; then
   set -- "$@" --renderer gles
 fi
 
-./dw2003 "$@" >> ./logs/game.log 2>&1
+game_rc=3
+if [ "$menu" = "c" ]; then
+  ./dw3-launcher >> ./menu.log 2>&1
+  game_rc=$?
+fi
+# 3: the launcher found no screen; run the game straight from the settings as before.
+if [ "$game_rc" = 3 ]; then
+  [ "$menu" = "c" ] && set -- --disc "$DISC" "$@"
+  ./dw2003 "$@" >> ./logs/game.log 2>&1
+fi
 blank_fb
 pm_finish

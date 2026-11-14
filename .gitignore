@@ -86,3 +86,6 @@ __pycache__
 .plan/.state/
 # The PortMaster release built by portmaster/make_release.sh (binary + launcher, regenerable)
 /dist/
+
+# The console launcher built by launcher/Makefile (tools/build_arm.sh builds the package's into build/)
+launcher/dw3-launcher
