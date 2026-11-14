@@ -546,9 +546,9 @@ def battle_menu(binary, out):
     check(state is not None, "the first battle's start saved as a state")
     if state is None:
         return
-    # the default places: east Fight, l1 Tech, north Digivolve, south Tag, r1 Item, west Run (script names are the runtime's)
-    for button, action, bit in (("CIRCLE", 0, 13), ("L1", 1, 10), ("TRIANGLE", 2, 12), ("CROSS", 3, 14),
-                                ("R1", 4, 11), ("SQUARE", 5, 15)):
+    # the default places: east Fight, r1 Tech, north Digivolve, south Tag, l1 Item, west Run (script names are the runtime's)
+    for button, action, bit in (("CIRCLE", 0, 13), ("R1", 1, 11), ("TRIANGLE", 2, 12), ("CROSS", 3, 14),
+                                ("L1", 4, 10), ("SQUARE", 5, 15)):
         rc, lines = bm_press(binary, out, state, f"{button}", button, {})
         got = bm_chosen(lines)
         check(rc == 0 and len(got) == 1 and got[0][1:] == (action, bit),

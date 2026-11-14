@@ -269,10 +269,10 @@ With the mod off nothing runs: the dispatch is one `#ifdef PC_PORT` test where t
 | option | default | |
 |---|---|---|
 | `fight` | right button | the place of each action on the pad: `south`, `west`, `north`, `east` (the face buttons by position), `l1`, `r1`, `l2`, `r2` |
-| `tech` | L1 | |
+| `tech` | R1 | |
 | `digivolve` | top button | |
 | `tag` | bottom button | |
-| `item` | R1 | |
+| `item` | L1 | |
 | `run` | left button | |
 | `remember_cursor` | `true` | the technique and item menus open on what that Digimon used last (by member ID and kind); the command menu keeps its cursor between turns |
 | `buffer_input` | `short` | `off`, `short` (1.0 s) or `long` (1.5 s): presses made in the window right before the command menu opens are given to it as it opens (up to 2: e.g. R1 then X to confirm the same skill before the menu appears) |

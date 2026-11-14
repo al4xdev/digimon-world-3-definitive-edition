@@ -3710,12 +3710,12 @@ static void fightstg_battle_menu_show(FightstgBattleMenu *obj, FightstgBattleMen
 
 /* Each action sits at a fixed place on the screen regardless of which button is mapped to it:
  * 0 Fight -> slot 2 (Right of cross)
- * 1 Tech -> slot 4 (Top-Left wing)
+ * 1 Tech -> slot 5 (Top-Right wing)
  * 2 Digivolve -> slot 0 (Top of cross)
  * 3 Tag -> slot 3 (Bottom of cross)
- * 4 Item -> slot 5 (Top-Right wing)
+ * 4 Item -> slot 4 (Top-Left wing)
  * 5 Run -> slot 1 (Left of cross) */
-static const u8 fightstg_bmenu_action_slot[7] = { 2, 4, 0, 3, 5, 1, 6 };
+static const u8 fightstg_bmenu_action_slot[7] = { 2, 5, 0, 3, 4, 1, 6 };
 
 /* Where an action's symbol, picture and panel go from its anchor (see fightstg_battle_menu_slots). `face`: the symbol
  * is one letter (a shoulder button's is two); `slot` 0 and 3 are the cross's up and down arms, drawn as a column. */

@@ -153,7 +153,7 @@ void cfg_defaults(Cfg *c) {
     c->backup_max = 10;
     c->sync_enabled = 1;
     c->sync_interval_min = 10;
-    int h[H_COUNT] = {K_EAST, K_L1, K_NORTH, K_SOUTH, K_R1, K_WEST, K_L2};
+    int h[H_COUNT] = {K_EAST, K_R1, K_NORTH, K_SOUTH, K_L1, K_WEST, K_L2};
     memcpy(c->hud, h, sizeof(h));
     /* The face rows rotate circle and triangle against the console's own order: back is the right-hand button and
      * the menu the top one, as in any modern game; the letters follow the places, so the text never says triangle. */

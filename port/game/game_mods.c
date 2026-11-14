@@ -392,14 +392,14 @@ static const struct {
 } bm_slot[BM_PLACE_COUNT] = { BM_PLACES(BM_SLOT) };
 /* The options' order is the original list's (and the menu's result's): Fight, Tech, Digivolve, Tag, Item, Run. */
 enum { BM_FIGHT, BM_TECH, BM_DV, BM_TAG, BM_ITEM, BM_RUN, BM_COUNT, BM_REMEMBER = BM_COUNT, BM_BUFFER, BM_INSPECT_OPT, BM_OPTIONS };
-static const u8 bm_default_places[BM_COUNT] = { 3, 4, 2, 0, 5, 1 }; /* east l1 north south r1 west */
+static const u8 bm_default_places[BM_COUNT] = { 3, 5, 2, 0, 4, 1 }; /* east r1 north south l1 west */
 #define BM_OPTION(name, default_place) \
     { .id = name, .type = PORT_MOD_ENUM, .def = default_place, .values = bm_places, .applies = "live" }
 static const char *const bm_buffers[] = { "off", "short", "long", NULL };
 static const int bm_buffer_ms[] = { 0, 1000, 1500 }; /* off, short, long (the owner played with 1.0 s: now the default) */
 static const PortModOption bm_options[BM_OPTIONS] = {
-    BM_OPTION("fight", "\"east\""),  BM_OPTION("tech", "\"l1\""),   BM_OPTION("digivolve", "\"north\""),
-    BM_OPTION("tag", "\"south\""),   BM_OPTION("item", "\"r1\""),   BM_OPTION("run", "\"west\""),
+    BM_OPTION("fight", "\"east\""),  BM_OPTION("tech", "\"r1\""),   BM_OPTION("digivolve", "\"north\""),
+    BM_OPTION("tag", "\"south\""),   BM_OPTION("item", "\"l1\""),   BM_OPTION("run", "\"west\""),
     { .id = "remember_cursor", .type = PORT_MOD_BOOL, .def = "true", .applies = "live" },
     { .id = "buffer_input", .type = PORT_MOD_ENUM, .def = "\"short\"", .values = bm_buffers, .applies = "live" },
     BM_OPTION("inspect", "\"l2\""),
@@ -410,7 +410,7 @@ int port_mod_bm_buffer; /* frames; 0: off */
 /* The seven actions' places: the six options, then Inspect (definitive combat), which has no option (the mod's options
  * are full): the first of L2, R2, then the other places, that no action of the six took. */
 #define BM_ACTIONS (BM_COUNT + 1)
-static u8 bm_place[BM_ACTIONS] = { 3, 4, 2, 0, 5, 1, 6 }; /* by action: index into bm_places (bm_default_places) */
+static u8 bm_place[BM_ACTIONS] = { 3, 5, 2, 0, 4, 1, 6 }; /* by action: index into bm_places (bm_default_places) */
 
 static void bm_pick_inspect(void) {
     static const u8 order[BM_PLACE_COUNT] = { 6, 7, 4, 5, 0, 1, 2, 3 };
