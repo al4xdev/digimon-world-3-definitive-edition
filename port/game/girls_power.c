@@ -22,11 +22,11 @@
  * it down to the chin (the last row with skin), stray hair beside it (the pigtails), and the small pieces that
  * removal cuts loose from the body. The two heads are put face on face: a head's axis is the mean x of its skin.
  *
- * Standing and walking (animations 1 and 4) the two have drawn alike, so there no head is swapped: the frame takes the
- * other's own frame of the same step, direction and animation, read from the disc (hers from P011MINO, his from
- * P001PLAY, whose frames are 24 wide as most of hers), and the script entries naming it move so it lands where the
- * other's own script draws it. The other animation ids they share are not the same gesture or not facing the same way
- * (7, 9, 57, 58), and the rest only one has: those keep the head swap.
+ * The animations both have for the same thing (1 standing, 4 walking, 7 talking, 9 the start, 12 the nod, 51 the hop)
+ * get no head swap: the frame takes the other's own frame of the same animation and direction, read from the disc
+ * (hers from P011MINO, his from P001PLAY, whose frames are 24 wide as most of hers), and the script entries naming it
+ * move so it lands where the other's own script draws it. 57 and 58 they share by number only (another gesture,
+ * another way faced), and the rest only one has: those keep the head swap.
  *
  * Prototyped in Python over the disc's frames (tools/girls_power_preview.py); this is the same algorithm.
  * Off under a replay script (shared with the emulator) like the definitive rules; DW3_GIRLS=0 or 1 forces it. */
@@ -740,16 +740,22 @@ static const s16 *gp_anim(const u8 *data, s32 table, s32 id) {
     return NULL;
 }
 
-/* Plans gp_whole_*: for animations 1 and 4, each script of `data` takes the frames of the source's script of the same
- * animation and direction, step by step. A script is taken whole or not at all: it must be no longer than the
- * source's, give each of its frames one source frame (also against the scripts taken before), and every source
- * frame's drawing must fit the frame it goes into. */
-static void gp_whole_plan(u8 *data, s32 table, u8 *sd, s32 stable) {
-    static const s32 ids[2] = { 1, 4 };
+/* Plans gp_whole_*. A script of `data` takes the source's script of the same animation and direction: its frames in
+ * order of first use take the source's in order of first use (the last one again when the source has fewer). The
+ * direction is the script's slot, or, for a script several slots share (drawn one way whatever the slot), the way its
+ * first frame's head faces: the source may have that way drawn in its own slot. A script is taken whole or not at
+ * all: every frame must have one source frame (also against the scripts taken before) whose drawing fits it.
+ * `hint`: the frames' directions by the table (gp_file's). */
+static void gp_whole_plan(u8 *data, s32 table, u8 *sd, s32 stable, const GpRefs *own, const s8 *hint) {
+    static const s32 ids[] = { 1, 4, 7, 9, 12, 51 };
+    static struct {
+        s32 f, x, y;
+    } first[256], sfirst[256];
     static struct {
         s32 f, sf, tx, ty, dx, dy;
     } trial[256];
-    s32 n = gp_count(data), sn, i, k, e, j;
+    s32 n = gp_count(data), sn, k, e, j;
+    u32 i;
     const s16 *a;
 
     memset(gp_whole_src, -1, sizeof(gp_whole_src));
@@ -763,7 +769,7 @@ static void gp_whole_plan(u8 *data, s32 table, u8 *sd, s32 stable) {
     for (a = (const s16 *)gp_sub(data, table); a[0] != 0; a += 6) {
         const s16 *sa = NULL;
 
-        for (i = 0; i < 2; i++) {
+        for (i = 0; i < sizeof(ids) / sizeof(ids[0]); i++) {
             if (a[0] == ids[i]) {
                 sa = gp_anim(sd, stable, a[0]);
             }
@@ -773,32 +779,73 @@ static void gp_whole_plan(u8 *data, s32 table, u8 *sd, s32 stable) {
         }
         for (k = 0; k < 5; k++) {
             const s32 *d, *s;
-            s32 nt = 0, ok = 1;
+            s32 nf = 0, ns = 0, nt = 0, ok = 1, uses = 0, before = 0, way = k, w, h;
+            u16 *clut;
+            u8 *px;
 
-            if (a[1 + k] < 0 || a[1 + k] >= n || sa[1 + k] < 0 || sa[1 + k] >= sn) {
+            if (a[1 + k] < 0 || a[1 + k] >= n) {
+                continue;
+            }
+            for (j = 0; j < 5; j++) {
+                uses += a[1 + j] == a[1 + k];
+                before += j < k && a[1 + j] == a[1 + k];
+            }
+            if (before) {
                 continue;
             }
             d = (const s32 *)gp_sub(data, a[1 + k]);
-            s = (const s32 *)gp_sub(sd, sa[1 + k]);
-            for (e = 0; ok && e < 256 && d[0] > 0; e++, d += 4, s += 4) {
-                s32 f = d[1], sf = s[1], known = -2, w, h, sw, sh, y, x, x0, x1, y0, y1, tx, ty;
-                u16 *clut;
-                u8 *px;
+            for (e = 0; e < 256 && d[0] > 0; e++, d += 4) {
+                for (j = 0; j < nf && first[j].f != d[1]; j++) {
+                }
+                if (j == nf) {
+                    first[nf].f = d[1];
+                    first[nf].x = d[2];
+                    first[nf].y = d[3];
+                    nf++;
+                }
+            }
+            if (nf == 0 || first[0].f < 0 || first[0].f >= n) {
+                continue;
+            }
+            if (uses > 1) {
+                GpMatch m;
 
-                if (s[0] <= 0 || f < 0 || f >= n || sf < 0 || sf >= sn) {
+                if (!gp_tim(data, first[0].f, &clut, &px, &gp_w, &gp_h)) {
+                    continue;
+                }
+                gp_unpack(px);
+                if (!gp_match(own, hint[first[0].f], &m)) {
+                    continue;
+                }
+                way = m.dir;
+            }
+            if (sa[1 + way] < 0 || sa[1 + way] >= sn) {
+                continue;
+            }
+            s = (const s32 *)gp_sub(sd, sa[1 + way]);
+            for (e = 0; e < 256 && s[0] > 0; e++, s += 4) {
+                for (j = 0; j < ns && sfirst[j].f != s[1]; j++) {
+                }
+                if (j == ns) {
+                    sfirst[ns].f = s[1];
+                    sfirst[ns].x = s[2];
+                    sfirst[ns].y = s[3];
+                    ns++;
+                }
+            }
+            if (ns == 0) {
+                continue;
+            }
+            for (j = 0; ok && j < nf; j++) {
+                s32 f = first[j].f, q = j < ns ? j : ns - 1, sf = sfirst[q].f;
+                s32 sw, sh, y, x, x0, x1, y0, y1, tx, ty;
+
+                if (f < 0 || f >= n || sf < 0 || sf >= sn) {
                     ok = 0;
                     break;
                 }
                 if (gp_whole_src[f] >= 0) {
-                    known = gp_whole_src[f];
-                }
-                for (j = 0; j < nt; j++) {
-                    if (trial[j].f == f) {
-                        known = trial[j].sf;
-                    }
-                }
-                if (known != -2) {
-                    ok = known == sf;
+                    ok = gp_whole_src[f] == sf;
                     continue;
                 }
                 if (!gp_tim(data, f, &clut, &px, &w, &h) || !gp_tim(sd, sf, &clut, &px, &sw, &sh)) {
@@ -822,21 +869,21 @@ static void gp_whole_plan(u8 *data, s32 table, u8 *sd, s32 stable) {
                     break;
                 }
                 /* where the frame's own offset would put it, moved only as far as the frame's sides ask */
-                tx = s[2] - d[2];
+                tx = sfirst[q].x - first[j].x;
                 tx = tx < -x0 ? -x0 : tx;
                 tx = tx > w - 1 - x1 ? w - 1 - x1 : tx;
-                ty = s[3] - d[3];
+                ty = sfirst[q].y - first[j].y;
                 ty = ty < -y0 ? -y0 : ty;
                 ty = ty > h - 1 - y1 ? h - 1 - y1 : ty;
                 trial[nt].f = f;
                 trial[nt].sf = sf;
                 trial[nt].tx = tx;
                 trial[nt].ty = ty;
-                trial[nt].dx = s[2] - tx - d[2];
-                trial[nt].dy = s[3] - ty - d[3];
+                trial[nt].dx = sfirst[q].x - tx - first[j].x;
+                trial[nt].dy = sfirst[q].y - ty - first[j].y;
                 nt++;
             }
-            if (!ok || e == 0) {
+            if (!ok) {
                 continue;
             }
             for (j = 0; j < nt; j++) {
@@ -892,11 +939,14 @@ static void gp_file(u8 *data, s32 table, const GpWho *src, const GpRefs *own, co
     memset(done, 0, sizeof(done));
     memset(moved, 0, sizeof(moved));
     memset(hint, -1, sizeof(hint));
-    gp_whole_plan(data, table, sd, stable);
+    memset(gp_whole_src, -1, sizeof(gp_whole_src));
     /* pass 0: a frame's direction is the slot of the first script naming it that only one slot of its animation uses
      * (a scene's animation often has one script in several slots, whatever way it faces); pass 1: the repaint, and
      * each script's entries moved for the whole frames (once: slots and animations share scripts) */
     for (pass = 0; pass < 2; pass++) {
+        if (pass == 1) {
+            gp_whole_plan(data, table, sd, stable, own, hint); /* with the directions, before any frame changes */
+        }
         for (a = (const s16 *)gp_sub(data, table); a[0] != 0; a += 6) {
             for (k = 0; k < 5; k++) {
                 s32 *s;

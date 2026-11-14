@@ -19,9 +19,10 @@ FILES = {0x186: ("P001PLAY", 0xCA, True), 0x187: ("P002PLAY", 0x70, True), 0x3C9
          0x190: ("P011MINO", 0xA8, False), 0x2F8: ("P012MINT", 0x26, False)}
 J2K = [0, 4, 7, 12, 6, 7, 5, 3, 1, 2, 10, 13, 14, 8, 9, 15]
 K2J = [0, 8, 9, 7, 3, 6, 2, 13, 13, 14, 10, 12, 3, 11, 2, 15]
-# The animations the two have drawn alike (standing, walking): there the other's own frames are used whole. The other
-# ids they share are not the same gesture (57, 58) or not facing the same way (7, 9), so those keep the head swap.
-WHOLE = (1, 4)
+# The animations both have for the same thing (standing, walking, talking, the start, the nod, the hop): there the
+# other's own frames are used whole. 57 and 58 they share by number only (another gesture, another way faced), and
+# the rest only one has: those keep the head swap.
+WHOLE = (1, 4, 7, 9, 12, 51)
 # file id: the file the whole frames come from (Junior's scene file has his frames 24 wide, as most of hers are)
 SOURCE = {0x186: 0x190, 0x187: 0x190, 0x190: 0x186, 0x2F8: 0x186}
 
@@ -300,30 +301,46 @@ def steps(d, idx):
     return out
 
 
-def whole(d, table, sd, stable):
-    """dst frame -> (src frame, tx, ty, ddx, ddy): the frames of the WHOLE animations that take the other's frame of
-    the same step of the same animation and direction, drawn at (tx, ty) in the frame, every script entry naming the
-    frame moved by (ddx, ddy) so it lands where the other's own script draws it. A script is taken whole or not at
-    all: it must be no longer than the other's, give each frame one source, and every source must fit its frame."""
-    got = {}
+def whole(d, table, sd, stable, who):
+    """dst frame -> (src frame, tx, ty, ddx, ddy): the frames of the WHOLE animations that take the other's own frame,
+    drawn at (tx, ty) in the frame, every script entry naming the frame moved by (ddx, ddy) so it lands where the
+    other's own script draws it. A script takes the other's script of the same animation and direction: its frames
+    in order of first use take the other's in order of first use (the last one again when the other has fewer). The
+    direction is the script's slot, or, for a script several slots share (drawn one way whatever the slot), the way
+    its first frame's head faces: the other may have that way drawn in its own slot. A script is taken whole or not
+    at all: every frame must have one source (also against the scripts taken before) that fits it."""
+    got, hint, own = {}, hints(d, table), who.refs()[1]
     for a, sc in anims(d, table):
         src = next((s for b, s in anims(sd, stable) if b == a), None)
         if a not in WHOLE or src is None:
             continue
         for k in range(5):
-            ds, ss = steps(d, sc[k]), steps(sd, src[k])
-            if not ds or len(ds) > len(ss):
+            ds = steps(d, sc[k])
+            if sc[k] in sc[:k] or not ds:
                 continue
-            trial = {}
-            for (_, f, x, y), (_, sf, sx, sy) in zip(ds, ss):
-                prev = got.get(f) or trial.get(f)
-                if prev:
-                    if prev[0] != sf:
+            way = k
+            if sc.count(sc[k]) > 1:
+                m = who.match(tim(d, ds[0][1])[1], own, hint.get(ds[0][1]))
+                if not m:
+                    continue
+                way = m[1]
+            first, sfirst = {}, {}
+            for _, f, x, y in ds:
+                first.setdefault(f, (x, y))
+            for _, sf, sx, sy in steps(sd, src[way]):
+                sfirst.setdefault(sf, (sx, sy))
+            if not sfirst:
+                continue
+            sl, trial = list(sfirst.items()), {}
+            for j, (f, (x, y)) in enumerate(first.items()):
+                sf, (sx, sy) = sl[min(j, len(sl) - 1)]
+                if f in got:
+                    if got[f][0] != sf:
                         break
                     continue
                 img, dst = tim(sd, sf)[1], tim(d, f)[1]
                 xs = [i for r in img for i, v in enumerate(r) if v]
-                ys = [j for j, r in enumerate(img) if any(r)]
+                ys = [j2 for j2, r in enumerate(img) if any(r)]
                 H, W = len(dst), len(dst[0])
                 if not xs or max(xs) - min(xs) >= W or max(ys) - min(ys) >= H:
                     break
@@ -344,7 +361,7 @@ def repaint(fid):
     jclut, jheads = JUNIOR.refs()
     kclut, kheads = KAILI.refs()
     sd = disc_files.read(SOURCE[fid]) if fid in SOURCE else None
-    full = whole(d0, table, sd, FILES[SOURCE[fid]][1]) if sd else {}
+    full = whole(d0, table, sd, FILES[SOURCE[fid]][1], JUNIOR if to_kaili else KAILI) if sd else {}
     for f in frames_of(d0, table):
         _, idx = tim(d0, f)
         if f in full:

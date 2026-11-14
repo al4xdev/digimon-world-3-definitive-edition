@@ -29,11 +29,14 @@ as ações. Por isso a solução não aponta o ator para o arquivo dela. Ela **r
 
 - **Quando:** assim que o `cdload` termina de ler um dos 8 arquivos (`src/main/cdload.c`, transição 2→3), cada quadro
   que as tabelas de animação citam é repintado no próprio buffer.
-- **Parado e andando (animações 1 e 4):** os dois têm essas animações desenhadas do mesmo jeito, então o quadro
-  recebe o quadro inteiro do outro (mesmo passo, direção e animação), lido do disco: os dela do `P011MINO`, os dele do
-  `P001PLAY`. As entradas de script que citam o quadro são deslocadas para ele cair onde o script do outro o desenha.
-  As outras animações com o mesmo id não são o mesmo gesto ou não olham para o mesmo lado (7, 9, 57, 58): seguem com
-  a troca de cabeça, como todas as que só um dos dois tem (correr, chute, pesca, cenas).
+- **Quadro inteiro do outro** nas animações que os dois têm para a mesma coisa (1 parado, 4 andar, 7 falar, 9 susto,
+  12 aceno, 51 pulinho): o quadro recebe o quadro original do outro (mesma animação e direção), lido do disco: os dela
+  do `P011MINO`, os dele do `P001PLAY`. Os quadros do script, na ordem em que aparecem, recebem os do outro na mesma
+  ordem. Script que vários slots dividem (desenhado de um jeito só) usa a direção da cabeça do primeiro quadro para
+  escolher o slot do outro. As entradas de script que citam o quadro são deslocadas para ele cair onde o script do
+  outro o desenha. Resultado: 65 dos 84 quadros do Junior (ex-Kaili) e 47 dos 87 da Kaili andável são originais.
+  - 57 e 58 só coincidem no número (outro gesto, outro lado); correr, chute, pesca e as cenas só um dos dois tem:
+    seguem com a troca de cabeça.
 - **A cabeça:** as cabeças paradas do próprio personagem (animação 1, 5 direções) são casadas com o quadro, pixel a
   pixel, também espelhadas. A direção é o slot do quadro na tabela de animação (os 5 slots são as 5 direções) quando
   um script de slot único cita o quadro; senão, a da cabeça casada. Com pelo menos metade dos pixels iguais, a cabeça
