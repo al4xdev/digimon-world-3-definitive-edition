@@ -63,6 +63,14 @@
       "type": "enum", "default": "short", "applies": "live",
       "values": [
         { "id": "off", "label": "Off" }, { "id": "short", "label": "Short (0.6 s)" }, { "id": "long", "label": "Long (1.0 s)" }
+      ] },
+    { "id": "inspect", "name": "Inspect", "description": "The button for Inspect (the enemy's weaknesses; spends no turn).",
+      "type": "enum", "default": "l2", "applies": "live",
+      "values": [
+        { "id": "south", "label": "Bottom button" }, { "id": "west", "label": "Left button" },
+        { "id": "north", "label": "Top button" }, { "id": "east", "label": "Right button" },
+        { "id": "l1", "label": "L1" }, { "id": "r1", "label": "R1" },
+        { "id": "l2", "label": "L2" }, { "id": "r2", "label": "R2" }
       ] }
   ]
 }

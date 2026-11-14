@@ -372,7 +372,7 @@ static const struct {
     char xbox;         /* by pad.map's name */
 } bm_slot[BM_PLACE_COUNT] = { BM_PLACES(BM_SLOT) };
 /* The options' order is the original list's (and the menu's result's): Fight, Tech, Digivolve, Tag, Item, Run. */
-enum { BM_FIGHT, BM_TECH, BM_DV, BM_TAG, BM_ITEM, BM_RUN, BM_COUNT, BM_REMEMBER = BM_COUNT, BM_BUFFER, BM_OPTIONS };
+enum { BM_FIGHT, BM_TECH, BM_DV, BM_TAG, BM_ITEM, BM_RUN, BM_COUNT, BM_REMEMBER = BM_COUNT, BM_BUFFER, BM_INSPECT_OPT, BM_OPTIONS };
 static const u8 bm_default_places[BM_COUNT] = { 3, 4, 2, 0, 5, 1 }; /* east l1 north south r1 west */
 #define BM_OPTION(name, default_place) \
     { .id = name, .type = PORT_MOD_ENUM, .def = default_place, .values = bm_places, .applies = "live" }
@@ -383,6 +383,7 @@ static const PortModOption bm_options[BM_OPTIONS] = {
     BM_OPTION("tag", "\"south\""),   BM_OPTION("item", "\"r1\""),   BM_OPTION("run", "\"west\""),
     { .id = "remember_cursor", .type = PORT_MOD_BOOL, .def = "true", .applies = "live" },
     { .id = "buffer_input", .type = PORT_MOD_ENUM, .def = "\"short\"", .values = bm_buffers, .applies = "live" },
+    BM_OPTION("inspect", "\"l2\""),
 };
 int port_mod_battle_menu;
 int port_mod_bm_remember;
@@ -444,7 +445,15 @@ static void bm_start(struct PortMod *mod) {
             bm_place[a] = bm_default_places[a];
         }
     }
-    bm_pick_inspect();
+    /* Inspect has its own option now; it only falls back to the first free place when it collides with one of the six
+     * (an old settings file has no value, so the default l2 applies, and the launcher refuses to save duplicates). */
+    bm_place[BM_COUNT] = (u8)mod->values[BM_INSPECT_OPT].number;
+    for (a = 0; a < BM_COUNT; a++) {
+        if (bm_place[a] == bm_place[BM_COUNT]) {
+            bm_pick_inspect();
+            break;
+        }
+    }
     port_mod_battle_menu = 1;
     port_mod_bm_remember = mod->values[BM_REMEMBER].number != 0;
     /* the window in frames at the game's own rate (50 or 60 a second) */
@@ -572,7 +581,7 @@ void port_bm_remember(s32 kind, s32 member, s32 value) {
 static const char *const bt_modes[] = { "off", "skip", "async", NULL };
 enum { BT_MODE };
 static const PortModOption bt_options[] = {
-    { .id = "mode", .type = PORT_MOD_ENUM, .def = "\"async\"", .values = bt_modes, .applies = "live" },
+    { .id = "mode", .type = PORT_MOD_ENUM, .def = "\"skip\"", .values = bt_modes, .applies = "live" },
 };
 int port_mod_battle_text;
 void *port_battle_text_windows[2];
