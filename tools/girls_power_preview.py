@@ -3,6 +3,7 @@
 before/after sheets of the field sprite files, to tune the algorithm by eye before touching the C.
 
   tools/venv/bin/python tools/girls_power_preview.py OUT_DIR [SCALE]
+  tools/venv/bin/python tools/girls_power_preview.py zoom OUT.png FILE_ID FRAME,FRAME,... [SCALE]
 
 Writes OUT_DIR/<file>.ppm: rows of 16 frames, each row of originals followed by the same frames repainted. Reads the
 user's disc (tools/disc_files.py); embeds no game data."""
@@ -23,6 +24,14 @@ K2J = [0, 8, 9, 7, 3, 6, 2, 13, 13, 14, 10, 12, 3, 11, 2, 15]
 # other's own frames are used whole. 57 and 58 they share by number only (another gesture, another way faced), and
 # the rest only one has: those keep the head swap.
 WHOLE = (1, 4, 7, 9, 12, 51)
+# His animations she has no drawing for (running, its start and stop) -> the animation of hers (walking) whose frames
+# give the head and trunk, step by step, put on his legs.
+BUST = {5: 4, 6: 4}
+JUNIOR_WAIST, KAILI_WAIST = 7, 8  # rows from the chin down to the belt: his cut there, hers kept down to there
+# His legs in her colours: the head swap's table, but his grey trousers are her violet ones (his greys elsewhere are
+# shadows on white, which she has as a brown grey)
+LEGS = [0, 4, 5, 13, 6, 7, 5, 12, 1, 2, 10, 13, 14, 7, 12, 15]
+ART = Path(__file__).resolve().parents[1] / "port/game/girls_power_art.h"
 # file id: the file the whole frames come from (Junior's scene file has his frames 24 wide, as most of hers are)
 SOURCE = {0x186: 0x190, 0x187: 0x190, 0x190: 0x186, 0x2F8: 0x186}
 
@@ -190,6 +199,35 @@ KAILI = Who(0x190, cap={4, 6, 14}, key={4}, skin={1, 2}, neck=15, outline={7}, t
 LEFTOVER = 8  # the biggest piece cut loose by the head's removal that is dropped with it
 
 
+def loose(img, pts):
+    """what removing `pts` cuts loose from the body (a pigtail's tip, a cap's corner, a foot whose leg went): the
+    pieces of at most LEFTOVER pixels touching it, corners included. They go with it."""
+    H, W = len(img), len(img[0])
+    pts, seen, out = set(pts), set(), set()
+    for y in range(H):
+        for x in range(W):
+            if not img[y][x] or (y, x) in pts or (y, x) in seen:
+                continue
+            st, part, touch = [(y, x)], [], False
+            seen.add((y, x))
+            while st:
+                a, b = st.pop()
+                part.append((a, b))
+                for c in (-1, 0, 1):
+                    for e in (-1, 0, 1):
+                        q = (a + c, b + e)
+                        if q in pts:
+                            touch = True
+                        elif (c == 0) != (e == 0) and 0 <= q[0] < H and 0 <= q[1] < W and img[q[0]][q[1]] \
+                                and q not in seen:
+                            seen.add(q)
+                            st.append(q)
+            if touch and len(part) <= LEFTOVER:
+                pts |= set(part)
+                out |= set(part)
+    return out
+
+
 def swap(img, src, dst_heads, body, hint=None):
     """The frame with the other's head and colours. The direction is the frame's slot in the animation table (`hint`)
     when it has one, else the best match of the source's own idle heads. The head goes where that match is when at
@@ -219,28 +257,7 @@ def swap(img, src, dst_heads, body, hint=None):
         for y, x in src.comp(img, None, set(src.top)) or ():
             out[y][x] = src.top[img[y][x]]
         return out
-    # what the removal cut loose from the body (a pigtail's tip, a cap's corner) goes with the head
-    seen = set()
-    for y in range(H):
-        for x in range(W):
-            if not img[y][x] or (y, x) in pts or (y, x) in seen:
-                continue
-            st, part, touch = [(y, x)], [], False
-            seen.add((y, x))
-            while st:
-                a, b = st.pop()
-                part.append((a, b))
-                for c in (-1, 0, 1):
-                    for e in (-1, 0, 1):
-                        q = (a + c, b + e)
-                        if q in pts:
-                            touch = True
-                        elif (c == 0) != (e == 0) and 0 <= q[0] < H and 0 <= q[1] < W and img[q[0]][q[1]] \
-                                and q not in seen:
-                            seen.add(q)
-                            st.append(q)
-            if touch and len(part) <= LEFTOVER:
-                pts |= set(part)
+    pts = pts | loose(img, pts)
     # Hair hanging below the chin over the back (body on both sides of it in its row) is not removed, which would
     # leave a hole: it becomes the other's clothes, with the outline pixels inside it (no neighbour of the four empty,
     # two or more of them that hair).
@@ -353,8 +370,74 @@ def whole(d, table, sd, stable, who):
     return got
 
 
-def repaint(fid):
-    """the file as Girls Power leaves it (what port/game/girls_power.c writes, byte for byte)"""
+def spot(who, img, hint):
+    """(chin row, twice the axis' x, the chin row of the idle head of that direction) of the head in the frame, as
+    swap() places it; None when there is none"""
+    own = who.refs()[1]
+    m = who.match(img, own, hint)
+    if not m:
+        return None
+    _, d, flip, dy, dx, n = m
+    px, rb, rx2 = own[d]
+    if m[0] * 2 >= n:
+        return rb + dy, rx2 + 2 * dx, rb
+    h = who.head(img, {(y + dy, (rx2 - x if flip else x) + dx) for y, x in px})
+    return (h[1], h[2], rb) if h else None
+
+
+def bust(img, kimg, way):
+    """His frame with her head and trunk (her frame `kimg`, facing `way`) on his legs; None when a head is not found.
+    Everything of his down to the belt goes; hers down to her belt comes, face on face. He runs crouched, his head
+    as much as 4 rows under where he holds it standing, and her trunk is longer than his: she drops only half as far
+    (rounded down), or no legs would be left under her, and takes as many more rows of her own hips to reach his."""
+    a, b = spot(JUNIOR, img, way), spot(KAILI, kimg, way)
+    if not a or not b:
+        return None
+    H, W = len(img), len(img[0])
+    drop = max(0, a[0] - a[2])
+    lift = drop - drop // 2
+    gone = {(y, x) for y, r in enumerate(img) for x, v in enumerate(r) if v and y <= a[0] + JUNIOR_WAIST}
+    gone |= loose(img, gone)
+    out = [[LEGS[v] if (y, x) not in gone else 0 for x, v in enumerate(r)] for y, r in enumerate(img)]
+    sh = round((a[1] - b[1]) / 2)
+    for y, r in enumerate(kimg[:b[0] + KAILI_WAIST + lift + 1]):
+        for x, v in enumerate(r):
+            yy, xx = y - b[0] + a[0] - lift, x + sh
+            if v and 0 <= yy < H and 0 <= xx < W:
+                out[yy][xx] = v
+    return out
+
+
+def busts(d, table, sd, stable, full):
+    """dst frame -> (src frame, direction) for the BUST animations: the same step of the same direction, around again
+    when hers is shorter; the first use of a frame decides"""
+    got = {}
+    for a, sc in anims(d, table):
+        src = next((s for b, s in anims(sd, stable) if b == BUST.get(a)), None)
+        if src is None:
+            continue
+        for k in range(5):
+            ss = steps(sd, src[k])
+            for i, (_, f, _, _) in enumerate(steps(d, sc[k])):
+                if ss and f not in full:
+                    got.setdefault(f, (ss[i % len(ss)][1], k))
+    return got
+
+
+def art():
+    """(file id, frame) -> rows of the hand-drawn retouches (port/game/girls_power_art.h): '.' keeps the pixel, '0'
+    empties it, 1-9 A-F set its colour (the other's palette)"""
+    import re
+    out = {}
+    if ART.exists():
+        for m in re.finditer(r"GP_ART\((0x[0-9A-Fa-f]+),\s*(\d+),((?:\s*\"[^\"]*\")+)\s*\)", ART.read_text()):
+            out[(int(m.group(1), 16), int(m.group(2)))] = re.findall(r'"([^"]*)"', m.group(3))
+    return out
+
+
+def repaint(fid, retouch=True):
+    """the file as Girls Power leaves it (what port/game/girls_power.c writes, byte for byte); (bytes, the whole
+    frames' plan, the bust frames' plan)"""
     name, table, to_kaili = FILES[fid]
     d0 = disc_files.read(fid)
     d, hint = bytearray(d0), hints(d0, table)
@@ -362,8 +445,11 @@ def repaint(fid):
     kclut, kheads = KAILI.refs()
     sd = disc_files.read(SOURCE[fid]) if fid in SOURCE else None
     full = whole(d0, table, sd, FILES[SOURCE[fid]][1], JUNIOR if to_kaili else KAILI) if sd else {}
+    half = busts(d0, table, sd, FILES[SOURCE[fid]][1], full) if sd and to_kaili else {}
+    drawn = art() if retouch else {}
     for f in frames_of(d0, table):
         _, idx = tim(d0, f)
+        o = None
         if f in full:
             sf, tx, ty, _, _ = full[f]
             o = [[0] * len(idx[0]) for _ in idx]
@@ -371,10 +457,13 @@ def repaint(fid):
                 for x, v in enumerate(r):
                     if v:
                         o[y + ty][x + tx] = v
-        elif to_kaili:
-            o = swap(idx, JUNIOR, kheads, J2K, hint.get(f))
-        else:
-            o = swap(idx, KAILI, jheads, K2J, hint.get(f))
+        elif f in half:
+            o = bust(idx, tim(sd, half[f][0])[1], half[f][1])
+        if o is None:
+            o = swap(idx, JUNIOR, kheads, J2K, hint.get(f)) if to_kaili else swap(idx, KAILI, jheads, K2J, hint.get(f))
+        for n, c in enumerate("".join(drawn.get((fid, f), ()))[:len(o) * len(o[0])]):
+            if c in "0123456789ABCDEF":
+                o[n // len(o[0])][n % len(o[0])] = int(c, 16)
         q = sub(d0, f) + 8
         struct.pack_into("<16H", d, q + 12, *(kclut if to_kaili else jclut))
         q += struct.unpack_from("<I", d0, q)[0] + 12
@@ -390,16 +479,46 @@ def repaint(fid):
             for p, f, x, y in steps(d0, si):
                 if f in full:
                     struct.pack_into("<2i", d, p + 8, x + full[f][3], y + full[f][4])
-    return bytes(d), full
+    return bytes(d), full, half
+
+
+def zoom(out, fid, frames, scale):
+    """OUT.png: for each frame, a column of the disc's frame, the automatic result, the retouched result and the
+    other's frame it was made from; and each automatic frame's rows on stdout, to start a retouch from"""
+    import subprocess
+    data, (auto, full, half), final = disc_files.read(fid), repaint(fid, False), repaint(fid)[0]
+    sd = disc_files.read(SOURCE[fid]) if fid in SOURCE else None
+    rows = [[], [], [], []]
+    for f in frames:
+        src = full[f][0] if f in full else half[f][0] if f in half else None
+        for to, (d, g) in zip(rows, ((data, f), (auto, f), (final, f), (sd, src))):
+            if g is None:
+                to.append([[None] * 32] * 32)
+                continue
+            clut, idx = tim(d, g)
+            to.append([[rgb(clut[v]) if v else None for v in r] for r in idx])
+        print("frame", f)
+        for r in tim(auto, f)[1]:
+            print('        "' + "".join(".123456789ABCDEF"[v] for v in r) + '"')
+    imgs = []
+    for r in rows:
+        imgs += r + [[[None]]] * (16 - len(r))
+    sheet(imgs, str(out) + ".ppm", scale)
+    subprocess.run(["magick", str(out) + ".ppm", "-crop", "%dx+0+0" % (32 * scale * len(frames)), "+repage", str(out)])
+    Path(str(out) + ".ppm").unlink()
 
 
 def main():
+    if sys.argv[1] == "zoom":  # zoom OUT.png FILE_ID(hex) FRAME,FRAME,... [SCALE]
+        zoom(Path(sys.argv[2]), int(sys.argv[3], 16), [int(v) for v in sys.argv[4].split(",")],
+             int(sys.argv[5]) if len(sys.argv) > 5 else 8)
+        return
     out = Path(sys.argv[1])
     scale = int(sys.argv[2]) if len(sys.argv) > 2 else 2
     out.mkdir(parents=True, exist_ok=True)
     for fid, (name, table, to_kaili) in FILES.items():
         data = disc_files.read(fid)
-        new, full = repaint(fid)
+        new, full, half = repaint(fid)
         before, after = [], []
         for f in frames_of(data, table):
             for d, to in ((data, before), (new, after)):
@@ -411,7 +530,7 @@ def main():
             imgs += a + [blank] * (16 - len(a)) + b + [blank] * (16 - len(b))
         sheet(imgs, out / f"{name}.ppm", scale)
         moved = sorted((f, v[3], v[4]) for f, v in full.items() if v[3] or v[4])
-        print(name, len(before), "frames,", len(full), "whole; script offsets moved:", moved)
+        print(name, len(before), "frames,", len(full), "whole,", len(half), "bust; script offsets moved:", moved)
 
 
 if __name__ == "__main__":

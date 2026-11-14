@@ -28,6 +28,11 @@
  * move so it lands where the other's own script draws it. 57 and 58 they share by number only (another gesture,
  * another way faced), and the rest only one has: those keep the head swap.
  *
+ * Running (his animations 5 and 6) she has no drawing for. There her head and trunk come from her walking frame of
+ * the same step and direction, down to the belt, and only his legs stay, in her colours (gp_bust_frame).
+ *
+ * Last, girls_power_art.h's hand-drawn retouches are drawn over the frames they name.
+ *
  * Prototyped in Python over the disc's frames (tools/girls_power_preview.py); this is the same algorithm.
  * Off under a replay script (shared with the emulator) like the definitive rules; DW3_GIRLS=0 or 1 forces it. */
 #include <stdio.h>
@@ -924,10 +929,193 @@ static void gp_whole_frame(u8 *data, s32 i, u8 *sd, const GpRefs *dst) {
     memcpy(clut, dst->clut, sizeof(dst->clut));
 }
 
+/* ---- her head and trunk on his legs ---- */
+
+/* His animations she has no drawing for (running, its start and stop) and the one of hers (walking) whose frames give
+ * the head and trunk, step by step. */
+static const struct {
+    s32 his, hers;
+} gp_busts[] = { { 5, 4 }, { 6, 4 } };
+#define GP_JUNIOR_WAIST 7 /* rows from the chin down to the belt: his cut there */
+#define GP_KAILI_WAIST 8  /* hers kept down to there */
+/* His legs in her colours: the head swap's table, but his grey trousers are her violet ones (his greys elsewhere are
+ * shadows on white, which she has as a brown grey). */
+static const u8 gp_legs[16] = { 0, 4, 5, 13, 6, 7, 5, 12, 1, 2, 10, 13, 14, 7, 12, 15 };
+
+static s16 gp_bust_src[GP_FRAMES]; /* her frame (-1: none) */
+static s8 gp_bust_way[GP_FRAMES];  /* the direction */
+
+/* The same step of the same direction, around again when hers is shorter; the first use of a frame decides, and the
+ * whole frames keep theirs. */
+static void gp_bust_plan(u8 *data, s32 table, u8 *sd, s32 stable) {
+    static s32 hers[256];
+    s32 n = gp_count(data), sn = gp_count(sd), k, e, ns;
+    u32 i;
+    const s16 *a;
+
+    for (a = (const s16 *)gp_sub(data, table); a[0] != 0; a += 6) {
+        const s16 *sa = NULL;
+
+        for (i = 0; i < sizeof(gp_busts) / sizeof(gp_busts[0]); i++) {
+            if (a[0] == gp_busts[i].his) {
+                sa = gp_anim(sd, stable, gp_busts[i].hers);
+            }
+        }
+        if (sa == NULL) {
+            continue;
+        }
+        for (k = 0; k < 5; k++) {
+            const s32 *d, *s;
+
+            if (a[1 + k] < 0 || a[1 + k] >= n || sa[1 + k] < 0 || sa[1 + k] >= sn) {
+                continue;
+            }
+            s = (const s32 *)gp_sub(sd, sa[1 + k]);
+            for (ns = 0; ns < 256 && s[0] > 0; ns++, s += 4) {
+                hers[ns] = s[1];
+            }
+            d = (const s32 *)gp_sub(data, a[1 + k]);
+            for (e = 0; ns > 0 && e < 256 && d[0] > 0; e++, d += 4) {
+                s32 f = d[1], sf = hers[e % ns];
+
+                if (f >= 0 && f < n && sf >= 0 && sf < sn && gp_whole_src[f] < 0 && gp_bust_src[f] < 0) {
+                    gp_bust_src[f] = (s16)sf;
+                    gp_bust_way[f] = (s8)k;
+                }
+            }
+        }
+    }
+}
+
+/* Where the head of gp_img facing `way` is, as the head swap places it: its chin row, twice its axis' x, and the chin
+ * row of the idle head of that direction. 0 when there is none. */
+static int gp_spot(const GpWho *who, const GpRefs *own, s32 way, s32 *bottom, s32 *x2, s32 *idle) {
+    const GpHead *o = &own->head[way];
+    GpMatch m;
+    GpFound f;
+    s32 k;
+
+    if (!gp_match(own, way, &m)) {
+        return 0;
+    }
+    *idle = o->bottom;
+    if (m.n * 2 >= m.total) {
+        *bottom = o->bottom + m.dy;
+        *x2 = o->x2 + 2 * m.dx;
+        return 1;
+    }
+    memset(gp_over, 0, sizeof(gp_over));
+    for (k = 0; k < o->n; k++) {
+        gp_over[o->px[k].y + m.dy][(m.flip ? o->x2 - o->px[k].x : o->px[k].x) + m.dx] = 1;
+    }
+    if (!gp_find_head(who, 1, &f)) {
+        return 0;
+    }
+    *bottom = f.bottom;
+    *x2 = f.x2;
+    return 1;
+}
+
+/* His frame `i` with her head and trunk (her frame gp_bust_src[i]) on his legs; 0 when a head is not found (the head
+ * swap takes the frame). Everything of his down to the belt goes, with what that cuts loose; hers down to her belt
+ * comes, face on face. He runs crouched, his head as much as 4 rows under where he holds it standing, and her trunk
+ * is longer than his: she drops only half as far (rounded down), or no legs would be left under her, and takes as
+ * many more rows of her own hips to reach his. */
+static int gp_bust_frame(u8 *data, s32 i, u8 *sd, const GpRefs *junior, const GpRefs *kaili) {
+    static u8 hers[GP_MAX][GP_MAX];
+    u16 *clut;
+    u8 *pixels;
+    s32 y, x, kw, kh, kb, kx2, kidle, b, x2, idle, drop, lift, sh, way = gp_bust_way[i];
+
+    if (!gp_tim(sd, gp_bust_src[i], &clut, &pixels, &gp_w, &gp_h)) {
+        return 0;
+    }
+    gp_unpack(pixels);
+    if (!gp_spot(&gp_kaili, kaili, way, &kb, &kx2, &kidle)) {
+        return 0;
+    }
+    memcpy(hers, gp_img, sizeof(hers));
+    kw = gp_w;
+    kh = gp_h;
+    if (!gp_tim(data, i, &clut, &pixels, &gp_w, &gp_h)) {
+        return 0;
+    }
+    gp_unpack(pixels);
+    if (!gp_spot(&gp_junior, junior, way, &b, &x2, &idle)) {
+        return 0;
+    }
+    memset(gp_mark, 0, sizeof(gp_mark));
+    for (y = 0; y < gp_h && y <= b + GP_JUNIOR_WAIST; y++) {
+        for (x = 0; x < gp_w; x++) {
+            gp_mark[y][x] = gp_img[y][x] != 0;
+        }
+    }
+    gp_mark_leftovers();
+    for (y = 0; y < gp_h; y++) {
+        for (x = 0; x < gp_w; x++) {
+            gp_out[y][x] = gp_mark[y][x] ? 0 : gp_legs[gp_img[y][x]];
+        }
+    }
+    drop = b > idle ? b - idle : 0;
+    lift = drop - drop / 2;
+    sh = gp_round_half_even(x2 - kx2);
+    for (y = 0; y < kh && y <= kb + GP_KAILI_WAIST + lift; y++) {
+        for (x = 0; x < kw; x++) {
+            s32 yy = y - kb + b - lift, xx = x + sh;
+
+            if (hers[y][x] && yy >= 0 && yy < gp_h && xx >= 0 && xx < gp_w) {
+                gp_out[yy][xx] = hers[y][x];
+            }
+        }
+    }
+    gp_pack(pixels);
+    memcpy(clut, kaili->clut, sizeof(kaili->clut));
+    return 1;
+}
+
+/* ---- the hand-drawn retouches ---- */
+
+static const struct {
+    s32 file, frame;
+    const char *rows; /* the frame's rows one after the other */
+} gp_art[] = {
+#define GP_ART(file, frame, rows) { file, frame, rows },
+#include "girls_power_art.h"
+#undef GP_ART
+    { 0, 0, NULL },
+};
+
+/* Draws girls_power_art.h's retouch of frame `i` of file `id` over it, when it has one. */
+static void gp_retouch(u8 *data, s32 id, s32 i) {
+    u16 *clut;
+    u8 *pixels;
+    s32 k, y, x;
+
+    for (k = 0; gp_art[k].rows != NULL; k++) {
+        const char *c = gp_art[k].rows;
+
+        if (gp_art[k].file != id || gp_art[k].frame != i || !gp_tim(data, i, &clut, &pixels, &gp_w, &gp_h)) {
+            continue;
+        }
+        gp_unpack(pixels);
+        memcpy(gp_out, gp_img, sizeof(gp_out));
+        for (y = 0; y < gp_h; y++) {
+            for (x = 0; x < gp_w && *c != '\0'; x++, c++) {
+                if (*c >= '0' && *c <= '9') {
+                    gp_out[y][x] = (u8)(*c - '0');
+                } else if (*c >= 'A' && *c <= 'F') {
+                    gp_out[y][x] = (u8)(*c - 'A' + 10);
+                }
+            }
+        }
+        gp_pack(pixels);
+    }
+}
+
 /* Repaints every frame the animation table's scripts name, once each. `sd`, `stable`: the other's file and table,
  * for the whole frames (NULL: none, as for the action files only he has). */
-static void gp_file(u8 *data, s32 table, const GpWho *src, const GpRefs *own, const GpRefs *dst, const u8 *map,
-                    u8 *sd, s32 stable) {
+static void gp_file(u8 *data, s32 id, s32 table, const GpWho *src, const GpRefs *own, const GpRefs *dst,
+                    const u8 *map, u8 *sd, s32 stable) {
     static u8 done[GP_FRAMES], moved[GP_FRAMES];
     static s8 hint[GP_FRAMES];
     s32 n = gp_count(data), k, e, j, pass;
@@ -940,12 +1128,16 @@ static void gp_file(u8 *data, s32 table, const GpWho *src, const GpRefs *own, co
     memset(moved, 0, sizeof(moved));
     memset(hint, -1, sizeof(hint));
     memset(gp_whole_src, -1, sizeof(gp_whole_src));
+    memset(gp_bust_src, -1, sizeof(gp_bust_src));
     /* pass 0: a frame's direction is the slot of the first script naming it that only one slot of its animation uses
      * (a scene's animation often has one script in several slots, whatever way it faces); pass 1: the repaint, and
      * each script's entries moved for the whole frames (once: slots and animations share scripts) */
     for (pass = 0; pass < 2; pass++) {
         if (pass == 1) {
             gp_whole_plan(data, table, sd, stable, own, hint); /* with the directions, before any frame changes */
+            if (sd != NULL && src == &gp_junior) {
+                gp_bust_plan(data, table, sd, stable);
+            }
         }
         for (a = (const s16 *)gp_sub(data, table); a[0] != 0; a += 6) {
             for (k = 0; k < 5; k++) {
@@ -979,9 +1171,10 @@ static void gp_file(u8 *data, s32 table, const GpWho *src, const GpRefs *own, co
                         done[s[1]] = 1;
                         if (gp_whole_src[s[1]] >= 0) {
                             gp_whole_frame(data, s[1], sd, dst);
-                        } else {
+                        } else if (gp_bust_src[s[1]] < 0 || !gp_bust_frame(data, s[1], sd, own, dst)) {
                             gp_frame(data, s[1], src, own, dst, map, hint[s[1]]);
                         }
+                        gp_retouch(data, id, s[1]);
                     }
                 }
             }
@@ -1005,10 +1198,10 @@ static const struct {
 
 static void gp_apply(u32 i, u8 *data) {
     if (gp_files[i].to_kaili) {
-        gp_file(data, gp_files[i].table, &gp_junior, &gp_ref_junior, &gp_ref_kaili, gp_j2k,
+        gp_file(data, gp_files[i].id, gp_files[i].table, &gp_junior, &gp_ref_junior, &gp_ref_kaili, gp_j2k,
                 gp_files[i].whole ? gp_src_kaili : NULL, 0xA8);
     } else {
-        gp_file(data, gp_files[i].table, &gp_kaili, &gp_ref_kaili, &gp_ref_junior, gp_k2j,
+        gp_file(data, gp_files[i].id, gp_files[i].table, &gp_kaili, &gp_ref_kaili, &gp_ref_junior, gp_k2j,
                 gp_files[i].whole ? gp_src_junior : NULL, 0xCA);
     }
 }

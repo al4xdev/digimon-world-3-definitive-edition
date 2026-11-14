@@ -37,6 +37,16 @@ as ações. Por isso a solução não aponta o ator para o arquivo dela. Ela **r
   outro o desenha. Resultado: 65 dos 84 quadros do Junior (ex-Kaili) e 47 dos 87 da Kaili andável são originais.
   - 57 e 58 só coincidem no número (outro gesto, outro lado); correr, chute, pesca e as cenas só um dos dois tem:
     seguem com a troca de cabeça.
+- **Correr (animações 5 e 6 dele):** ela não tem esse desenho. A cabeça e o tronco vêm do quadro de andar dela (mesmo
+  passo e direção), até o cinto; do Junior ficam só as pernas, nas cores dela. Ele corre agachado (cabeça até 4
+  linhas abaixo) e o tronco dela é mais comprido, então ela desce só metade. Com isso o arquivo andável (`P002PLAY`)
+  não tem mais nenhum quadro com cabeça colada: 47 originais + 40 de corrida.
+- **Retoques à mão (`port/game/girls_power_art.h`):** pixels desenhados por cima de um quadro depois da troca
+  automática (`.` mantém, `0` apaga, `1`-`F` pinta). Nenhum pixel ali é copiado do disco. Para desenhar:
+  `tools/venv/bin/python tools/girls_power_preview.py zoom SAIDA.png 187 42,43,44` mostra, por quadro, o original do
+  disco, o automático, o retocado e o quadro do outro que serviu de base, e imprime as linhas do quadro. Feitos até
+  agora: 4 quadros da corrida (38, 39, 45, 51). O `P001PLAY` (cenas) tem a mesma corrida em 24 de largura, sem
+  retoque.
 - **A cabeça:** as cabeças paradas do próprio personagem (animação 1, 5 direções) são casadas com o quadro, pixel a
   pixel, também espelhadas. A direção é o slot do quadro na tabela de animação (os 5 slots são as 5 direções) quando
   um script de slot único cita o quadro; senão, a da cabeça casada. Com pelo menos metade dos pixels iguais, a cabeça
