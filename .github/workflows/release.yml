@@ -415,7 +415,7 @@ jobs:
           rm -rf pm-repo/ports/dw3
           mkdir -p pm-repo/ports/dw3
           unzip -oq dist/dw3.zip -d pm-repo/ports/dw3
-          chmod +x "pm-repo/ports/dw3/Digimon World 3.sh" pm-repo/ports/dw3/dw3/dw2003 pm-repo/ports/dw3/dw3/dw3-menu.py
+          chmod +x "pm-repo/ports/dw3/Digimon World 3.sh" pm-repo/ports/dw3/dw3/dw2003 pm-repo/ports/dw3/dw3/dw3-launcher
           [ -f pm-repo/ports/dw3/dw3/ledd.py ] && chmod +x pm-repo/ports/dw3/dw3/ledd.py
           [ -f pm-repo/ports/dw3/dw3/probe.sh ] && chmod +x pm-repo/ports/dw3/dw3/probe.sh
           cd pm-repo
