@@ -24,11 +24,11 @@ Builds build/port-sdl if needed (-DPSXSTACK_SDL=ON: tools/sdl3 and tools/dxc), t
     2D does not); the debug channel's screenshot with "renderer": "gpu" at the internal scale;
   - with a GPU device and the disc, widescreen (the `widescreen` mod; psxstack render_gpu_wide.c, issues #71, #78):
     first_battle_save with the mod on and its `field` off (a settings file: no window, renderer gpu): a field frame
-    stays the software image (320x240); a battle frame is 426x240 (16:9 in whole columns) whose middle 320 columns are
+    stays the software image (320x240); a battle frame is 428x240 (16:9 in whole columns) whose middle 320 columns are
     the software image byte for byte and whose sides show the arena (WIDE_SIDES: at least that share of the side pixels
-    not black); its present into 1920x1080 is the reference at 16:9; at internal scale 2 a battle frame is 852x480 and
+    not black); its present into 1920x1080 is the reference at 16:9; at internal scale 2 a battle frame is 856x480 and
     its middle, averaged back, within SCALED_BUDGET of the software image; the frame log equals the run without the mod
-    (the game draws the same); then with `field` on (its default) a field frame is 426x240 too, the middle the run's
+    (the game draws the same); then with `field` on (its default) a field frame is 428x240 too, the middle the run's
     software image byte for byte and the sides the map (the field draws past the screen's edges, so the game's frame
     log differs from 4:3);
   - with the disc: SDL_Renderer's own present (a 960x720 window on the offscreen driver, read back through
@@ -345,7 +345,7 @@ def widescreen(sdl, env, out):
     for f in WIDE_MAP:
         w, h, lo = ppm(out / f"wf_sw{f}.ppm")
         image = ppm(out / f"wf_hw{f}.ppm")
-        want = w + 2 * (w // 6)
+        want = w + 2 * ((w + 5) // 6)
         if image[:2] != (want, h):
             check(False, f"vsync {f} (the field): {image[0]}x{image[1]}, not {want}x{h}")
             continue
