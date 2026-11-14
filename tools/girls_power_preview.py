@@ -56,6 +56,18 @@ def frames_of(d, table):
     return sorted(seen)
 
 
+def hints(d, table):
+    """frame -> the direction slot (0-4) of the first animation that has it in a script only one of its slots uses"""
+    out = {}
+    for _, sc in anims(d, table):
+        for k, si in enumerate(sc):
+            if sc.count(si) == 1:
+                for t, f, _, _ in script(d, si):
+                    if t > 0:
+                        out.setdefault(f, k)
+    return out
+
+
 def tim(d, idx):
     p = sub(d, idx)
     q = p + 8
@@ -72,33 +84,43 @@ def rgb(c):
 
 
 class Who:
-    def __init__(self, fid, cap, key, skin, neck, outline=()):
+    def __init__(self, fid, cap, key, skin, neck, outline=(), top=None, hang=None):
         self.fid, self.table = fid, FILES[fid][1]
+        # top: the cap/hair seen from above, its colours -> the other's (in the other's palette), for a head that
+        # covers the body; hang: hair hanging below the chin and the outline inside it -> the other's clothes
+        self.top, self.hang = top or {}, hang or {}
         self.cap, self.key, self.skin, self.neck, self.outline = set(cap), set(key), set(skin), neck, set(outline)
 
-    def comp(self, img):
+    def comp(self, img, over=None, colours=None):
+        """The cap/hair: the blobs of cap colours with at least half their pixels in `over` (where the matched head
+        is; a band can split a cap in two), or else the one with the most there. With no `over`, as for the idle
+        frames the reference heads are cut from, the blob with the most key pixels. None when there is none."""
         H, W = len(img), len(img[0])
-        seen, best = set(), (0, None)
+        seen, best, inside = set(), (0, None), []
+        colours = colours or self.cap
         for y in range(H):
             for x in range(W):
-                if img[y][x] in self.cap and (y, x) not in seen:
+                if img[y][x] in colours and (y, x) not in seen:
                     st, pts = [(y, x)], []
                     seen.add((y, x))
                     while st:
                         a, b = st.pop()
                         pts.append((a, b))
                         for c, e in ((a + 1, b), (a - 1, b), (a, b + 1), (a, b - 1)):
-                            if 0 <= c < H and 0 <= e < W and (c, e) not in seen and img[c][e] in self.cap:
+                            if 0 <= c < H and 0 <= e < W and (c, e) not in seen and img[c][e] in colours:
                                 seen.add((c, e))
                                 st.append((c, e))
-                    k = sum(1 for a, b in pts if img[a][b] in self.key)
+                    k = sum(1 for a, b in pts if (((a, b) in over) if over is not None else img[a][b] in self.key))
                     if k > best[0]:
                         best = (k, pts)
-        return best[1]
+                    if over is not None and k * 2 >= len(pts):
+                        inside += pts
+        return inside or best[1]
 
-    def head(self, img):
-        """(the head's pixels, chin row, x0 + x1 of the cap/hair, direction 0-4, mirrored) or None"""
-        c = self.comp(img)
+    def head(self, img, over=None):
+        """(the head's pixels, chin row, twice the x of its axis) or None. The axis is the face's (the mean x of its
+        skin), so that one face lands on the other; a head showing no face has the cap/hair blob's centre."""
+        c = self.comp(img, over)
         if not c or len(c) < 6:
             return None
         H, W = len(img), len(img[0])
@@ -114,49 +136,133 @@ class Who:
                 if 0 <= a < H and 0 <= b < W and img[a][b] in self.outline:
                     stray.add((a, b))
         pts |= stray
-        sk = [(y, x) for y, x in pts if img[y][x] in self.skin]
-        rel = (sum(x for _, x in sk) / len(sk) - (x0 + x1) / 2) if sk else 0
-        if len(sk) < 4:
-            d = 4
-        elif abs(rel) < 1.0:
-            d = 0
-        elif abs(rel) < 2.5:
-            d = 1 if len(sk) >= 12 else 3
-        else:
-            d = 2
-        return pts, bottom, x0 + x1, d, rel > 0
+        sk = [x for y, x in pts if img[y][x] in self.skin]
+        x2 = (4 * sum(sk) + len(sk)) // (2 * len(sk)) if len(sk) >= 4 else x0 + x1
+        return pts, bottom, x2
+
+    def match(self, img, heads, hint):
+        """Where one of this person's own idle heads sits in the frame: (pixels equal, direction, mirrored, dy, dx, the
+        head's pixel count) of the best placement, the head whole inside the frame; None when none has an equal pixel.
+        Only direction `hint` is tried when it is given. The first best in (direction, mirror, dy, dx) order wins."""
+        H, W = len(img), len(img[0])
+        best = None
+        for d in (range(5) if hint is None else (hint,)):
+            px, _, x2 = heads[d]
+            for flip in (False, True):
+                pts = [(y, x2 - x if flip else x, v) for (y, x), v in px.items()]
+                y0, y1 = min(p[0] for p in pts), max(p[0] for p in pts)
+                x0, x1 = min(p[1] for p in pts), max(p[1] for p in pts)
+                for dy in range(-y0, H - y1):
+                    for dx in range(-x0, W - x1):
+                        n = sum(1 for y, x, v in pts if img[y + dy][x + dx] == v)
+                        if n > (best[0] if best else 0):
+                            best = (n, d, flip, dy, dx, len(pts))
+        return best
 
     def refs(self):
+        if hasattr(self, "_refs"):
+            return self._refs
+        self._refs = self._read_refs()
+        return self._refs
+
+    def _read_refs(self):
         data = disc_files.read(self.fid)
         s = dict(anims(data, self.table))[1]
         heads = []
         for d in range(5):
             clut, idx = tim(data, script(data, s[d])[0][1])
-            pts, bottom, x2, _, _ = self.head(idx)
+            pts, bottom, x2 = self.head(idx)
             heads.append(({(y, x): idx[y][x] for y, x in pts}, bottom, x2))
         return clut, heads
 
 
-JUNIOR = Who(0x187, cap={2, 3, 7}, key={7}, skin={8, 9}, neck=16)
-KAILI = Who(0x190, cap={4, 6, 14}, key={4}, skin={1, 2}, neck=15, outline={7})
+JUNIOR = Who(0x187, cap={2, 3, 7}, key={7}, skin={8, 9}, neck=16, top={3: 4, 7: 6, 2: 14, 6: 14})
+KAILI = Who(0x190, cap={4, 6, 14}, key={4}, skin={1, 2}, neck=15, outline={7}, top={4: 3, 6: 7, 14: 2},
+            hang={4: 3, 6: 2, 14: 2, 7: 2})
 
 
-def swap(img, src, dst_heads, body):
+LEFTOVER = 8  # the biggest piece cut loose by the head's removal that is dropped with it
+
+
+def swap(img, src, dst_heads, body, hint=None):
+    """The frame with the other's head and colours. The direction is the frame's slot in the animation table (`hint`)
+    when it has one, else the best match of the source's own idle heads. The head goes where that match is when at
+    least half of the matched head's pixels are equal; else (tilted and lying heads) on the cap/hair blob's chin."""
     H, W = len(img), len(img[0])
     out = [[body[v] if v else 0 for v in r] for r in img]
-    h = src.head(img)
-    if h:
-        pts, bottom, x2, d, flip = h
-        K, kb, kx2 = dst_heads[d]
-        for y, x in pts:
+    own = src.refs()[1]
+    m = src.match(img, own, hint)
+    if not m:
+        return out
+    _, d, flip, dy, dx, n = m
+    px, rb, rx2 = own[d]
+    placed = {(y + dy, (rx2 - x if flip else x) + dx) for y, x in px}
+    h = src.head(img, placed)
+    if m[0] * 2 >= n:
+        pts = (h[0] if h else set()) | placed
+        bottom, x2 = rb + dy, rx2 + 2 * dx
+    else:
+        if not h:
+            return out
+        pts, bottom, x2 = h
+        if hint is not None:
+            flip = False
+    # A head with no body left under it (three quarters of the frame) is one seen from above, lying: no head of the
+    # five fits, so the cap/hair is dyed the other's instead.
+    if 4 * sum(1 for y, x in pts if img[y][x]) >= 3 * sum(1 for r in img for v in r if v):
+        for y, x in src.comp(img, None, set(src.top)) or ():
+            out[y][x] = src.top[img[y][x]]
+        return out
+    # what the removal cut loose from the body (a pigtail's tip, a cap's corner) goes with the head
+    seen = set()
+    for y in range(H):
+        for x in range(W):
+            if not img[y][x] or (y, x) in pts or (y, x) in seen:
+                continue
+            st, part, touch = [(y, x)], [], False
+            seen.add((y, x))
+            while st:
+                a, b = st.pop()
+                part.append((a, b))
+                for c in (-1, 0, 1):
+                    for e in (-1, 0, 1):
+                        q = (a + c, b + e)
+                        if q in pts:
+                            touch = True
+                        elif (c == 0) != (e == 0) and 0 <= q[0] < H and 0 <= q[1] < W and img[q[0]][q[1]] \
+                                and q not in seen:
+                            seen.add(q)
+                            st.append(q)
+            if touch and len(part) <= LEFTOVER:
+                pts |= set(part)
+    # Hair hanging below the chin over the back (body on both sides of it in its row) is not removed, which would
+    # leave a hole: it becomes the other's clothes, with the outline pixels inside it (no neighbour of the four empty,
+    # two or more of them that hair).
+    if src.hang:
+        def body(y, xs):
+            return any(img[y][x] and (y, x) not in pts for x in xs)
+        low = {(y, x) for y, x in pts if y > bottom and img[y][x] in src.cap and body(y, range(x)) and
+               body(y, range(x + 1, W))}
+        pts = pts - low
+        for y in range(1, H - 1):
+            for x in range(1, W - 1):
+                near = ((y + 1, x), (y - 1, x), (y, x + 1), (y, x - 1))
+                if img[y][x] in src.outline and (y, x) not in pts and all(img[a][b] for a, b in near) \
+                        and sum(1 for q in near if q in low) >= 2:
+                    out[y][x] = src.hang[img[y][x]]
+        for y, x in low:
+            out[y][x] = src.hang[img[y][x]]
+    K, kb, kx2 = dst_heads[d]
+    for y, x in pts:
+        if 0 <= y < H and 0 <= x < W:
             out[y][x] = 0
-        sh = round((x2 - kx2) / 2)
-        for (y, x), v in K.items():
-            if flip:
-                x = kx2 - x
-            yy, xx = y - kb + bottom, x + sh
-            if 0 <= yy < H and 0 <= xx < W:
-                out[yy][xx] = v
+    sh = round((x2 - kx2) / 2)
+    for (y, x), v in K.items():
+        if flip:
+            x = kx2 - x
+        yy, xx = y - kb + bottom, x + sh
+        if 0 <= yy < H and 0 <= xx < W:
+            out[yy][xx] = v
     return out
 
 
@@ -185,10 +291,10 @@ def main():
     kclut, kheads = KAILI.refs()
     for fid, (name, table, to_kaili) in FILES.items():
         data = disc_files.read(fid)
-        before, after = [], []
+        before, after, hint = [], [], hints(data, table)
         for f in frames_of(data, table):
             clut, idx = tim(data, f)
-            o = swap(idx, JUNIOR, kheads, J2K) if to_kaili else swap(idx, KAILI, jheads, K2J)
+            o = swap(idx, JUNIOR, kheads, J2K, hint.get(f)) if to_kaili else swap(idx, KAILI, jheads, K2J, hint.get(f))
             nclut = kclut if to_kaili else jclut
             before.append([[rgb(clut[v]) if v else None for v in r] for r in idx])
             after.append([[rgb(nclut[v]) if v else None for v in r] for r in o])

@@ -11,14 +11,18 @@
  * hers become him, so a scene with both still shows two people. Every animation, its timing and its script stay the
  * game's own.
  *
- * Finding the head: the cap (Junior) or the hair (Kaili) is the connected blob of its colours holding the most
- * pixels of one colour no other part has (his lavender, her pink). The head is that blob's columns, from its top
- * down to the chin (the last row with skin), plus stray hair beside it (the pigtails). The face's skin picks the
- * direction: little skin, the back; skin centred, the front; a little off centre, three quarters; far off, the
- * profile; the side it is on, the mirror. The heads put back are the other's idle frames (animation 1, directions
- * 0-4), read from the disc itself, so the repainted file never feeds its own references.
+ * Finding the head: each person's own idle heads (animation 1, directions 0-4, read from the disc itself, so the
+ * repainted file never feeds its own references) are matched against the frame, mirrored too, the head whole inside
+ * it; the placement with the most equal pixels says where the head is. Its direction is the frame's slot in the
+ * animation table when a script only one slot uses names the frame (the table's five slots are the five directions),
+ * else the matched head's. When at least half of the matched head's pixels are equal the other's head of that
+ * direction goes exactly there, so it moves as the original did (guessing the direction from the face's skin, as this
+ * first did, turned the head from frame to frame of one animation); else (tilted and lying heads) it goes on the chin
+ * found under the cap (Junior) or hair (Kaili). What is removed: the matched head's pixels, the cap/hair blobs under
+ * it down to the chin (the last row with skin), stray hair beside it (the pigtails), and the small pieces that
+ * removal cuts loose from the body. The two heads are put face on face: a head's axis is the mean x of its skin.
  *
- * Prototyped in Python over the disc's frames (.dumps/tasks/girls-power/swap4.py); this is the same algorithm.
+ * Prototyped in Python over the disc's frames (tools/girls_power_preview.py); this is the same algorithm.
  * Off under a replay script (shared with the emulator) like the definitive rules; DW3_GIRLS=0 or 1 forces it. */
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,10 +47,20 @@ typedef struct GpWho {
     u16 skin;
     u16 outline; /* the outline around stray hair */
     s32 neck;    /* the most rows a head takes */
+    /* the cap/hair seen from above (a head covering the body, lying): its colours, and what each becomes in the
+     * other's palette */
+    u16 top;
+    u8 top_to[16];
+    /* hair hanging below the chin, and the outline inside it: what each becomes (the other's clothes); 0, none */
+    u8 hang_to[16];
 } GpWho;
 
-static const GpWho gp_junior = { 0x187, 0x70, (1 << 2) | (1 << 3) | (1 << 7), 1 << 7, (1 << 8) | (1 << 9), 0, 16 };
-static const GpWho gp_kaili = { 0x190, 0xA8, (1 << 4) | (1 << 6) | (1 << 14), 1 << 4, (1 << 1) | (1 << 2), 1 << 7, 15 };
+static const GpWho gp_junior = { 0x187, 0x70, (1 << 2) | (1 << 3) | (1 << 7), 1 << 7, (1 << 8) | (1 << 9), 0, 16,
+                                 (1 << 2) | (1 << 3) | (1 << 6) | (1 << 7), { [3] = 4, [7] = 6, [2] = 14, [6] = 14 },
+                                 { 0 } };
+static const GpWho gp_kaili = { 0x190, 0xA8, (1 << 4) | (1 << 6) | (1 << 14), 1 << 4, (1 << 1) | (1 << 2), 1 << 7, 15,
+                                (1 << 4) | (1 << 6) | (1 << 14), { [4] = 3, [6] = 7, [14] = 2 },
+                                { [4] = 3, [6] = 2, [14] = 2, [7] = 2 } };
 
 /* The clothes: his index -> hers by role (skin, shirt, jacket, trousers, outlines), and back. */
 static const u8 gp_j2k[16] = { 0, 4, 7, 12, 6, 7, 5, 3, 1, 2, 10, 13, 14, 8, 9, 15 };
@@ -61,7 +75,7 @@ typedef struct GpHead {
     GpPix px[GP_MAX * GP_MAX / 4];
     s32 n;
     s32 bottom; /* the chin's row */
-    s32 x2;     /* x0 + x1 of the cap/hair blob: twice its centre */
+    s32 x2;     /* twice the x of its axis: the face's skin, or the cap/hair blob's centre when no face shows */
 } GpHead;
 
 typedef struct GpRefs {
@@ -177,77 +191,96 @@ static void gp_pack(u8 *pixels) {
 #define GP_IN(m, v) (((m) >> (v)) & 1)
 
 static u8 gp_mark[GP_MAX][GP_MAX];
+static u8 gp_over[GP_MAX][GP_MAX]; /* where the matched head is */
 static s16 gp_stack[GP_MAX * GP_MAX][2];
+static s16 gp_part[GP_MAX * GP_MAX][2];
 
 typedef struct GpFound {
-    s32 dir, flip;
     s32 bottom, x2;
 } GpFound;
 
-/* Marks the head of gp_img in gp_mark (1) and says where it is and which way it looks; 0 when there is none. */
-static int gp_find_head(const GpWho *who, GpFound *f) {
-    static u8 seen[GP_MAX][GP_MAX];
-    s32 y, x, best_key = 0, best_label = 0, label = 0;
-    s32 y0 = GP_MAX, x0 = GP_MAX, y1 = -1, x1 = -1, size = 0;
-    s32 bottom, nsk = 0, sum = 0, rows_end, cols0, cols1, d;
-    double rel;
+/* Marks in gp_mark (1) the blobs of `colours` in gp_img with at least half their pixels in gp_over (a band can split a
+ * cap in two), or else the one with the most there; with no `over`, the blob with the most `key` pixels. The first
+ * wins a tie. Returns how many pixels were marked, and their top row and columns. */
+static s32 gp_blob(u16 colours, u16 key, int over, s32 *top, s32 *left, s32 *right) {
+    static u16 seen[GP_MAX][GP_MAX];
+    static u8 keep[GP_MAX * GP_MAX + 1];
+    s32 y, x, best_k = 0, best_label = 0, label = 0, any = 0, size = 0;
 
+    *top = GP_MAX;
+    *left = GP_MAX;
+    *right = -1;
     memset(seen, 0, sizeof(seen));
     memset(gp_mark, 0, sizeof(gp_mark));
-    /* the blobs of cap colours, labelled in scan order; keep the one with the most key pixels (the first on a tie) */
     for (y = 0; y < gp_h; y++) {
         for (x = 0; x < gp_w; x++) {
-            s32 sp = 0, keys = 0;
+            s32 sp = 0, k = 0, n = 0;
 
-            if (seen[y][x] || !GP_IN(who->cap, gp_img[y][x])) {
+            if (seen[y][x] || !GP_IN(colours, gp_img[y][x])) {
                 continue;
             }
             label++;
-            seen[y][x] = (u8)label;
+            seen[y][x] = (u16)label;
             gp_stack[sp][0] = (s16)y;
             gp_stack[sp][1] = (s16)x;
             sp++;
             while (sp > 0) {
-                s32 a, b, k;
+                s32 a, b, j;
                 static const s32 dy[4] = { 1, -1, 0, 0 }, dx[4] = { 0, 0, 1, -1 };
 
                 sp--;
                 a = gp_stack[sp][0];
                 b = gp_stack[sp][1];
-                keys += GP_IN(who->key, gp_img[a][b]);
-                for (k = 0; k < 4; k++) {
-                    s32 c = a + dy[k], e = b + dx[k];
+                n++;
+                k += over ? gp_over[a][b] : GP_IN(key, gp_img[a][b]);
+                for (j = 0; j < 4; j++) {
+                    s32 c = a + dy[j], e = b + dx[j];
 
-                    if (c >= 0 && c < gp_h && e >= 0 && e < gp_w && !seen[c][e] && GP_IN(who->cap, gp_img[c][e])) {
-                        seen[c][e] = (u8)label;
+                    if (c >= 0 && c < gp_h && e >= 0 && e < gp_w && !seen[c][e] && GP_IN(colours, gp_img[c][e])) {
+                        seen[c][e] = (u16)label;
                         gp_stack[sp][0] = (s16)c;
                         gp_stack[sp][1] = (s16)e;
                         sp++;
                     }
                 }
             }
-            if (keys > best_key) {
-                best_key = keys;
+            keep[label] = (u8)(over && k * 2 >= n);
+            any |= keep[label];
+            if (k > best_k) {
+                best_k = k;
                 best_label = label;
             }
         }
     }
-    if (best_label == 0) {
-        return 0;
+    if (!any) {
+        if (best_label == 0) {
+            return 0;
+        }
+        keep[best_label] = 1;
     }
     for (y = 0; y < gp_h; y++) {
         for (x = 0; x < gp_w; x++) {
-            if (seen[y][x] == best_label) {
+            if (seen[y][x] && keep[seen[y][x]]) {
                 gp_mark[y][x] = 1;
                 size++;
-                y0 = y < y0 ? y : y0;
-                y1 = y > y1 ? y : y1;
-                x0 = x < x0 ? x : x0;
-                x1 = x > x1 ? x : x1;
+                *top = y < *top ? y : *top;
+                *left = x < *left ? x : *left;
+                *right = x > *right ? x : *right;
             }
         }
     }
-    if (size < 6) {
+    return size;
+}
+
+/* Marks the head of gp_img in gp_mark (non-zero; bit 0: the cap/hair blobs, gp_blob's) and says where its chin and
+ * axis are; 0 when there is none. `over`: the cap/hair is looked for where the matched head is (gp_over); without
+ * it (the idle frames the reference heads are cut from), by its key colour. */
+static int gp_find_head(const GpWho *who, int over, GpFound *f) {
+    s32 y, x, y0, x0, x1;
+    s32 bottom, nsk = 0, sum = 0, rows_end, cols0, cols1;
+
+    if (gp_blob(who->cap, who->key, over, &y0, &x0, &x1) < 6) {
+        memset(gp_mark, 0, sizeof(gp_mark));
         return 0;
     }
     rows_end = y0 + who->neck < gp_h ? y0 + who->neck : gp_h;
@@ -267,7 +300,7 @@ static int gp_find_head(const GpWho *who, GpFound *f) {
     for (y = y0; y < gp_h && y <= bottom; y++) {
         for (x = cols0; x < cols1; x++) {
             if (gp_img[y][x]) {
-                gp_mark[y][x] = 1;
+                gp_mark[y][x] |= 8;
             }
         }
     }
@@ -304,21 +337,59 @@ static int gp_find_head(const GpWho *who, GpFound *f) {
             }
         }
     }
-    rel = nsk ? (double)sum / nsk - (x0 + x1) / 2.0 : 0.0;
-    if (nsk < 4) {
-        d = 4;
-    } else if (rel > -1.0 && rel < 1.0) {
-        d = 0;
-    } else if (rel > -2.5 && rel < 2.5) {
-        d = nsk >= 12 ? 1 : 3;
-    } else {
-        d = 2;
-    }
-    f->dir = d;
-    f->flip = rel > 0;
     f->bottom = bottom;
-    f->x2 = x0 + x1;
+    f->x2 = nsk >= 4 ? (4 * sum + nsk) / (2 * nsk) : x0 + x1; /* twice the mean, rounded */
     return 1;
+}
+
+typedef struct GpMatch {
+    s32 n, total; /* pixels equal, of how many */
+    s32 dir, flip, dy, dx;
+} GpMatch;
+
+/* The best placement in gp_img of one of the person's own idle heads (only direction `hint` when it is not negative),
+ * mirrored about its axis too, the head whole inside the frame: the first with the most equal pixels in (direction,
+ * mirror, dy, dx) order. 0 when no placement has an equal pixel. */
+static int gp_match(const GpRefs *own, s32 hint, GpMatch *m) {
+    s32 d, flip, k, dy, dx;
+
+    m->n = 0;
+    for (d = hint < 0 ? 0 : hint; d < (hint < 0 ? 5 : hint + 1); d++) {
+        const GpHead *h = &own->head[d];
+
+        for (flip = 0; flip < 2; flip++) {
+            s32 y0 = GP_MAX, y1 = -GP_MAX, x0 = 4 * GP_MAX, x1 = -4 * GP_MAX;
+
+            for (k = 0; k < h->n; k++) {
+                s32 x = flip ? h->x2 - h->px[k].x : h->px[k].x, y = h->px[k].y;
+
+                y0 = y < y0 ? y : y0;
+                y1 = y > y1 ? y : y1;
+                x0 = x < x0 ? x : x0;
+                x1 = x > x1 ? x : x1;
+            }
+            for (dy = -y0; dy < gp_h - y1; dy++) {
+                for (dx = -x0; dx < gp_w - x1; dx++) {
+                    s32 n = 0;
+
+                    for (k = 0; k < h->n; k++) {
+                        s32 x = flip ? h->x2 - h->px[k].x : h->px[k].x;
+
+                        n += gp_img[h->px[k].y + dy][x + dx] == h->px[k].v;
+                    }
+                    if (n > m->n) {
+                        m->n = n;
+                        m->total = h->n;
+                        m->dir = d;
+                        m->flip = flip;
+                        m->dy = dy;
+                        m->dx = dx;
+                    }
+                }
+            }
+        }
+    }
+    return m->n > 0;
 }
 
 /* ---- the references ---- */
@@ -372,7 +443,7 @@ static int gp_read_refs(const GpWho *who, GpRefs *r) {
         }
         memcpy(r->clut, clut, sizeof(r->clut)); /* every frame of a file has the same CLUT; the last one is kept */
         gp_unpack(pixels);
-        if (!gp_find_head(who, &f)) {
+        if (!gp_find_head(who, 0, &f)) {
             free(data);
             return 0;
         }
@@ -437,11 +508,116 @@ static s32 gp_round_half_even(s32 twice) {
 
 /* ---- one frame, one file ---- */
 
-static void gp_frame(u8 *data, s32 i, const GpWho *src, const GpRefs *dst, const u8 *map) {
+#define GP_LEFTOVER 8 /* the biggest piece cut loose by the head's removal that is dropped with it */
+
+/* What the removal cut loose from the body (a pigtail's tip, a cap's corner) goes with the head: every piece of at
+ * most GP_LEFTOVER pixels touching it, corners included. */
+static void gp_mark_leftovers(void) {
+    static u8 seen[GP_MAX][GP_MAX];
+    s32 y, x;
+
+    memset(seen, 0, sizeof(seen));
+    for (y = 0; y < gp_h; y++) {
+        for (x = 0; x < gp_w; x++) {
+            s32 sp = 0, n = 0, touch = 0, k;
+
+            if (!gp_img[y][x] || gp_mark[y][x] || seen[y][x]) {
+                continue;
+            }
+            seen[y][x] = 1;
+            gp_stack[sp][0] = (s16)y;
+            gp_stack[sp][1] = (s16)x;
+            sp++;
+            while (sp > 0) {
+                s32 a, b, c, e;
+
+                sp--;
+                a = gp_stack[sp][0];
+                b = gp_stack[sp][1];
+                gp_part[n][0] = (s16)a;
+                gp_part[n][1] = (s16)b;
+                n++;
+                for (c = a - 1; c <= a + 1; c++) {
+                    for (e = b - 1; e <= b + 1; e++) {
+                        if (c < 0 || c >= gp_h || e < 0 || e >= gp_w) {
+                            continue;
+                        }
+                        if (gp_mark[c][e]) {
+                            touch = 1;
+                        } else if ((c == a) != (e == b) && gp_img[c][e] && !seen[c][e]) {
+                            seen[c][e] = 1;
+                            gp_stack[sp][0] = (s16)c;
+                            gp_stack[sp][1] = (s16)e;
+                            sp++;
+                        }
+                    }
+                }
+            }
+            if (touch && n <= GP_LEFTOVER) {
+                for (k = 0; k < n; k++) {
+                    gp_mark[gp_part[k][0]][gp_part[k][1]] = 1;
+                }
+            }
+        }
+    }
+}
+
+/* Hair hanging below the chin over the back (body on both sides of it in its row) is not removed, which would leave a
+ * hole: it becomes the other's clothes, with the outline pixels inside it (no neighbour of the four empty, two or
+ * more of them that hair). */
+static void gp_hang(const GpWho *src, s32 bottom) {
+    static u8 low[GP_MAX][GP_MAX];
+    static const s32 dy[4] = { 1, -1, 0, 0 }, dx[4] = { 0, 0, 1, -1 };
+    s32 y, x, k;
+
+    memset(low, 0, sizeof(low));
+    for (y = bottom + 1; y < gp_h; y++) {
+        s32 first = -1, last = -1; /* the row's body: what is not the head */
+
+        for (x = 0; x < gp_w; x++) {
+            if (gp_img[y][x] && !gp_mark[y][x]) {
+                first = first < 0 ? x : first;
+                last = x;
+            }
+        }
+        for (x = first + 1; first >= 0 && x < last; x++) {
+            low[y][x] = gp_mark[y][x] && GP_IN(src->cap, gp_img[y][x]);
+        }
+    }
+    for (y = 0; y < gp_h; y++) {
+        for (x = 0; x < gp_w; x++) {
+            if (low[y][x]) {
+                gp_mark[y][x] = 0;
+                gp_out[y][x] = src->hang_to[gp_img[y][x]];
+            }
+        }
+    }
+    for (y = 1; y < gp_h - 1; y++) {
+        for (x = 1; x < gp_w - 1; x++) {
+            s32 full = 1, hair = 0;
+
+            if (!GP_IN(src->outline, gp_img[y][x]) || gp_mark[y][x] || low[y][x]) {
+                continue;
+            }
+            for (k = 0; k < 4; k++) {
+                full &= gp_img[y + dy[k]][x + dx[k]] != 0;
+                hair += low[y + dy[k]][x + dx[k]];
+            }
+            if (full && hair >= 2) {
+                gp_out[y][x] = src->hang_to[gp_img[y][x]];
+            }
+        }
+    }
+}
+
+/* `hint`: the frame's direction by the animation table, or -1. */
+static void gp_frame(u8 *data, s32 i, const GpWho *src, const GpRefs *own, const GpRefs *dst, const u8 *map,
+                     s32 hint) {
     u16 *clut;
     u8 *pixels;
     s32 y, x, k;
     GpFound f;
+    GpMatch m;
 
     if (!gp_tim(data, i, &clut, &pixels, &gp_w, &gp_h)) {
         return;
@@ -452,23 +628,73 @@ static void gp_frame(u8 *data, s32 i, const GpWho *src, const GpRefs *dst, const
             gp_out[y][x] = gp_img[y][x] ? map[gp_img[y][x]] : 0;
         }
     }
-    if (gp_find_head(src, &f)) {
-        const GpHead *h = &dst->head[f.dir];
-        s32 sh = gp_round_half_even(f.x2 - h->x2); /* (hx - khx), both centres being halves of x0 + x1 */
+    if (gp_match(own, hint, &m)) {
+        const GpHead *o = &own->head[m.dir], *h = &dst->head[m.dir];
+        s32 found, sh;
 
-        for (y = 0; y < gp_h; y++) {
-            for (x = 0; x < gp_w; x++) {
-                if (gp_mark[y][x]) {
-                    gp_out[y][x] = 0;
+        memset(gp_over, 0, sizeof(gp_over));
+        for (k = 0; k < o->n; k++) {
+            gp_over[o->px[k].y + m.dy][(m.flip ? o->x2 - o->px[k].x : o->px[k].x) + m.dx] = 1;
+        }
+        found = gp_find_head(src, 1, &f);
+        if (m.n * 2 >= m.total) {
+            /* the matched head is the head: the other's goes exactly where it is */
+            for (y = 0; y < gp_h; y++) {
+                for (x = 0; x < gp_w; x++) {
+                    gp_mark[y][x] |= gp_over[y][x];
                 }
             }
+            f.bottom = o->bottom + m.dy;
+            f.x2 = o->x2 + 2 * m.dx;
+            found = 1;
+        } else if (hint >= 0) {
+            m.flip = 0; /* too poor a match to say it is mirrored; the table's frames are not */
         }
-        for (k = 0; k < h->n; k++) {
-            s32 hx = f.flip ? h->x2 - h->px[k].x : h->px[k].x;
-            s32 yy = h->px[k].y - h->bottom + f.bottom, xx = hx + sh;
+        if (found) {
+            s32 head = 0, all = 0;
 
-            if (yy >= 0 && yy < gp_h && xx >= 0 && xx < gp_w) {
-                gp_out[yy][xx] = h->px[k].v;
+            for (y = 0; y < gp_h; y++) {
+                for (x = 0; x < gp_w; x++) {
+                    all += gp_img[y][x] != 0;
+                    head += gp_img[y][x] && gp_mark[y][x];
+                }
+            }
+            if (4 * head >= 3 * all) {
+                /* A head with no body left under it (three quarters of the frame) is one seen from above, lying: no
+                 * head of the five fits, so the cap/hair is dyed the other's instead. */
+                s32 t, l, r;
+
+                gp_blob(src->top, src->key, 0, &t, &l, &r);
+                for (y = 0; y < gp_h; y++) {
+                    for (x = 0; x < gp_w; x++) {
+                        if (gp_mark[y][x]) {
+                            gp_out[y][x] = src->top_to[gp_img[y][x]];
+                        }
+                    }
+                }
+                found = 0;
+            }
+        }
+        if (found) {
+            gp_mark_leftovers();
+            if (src->hang_to[7]) { /* only her hair hangs; his cap does not */
+                gp_hang(src, f.bottom);
+            }
+            sh = gp_round_half_even(f.x2 - h->x2); /* half the difference of the two axes, both kept doubled */
+            for (y = 0; y < gp_h; y++) {
+                for (x = 0; x < gp_w; x++) {
+                    if (gp_mark[y][x]) {
+                        gp_out[y][x] = 0;
+                    }
+                }
+            }
+            for (k = 0; k < h->n; k++) {
+                s32 hx = m.flip ? h->x2 - h->px[k].x : h->px[k].x;
+                s32 yy = h->px[k].y - h->bottom + f.bottom, xx = hx + sh;
+
+                if (yy >= 0 && yy < gp_h && xx >= 0 && xx < gp_w) {
+                    gp_out[yy][xx] = h->px[k].v;
+                }
             }
         }
     }
@@ -477,27 +703,44 @@ static void gp_frame(u8 *data, s32 i, const GpWho *src, const GpRefs *dst, const
 }
 
 /* Repaints every frame the animation table's scripts name, once each. */
-static void gp_file(u8 *data, s32 table, const GpWho *src, const GpRefs *dst, const u8 *map) {
+static void gp_file(u8 *data, s32 table, const GpWho *src, const GpRefs *own, const GpRefs *dst, const u8 *map) {
     static u8 done[1024];
-    s32 n = gp_count(data), k, e;
+    static s8 hint[1024];
+    s32 n = gp_count(data), k, e, j, pass;
     const s16 *a;
 
     if (n <= 0 || n > (s32)sizeof(done) || table >= n) {
         return;
     }
     memset(done, 0, sizeof(done));
-    for (a = (const s16 *)gp_sub(data, table); a[0] != 0; a += 6) {
-        for (k = 0; k < 5; k++) {
-            const s32 *s;
+    memset(hint, -1, sizeof(hint));
+    /* pass 0: a frame's direction is the slot of the first script naming it that only one slot of its animation uses
+     * (a scene's animation often has one script in several slots, whatever way it faces); pass 1: the repaint */
+    for (pass = 0; pass < 2; pass++) {
+        for (a = (const s16 *)gp_sub(data, table); a[0] != 0; a += 6) {
+            for (k = 0; k < 5; k++) {
+                const s32 *s;
+                s32 uses = 0;
 
-            if (a[1 + k] < 0 || a[1 + k] >= n) {
-                continue;
-            }
-            s = (const s32 *)gp_sub(data, a[1 + k]);
-            for (e = 0; e < 256 && s[0] > 0; e++, s += 4) {
-                if (s[1] >= 0 && s[1] < n && !done[s[1]]) {
-                    done[s[1]] = 1;
-                    gp_frame(data, s[1], src, dst, map);
+                if (a[1 + k] < 0 || a[1 + k] >= n) {
+                    continue;
+                }
+                for (j = 0; j < 5; j++) {
+                    uses += a[1 + j] == a[1 + k];
+                }
+                s = (const s32 *)gp_sub(data, a[1 + k]);
+                for (e = 0; e < 256 && s[0] > 0; e++, s += 4) {
+                    if (s[1] < 0 || s[1] >= n) {
+                        continue;
+                    }
+                    if (pass == 0) {
+                        if (uses == 1 && hint[s[1]] < 0) {
+                            hint[s[1]] = (s8)k;
+                        }
+                    } else if (!done[s[1]]) {
+                        done[s[1]] = 1;
+                        gp_frame(data, s[1], src, own, dst, map, hint[s[1]]);
+                    }
                 }
             }
         }
@@ -519,9 +762,9 @@ static const struct {
 
 static void gp_apply(u32 i, u8 *data) {
     if (gp_files[i].to_kaili) {
-        gp_file(data, gp_files[i].table, &gp_junior, &gp_ref_kaili, gp_j2k);
+        gp_file(data, gp_files[i].table, &gp_junior, &gp_ref_junior, &gp_ref_kaili, gp_j2k);
     } else {
-        gp_file(data, gp_files[i].table, &gp_kaili, &gp_ref_junior, gp_k2j);
+        gp_file(data, gp_files[i].table, &gp_kaili, &gp_ref_kaili, &gp_ref_junior, gp_k2j);
     }
 }
 

@@ -29,8 +29,18 @@ as ações. Por isso a solução não aponta o ator para o arquivo dela. Ela **r
 
 - **Quando:** assim que o `cdload` termina de ler um dos 8 arquivos (`src/main/cdload.c`, transição 2→3), cada quadro
   que as tabelas de animação citam é repintado no próprio buffer.
-- **A cabeça:** acha a cabeça (o boné dele ou o cabelo dela) e decide a direção pela pele do rosto (frente, 3/4,
-  perfil, costas e o lado). Corta a cabeça e cola a do outro, da mesma direção, alinhada pelo queixo.
+- **A cabeça:** as cabeças paradas do próprio personagem (animação 1, 5 direções) são casadas com o quadro, pixel a
+  pixel, também espelhadas. A direção é o slot do quadro na tabela de animação (os 5 slots são as 5 direções) quando
+  um script de slot único cita o quadro; senão, a da cabeça casada. Com pelo menos metade dos pixels iguais, a cabeça
+  do outro entra exatamente onde a original está (acompanha o movimento original); senão (cabeça inclinada ou
+  deitada), vai no queixo achado sob o boné/cabelo. As duas cabeças são alinhadas rosto com rosto (média do x da
+  pele). Pedaços de até 8 pixels que a remoção solta do corpo (ponta de maria-chiquinha, canto do boné) saem junto.
+- **Cabeça que cobre o corpo** (deitado, visto de cima: 3/4 do quadro seria removido): nenhuma das 5 cabeças serve,
+  então o boné/cabelo é só tingido com as cores do outro, sem colagem.
+- **Cabelo dela caindo nas costas** (abaixo do queixo, com corpo dos dois lados): não é removido (deixaria um buraco);
+  vira a roupa do Junior.
+  - *Antes (até 2026-11-14)* a direção era adivinhada pela pele do rosto, quadro a quadro: errava quase todo 3/4 e
+    costas (cabeça de perfil em corpo de costas) e trocava de direção dentro do idle ("girando a cabeça").
 - **A roupa:** recolorida com uma tabela de 16 índices, e a CLUT passa a ser a do outro.
 - **O que não muda:** animações, tempos e scripts continuam os do jogo. Por isso o chute, a pesca e todas as cenas
   funcionam sem tradução de animação.
@@ -61,9 +71,7 @@ as ações. Por isso a solução não aponta o ator para o arquivo dela. Ela **r
 
 ### Para o playtest (o que olhar)
 
-- **Poses deitadas** (anims 16, 38 e 39 das cenas): a cabeça colada fica em pé num corpo deitado. É legível, mas é o
-  ponto mais fraco.
-- **Quadros 3/4 de costas** com chapéu inclinado: um ou outro pode sobrar com um pixel do boné.
+- **Poses deitadas** (anims 16, 38 e 39 das cenas): agora o boné vira cabelo visto de cima; sem maria-chiquinha.
 - **Chute em árvore, pesca e as ações `PLYD`/`PLYL`:** foram verificadas quadro a quadro nas folhas, mas não jogando.
 - **Tela de deck e nome do Digimon:** usam a mesma página `0x771`, mas não foram vistas rodando.
 - **Fora do censo:** qualquer outro lugar com o Junior. O censo pela paleta exata não achou mais nenhum, mas uma
