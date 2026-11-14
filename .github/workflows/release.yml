@@ -307,7 +307,7 @@ jobs:
             readelf -d "$bin" | grep NEEDED
             bad_deps="$(readelf -d "$bin" | grep NEEDED | grep -E 'lib(EGL|GLESv2|gbm)' || true)"
             [[ -z "$bad_deps" ]] || { echo "::error::$bin must not hard-link EGL/GLES/GBM: $bad_deps"; exit 1; }
-            bad_glibc="$(readelf -V "$bin" | grep -oE 'GLIBC_[0-9.]+' | sort -uV | awk -F_ '$2+0 > 2.28 {print}' || true)"
+            bad_glibc="$(readelf -V "$bin" | grep -oE 'GLIBC_[0-9.]+' | sort -uV | awk -F_ '{split($2, v, "."); if (v[1]+0 > 2 || (v[1]+0 == 2 && v[2]+0 > 28)) print}' || true)"
             [[ -z "$bad_glibc" ]] || { echo "::error::$bin requires glibc > 2.28: $bad_glibc"; exit 1; }
           done
           file build/armhf-sdl2/dw2003 | grep -q "ELF 32-bit LSB.*ARM"
