@@ -36,14 +36,16 @@ public class Dw3Activity extends SDLActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         File dir = resolveAppDataDir();
         if (dir != null) {
             dir.mkdirs();
             new File(dir, "game").mkdirs();
             new File(dir, "logs").mkdirs();
-            nativeSetFilesDir(dir.getAbsolutePath());
+            try {
+                nativeSetFilesDir(dir.getAbsolutePath());
+            } catch (Throwable ignored) {}
         }
-        super.onCreate(savedInstanceState);
         enableImmersiveMode();
     }
 
