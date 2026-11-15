@@ -31,7 +31,8 @@
  * Running (his animations 5 and 6) she has no drawing for. There her head and trunk come from her walking frame of
  * the same step and direction, down to the belt, and only his legs stay, in her colours (gp_bust_frame).
  *
- * Last, girls_power_art.h's hand-drawn retouches are drawn over the frames they name.
+ * Last, girls_power_art.h's hand-drawn retouches are drawn over the frames they name: pieces of the other's own
+ * frames from the disc (a head turned the way the pose asks) and pixels drawn by hand.
  *
  * Prototyped in Python over the disc's frames (tools/girls_power_preview.py); this is the same algorithm.
  * Off under a replay script (shared with the emulator) like the definitive rules; DW3_GIRLS=0 or 1 forces it. */
@@ -1075,31 +1076,93 @@ static int gp_bust_frame(u8 *data, s32 i, u8 *sd, const GpRefs *junior, const Gp
 
 /* ---- the hand-drawn retouches ---- */
 
+/* girls_power_art.h's steps, in its order: GP_PASTE puts a piece of a frame of a disc file on the frame (a drawing of
+ * the other's the automatic swap does not use: a head turned or tilted another way, an arm), GP_ART draws pixels over
+ * it. The file ends the list at 0. */
 static const struct {
     s32 file, frame;
-    const char *rows; /* the frame's rows one after the other */
+    s32 src, sframe, x, y, w, h, tx, ty, how; /* GP_PASTE */
+    const char *rows;                        /* GP_ART: the frame's rows one after the other */
 } gp_art[] = {
-#define GP_ART(file, frame, rows) { file, frame, rows },
+#define GP_PASTE(file, frame, src, sframe, x, y, w, h, tx, ty, how)                                                    \
+    { file, frame, src, sframe, x, y, w, h, tx, ty, how, NULL },
+#define GP_ART(file, frame, rows) { file, frame, 0, 0, 0, 0, 0, 0, 0, 0, 0, rows },
 #include "girls_power_art.h"
 #undef GP_ART
-    { 0, 0, NULL },
+#undef GP_PASTE
+    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL },
 };
 
-/* Draws girls_power_art.h's retouch of frame `i` of file `id` over it, when it has one. */
-static void gp_retouch(u8 *data, s32 id, s32 i) {
-    u16 *clut;
-    u8 *pixels;
-    s32 k, y, x;
+#define GP_PASTE_MIRROR 1 /* how: the piece mirrored left to right */
+#define GP_PASTE_RECOLOUR 2 /* how: the piece's colours through the file's table (a piece of his own file in hers) */
 
-    for (k = 0; gp_art[k].rows != NULL; k++) {
+/* The files the pieces come from, as on the disc, read once. */
+static struct {
+    s32 id;
+    u8 *data;
+} gp_piece_files[8];
+static u8 gp_piece[GP_MAX][GP_MAX];
+
+static u8 *gp_piece_file(s32 id) {
+    u32 k;
+
+    for (k = 0; k < sizeof(gp_piece_files) / sizeof(gp_piece_files[0]); k++) {
+        if (gp_piece_files[k].data == NULL) {
+            gp_piece_files[k].data = gp_read_file(id);
+            gp_piece_files[k].id = id;
+        }
+        if (gp_piece_files[k].id == id) {
+            return gp_piece_files[k].data;
+        }
+    }
+    return NULL;
+}
+
+/* Draws girls_power_art.h's steps for frame `i` of file `id` over it, when it has any. `map`: the file's table. */
+static void gp_retouch(u8 *data, s32 id, s32 i, const u8 *map) {
+    u16 *clut;
+    u8 *pixels, *sd, *spx;
+    s32 k, y, x, sw = 0, sh = 0;
+
+    for (k = 0; gp_art[k].file != 0; k++) {
         const char *c = gp_art[k].rows;
 
-        if (gp_art[k].file != id || gp_art[k].frame != i || !gp_tim(data, i, &clut, &pixels, &gp_w, &gp_h)) {
+        if (gp_art[k].file != id || gp_art[k].frame != i) {
+            continue;
+        }
+        if (c == NULL) { /* the piece, read before the frame: gp_unpack fills gp_img */
+            sd = gp_piece_file(gp_art[k].src);
+            if (sd == NULL || !gp_tim(sd, gp_art[k].sframe, &clut, &spx, &gp_w, &gp_h)) {
+                continue;
+            }
+            gp_unpack(spx);
+            memcpy(gp_piece, gp_img, sizeof(gp_piece));
+            sw = gp_w;
+            sh = gp_h;
+        }
+        if (!gp_tim(data, i, &clut, &pixels, &gp_w, &gp_h)) {
             continue;
         }
         gp_unpack(pixels);
         memcpy(gp_out, gp_img, sizeof(gp_out));
-        for (y = 0; y < gp_h; y++) {
+        if (c == NULL) {
+            for (y = 0; y < gp_art[k].h; y++) {
+                for (x = 0; x < gp_art[k].w; x++) {
+                    s32 sy = gp_art[k].y + y, sx = gp_art[k].x + x, ty = gp_art[k].ty + y;
+                    s32 tx = gp_art[k].tx + ((gp_art[k].how & GP_PASTE_MIRROR) ? gp_art[k].w - 1 - x : x);
+                    u8 v;
+
+                    if (sy < 0 || sy >= sh || sx < 0 || sx >= sw || ty < 0 || ty >= gp_h || tx < 0 || tx >= gp_w) {
+                        continue;
+                    }
+                    v = gp_piece[sy][sx];
+                    if (v) {
+                        gp_out[ty][tx] = (gp_art[k].how & GP_PASTE_RECOLOUR) ? map[v] : v;
+                    }
+                }
+            }
+        }
+        for (y = 0; c != NULL && y < gp_h; y++) {
             for (x = 0; x < gp_w && *c != '\0'; x++, c++) {
                 if (*c >= '0' && *c <= '9') {
                     gp_out[y][x] = (u8)(*c - '0');
@@ -1174,7 +1237,7 @@ static void gp_file(u8 *data, s32 id, s32 table, const GpWho *src, const GpRefs 
                         } else if (gp_bust_src[s[1]] < 0 || !gp_bust_frame(data, s[1], sd, own, dst)) {
                             gp_frame(data, s[1], src, own, dst, map, hint[s[1]]);
                         }
-                        gp_retouch(data, id, s[1]);
+                        gp_retouch(data, id, s[1], map);
                     }
                 }
             }

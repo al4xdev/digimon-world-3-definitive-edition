@@ -425,14 +425,39 @@ def busts(d, table, sd, stable, full):
 
 
 def art():
-    """(file id, frame) -> rows of the hand-drawn retouches (port/game/girls_power_art.h): '.' keeps the pixel, '0'
-    empties it, 1-9 A-F set its colour (the other's palette)"""
+    """(file id, frame) -> the hand-drawn retouch steps of port/game/girls_power_art.h, in its order: ("paste", src
+    file, src frame, x, y, w, h, to x, to y, how) puts that piece of a disc frame on it (how: 1 mirrored, 2 through
+    the file's colour table), ("art", rows) draws over it ('.' keeps the pixel, '0' empties it, 1-9 A-F set its
+    colour, the other's palette)"""
     import re
     out = {}
-    if ART.exists():
-        for m in re.finditer(r"GP_ART\((0x[0-9A-Fa-f]+),\s*(\d+),((?:\s*\"[^\"]*\")+)\s*\)", ART.read_text()):
-            out[(int(m.group(1), 16), int(m.group(2)))] = re.findall(r'"([^"]*)"', m.group(3))
+    if not ART.exists():
+        return out
+    text = re.sub(r"/\*.*?\*/", "", ART.read_text(), flags=re.S)
+    for m in re.finditer(r"GP_(PASTE|ART)\(([^\"]*?)((?:\s*\"[^\"]*\")*)\s*\)", text):
+        nums = [int(v, 0) for v in m.group(2).replace(",", " ").split()]
+        step = ("art", re.findall(r'"([^"]*)"', m.group(3))) if m.group(1) == "ART" else ("paste", *nums[2:])
+        out.setdefault((nums[0], nums[1]), []).append(step)
     return out
+
+
+def draw_steps(o, steps, to_kaili):
+    """the frame `o` (rows of indices) with the steps of art() drawn on it, in place"""
+    H, W = len(o), len(o[0])
+    for st in steps:
+        if st[0] == "art":
+            for n, c in enumerate("".join(st[1])[:H * W]):
+                if c in "0123456789ABCDEF":
+                    o[n // W][n % W] = int(c, 16)
+            continue
+        src, sf, x0, y0, w, h, tx, ty, how = st[1:]
+        piece = tim(disc_files.read(src), sf)[1]
+        for y in range(h):
+            for x in range(w):
+                sy, sx, yy, xx = y0 + y, x0 + x, ty + y, tx + (w - 1 - x if how & 1 else x)
+                if 0 <= sy < len(piece) and 0 <= sx < len(piece[0]) and 0 <= yy < H and 0 <= xx < W and piece[sy][sx]:
+                    v = piece[sy][sx]
+                    o[yy][xx] = ((J2K if to_kaili else K2J)[v]) if how & 2 else v
 
 
 def repaint(fid, retouch=True):
@@ -461,9 +486,7 @@ def repaint(fid, retouch=True):
             o = bust(idx, tim(sd, half[f][0])[1], half[f][1])
         if o is None:
             o = swap(idx, JUNIOR, kheads, J2K, hint.get(f)) if to_kaili else swap(idx, KAILI, jheads, K2J, hint.get(f))
-        for n, c in enumerate("".join(drawn.get((fid, f), ()))[:len(o) * len(o[0])]):
-            if c in "0123456789ABCDEF":
-                o[n // len(o[0])][n % len(o[0])] = int(c, 16)
+        draw_steps(o, drawn.get((fid, f), ()), to_kaili)
         q = sub(d0, f) + 8
         struct.pack_into("<16H", d, q + 12, *(kclut if to_kaili else jclut))
         q += struct.unpack_from("<I", d0, q)[0] + 12
