@@ -25,7 +25,7 @@ public class Dw3Activity extends SDLActivity {
 
     @Override
     protected String[] getLibraries() {
-        return new String[] { "SDL2", "main" };
+        return new String[] { "SDL3", "main" };
     }
 
     private File resolveAppDataDir() {

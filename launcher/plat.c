@@ -19,6 +19,8 @@
 #endif
 #ifdef HAVE_SDL2
 #include <SDL2/SDL.h>
+#elif defined(HAVE_SDL3)
+#include <SDL3/SDL.h>
 #endif
 
 extern int is_portmaster, is_android;
@@ -31,7 +33,7 @@ void plat_desktop_size(int *w, int *h) {
     if (h) *h = desk_h;
 }
 
-#ifdef HAVE_SDL2
+#if defined(HAVE_SDL2) || defined(HAVE_SDL3)
 static SDL_Window *win;
 #endif
 
@@ -40,6 +42,11 @@ void plat_toggle_fullscreen(void) {
     if (kind_open == PLAT_SDL && win) {
         Uint32 f = SDL_GetWindowFlags(win);
         SDL_SetWindowFullscreen(win, (f & SDL_WINDOW_FULLSCREEN_DESKTOP) ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP);
+    }
+#elif defined(HAVE_SDL3)
+    if (kind_open == PLAT_SDL && win) {
+        SDL_WindowFlags f = SDL_GetWindowFlags(win);
+        SDL_SetWindowFullscreen(win, (f & SDL_WINDOW_FULLSCREEN) == 0);
     }
 #endif
 }
@@ -286,6 +293,110 @@ static int btn_code(int b) {
     }
     return 0;
 }
+#elif defined(HAVE_SDL3)
+static SDL_Renderer *ren;
+static SDL_Texture *tex;
+static SDL_Gamepad *pad;
+static int trig_l, trig_r;
+
+static int sdl_open(void) {
+    if (is_android) {
+        SDL_SetHint(SDL_HINT_ORIENTATIONS, "LandscapeLeft LandscapeRight");
+    }
+    if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_GAMEPAD | SDL_INIT_EVENTS)) {
+        if (!SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
+            return -1;
+        }
+    }
+    const SDL_DisplayMode *dm = SDL_GetDesktopDisplayMode(SDL_GetPrimaryDisplay());
+    if (dm && dm->w > 0 && dm->h > 0) {
+        desk_w = dm->w;
+        desk_h = dm->h;
+    }
+    int pm_mode = is_portmaster || is_android || getenv("DW3_PORTMASTER") != NULL || getenv("CFW_NAME") != NULL;
+    int win_w = W, win_h = H;
+    SDL_WindowFlags wflags = 0;
+    if (pm_mode) {
+        ui_init(1);
+        wflags = SDL_WINDOW_FULLSCREEN | SDL_WINDOW_HIGH_PIXEL_DENSITY;
+    } else {
+        int sc = (desk_h >= 1350 && desk_w >= 1800) ? 3 : 2;
+        ui_init(sc);
+        win_h = desk_h * 82 / 100;
+        if (win_h < 480) win_h = 480;
+        if (win_h > ui_h) win_h = ui_h;
+        win_w = win_h * 4 / 3;
+        if (win_w > desk_w * 90 / 100) {
+            win_w = desk_w * 90 / 100;
+            win_h = win_w * 3 / 4;
+        }
+        wflags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY;
+    }
+    win = SDL_CreateWindow(pm_mode ? "dw3-launcher" : "Digimon World 3", win_w, win_h, wflags);
+    if (!win) {
+        return -1;
+    }
+    ren = SDL_CreateRenderer(win, NULL);
+    if (!ren) {
+        SDL_DestroyWindow(win);
+        win = NULL;
+        return -1;
+    }
+    SDL_SetRenderVSync(ren, 1);
+    SDL_SetRenderLogicalPresentation(ren, ui_w, ui_h, SDL_LOGICAL_PRESENTATION_LETTERBOX);
+    tex = SDL_CreateTexture(ren, SDL_PIXELFORMAT_XRGB8888, SDL_TEXTUREACCESS_STREAMING, ui_w, ui_h);
+    if (tex) {
+        SDL_SetTextureBlendMode(tex, SDL_BLENDMODE_NONE);
+        SDL_SetTextureScaleMode(tex, SDL_SCALEMODE_LINEAR);
+    }
+    int njoys = 0;
+    SDL_JoystickID *joys = SDL_GetGamepads(&njoys);
+    if (joys) {
+        if (njoys > 0) {
+            pad = SDL_OpenGamepad(joys[0]);
+        }
+        SDL_free(joys);
+    }
+    return 0;
+}
+
+static int key_code(SDL_Keycode k) {
+    switch (k) {
+    case SDLK_RETURN: case SDLK_Z: return K_SOUTH;
+    case SDLK_X: case SDLK_BACKSPACE: case SDLK_ESCAPE: return K_EAST;
+    case SDLK_S: return K_WEST;
+    case SDLK_A: return K_NORTH;
+    case SDLK_Q: return K_L1;
+    case SDLK_E: return K_R1;
+    case SDLK_1: return K_L2;
+    case SDLK_3: return K_R2;
+    case SDLK_TAB: return K_SELECT;
+    case SDLK_SPACE: return K_START;
+    case SDLK_UP: return K_UP;
+    case SDLK_DOWN: return K_DOWN;
+    case SDLK_LEFT: return K_LEFT;
+    case SDLK_RIGHT: return K_RIGHT;
+    }
+    return 0;
+}
+
+static int btn_code(int b) {
+    switch (b) {
+    case SDL_GAMEPAD_BUTTON_SOUTH: return K_SOUTH;
+    case SDL_GAMEPAD_BUTTON_EAST: return K_EAST;
+    case SDL_GAMEPAD_BUTTON_WEST: return K_NORTH;
+    case SDL_GAMEPAD_BUTTON_NORTH: return K_WEST;
+    case SDL_GAMEPAD_BUTTON_LEFT_SHOULDER: return K_L1;
+    case SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER: return K_R1;
+    case SDL_GAMEPAD_BUTTON_BACK: return K_SELECT;
+    case SDL_GAMEPAD_BUTTON_START: return K_START;
+    case SDL_GAMEPAD_BUTTON_DPAD_UP: return K_UP;
+    case SDL_GAMEPAD_BUTTON_DPAD_DOWN: return K_DOWN;
+    case SDL_GAMEPAD_BUTTON_DPAD_LEFT: return K_LEFT;
+    case SDL_GAMEPAD_BUTTON_DPAD_RIGHT: return K_RIGHT;
+    }
+    return 0;
+}
 #endif
 
 /* ---- null: a script of tokens, PPM shots ---- */
@@ -348,7 +459,7 @@ int plat_open(int kind, const char *script) {
         }
         return 0;
     }
-#ifdef HAVE_SDL2
+#if defined(HAVE_SDL2) || defined(HAVE_SDL3)
     return sdl_open();
 #else
     return -1;
@@ -427,6 +538,14 @@ void plat_present(void) {
         SDL_SetRenderDrawColor(ren, 7, 16, 25, 255);
         SDL_RenderClear(ren);
         SDL_RenderCopy(ren, tex, NULL, NULL);
+        SDL_RenderPresent(ren);
+    }
+#elif defined(HAVE_SDL3)
+    if (kind_open == PLAT_SDL && ren) {
+        SDL_UpdateTexture(tex, NULL, fb, ui_w * 4);
+        SDL_SetRenderDrawColor(ren, 7, 16, 25, 255);
+        SDL_RenderClear(ren);
+        SDL_RenderTexture(ren, tex, NULL, NULL);
         SDL_RenderPresent(ren);
     }
 #endif
@@ -624,6 +743,87 @@ int plat_poll(Ev *ev, int timeout_ms) {
         }
         return 0;
     }
+#elif defined(HAVE_SDL3)
+    if (kind_open == PLAT_SDL) {
+        SDL_Event e;
+        if (!SDL_WaitEventTimeout(&e, timeout_ms)) {
+            return 0;
+        }
+        ev->code = 0;
+        ev->x = ev->y = 0;
+        switch (e.type) {
+        case SDL_EVENT_QUIT: return -1;
+        case SDL_EVENT_FINGER_DOWN:
+        case SDL_EVENT_FINGER_MOTION:
+        case SDL_EVENT_FINGER_UP: {
+            int ow = 0, oh = 0;
+            SDL_GetRenderOutputSize(ren, &ow, &oh);
+            if (ow <= 0 || oh <= 0) { ow = W; oh = H; }
+            float sx = (float)ow / (float)ui_w;
+            float sy = (float)oh / (float)ui_h;
+            float sc = sx < sy ? sx : sy;
+            float vw = (float)ui_w * sc, vh = (float)ui_h * sc;
+            float vx = ((float)ow - vw) * 0.5f, vy = ((float)oh - vh) * 0.5f;
+            int lx = (int)(((e.tfinger.x * (float)ow - vx) / vw) * (float)W);
+            int ly = (int)(((e.tfinger.y * (float)oh - vy) / vh) * (float)H);
+            if (lx < 0) lx = 0;
+            if (lx >= W) lx = W - 1;
+            if (ly < 0) ly = 0;
+            if (ly >= H) ly = H - 1;
+            ev->x = lx;
+            ev->y = ly;
+            ev->code = e.type == SDL_EVENT_FINGER_DOWN ? K_TOUCH_DOWN : e.type == SDL_EVENT_FINGER_UP ? K_TOUCH_UP : K_TOUCH_MOVE;
+            ev->down = e.type != SDL_EVENT_FINGER_UP;
+            return 1;
+        }
+        case SDL_EVENT_MOUSE_BUTTON_DOWN:
+        case SDL_EVENT_MOUSE_BUTTON_UP:
+            if (e.button.which == SDL_TOUCH_MOUSEID || e.button.button != SDL_BUTTON_LEFT) return 0;
+            ev->x = (int)(e.button.x * W / (ui_w > 0 ? ui_w : W));
+            ev->y = (int)(e.button.y * H / (ui_h > 0 ? ui_h : H));
+            ev->code = e.type == SDL_EVENT_MOUSE_BUTTON_DOWN ? K_TOUCH_DOWN : K_TOUCH_UP;
+            ev->down = e.type == SDL_EVENT_MOUSE_BUTTON_DOWN;
+            return 1;
+        case SDL_EVENT_KEY_DOWN:
+        case SDL_EVENT_KEY_UP:
+            if (e.key.repeat) {
+                return 0;
+            }
+            if (e.type == SDL_EVENT_KEY_DOWN && e.key.key == SDLK_F11) {
+                plat_toggle_fullscreen();
+                return 0;
+            }
+            ev->code = key_code(e.key.key);
+            ev->down = e.type == SDL_EVENT_KEY_DOWN;
+            return ev->code != 0;
+        case SDL_EVENT_GAMEPAD_BUTTON_DOWN:
+        case SDL_EVENT_GAMEPAD_BUTTON_UP:
+            ev->code = btn_code(e.gbutton.button);
+            ev->down = e.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN;
+            return ev->code != 0;
+        case SDL_EVENT_GAMEPAD_AXIS_MOTION: {
+            int *t = e.gaxis.axis == SDL_GAMEPAD_AXIS_LEFT_TRIGGER ? &trig_l :
+                     e.gaxis.axis == SDL_GAMEPAD_AXIS_RIGHT_TRIGGER ? &trig_r : NULL;
+            if (!t) {
+                return 0;
+            }
+            int on = e.gaxis.value > 16000;
+            if (on == *t) {
+                return 0;
+            }
+            *t = on;
+            ev->code = e.gaxis.axis == SDL_GAMEPAD_AXIS_LEFT_TRIGGER ? K_L2 : K_R2;
+            ev->down = on;
+            return 1;
+        }
+        case SDL_EVENT_GAMEPAD_ADDED:
+            if (!pad) {
+                pad = SDL_OpenGamepad(e.gdevice.which);
+            }
+            return 0;
+        }
+        return 0;
+    }
 #endif
     return 0;
 }
@@ -653,6 +853,19 @@ void plat_release(void) {
         tex = NULL; ren = NULL; win = NULL;
         if (is_android) {
             SDL_QuitSubSystem(SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER);
+        } else {
+            SDL_Quit();
+        }
+    }
+#elif defined(HAVE_SDL3)
+    if (kind_open == PLAT_SDL) {
+        if (pad) { SDL_CloseGamepad(pad); pad = NULL; }
+        if (tex) SDL_DestroyTexture(tex);
+        if (ren) SDL_DestroyRenderer(ren);
+        if (win) SDL_DestroyWindow(win);
+        tex = NULL; ren = NULL; win = NULL;
+        if (is_android) {
+            SDL_QuitSubSystem(SDL_INIT_VIDEO | SDL_INIT_GAMEPAD);
         } else {
             SDL_Quit();
         }

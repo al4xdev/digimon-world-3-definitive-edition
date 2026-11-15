@@ -84,7 +84,7 @@ if(ANDROID)
         "${DW3_ROOT}/android/android_entry.c"
         "${DW3_ROOT}/android/touch_pad.c"
     )
-    target_compile_definitions(main PRIVATE HAVE_SDL2 DW3_TARGET_ANDROID)
+    target_compile_definitions(main PRIVATE HAVE_SDL3 DW3_TARGET_ANDROID)
     target_include_directories(main PRIVATE "${DW3_ROOT}/launcher" "${DW3_ROOT}/android")
 else()
     psxstack_add_game(dw2003

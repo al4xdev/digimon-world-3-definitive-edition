@@ -146,6 +146,7 @@ void cfg_defaults(Cfg *c) {
     c->bbuf = 1;
     c->led = (!is_pc && !is_android);
     c->fullscreen = (is_pc && !is_android) ? 0 : 1;
+    c->widescreen = (is_pc || is_android) ? 1 : 0;
     c->touch_pad = is_android ? 1 : 0;
     c->fill = (is_pc || is_android);
     c->scale = (is_pc || is_android) ? 0 : 2;
@@ -378,8 +379,8 @@ void cfg_load(Cfg *c) {
 static int write_settings(const Cfg *c) {
     char path[600], renderer[16] = "";
     path_of(path, sizeof(path), "settings.json");
-    if (is_pc) {
-        snprintf(renderer, sizeof(renderer), "%s", c->renderer_pc ? "software" : "gpu");
+    if (is_pc || is_android) {
+        snprintf(renderer, sizeof(renderer), "%s", is_android ? "gpu" : (c->renderer_pc ? "software" : "gpu"));
     } else {
         char *old = slurp(path);
         if (old) {
@@ -417,9 +418,9 @@ static int write_settings(const Cfg *c) {
     }
     int vscale = is_pc ? (c->scale > 0 ? c->scale : cfg_auto_scale(c)) : 2;
     int vfull = is_pc ? c->fullscreen : 1;
-    int vfill = is_pc && c->fill;
-    int vw = is_pc ? (c->widescreen && c->renderer_pc == 0) : 0;
-    const char *vfilt = is_pc ? filter_names[c->filter] : "none";
+    int vfill = is_android ? 1 : (is_pc && c->fill);
+    int vw = is_pc ? (c->widescreen && c->renderer_pc == 0) : (is_android ? 1 : 0);
+    const char *vfilt = (is_pc || is_android) ? filter_names[c->filter] : "none";
     char text[4600];
     snprintf(text, sizeof(text),
         "{\n  \"schema\": 1,\n  \"disc\": { \"path\": \"%s\" },\n"

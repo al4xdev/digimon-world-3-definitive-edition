@@ -1,8 +1,9 @@
-/* Android SDL_main entry & JNI bridge:
+/* Android SDL3 main entry & JNI bridge:
  * 1. Resolves app external/internal storage dir and prepares <files>/game and <files>/logs.
  * 2. Runs the parallel touch launcher (launcher/main_android.c).
  * 3. Configures DW3_TOUCH_PAD, DW3_PAD_REMAP=1, DW3_LOG, and runs dw3_game_main() in-process. */
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_main.h>
 #include <jni.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,8 +40,8 @@ JNIEXPORT void JNICALL Java_com_al4xdev_dw2003_Dw3Activity_nativeOnDiscPicked(JN
 }
 
 int android_pick_disc_files(void) {
-    JNIEnv *env = (JNIEnv *)SDL_AndroidGetJNIEnv();
-    jobject activity = (jobject)SDL_AndroidGetActivity();
+    JNIEnv *env = (JNIEnv *)SDL_GetAndroidJNIEnv();
+    jobject activity = (jobject)SDL_GetAndroidActivity();
     if (!env || !activity) return -1;
 
     jclass cls = (*env)->GetObjectClass(env, activity);
@@ -69,12 +70,12 @@ static void ensure_dir(const char *path) {
     if (stat(path, &st) != 0) mkdir(path, 0755);
 }
 
-int SDL_main(int argc, char **argv) {
+int main(int argc, char **argv) {
     (void)argc;
     (void)argv;
 
-    const char *base = android_files_dir[0] ? android_files_dir : SDL_AndroidGetExternalStoragePath();
-    if (!base || !base[0]) base = SDL_AndroidGetInternalStoragePath();
+    const char *base = android_files_dir[0] ? android_files_dir : SDL_GetAndroidExternalStoragePath();
+    if (!base || !base[0]) base = SDL_GetAndroidInternalStoragePath();
     if (!base || !base[0]) base = ".";
 
     ensure_dir(base);

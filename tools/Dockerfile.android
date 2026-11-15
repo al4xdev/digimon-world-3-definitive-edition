@@ -1,13 +1,13 @@
-# Android (arm64-v8a) APK build environment based on JDK 17 + Android SDK 34 + NDK 27.2 + SDL2 2.30.11 + Gradle 8.7.
-FROM eclipse-temurin:17-jdk-jammy
+# Android (arm64-v8a / x86_64) APK build environment based on JDK 17 + Android SDK 34 + NDK 27.2 + SDL3 3.4.18 + Gradle 8.7.
+FROM eclipse-temurin:17-jdk-noble
 
 ARG CMDLINE_TOOLS_URL=https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-ARG SDL2_VERSION=2.30.11
+ARG SDL3_VERSION=3.4.18
 ARG GRADLE_VERSION=8.7
 
 ENV ANDROID_HOME=/opt/android-sdk
 ENV ANDROID_SDK_ROOT=/opt/android-sdk
-ENV SDL2_ANDROID_DIR=/opt/SDL2
+ENV SDL3_ANDROID_DIR=/opt/SDL3
 ENV PATH=/opt/gradle/bin:/opt/android-sdk/cmdline-tools/latest/bin:/opt/android-sdk/platform-tools:${PATH}
 
 RUN apt-get update && \
@@ -33,6 +33,6 @@ RUN curl -fsSL "https://services.gradle.org/distributions/gradle-${GRADLE_VERSIO
     mv /opt/gradle-${GRADLE_VERSION} /opt/gradle && \
     rm /tmp/gradle.zip
 
-RUN curl -fsSL "https://github.com/libsdl-org/SDL/releases/download/release-${SDL2_VERSION}/SDL2-${SDL2_VERSION}.tar.gz" | \
+RUN curl -fsSL "https://github.com/libsdl-org/SDL/releases/download/release-${SDL3_VERSION}/SDL3-${SDL3_VERSION}.tar.gz" | \
     tar -xz -C /opt && \
-    mv /opt/SDL2-${SDL2_VERSION} /opt/SDL2
+    mv /opt/SDL3-${SDL3_VERSION} /opt/SDL3

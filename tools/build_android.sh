@@ -31,16 +31,54 @@ else
         docker build -t "$IMAGE" -f "$TOOLS_DIR/Dockerfile.android" "$TOOLS_DIR"
     fi
     echo "=== Building Android APK in Docker ($VER, arm64-v8a) ==="
-    mkdir -p "$REPO/.dumps/gradle-home" "$REPO/.dumps/android-home"
+    mkdir -p "$REPO/.dumps/gradle-home" "$REPO/.dumps/android-home" "$REPO/.dumps/android-shaders"
+    for hlsl in "$REPO"/psxstack/shaders/*.hlsl; do
+        name=$(basename "$hlsl" .hlsl)
+        case "$name" in
+            *.vert) prof=vs_6_0 ;;
+            *.frag) prof=ps_6_0 ;;
+            *) continue ;;
+        esac
+        spv="$REPO/.dumps/android-shaders/${name}.spv"
+        if [ ! -f "$spv" ] || [ "$hlsl" -nt "$spv" ]; then
+            "$REPO/tools/dxc/bin/dxc" -T "$prof" -E main -spirv -fspv-target-env=vulkan1.0 -WX -Fo "$spv" "$hlsl"
+        fi
+    done
+    cat > "$REPO/.dumps/dxc-android-wrap.sh" <<'EOF'
+#!/bin/sh
+out=""
+src=""
+prev=""
+for a in "$@"; do
+    if [ "$prev" = "-Fo" ]; then out="$a"; fi
+    prev="$a"
+    src="$a"
+done
+name=$(basename "$src" .hlsl)
+cp "/work/.dumps/android-shaders/${name}.spv" "$out"
+EOF
+    chmod +x "$REPO/.dumps/dxc-android-wrap.sh"
+    if [ ! -f "$REPO/.dumps/SDL3-3.4.18/CMakeLists.txt" ] && [ -f "$REPO/tools/src/SDL3-3.4.18.tar.gz" ]; then
+        tar -xzf "$REPO/tools/src/SDL3-3.4.18.tar.gz" -C "$REPO/.dumps"
+    fi
+    SDL3_ENV=""
+    if [ -f "$REPO/.dumps/SDL3-3.4.18/CMakeLists.txt" ]; then
+        SDL3_ENV="/work/.dumps/SDL3-3.4.18"
+    fi
+    ABI_PROP=""
+    if [ -n "${DW3_ANDROID_ABI:-}" ]; then
+        ABI_PROP="-PabiFilters=${DW3_ANDROID_ABI}"
+    fi
     docker run --rm -u "$(id -u):$(id -g)" \
         -e DW3_VERSION \
+        ${SDL3_ENV:+-e SDL3_ANDROID_DIR="$SDL3_ENV"} \
         -e HOME=/work/.dumps/android-home \
         -e ANDROID_USER_HOME=/work/.dumps/android-home/.android \
         -e GRADLE_USER_HOME=/work/.dumps/gradle-home \
         -v "$REPO:/work" \
         -w /work/android \
         "$IMAGE" \
-        gradle --no-daemon assembleRelease
+        gradle --no-daemon ${ABI_PROP} -PdxcPath=/work/.dumps/dxc-android-wrap.sh assembleRelease
 fi
 
 APK_SRC="$REPO/android/app/build/outputs/apk/release/app-release.apk"
