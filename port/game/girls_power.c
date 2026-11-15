@@ -1175,6 +1175,44 @@ static void gp_retouch(u8 *data, s32 id, s32 i, const u8 *map) {
     }
 }
 
+/* The frame's sub-file number written in its top left corner (3x5 digits, light on dark), to name a frame seen in the
+ * game: on with the heavy logs (the launcher's DEBUG group, DW3_LOG=heavy), DW3_GIRLS_NUMBERS=0/1 overrides. The game
+ * mirrors the left-hand directions, and the number with them. */
+static void gp_number(u8 *data, s32 i, int to_kaili) {
+    static const u16 digits[10] = { 075557, 026227, 071747, 071717, 055711, 074717, 074757, 071111, 075757, 075717 };
+    static int on = -1;
+    u8 light = to_kaili ? 10 : 15, dark = to_kaili ? 7 : 13;
+    u16 *clut;
+    u8 *pixels;
+    s32 n = i >= 100 ? 3 : i >= 10 ? 2 : 1, d, y, x, v = i;
+
+    if (on < 0) {
+        const char *e = getenv("DW3_GIRLS_NUMBERS");
+
+        on = e != NULL && e[0] != '\0' ? e[0] != '0' : port_log_verbose();
+    }
+    if (!on || !gp_tim(data, i, &clut, &pixels, &gp_w, &gp_h) || gp_w < 4 * n + 1 || gp_h < 7) {
+        return;
+    }
+    gp_unpack(pixels);
+    memcpy(gp_out, gp_img, sizeof(gp_out));
+    for (y = 0; y < 7; y++) {
+        for (x = 0; x < 4 * n + 1; x++) {
+            gp_out[y][x] = dark;
+        }
+    }
+    for (d = n - 1; d >= 0; d--, v /= 10) {
+        for (y = 0; y < 5; y++) {
+            for (x = 0; x < 3; x++) {
+                if ((digits[v % 10] >> ((4 - y) * 3 + (2 - x))) & 1) {
+                    gp_out[1 + y][1 + d * 4 + x] = light;
+                }
+            }
+        }
+    }
+    gp_pack(pixels);
+}
+
 /* Repaints every frame the animation table's scripts name, once each. `sd`, `stable`: the other's file and table,
  * for the whole frames (NULL: none, as for the action files only he has). */
 static void gp_file(u8 *data, s32 id, s32 table, const GpWho *src, const GpRefs *own, const GpRefs *dst,
@@ -1238,6 +1276,7 @@ static void gp_file(u8 *data, s32 id, s32 table, const GpWho *src, const GpRefs 
                             gp_frame(data, s[1], src, own, dst, map, hint[s[1]]);
                         }
                         gp_retouch(data, id, s[1], map);
+                        gp_number(data, s[1], map == gp_j2k);
                     }
                 }
             }

@@ -47,7 +47,9 @@ When his head drops (crouch, wind-up) her body is shortened to fit: drop jacket 
 knees), never squash the head. Aligning by his chin instead (what the automatic swap does) makes her body too short
 and puts her 1–2 px off her idle position (a visible hop at the start/end of the animation).
 
-Scratch helpers used (rewrite if lost; all thin wrappers over `girls_power_draw.py`'s `read`/`write`):
+Helpers (local, `.dumps/tasks/girls-power/helpers/`; rewrite if lost; thin wrappers over `girls_power_draw.py`'s
+`read`/`write`; `stamp.py` + `st/*` are the arm stamps per direction, `rev.py` the disc / drawn / mirrored strip,
+`addpaste.py` starts from the automatic frame, `mv.py` moves a block):
 `compose.py FILE FRAME "comment" SRCFRAME:X0-X1:A-B@DST:DX ...` (drawing = her pieces only, pastes written),
 `over.py FILE FRAME` (stdin `ROW:pixels`, '.' keep, '0' erase), `cpdraw.py` (copy a drawing to another frame),
 `where.py FILE frames` (the placement rule above, printed per frame). Copies kept in
@@ -100,13 +102,13 @@ Mark `[x]` with a short note when the frame is drawn and built.
 - [x] 3/4 back (slot 3): 5 6 7 8 9 — the kicking leg as a smear left of the body (as his)
 - [x] back (slot 4): 0 1 2 3 4 — kicking leg hidden forward, thigh only; 3 head sunk (bow)
 
-### P002PLYF `3CA` — fishing, 70 (per slot 0..4: frames for slot 4 / 3 / 2 / 1 / 0)
-- [ ] cast + reel (anims 17, 21): back 0-6, 3/4 back 14-20, profile 27-33, 3/4 front 41-47, front 55-61
-- [ ] anim 17 end: 7 21 34 48 62
-- [ ] anim 18 (waiting): 8 22 35 49 63
-- [ ] anim 19 (bite/pull): 9 10 23 24 36 37 50 51 64 65
-- [ ] anim 19/60: 11 12 25 26 38 39 52 53 66 67
-- [ ] anim 20: 13 40 54 68 69
+### P002PLYF `3CA` — fishing, 70 — done 2026-11-15
+- [x] front (slot 0) 55-68: 55-58 her 3/4 head turned down on the front trunk, 59-62 and 65-67 her bowed frame (37),
+  63/64/68 her standing frame; hands and rod drawn
+- [x] 3/4 front (slot 1) 41-54: her 3/4 frame, head leaning as his; far arm and rod drawn
+- [x] profile (slot 2) 27-40: her profile frame; arm stamps (bent / straight / raised) and rod drawn
+- [x] 3/4 back (slot 3) 14-26, 69: her 3/4 back frame; forearm forward and rod drawn
+- [x] back (slot 4) 0-13: her back frame, elbows (hands hidden), rod kept clear of the pigtail
 
 ### P002PLYD `3C9`, 7 — done 2026-11-14
 - [x] anim 25: 0 1 — anim 22: 2 3 — anims 23/24: 4 — anim 24: 5 6 (all one way, 3/4 front; 0 had her back head)
@@ -115,13 +117,28 @@ Mark `[x]` with a short note when the frame is drawn and built.
 - [x] anim 29: 0 1 10 11 — anims 28/31: 2 3 — anims 26/27: 4 5 6 7 8 — 26/27/32: 9 — anim 30: 12 13 — anim 32: 14 15
   (11, 0, 1 had her profile head and 13 her back head: his heads there are 3/4 back and 3/4 front)
 
-### P001PLAY `186` — Junior's scene gestures (24 wide), 37
-- [ ] anim 41: 92 93 94 95 96 — anim 42: 97-102 — 43/64: 103 — 43/44: 105 — 46: 106 — 46/64: 107 — 47: 108
-- [ ] 48: 109 110 — 50: 111 — 49: 112 — 11: 116 — 57: 119 120 121 — 58: 122 123 — 67: 127 128
-- [ ] 16/39: 132 — 38/39: 133 — 39: 134-137 — 38: 138 — 37: 139 140
+### P001PLAY `186` — Junior's scene gestures (24 wide), 37 — done 2026-11-15
+- [x] arms crossed 92-96 (5 ways), tapping 97-99 / 100-102, 103 105 107 (3/4 back, hand up / out), 108-110 (nod)
+- [x] 106 (talking, his speech marks kept), 111 (profile head on the 3/4 trunk), 112, 116 (hand to mouth)
+- [x] 119-121 (fist + device), 122 123 (hand on hip), 127 128 (down on her knees)
+- [x] 132-138 lying: the automatic body with her own head (back head, front head for 134/135) pasted over
+- [x] 139 140: her own hop frame (190:33), sparks drawn in white
 
-### P011MINO `190` — her file becomes Junior (the NPC), drawn in **his** palette, 19
-- [ ] anim 9: 28 29 — anim 51: 36 — anim 57: 37-48 — anim 58: 49 50 — anim 59: 51 52
+### P011MINO `190` — her file becomes Junior (the NPC), in **his** palette, 19 — done 2026-11-15
+- [x] 28 29 (bow: his looking-down head from 3CA:59), 36 (crouch, 24 rows), 37-40 (arms out), 41-44, 45-48, 49-52:
+  his own standing frames of `187` pasted, arms drawn
+
+All 174 are drawn. What is left is the owner's review in the game (see "Review" below) and redoing what he points at.
+
+## Review in the game
+
+`DW3_GIRLS_NUMBERS=1` writes each repainted frame's sub-file number in its top left corner (3x5 digits; mirrored
+when the game mirrors the frame). The owner sends a screenshot, the number names the frame; the file is known from
+the action (fishing `3CA`, kick `3CB`, climbing `3CC`, scene gestures `186`, walking `187`, the Junior NPC `190`).
+
+Known weak spots, first candidates if he complains: the rod is one pixel wide in her hair's dark colour (index 6);
+3/4 frames in 24-wide files lose 1-2 px of the pigtail tip at the frame's edge (95, 97-99, 108-110, 119-123, 93,
+100-103, 107); the lying frames keep the automatic body; 122/123 differ from standing only by head height and elbow.
 
 ## Fishing plan (P002PLYF)
 
