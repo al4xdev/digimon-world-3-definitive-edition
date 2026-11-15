@@ -1280,6 +1280,14 @@ void fightstg_sprite_anim_draw(void *data, GfxLayer *layer, s32 arg) {
     FightstgSpriteAnim *obj = data;
     SVECTOR pos;
     Sprite sprite;
+#ifdef PC_PORT
+    s32 *bank;
+    s32 pad;
+    s32 sx;
+    s32 sy;
+    s32 min_x;
+    s32 max_x;
+#endif
 
     if (obj->pos.vz != 0x7FFF && obj->pos.vz != -1) {
         fightstg_battle.to_screen(layer, &obj->pos, &pos);
@@ -1297,9 +1305,26 @@ void fightstg_sprite_anim_draw(void *data, GfxLayer *layer, s32 arg) {
     sprite_init(&sprite);
     sprite.set_layer(layer, pos.vz);
     sprite.set_vram_pos(obj->vram.x, obj->vram.y);
+#ifdef PC_PORT
+    bank = cdload_module.get_subfile_by_id(obj->file);
+    pad = obj->pos.vz == -1 ? port_video_widescreen_pad() : 0;
+    sx = obj->values[4];
+    sy = obj->values[5];
+    if (pad > 0) {
+        sprite_frame_bounds_x(bank, obj->values[0], &min_x, &max_x);
+        if (max_x - min_x >= 320 && pos.vx + min_x <= -160) {
+            pos.vx = (pos.vx * (320 + 2 * pad)) / 320;
+            sx = (sx * (320 + 2 * pad) + 160) / 320;
+        }
+    }
+    if (sx != 0x1000 || sy != 0x1000) {
+        sprite.set_scale(sx, sy, 0);
+    }
+#else
     if (obj->values[4] != 0x1000 || obj->values[5] != 0x1000) {
         sprite.set_scale(obj->values[4], obj->values[5], 0);
     }
+#endif
     if (obj->values[1] != 0) {
         sprite.set_palette(obj->values[1]);
     }
@@ -1307,7 +1332,11 @@ void fightstg_sprite_anim_draw(void *data, GfxLayer *layer, s32 arg) {
         sprite.set_rotation(obj->values[6], obj->values[7], obj->values[8]);
     }
     sprite.set_pivot(pos.vx, pos.vy);
+#ifdef PC_PORT
+    sprite.draw(bank, obj->values[0], pos.vx, pos.vy);
+#else
     sprite.draw(cdload_module.get_subfile_by_id(obj->file), obj->values[0], pos.vx, pos.vy);
+#endif
 }
 
 void fightstg_sprite_anim_update(FightstgSpriteAnim *obj) {

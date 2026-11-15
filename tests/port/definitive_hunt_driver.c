@@ -145,7 +145,9 @@ int main(void) {
     def_hunt_encounter(7);
     def_hunt_skipped(); /* the Rush took it */
     def_hunt_battle_end(1); /* a later scripted battle's end */
-    check("an encounter the Rush skipped does not count, nor does the next scripted battle", chain_now() == DEF_HUNT_CHAIN_MIN);
+    check("an encounter the Rush skipped counts toward the chain, while a later scripted battle does not",
+          chain_now() == DEF_HUNT_CHAIN_MIN + 1);
+    def_record_set_hunt(0x05, DEF_HUNT_CHAIN_MIN); /* restore baseline for the remaining chain checks */
 
     def_hunt_battle_end(1); /* a battle that did not come from an encounter */
     check("a scripted battle does not count", chain_now() == DEF_HUNT_CHAIN_MIN);
@@ -239,8 +241,8 @@ int main(void) {
     def_record_set_hunt(0x06, 2);
     def_hunt_encounter(7);
     def_hunt_skipped(); /* the Rush won it */
-    check("an encounter the Rush took leaves its materials, and the chain is not counted",
-          def_record_material(5) == 4 && lines_pending() == 1 && chain_now() == 2);
+    check("an encounter the Rush took leaves its materials and advances the chain",
+          def_record_material(5) == 4 && lines_pending() == 1 && chain_now() == 3);
     def_hunt_reward_done();
 
     /* Layer C: what the bestiary lists under a species. */

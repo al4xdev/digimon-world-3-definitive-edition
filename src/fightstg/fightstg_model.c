@@ -721,6 +721,117 @@ void fightstg_model_add_poly_ft(FightstgDrawState *ctx) {
     }
 }
 
+#ifdef PC_PORT
+/* Widescreen portrait clipping (layer 0x1009): the layer's hardware clip covers the full width so
+ * render_gpu_wide does not discard it at x >= 320, so faces are clipped horizontally in screen-offset
+ * space [-50, 49] to match the 100 px portrait frame. */
+typedef struct {
+    s32 x, y;
+    s32 u, v;
+    s32 r, g, b;
+} FightstgClipVtx;
+
+static s32 fightstg_clip_edge(const FightstgClipVtx *in, s32 n, FightstgClipVtx *out, s32 bound, s32 keep_ge) {
+    s32 m = 0;
+    s32 i;
+
+    for (i = 0; i < n; i++) {
+        const FightstgClipVtx *a = &in[i];
+        const FightstgClipVtx *b = &in[(i + 1) % n];
+        s32 ain = keep_ge ? (a->x >= bound) : (a->x <= bound);
+        s32 bin = keep_ge ? (b->x >= bound) : (b->x <= bound);
+
+        if (ain) {
+            out[m++] = *a;
+        }
+        if (ain != bin) {
+            s32 dx = b->x - a->x;
+            s32 num = bound - a->x;
+            FightstgClipVtx p;
+
+            p.x = bound;
+            p.y = a->y + (b->y - a->y) * num / dx;
+            p.u = a->u + (b->u - a->u) * num / dx;
+            p.v = a->v + (b->v - a->v) * num / dx;
+            p.r = a->r + (b->r - a->r) * num / dx;
+            p.g = a->g + (b->g - a->g) * num / dx;
+            p.b = a->b + (b->b - a->b) * num / dx;
+            out[m++] = p;
+        }
+    }
+    return m;
+}
+
+static void fightstg_clip_emit_tri(FightstgDrawState *ctx, s32 i0, s32 i1, s32 i2) {
+    FightstgClipVtx v0[3], v1[5], v2[5];
+    s32 idxs[3];
+    s32 n, k;
+    s32 saved_quad = ctx->quad;
+    s32 saved_xy[4];
+    u8 saved_uv[4][2];
+    CVECTOR saved_col[4];
+
+    idxs[0] = i0;
+    idxs[1] = i1;
+    idxs[2] = i2;
+    for (k = 0; k < 3; k++) {
+        s32 id = idxs[k];
+        CVECTOR c = ctx->gouraud ? ctx->corners_color[id] : ctx->corners_color[0];
+
+        v0[k].x = (s16)(ctx->corners_xy[id] & 0xFFFF);
+        v0[k].y = (s16)(ctx->corners_xy[id] >> 16);
+        v0[k].u = ctx->corners_uv[id][0];
+        v0[k].v = ctx->corners_uv[id][1];
+        v0[k].r = c.r;
+        v0[k].g = c.g;
+        v0[k].b = c.b;
+    }
+    n = fightstg_clip_edge(v0, 3, v1, -50, 1);
+    if (n < 3) {
+        return;
+    }
+    n = fightstg_clip_edge(v1, n, v2, 49, 0);
+    if (n < 3) {
+        return;
+    }
+    for (k = 0; k < 4; k++) {
+        saved_xy[k] = ctx->corners_xy[k];
+        saved_uv[k][0] = ctx->corners_uv[k][0];
+        saved_uv[k][1] = ctx->corners_uv[k][1];
+        saved_col[k] = ctx->corners_color[k];
+    }
+    ctx->quad = 0;
+    for (k = 1; k + 1 < n; k++) {
+        const FightstgClipVtx *tri[3] = { &v2[0], &v2[k], &v2[k + 1] };
+        s32 j;
+
+        for (j = 0; j < 3; j++) {
+            ctx->corners_xy[j] = (u16)(s16)tri[j]->x | ((u32)(u16)(s16)tri[j]->y << 16);
+            ctx->corners_uv[j][0] = (u8)tri[j]->u;
+            ctx->corners_uv[j][1] = (u8)tri[j]->v;
+            ctx->corners_color[j].r = (u8)tri[j]->r;
+            ctx->corners_color[j].g = (u8)tri[j]->g;
+            ctx->corners_color[j].b = (u8)tri[j]->b;
+            ctx->corners_color[j].cd = saved_col[0].cd;
+        }
+        if (ctx->gouraud) {
+            fightstg_model_add_poly_gt(ctx);
+        } else {
+            fightstg_model_add_poly_ft(ctx);
+        }
+    }
+    ctx->quad = saved_quad;
+    for (k = 0; k < 4; k++) {
+        ctx->corners_xy[k] = saved_xy[k];
+        ctx->corners_uv[k][0] = saved_uv[k][0];
+        ctx->corners_uv[k][1] = saved_uv[k][1];
+        ctx->corners_color[k] = saved_col[k];
+    }
+}
+
+static s32 fightstg_portrait_clip_active;
+#endif
+
 /* Whether the mesh may be on screen: unclipped meshes count as visible; else whether one of
  * the 9 points of sub-file 5 projects into the layer's clip area (with a 0x40 margin). */
 s32 fightstg_model_mesh_is_visible(FightstgMesh *obj, GfxLayer *layer) {
@@ -867,6 +978,35 @@ static inline void fightstg_model_mesh_draw_faces(FightstgDrawState *ctx) {
                 gte_stotz(&otz);
             }
             ctx->ot_entry = ctx->ot + otz;
+#ifdef PC_PORT
+            if (fightstg_portrait_clip_active) {
+                s32 n = ctx->quad + 3;
+                s32 any_out = 0;
+                s32 k;
+
+                if (!ctx->gouraud && !ctx->lit) {
+                    ctx->corners_color[0] = ctx->face_colors[0];
+                }
+                for (k = 0; k < n; k++) {
+                    s16 x = (s16)(ctx->corners_xy[k] & 0xFFFF);
+
+                    if (x < -50 || x > 49) {
+                        any_out = 1;
+                        break;
+                    }
+                }
+                if (any_out) {
+                    fightstg_clip_emit_tri(ctx, 0, 1, 2);
+                    if (ctx->quad) {
+                        fightstg_clip_emit_tri(ctx, 1, 3, 2);
+                    }
+                } else if (ctx->gouraud) {
+                    fightstg_model_add_poly_gt(ctx);
+                } else {
+                    fightstg_model_add_poly_ft(ctx);
+                }
+            } else
+#endif
             if (ctx->gouraud) {
                 fightstg_model_add_poly_gt(ctx);
             } else {
@@ -915,6 +1055,9 @@ void fightstg_model_mesh_draw(void *data, GfxLayer *layer, s32 arg) {
     ctx.vertex_colors = obj->colors;
     ctx.ot = layer->get_ot(layer);
     ctx.prim.ft3 = gfx_module.funcs.get_packet();
+#ifdef PC_PORT
+    fightstg_portrait_clip_active = port_video_widescreen_pad() > 0 && layer == gfx_module.funcs.get_layer(0x1009);
+#endif
     while (*ctx.stream != 0xFF) {
         op = *ctx.stream;
         hi = op >> 4;
@@ -971,6 +1114,9 @@ void fightstg_model_mesh_draw(void *data, GfxLayer *layer, s32 arg) {
         }
     }
     gfx_module.funcs.set_packet(ctx.prim.ft3);
+#ifdef PC_PORT
+    fightstg_portrait_clip_active = 0;
+#endif
     MODEL_PHASE_END();
 }
 

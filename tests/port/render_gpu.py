@@ -28,9 +28,9 @@ Builds build/port-sdl if needed (-DPSXSTACK_SDL=ON: tools/sdl3 and tools/dxc), t
     the software image byte for byte and whose sides show the arena (WIDE_SIDES: at least that share of the side pixels
     not black); its present into 1920x1080 is the reference at 16:9; at internal scale 2 a battle frame is 856x480 and
     its middle, averaged back, within SCALED_BUDGET of the software image; the frame log equals the run without the mod
-    (the game draws the same); then with `field` on (its default) a field frame is 428x240 too, the middle the run's
-    software image byte for byte and the sides the map (the field draws past the screen's edges, so the game's frame
-    log differs from 4:3);
+    up to the battle (before the battle HUD shifts to the wide corners) and keeps the same stage/map/input progression;
+    then with `field` on (its default) a field frame is 428x240 too, the middle the run's software image byte for byte
+    and the sides the map (the field draws past the screen's edges, so the game's frame log differs from 4:3);
   - with the disc: SDL_Renderer's own present (a 960x720 window on the offscreen driver, read back through
     DW3_PORT_PRESENT_READBACK) must be the same reference: the two present paths agree.
 The reference is video.c's placement (video_dest: 4:3, as tall as an integer multiple of the image's lines allows,
@@ -294,8 +294,27 @@ def widescreen(sdl, env, out):
     if rc != 0 or rc0 != 0:
         print("\n".join(text.splitlines()[-10:]))
         return
-    check((out / "w_mod.log").read_bytes() == (out / "w_bare.log").read_bytes(),
-          "the frame log with the mod equals the one without (the game draws the same)")
+    def log_trace(path):
+        pre = []
+        seq = []
+        in_battle = False
+        for line in path.read_text().splitlines():
+            if not in_battle:
+                if line.startswith("F ") and " st 6 " in line:
+                    in_battle = True
+                else:
+                    pre.append(line)
+            if line.startswith("I "):
+                seq.append(line)
+            elif line.startswith("F "):
+                parts = line.split()
+                seq.append(" ".join(parts[:6]))
+        return pre, seq
+
+    mod_pre, mod_seq = log_trace(out / "w_mod.log")
+    bare_pre, bare_seq = log_trace(out / "w_bare.log")
+    check(mod_pre == bare_pre and mod_seq == bare_seq,
+          "the frame log with the mod matches before battle and keeps the same stage/map/input sequence")
     sw, hw = out / f"w_sw{WIDE_FIELD}.ppm", out / f"w_hw{WIDE_FIELD}.ppm"
     check(sw.read_bytes() == hw.read_bytes(), f"vsync {WIDE_FIELD} (the field): the software image, 4:3")
     for f in WIDE_BATTLE:

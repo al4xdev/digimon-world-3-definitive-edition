@@ -140,24 +140,45 @@ void fieldmenu_create_windows(Fieldmenu *obj, FieldmenuWindows *data) {
     FieldmenuPos *pos;
     s32 i;
     s32 j;
+#ifdef PC_PORT
+    s32 wide_pad = port_video_widescreen_pad();
 
+    data->help = message_create_window(obj->layer_id, 1, 0x98 + wide_pad, 0x13);
+    for (j = 0; j < obj->option_count; j++) {
+        data->options[j] = message_create_window(obj->layer_id, 1, 0xBD + wide_pad, j * 14 + 0x31);
+    }
+    if (obj->bestiary) {
+        data->bs_info[0] = message_create_window(obj->layer_id, 1, BS_TEXT_X - wide_pad, BS_NAME_Y);
+        for (j = 0; j < 7; j++) {
+            data->bs_icons[j] = message_create_window(obj->layer_id, 1, BS_TEXT_X - wide_pad, j * 14 + BS_ROW_Y);
+            data->bs_info[j + 1] = message_create_window(obj->layer_id, 1, BS_ELEM_X - wide_pad, j * 14 + BS_ROW_Y);
+            data->bs_states[j] = message_create_window(obj->layer_id, 1, BS_STATE_X - wide_pad, j * 14 + BS_ROW_Y);
+        }
+        data->bs_page = message_create_window(obj->layer_id, 1, BS_PAGE_X + wide_pad, 0x13);
+        data->bs_hint = message_create_window(obj->layer_id, 1, BS_TEXT_X - wide_pad, BS_HINT_Y);
+        data->bs_drops = message_create_window(obj->layer_id, 1, BS_TEXT_X - wide_pad, BS_DROPS_Y);
+    }
+    data->cursor = message_create_cursor(obj->layer_id, 0, 0xB0 + wide_pad, obj->cursor * 14 + 0x31);
+    data->cursor->show(data->cursor, 0);
+    data->money_unit = message_create_window(obj->layer_id, 3, 0x46 - wide_pad, 0xA6);
+    data->money = message_create_window(obj->layer_id, 3, 0x42 - wide_pad, 0xA6);
+    for (i = 0; i < 3; i++) {
+        pos = fieldmenu_name_pos;
+        data->members[i].name = message_create_window(obj->layer_id, 1, pos->x - wide_pad, pos->y + i * 46);
+        for (j = 0; j < 5; j++) {
+            pos = &fieldmenu_label_pos[j];
+            data->members[i].labels[j] = message_create_window(obj->layer_id, 3, pos->x - wide_pad, pos->y + i * 46);
+        }
+        for (j = 0; j < 5; j++) {
+            pos = &fieldmenu_value_pos[j];
+            data->members[i].values[j] = message_create_window(obj->layer_id, 3, pos->x - wide_pad, pos->y + i * 46);
+        }
+    }
+#else
     data->help = message_create_window(obj->layer_id, 1, 0x98, 0x13);
     for (j = 0; j < obj->option_count; j++) {
         data->options[j] = message_create_window(obj->layer_id, 1, 0xBD, j * 14 + 0x31);
     }
-#ifdef PC_PORT
-    if (obj->bestiary) {
-        data->bs_info[0] = message_create_window(obj->layer_id, 1, BS_TEXT_X, BS_NAME_Y);
-        for (j = 0; j < 7; j++) {
-            data->bs_icons[j] = message_create_window(obj->layer_id, 1, BS_TEXT_X, j * 14 + BS_ROW_Y);
-            data->bs_info[j + 1] = message_create_window(obj->layer_id, 1, BS_ELEM_X, j * 14 + BS_ROW_Y);
-            data->bs_states[j] = message_create_window(obj->layer_id, 1, BS_STATE_X, j * 14 + BS_ROW_Y);
-        }
-        data->bs_page = message_create_window(obj->layer_id, 1, BS_PAGE_X, 0x13);
-        data->bs_hint = message_create_window(obj->layer_id, 1, BS_TEXT_X, BS_HINT_Y);
-        data->bs_drops = message_create_window(obj->layer_id, 1, BS_TEXT_X, BS_DROPS_Y);
-    }
-#endif
     data->cursor = message_create_cursor(obj->layer_id, 0, 0xB0, obj->cursor * 14 + 0x31);
     data->cursor->show(data->cursor, 0);
     data->money_unit = message_create_window(obj->layer_id, 3, 0x46, 0xA6);
@@ -174,6 +195,7 @@ void fieldmenu_create_windows(Fieldmenu *obj, FieldmenuWindows *data) {
             data->members[i].values[j] = message_create_window(obj->layer_id, 3, pos->x, pos->y + i * 46);
         }
     }
+#endif
 }
 
 /* Shows party member `slot`'s name, level, HP and MP (or the empty-slot texts), or closes them. */
@@ -198,8 +220,14 @@ void fieldmenu_show_member(Fieldmenu *obj, FieldmenuWindows *data, s32 slot, s32
         } else {
             data->members[slot].name->set_text(data->members[slot].name, cdload_module.files.get_file(records_language + 0xB0), 0xC);
             for (i = 0; i < 5; i++) {
+#ifdef PC_PORT
+                data->members[slot].labels[i]->set_visible(data->members[slot].labels[i], 0);
+                data->members[slot].values[i]->set_text(data->members[slot].values[i],
+                                                      cdload_module.files.get_file(records_language + 0xB0), fieldmenu_value_pos[i].message);
+#else
                 data->members[slot].values[i]->set_text(data->members[slot].values[i],
                                                       cdload_module.files.get_file(records_language + 0xB0), fieldmenu_name_pos[i + 6].message);
+#endif
                 data->members[slot].values[i]->measure(data->members[slot].values[i], 1);
             }
         }
@@ -273,7 +301,7 @@ static void fieldmenu_bestiary_drops(Fieldmenu *obj, FieldmenuWindows *data, s32
         data->bs_info[6]->set_palette(data->bs_info[6], 0);
         data->bs_states[5]->set_text(data->bs_states[5], held, -1);
         data->bs_states[5]->set_palette(data->bs_states[5], count != 0 ? 0 : 7);
-        data->bs_states[5]->set_pos(data->bs_states[5], BS_HELD_X, BS_DROPS_Y);
+        data->bs_states[5]->set_pos(data->bs_states[5], BS_HELD_X - port_video_widescreen_pad(), BS_DROPS_Y);
     } else {
         data->bs_info[6]->set_text(data->bs_info[6], (u8 *)(known ? def_str_Neutral : def_str_Unknown), -1);
         data->bs_info[6]->set_palette(data->bs_info[6], 7);
@@ -298,7 +326,7 @@ static void fieldmenu_bestiary_drops(Fieldmenu *obj, FieldmenuWindows *data, s32
         data->bs_info[7]->set_palette(data->bs_info[7], 0);
         data->bs_states[6]->set_text(data->bs_states[6], rares, -1);
         data->bs_states[6]->set_palette(data->bs_states[6], seen == total ? 3 : seen != 0 ? 0 : 7);
-        data->bs_states[6]->set_pos(data->bs_states[6], BS_RARE_X, BS_DROPS_Y + 14);
+        data->bs_states[6]->set_pos(data->bs_states[6], BS_RARE_X - port_video_widescreen_pad(), BS_DROPS_Y + 14);
     } else {
         data->bs_info[7]->set_text(data->bs_info[7], (u8 *)none, -1);
         data->bs_states[6]->set_text(data->bs_states[6], (u8 *)none, -1);
@@ -335,7 +363,7 @@ static void fieldmenu_bestiary_draw(Fieldmenu *obj, FieldmenuWindows *data) {
             s32 f = i == BS_FAMILIES ? 1 : 3; /* Water+Ice, Thunder+Machine */
 
             data->bs_icons[i]->set_text(data->bs_icons[i], (u8 *)def_family_icon(f, 1), -1);
-            data->bs_icons[i]->set_pos(data->bs_icons[i], BS_TEXT_X + BS_PAIR_DX, f * 14 + BS_ROW_Y);
+            data->bs_icons[i]->set_pos(data->bs_icons[i], BS_TEXT_X + BS_PAIR_DX - port_video_widescreen_pad(), f * 14 + BS_ROW_Y);
         }
     }
     fieldmenu_bestiary_drops(obj, data, recs[obj->bs_sel].id);
@@ -353,7 +381,7 @@ static void fieldmenu_bestiary_draw(Fieldmenu *obj, FieldmenuWindows *data) {
     page[n++] = 4 + pages % 10;
     page[n] = 0;
     data->bs_page->set_text(data->bs_page, page, -1);
-    data->cursor->set_pos(data->cursor, 0xB0, (obj->bs_sel - first) * 14 + 0x31);
+    data->cursor->set_pos(data->cursor, 0xB0 + port_video_widescreen_pad(), (obj->bs_sel - first) * 14 + 0x31);
 }
 
 /* An opaque rectangle on the menu's layer. */
@@ -375,14 +403,15 @@ static void fieldmenu_bestiary_rect(Fieldmenu *obj, s32 x, s32 y, s32 w, s32 h, 
  * so it is drawn flat in the bank's panels' colours: the frame, the name's band, a rule between the lines. The layer
  * draws what is added last first, so the fill goes last. */
 static void fieldmenu_bestiary_panel(Fieldmenu *obj) {
+    s32 x = BS_PANEL_X - port_video_widescreen_pad();
     s32 i;
 
     for (i = 1; i <= BS_FAMILIES; i++) { /* between the families' lines, and above the Hunt Materials' (PRD 4 layer C) */
-        fieldmenu_bestiary_rect(obj, BS_PANEL_X + 6, BS_ROW_Y + i * 14 - 1, BS_PANEL_W - 12, 1, 41, 41, 115);
+        fieldmenu_bestiary_rect(obj, x + 6, BS_ROW_Y + i * 14 - 1, BS_PANEL_W - 12, 1, 41, 41, 115);
     }
-    fieldmenu_bestiary_rect(obj, BS_PANEL_X + 2, BS_PANEL_Y + 2, BS_PANEL_W - 4, BS_ROW_Y - 4 - BS_PANEL_Y, 0, 0, 74);
-    fieldmenu_bestiary_rect(obj, BS_PANEL_X + 1, BS_PANEL_Y + 1, BS_PANEL_W - 2, BS_PANEL_H - 2, 0, 0, 33);
-    fieldmenu_bestiary_rect(obj, BS_PANEL_X, BS_PANEL_Y, BS_PANEL_W, BS_PANEL_H, 107, 107, 214);
+    fieldmenu_bestiary_rect(obj, x + 2, BS_PANEL_Y + 2, BS_PANEL_W - 4, BS_ROW_Y - 4 - BS_PANEL_Y, 0, 0, 74);
+    fieldmenu_bestiary_rect(obj, x + 1, BS_PANEL_Y + 1, BS_PANEL_W - 2, BS_PANEL_H - 2, 0, 0, 33);
+    fieldmenu_bestiary_rect(obj, x, BS_PANEL_Y, BS_PANEL_W, BS_PANEL_H, 107, 107, 214);
 }
 
 /* Opens the screen on the first species: the member panels' texts and the money give way to it. */
@@ -441,7 +470,7 @@ static s32 fieldmenu_bestiary_update(Fieldmenu *obj, FieldmenuWindows *data) {
         if (obj->map_enabled == 0) {
             data->options[2]->set_palette(data->options[2], 7);
         }
-        data->cursor->set_pos(data->cursor, 0xB0, obj->cursor * 14 + 0x31);
+        data->cursor->set_pos(data->cursor, 0xB0 + port_video_widescreen_pad(), obj->cursor * 14 + 0x31);
         obj->bs_sel = -1;
         return 1;
     }
@@ -582,7 +611,11 @@ void fieldmenu_update(Fieldmenu *obj, FieldmenuWindows *data) {
             }
             if (cursor != obj->cursor) {
                 sound_module.play(0x8004513E);
+#ifdef PC_PORT
+                data->cursor->set_pos(data->cursor, 0xB0 + port_video_widescreen_pad(), obj->cursor * 14 + 0x31);
+#else
                 data->cursor->set_pos(data->cursor, 0xB0, obj->cursor * 14 + 0x31);
+#endif
                 break;
             }
             done = 0;
@@ -675,13 +708,77 @@ void fieldmenu_update(Fieldmenu *obj, FieldmenuWindows *data) {
         gfx.set_vram_pos(0x140, 0);
         gfx.set_layer_id(obj->layer_id, obj->ot_depth);
         gfx.set_follow_scroll(0);
+#ifdef PC_PORT
+        {
+            s32 wide_pad = port_video_widescreen_pad();
+
+            for (i = 0; i < 3; i++) {
+                level = obj->panel_anims[i].level;
+                if (obj->bs_sel >= 0) {
+                    break; /* the bestiary screen has no member panels: its element list takes their space */
+                }
+                if (level != 0) {
+                    if (level != 0x1000) {
+                        gfx.set_scale(level, 0x1000, 0x1000);
+                        gfx.set_pivot(-wide_pad, i * 46 + 0x25);
+                    } else {
+                        gfx.set_scale(0x1000, 0x1000, 0x1000);
+                    }
+                    gfx.draw(cdload_module.get_subfile_by_id(0x2860000), 0x15, -wide_pad, i * 46 + 0x11);
+                    gfx.draw(cdload_module.get_subfile_by_id(0x2860000), 0x17, -wide_pad, i * 46 + 0x11);
+                }
+            }
+            if (obj->panel_anims[0].level != 0) {
+                s32 bar_sx = wide_pad > 0 ? (obj->panel_anims[0].level * (288 + 2 * wide_pad) + 144) / 288
+                                          : obj->panel_anims[0].level;
+
+                if (bar_sx != 0x1000) {
+                    gfx.set_scale(bar_sx, 0x1000, 0x1000);
+                    gfx.set_pivot(0x22 - wide_pad, 0x19);
+                } else {
+                    gfx.set_scale(0x1000, 0x1000, 0x1000);
+                }
+                gfx.draw(cdload_module.get_subfile_by_id(0x2860000), 0x18, 0x22 - wide_pad, 0xD);
+            }
+            if (obj->panel_anims[1].level != 0) {
+                if (obj->panel_anims[1].level != 0x1000) {
+                    gfx.set_scale(obj->panel_anims[1].level, 0x1000, 0x1000);
+                    gfx.set_pivot(0x140 + wide_pad, 0x52);
+                } else {
+                    gfx.set_scale(0x1000, 0x1000, 0x1000);
+                }
+                if (obj->bs_sel >= 0) {
+                    /* the bestiary's page is six names whatever the menu has: the 6-entry panel as it is */
+                    gfx.draw(cdload_module.get_subfile_by_id(0x2860000), 0x1B, 0xA8 + wide_pad, 0x28);
+                } else if (obj->option_count >= 7) {
+                    /* global_save's entry with the card case's: the bank has panels for 5 and 6 entries only (a 22 px top,
+                     * 14 px rows, a 20 px bottom), so the 6-entry one (98 px) is stretched by 14 px per entry more
+                     * (7: 112 px, 8: 126 px) from its top */
+                    gfx.set_scale(obj->panel_anims[1].level, 0x1000 + (obj->option_count - 6) * 0x249, 0x1000);
+                    gfx.set_pivot(0x140 + wide_pad, 0x28);
+                    gfx.draw(cdload_module.get_subfile_by_id(0x2860000), 0x1B, 0xA8 + wide_pad, 0x28);
+                } else {
+                    gfx.draw(cdload_module.get_subfile_by_id(0x2860000), 0x1C - (obj->option_count - 5), 0xA8 + wide_pad,
+                             0x28);
+                }
+            }
+            if (obj->bs_sel >= 0) {
+                fieldmenu_bestiary_panel(obj); /* in the member panels' and the money's place */
+                break;
+            }
+            if (obj->panel_anims[2].level != 0) {
+                if (obj->panel_anims[2].level != 0x1000) {
+                    gfx.set_scale(obj->panel_anims[2].level, 0x1000, 0x1000);
+                    gfx.set_pivot(-wide_pad, 0xA8);
+                } else {
+                    gfx.set_scale(0x1000, 0x1000, 0x1000);
+                }
+                gfx.draw(cdload_module.get_subfile_by_id(0x2860000), 0x1A, -wide_pad, 0x9E);
+            }
+        }
+#else
         for (i = 0; i < 3; i++) {
             level = obj->panel_anims[i].level;
-#ifdef PC_PORT
-            if (obj->bs_sel >= 0) {
-                break; /* the bestiary screen has no member panels: its element list takes their space */
-            }
-#endif
             if (level != 0) {
                 if (level != 0x1000) {
                     gfx.set_scale(level, 0x1000, 0x1000);
@@ -709,30 +806,8 @@ void fieldmenu_update(Fieldmenu *obj, FieldmenuWindows *data) {
             } else {
                 gfx.set_scale(0x1000, 0x1000, 0x1000);
             }
-#ifdef PC_PORT
-            if (obj->bs_sel >= 0) {
-                /* the bestiary's page is six names whatever the menu has: the 6-entry panel as it is */
-                gfx.draw(cdload_module.get_subfile_by_id(0x2860000), 0x1B, 0xA8, 0x28);
-            } else if (obj->option_count >= 7) {
-                /* global_save's entry with the card case's: the bank has panels for 5 and 6 entries only (a 22 px top,
-                 * 14 px rows, a 20 px bottom), so the 6-entry one (98 px) is stretched by 14 px per entry more
-                 * (7: 112 px, 8: 126 px) from its top */
-                gfx.set_scale(obj->panel_anims[1].level, 0x1000 + (obj->option_count - 6) * 0x249, 0x1000);
-                gfx.set_pivot(0x140, 0x28);
-                gfx.draw(cdload_module.get_subfile_by_id(0x2860000), 0x1B, 0xA8, 0x28);
-            } else {
-                gfx.draw(cdload_module.get_subfile_by_id(0x2860000), 0x1C - (obj->option_count - 5), 0xA8, 0x28);
-            }
-#else
             gfx.draw(cdload_module.get_subfile_by_id(0x2860000), 0x1C - obj->extended, 0xA8, 0x28);
-#endif
         }
-#ifdef PC_PORT
-        if (obj->bs_sel >= 0) {
-            fieldmenu_bestiary_panel(obj); /* in the member panels' and the money's place */
-            break;
-        }
-#endif
         if (obj->panel_anims[2].level != 0) {
             if (obj->panel_anims[2].level != 0x1000) {
                 gfx.set_scale(obj->panel_anims[2].level, 0x1000, 0x1000);
@@ -742,6 +817,7 @@ void fieldmenu_update(Fieldmenu *obj, FieldmenuWindows *data) {
             }
             gfx.draw(cdload_module.get_subfile_by_id(0x2860000), 0x1A, 0, 0x9E);
         }
+#endif
         break;
     case OBJECT_STATE_DONE:
         switch (obj->base.step) {
@@ -799,6 +875,29 @@ void fieldmenu_update(Fieldmenu *obj, FieldmenuWindows *data) {
         gfx2.set_vram_pos(0x140, 0);
         gfx2.set_layer_id(obj->layer_id, obj->ot_depth);
         gfx2.set_follow_scroll(0);
+#ifdef PC_PORT
+        {
+            s32 wide_pad = port_video_widescreen_pad();
+
+            if (wide_pad > 0) {
+                gfx2.set_scale((0x1000 * (320 + 2 * wide_pad) + 160) / 320, 0x1000, 0x1000);
+                gfx2.set_pivot(-wide_pad, 0);
+            }
+            for (j = 0; j <= obj->base.step; j++) {
+                if (j == 6) {
+                    break;
+                }
+                if (j == obj->base.step) {
+                    gfx2.set_palette(obj->anim_palette);
+                } else if (j < 3) {
+                    gfx2.set_palette(7);
+                } else {
+                    gfx2.set_palette(15);
+                }
+                gfx2.draw(cdload_module.get_subfile_by_id(0x2860000), fieldmenu_anim_pictures[j], -wide_pad, 0);
+            }
+        }
+#else
         for (j = 0; j <= obj->base.step; j++) {
             if (j == 6) {
                 break;
@@ -812,6 +911,7 @@ void fieldmenu_update(Fieldmenu *obj, FieldmenuWindows *data) {
             }
             gfx2.draw(cdload_module.get_subfile_by_id(0x2860000), fieldmenu_anim_pictures[j], 0, 0);
         }
+#endif
         break;
     case OBJECT_STATE_END:
         break;

@@ -210,6 +210,9 @@ typedef struct CardPicture {
 } CardPicture; /* size 0x54 */
 
 void sprite_init(Sprite *obj);
+#ifdef PC_PORT
+void sprite_frame_bounds_x(s32 *bank, s32 id, s32 *min_x, s32 *max_x);
+#endif
 void font_init(Font *obj);
 void tim_init(Tim *obj);
 void card_init(CardPicture *obj);

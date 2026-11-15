@@ -276,8 +276,15 @@ static void rare_won(int t) {
 }
 
 void def_hunt_skipped(void) {
+    int region, chain;
+
     if (hunt.from_encounter && !hunt.rare && def_on()) {
-        common_drops(); /* the Rush won it for the party: its enemies still leave their materials (the chain does not count it) */
+        def_record_hunt(&region, &chain);
+        if (chain < DEF_HUNT_CHAIN_CAP) {
+            chain++;
+        }
+        def_record_set_hunt(region, chain);
+        common_drops(); /* the Rush won it for the party: counts for the hunt chain and drops materials */
     }
     hunt.from_encounter = 0;
     hunt.rare = 0;

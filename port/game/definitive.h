@@ -243,7 +243,7 @@ void def_hunt_scale(void);
 int def_hunt_active(void);
 void def_hunt_skipped(void);
 /* The battle's end (def_log_end): a won random encounter adds to the chain and leaves its commons; a Rare Target fought
- * resets it, and won gives its rare item. The Rush's skip (def_hunt_skipped) leaves the commons, not the chain. */
+ * resets it, and won gives its rare item. The Rush's skip (def_hunt_skipped) counts for the chain and leaves commons. */
 void def_hunt_battle_end(int result);
 /* The Guardromon teleport resets the chain, whatever region it lands in. */
 void def_hunt_chain_reset(void);

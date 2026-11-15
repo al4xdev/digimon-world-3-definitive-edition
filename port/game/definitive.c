@@ -1459,7 +1459,7 @@ void def_rush_results(void) {
         }
     }
     overfinish_damage = 0;
-    def_hunt_skipped(); /* PRD 4 layer A: a skipped battle does not count in the hunt's chain */
+    def_hunt_skipped(); /* a Rush-won encounter also advances the regional hunt chain and drops materials */
     port_log("rush: battle %d skipped (member %d, item %d)", (int)records_state.battle, lead,
              (int)records_battle_results.item);
 }

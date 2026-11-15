@@ -3279,10 +3279,17 @@ void fightstg_hud_move_bar(FightstgHudBar *bar) {
 void fightstg_hud_update_names(FightstgHud *obj, FightstgHudData *data) {
     FightstgEnemyRecord *digimon;
     s32 i;
+#ifdef PC_PORT
+    s32 wide_pad = port_video_widescreen_pad();
+#endif
 
     if (fightstg_battle.state.current[0] != obj->named[0]) {
         if (data->party_name == NULL) {
+#ifdef PC_PORT
+            data->party_name = message_create_window(0x1005, 1, 0xAE + wide_pad, 0x15);
+#else
             data->party_name = message_create_window(0x1005, 1, 0xAE, 0x15);
+#endif
         }
         data->party_name->set_text(data->party_name,
             gamestate_data.digimon[gamestate_data.funcs.get_party_member(fightstg_battle.state.current[0])].record.name, -1);
@@ -3290,7 +3297,11 @@ void fightstg_hud_update_names(FightstgHud *obj, FightstgHudData *data) {
     if (fightstg_battle.state.current[1] != obj->named[1]) {
         digimon = fightstg_enemy_records.get(records_state.enemies[fightstg_battle.state.current[1]].digimon);
         if (data->enemy_name == NULL) {
+#ifdef PC_PORT
+            data->enemy_name = message_create_window(0x1005, 1, 0x11 - wide_pad, 0x15);
+#else
             data->enemy_name = message_create_window(0x1005, 1, 0x11, 0x15);
+#endif
         }
         if (digimon != NULL) {
 #ifdef PC_PORT
@@ -3328,22 +3339,40 @@ void fightstg_hud_draw(FightstgHud *obj, FightstgHudData *data) {
     s32 k;
     s32 idx;
     s32 x;
+#ifdef PC_PORT
+    s32 wide_pad = port_video_widescreen_pad();
+    DVECTOR bar[4];
+    DVECTOR gauge[4];
+#endif
 
     bank = cdload_module.get_subfile_by_id(0x4550000);
     sprite_init(&sprite);
     sprite.set_layer_id(0x1005, 1);
     sprite.set_vram_pos(0x200, 0);
+#ifdef PC_PORT
+    sprite.draw(bank, 0, 8 - wide_pad, 0xF);
+    sprite.draw(bank, 1, 0xA1 + wide_pad, 0xF);
+#else
     sprite.draw(bank, 0, 8, 0xF);
     sprite.draw(bank, 1, 0xA1, 0xF);
+#endif
     fightstg_hud_update_names(obj, data);
     member = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
     if (data->hp == NULL) {
+#ifdef PC_PORT
+        data->hp = message_create_window(0x1005, 3, 0x10B + wide_pad, 0x1A);
+#else
         data->hp = message_create_window(0x1005, 3, 0x10B, 0x1A);
+#endif
     }
     data->hp->set_line_number(data->hp, 0, obj->bars[0].hp);
     data->hp->measure(data->hp, 1);
     if (data->max_hp == NULL) {
+#ifdef PC_PORT
+        data->max_hp = message_create_window(0x1005, 3, 0x12E + wide_pad, 0x1A);
+#else
         data->max_hp = message_create_window(0x1005, 3, 0x12E, 0x1A);
+#endif
     }
     data->max_hp->set_line_number(data->max_hp, 0, member->max_hp);
     data->max_hp->measure(data->max_hp, 1);
@@ -3367,10 +3396,35 @@ void fightstg_hud_draw(FightstgHud *obj, FightstgHudData *data) {
             colors[0] = colors[2] = fightstg_hud_bar_colors[1][0];
             colors[1] = colors[3] = fightstg_hud_bar_colors[1][1];
         }
+#ifdef PC_PORT
+        for (k = 0; k < 4; k++) {
+            bar[k] = fightstg_hud_bars[side][k];
+            bar[k].vx += side == 0 ? wide_pad : -wide_pad;
+        }
+        fightstg_battle.draw_quad(0x1005, 1, bar, colors);
+#else
         fightstg_battle.draw_quad(0x1005, 1, fightstg_hud_bars[side], colors);
+#endif
     }
     frame = (gfx_module.funcs.get_time() >> 2) & 3;
     idx = gamestate_data.funcs.get_party_member(fightstg_battle.state.current[0]);
+#ifdef PC_PORT
+    sprite.draw(bank, 0x1E, 0x104 + wide_pad, 0x3D);
+    if (records_state.gauges[idx] < 1000) {
+        fightstg_hud_gauge[2].vx = fightstg_hud_gauge[0].vx = records_state.gauges[idx] / 25 + 0x109;
+        for (k = 0; k < 4; k++) {
+            gauge[k] = fightstg_hud_gauge[k];
+            gauge[k].vx += wide_pad;
+        }
+        fightstg_battle.draw_quad(0x1005, 1, gauge, fightstg_hud_gauge_colors);
+    }
+    if (records_state.gauges[idx] < 1000) {
+        sprite.draw(bank, frame + 0x33, 0x109 + wide_pad, 0x3E);
+    } else {
+        sprite.draw(bank, frame + 0x37, 0x109 + wide_pad, 0x3E);
+    }
+    sprite.draw(bank, 0xB, 0x104 + wide_pad, 0x3D);
+#else
     sprite.draw(bank, 0x1E, 0x104, 0x3D);
     if (records_state.gauges[idx] < 1000) {
         fightstg_hud_gauge[2].vx = fightstg_hud_gauge[0].vx = records_state.gauges[idx] / 25 + 0x109;
@@ -3382,6 +3436,7 @@ void fightstg_hud_draw(FightstgHud *obj, FightstgHudData *data) {
         sprite.draw(bank, frame + 0x37, 0x109, 0x3E);
     }
     sprite.draw(bank, 0xB, 0x104, 0x3D);
+#endif
 #ifdef PC_PORT
     fightstg_hud_draw_mods(obj, data);
 #endif
@@ -3399,8 +3454,13 @@ void fightstg_hud_draw(FightstgHud *obj, FightstgHudData *data) {
                 } else {
                     k = member->hp != member->max_hp;
                 }
+#ifdef PC_PORT
+                sprite.draw(bank, (fightstg_battle.state.current[i] == j ? 0xC : 0x3C) + k,
+                              fightstg_hud_icon_x[i][j] + (i == 0 ? wide_pad : -wide_pad), 0x30);
+#else
                 sprite.draw(bank, (fightstg_battle.state.current[i] == j ? 0xC : 0x3C) + k,
                               fightstg_hud_icon_x[i][j], 0x30);
+#endif
             }
         }
     }
@@ -3409,6 +3469,9 @@ void fightstg_hud_draw(FightstgHud *obj, FightstgHudData *data) {
 void fightstg_hud_update(FightstgHud *obj, FightstgHudData *data) {
     FightstgMember (*members)[3];
     s32 i;
+#ifdef PC_PORT
+    s32 wide_pad = port_video_widescreen_pad();
+#endif
 
     switch (obj->base.state) {
     case OBJECT_STATE_INIT:
@@ -3416,6 +3479,15 @@ void fightstg_hud_update(FightstgHud *obj, FightstgHudData *data) {
         obj->named[1] = -1;
         obj->named[0] = -1;
         fightstg_hud_update_names(obj, data);
+#ifdef PC_PORT
+        data->slash = message_create_window(0x1005, 3, 0x10C + wide_pad, 0x1A);
+        data->slash->set_text(data->slash, cdload_module.files.get_file(records_language + 0x7F), 0x10);
+        members = fightstg_battle.state.members;
+        data->hp = message_create_window(0x1005, 3, 0x10B + wide_pad, 0x1A);
+        data->hp->set_line_number(data->hp, 0, members[0][fightstg_battle.state.current[0]].hp);
+        data->hp->measure(data->hp, 1);
+        data->max_hp = message_create_window(0x1005, 3, 0x12E + wide_pad, 0x1A);
+#else
         data->slash = message_create_window(0x1005, 3, 0x10C, 0x1A);
         data->slash->set_text(data->slash, cdload_module.files.get_file(records_language + 0x7F), 0x10);
         members = fightstg_battle.state.members;
@@ -3423,6 +3495,7 @@ void fightstg_hud_update(FightstgHud *obj, FightstgHudData *data) {
         data->hp->set_line_number(data->hp, 0, members[0][fightstg_battle.state.current[0]].hp);
         data->hp->measure(data->hp, 1);
         data->max_hp = message_create_window(0x1005, 3, 0x12E, 0x1A);
+#endif
         data->max_hp->set_line_number(data->max_hp, 0, members[0][fightstg_battle.state.current[0]].max_hp);
         data->max_hp->measure(data->max_hp, 1);
         for (i = 0; i < 2; i++) {
@@ -3461,11 +3534,18 @@ void fightstg_command_menu_open(FightstgCommandMenu *obj) {
     FightstgMember *member;
     u8 *text;
     s32 i;
+#ifdef PC_PORT
+    s32 wide_pad = port_video_widescreen_pad();
+#endif
 
     if (data->windows[0] == NULL) {
         text = cdload_module.files.get_file(records_language + 0x7F);
         for (i = 0; i < 6; i++) {
+#ifdef PC_PORT
+            data->windows[i] = message_create_window(0x1005, 1, 0x24 - wide_pad, i * 19 + 0x6D);
+#else
             data->windows[i] = message_create_window(0x1005, 1, 0x24, i * 19 + 0x6D);
+#endif
             data->windows[i]->set_text(data->windows[i], text, i + 1);
         }
         member = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
@@ -3486,7 +3566,16 @@ void fightstg_command_menu_update(FightstgCommandMenu *obj, FightstgCommandMenuD
     switch (obj->base.state) {
     case OBJECT_STATE_INIT:
     default:
+#ifdef PC_PORT
+    {
+        FightstgCursorParams params = fightstg_command_menu_cursor;
+
+        params.x -= port_video_widescreen_pad();
+        data->cursor = fightstg_cursor_create(&params);
+    }
+#else
         data->cursor = fightstg_cursor_create(&fightstg_command_menu_cursor);
+#endif
         data->cursor->sel = obj->sel;
         fightstg_command_menu_open(obj);
         obj->base.next_state(obj);
@@ -3717,7 +3806,11 @@ static void fightstg_hud_draw_mods(FightstgHud *obj, FightstgHudData *data) {
             continue;
         }
         total_w -= 2; /* the last mark's gap */
-        x0 = side == 1 ? FIGHTSTG_HUD_MOD_ENEMY_X : FIGHTSTG_HUD_MOD_PARTY_X - total_w;
+        {
+            s32 wide_pad = port_video_widescreen_pad();
+
+            x0 = side == 1 ? FIGHTSTG_HUD_MOD_ENEMY_X - wide_pad : FIGHTSTG_HUD_MOD_PARTY_X + wide_pad - total_w;
+        }
         fightstg_battle_menu_quad(x0 - 3, FIGHTSTG_HUD_MOD_Y - 1, total_w + 6, 15, 2, 150, 140, 100);
         if (!changed) {
             continue;
@@ -3884,7 +3977,7 @@ static void fightstg_battle_menu_inspect_set(FightstgBattleMenuData *data, s32 o
 
 /* The open panel's backdrop: the dark quad, a line under the title and a frame in the windows' blue. */
 static void fightstg_battle_menu_inspect_frame(void) {
-    s32 x = FIGHTSTG_INSPECT_X - 4;
+    s32 x = FIGHTSTG_INSPECT_X - port_video_widescreen_pad() - 4;
     s32 y = FIGHTSTG_INSPECT_Y - 3;
     s32 w = FIGHTSTG_INSPECT_W;
     s32 h = FIGHTSTG_INSPECT_ROW_Y + FIGHTSTG_INSPECT_LINE * FIGHTSTG_INSPECT_ROWS + 2 - y;
@@ -3909,6 +4002,7 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
     s32 glow;
     s32 i;
     s32 buffered;
+    s32 wide_pad = port_video_widescreen_pad();
 
     switch (obj->base.state) {
     case OBJECT_STATE_INIT:
@@ -3918,7 +4012,7 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
         port_bm_open(); /* buffer_input: what was pressed just before is given from the first frame */
         for (i = 0; i < 7; i++) {
             slot = fightstg_bmenu_action_slot[i];
-            x = fightstg_battle_menu_slots[slot][0];
+            x = fightstg_battle_menu_slots[slot][0] - wide_pad;
             y = fightstg_battle_menu_slots[slot][1];
             fightstg_battle_menu_icon_text(icon, i);
             obj->x[i] = x;
@@ -3932,12 +4026,12 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
             data->labels[i]->set_text(data->labels[i], (u8 *)fightstg_bmenu_glyphs[i], -1);
             fightstg_battle_menu_paint(data, i, obj->grey[i] ? FIGHTSTG_BMENU_PAL_GREY : 0);
         }
-        data->inspect_title = message_create_window(0x1005, 1, FIGHTSTG_INSPECT_X, FIGHTSTG_INSPECT_Y);
+        data->inspect_title = message_create_window(0x1005, 1, FIGHTSTG_INSPECT_X - wide_pad, FIGHTSTG_INSPECT_Y);
         for (i = 0; i < 7; i++) {
             /* five cells by family; windows 5 and 6 are the second pictures of the pairs (families 1 and 3) */
             s32 f = i < FIGHTSTG_INSPECT_FAMILIES ? i : i == 5 ? 1 : 3;
 
-            x = FIGHTSTG_INSPECT_X + FIGHTSTG_INSPECT_COL_DX * (f / FIGHTSTG_INSPECT_ROWS);
+            x = FIGHTSTG_INSPECT_X - wide_pad + FIGHTSTG_INSPECT_COL_DX * (f / FIGHTSTG_INSPECT_ROWS);
             y = FIGHTSTG_INSPECT_ROW_Y + FIGHTSTG_INSPECT_LINE * (f % FIGHTSTG_INSPECT_ROWS);
             if (i >= FIGHTSTG_INSPECT_FAMILIES) {
                 x += FIGHTSTG_INSPECT_PAIR_DX;
@@ -3946,7 +4040,7 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
             data->inspect_states[i] = message_create_window(0x1005, 1, x + FIGHTSTG_INSPECT_STATE_DX, y);
         }
         fightstg_battle_menu_inspect_set(data, 0);
-        data->twice = message_create_window(0x1005, 3, FIGHTSTG_TWICE_X, FIGHTSTG_TWICE_Y);
+        data->twice = message_create_window(0x1005, 3, FIGHTSTG_TWICE_X - wide_pad, FIGHTSTG_TWICE_Y);
         data->twice->set_text(data->twice, (u8 *)(def_enemy_acts_twice() ? def_twice_label() : fightstg_inspect_empty), -1);
         obj->base.next_state(obj);
         break;
@@ -4070,11 +4164,18 @@ extern RECT fightstg_portrait_rect;
 
 void fightstg_portrait_draw(FightstgPortrait *obj, FightstgPortraitData *data) {
     Sprite sprite;
+#ifdef PC_PORT
+    s32 wide_pad = port_video_widescreen_pad();
+#endif
 
     sprite_init(&sprite);
     sprite.set_layer_id(0x1005, 0);
     sprite.set_vram_pos(0x200, 0);
+#ifdef PC_PORT
+    sprite.draw(cdload_module.get_subfile_by_id(0x4550000), 0xA, 0xF6 + wide_pad, 0x4A);
+#else
     sprite.draw(cdload_module.get_subfile_by_id(0x4550000), 0xA, 0xF6, 0x4A);
+#endif
 }
 
 void fightstg_portrait_update(FightstgPortrait *obj, FightstgPortraitData *data) {
@@ -4082,16 +4183,31 @@ void fightstg_portrait_update(FightstgPortrait *obj, FightstgPortraitData *data)
     FightstgModelParams *params;
     FightstgModelView *old;
     s32 id;
+#ifdef PC_PORT
+    s32 wide_pad = port_video_widescreen_pad();
+#endif
 
     switch (obj->base.state) {
     case OBJECT_STATE_INIT:
     default:
-        fightstg_portrait_rect.x = 0xD0;
-        fightstg_portrait_rect.y = 0x4C;
-        fightstg_portrait_rect.w = 0x64;
-        fightstg_portrait_rect.h = 0x3C;
-        obj->layer = gfx_module.funcs.create_layer(&fightstg_portrait_rect, 0xC, 0x1009);
-        obj->layer->set_draw_offset(obj->layer, 0x102, 0x6A);
+#ifdef PC_PORT
+        if (wide_pad > 0) {
+            fightstg_portrait_rect.x = 0;
+            fightstg_portrait_rect.y = 0x4C;
+            fightstg_portrait_rect.w = 320;
+            fightstg_portrait_rect.h = 0x3C;
+            obj->layer = gfx_module.funcs.create_layer(&fightstg_portrait_rect, 0xC, 0x1009);
+            obj->layer->set_draw_offset(obj->layer, 0x102 + wide_pad, 0x6A);
+        } else
+#endif
+        {
+            fightstg_portrait_rect.x = 0xD0;
+            fightstg_portrait_rect.y = 0x4C;
+            fightstg_portrait_rect.w = 0x64;
+            fightstg_portrait_rect.h = 0x3C;
+            obj->layer = gfx_module.funcs.create_layer(&fightstg_portrait_rect, 0xC, 0x1009);
+            obj->layer->set_draw_offset(obj->layer, 0x102, 0x6A);
+        }
         obj->layer->alloc_callbacks(obj->layer, 0x32);
         obj->base.next_state(obj);
         break;
@@ -4861,7 +4977,11 @@ void fightstg_tech_menu_draw(FightstgTechMenu *obj) {
         }
     }
     sprite.draw(bank, 0x2A, 8, 0x3E);
+#ifdef PC_PORT
+    sprite.draw(bank, 0x29, 0xA3 + port_video_widescreen_pad(), 0x21);
+#else
     sprite.draw(bank, 0x29, 0xA3, 0x21);
+#endif
     sprite.draw(bank, 0x31, 0xB, 0xBC);
 }
 
@@ -4869,6 +4989,9 @@ void fightstg_tech_menu_open(FightstgTechMenu *obj, FightstgTechMenuData *data) 
     FightstgMember *member = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
     u8 *text = cdload_module.files.get_file(records_language + 0x7F);
     s32 i;
+#ifdef PC_PORT
+    s32 wide_pad = port_video_widescreen_pad();
+#endif
 
     data->l1_window = message_create_window(0x1005, 3, 0x1A, 0x9F);
     data->l1_window->set_text(data->l1_window, text, 0x11);
@@ -4876,9 +4999,15 @@ void fightstg_tech_menu_open(FightstgTechMenu *obj, FightstgTechMenuData *data) 
     data->r1_window = message_create_window(0x1005, 3, 0x80, 0x9F);
     data->r1_window->set_text(data->r1_window, text, 0x12);
     data->r1_window->set_palette(data->r1_window, 2);
+#ifdef PC_PORT
+    data->mp_label = message_create_window(0x1005, 3, 0xAC + wide_pad, 0x3A);
+    data->mp_label->set_text(data->mp_label, text, 0xD);
+    data->mp = message_create_window(0x1005, 3, 0xD8 + wide_pad, 0x3A);
+#else
     data->mp_label = message_create_window(0x1005, 3, 0xAC, 0x3A);
     data->mp_label->set_text(data->mp_label, text, 0xD);
     data->mp = message_create_window(0x1005, 3, 0xD8, 0x3A);
+#endif
     if (member->blasted != 0) {
         if (member->mp < 100) {
             data->mp->set_text(data->mp, text, 0x1A);
@@ -4891,9 +5020,15 @@ void fightstg_tech_menu_open(FightstgTechMenu *obj, FightstgTechMenuData *data) 
         data->mp->set_line_number(data->mp, 0, member->mp);
     }
     data->mp->measure(data->mp, 1);
+#ifdef PC_PORT
+    data->slash = message_create_window(0x1005, 3, 0xD9 + wide_pad, 0x3A);
+    data->slash->set_text(data->slash, text, 0x10);
+    data->max_mp = message_create_window(0x1005, 3, 0xFB + wide_pad, 0x3A);
+#else
     data->slash = message_create_window(0x1005, 3, 0xD9, 0x3A);
     data->slash->set_text(data->slash, text, 0x10);
     data->max_mp = message_create_window(0x1005, 3, 0xFB, 0x3A);
+#endif
     data->max_mp->set_line_number(data->max_mp, 0, member->max_mp);
     data->max_mp->measure(data->max_mp, 1);
     for (i = 0; i < 6; i++) {
@@ -5392,7 +5527,11 @@ void fightstg_switch_menu_draw(FightstgSwitchMenu *obj) {
     sprite.draw(bank, 0x2B, 0xA7, 0x8F);
     if (obj->action != 0) {
         sprite.draw(bank, 2, 0xA7, 0xB8);
+#ifdef PC_PORT
+        sprite.draw(bank, 0x29, 0xA3 + port_video_widescreen_pad(), 0x21);
+#else
         sprite.draw(bank, 0x29, 0xA3, 0x21);
+#endif
     }
 }
 
@@ -5401,6 +5540,9 @@ extern DVECTOR fightstg_switch_menu_window_x[4];
 
 void fightstg_switch_menu_open(FightstgSwitchMenu *obj, FightstgSwitchMenuData *data) {
     s32 i;
+#ifdef PC_PORT
+    s32 wide_pad = port_video_widescreen_pad();
+#endif
 
     for (i = 0; i < 4; i++) {
         data->names[i] = message_create_window(0x1005, 1, 0xBB, i * 0x13 + 0x92);
@@ -5411,7 +5553,11 @@ void fightstg_switch_menu_open(FightstgSwitchMenu *obj, FightstgSwitchMenuData *
     data->action_windows[2] = message_create_window(0x1005, 3, 0x10E, 0xBA);
     data->action_windows[3] = message_create_window(0x1005, 3, 0x133, 0xBA);
     for (i = 0; i < 4; i++) {
+#ifdef PC_PORT
+        data->mp_windows[i] = message_create_window(0x1005, 3, fightstg_switch_menu_window_x[i].vx + wide_pad, 0x39);
+#else
         data->mp_windows[i] = message_create_window(0x1005, 3, fightstg_switch_menu_window_x[i].vx, 0x39);
+#endif
     }
 #ifdef PC_PORT
     data->baton[0] = message_create_window(0x1005, 1, 0xBB, 0xCB);
@@ -6397,11 +6543,18 @@ void fightstg_confused_menu_open(FightstgConfusedMenu *obj) {
     FightstgCommandMenuData *data = (FightstgCommandMenuData *)obj->base.children;
     u8 *text;
     s32 i;
+#ifdef PC_PORT
+    s32 wide_pad = port_video_widescreen_pad();
+#endif
 
     if (data->windows[0] == NULL) {
         text = cdload_module.files.get_file(records_language + 0x7F);
         for (i = 0; i < 6; i++) {
+#ifdef PC_PORT
+            data->windows[i] = message_create_window(0x1005, 1, 0x24 - wide_pad, i * 0x13 + 0x6D);
+#else
             data->windows[i] = message_create_window(0x1005, 1, 0x24, i * 0x13 + 0x6D);
+#endif
             data->windows[i]->set_text(data->windows[i], text, fightstg_confused_menu_order[i] + 0x6B);
         }
     }
@@ -6503,7 +6656,16 @@ void fightstg_confused_menu_update(FightstgConfusedMenu *obj, FightstgCommandMen
     switch (obj->base.state) {
     case OBJECT_STATE_INIT:
     default:
+#ifdef PC_PORT
+    {
+        FightstgCursorParams params = fightstg_confused_menu_cursor;
+
+        params.x -= port_video_widescreen_pad();
+        data->cursor = fightstg_cursor_create(&params);
+    }
+#else
         data->cursor = fightstg_cursor_create(&fightstg_confused_menu_cursor);
+#endif
         data->cursor->sel = obj->sel;
         for (i = 0; i < 8; i++) {
             j = pad_random.next() % 8;

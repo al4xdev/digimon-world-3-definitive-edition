@@ -265,3 +265,35 @@ void sprite_init(Sprite *obj) {
     obj->set_color = sprite_set_color;
     sprite_set_current(obj);
 }
+
+#ifdef PC_PORT
+void sprite_frame_bounds_x(s32 *bank, s32 id, s32 *min_x, s32 *max_x) {
+    SpriteCell *cells = (SpriteCell *)((u8 *)bank + bank[0]);
+    u8 *ids = (u8 *)bank + bank[1];
+    s16 *frame;
+    s32 count;
+    s32 i = 0;
+    s32 lo = 0x7FFF;
+    s32 hi = -0x7FFF;
+
+    while (ids[i] != id) {
+        i++;
+    }
+    frame = (s16 *)((u8 *)bank + bank[i + 2]);
+    count = *frame;
+    frame += 3;
+    for (i = 0; i < count; i++, frame += 3) {
+        s32 x0 = frame[1];
+        s32 x1 = x0 + cells[frame[0]].w;
+
+        if (x0 < lo) {
+            lo = x0;
+        }
+        if (x1 > hi) {
+            hi = x1;
+        }
+    }
+    *min_x = lo;
+    *max_x = hi;
+}
+#endif
