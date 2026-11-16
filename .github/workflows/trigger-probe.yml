@@ -1,0 +1,7 @@
+name: TriggerProbe
+on: [push]
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    steps:
+      - run: echo "push event reached Actions"
