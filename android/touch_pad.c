@@ -71,19 +71,21 @@ typedef struct {
 } TouchFinger;
 
 typedef struct {
+    uint16_t bit;
+    float cx, cy;
+    float hw, hh; /* half-width, half-height (for face: hw == hh == radius) */
+    int is_circle;
+    uint8_t cr, cg, cb;
+    const char *label;
+} TpBtn;
+
+typedef struct {
     int w, h;
     int left_zone, right_zone;
     int in_bezel;
     float dpad_cx, dpad_cy, dpad_r;
     float face_cx, face_cy, face_sp, face_r;
-    struct {
-        uint16_t bit;
-        float cx, cy;
-        float hw, hh; /* half-width, half-height (for face: hw == hh == radius) */
-        int is_circle;
-        uint8_t cr, cg, cb;
-        const char *label;
-    } btns[N_BTNS];
+    TpBtn btns[N_BTNS];
     float tog_cx, tog_cy, tog_hw, tog_hh;
 } TpLayout;
 
@@ -136,7 +138,8 @@ static void tp_compute_layout(int w, int h, TpLayout *L) {
     if (bezel < 0) bezel = 0;
 
     L->in_bezel = bezel >= (int)(h * 0.16f);
-    L->left_zone = bezel > min_zone ? bezel : min_zone;
+    /* Use the real bezel when there is one: forcing min_zone on 18:9-19.5:9 pushed controls onto the image. */
+    L->left_zone = L->in_bezel ? bezel : min_zone;
     L->right_zone = L->left_zone;
     if (L->left_zone > w * 40 / 100) {
         L->left_zone = L->right_zone = w * 40 / 100;
@@ -166,23 +169,23 @@ static void tp_compute_layout(int w, int h, TpLayout *L) {
     if (L->face_r > fh * 0.078f) L->face_r = fh * 0.078f;
     if (L->face_r < 14.0f) L->face_r = 14.0f;
 
-    L->btns[BTN_CROSS] = (typeof(L->btns[0])){PAD_CROSS, L->face_cx, L->face_cy + L->face_sp, L->face_r, L->face_r, 1, 90, 175, 255, "X"};
-    L->btns[BTN_CIRCLE] = (typeof(L->btns[0])){PAD_CIRCLE, L->face_cx + L->face_sp, L->face_cy, L->face_r, L->face_r, 1, 255, 100, 105, "O"};
-    L->btns[BTN_SQUARE] = (typeof(L->btns[0])){PAD_SQUARE, L->face_cx - L->face_sp, L->face_cy, L->face_r, L->face_r, 1, 225, 125, 255, "[]"};
-    L->btns[BTN_TRIANGLE] = (typeof(L->btns[0])){PAD_TRIANGLE, L->face_cx, L->face_cy - L->face_sp, L->face_r, L->face_r, 1, 70, 235, 165, "/\\"};
+    L->btns[BTN_CROSS] = (TpBtn){PAD_CROSS, L->face_cx, L->face_cy + L->face_sp, L->face_r, L->face_r, 1, 90, 175, 255, "X"};
+    L->btns[BTN_CIRCLE] = (TpBtn){PAD_CIRCLE, L->face_cx + L->face_sp, L->face_cy, L->face_r, L->face_r, 1, 255, 100, 105, "O"};
+    L->btns[BTN_SQUARE] = (TpBtn){PAD_SQUARE, L->face_cx - L->face_sp, L->face_cy, L->face_r, L->face_r, 1, 225, 125, 255, "[]"};
+    L->btns[BTN_TRIANGLE] = (TpBtn){PAD_TRIANGLE, L->face_cx, L->face_cy - L->face_sp, L->face_r, L->face_r, 1, 70, 235, 165, "/\\"};
 
     /* Left pills: L1, L2, SELECT */
     float pw = lz * 0.39f;
     float ph = fh * 0.052f;
     if (ph < 14.0f) ph = 14.0f;
-    L->btns[BTN_L1] = (typeof(L->btns[0])){PAD_L1, lcx, fh * 0.115f, pw, ph, 0, 0, 220, 195, "L1"};
-    L->btns[BTN_L2] = (typeof(L->btns[0])){PAD_L2, lcx, fh * 0.240f, pw * 0.90f, ph * 0.90f, 0, 0, 185, 175, "L2"};
-    L->btns[BTN_SELECT] = (typeof(L->btns[0])){PAD_SELECT, lcx, fh * 0.365f, pw * 0.84f, ph * 0.82f, 0, 170, 195, 220, "SEL"};
+    L->btns[BTN_L1] = (TpBtn){PAD_L1, lcx, fh * 0.115f, pw, ph, 0, 0, 220, 195, "L1"};
+    L->btns[BTN_L2] = (TpBtn){PAD_L2, lcx, fh * 0.240f, pw * 0.90f, ph * 0.90f, 0, 0, 185, 175, "L2"};
+    L->btns[BTN_SELECT] = (TpBtn){PAD_SELECT, lcx, fh * 0.365f, pw * 0.84f, ph * 0.82f, 0, 170, 195, 220, "SEL"};
 
     /* Right pills: R1, R2, START */
-    L->btns[BTN_R1] = (typeof(L->btns[0])){PAD_R1, rcx, fh * 0.115f, pw, ph, 0, 0, 220, 195, "R1"};
-    L->btns[BTN_R2] = (typeof(L->btns[0])){PAD_R2, rcx, fh * 0.240f, pw * 0.90f, ph * 0.90f, 0, 0, 185, 175, "R2"};
-    L->btns[BTN_START] = (typeof(L->btns[0])){PAD_START, rcx, fh * 0.365f, pw * 0.84f, ph * 0.82f, 0, 170, 195, 220, "STA"};
+    L->btns[BTN_R1] = (TpBtn){PAD_R1, rcx, fh * 0.115f, pw, ph, 0, 0, 220, 195, "R1"};
+    L->btns[BTN_R2] = (TpBtn){PAD_R2, rcx, fh * 0.240f, pw * 0.90f, ph * 0.90f, 0, 0, 185, 175, "R2"};
+    L->btns[BTN_START] = (TpBtn){PAD_START, rcx, fh * 0.365f, pw * 0.84f, ph * 0.82f, 0, 170, 195, 220, "STA"};
 
     /* Top-center hide/show toggle pill */
     L->tog_cx = fw * 0.50f;
@@ -333,7 +336,7 @@ void port_touch_event(const void *sdl_event) {
         f->locked_btn = -1;
 
         /* Top-center toggle pill */
-        if (fabsf(px - L.tog_cx) <= L.tog_hw + 14.0f && py <= L.tog_cy + L.tog_hh + 18.0f) {
+        if (fabsf(px - L.tog_cx) <= L.tog_hw + 6.0f && py <= L.tog_cy + L.tog_hh + 8.0f) {
             f->role = ROLE_TOGGLE;
             tp_recompute();
             return;
@@ -558,7 +561,10 @@ static void draw_glyph(uint32_t *buf, int w, int h, float cx, float cy, float s,
     case 'O': {
         int x0 = (int)floorf(cx - hs - 2.0f), x1 = (int)ceilf(cx + hs + 2.0f);
         int y0 = (int)floorf(cy - hs - 2.0f), y1 = (int)ceilf(cy + hs + 2.0f);
-        if (x0 < 0) x0 = 0; if (y0 < 0) y0 = 0; if (x1 >= w) x1 = w - 1; if (y1 >= h) y1 = h - 1;
+        if (x0 < 0) x0 = 0;
+        if (y0 < 0) y0 = 0;
+        if (x1 >= w) x1 = w - 1;
+        if (y1 >= h) y1 = h - 1;
         for (int y = y0; y <= y1; y++) {
             for (int x = x0; x <= x1; x++) {
                 float d = fabsf(sqrtf(((float)x + 0.5f - cx) * ((float)x + 0.5f - cx) +

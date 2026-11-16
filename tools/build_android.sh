@@ -84,7 +84,7 @@ fi
 APK_SRC="$REPO/android/app/build/outputs/apk/release/app-release.apk"
 [ -f "$APK_SRC" ] || { echo "Error: APK not produced at $APK_SRC" >&2; exit 1; }
 mkdir -p "$REPO/dist"
-APK_OUT="$REPO/dist/dw2003-${VER}-android-arm64-v8a.apk"
+APK_OUT="$REPO/dist/dw2003-${VER}-android-${DW3_ANDROID_ABI:-arm64-v8a}.apk"
 cp "$APK_SRC" "$APK_OUT"
 (cd "$REPO/dist" && sha256sum "$(basename "$APK_OUT")" > SHA256SUMS-android)
 echo "=== Android APK ready: $APK_OUT ==="
