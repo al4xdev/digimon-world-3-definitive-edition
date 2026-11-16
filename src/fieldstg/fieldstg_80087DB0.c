@@ -15,6 +15,11 @@
 #include "overlay_common.h"
 #include "fieldstg.h"
 
+#ifdef PC_PORT
+extern void fieldstg_rush_reset(void);
+extern s32 fieldstg_rush_asking(void); /* the Overlevel Rush's question is up: the player walks, nothing else may start */
+#endif
+
 /* A frame of a sprite animation (fieldstg_actor_effect_anims, fieldstg_spots_open_anim, fieldstg_spots_effect_anims):
  * the list ends with sprite 0xFF. */
 typedef struct FieldstgAnimFrame {
@@ -656,7 +661,11 @@ void fieldstg_map_events_update(FieldstgMapEvents *obj, FieldstgMapEventsData *d
         }
         break;
     case OBJECT_STATE_RUN:
-        if (fieldstg_stage.event_running == 0 && fieldstg_stage.title_shown == 0) {
+        if (fieldstg_stage.event_running == 0 && fieldstg_stage.title_shown == 0
+#ifdef PC_PORT
+            && !fieldstg_rush_asking()
+#endif
+        ) {
             switch (obj->base.step) {
             case 0:
             default:
@@ -1649,7 +1658,11 @@ static inline void fieldstg_manager_warp(FieldstgManager *obj, FieldstgManagerDa
 /* From progress 4 on, START opens the field menu while nothing else runs; the player's map, place and direction are
  * kept to come back to. */
 static inline void fieldstg_manager_open_menu(FieldstgManager *obj, FieldstgManagerData *data) {
-    if (fieldstg_stage.menu_open != 1 && fieldstg_stage.event_running == 0 && fieldstg_stage.actor_busy == 0) {
+    if (fieldstg_stage.menu_open != 1 && fieldstg_stage.event_running == 0 && fieldstg_stage.actor_busy == 0
+#ifdef PC_PORT
+        && !fieldstg_rush_asking()
+#endif
+    ) {
         /* Evidence (class B, register priority only; docs/MATCHING.md "LOOP_BLOCK and LOOP_BARRIER"): references
          * inside the block weigh more, so the gamestate_data base ranks above the other saved registers, as in the
          * original; as a plain if, or with `return` for the break, only registers differ (99.86%), same layout. */
@@ -1702,6 +1715,7 @@ static inline void fieldstg_manager_start(FieldstgManager *obj, FieldstgManagerD
     def_variants_hook(); /* PRD 4 layer F: the equipment variants, before a loaded save's first shop or status screen */
     def_hard_party_fix(); /* Hard Mode: a party of two, whatever set it */
     def_rush_panel_reset(); /* PRD 4 layer I: a floating Rush's panel went with the last stage's heap */
+    fieldstg_rush_reset();
     def_notice_reset(); /* and so did a Guide's notice's windows */
 #endif
     map = gamestate_data.funcs.get_prev_map();
@@ -5014,12 +5028,20 @@ void fieldstg_encounter_reset(void) {
 typedef struct FieldstgRush {
     s32 active; /* 0: none; 1: asking; 2: rushing */
     s32 battle;
-    s32 yes;   /* the cursor */
-    s32 ticks;
+    s32 warned; /* the warning sound played (the question has no cursor: confirm is yes, back is no) */
+    s32 ticks; /* asking: the time waited; rushing: the word's clock */
 } FieldstgRush;
 /* Not an object: nothing of the field would run one made here, so the camera's update (once a frame, whatever the
  * player may do) runs it: fieldstg_rush_frame. */
 static FieldstgRush fieldstg_rush;
+
+s32 fieldstg_rush_asking(void) {
+    return fieldstg_rush.active == 1;
+}
+
+void fieldstg_rush_reset(void) { /* a new stage: an open question went with the old one */
+    fieldstg_rush.active = 0;
+}
 
 static void fieldstg_rush_quad(GfxLayer *layer, s32 x, s32 y, s32 w, s32 h, s32 abr, u8 r, u8 g, u8 b) {
     POLY_F4 *poly = gfx_module.funcs.get_packet();
@@ -5069,6 +5091,7 @@ static void fieldstg_rush_float(FieldstgRush *obj, FieldstgManager *mgr) {
     def_rush_results();
     def_rush_apply_quiet(&summary);
     def_rush_panel_open(&summary);
+    sound_module.play(DEF_RUSH_JINGLE); /* the victory music, as long as the panel (DEF_RUSH_FLOAT_FRAMES) */
     obj->active = 0;
 }
 
@@ -5100,24 +5123,40 @@ static void fieldstg_rush_update(FieldstgRush *obj) {
             return;
         }
         if (obj->active == 1) {
+            /* The player walks meanwhile (event_running is 0; battle_starting keeps other encounters, talks and the
+             * map's events off, and fieldstg_rush_asking the menu): the answer is the confirm button (yes) or back
+             * (no), the d-pad being a way to walk. No answer in DEF_RUSH_ASK_TICKS is the manual battle. */
             s32 pt = def_is_ptbr();
-            fieldstg_rush_text(layer, pt ? 78 : 82, 96, 128, pt ? "LUTA FACIL! ATROPELAR?" : "EASY FIGHT! RUSH IT?", gold);
-            fieldstg_rush_text(layer, 112, 114, 160, pt ? "SIM" : "YES", obj->yes ? white : grey);
-            fieldstg_rush_text(layer, pt ? 178 : 182, 114, 160, pt ? "NAO" : "NO", obj->yes ? grey : white);
-            fieldstg_rush_quad(layer, obj->yes ? 106 : 176, 112, obj->yes ? 44 : (pt ? 42 : 34), 14, 1, 24, 40, 96);
+            s32 left = DEF_RUSH_ASK_TICKS - obj->ticks;
+
+            if (left < 0) {
+                left = 0;
+            }
+            fieldstg_rush_text(layer, pt ? 78 : 82, 94, 128, pt ? "LUTA FACIL! ATROPELAR?" : "EASY FIGHT! RUSH IT?", gold);
+            fieldstg_rush_text(layer, 76, 110, 112, pt ? "CONFIRMA SIM" : "CONFIRM YES", white);
+            fieldstg_rush_text(layer, 170, 110, 112, pt ? "VOLTA NAO" : "BACK NO", white);
+            fieldstg_rush_quad(layer, 76, 128, 168 * left / DEF_RUSH_ASK_TICKS, 3, 0, 255, 208, 64); /* the time left */
             fieldstg_rush_quad(layer, 70, 90, 180, 1, 1, 60, 130, 230);
             fieldstg_rush_quad(layer, 70, 133, 180, 1, 1, 60, 130, 230);
             fieldstg_rush_quad(layer, 70, 90, 180, 44, 2, 225, 215, 160);
-            if (PAD_PRESSED(5) || PAD_PRESSED(7)) {
-                obj->yes = !obj->yes;
-                sound_module.play(0x8004513E);
+            if (!obj->warned) {
+                obj->warned = 1;
+                sound_module.play(DEF_RUSH_WARN_SOUND);
             }
-            if (PAD_PRESSED(14) || (PAD_PRESSED(13) && !obj->yes)) {
+            obj->ticks += gfx_module.funcs.get_frame_ticks();
+            if (PAD_PRESSED(14)) {
                 sound_module.play(0x800450BD);
                 fieldstg_rush_leave(obj, 0);
             } else if (PAD_PRESSED(13)) {
-                /* no sound yet: the hit lands when the word does */
-                obj->active = 2;
+                obj->ticks = 0;
+                /* the results' panel opens at once with the victory music; the old word is kept for the report's path */
+                if (def_rush_float()) {
+                    fieldstg_rush_leave(obj, 1);
+                } else {
+                    obj->active = 2;
+                }
+            } else if (obj->ticks >= DEF_RUSH_ASK_TICKS) {
+                fieldstg_rush_leave(obj, 0);
             }
         } else {
             /* the rush: the word slams in, shakes and holds, then the report */
@@ -5176,9 +5215,11 @@ void fieldstg_encounter_start(void) {
         if (def_rush_offer()) {
             fieldstg_rush.active = def_rush_auto() ? 2 : 1;
             fieldstg_rush.battle = event->battle;
-            fieldstg_rush.yes = 1;
+            fieldstg_rush.warned = 0;
             fieldstg_rush.ticks = 0;
-            fieldstg_stage.event_running = 1; /* the player stands still and no other battle starts meanwhile */
+            /* no other battle, talk or map event starts meanwhile; the player stays free to walk while asked (the
+             * auto test mode and the report's path, which has no panel, hold them as before) */
+            fieldstg_stage.event_running = !(fieldstg_rush.active == 1 && def_rush_float());
             fieldstg_stage.battle_starting = 1;
             return;
         }

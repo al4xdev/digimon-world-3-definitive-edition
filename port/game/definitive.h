@@ -9,6 +9,9 @@
 #define DEF_OVERFINISH_BITS_PCT 10 /* Bits earned per 100 damage dealt to an enemy already knocked out (OVERFINISH) */
 #define DEF_OVERLEVEL_GAP 8        /* levels the party's best must be above the enemies' best for a random battle to offer the Overlevel Rush */
 #define DEF_RUSH_TICKS 70          /* ticks (1/60 s) of the rush on the field before the battle's report opens */
+#define DEF_RUSH_ASK_TICKS 300     /* ticks (1/60 s, 5 s) the Rush's question waits for an answer; none goes to the battle */
+#define DEF_RUSH_WARN_SOUND 0x4001F /* WNG_STEP (COMMON seq 31, ~0.6 s): the question's warning */
+#define DEF_RUSH_JINGLE 0x6004001E  /* W_JINGLE: the battle's own victory music, played when the results show */
 #define DEF_WEAK_MAX 80         /* a family is a weakness while one of its values is at most this (modifiers included): the
                                  * table's weak 60, or a neutral 100..115 lowered by Resist Down (80) or Mega Break (100);
                                  * a resisted one lowered stays above it. No cap on the count (owner, 2026-11-13) */
@@ -470,7 +473,9 @@ void def_glyph_number(unsigned char *buf, int *p, int size, int n);
  * src/stfgtrep/stfgtrep_80082E70.c: the report's rewards, by its own routines and in its order). DW3_RUSH_FLOAT (read
  * once: 0 the report, else the panel) overrides DEF_RUSH_FLOAT for a test; def_rush_float_mode is that switch. */
 #define DEF_RUSH_FLOAT 1          /* a taken Rush gives its results at once in a panel over the player, not on the report */
-#define DEF_RUSH_FLOAT_FRAMES 120 /* how long that panel stays up, in ticks (1/60 s: two seconds at 50 Hz too) */
+#define DEF_RUSH_FLOAT_FRAMES 135 /* how long that panel stays up, in ticks (1/60 s): the victory jingle (DEF_RUSH_JINGLE) runs
+                                   * ~102 ticks of the sequencer's 50 Hz (tests/sound/expected/keys, bank 1 step 46: first
+                                   * note 13 ticks in, last key-off at 102) = 2.04 s, plus its release */
 #define DEF_RUSH_ROWS 10          /* rows the panel lists at most (the rest is given, not listed) */
 typedef struct DefRushMember {
     short digimon;              /* its gamestate_data.digimon index; -1: no member in this party slot */
