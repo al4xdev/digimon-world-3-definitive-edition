@@ -28,7 +28,9 @@ Code cites this file as `docs/LAUNCHER.md "<heading>"`; keep the headings stable
 - `dw2003 --config FILE` and `--print-settings` are psxstack's runtime (`psxstack/runtime/settings.c`, `input.c`,
   `mods.c`); `tests/port/settings.py` checks the round trip, the defaults, the overrides and the errors against this
   game's build, and that every manifest under `psxstack/mods/` and `port/mods/` equals the game's registry
-  (`--print-mods`).
+  (`--print-mods`). `--game PATH` is the same option as `--disc PATH`. When `RECOMPLAUNCHER=1` and `--config` was not
+  passed, the runtime loads the launcher's usual `settings.json` (portable.txt beside the executable, else the
+  per-user folder) and puts crash reports and data mods beside it. A start without that variable is unchanged.
 - The disc check is the game's description's: `port/game/game.json` names the unpatched EU disc (SLES-03936) by its
   SHA-1 and size; the launcher and the game both check against it.
 - The environment variables keep their names (`DW3_CONFIG_DIR`, `DW3_GAME`, `DW3_SELFTEST_*`, `DW3_PORT_*`): the
