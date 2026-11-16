@@ -284,7 +284,7 @@ With the mod off nothing runs: the dispatch is one `#ifdef PC_PORT` test where t
 | `item` | L1 | |
 | `run` | left button | |
 | `remember_cursor` | `true` | the technique and item menus open on what that Digimon used last (by member ID and kind); the command menu keeps its cursor between turns |
-| `buffer_input` | `short` | `off`, `short` (1.0 s) or `long` (1.5 s): presses made in the window right before the command menu opens are given to it as it opens (up to 2: e.g. R1 then X to confirm the same skill before the menu appears) |
+| `buffer_input` | `short` | `off`, `short` (1.0 s) or `long` (1.5 s): presses made in the window right before the command menu opens are given to it as it opens (up to 2). An action's press is given without the command menu being drawn, and with a confirm behind it the remembered technique or item (see `remember_cursor`) is executed at once, without drawing that menu either; a refused press still just leaves the menu open |
 
 - **It follows the button mapping.** The options name a *place* on the player's pad, not a PS1 button. `pad.map`
   (`dw3_pad_permute`) says which PS1 bit the player's button at that place delivers (`port_battle_menu_bit`), so

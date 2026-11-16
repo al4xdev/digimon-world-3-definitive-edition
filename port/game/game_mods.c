@@ -491,7 +491,8 @@ static void bm_start(struct PortMod *mod) {
  *    A press is only kept while no menu is open and no battle message is up (fightstg_8008D3B4.c decides: a press
  *    that dismisses a message is not a command), and everything is dropped when a press is refused or the turn's
  *    command is chosen. Nothing is invented: a press the menu would have taken is taken, a refused one leaves the menu
- *    open. */
+ *    open. A menu whose input the buffer already decided is not drawn: port_bm_peek reads the press without taking it,
+ *    and the command menu and a technique or item menu a confirm settled give their result the frame they open. */
 #define BMB_MAX 2
 static struct {
     long t;      /* the frame it was pressed */
@@ -557,6 +558,20 @@ s32 port_bm_take_action(void) {
         port_log("battle menu: frame %ld: buffered press, action %d", port_frames, action);
     }
     return action;
+}
+
+/* The oldest given press without taking it (1: there is one; action -1 for a confirm-only one). */
+int port_bm_peek(s32 *action, u32 *confirm) {
+    if (bmb_n == 0 || !bmb[0].armed) {
+        return 0;
+    }
+    if (action != NULL) {
+        *action = bmb[0].action;
+    }
+    if (confirm != NULL) {
+        *confirm = bmb[0].confirm;
+    }
+    return 1;
 }
 
 /* The oldest given press as a confirm for a technique or item menu: 0x2000 or 0. */

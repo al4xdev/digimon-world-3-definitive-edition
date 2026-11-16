@@ -4002,6 +4002,8 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
     s32 glow;
     s32 i;
     s32 buffered;
+    s32 b_action;
+    u32 b_confirm;
     s32 wide_pad = port_video_widescreen_pad();
 
     switch (obj->base.state) {
@@ -4010,6 +4012,17 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
         member = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
         obj->press = obj->refused = -1;
         port_bm_open(); /* buffer_input: what was pressed just before is given from the first frame */
+        /* buffer_input: the press already chose a valid action, so the menu is not drawn at all: the action goes to
+         * the battle now (a confirm still in the buffer is left for a technique or item menu). */
+        if (port_bm_peek(&b_action, &b_confirm) && b_action >= 0 &&
+            !((member->status & 8) && b_action < 3) && !((member->status & 0x20) && b_action == 2)) {
+            port_bm_take_action();
+            port_battle_menu_chosen(b_action, port_battle_menu_bit(b_action), 0);
+            sound_module.play(0x4001C);
+            *obj->result = b_action;
+            obj->base.set_state(obj, OBJECT_STATE_END);
+            break;
+        }
         for (i = 0; i < 7; i++) {
             slot = fightstg_bmenu_action_slot[i];
             x = fightstg_battle_menu_slots[slot][0] - wide_pad;
@@ -4777,12 +4790,39 @@ void fightstg_item_menu_update(FightstgItemMenu *obj, FightstgItemMenuData *data
 #ifdef PC_PORT
     s32 mem_k = 0;
     s32 want;
+    s32 b_action;
+    u32 b_confirm;
+    s32 skip_item;
 #endif
 
     switch (obj->base.state) {
     case OBJECT_STATE_INIT:
     default:
         count = records_funcs.list_items(1, (u16 *)obj->items);
+#ifdef PC_PORT
+        /* buffer_input: the action and the confirm both came before the menus opened: the remembered item (still
+         * held) is given now, without drawing this menu. Nothing is allocated yet: the object only ends. */
+        skip_item = 0;
+        if (port_mod_battle_menu != 0 && port_bm_peek(&b_action, &b_confirm) && b_confirm != 0) {
+            want = port_bm_recall(1, gamestate_data.funcs.get_party_member(fightstg_battle.state.current[0]));
+            if (want > 0 && gamestate_data.items[want] > 0 &&
+                ((RecordsUsable *)records_funcs.get_item(want)->data)->flags & 2) {
+                for (i = 0; i < count && obj->items[i] != 0; i++) {
+                    if (obj->items[i] == want) {
+                        skip_item = want;
+                        break;
+                    }
+                }
+            }
+            if (skip_item != 0) {
+                port_bm_take_confirm();
+                sound_module.play(0x4001C);
+                *obj->result = skip_item;
+                obj->base.set_state(obj, OBJECT_STATE_END);
+                break;
+            }
+        }
+#endif
         obj->count = 0;
         for (i = 0; i < count; i++) {
             if (obj->items[i] == 0) {
@@ -5146,6 +5186,9 @@ void fightstg_tech_menu_update(FightstgTechMenu *obj, FightstgTechMenuData *data
     s32 cost;
 #ifdef PC_PORT
     s32 mem_k = 0;
+    s32 b_action;
+    u32 b_confirm;
+    s32 skip_tech;
 #endif
 
     switch (obj->base.state) {
@@ -5239,6 +5282,31 @@ void fightstg_tech_menu_update(FightstgTechMenu *obj, FightstgTechMenuData *data
                 shown = obj->count - obj->page * 6;
                 fightstg_tech_menu_cursor.count = shown >= 7 ? 6 : shown;
                 break;
+            }
+        }
+        /* buffer_input: the action and the confirm both came before the menus opened: the remembered technique is
+         * paid for and given now, without drawing this menu either. */
+        skip_tech = 0;
+        if (port_mod_battle_menu != 0 && port_bm_peek(&b_action, &b_confirm) && b_confirm != 0) {
+            tech = port_bm_recall(0, id);
+            for (i = 0; tech != 0 && i < obj->count; i++) {
+                if ((obj->techniques[i] & 0x1FFF) == tech) {
+                    skip_tech = obj->techniques[i];
+                    break;
+                }
+            }
+            if (skip_tech != 0) {
+                cost = fightstg_rules.get_tech_cost(0, skip_tech);
+                if (m->blasted != 0 || m->mp >= cost) {
+                    if (m->blasted == 0) {
+                        m->mp -= cost;
+                    }
+                    port_bm_take_confirm();
+                    sound_module.play(0x4001C);
+                    *obj->result = skip_tech & 0x1FFF;
+                    obj->base.set_state(obj, OBJECT_STATE_END);
+                    break;
+                }
             }
         }
 #endif
