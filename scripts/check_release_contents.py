@@ -35,7 +35,8 @@ PORTMASTER = [r"Digimon World 3\.sh", r"port\.json", r"README\.md", r"gameinfo\.
               r"dw3/ledd\.py", r"dw3/probe\.sh",
               r"dw3/README\.txt", r"dw3/" + MOD, r"dw3/licenses/[A-Za-z0-9._-]+"]
 ANDROID = [r"AndroidManifest\.xml", r"classes\d*\.dex", r"resources\.arsc", r"res/.*",
-           r"lib/arm64-v8a/lib(SDL2|main)\.so", r"META-INF/.*", r"assets/.*", r"DebugProbesKt\.bin"]
+           # SDL3 on Android is a shared library (libSDL3.so) the SDL3 build ships next to libmain.so.
+           r"lib/arm64-v8a/lib(SDL2|SDL3|main)\.so", r"META-INF/.*", r"assets/.*", r"DebugProbesKt\.bin"]
 VERSION = r"[A-Za-z0-9._+-]+"
 ASSETS = [rf"dw2003-{VERSION}-x86_64\.AppImage", rf"dw2003-{VERSION}-x86_64\.debug", r"SHA256SUMS",
           rf"dw2003-{VERSION}-windows-x86_64\.zip", rf"dw2003-{VERSION}-windows-x86_64-symbols\.zip",
