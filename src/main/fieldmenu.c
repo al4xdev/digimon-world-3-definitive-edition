@@ -751,12 +751,17 @@ void fieldmenu_update(Fieldmenu *obj, FieldmenuWindows *data) {
                     /* the bestiary's page is six names whatever the menu has: the 6-entry panel as it is */
                     gfx.draw(cdload_module.get_subfile_by_id(0x2860000), 0x1B, 0xA8 + wide_pad, 0x28);
                 } else if (obj->option_count >= 7) {
-                    /* global_save's entry with the card case's: the bank has panels for 5 and 6 entries only (a 22 px top,
-                     * 14 px rows, a 20 px bottom), so the 6-entry one (98 px) is stretched by 14 px per entry more
-                     * (7: 112 px, 8: 126 px) from its top */
-                    gfx.set_scale(obj->panel_anims[1].level, 0x1000 + (obj->option_count - 6) * 0x249, 0x1000);
-                    gfx.set_pivot(0x140 + wide_pad, 0x28);
-                    gfx.draw(cdload_module.get_subfile_by_id(0x2860000), 0x1B, 0xA8 + wide_pad, 0x28);
+                    /* global_save's entry with the card case's: the bank has panels for 5 and 6 entries only, so for 7+
+                     * Stretching the sprite also stretches its 20 px bottom border to ~28 px, and its inner rule then runs
+                     * through the last entry's text (9 entries: BESTIÁRIO). So from 7 entries the panel is drawn flat in
+                     * the bank's colours, like the bestiary's, tall enough for the rows; it slides in from the right
+                     * edge by its width. The frame is added last, so it is drawn first, under the fill. */
+                    s32 right = 0x140 + wide_pad + 2;
+                    s32 w = ((0x98 + wide_pad + 2) * obj->panel_anims[1].level) >> 12;
+                    s32 h = obj->option_count * 14 + 18;
+
+                    fieldmenu_bestiary_rect(obj, right - w + 2, 0x28 + 2, w - 2, h - 4, 0, 0, 33);
+                    fieldmenu_bestiary_rect(obj, right - w, 0x28, w, h, 107, 107, 214);
                 } else {
                     gfx.draw(cdload_module.get_subfile_by_id(0x2860000), 0x1C - (obj->option_count - 5), 0xA8 + wide_pad,
                              0x28);
