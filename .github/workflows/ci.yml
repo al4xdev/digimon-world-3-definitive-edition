@@ -508,6 +508,19 @@ jobs:
           cache-from: type=gha,scope=android-builder
           cache-to: type=gha,scope=android-builder,mode=max
 
+      # build_android.sh compiles psxstack's HLSL to SPIR-V on the host before it enters Docker, so the job needs the
+      # pinned dxc (scripts/setup.sh dxc) the appimage and windows jobs already install and cache.
+      - name: Cached dxc (the renderer's shaders, HLSL to SPIR-V)
+        uses: actions/cache@v4
+        with:
+          path: |
+            tools/dxc
+            tools/src/dxc-*
+          key: dxc-${{ runner.os }}-${{ hashFiles('scripts/setup.sh') }}
+
+      - name: dxc
+        run: scripts/setup.sh dxc
+
       - name: Build and verify Android arm64-v8a APK
         run: |
           tools/build_android.sh
