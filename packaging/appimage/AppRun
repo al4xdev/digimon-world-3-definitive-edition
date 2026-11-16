@@ -1,0 +1,14 @@
+#!/bin/sh
+# The AppImage's start. A double-click still opens dw2003-launcher.
+# RecompLauncher (and any shortcut) passes --disc or --game: start the game
+# itself, with those arguments, and do not open the launcher window.
+set -eu
+here=$(CDPATH= cd -- "$(dirname "$0")" && pwd)
+prev=
+for arg in "$@"; do
+    if [ "$prev" = "--disc" ] || [ "$prev" = "--game" ]; then
+        exec "$here/usr/bin/dw2003" "$@"
+    fi
+    prev=$arg
+done
+exec "$here/usr/bin/dw2003-launcher" "$@"

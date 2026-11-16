@@ -102,7 +102,8 @@ on that machine, not for a release. `--version V` names the file; the default is
 ## What the AppImage holds
 
 ```
-AppRun -> usr/bin/dw2003-launcher        the launcher starts when the AppImage is opened
+AppRun                                   the launcher, unless --disc/--game was passed (RecompLauncher: the game, no window)
+recomplauncher.json                      how RecompLauncher sets the game up (at the AppImage root)
 usr/bin/dw2003                           the game (the SDL build), found by the launcher beside itself
 usr/bin/mods/<id>/mod.json               the mods' manifests (port/mods/), listed by the launcher
 dw2003recomp.desktop, dw2003recomp.svg   packaging/appimage/ (the icon is our own drawing)
@@ -136,6 +137,7 @@ toolchain's or SDL's imported: only Windows' own), and zips one folder:
 dw2003-<version>-windows-x86_64/
   dw2003-launcher.exe        the launcher (run this)
   dw2003.exe                 the game, found by the launcher beside itself
+  recomplauncher.json        how RecompLauncher sets the game up
   mods/<id>/mod.json         the mods' manifests (port/mods/)
   README.txt                 packaging/windows/README.txt: the disc, SmartScreen, where settings and crash reports live
   LICENSES/                  ours, SDL3, Dear ImGui, its two fonts, LLVM's runtime, the mingw-w64 runtime, winpthreads

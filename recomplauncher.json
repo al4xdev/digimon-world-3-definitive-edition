@@ -1,0 +1,250 @@
+{
+  "$schema": "https://recomplauncher.com/schema/recomplauncher.json",
+  "format": 1,
+  "name": "Digimon World 3: Definitive Edition",
+  "repo": "al4xdev/digimon-world-3-definitive-edition",
+  "game": {
+    "kind": "iso",
+    "label": "Your disc image (.bin) of Digimon World 2003 (Europe), serial SLES-03936. This recomp plays that Europe release only.",
+    "check": {
+      "iso9660": "SLES_039.36",
+      "ids": ["SLES-03936", "SLES_039.36"]
+    },
+    "dumps": [
+      {
+        "name": "Europe",
+        "size": 692146560,
+        "crc32": "007df18e"
+      }
+    ]
+  },
+  "start": {
+    "program": ["dw2003.exe", "usr/bin/dw2003", "dw2003", "dw2003.AppImage", "AppRun"],
+    "args": ["--game", "{game}", "--window"]
+  },
+  "config": [
+    {
+      "id": "main",
+      "format": "json",
+      "file": [
+        { "path": "{install}/settings.json", "if": "{install}/portable.txt" },
+        { "path": "{install}/usr/bin/settings.json", "if": "{install}/usr/bin/portable.txt" },
+        { "path": "{local}/dw2003/settings.json", "if": "/etc/os-release" },
+        { "path": "{config}/dw2003/settings.json" }
+      ],
+      "game_path": "disc/path",
+      "ensure": { "schema": "1" }
+    }
+  ],
+  "folders": {
+    "saves": [
+      { "path": "{install}", "if": "{install}/portable.txt" },
+      { "path": "{install}/usr/bin", "if": "{install}/usr/bin/portable.txt" },
+      { "path": "{local}/dw2003", "if": "/etc/os-release" },
+      { "path": "{config}/dw2003" }
+    ],
+    "logs": [
+      { "path": "{install}/logs", "if": "{install}/portable.txt" },
+      { "path": "{install}/usr/bin/logs", "if": "{install}/usr/bin/portable.txt" },
+      { "path": "{local}/dw2003/logs", "if": "/etc/os-release" },
+      { "path": "{config}/dw2003/logs" }
+    ]
+  },
+  "saves": [
+    "{local}/dw2003/card1.mcd",
+    "{local}/dw2003/card2.mcd",
+    "{local}/dw2003/settings.json",
+    "{config}/dw2003/card1.mcd",
+    "{config}/dw2003/card2.mcd",
+    "{config}/dw2003/settings.json",
+    "{install}/card1.mcd",
+    "{install}/card2.mcd",
+    "{install}/settings.json"
+  ],
+  "exit_codes": {
+    "1": "It stopped before the game could run. If this is about your disc, it needs the Europe release (SLES-03936) as a raw disc image.",
+    "4": "The game stopped responding.",
+    "64": "A setting or a launch option was not accepted. Pick the disc again on the game's page."
+  },
+  "looks": {
+    "allowed": false,
+    "reason": "This recomp already has its own filters, and it draws with SDL_GPU rather than a single API ReShade can sit on."
+  },
+  "groups": [
+    { "id": "Picture" },
+    { "id": "Sound" },
+    { "id": "Play" }
+  ],
+  "settings": [
+    {
+      "id": "window",
+      "label": "Window",
+      "group": "Picture",
+      "help": "Fullscreen fills the screen. Windowed keeps the game in a window you can move.",
+      "choices": [
+        { "label": "Windowed", "set": { "video/fullscreen": "false" } },
+        { "label": "Fullscreen", "set": { "video/fullscreen": "true" } }
+      ],
+      "defaults": { "video/fullscreen": "false" }
+    },
+    {
+      "id": "scale",
+      "label": "Window size",
+      "group": "Picture",
+      "help": "How large the window is, in PlayStation pixels. 2x is 640 by 480.",
+      "when": { "video/fullscreen": "false" },
+      "defaults": { "video/scale": "2", "video/fullscreen": "false" },
+      "slider": { "key": "video/scale", "min": 1, "max": 8, "step": 1, "format": "%d" }
+    },
+    {
+      "id": "fit",
+      "label": "Fit",
+      "group": "Picture",
+      "help": "Integer keeps the pixels sharp. Fill uses the whole screen and keeps the picture's shape.",
+      "choices": [
+        { "label": "Integer", "set": { "video/fill": "false" } },
+        { "label": "Fill", "set": { "video/fill": "true" } }
+      ],
+      "defaults": { "video/fill": "false" }
+    },
+    {
+      "id": "renderer",
+      "label": "Renderer",
+      "group": "Picture",
+      "help": "GPU is the sharp hardware picture, and what widescreen and filters need. Software is the console's own pixels.",
+      "choices": [
+        { "label": "Software", "set": { "video/renderer": "\"software\"" } },
+        { "label": "GPU", "set": { "video/renderer": "\"gpu\"" } }
+      ],
+      "defaults": { "video/renderer": "\"software\"" }
+    },
+    {
+      "id": "internal_scale",
+      "label": "Resolution",
+      "group": "Picture",
+      "help": "How sharp the GPU picture is. 1x is the PlayStation's own. Higher needs a faster card.",
+      "when": { "video/renderer": "gpu" },
+      "defaults": { "video/internal_scale": "1", "video/renderer": "\"software\"" },
+      "slider": { "key": "video/internal_scale", "min": 1, "max": 8, "step": 1, "format": "%d" }
+    },
+    {
+      "id": "filter",
+      "label": "Filter",
+      "group": "Picture",
+      "help": "How the GPU picture is fitted to the screen. Software always shows the pixels as they are.",
+      "when": { "video/renderer": "gpu" },
+      "defaults": { "video/filter": "\"none\"", "video/renderer": "\"software\"" },
+      "choices": [
+        { "label": "Pixels", "set": { "video/filter": "\"none\"" } },
+        { "label": "Sharp", "set": { "video/filter": "\"sharp\"" } },
+        { "label": "Scanlines", "set": { "video/filter": "\"scanlines\"" } },
+        { "label": "CRT", "set": { "video/filter": "\"crt\"" } },
+        { "label": "Smooth", "set": { "video/filter": "\"smooth\"" } }
+      ]
+    },
+    {
+      "id": "subpixel",
+      "label": "3D vertices",
+      "group": "Picture",
+      "advanced": true,
+      "help": "Above 1x, where the 3D models sit. Game's own is the usual. Perspective is smoother and less like the PlayStation.",
+      "when": { "video/renderer": "gpu" },
+      "defaults": { "video/subpixel": "\"on\"", "video/renderer": "\"software\"" },
+      "choices": [
+        { "label": "Game's own", "set": { "video/subpixel": "\"on\"" } },
+        { "label": "Perspective", "set": { "video/subpixel": "\"perspective\"" } },
+        { "label": "Whole pixels", "set": { "video/subpixel": "\"off\"" } }
+      ]
+    },
+    {
+      "id": "refresh",
+      "label": "Speed",
+      "group": "Picture",
+      "help": "50 is the European disc. 60 is the game's own faster mode, in battles and on the field.",
+      "choices": [
+        { "label": "50 Hz", "set": { "video/refresh": "50" } },
+        { "label": "60 Hz", "set": { "video/refresh": "60" } }
+      ],
+      "defaults": { "video/refresh": "50" }
+    },
+    {
+      "id": "mute",
+      "label": "Sound",
+      "group": "Sound",
+      "help": "Turn the game's audio off without closing it.",
+      "choices": [
+        { "label": "On", "set": { "audio/mute": "false" } },
+        { "label": "Muted", "set": { "audio/mute": "true" } }
+      ],
+      "defaults": { "audio/mute": "false" }
+    },
+    {
+      "id": "widescreen",
+      "label": "Widescreen",
+      "group": "Play",
+      "help": "Battles and the field at the screen's shape, up to 16:9. Needs the GPU renderer. Takes effect on the next start.",
+      "when": { "video/renderer": "gpu" },
+      "defaults": { "mods/widescreen/enabled": "false", "video/renderer": "\"software\"" },
+      "choices": [
+        { "label": "Off", "set": { "mods/widescreen/enabled": "false" } },
+        { "label": "On", "set": { "mods/widescreen/enabled": "true" } }
+      ]
+    },
+    {
+      "id": "battle_text",
+      "label": "Battle text",
+      "group": "Play",
+      "help": "Show technique names as the fight goes on, skip them, or wait as on the disc.",
+      "choices": [
+        { "label": "As on the disc", "set": { "mods/battle_text/enabled": "false" } },
+        { "label": "As they happen", "set": { "mods/battle_text/enabled": "true", "mods/battle_text/mode": "\"async\"" } },
+        { "label": "Skip them", "set": { "mods/battle_text/enabled": "true", "mods/battle_text/mode": "\"skip\"" } }
+      ],
+      "defaults": { "mods/battle_text/enabled": "false", "mods/battle_text/mode": "\"async\"" }
+    },
+    {
+      "id": "skip_dialogues",
+      "label": "Dialogues",
+      "group": "Play",
+      "help": "Show story text all at once and move on. Choices and shops still wait for you.",
+      "choices": [
+        { "label": "Wait", "set": { "mods/skip_dialogues/enabled": "false" } },
+        { "label": "Skip", "set": { "mods/skip_dialogues/enabled": "true" } }
+      ],
+      "defaults": { "mods/skip_dialogues/enabled": "false" }
+    },
+    {
+      "id": "save_anywhere",
+      "label": "Save anywhere",
+      "group": "Play",
+      "help": "Adds Save to the field menu, not only at an inn. A load puts you back where you saved.",
+      "choices": [
+        { "label": "Inns only", "set": { "mods/global_save/enabled": "false" } },
+        { "label": "Anywhere", "set": { "mods/global_save/enabled": "true" } }
+      ],
+      "defaults": { "mods/global_save/enabled": "false" }
+    },
+    {
+      "id": "language",
+      "label": "Language",
+      "group": "Play",
+      "help": "Skips the language screen and starts in this language. Takes effect on the next start.",
+      "choices": [
+        { "label": "Ask at the start", "set": { "mods/preset_language/enabled": "false" } },
+        { "label": "English", "set": { "mods/preset_language/enabled": "true", "mods/preset_language/language": "\"english\"" } },
+        { "label": "Portuguese", "set": { "mods/preset_language/enabled": "true", "mods/preset_language/language": "\"portuguese\"" } },
+        { "label": "French", "set": { "mods/preset_language/enabled": "true", "mods/preset_language/language": "\"french\"" } },
+        { "label": "German", "set": { "mods/preset_language/enabled": "true", "mods/preset_language/language": "\"german\"" } },
+        { "label": "Italian", "set": { "mods/preset_language/enabled": "true", "mods/preset_language/language": "\"italian\"" } },
+        { "label": "Spanish", "set": { "mods/preset_language/enabled": "true", "mods/preset_language/language": "\"spanish\"" } },
+        { "label": "English (USA)", "set": { "mods/preset_language/enabled": "true", "mods/preset_language/language": "\"usa\"" } },
+        { "label": "Japanese", "set": { "mods/preset_language/enabled": "true", "mods/preset_language/language": "\"japanese\"" } }
+      ],
+      "defaults": { "mods/preset_language/enabled": "false", "mods/preset_language/language": "\"english\"" }
+    }
+  ],
+  "actions": [
+    { "id": "saves", "label": "Saves", "help": "Your memory cards and settings.", "open": "saves" },
+    { "id": "logs", "label": "Logs", "help": "The last run's log, for a bug report.", "open": "logs" }
+  ]
+}

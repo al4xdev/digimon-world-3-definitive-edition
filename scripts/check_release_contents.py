@@ -25,10 +25,10 @@ from pathlib import Path
 MAX_FILE = 64 * 1024 * 1024
 MOD = r"mods/[a-z0-9_]+/mod\.json"
 LICENCE = r"LICENSES/[A-Za-z0-9._-]+\.txt"
-APPIMAGE = [r"AppRun", r"\.DirIcon", r"dw2003recomp\.desktop", r"dw2003recomp\.svg", r"usr/bin/dw2003",
+APPIMAGE = [r"AppRun", r"recomplauncher\.json", r"\.DirIcon", r"dw2003recomp\.desktop", r"dw2003recomp\.svg", r"usr/bin/dw2003",
             r"usr/bin/dw2003-launcher", r"usr/bin/" + MOD, r"usr/share/applications/dw2003recomp\.desktop",
             r"usr/share/icons/hicolor/scalable/apps/dw2003recomp\.svg", LICENCE]
-WINDOWS = [r"dw2003\.exe", r"dw2003-launcher\.exe", r"README\.txt", MOD, LICENCE]
+WINDOWS = [r"dw2003\.exe", r"dw2003-launcher\.exe", r"recomplauncher\.json", r"README\.txt", MOD, LICENCE]
 SYMBOLS = [r"dw2003\.pdb", r"dw2003-launcher\.pdb", r"README\.txt"]
 PORTMASTER = [r"Digimon World 3\.sh", r"port\.json", r"README\.md", r"gameinfo\.xml", r"screenshot\.png",
               r"cover\.png", r"dw3/dw2003\.(armhf|aarch64)", r"dw3/dw3-launcher\.(armhf|aarch64)",

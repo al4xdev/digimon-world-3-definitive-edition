@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Builds the release AppImage (DECISIONS "Releases: tagged drafts, published by hand"; docs/RELEASE.md): the game (the SDL build) and the launcher in
 # Release, an AppDir with both in usr/bin/ (the launcher finds the game beside itself) and the mods' manifests in
-# usr/bin/mods/, AppRun -> the launcher, a .desktop file, the icon and LICENSES/, then appimagetool with the pinned
+# usr/bin/mods/, AppRun (the launcher, or the game when --disc/--game is passed), a .desktop file, the icon, recomplauncher.json and LICENSES/, then appimagetool with the pinned
 # static runtime (no libfuse2 needed to run it). Players supply their own disc in the launcher.
 #
 # Usage: scripts/package_appimage.sh [--version V] [--out DIR] [--sdl3 DIR] [--test] [--shared-libstdcxx]
@@ -125,7 +125,11 @@ objcopy --only-keep-debug "$work/port-sdl/dw2003" "$out/$debug"
 strip -o "$appdir/usr/bin/dw2003-launcher" "$work/launcher/dw2003-launcher"
 [[ -d "$work/port-sdl/mods" ]] || die "the game's build has no mods/ (psxstack copies its mods/ and port/mods there)"
 cp -r "$work/port-sdl/mods" "$appdir/usr/bin/mods"
-ln -s usr/bin/dw2003-launcher "$appdir/AppRun"
+# A script, not a link: with --disc/--game it starts the game and skips the launcher window
+# (RecompLauncher). Without those, it is the launcher, as a double-click always was.
+cp "$pkg/AppRun" "$appdir/AppRun"
+chmod +x "$appdir/AppRun"
+cp "$ROOT/recomplauncher.json" "$appdir/recomplauncher.json"
 cp "$pkg/dw2003recomp.desktop" "$appdir/dw2003recomp.desktop"
 cp "$pkg/dw2003recomp.desktop" "$appdir/usr/share/applications/"
 cp "$pkg/dw2003recomp.svg" "$appdir/dw2003recomp.svg"

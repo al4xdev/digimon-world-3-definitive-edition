@@ -26,6 +26,8 @@ which are the upstream project's work; this fork adds the handheld path and the 
 > raw `.bin` + `.cue`, MODE2/2352, 692,146,560 bytes, SHA-1 `457cb233349ba841e03b33d8060f8fbcadd45cb3`.
 > This project is not affiliated with or endorsed by Bandai, Bandai Namco or Sony.
 
+<a href="https://recomplauncher.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://recomplauncher.com/assets/press/launcher/badge-light.svg"><img alt="Get it on RecompLauncher" src="https://recomplauncher.com/assets/press/launcher/badge-dark.svg" height="48"></picture></a>
+
 <p align="center"><img src="docs/images/definitive/banner.svg" width="800" alt="Digimon World 3: Definitive Edition. Find the weakness. Stagger. One more. Pass the baton."></p>
 
 ## Quick start
@@ -411,8 +413,9 @@ keeps your best stage. A replay pays the battle's experience and Bits, but no ac
 - **The Blast Gauge is saved.** The original reset it every time the game was closed, even after saving.
 - **Battle text that does not stop the fight**: message boxes skip by default (`BATTLE TEXT: SKIP`) without waiting for a button.
 - **Overlevel Rush**: when your strongest Digimon is 8 or more levels above every enemy of a random battle, the game
-  offers to skip it. Take it and the rewards a win by your lead Digimon would give (experience, Bits, the drop and
-  Hunt Materials) are yours at once: a small panel over your Digimon lists them for two seconds while you keep walking
+  offers to skip it, at the top of the screen while you keep walking (confirm takes it, back or five seconds fights).
+  Take it and the rewards a win by your lead Digimon would give (experience, Bits, the drop and Hunt Materials) are
+  yours at once: a panel slides in at the top of the screen and lists them for three seconds while you keep walking
   (+EXP and LV UP! for each member, NEW TECH!, TP FULL!, the Bits, the item and the materials). A battle you fight
   still ends on the results screen.
 - **A Guardromon network**: at any Guardromon, `SAVE` or `TELEPORT` to the others you have met, a **map objective
