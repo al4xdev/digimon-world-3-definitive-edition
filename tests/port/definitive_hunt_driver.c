@@ -34,6 +34,11 @@ int def_on(void) {
     return on;
 }
 
+/* Super Hard off (definitive_super.c): a material's count is the game's. */
+int def_super_reward(int amount) {
+    return amount;
+}
+
 RecordsState records_state;
 unsigned char ststatus_map_areas[0xF0];
 

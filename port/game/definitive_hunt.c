@@ -31,6 +31,7 @@
 
 extern unsigned char ststatus_map_areas[];
 extern int def_on(void); /* port.h declares it under PC_PORT only; the host test builds without it */
+extern int def_super_reward(int amount); /* the same (definitive_super.c) */
 extern void port_log(const char *fmt, ...);
 extern const unsigned char def_str_HuntGotPrefix[], def_str_HuntGotSuffix[], def_str_HuntRarePrefix[], def_str_HuntRareWord[],
     def_str_HuntSpace[], def_str_HuntHeld[];

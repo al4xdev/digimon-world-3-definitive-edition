@@ -208,8 +208,10 @@ não podem mudar, e uma falha nova é bloqueio.
   região.
 - **Reset:** trocar de região, usar o teleporte (rede Guardromon) ou sair da área
   zera na hora.
-- **Overlevel Rush não conta:** batalha pulada não incrementa (evita Alvo Raro
-  durante backtracking). O gancho é `def_rush_results`.
+- ~~**Overlevel Rush não conta:** batalha pulada não incrementa (evita Alvo Raro
+  durante backtracking).~~ Mudou em `3fb236d` (2026-11-14, "Rush hunt streak"):
+  a batalha que o Rush leva **conta** para a cadeia e deixa materiais, como uma
+  vencida (`def_hunt_skipped`, chamado por `def_rush_results`).
 - **Gatilho:** acima de `DEF_HUNT_CHAIN_MIN` (5) vitórias seguidas, o próximo
   encontro aleatório tem chance crescente de ser o Alvo Raro da região
   (emenda do dono, 2026-11-13: nenhuma com 5, sobe por igual a cada vitória e é
@@ -279,8 +281,8 @@ Até a camada B, o Alvo Raro dá a recompensa da própria batalha de chefe
 
 ### Teste
 
-- Unidade: contador (incrementa, zera ao trocar de área, não conta Rush nem
-  batalha de script), curva de chance, com a sequência aleatória simulada; um
+- Unidade: contador (incrementa, zera ao trocar de área, conta o Rush desde
+  `3fb236d`, não conta batalha de script), curva de chance, com a sequência aleatória simulada; um
   replay script não consome `pad_random` a mais.
 - Jogo: estado no mapa `0x21D`, escreva `region_chain` = 9 e
   `encounter_timer` = 1, ande, confira o Alvo Raro, o aviso, que o Rush não

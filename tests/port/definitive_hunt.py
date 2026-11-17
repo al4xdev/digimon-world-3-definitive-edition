@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """PRD 4 layers A, B and C (the regional hunt, the Rare Target's rewards, the bestiary's drops): port/game/definitive_hunt.c and definitive_bestiary.c compiled alone against a
-driver with stand-ins for the game's state: the chance curve, the chain (won encounters only, not the Rush's, not
-scripted battles), its resets (region, teleport, a Rare Target fought), the swap and the enemies' raise, the card
+driver with stand-ins for the game's state: the chance curve, the chain (won encounters and the ones the Rush
+took, not scripted battles), its resets (region, teleport, a Rare Target fought), the swap and the enemies' raise, the card
 record (written, read back, an older record as zero) and a replay script (nothing changes, nothing is drawn). Also
 that the generated table is consistent: every target an existing battle, no region twice. Needs only the host gcc."""
 import re
