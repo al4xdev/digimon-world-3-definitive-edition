@@ -1,14 +1,17 @@
-/* PRD 4 layer I: the Overlevel Rush's results on the field. With DEF_RUSH_FLOAT the Rush's leave
+/* PRD 4 layer I: the Overlevel Rush on the field, its question and its results. With DEF_RUSH_FLOAT the Rush's leave
  * (fieldstg_rush_leave) keeps the field, gives the report's rewards at once (def_rush_apply_quiet: STFGTREP's own
- * routines in its order, so the game's state is the report's) and opens this panel; fieldstg_rush_frame runs it once a
- * frame from the camera's update, whatever the player does, as it runs the Rush's question. It never sets
- * event_running: that is what would hold the player, who walks on under it. definitive_rush.c gives its rows and clock.
+ * routines in its order, so the game's state is the report's) and opens the results' panel; fieldstg_rush_frame runs
+ * the question and the panel once a frame from the camera's update, whatever the player does. Neither sets
+ * event_running: that is what would hold the player, who walks on under both. definitive_rush.c gives the panel's rows
+ * and clock.
  *
- * Drawing: a window of the game's font per text (windows of no object's data block: only this runs them, as on the
- * Guardromon screen), on the Rush's own layer 0x1004, over the field's sprites, with the Rush question's dark panel. In
- * one ordering-table entry what is added last is drawn first, so the texts go in before the frame and the fill. Placed
- * over the player (its actor's pixel position less the field layer's scroll, which the camera sets) and kept inside the
- * screen.
+ * Both sit at the top of the screen, centred, sliding in from above: the camera keeps the player in the middle, so a
+ * panel there would cover the one walking under it (and one that followed the player would shake with every step).
+ * The headings are in the callouts' polygon letters (def_poly_text: no texture, so the accents Portuguese needs and
+ * any internal resolution are theirs); the rest is the game's font, a window per text (windows of no object's data
+ * block: only this runs them, as on the Guardromon screen), on the Rush's own layer 0x1004 over the field's sprites,
+ * with the Rush question's dark panel. In one ordering-table entry what is added last is drawn first, so the texts go
+ * in before the frame and the fill.
  *
  * The windows live on the field's heap: the panel closes and frees them as soon as the field holds the player or the map
  * ends, a map's load forgets them (def_rush_panel_reset: that heap went with the last stage), and a save state keeps
@@ -22,6 +25,7 @@
 #include "gfx.h"
 #include "heap.h"
 #include "message.h"
+#include "pad.h"
 #include "psyq/libgpu.h"
 #include "records.h"
 
@@ -31,22 +35,35 @@
 
 extern void *font_get_entry(void *data, s32 i);
 extern void port_log(const char *fmt, ...);
+extern const unsigned char def_str_RushAskYes[], def_str_RushAskNo[];
 
 #define RP_LAYER 0x1004 /* the Rush's layer (its question and RUSH!), over the field's sprites; offset (0, 0) on the field */
-#define RP_FIELD 0x1002 /* the field's window layer: its scroll is the camera's (fieldstg_camera_apply) */
-#define RP_FONT 2       /* the 11-pixel font: names and numbers */
-#define RP_LINE 12      /* a row's pitch in it */
-#define RP_PAD 6        /* the texts' inset from the panel's sides */
-#define RP_TOP 3        /* the first row's from its top */
-#define RP_GAP 10       /* the least room between a row's two texts */
-#define RP_MIN_W 112
+#define RP_FONT 1       /* the dialogues' 14-pixel font: its button symbols, its accents, white on palette 0 */
+#define RP_LINE 14      /* a row's pitch in it */
+#define RP_PAD 8        /* the texts' inset from the panel's sides */
+#define RP_BOTTOM 3     /* under the last row */
+#define RP_GAP 12       /* the least room between a row's two texts */
+#define RP_MIN_W 140
 #define RP_MAX_W 312
-#define RP_RISE 52      /* from the player's feet to the panel's bottom: clear of its sprite */
-#define RP_EDGE 4       /* the panel stays this far inside the screen */
+#define RP_Y 8          /* the panels' top once slid in */
+#define RP_SLIDE 10     /* ticks (1/60 s) a panel takes to slide in from above, and the results' to slide back out */
+#define RP_CENTRE 160   /* the screen's middle: in a widescreen field too, which widens both sides alike */
+#define RP_TITLE 192    /* the headings: 8.8 of the callouts' 16-pixel letters (12 pixels) */
+#define RP_TITLE_Y 8    /* a heading's top, from its panel's: room above for its accents */
+#define RP_RULE_Y 23    /* the results' line under it */
+#define RP_HEAD 26      /* their first row's top */
 #define RP_TEXT 96      /* bytes of a row's text */
+#define RP_PAL_TEXT 0   /* names and numbers */
 #define RP_PAL_UP 3     /* LV UP! and TP FULL! (the bestiary's orange) */
 #define RP_PAL_NEW 4    /* NEW TECH! (its green) */
 #define RP_ITEM_NAMES 0x6A /* the item names' text file (records_language + it), STFGTREP's own */
+
+#define RA_KEYS_Y 24    /* the question: the answers' line, in the game's font */
+#define RA_BAR_Y 42     /* the time left */
+#define RA_BAR_H 3
+#define RA_H 49
+#define RA_PAD 14
+#define RA_MIN_W 208
 
 /* The tests read rush_panel.clock (left, opened) first. */
 static struct {
@@ -58,6 +75,10 @@ static struct {
     s32 item_row; /* the item's row, still waiting for the item names' file; -1: none */
     MessageWindow *left[DEF_RUSH_ROWS], *right[DEF_RUSH_ROWS];
     s32 left_w[DEF_RUSH_ROWS], right_w[DEF_RUSH_ROWS];
+    /* the question's answers: their window, its width and its text (a window keeps the pointer it is given) */
+    MessageWindow *keys;
+    s32 keys_w;
+    unsigned char keys_text[64];
 } rush_panel;
 
 int def_rush_float_mode = -1; /* -1: DW3_RUSH_FLOAT not read yet (a debug session may set it directly) */
@@ -123,7 +144,7 @@ static void rp_fill_row(s32 i) {
     unsigned char left[RP_TEXT], right[RP_TEXT];
     const unsigned char *item_name = NULL;
     DefRushRow row = rush_panel.rows[i];
-    s32 pal = 0;
+    s32 pal = RP_PAL_TEXT;
     void *names;
 
     if (row.kind == DEF_RUSH_ROW_ITEM && (names = rp_item_names()) != NULL) {
@@ -136,14 +157,23 @@ static void rp_fill_row(s32 i) {
         pal = RP_PAL_UP;
     }
     rp_stop_row(i);
-    rush_panel.left[i] = rp_window(left, 0, &rush_panel.left_w[i]);
+    rush_panel.left[i] = rp_window(left, RP_PAL_TEXT, &rush_panel.left_w[i]);
     rush_panel.right[i] = rp_window(right, pal, &rush_panel.right_w[i]);
+}
+
+/* The results' heading, in the game's language. */
+static const char *rp_title(void) {
+    return def_is_ptbr() ? "VITÓRIA FÁCIL!" : "EASY WIN!";
 }
 
 static void rp_size(void) {
     s32 i, w;
 
     rush_panel.w = RP_MIN_W;
+    w = def_poly_text_width(RP_TITLE, rp_title()) + RP_PAD * 2;
+    if (w > rush_panel.w) {
+        rush_panel.w = w;
+    }
     for (i = 0; i < rush_panel.count; i++) {
         w = RP_PAD * 2 + rush_panel.left_w[i] + (rush_panel.right_w[i] > 0 ? RP_GAP + rush_panel.right_w[i] : 0);
         if (w > rush_panel.w) {
@@ -153,23 +183,51 @@ static void rp_size(void) {
     if (rush_panel.w > RP_MAX_W) {
         rush_panel.w = RP_MAX_W;
     }
-    rush_panel.h = RP_TOP * 2 + rush_panel.count * RP_LINE;
+    rush_panel.h = RP_HEAD + rush_panel.count * RP_LINE + RP_BOTTOM;
 }
 
-/* The Rush question's panel pieces (fieldstg_rush_quad): a flat quad with its blend mode `abr` (1 adds, 2 subtracts). */
+/* A flat quad with its blend: `abr` 1 adds, 2 subtracts (the panels' frame and fill); -1 is
+ * opaque. */
 static void rp_quad(GfxLayer *layer, s32 x, s32 y, s32 w, s32 h, s32 abr, u8 r, u8 g, u8 b) {
     POLY_F4 *poly = gfx_module.funcs.get_packet();
     DR_TPAGE *tpage = (DR_TPAGE *)(poly + 1);
     u32 *ot = layer->get_ot_entry(layer, 0);
 
     setPolyF4(poly);
-    setSemiTrans(poly, 1);
+    setSemiTrans(poly, abr >= 0);
     setRGB0(poly, r, g, b);
     setXY4(poly, x, y, x + w, y, x, y + h, x + w, y + h);
     addPrim(ot, poly);
-    SetDrawTPage(tpage, 0, 1, getTPage(1, abr, 0, 0));
+    SetDrawTPage(tpage, 0, 1, getTPage(1, abr >= 0 ? abr : 0, 0, 0));
     addPrim(ot, tpage);
     gfx_module.funcs.set_packet(tpage + 1);
+}
+
+/* The panel's frame and fill (queued after what goes on it: under it). */
+static void rp_box(GfxLayer *layer, s32 x, s32 y, s32 w, s32 h) {
+    rp_quad(layer, x, y, w, 1, 1, 60, 130, 230);
+    rp_quad(layer, x, y + h - 1, w, 1, 1, 60, 130, 230);
+    rp_quad(layer, x, y, w, h, 2, 225, 215, 160);
+}
+
+/* A heading in the callouts' letters with the dark edge the title screen's questions have, centred on the screen. */
+static void rp_heading(GfxLayer *layer, s32 y, s32 size, const char *text, const u8 *rgb) {
+    static const u8 edge[3] = { 8, 12, 40 };
+    s32 x = RP_CENTRE - def_poly_text_width(size, text) / 2;
+
+    def_poly_text(layer, 0, x, y, size, text, rgb);
+    def_poly_text(layer, 0, x + 1, y + 1, size, text, edge);
+}
+
+/* How far a panel `h` tall that has been up `shown` ticks has come down: from above the screen to RP_Y. */
+static s32 rp_slide_y(s32 shown, s32 h) {
+    if (shown >= RP_SLIDE) {
+        return RP_Y;
+    }
+    if (shown < 0) {
+        shown = 0;
+    }
+    return RP_Y - (h + RP_Y) * (RP_SLIDE - shown) / RP_SLIDE;
 }
 
 void def_rush_panel_open(const DefRushSummary *s) {
@@ -197,21 +255,23 @@ void def_rush_panel_open(const DefRushSummary *s) {
              (int)rush_panel.count, replaced ? " (in place of the last one)" : "");
 }
 
+int def_rush_panel_up(void) {
+    return rush_panel.clock.left > 0;
+}
+
 void def_rush_panel_frame(void) {
-    FieldstgActor *player;
+    static const u8 gold[3] = { 255, 208, 64 };
     Object *mgr;
-    GfxLayer *layer, *field;
-    s32 held, x, y, i, ty;
+    GfxLayer *layer;
+    s32 held, x, y, i, ty, shown;
 
     if (rush_panel.clock.left <= 0) {
         return;
     }
     mgr = heap_objects.find(7, -1, -1);
-    player = (FieldstgActor *)heap_objects.find(5, -1, 0);
     layer = gfx_module.funcs.get_layer(RP_LAYER);
-    field = gfx_module.funcs.get_layer(RP_FIELD);
     held = fieldstg_stage.menu_open != 0 || fieldstg_stage.event_running != 0 || fieldstg_stage.battle_starting != 0 ||
-           mgr == NULL || mgr->state != OBJECT_STATE_RUN || player == NULL || layer == NULL || field == NULL;
+           mgr == NULL || mgr->state != OBJECT_STATE_RUN || layer == NULL;
     if (!def_rush_clock_tick(&rush_panel.clock, gfx_module.funcs.get_frame_ticks(), held)) {
         rp_close();
         return;
@@ -221,23 +281,16 @@ void def_rush_panel_frame(void) {
         rush_panel.item_row = -1;
         rp_size();
     }
-    /* the player's place on the screen, at the height the camera centres (its jump counted), and the panel over it */
-    x = player->pixel_pos.x - (field->scroll_x >> 8) - rush_panel.w / 2;
-    y = player->pixel_pos.y - (player->height >> 8) - (field->scroll_y >> 8) - RP_RISE - rush_panel.h;
-    if (x > 320 - RP_EDGE - rush_panel.w) {
-        x = 320 - RP_EDGE - rush_panel.w;
+    /* in at the top as the jingle starts, back out as it ends */
+    shown = DEF_RUSH_FLOAT_FRAMES - rush_panel.clock.left;
+    if (rush_panel.clock.left < shown) {
+        shown = rush_panel.clock.left;
     }
-    if (x < RP_EDGE) {
-        x = RP_EDGE;
-    }
-    if (y > 240 - RP_EDGE - rush_panel.h) {
-        y = 240 - RP_EDGE - rush_panel.h;
-    }
-    if (y < RP_EDGE) {
-        y = RP_EDGE;
-    }
+    x = RP_CENTRE - rush_panel.w / 2;
+    y = rp_slide_y(shown, rush_panel.h);
+    rp_heading(layer, y + RP_TITLE_Y, RP_TITLE, rp_title(), gold);
     for (i = 0; i < rush_panel.count; i++) {
-        ty = y + RP_TOP + i * RP_LINE;
+        ty = y + RP_HEAD + i * RP_LINE;
         if (rush_panel.left[i] != NULL) {
             rush_panel.left[i]->set_pos(rush_panel.left[i], x + RP_PAD + rush_panel.left_w[i], ty);
             rush_panel.left[i] = (MessageWindow *)heap_objects.try_run((Object *)rush_panel.left[i]);
@@ -247,9 +300,79 @@ void def_rush_panel_frame(void) {
             rush_panel.right[i] = (MessageWindow *)heap_objects.try_run((Object *)rush_panel.right[i]);
         }
     }
-    rp_quad(layer, x, y, rush_panel.w, 1, 1, 60, 130, 230);
-    rp_quad(layer, x, y + rush_panel.h - 1, rush_panel.w, 1, 1, 60, 130, 230);
-    rp_quad(layer, x, y, rush_panel.w, rush_panel.h, 2, 225, 215, 160);
+    rp_quad(layer, x + RP_PAD, y + RP_RULE_Y, rush_panel.w - RP_PAD * 2, 1, 1, 60, 130, 230);
+    rp_box(layer, x, y, rush_panel.w, rush_panel.h);
+}
+
+/* The question's answers in the game's font: each answer's button as the symbol of the bit the question reads (the
+ * player's own letter, pad.map's, when there is one: message.c swaps it in), then its word. */
+static void ra_keys_open(void) {
+    static const unsigned char space[] = { 0x01, 0x01, 0x00 };
+    unsigned char sym[3] = { 0x01, 0x00, 0x00 };
+    unsigned char *t = rush_panel.keys_text;
+    int p = 0, i;
+
+    sym[1] = port_face_symbol_code(pad_state.get_button_map(0, 13));
+    if (sym[1] != 0) {
+        def_glyph_put(t, &p, sizeof(rush_panel.keys_text), sym);
+        def_glyph_put(t, &p, sizeof(rush_panel.keys_text), space);
+    }
+    def_glyph_put(t, &p, sizeof(rush_panel.keys_text), def_str_RushAskYes);
+    for (i = 0; i < 5; i++) {
+        def_glyph_put(t, &p, sizeof(rush_panel.keys_text), space);
+    }
+    sym[1] = port_face_symbol_code(pad_state.get_button_map(0, 14));
+    if (sym[1] != 0) {
+        def_glyph_put(t, &p, sizeof(rush_panel.keys_text), sym);
+        def_glyph_put(t, &p, sizeof(rush_panel.keys_text), space);
+    }
+    def_glyph_put(t, &p, sizeof(rush_panel.keys_text), def_str_RushAskNo);
+    rush_panel.keys = rp_window(t, RP_PAL_TEXT, &rush_panel.keys_w);
+}
+
+void def_rush_ask_frame(int waited, int total) {
+    static const u8 gold[3] = { 255, 208, 64 };
+    GfxLayer *layer = gfx_module.funcs.get_layer(RP_LAYER);
+    const char *title = def_is_ptbr() ? "LUTA FÁCIL! ATROPELAR?" : "EASY FIGHT! RUSH IT?";
+    s32 w, x, y, left, bar;
+
+    if (layer == NULL) {
+        return;
+    }
+    if (rush_panel.keys == NULL) {
+        ra_keys_open();
+    }
+    w = def_poly_text_width(RP_TITLE, title) + RA_PAD * 2;
+    if (w < rush_panel.keys_w + RA_PAD * 2) {
+        w = rush_panel.keys_w + RA_PAD * 2;
+    }
+    if (w < RA_MIN_W) {
+        w = RA_MIN_W;
+    }
+    x = RP_CENTRE - w / 2;
+    y = rp_slide_y(waited, RA_H);
+    left = total - waited;
+    left = left < 0 ? 0 : left;
+    bar = (w - RA_PAD * 2) * left / total;
+    rp_heading(layer, y + RP_TITLE_Y, RP_TITLE, title, gold);
+    if (rush_panel.keys != NULL) {
+        rush_panel.keys->set_pos(rush_panel.keys, RP_CENTRE + rush_panel.keys_w / 2, y + RA_KEYS_Y);
+        rush_panel.keys = (MessageWindow *)heap_objects.try_run((Object *)rush_panel.keys);
+    }
+    /* the time left, gold turning red in its last third, over its empty track */
+    if (left * 3 > total) {
+        rp_quad(layer, x + RA_PAD, y + RA_BAR_Y, bar, RA_BAR_H, -1, 255, 208, 64);
+    } else {
+        rp_quad(layer, x + RA_PAD, y + RA_BAR_Y, bar, RA_BAR_H, -1, 255, 88, 56);
+    }
+    rp_quad(layer, x + RA_PAD, y + RA_BAR_Y, w - RA_PAD * 2, RA_BAR_H, 1, 40, 48, 72);
+    rp_box(layer, x, y, w, RA_H);
+}
+
+void def_rush_ask_close(void) {
+    heap_objects.stop((Object *)rush_panel.keys);
+    rush_panel.keys = NULL;
+    rush_panel.keys_w = 0;
 }
 
 void def_rush_panel_reset(void) {
@@ -261,6 +384,8 @@ void def_rush_panel_reset(void) {
     rush_panel.count = 0;
     rush_panel.item_row = -1;
     rush_panel.clock.left = 0;
+    rush_panel.keys = NULL;
+    rush_panel.keys_w = 0;
 }
 
 void def_rush_savestate(struct PortState *s) {

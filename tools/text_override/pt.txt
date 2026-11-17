@@ -104,6 +104,8 @@ $RushNewTech: NOVA TECH!
 $RushTpFull: TP CHEIO!
 $RushBits: " Bits"
 $RushTimes: " x"
+$RushAskYes: Atropelar
+$RushAskNo: Lutar
 $DriTitle: Simulações DRI
 $DriSep: " - "
 $DriDash: --

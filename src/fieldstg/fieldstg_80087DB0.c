@@ -3265,7 +3265,18 @@ void fieldstg_player_control_height(FieldstgActor *obj) {
     s32 hit;
     u8 attr;
 
+#ifdef PC_PORT
+    /* The Overlevel Rush's question (fieldstg_player_control): flying goes on under it, the confirm press is its yes. */
+    s32 asking = fieldstg_rush_asking();
+
+    if (asking) {
+        pressed = 0;
+    }
+    if (fieldstg_stage.menu_open == 0 && fieldstg_stage.event_running == 0
+        && (fieldstg_stage.battle_starting == 0 || asking)) {
+#else
     if (fieldstg_stage.menu_open == 0 && fieldstg_stage.event_running == 0 && fieldstg_stage.battle_starting == 0) {
+#endif
         if (pressed && obj->height < 0x2000) {
             obj->get_front(obj, &front);
             if (fieldstg_actor_talk_to(obj, &front)) {
@@ -3406,6 +3417,17 @@ void fieldstg_player_control(FieldstgActor *obj) {
     FieldstgPos pos;
     FieldstgSpots *sel;
 
+#ifdef PC_PORT
+    /* The Overlevel Rush's question keeps battle_starting up (no other encounter starts under it), which alone would
+     * leave the player in the step the encounter caught them in: walking on by itself, the d-pad ignored. The d-pad
+     * steers meanwhile; the confirm button is the question's answer, never a talk or a spot. */
+    if (fieldstg_rush_asking()) {
+        if (fieldstg_stage.menu_open == 0 && fieldstg_stage.event_running == 0) {
+            fieldstg_actor_set_move(obj, (pad_state.get_held(0) >> 4) & 0xF);
+        }
+        return;
+    }
+#endif
     if (fieldstg_stage.menu_open == 0 && fieldstg_stage.event_running == 0 && fieldstg_stage.battle_starting == 0) {
         dir = (pad_state.get_held(0) >> 4) & 0xF;
         pressed = (pad_state.get_pressed(0) & 0x2000) != 0;
@@ -5043,21 +5065,6 @@ void fieldstg_rush_reset(void) { /* a new stage: an open question went with the 
     fieldstg_rush.active = 0;
 }
 
-static void fieldstg_rush_quad(GfxLayer *layer, s32 x, s32 y, s32 w, s32 h, s32 abr, u8 r, u8 g, u8 b) {
-    POLY_F4 *poly = gfx_module.funcs.get_packet();
-    DR_TPAGE *tpage = (DR_TPAGE *)(poly + 1);
-    u32 *ot = layer->get_ot_entry(layer, 0);
-
-    setPolyF4(poly);
-    setSemiTrans(poly, 1);
-    setRGB0(poly, r, g, b);
-    setXY4(poly, x, y, x + w, y, x, y + h, x + w, y + h);
-    addPrim(ot, poly);
-    SetDrawTPage(tpage, 0, 1, getTPage(1, abr, 0, 0));
-    addPrim(ot, tpage);
-    gfx_module.funcs.set_packet(tpage + 1);
-}
-
 static void fieldstg_rush_text(GfxLayer *layer, s32 x, s32 y, s32 size, const char *text, const u8 *rgb) {
     static const u8 edge[3] = { 8, 12, 40 };
 
@@ -5098,6 +5105,7 @@ static void fieldstg_rush_float(FieldstgRush *obj, FieldstgManager *mgr) {
 static void fieldstg_rush_leave(FieldstgRush *obj, s32 rushed) {
     FieldstgManager *mgr;
 
+    def_rush_ask_close();
     fieldstg_stage.event_running = 0;
     fieldstg_stage.battle_starting = 0;
     if (rushed && def_rush_float() && (mgr = (FieldstgManager *)heap_objects.find(7, -1, -1)) != NULL) {
@@ -5113,7 +5121,6 @@ static void fieldstg_rush_leave(FieldstgRush *obj, s32 rushed) {
 }
 
 static void fieldstg_rush_update(FieldstgRush *obj) {
-    static const u8 white[3] = { 255, 255, 255 }, grey[3] = { 120, 128, 150 }, gold[3] = { 255, 208, 64 };
     static const u8 red[3] = { 255, 72, 56 };
     GfxLayer *layer = gfx_module.funcs.get_layer(0x1004);
 
@@ -5123,22 +5130,11 @@ static void fieldstg_rush_update(FieldstgRush *obj) {
             return;
         }
         if (obj->active == 1) {
-            /* The player walks meanwhile (event_running is 0; battle_starting keeps other encounters, talks and the
-             * map's events off, and fieldstg_rush_asking the menu): the answer is the confirm button (yes) or back
-             * (no), the d-pad being a way to walk. No answer in DEF_RUSH_ASK_TICKS is the manual battle. */
-            s32 pt = def_is_ptbr();
-            s32 left = DEF_RUSH_ASK_TICKS - obj->ticks;
-
-            if (left < 0) {
-                left = 0;
-            }
-            fieldstg_rush_text(layer, pt ? 78 : 82, 94, 128, pt ? "LUTA FACIL! ATROPELAR?" : "EASY FIGHT! RUSH IT?", gold);
-            fieldstg_rush_text(layer, 76, 110, 112, pt ? "CONFIRMA SIM" : "CONFIRM YES", white);
-            fieldstg_rush_text(layer, 170, 110, 112, pt ? "VOLTA NAO" : "BACK NO", white);
-            fieldstg_rush_quad(layer, 76, 128, 168 * left / DEF_RUSH_ASK_TICKS, 3, 0, 255, 208, 64); /* the time left */
-            fieldstg_rush_quad(layer, 70, 90, 180, 1, 1, 60, 130, 230);
-            fieldstg_rush_quad(layer, 70, 133, 180, 1, 1, 60, 130, 230);
-            fieldstg_rush_quad(layer, 70, 90, 180, 44, 2, 225, 215, 160);
+            /* The player walks meanwhile (event_running is 0; battle_starting keeps other encounters and the map's
+             * events off, fieldstg_rush_asking the menu, and fieldstg_player_control lets only the d-pad through): the
+             * answer is the confirm button (yes) or back (no). No answer in DEF_RUSH_ASK_TICKS is the manual battle.
+             * The question is drawn at the top of the screen, clear of the player (port/game/definitive_rush_panel.c). */
+            def_rush_ask_frame(obj->ticks, DEF_RUSH_ASK_TICKS);
             if (!obj->warned) {
                 obj->warned = 1;
                 sound_module.play(DEF_RUSH_WARN_SOUND);
@@ -5149,10 +5145,12 @@ static void fieldstg_rush_update(FieldstgRush *obj) {
                 fieldstg_rush_leave(obj, 0);
             } else if (PAD_PRESSED(13)) {
                 obj->ticks = 0;
+                sound_module.play(0x800450BD);
                 /* the results' panel opens at once with the victory music; the old word is kept for the report's path */
                 if (def_rush_float()) {
                     fieldstg_rush_leave(obj, 1);
                 } else {
+                    def_rush_ask_close();
                     obj->active = 2;
                 }
             } else if (obj->ticks >= DEF_RUSH_ASK_TICKS) {

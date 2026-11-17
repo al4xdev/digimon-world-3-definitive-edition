@@ -403,6 +403,9 @@ $RushNewTech: NEW TECH!
 $RushTpFull: TP FULL!
 $RushBits: " Bits"
 $RushTimes: " x"
+# The Rush's question: its two answers after their buttons' symbols (port/game/definitive_rush_panel.c).
+$RushAskYes: Rush it
+$RushAskNo: Fight
 
 # PRD 4 layer H, the DRI Agents' Gauntlet (port/game/definitive_dri_screen.c): the list's title, the separator of a
 # line's stages ("Tyrannomon / MetalGreymon / BK WarGreymon"), a locked row's mark, the chosen challenge's lines (quoted:

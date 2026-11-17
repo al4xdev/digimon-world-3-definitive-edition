@@ -510,7 +510,7 @@ void def_glyph_number(unsigned char *buf, int *p, int size, int n);
  * panel's rows and clock; definitive_rush_panel.c: the panel and the switch; def_rush_apply_quiet in
  * src/stfgtrep/stfgtrep_80082E70.c: the report's rewards, by its own routines and in its order). DW3_RUSH_FLOAT (read
  * once: 0 the report, else the panel) overrides DEF_RUSH_FLOAT for a test; def_rush_float_mode is that switch. */
-#define DEF_RUSH_FLOAT 1          /* a taken Rush gives its results at once in a panel over the player, not on the report */
+#define DEF_RUSH_FLOAT 1          /* a taken Rush gives its results at once in a panel on the field, not on the report */
 #define DEF_RUSH_FLOAT_FRAMES 175 /* how long that panel stays up, in ticks (1/60 s): DEF_RUSH_JINGLE's ~2.9 s (rendered in full
                                    * from the port's own SPU, see .dumps/sounds) */
 #define DEF_RUSH_ROWS 10          /* rows the panel lists at most (the rest is given, not listed) */
@@ -563,6 +563,10 @@ void def_rush_apply_quiet(DefRushSummary *out);
 void def_rush_panel_open(const DefRushSummary *s);
 void def_rush_panel_frame(void);
 void def_rush_panel_reset(void);
+int def_rush_panel_up(void); /* 1 while the results' panel is up (the Guide's notices wait for it: same place) */
+/* The Rush's question at the top of the screen, `waited` of its `total` ticks gone; closed when it is answered. */
+void def_rush_ask_frame(int waited, int total);
+void def_rush_ask_close(void);
 struct PortState;
 void def_rush_savestate(struct PortState *s);
 

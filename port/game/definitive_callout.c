@@ -393,41 +393,112 @@ void def_callout_frame(void) {
     callout.tick += fightstg_battle.frames;
 }
 
+/* The accents Portuguese needs, in the letters' units around the middle of the capital they go on (x 0 there): above
+ * its top (y < 0, which the lean carries right with the letter's top), the cedilla under its foot. */
+enum { ACCENT_NONE, ACCENT_ACUTE, ACCENT_GRAVE, ACCENT_CIRCUMFLEX, ACCENT_TILDE, ACCENT_CEDILLA };
+static const struct {
+    u8 n;
+    Slab s[3];
+} accents[] = {
+    [ACCENT_ACUTE] = { 1, { { -7, 0, 4, -3, -3, 1 } } },
+    [ACCENT_GRAVE] = { 1, { { -7, -4, 0, -3, -1, 3 } } },
+    [ACCENT_CIRCUMFLEX] = { 2, { { -7, -1, 2, -3, -5, -2 }, { -7, -2, 1, -3, 2, 5 } } },
+    [ACCENT_TILDE] = { 3, { { -7, -3, 0, -4, -6, -3 }, { -7, -3, 0, -4, 0, 3 }, { -7, 3, 6, -4, 0, 3 } } },
+    [ACCENT_CEDILLA] = { 1, { { 17, -1, 2, 21, -3, 0 } } },
+};
+
+/* The Latin-1 letters in UTF-8 (C3 80..BF, capitals and small alike: the letters are capitals only), as their capital
+ * and accent; 0 for the ones without a letter here. */
+static const struct {
+    u8 code;
+    char c;
+    u8 accent;
+} accented[] = {
+    { 0x80, 'A', ACCENT_GRAVE }, { 0x81, 'A', ACCENT_ACUTE }, { 0x82, 'A', ACCENT_CIRCUMFLEX },
+    { 0x83, 'A', ACCENT_TILDE }, { 0x87, 'C', ACCENT_CEDILLA }, { 0x88, 'E', ACCENT_GRAVE },
+    { 0x89, 'E', ACCENT_ACUTE }, { 0x8A, 'E', ACCENT_CIRCUMFLEX }, { 0x8D, 'I', ACCENT_ACUTE },
+    { 0x93, 'O', ACCENT_ACUTE }, { 0x94, 'O', ACCENT_CIRCUMFLEX }, { 0x95, 'O', ACCENT_TILDE },
+    { 0x9A, 'U', ACCENT_ACUTE },
+};
+
+/* The letter at `t`: its glyph (NULL: a space), its accent, and the bytes it takes. */
+static const Glyph *glyph_at(const char *t, int *len, int *accent) {
+    const u8 *u = (const u8 *)t;
+    unsigned i;
+
+    *len = 1;
+    *accent = ACCENT_NONE;
+    if (u[0] == 0xC3 && u[1] >= 0x80 && u[1] <= 0xBF) {
+        u8 code = u[1] >= 0xA0 ? (u8)(u[1] - 0x20) : u[1];
+
+        *len = 2;
+        for (i = 0; i < sizeof(accented) / sizeof(accented[0]); i++) {
+            if (accented[i].code == code) {
+                *accent = accented[i].accent;
+                return glyph_of(accented[i].c);
+            }
+        }
+        return NULL;
+    }
+    return glyph_of(*t);
+}
+
+/* One slab, at letter `pen` (units), as a flat quad on `ot`; the next packet. */
+static POLY_F4 *poly_slab(POLY_F4 *poly, u32 *ot, const Slab *s, int pen, int x, int y, int size, const u8 *rgb) {
+    const int px[4] = { s->tl, s->tr, s->bl, s->br }, py[4] = { s->y0, s->y0, s->y1, s->y1 };
+    short v[8];
+    int k;
+
+    for (k = 0; k < 4; k++) {
+        int lx = (pen + px[k]) * 256 + (GLYPH_H - py[k]) * ITALIC; /* the top leans right of the foot */
+        v[k * 2] = x + ((lx * size + 0x8000) >> 16);
+        v[k * 2 + 1] = y + ((py[k] * size + 0x80) >> 8);
+    }
+    setPolyF4(poly);
+    setRGB0(poly, rgb[0], rgb[1], rgb[2]);
+    setXY4(poly, v[0], v[1], v[2], v[3], v[4], v[5], v[6], v[7]);
+    addPrim(ot, poly);
+    return poly + 1;
+}
+
 /* Plain text in the callouts' letters, for a screen where the game's font is not there (the title): upright with the
  * letters' lean, left end at x and top at y on `layer`'s ordering table entry `depth`, `size` 8.8 of the 16-pixel
- * letters, one flat colour. Capitals, 2, 3, ! and ? only; another character is a space. Returns the width drawn. As
- * every primitive here, a later call is drawn under an earlier one. */
+ * letters, one flat colour. Capitals, 2, 3, ! and ?, and the accented capitals in UTF-8 (FÁCIL, NÃO, AÇÃO); another
+ * character is a space. Returns the width drawn. As every primitive here, a later call is drawn under an earlier one.
+ * With no layer it only measures. */
 int def_poly_text(GfxLayer *layer, s32 depth, int x, int y, int size, const char *text, const u8 *rgb) {
-    u32 *ot = layer->get_ot_entry(layer, depth);
-    POLY_F4 *poly = gfx_module.funcs.get_packet();
-    int pen = 0;
+    u32 *ot = layer != NULL ? layer->get_ot_entry(layer, depth) : NULL;
+    POLY_F4 *poly = layer != NULL ? gfx_module.funcs.get_packet() : NULL;
+    int pen = 0, len, accent;
 
-    for (; *text != '\0'; text++) {
-        const Glyph *g = glyph_of(*text);
-        int i, k;
+    for (; *text != '\0'; text += len) {
+        const Glyph *g = glyph_at(text, &len, &accent);
+        int i;
 
         if (g == NULL) {
             pen += SPACE_W + GLYPH_GAP;
             continue;
         }
-        for (i = 0; i < g->n; i++) {
-            const Slab *s = &g->s[i];
-            const int px[4] = { s->tl, s->tr, s->bl, s->br }, py[4] = { s->y0, s->y0, s->y1, s->y1 };
-            short v[8];
-
-            for (k = 0; k < 4; k++) {
-                int lx = (pen + px[k]) * 256 + (GLYPH_H - py[k]) * ITALIC; /* the top leans right of the foot */
-                v[k * 2] = x + ((lx * size + 0x8000) >> 16);
-                v[k * 2 + 1] = y + ((py[k] * size + 0x80) >> 8);
+        if (poly != NULL) {
+            for (i = 0; i < g->n; i++) {
+                poly = poly_slab(poly, ot, &g->s[i], pen, x, y, size, rgb);
             }
-            setPolyF4(poly);
-            setRGB0(poly, rgb[0], rgb[1], rgb[2]);
-            setXY4(poly, v[0], v[1], v[2], v[3], v[4], v[5], v[6], v[7]);
-            addPrim(ot, poly);
-            poly++;
+            for (i = 0; accent != ACCENT_NONE && i < accents[accent].n; i++) {
+                poly = poly_slab(poly, ot, &accents[accent].s[i], pen + g->w / 2, x, y, size, rgb);
+            }
         }
         pen += g->w + GLYPH_GAP;
     }
-    gfx_module.funcs.set_packet(poly);
+    if (poly != NULL) {
+        gfx_module.funcs.set_packet(poly);
+    }
     return pen * size >> 8;
+}
+
+/* What def_poly_text covers from its x: the letters without the gap after the last one, the top's lean included (to
+ * centre a line). */
+int def_poly_text_width(int size, const char *text) {
+    int w = def_poly_text(NULL, 0, 0, 0, size, text, NULL);
+
+    return w <= 0 ? 0 : w - (GLYPH_GAP * size >> 8) + (GLYPH_H * ITALIC * size >> 16);
 }

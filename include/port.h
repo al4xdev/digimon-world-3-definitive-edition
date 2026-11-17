@@ -363,6 +363,9 @@ int def_rush_float(void);
 void def_rush_apply_quiet(struct DefRushSummary *out);
 void def_rush_panel_open(const struct DefRushSummary *s);
 void def_rush_panel_frame(void);
+int def_rush_panel_up(void);
+void def_rush_ask_frame(int waited, int total);
+void def_rush_ask_close(void);
 /* The Guide (port/game/definitive_quest_screen.c): def_guide_frame runs its screen from FIELDSTG's idle step
  * (fieldstg_manager_update) and returns 1 while it owns the field; the field menu's GUIDE entry asks for it. The
  * notices (a new objective, an auction that opened): def_notice_frame once a frame from the camera's update,
@@ -414,9 +417,11 @@ int def_hard_slot_closed(int slot);
 int def_bestiary_active(void);
 /* The hit callouts (port/game/definitive_callout.c): one frame of the word over the target, from the battle's tick. */
 void def_callout_frame(void);
-/* Text in the callouts' polygon letters (capitals, 2, 3, ! and ?), for screens without the game's font: the width. */
+/* Text in the callouts' polygon letters (capitals, 2, 3, ! and ?, the accented capitals in UTF-8), for screens without
+ * the game's font: the width (a NULL layer only measures); def_poly_text_width, what it covers, to centre a line. */
 struct GfxLayer;
 int def_poly_text(struct GfxLayer *layer, s32 depth, int x, int y, int size, const char *text, const u8 *rgb);
+int def_poly_text_width(int size, const char *text);
 /* Layer 3: overrides the resists of an enemy record (FightstgEnemyRecord) by the port's table, if the species has a row. */
 struct FightstgEnemyRecord;
 void def_enemy_override(struct FightstgEnemyRecord *rec);
