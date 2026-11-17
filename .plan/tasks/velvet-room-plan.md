@@ -242,7 +242,8 @@ Texto do dono, como ele mandou:
   que ele mesmo forçou ao longo do jogo.
 - Recompensa de Purificação: Vencer devolve os TPs sacrificados pelos itens malditos.
 
-**Fase 3: Domínio Total ("Chosen Evolution" / True Warp)**
+**Fase 3: Domínio Total ("Chosen Evolution" / True Warp)** (texto original; o que foi feito está em "o redesenho
+implementado", abaixo)
 - Condição: Invocar e purificar todas as formas disponíveis na lista da Blast Gauge.
 - Recompensa Máxima: Além de buffs permanentes nos atributos, a Blast Gauge é purificada e se transforma na evolução
   definitiva (inspirada no conceito de DigiEscolhido / Gennai):
@@ -340,14 +341,84 @@ BIN --out .dumps/tasks/blast/mods`, refazer a cada build): `blast_test.py` (R2 d
 --check` e `gen_equipment.py --check` passam.
 
 Launcher: o C (`launcher/`, desktop e Android) ganhou a linha BLAST (`H_BLAST`, `bm_blast`, padrão R2; no Android
-as linhas da tela passaram de 27 para 25 px para caber); o do psxstack lê o `mod.json`. Fase 2 vai precisar guardar no save as formas invocadas e os TP sacrificados (hoje só o log diz).
+as linhas da tela passaram de 27 para 25 px para caber); o do psxstack lê o `mod.json`.
 Não testado em jogo real: uma batalha comum com WEAK/Stagger enchendo o gauge até 1000 (a regra está no log
 `DW3_BATTLE_LOG`, linhas "blast gauge hit").
+
+## Blast Gauge: redesenho do dono (2026-11-17, tarde) — substitui o que está abaixo onde conflitar
+
+**Formas** (resposta "A"): as do jogo (`RecordsDigimon.blast_forms`, 5 por parceiro, 29 distintas), não a minha lista
+de 10; **pintadas de preto** quando vêm pelo Blast (método de CLUT da outra sessão, `super-rare-hunts.md`, quando
+pronto). **Em sequência por parceiro**: cada Blast dele avança para a próxima forma se tiver o nível dela (forma 1 nv
+1, 2 nv 15, 3 nv 25, 4 nv 35, 5 nv 45), senão repete a última alcançada; depois da 5ª volta ao começo.
+
+**Fora do escopo daqui** (dono, 2026-11-17): os ganchos na história principal (seção 6, "Integração Natural na
+Campanha"). O dono está mudando a quest principal em outra sessão e depois cria quests guia; esta task não mexe nisso.
+
+**Gravação**: o **primeiro** status de cada forma (o Digimon transformado na primeira vez: atributos, HP, MP, a
+espécie dá as técnicas) e o **melhor** status que ela já teve. Precisa de um 3º registro no cartão (o 2º não cabe).
+
+**A quest** (10 = 10 pares **parceiro+forma** distintos: a mesma espécie em dois parceiros conta duas vezes, então
+dois parceiros com as 5 cada fecham 10 — funciona no Hard Mode, de 2 Digimon):
+1. O velhinho da sala se apresenta como **Gennai** (é o Myotismon disfarçado). Só mostra quantas formas você liberou
+   e manda dominá-las; nada de quest.
+2. Ao chegar nas 10: ele **cobra os Bits** (a taxa), revela que te enganou e que seu Digimon está amaldiçoado; tela
+   preta e um som; aparece o velhinho de verdade: ele é o Gennai, o outro era o Myotismon, e acredita que você é um
+   DigiEscolhido.
+3. O Gennai abre o **simulador**: as 10 formas em sequência (ondas de 3 encadeadas, sem tela de resultado entre elas),
+   cada uma com o **primeiro status gravado − 10%** e as técnicas da espécie.
+4. Vencendo: **todos os TP** do DV Plug de volta; **buff permanente por forma purificada: +10% do melhor status que
+   aquela forma teve** (no atributo em que ela era mais forte, para o parceiro que a tomou; o que passar de 999 vai
+   para o próximo atributo mais forte da forma, e assim por diante); e o Blast **some**, substituído pela **Chosen
+   Evolution**.
+
+**Chosen Evolution**:
+- Só **um** Digimon por vez, escolhido com o Gennai (pode trocar com ele sempre).
+- Exige a quest feita **e nível 45** do Digimon.
+- Forma: a Mega padrão do parceiro; **Kumamon → Beelzemon**.
+- Só a partir da forma **Rookie** (aviso se tentar em outra evolução); **uma por batalha**; **uma carga**: depois de
+  usar, só volta a ter carga falando com o Gennai.
+- Ao usar, recupera tudo (HP e MP).
+- O **DV Plug** passa a reviver o Digimon na forma Rookie com 1 HP e 1 MP.
+
+## Blast Gauge: o redesenho implementado (2026-11-17, noite)
+
+Substitui a "fase 2" antiga (lista fixa de 10 formas, taxa por forma, espelho do grupo), que saiu do código.
+
+- **Sequência** (`definitive.c`, `def_blast_form` / `def_blast_step`, pura e testada em `definitive_buffs`): as
+  `blast_forms` do próprio jogo, o próximo passo de cada parceiro no 2º registro (`REC2_BLAST`), níveis
+  `DEF_BLAST_STEP_LEVELS` {1, 15, 25, 35, 45}. `DW3_BLAST_STEP=k` força um passo nos testes (sem mexer na sequência).
+- **Preto**: `DEF_RECOLOR_DARK` em `definitive_recolor.c` (arquivo da outra sessão, toque mínimo): luminância a 40%
+  com leve tom roxo; modelo do grupo (id 1) quando o membro está em Blast (`def_blast_dark`), e os inimigos do
+  simulador (id 2). A Chosen sai com as cores normais.
+- **Gravação**: 3º registro do cartão, parte 7 (`memcard.c` 0x7E00 + slot × 0x80; `stgmcard` passos 0x4A na leitura e
+  0x38 na escrita): "BLST", versão, checksum, até 10 pares parceiro+forma de 11 bytes (atributos da 1ª vez, HP, o
+  atributo mais forte e o melhor valor que ele já teve). `def_blast_started` grava; testado em `definitive_bestiary`.
+- **Quest** (`definitive_purify.c`, o cabeçalho explica): estágio no 2º registro (enganado / revelado / feita).
+  "Gennai" mostra n de 10 e manda dominar; com 10, cobra `DEF_PURIFY_BITS` (10000), história em 2 páginas, tela preta
+  com som (`PF_SND_CURSE`, provisório), o Gennai de verdade em 2 páginas, simulador. Ondas de 3 sem espécie repetida,
+  status gravado × 90%, sem tela de resultado entre ondas (`wfightmn` manda direto ao campo), sem XP/Bits. Derrota:
+  volta ao campo, HP/MP de antes; formas derrubadas ficam purificadas. Ao fim: TP devolvidos (até 99), buff +10% do
+  melhor valor no atributo mais forte de cada forma (o excesso de 999 vai ao próximo), Blast vira Chosen.
+- **Chosen** (`definitive.c`): o botão do Blast passa a ser a Chosen do parceiro escolhido com o Gennai (painel dele,
+  que recarrega a carga a cada visita), nível 45, só da Rookie (linha "Chosen needs Rookie" no menu), uma por batalha,
+  restaura HP e MP, sem maldição nem medidor. Megas em `DEF_CHOSEN_MEGAS` (Kumamon → Beelzemon). DV Plug depois da
+  quest: item de reviver (passa pelo caminho do item 0x46 do jogo, que revive todos os caídos): cada parceiro caído
+  volta na Rookie com 1 HP / 1 MP e o Blast desligado (`def_blast_plug_revive`); descrição trocada para "Revive:
+  Rookie form, 1 HP and 1 MP" / "Revive em Rookie com 1 HP e 1 MP" (`$PlugRevive`, servida no lugar do ITMINF 76).
+  Teste: `.dumps/tasks/blast/v3/plug_revive.py` (revive, gasta o item, sem maldição; antes da quest ainda é a
+  maldição) passa.
+- **Testes** (scratch, binário copiado para `.dumps/tasks/blast/v2/dw2003` porque a outra sessão recompila o
+  compartilhado): `blast2_test.py` (sequência passo 0/3/2, gravação, preto, Chosen e recusas) passa;
+  `dark_shots.py` (folhas de contato: GranKuwagamon escuro, GuardiAngemon normal); `quest_test.py` (quest inteira).
 
 ## Pendências / pedidos ao dono
 
 - **Portas**: sprite novo desenhado à mão e reposicionar ao lado dos guarda-roupas/armários (seção "Próximas tasks").
-- **Blast Gauge** fases 2 e 3, e o **onboarding** (seção "Próximas tasks").
+- **Blast Gauge**: feita (redesenho acima). A seção 5 de "Próximas tasks" é o texto original do dono; onde ela
+  conflita (pool curado, taxa por forma, teto de 999 na Chosen), vale o redesenho. Provisórios para o dono ajustar: o
+  texto da história do Myotismon/Gennai e o som da tela preta (`PF_SND_CURSE`).
+- **Onboarding** (seção 6, ganchos na quest principal): fora do escopo daqui; o dono faz em outra sessão.
 
 ### Ao dono
 
