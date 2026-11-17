@@ -184,6 +184,9 @@ void wfightmn_init_members(s32 leader) {
             members[i].hp = members[i].max_hp = records_state.enemies[i].hp;
 #ifdef PC_PORT
             members[i].hp = members[i].max_hp = (s16)def_super_hp(records_state.enemies[i].hp); /* Super Hard */
+            if (i == 0) {
+                members[0].hp = (s16)def_super_hp_start(members[0].max_hp); /* a Super Rare keeps the HP it lost */
+            }
 #endif
             members[i].mp = members[i].max_mp = records_state.enemies[i].mp;
             digimon = fightstg_enemy_records.get(members[i].digimon);
@@ -734,6 +737,11 @@ void wfightmn_battle_end(WfightmnMain *obj, WfightmnMainData *data) {
 #endif
             if (fightstg_events.result != 0) {
                 records_battle_results.battle = records_state.battle;
+#ifdef PC_PORT
+                if (def_purify_won_wave()) { /* the Blast quest's simulator pays in TP and buffs, not the template's XP */
+                    records_battle_results.battle = 0; /* stfgtrep_rewards[0]: no experience, no Bits */
+                }
+#endif
                 records_battle_results.member = fightstg_battle.state.current[0];
                 enemies = fightstg_battle.state.members[1];
                 for (i = 0; i < 3; i++) {
@@ -822,6 +830,12 @@ void wfightmn_battle_end(WfightmnMain *obj, WfightmnMainData *data) {
             gamestate_data.funcs.set_next_map(gamestate_data.field_map, 0);
             break;
         case 1:
+#ifdef PC_PORT
+            if (def_purify_won_wave()) { /* the Blast quest's simulator: no results screen between its waves */
+                gamestate_data.funcs.set_next_map(gamestate_data.field_map, 0);
+                break;
+            }
+#endif
             if (fightstg_battle.state.type == 6) {
                 gamestate_data.funcs.set_next_map(0xE0B, 0);
             } else {
@@ -830,7 +844,8 @@ void wfightmn_battle_end(WfightmnMain *obj, WfightmnMainData *data) {
             break;
         case 2:
 #ifdef PC_PORT
-            if (def_dri_defeat()) { /* PRD 4 layer H: a lost DRI simulation is no game over: back to the field */
+            if (def_dri_defeat() || def_purify_defeat()) { /* PRD 4 layer H, Blast phase 2: a lost simulation or
+                                                             * purification is no game over: back to the field */
                 gamestate_data.funcs.set_next_map(gamestate_data.field_map, 0);
                 break;
             }
@@ -1156,7 +1171,7 @@ void wfightmn_blast(WfightmnMain *obj, WfightmnMainData *data) {
             member->base_digimon = member->digimon;
             member->digimon = records_digimon[digimon->blast_forms[stage] - 1].id;
 #ifdef PC_PORT
-            { /* Blast Gauge phase 1: the cursed form, from the port's hand-picked pool for the level's band */
+            { /* Blast Gauge: the partner's next dark form in its sequence, or after the quest its Chosen Mega */
                 s32 row = def_blast_form(id, stage);
 
                 if (row > 0) {
@@ -1324,6 +1339,7 @@ void wfightmn_knockout(WfightmnMain *obj, WfightmnMainData *data) {
             fightstg_battle.state.current[1] = obj->msg_args[0];
 #ifdef PC_PORT
             def_dri_stage_enters(obj->msg_args[0]); /* PRD 4 layer H: a DRI simulation's next stage, its callout */
+            def_purify_stage_enters(obj->msg_args[0]); /* Blast phase 2: a purification's next dark form */
 #endif
             obj->base.substep++;
         }

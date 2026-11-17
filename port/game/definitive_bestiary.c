@@ -41,9 +41,67 @@ static unsigned char buffer2[DEF_RECORD2_SIZE];
 typedef char rec2_dri_fits[DEF_DRI_CHALLENGES <= 16 && REC2_DRI + 6 <= DEF_RECORD2_SIZE ? 1 : -1];
 static unsigned short dri_unlocked;
 static unsigned int dri_best;
+/* The Blast Gauge (owner's redesign, 2026-11-17), after the DRI's bytes: each partner's next dark form in its sequence
+ * (a byte each), the TP the DV Plug took from each (2 bytes each, low first) that the purification gives back, the
+ * quest's stage, the quest's forms purified (a bit per entry of the third record, 2 bytes), the Chosen Evolution's
+ * partner + 1 (0: none) and its charge. Version 1 still: an older record reads them as 0. */
+#define REC2_BLAST (REC2_DRI + 6)
+#define REC2_BLAST_OWED (REC2_BLAST + DEF_BLAST_PARTNERS)
+#define REC2_BLAST_QUEST (REC2_BLAST_OWED + 2 * DEF_BLAST_PARTNERS)
+#define REC2_BLAST_END (REC2_BLAST_QUEST + 5)
+typedef char rec2_blast_fits[DEF_BLAST_QUEST_FORMS <= 16 && REC2_BLAST_END <= DEF_RECORD2_SIZE ? 1 : -1];
+static unsigned char blast_next[DEF_BLAST_PARTNERS];
+static unsigned short blast_owed[DEF_BLAST_PARTNERS];
+static unsigned char blast_quest, chosen_partner, chosen_charge; /* chosen_partner: the partner + 1, 0 none */
+static unsigned short blast_purified;
+/* The third record (DEF_RECORD3_*, memcard.c part 7): "BLST", version, XOR checksum of the rest, the entries' count, a
+ * byte unused, then the quest's dark forms, the first DEF_BLAST_QUEST_FORMS partner+form pairs a Blast called up, each
+ * packed in REC3_ENTRY bytes (low bit first): the pair (partner * DEF_BLAST_STEPS + step, 6 bits), its first stats (5 x
+ * 10 bits, as FightstgStats.stats), its HP (14 bits), its strongest stat (3 bits) and the best that stat ever was (10
+ * bits). */
+#define REC3_ENTRIES 8
+#define REC3_ENTRY 11
+typedef char rec3_fits[REC3_ENTRIES + DEF_BLAST_QUEST_FORMS * REC3_ENTRY <= DEF_RECORD3_SIZE ? 1 : -1];
+static DefBlastEntry blast_entries[DEF_BLAST_QUEST_FORMS];
+static int blast_count;
+static unsigned char buffer3[DEF_RECORD3_SIZE];
+/* The Super Rare hunts (definitive_superhunt.c) keep their DEF_SUPER_RECORD bytes at the record's end, away from the
+ * layers that grow from its start. Version 1 still: an older record reads them as 0 (no hunt). */
+#define REC2_SUPER (DEF_RECORD2_SIZE - DEF_SUPER_RECORD)
+typedef char rec2_super_fits[REC2_BLAST_END <= REC2_SUPER ? 1 : -1];
+/* The hero's skin (definitive_skins.c), just before the hunts' bytes. Version 1 still: an older record reads it as 0
+ * (the own colours). */
+#define REC2_SKIN (REC2_SUPER - DEF_SKIN_RECORD)
+typedef char rec2_skin_fits[REC2_BLAST_END <= REC2_SKIN ? 1 : -1];
 
 static unsigned char table[DEF_BESTIARY_SPECIES];
 static unsigned char buffer[DEF_BESTIARY_RECORD_SIZE];
+
+static void blast_reset2(void) {
+    memset(blast_next, 0, sizeof(blast_next));
+    memset(blast_owed, 0, sizeof(blast_owed));
+    blast_quest = 0;
+    chosen_partner = 0;
+    chosen_charge = 0;
+    blast_purified = 0;
+}
+
+static void blast_reset(void) {
+    blast_reset2();
+    memset(blast_entries, 0, sizeof(blast_entries));
+    blast_count = 0;
+}
+
+static int blast_any(void) {
+    unsigned int i;
+
+    for (i = 0; i < DEF_BLAST_PARTNERS; i++) {
+        if (blast_next[i] != 0 || blast_owed[i] != 0) {
+            return 1;
+        }
+    }
+    return blast_quest != 0 || chosen_partner != 0 || chosen_charge != 0 || blast_purified != 0;
+}
 
 void def_bestiary_reset(void) {
     memset(table, 0, sizeof(table));
@@ -57,6 +115,9 @@ void def_bestiary_reset(void) {
     memset(rares_seen, 0, sizeof(rares_seen));
     dri_unlocked = 0;
     dri_best = 0;
+    blast_reset();
+    def_super_reset();
+    def_skin_reset();
 }
 
 unsigned int def_network_mask(void) {
@@ -151,6 +212,15 @@ void def_bestiary_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, rares_seen);
     PORT_STATE_VAR(s, dri_unlocked);
     PORT_STATE_VAR(s, dri_best);
+    PORT_STATE_VAR(s, blast_next);
+    PORT_STATE_VAR(s, blast_owed);
+    PORT_STATE_VAR(s, blast_quest);
+    PORT_STATE_VAR(s, chosen_partner);
+    PORT_STATE_VAR(s, chosen_charge);
+    PORT_STATE_VAR(s, blast_purified);
+    PORT_STATE_VAR(s, blast_entries);
+    PORT_STATE_VAR(s, blast_count);
+    def_super_savestate(s);
 }
 
 static unsigned char sum(const unsigned char *p, int n) {
@@ -250,8 +320,10 @@ void def_record2_write(unsigned char *out) {
     memset(out, 0, DEF_RECORD2_SIZE);
     for (i = 0; i < sizeof(rares_seen) && rares_seen[i] == 0; i++) {
     }
-    if (i == sizeof(rares_seen) && dri_unlocked == 0 && dri_best == 0) {
-        return; /* no rare ever held (a count needs one) and no DRI challenge: the card stays as it was */
+    if (i == sizeof(rares_seen) && dri_unlocked == 0 && dri_best == 0 && !blast_any() &&
+        def_super_record_empty() && def_skin_record_empty()) {
+        return; /* no rare ever held (a count needs one), no DRI challenge, no dark form (TP owed needs one), no Super
+                 * Rare hunt, no skin: the card stays as it was */
     }
     memcpy(out, "HUNT", 4);
     out[4] = DEF_RECORD2_VERSION;
@@ -263,6 +335,18 @@ void def_record2_write(unsigned char *out) {
     for (i = 0; i < 4; i++) {
         out[REC2_DRI + 2 + i] = (unsigned char)(dri_best >> (8 * i));
     }
+    for (i = 0; i < DEF_BLAST_PARTNERS; i++) {
+        out[REC2_BLAST + i] = blast_next[i];
+        out[REC2_BLAST_OWED + 2 * i] = (unsigned char)blast_owed[i];
+        out[REC2_BLAST_OWED + 2 * i + 1] = (unsigned char)(blast_owed[i] >> 8);
+    }
+    out[REC2_BLAST_QUEST] = blast_quest;
+    out[REC2_BLAST_QUEST + 1] = (unsigned char)blast_purified;
+    out[REC2_BLAST_QUEST + 2] = (unsigned char)(blast_purified >> 8);
+    out[REC2_BLAST_QUEST + 3] = chosen_partner;
+    out[REC2_BLAST_QUEST + 4] = chosen_charge;
+    def_super_record_write(out + REC2_SUPER);
+    def_skin_record_write(out + REC2_SKIN);
     out[5] = sum(out + REC2_RARES, DEF_RECORD2_SIZE - REC2_RARES);
     port_log("hunt: the slot's second record written");
 }
@@ -274,6 +358,9 @@ void def_record2_read(const unsigned char *in) {
     memset(rares_seen, 0, sizeof(rares_seen));
     dri_unlocked = 0;
     dri_best = 0;
+    blast_reset2();
+    def_super_reset();
+    def_skin_reset();
     if (in == NULL || memcmp(in, "HUNT", 4) != 0 || in[4] != DEF_RECORD2_VERSION ||
         in[5] != sum(in + REC2_RARES, DEF_RECORD2_SIZE - REC2_RARES)) {
         return;
@@ -286,6 +373,16 @@ void def_record2_read(const unsigned char *in) {
     for (i = 0; i < 4; i++) {
         dri_best |= (unsigned int)in[REC2_DRI + 2 + i] << (8 * i);
     }
+    for (i = 0; i < DEF_BLAST_PARTNERS; i++) {
+        blast_next[i] = in[REC2_BLAST + i] < DEF_BLAST_STEPS ? in[REC2_BLAST + i] : 0;
+        blast_owed[i] = (unsigned short)(in[REC2_BLAST_OWED + 2 * i] | in[REC2_BLAST_OWED + 2 * i + 1] << 8);
+    }
+    blast_quest = in[REC2_BLAST_QUEST] <= DEF_BLAST_QUEST_DONE ? in[REC2_BLAST_QUEST] : 0;
+    blast_purified = (unsigned short)(in[REC2_BLAST_QUEST + 1] | in[REC2_BLAST_QUEST + 2] << 8);
+    chosen_partner = in[REC2_BLAST_QUEST + 3] <= DEF_BLAST_PARTNERS ? in[REC2_BLAST_QUEST + 3] : 0;
+    chosen_charge = in[REC2_BLAST_QUEST + 4] ? 1 : 0;
+    def_super_record_read(in + REC2_SUPER);
+    def_skin_record_read(in + REC2_SKIN);
     port_log("hunt: the slot's second record read");
 }
 
@@ -309,6 +406,192 @@ void def_record_dri_raise_best(int c, int stage) {
     }
     stage = stage > 3 ? 3 : stage;
     dri_best = (dri_best & ~(3u << (2 * c))) | (unsigned int)stage << (2 * c);
+}
+
+int def_record_blast_next(int partner) {
+    return partner >= 0 && partner < DEF_BLAST_PARTNERS ? blast_next[partner] : 0;
+}
+
+void def_record_blast_set_next(int partner, int step) {
+    if (partner >= 0 && partner < DEF_BLAST_PARTNERS) {
+        blast_next[partner] = (unsigned char)(step >= 0 && step < DEF_BLAST_STEPS ? step : 0);
+    }
+}
+
+int def_record_blast_quest(void) {
+    return blast_quest;
+}
+
+void def_record_blast_set_quest(int stage) {
+    blast_quest = (unsigned char)(stage < 0 ? 0 : stage > DEF_BLAST_QUEST_DONE ? DEF_BLAST_QUEST_DONE : stage);
+}
+
+unsigned int def_record_blast_purified(void) {
+    return blast_purified;
+}
+
+void def_record_blast_purify(int entry) {
+    if (entry >= 0 && entry < DEF_BLAST_QUEST_FORMS) {
+        blast_purified = (unsigned short)(blast_purified | 1u << entry);
+    }
+}
+
+int def_record_chosen(void) {
+    return (int)chosen_partner - 1;
+}
+
+void def_record_set_chosen(int partner) {
+    chosen_partner = (unsigned char)(partner >= 0 && partner < DEF_BLAST_PARTNERS ? partner + 1 : 0);
+}
+
+int def_record_chosen_charge(void) {
+    return chosen_charge;
+}
+
+void def_record_set_chosen_charge(int charge) {
+    chosen_charge = (unsigned char)(charge != 0);
+}
+
+int def_record_blast_count(void) {
+    return blast_count;
+}
+
+const DefBlastEntry *def_record_blast_entry(int i) {
+    return i >= 0 && i < blast_count ? &blast_entries[i] : NULL;
+}
+
+int def_record_blast_find(int partner, int step) {
+    int i;
+
+    for (i = 0; i < blast_count; i++) {
+        if (blast_entries[i].partner == partner && blast_entries[i].step == step) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+static int clamp(int v, int hi) {
+    return v < 0 ? 0 : v > hi ? hi : v;
+}
+
+int def_record_blast_add(const DefBlastEntry *e) {
+    DefBlastEntry *d;
+    int j;
+
+    if (e == NULL || blast_count >= DEF_BLAST_QUEST_FORMS || e->partner >= DEF_BLAST_PARTNERS ||
+        e->step >= DEF_BLAST_STEPS || def_record_blast_find(e->partner, e->step) >= 0) {
+        return -1;
+    }
+    d = &blast_entries[blast_count];
+    *d = *e;
+    for (j = 0; j < 5; j++) { /* what the third record can hold */
+        d->stats[j] = (short)clamp(d->stats[j], 999);
+    }
+    d->hp = (short)clamp(d->hp, 0x3FFF);
+    d->best = (unsigned char)(d->best < 5 ? d->best : 0);
+    d->best_value = (short)clamp(d->best_value, 999);
+    return blast_count++;
+}
+
+void def_record_blast_raise_best(int i, int value) {
+    if (i >= 0 && i < blast_count && value > blast_entries[i].best_value) {
+        blast_entries[i].best_value = (short)clamp(value, 999);
+    }
+}
+
+/* The third record's bits, low bit first. */
+static void put_bits(unsigned char *out, int *at, unsigned int v, int n) {
+    int i;
+
+    for (i = 0; i < n; i++, (*at)++) {
+        if ((v >> i) & 1) {
+            out[*at / 8] |= (unsigned char)(1 << (*at % 8));
+        }
+    }
+}
+
+static unsigned int get_bits(const unsigned char *in, int *at, int n) {
+    unsigned int v = 0;
+    int i;
+
+    for (i = 0; i < n; i++, (*at)++) {
+        v |= (unsigned int)((in[*at / 8] >> (*at % 8)) & 1) << i;
+    }
+    return v;
+}
+
+void def_record3_write(unsigned char *out) {
+    int i, j, at;
+
+    memset(out, 0, DEF_RECORD3_SIZE);
+    if (blast_count == 0) {
+        return; /* no dark form recorded: the card stays as it was */
+    }
+    memcpy(out, "BLST", 4);
+    out[4] = DEF_RECORD3_VERSION;
+    out[6] = (unsigned char)blast_count;
+    for (i = 0; i < blast_count; i++) {
+        const DefBlastEntry *e = &blast_entries[i];
+
+        at = (REC3_ENTRIES + i * REC3_ENTRY) * 8;
+        put_bits(out, &at, (unsigned int)(e->partner * DEF_BLAST_STEPS + e->step), 6);
+        for (j = 0; j < 5; j++) {
+            put_bits(out, &at, (unsigned int)e->stats[j], 10);
+        }
+        put_bits(out, &at, (unsigned int)e->hp, 14);
+        put_bits(out, &at, e->best, 3);
+        put_bits(out, &at, (unsigned int)e->best_value, 10);
+    }
+    out[5] = sum(out + 6, DEF_RECORD3_SIZE - 6);
+    port_log("blast: the slot's third record written (%d forms)", blast_count);
+}
+
+void def_record3_read(const unsigned char *in) {
+    int i, j, at, pair;
+
+    memset(blast_entries, 0, sizeof(blast_entries));
+    blast_count = 0;
+    if (in == NULL || memcmp(in, "BLST", 4) != 0 || in[4] != DEF_RECORD3_VERSION ||
+        in[5] != sum(in + 6, DEF_RECORD3_SIZE - 6)) {
+        return;
+    }
+    for (i = 0; i < in[6] && i < DEF_BLAST_QUEST_FORMS; i++) {
+        DefBlastEntry *e = &blast_entries[blast_count];
+
+        at = (REC3_ENTRIES + i * REC3_ENTRY) * 8;
+        pair = (int)get_bits(in, &at, 6);
+        e->partner = (unsigned char)(pair / DEF_BLAST_STEPS);
+        e->step = (unsigned char)(pair % DEF_BLAST_STEPS);
+        for (j = 0; j < 5; j++) {
+            e->stats[j] = (short)get_bits(in, &at, 10);
+        }
+        e->hp = (short)get_bits(in, &at, 14);
+        e->best = (unsigned char)get_bits(in, &at, 3);
+        e->best_value = (short)get_bits(in, &at, 10);
+        if (e->partner < DEF_BLAST_PARTNERS && e->best < 5) {
+            blast_count++;
+        }
+    }
+    port_log("blast: the slot's third record read (%d forms)", blast_count);
+}
+
+unsigned char *def_record3_buffer(void) {
+    return buffer3;
+}
+
+int def_record_blast_owed(int partner) {
+    return partner >= 0 && partner < DEF_BLAST_PARTNERS ? blast_owed[partner] : 0;
+}
+
+void def_record_blast_owe(int partner, int tp) {
+    int v;
+
+    if (partner < 0 || partner >= DEF_BLAST_PARTNERS) {
+        return;
+    }
+    v = blast_owed[partner] + tp;
+    blast_owed[partner] = (unsigned short)(v < 0 ? 0 : v > 0xFFFF ? 0xFFFF : v);
 }
 
 unsigned char *def_record2_buffer(void) {

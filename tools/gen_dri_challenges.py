@@ -101,9 +101,9 @@ def battle_rows():
     bt = src[src.index("FieldstgBattle fieldstg_battles"):]
     battles = []
     for es, _fs, kind, bl in re.findall(r"\{\s*\{([^}]*)\},\s*(0x[0-9A-Fa-f]+|\d+),\s*(\d+),\s*\{([^}]*)\}\s*\}", bt):
-        idx = [int(x) for x in re.findall(r"\[(\d+)\]", es) if int(x)]
+        slots = [int(x) for x in re.findall(r"\[(\d+)\]", es)]
         flags = [int(x, 0) for x in bl.split(",")]
-        battles.append(dict(rows=idx, kind=int(kind), escape=flags[11], blocked=sum(flags)))
+        battles.append(dict(rows=[i for i in slots if i], slots=slots, kind=int(kind), escape=flags[11], blocked=sum(flags)))
     return rows, battles
 
 
@@ -116,11 +116,12 @@ def items():
 
 
 def rares(rows, battles):
-    """[dict(index, level, lead, variant)] of def_hunt_targets (the index is the rare item's)."""
+    """[dict(index, level, lead, variant)] of def_hunt_targets (the index is the rare item's; the lead is the target's
+    species, its battle's enemy in its slot)."""
     s = (ROOT / "port/game/definitive_hunt_targets.c").read_text()
     out = []
-    for i, (_r, b, lv, v) in enumerate(re.findall(r"\{ 0x([0-9A-F]+), (\d+), (\d+), (\d+) \}", s)):
-        out.append(dict(index=i, level=int(lv), lead=rows[battles[int(b)]["rows"][0]][0], variant=int(v)))
+    for i, (_r, b, k, lv, v) in enumerate(re.findall(r"\{ 0x([0-9A-F]+), (\d+), (\d+), (\d+), (\d+) \}", s)):
+        out.append(dict(index=i, level=int(lv), lead=rows[battles[int(b)]["slots"][int(k)]][0], variant=int(v)))
     return out
 
 
@@ -235,7 +236,7 @@ def table():
 
 
 def rare_name(t, names):
-    return f"{names.get(t['lead'], t['lead'])} Core {roman(t['variant'])}"
+    return f"{names.get(t['lead'], t['lead'])} Core" + (f" {roman(t['variant'])}" if t["variant"] else "")
 
 
 def c_text(rows_, names):

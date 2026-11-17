@@ -68,6 +68,12 @@ extern const unsigned char def_str_VelvetTitle[], def_str_VelvetTitle2[];
 #define VL_DEMON_GIVE 77 /* the Bell handed over (the letter "a" on the disc, said by no stage) */
 #define VL_DEMON_TAKE 78 /* the Bell taken back */
 #define VL_PIG_LINE 79 /* also the letter "a" on the disc, and no stage's talk reaches it */
+/* The Sepikmon, the hunts' master (the Super Rare hunts, definitive_superhunt_screen.c): actor 61 (0x3D), the Shaman
+ * House's own Sepikmon (WSTAG475). Its first line introduces the hunts, the other greets; its board opens after either.
+ * Entries 14 and 15 of the bar's talk file are the letter "a" on the disc, and no stage's talk reaches them. */
+#define VL_SEPIK 61
+#define VL_SEPIK_INTRO 14
+#define VL_SEPIK_LINE 15
 /* The shopkeeper's lines (entries of the same file that no stage's talk reaches): the two greetings, said in turn one
  * per visit, the one after a trade, and the one after a visit that bought nothing. */
 #define VL_SHOP_GREET_A 8
@@ -100,6 +106,9 @@ extern const unsigned char def_str_VelvetTitle[], def_str_VelvetTitle2[];
                          * player finds his back; he turns to talk) */
 #define VL_ETEMON_Y 284
 #define VL_ETEMON_DIR 5
+#define VL_SEPIK_X 176 /* on the floor at the stairs' foot, left of the entry, facing the player coming in */
+#define VL_SEPIK_Y 306
+#define VL_SEPIK_DIR 7
 #define VL_PIG_X 245 /* on the room's floor, by the carpet's edge */
 #define VL_PIG_Y 292
 #define VL_PIG_DIR 0
@@ -149,6 +158,7 @@ static FieldstgTalk vl_mentor_talks[2] = { { NULL, NULL, VL_MENTOR_LINE }, { NUL
 static FieldstgTalk vl_etemon_talks[2] = { { NULL, NULL, VL_ETEMON_LINE }, { NULL, NULL, 0 } };
 static FieldstgTalk vl_demon_talks[2] = { { NULL, NULL, VL_DEMON_GIVE }, { NULL, NULL, 0 } };
 static FieldstgTalk vl_pig_talks[2] = { { NULL, NULL, VL_PIG_LINE }, { NULL, NULL, 0 } };
+static FieldstgTalk vl_sepik_talks[2] = { { NULL, NULL, VL_SEPIK_LINE }, { NULL, NULL, 0 } };
 
 /* The room's figures (FieldstgPlacedActor: flags, talks, ID, VRAM place, x, y, dir). The VRAM places are three of the
  * bar's own patron slots, free while the patrons are away. */
@@ -159,14 +169,19 @@ static FieldstgPlacedActor vl_mentor = { NULL, vl_mentor_talks, VL_MENTOR, 5, VL
 static FieldstgPlacedActor vl_etemon = { NULL, vl_etemon_talks, VL_ETEMON, 4, VL_ETEMON_X, VL_ETEMON_Y, VL_ETEMON_DIR };
 static FieldstgPlacedActor vl_demon = { NULL, vl_demon_talks, VL_DEMON, 3, VL_DEMON_X, VL_DEMON_Y, VL_DEMON_DIR };
 static FieldstgPlacedActor vl_pig = { NULL, vl_pig_talks, VL_PIG, 6, VL_PIG_X, VL_PIG_Y, VL_PIG_DIR };
-static FieldstgPlacedActor *vl_actors[] = { &vl_merchant, &vl_mentor, &vl_etemon, &vl_pig, &vl_demon, NULL };
+/* VRAM place 11 (the bar's 13th): the last patron's, free while they are away */
+static FieldstgPlacedActor vl_sepik = { NULL, vl_sepik_talks, VL_SEPIK, 11, VL_SEPIK_X, VL_SEPIK_Y, VL_SEPIK_DIR };
+static FieldstgPlacedActor *vl_actors[] = { &vl_merchant, &vl_mentor, &vl_etemon, &vl_pig, &vl_demon, &vl_sepik, NULL };
 
 static s32 vl_shop_greet;  /* which greeting the next visit begins with (they cycle) */
 static s32 vl_shop_last;   /* how the last visit ended: 0 nothing, 1 it traded, 2 it bought nothing */
 static s32 vl_shop_said;   /* the outcome his line already answered: a run of equal visits is answered once */
 static s32 vl_shop_phase;  /* 0 idle, 1 the greeting is on screen, 2 the market is to be opened */
+static s32 vl_mentor_phase; /* 1 the mentor's line is on screen: his panel (the purification) opens after it */
 static s32 vl_room; /* the room is running (set when a portal is taken, cleared when the map is left) */
 static s32 vl_from; /* the inn the portal was taken in */
+static s32 vl_sepik_phase; /* 1 the Sepikmon's line is on screen: his board opens after it */
+static s32 vl_pulled; /* the room was entered by dw3_velvet_pull: the Sepikmon speaks to the player on arrival */
 
 /* The feature (DW3_FEAT_VELVET, default on): off under a replay script, which must replay the emulator's own frames. */
 static int vl_on(void) {
@@ -328,6 +343,52 @@ int dw3_velvet_actor_art(FieldstgActor *actor, u32 *ot, s32 x, s32 y) {
     return 1;
 }
 
+extern s32 fieldstg_actor_talk_to(FieldstgActor *obj, FieldstgPos *pos);
+
+/* The Sepikmon speaks to the player as if talked to (the room's first visit, dw3_velvet_pull): once the field is idle
+ * and the player has control. 1 when the talk began. */
+static int vl_sepik_talk_start(void) {
+    FieldstgActor *player;
+    FieldstgActor *obj;
+
+    if (fieldstg_stage.event_running != 0 || fieldstg_stage.menu_open != 0 || fieldstg_stage.actor_busy != 0 ||
+        fieldstg_stage.battle_starting != 0 || fieldstg_stage.title_shown != 0) {
+        return 0;
+    }
+    player = (FieldstgActor *)heap_objects.find(5, -1, 0);
+    if (player == NULL || player->base.state != OBJECT_STATE_RUN || player->control == NULL) {
+        return 0;
+    }
+    for (obj = (FieldstgActor *)heap_objects.find(5, -1, 1); obj != NULL; obj = (FieldstgActor *)heap_objects.find_next()) {
+        if (obj->base.key1 == VL_SEPIK && obj->base.key2 == 1 && obj->base.state == OBJECT_STATE_RUN) {
+            FieldstgPos pos = obj->pixel_pos;
+
+            port_log("velvet: frame %ld: the Sepikmon calls the player over", port_frames);
+            return fieldstg_actor_talk_to(player, &pos) != 0;
+        }
+    }
+    return 0; /* his actor is not made yet (the stage is still setting up): the next frame */
+}
+
+/* The room pulls the player in from map `from` (an inn: the room's door goes back to its Guardromon), as a portal
+ * taken there would, and the Sepikmon speaks first (the Super Rare hunts' introduction, Seiryu City's first visit). */
+void dw3_velvet_pull(s32 from) {
+    if (!vl_on() || vl_room) {
+        return;
+    }
+    vl_from = from;
+    vl_room = 1;
+    vl_pulled = 1;
+    sound_module.play(VL_SND_PORTAL);
+    port_log("velvet: frame %ld: pulled into the room from map 0x%X (back to map 0x%X)", port_frames,
+             gamestate_data.funcs.get_map(), from);
+    fieldstg_goto_map(VL_MAP, -1, VL_ENTRY_X << 8, VL_ENTRY_Y << 8, VL_ENTRY_DIR);
+}
+
+int dw3_velvet_in_room(void) {
+    return vl_on() && vl_room;
+}
+
 /* The room's backdrop and its portals: called every frame from FIELDSTG's idle step, before the frame is drawn. */
 void dw3_velvet_draw(void) {
     const VelvetDoor *door;
@@ -337,6 +398,17 @@ void dw3_velvet_draw(void) {
     }
     if (vl_room) {
         vl_backdrop();
+        if (vl_pulled && vl_sepik_talk_start()) {
+            vl_pulled = 0;
+        }
+        if (vl_sepik_phase == 1 && fieldstg_stage.actor_busy == 0) {
+            vl_sepik_phase = 0;
+            def_superhunt_board_offer(); /* the Super Rare hunts (definitive_superhunt_screen.c) */
+        }
+        if (vl_mentor_phase == 1 && fieldstg_stage.actor_busy == 0) {
+            vl_mentor_phase = 0;
+            def_purify_offer(); /* Blast phase 2 (definitive_purify.c) */
+        }
         if (vl_shop_phase == 1 && fieldstg_stage.actor_busy == 0) {
             vl_shop_phase = 2; /* the greeting is over: the market takes the field */
         } else if (vl_shop_phase == 2) {
@@ -401,6 +473,7 @@ void dw3_velvet_leave(s32 *map, s32 *x, s32 *y, s32 *dir) {
         return;
     }
     vl_room = 0;
+    vl_pulled = 0;
     if (dw3_travel_node(vl_from, &node_x, &node_y, &node_dir)) {
         *x = node_x << 8; /* at the Guardromon of the inn it was entered from, as a teleport lands there */
         *y = node_y << 8;
@@ -486,6 +559,8 @@ int dw3_velvet_text_own(s32 base_id, s32 index) {
     case VL_DEMON_TAKE:
     case VL_MENTOR_LINE:
     case VL_ETEMON_LINE:
+    case VL_SEPIK_INTRO:
+    case VL_SEPIK_LINE:
         return 1;
     }
     return 0;
@@ -499,6 +574,18 @@ void dw3_velvet_shop_talk(FieldstgActor *actor) {
         vl_demon_talks[0].message = def_super_toggle() ? VL_DEMON_GIVE : VL_DEMON_TAKE;
         port_log("velvet: the Bell's keeper, message %d (Super Hard %s)", vl_demon_talks[0].message,
                  def_super_on() ? "on" : "off");
+        return;
+    }
+    if (vl_on() && vl_room && actor != NULL && actor->base.key1 == VL_SEPIK && actor->base.key2 == 1) {
+        /* the first meeting introduces the hunts (and gives the tutorial, on his board) */
+        vl_sepik_talks[0].message = (def_super_flags() & DEF_SUPER_FLAG_MET) ? VL_SEPIK_LINE : VL_SEPIK_INTRO;
+        def_super_flag_set(DEF_SUPER_FLAG_MET);
+        vl_sepik_phase = 1;
+        port_log("velvet: the Sepikmon, message %d", vl_sepik_talks[0].message);
+        return;
+    }
+    if (vl_on() && vl_room && actor != NULL && actor->base.key1 == VL_MENTOR && actor->base.key2 == 1) {
+        vl_mentor_phase = 1;
         return;
     }
     if (!vl_on() || !vl_room || actor == NULL || actor->base.key1 != VL_MERCHANT || vl_shop_phase != 0) {
@@ -560,4 +647,7 @@ void dw3_velvet_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, vl_shop_last);
     PORT_STATE_VAR(s, vl_shop_said);
     PORT_STATE_VAR(s, vl_shop_phase);
+    PORT_STATE_VAR(s, vl_mentor_phase);
+    PORT_STATE_VAR(s, vl_sepik_phase);
+    PORT_STATE_VAR(s, vl_pulled);
 }

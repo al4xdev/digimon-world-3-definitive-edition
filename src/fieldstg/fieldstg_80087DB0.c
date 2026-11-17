@@ -1832,8 +1832,9 @@ void fieldstg_manager_update(FieldstgManager *obj, FieldstgManagerData *data) {
             if (dw3_travel_frame()) {
                 break; /* the Guardromon's SAVE / TELEPORT screen owns the field */
             }
-            if (def_bm_frame() || def_dri_frame()) {
-                break; /* PRD 4 layers G and H: the Black Market's or a DRI Agent's screen owns the field */
+            if (def_bm_frame() || def_dri_frame() || def_purify_frame() || def_superhunt_frame()) {
+                break; /* PRD 4 layers G and H, Blast phase 2, the Super Rare hunts: the Black Market's, a DRI Agent's,
+                        * the mentor's or the Sepikmon's screen owns the field (the hunts' also draw the compass) */
             }
             if (def_guide_frame()) {
                 break; /* the Guide, asked for by the field menu's entry */
@@ -5213,6 +5214,122 @@ void fieldstg_rush_frame(void) {
 }
 #endif
 
+#ifdef PC_PORT
+/* The Super Rare hunts (port/game/definitive_superhunt.c). The candidate points of the target's map: the tiles where
+ * random encounters happen (attribute layer 4) that the player can walk to from where it stands: an 8-way flood over a
+ * grid of the collision layer (gamestate_data.attr_layer: 0 is a wall, fieldstg_actor_collide_point), so the point is
+ * never somewhere out of reach. Taken once per placement of the target. */
+#include <string.h>
+
+extern void port_log(const char *fmt, ...);
+
+#define FIELDSTG_SUPER_CELLS 16384
+
+static u8 fieldstg_super_cell[FIELDSTG_SUPER_CELLS];   /* 0 unseen, 1 reachable, 2 wall */
+static u16 fieldstg_super_queue[FIELDSTG_SUPER_CELLS];
+
+static void fieldstg_super_points(FieldstgPos *player) {
+    static short xy[2 * DEF_SUPER_POINTS_MAX];
+    static const s8 next[8][2] = { { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 }, { 1, 1 }, { 1, -1 }, { -1, 1 }, { -1, -1 } };
+    FieldstgPos pos;
+    s32 n = 0, w, h, cw, ch, cell = 16, head = 0, tail = 0, i, k, found = 0, stride;
+
+    if (!fieldstg_attr_load_layer(4)) {
+        def_super_set_points(xy, 0, player->x, player->y);
+        return;
+    }
+    w = fieldstg_attr.width * 128;
+    h = fieldstg_attr.height * 128;
+    while ((w / cell) * (h / cell) > FIELDSTG_SUPER_CELLS) {
+        cell *= 2;
+    }
+    cw = w / cell;
+    ch = h / cell;
+    memset(fieldstg_super_cell, 0, cw * ch);
+    /* the seed: the walkable cell centre nearest the player (the player's own cell centre can fall on a wall next to
+     * a narrow path) */
+    for (k = 0; k < 4 && tail == 0; k++) {
+        s32 dx, dy;
+
+        for (dy = -k; dy <= k && tail == 0; dy++) {
+            for (dx = -k; dx <= k && tail == 0; dx++) {
+                s32 x = player->x / cell + dx, y = player->y / cell + dy;
+
+                if (x < 0 || y < 0 || x >= cw || y >= ch) {
+                    continue;
+                }
+                pos.x = x * cell + cell / 2;
+                pos.y = y * cell + cell / 2;
+                if (fieldstg_attr.get(gamestate_data.attr_layer, &pos) != 0) {
+                    fieldstg_super_cell[y * cw + x] = 1;
+                    fieldstg_super_queue[tail++] = (u16)(y * cw + x);
+                }
+            }
+        }
+    }
+    while (head < tail) {
+        s32 c = fieldstg_super_queue[head++];
+
+        for (k = 0; k < 8; k++) {
+            s32 x = c % cw + next[k][0], y = c / cw + next[k][1], j;
+
+            if (x < 0 || y < 0 || x >= cw || y >= ch || fieldstg_super_cell[j = y * cw + x] != 0) {
+                continue;
+            }
+            pos.x = x * cell + cell / 2;
+            pos.y = y * cell + cell / 2;
+            if (fieldstg_attr.get(gamestate_data.attr_layer, &pos) == 0) {
+                fieldstg_super_cell[j] = 2;
+                continue;
+            }
+            fieldstg_super_cell[j] = 1;
+            fieldstg_super_queue[tail++] = (u16)j;
+        }
+    }
+    /* the reachable cells (the queue, in flood order) where encounters happen, every stride-th one up to the most */
+    for (i = 0; i < tail; i++) {
+        pos.x = fieldstg_super_queue[i] % cw * cell + cell / 2;
+        pos.y = fieldstg_super_queue[i] / cw * cell + cell / 2;
+        found += fieldstg_attr.get(4, &pos) != 0;
+    }
+    stride = found / DEF_SUPER_POINTS_MAX + 1;
+    for (i = k = 0; i < tail && n < DEF_SUPER_POINTS_MAX; i++) {
+        pos.x = fieldstg_super_queue[i] % cw * cell + cell / 2;
+        pos.y = fieldstg_super_queue[i] / cw * cell + cell / 2;
+        if (fieldstg_attr.get(4, &pos) != 0 && k++ % stride == 0) {
+            xy[2 * n] = (short)pos.x;
+            xy[2 * n + 1] = (short)pos.y;
+            n++;
+        }
+    }
+    port_log("super: map 0x%X, %d candidate points (%d reachable cells of %d px, %d of them encounter tiles)",
+             gamestate_data.funcs.get_map(), n, tail, cell, found);
+    def_super_set_points(xy, n, player->x, player->y);
+}
+
+/* A field step: the Super Rare's battle when the player stands on its point; on the encounter's stage and music, as
+ * a random encounter (the map's first list). Never offered to the Rush. 1 when it started. */
+static s32 fieldstg_super_step(FieldstgPos *pos) {
+    s32 map = gamestate_data.funcs.get_map();
+    s32 r = def_super_step(map, pos->x, pos->y);
+    FieldstgListedBattle *event;
+
+    if (r == 2) {
+        fieldstg_super_points(pos);
+        r = def_super_step(map, pos->x, pos->y);
+    }
+    if (r != 1) {
+        return 0;
+    }
+    event = fieldstg_stage.battle_lists->encounters[0]->events[0];
+    records_state.stage = event->stage;
+    records_state.music = event->music;
+    fieldstg_start_battle(def_super_battle());
+    def_super_scale();
+    return 1;
+}
+#endif
+
 void fieldstg_encounter_start(void) {
     FieldstgActor *obj = (FieldstgActor *)heap_objects.find(5, -1, 0);
     FieldstgPos pos = obj->pixel_pos;
@@ -5267,6 +5384,11 @@ void fieldstg_encounter_step(void) {
         && fieldstg_stage.event_running == 0 && fieldstg_stage.actor_busy == 0 && fieldstg_stage.title_shown == 0) {
         obj = (FieldstgActor *)heap_objects.find(5, -1, 0);
         pos = obj->pixel_pos;
+#ifdef PC_PORT
+        if (fieldstg_super_step(&pos)) {
+            return;
+        }
+#endif
         area = fieldstg_attr.get(4, &pos);
         if (area != 0) {
             area--;

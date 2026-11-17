@@ -21,7 +21,7 @@ def main():
     OUT.mkdir(parents=True, exist_ok=True)
     exe = OUT / "definitive_bestiary_driver"
     cc = ["gcc", "-std=gnu99", "-Wall", "-Wextra", "-Werror", "-I", str(ROOT / "include"), "-I", str(ROOT / "psxstack/include"),
-          "-I", str(ROOT / "port/game"), str(ROOT / "port/game/definitive_bestiary.c"),
+          "-I", str(ROOT / "port/game"), str(ROOT / "port/game/definitive_bestiary.c"), str(ROOT / "tests/port/definitive_super_stub.c"),
           str(ROOT / "tests/port/definitive_bestiary_driver.c"), "-o", str(exe)]
     if subprocess.run(cc).returncode != 0:
         print("definitive_bestiary: FAIL: does not compile")
@@ -37,6 +37,10 @@ def main():
         ("memcard.c offset", define(mc, "MEMCARD_PART_BESTIARY_AT"), define(h, "DEF_BESTIARY_RECORD_AT")),
         ("stgmcard part", define(sc, "DEF_BESTIARY_PART"), define(h, "DEF_BESTIARY_PART")),
         ("stgmcard size", define(sc, "DEF_BESTIARY_RECORD_SIZE"), define(h, "DEF_BESTIARY_RECORD_SIZE")),
+        ("memcard.c third part", define(mc, "MEMCARD_PART_BLAST"), define(h, "DEF_RECORD3_PART")),
+        ("memcard.c third offset", define(mc, "MEMCARD_PART_BLAST_AT"), define(h, "DEF_RECORD3_AT")),
+        ("stgmcard third part", define(sc, "DEF_RECORD3_PART"), define(h, "DEF_RECORD3_PART")),
+        ("stgmcard third size", define(sc, "DEF_RECORD3_SIZE"), define(h, "DEF_RECORD3_SIZE")),
     ]
     for name, a, b in same:
         ok = a is not None and a == b

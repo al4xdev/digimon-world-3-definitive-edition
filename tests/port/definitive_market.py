@@ -19,7 +19,7 @@ def main():
     exe = OUT / "definitive_market_driver"
     cc = ["gcc", "-std=gnu99", "-Wall", "-Wextra", "-Werror", "-I", str(ROOT / "include"), "-I", str(ROOT / "tests/host"),
           "-I", str(ROOT / "psxstack/include"), "-I", str(ROOT / "port/game"),
-          str(ROOT / "port/game/definitive_market.c"), str(ROOT / "port/game/definitive_bestiary.c"),
+          str(ROOT / "port/game/definitive_market.c"), str(ROOT / "port/game/definitive_bestiary.c"), str(ROOT / "tests/port/definitive_super_stub.c"),
           str(ROOT / "tests/port/definitive_market_driver.c"), "-o", str(exe)]
     if subprocess.run(cc).returncode != 0:
         print("definitive_market: FAIL: does not compile")

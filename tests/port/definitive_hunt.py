@@ -16,18 +16,19 @@ OUT = ROOT / "build/port-test/definitive_hunt"
 def table_ok():
     gen = (ROOT / "port/game/definitive_hunt_targets.c").read_text()
     rows = [tuple(int(x, 0) for x in m)
-            for m in re.findall(r"\{\s*(0x[0-9A-Fa-f]+),\s*(\d+),\s*(\d+),\s*(\d+)\s*\}", gen)]
+            for m in re.findall(r"\{\s*(0x[0-9A-Fa-f]+),\s*(\d+),\s*(\d+),\s*(\d+),\s*(\d+)\s*\}", gen)]
     count = int(re.search(r"def_hunt_target_count = (\d+);", gen).group(1))
     n = int(re.search(r"FieldstgBattle fieldstg_battles\[(\d+)\]",
                       (ROOT / "src/fieldstg/fieldstg_80083784.c").read_text()).group(1))
     regions = [r[0] for r in rows]
     body = re.search(r"def_hunt_commons\[DEF_BESTIARY_SPECIES\] = \{(.*?)\};", gen, re.S).group(1)
     com = [int(x, 0) for x in re.sub(r"/\*.*?\*/", "", body).split(",") if x.strip()]
-    ok = (len(rows) == count and count <= 128 and len(set(regions)) == len(regions) and all(0 < b < n for _, b, _, _ in rows)
-          and all(0 < lv <= 99 for _, _, lv, _ in rows) and all(1 <= v <= 39 for _, _, _, v in rows)
-          and len({(b, v) for _, b, _, v in rows}) == len(rows))
-    print(f"{'ok' if ok else 'FAIL'} the generated table: {count} regions (room for 128), each once, existing battles, "
-          f"levels 1..99, numerals I..{max(v for *_, v in rows)}, one per region of a battle")
+    ok = (len(rows) == count and count <= 128 and len(set(regions)) == len(regions)
+          and all(0 < b < n and 0 <= k < 3 for _, b, k, _, _ in rows)
+          and all(0 < lv <= 99 for _, _, _, lv, _ in rows) and all(0 <= v <= 39 for *_, v in rows)
+          and len({(b, k, v) for _, b, k, _, v in rows}) == len(rows))
+    print(f"{'ok' if ok else 'FAIL'} the generated table: {count} regions (room for 128), each once, existing battles and "
+          f"slots, levels 1..99, numerals 0..{max(v for *_, v in rows)}")
     ok2 = len(com) == 193 and all(c < 16 or c == 0xFF for c in com) and {c for c in com if c < 16} == set(range(16))
     print(f"{'ok' if ok2 else 'FAIL'} the commons: 193 species, {sum(c < 16 for c in com)} with one, every material with "
           f"its species")
@@ -40,7 +41,7 @@ def main():
     cc = ["gcc", "-std=gnu99", "-Wall", "-Wextra", "-Werror", "-I", str(ROOT / "include"),
           "-I", str(ROOT / "tests/host"),
           "-I", str(ROOT / "psxstack/include"), "-I", str(ROOT / "port/game"),
-          str(ROOT / "port/game/definitive_hunt.c"), str(ROOT / "port/game/definitive_bestiary.c"),
+          str(ROOT / "port/game/definitive_hunt.c"), str(ROOT / "port/game/definitive_bestiary.c"), str(ROOT / "tests/port/definitive_super_stub.c"),
           str(ROOT / "port/game/definitive_glyph.c"),
           str(ROOT / "port/game/definitive_text.c"),
           str(ROOT / "tests/port/definitive_hunt_driver.c"), "-o", str(exe)]

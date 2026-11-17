@@ -398,6 +398,10 @@ void fightstg_model_update(FightstgModel *obj, FightstgModelData *data) {
             tim_init(&tim);
             tim.set_image_pos(obj->texture_pos.x, obj->texture_pos.y);
             tim.load_all(cdload_module.get_subfile_by_id(obj->texture_file));
+#ifdef PC_PORT
+            /* a rare foe's palette swap (definitive_recolor.c): its page's CLUTs, as the meshes use them */
+            def_recolor_texture_loaded(obj, obj->texture_pos.x, obj->texture_pos.y);
+#endif
         }
         child = obj->parts;
         for (k = 0; k < obj->part_count; k++, child++) {
@@ -893,6 +897,9 @@ static inline void fightstg_model_mesh_set_texture(FightstgDrawState *ctx) {
     cy = ctx->stream[5] + y;
     tp = ctx->stream[6];
     ctx->clut = getClut(cx, cy);
+#ifdef PC_PORT
+    def_recolor_mesh_clut(x, y, cx, cy, tp); /* a recoloured model's CLUT, turned the first time it is used */
+#endif
     ctx->tpage = getTPage(tp, ctx->semi_trans ? ctx->semi_trans - 1 : 0, x + (ctx->stream[2] << 6), y);
     ctx->stream += 7;
 }

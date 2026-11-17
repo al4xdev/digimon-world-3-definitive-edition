@@ -57,10 +57,10 @@ def sold():
 
 
 def rares():
-    """[(level, index, battle, variant)] of def_hunt_targets, in table order (the index is the rare item's)."""
+    """[(level, index, battle, variant, slot)] of def_hunt_targets, in table order (the index is the rare item's)."""
     s = (ROOT / "port/game/definitive_hunt_targets.c").read_text()
-    rows = re.findall(r"\{ 0x([0-9A-F]+), (\d+), (\d+), (\d+) \}", s)
-    return [(int(lv), i, int(b), int(v)) for i, (_r, b, lv, v) in enumerate(rows)]
+    rows = re.findall(r"\{ 0x([0-9A-F]+), (\d+), (\d+), (\d+), (\d+) \}", s)
+    return [(int(lv), i, int(b), int(v), int(k)) for i, (_r, b, k, lv, v) in enumerate(rows)]
 
 
 def r5(v):
@@ -77,7 +77,7 @@ def table():
                    and it["price"] >= c["DEF_RECIPE_FROM"]))
     mid = [i for p, i in cand if p < c["DEF_RECIPE_TOP"]]
     top = [i for p, i in cand if p >= c["DEF_RECIPE_TOP"]]
-    order = [i for _lv, i, _b, _v in sorted(rares())]
+    order = [i for _lv, i, *_ in sorted(rares())]
     rows = {}
     for rank, i in enumerate(mid):
         rows[i] = (spread(rank, len(mid), 2, 8), r5(spread(rank, len(mid), c["DEF_RECIPE_MID_LO"], c["DEF_RECIPE_MID_HI"])),
@@ -108,8 +108,9 @@ def write_md(rows):
         import gen_hunt_targets as gh
         names = {sp["id"]: sp["name"] for sp in gw.species()}
         battles = gh.battle_info()
-        rare_name = {i: f"{names.get(battles[b]['enemies'][0][0], '?')} Core "
-                        f"{'X' * (v // 10) + ROMAN[v % 10]}" for _lv, i, b, v in rares()}
+        species = {i: next(s for slot, s, *_ in battles[b]["slots"] if slot == k) for _lv, i, b, v, k in rares()}
+        rare_name = {i: f"{names.get(species[i], '?')} Core" + (f" {'X' * (v // 10) + ROMAN[v % 10]}" if v else "")
+                     for _lv, i, b, v, k in rares()}
     except Exception as e:  # no disc here: the rares by index
         print("rare names unavailable:", e)
         rare_name = {}

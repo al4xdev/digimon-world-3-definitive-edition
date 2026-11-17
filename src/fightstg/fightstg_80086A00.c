@@ -683,6 +683,9 @@ void fightstg_slots_add(FightstgSlots *obj, s32 id, s32 model_id, s32 shown) {
         model = fightstg_models.get(model_id);
         params = &obj->slots[i];
         data->models[i] = fightstg_model_create_idle(model->model_file, model->anim_file, fightstg_slots_vram[i], params);
+#ifdef PC_PORT
+        def_recolor_model_added(data->models[i], id); /* the enemy's model in a rare battle: its palette swapped */
+#endif
         heap_funcs.bzero(params, sizeof(FightstgModelParams));
         obj->slots[i].in_use = 1;
         obj->slots[i].anim = 1;
@@ -917,6 +920,19 @@ void fightstg_enemy_turn_update(FightstgEnemyTurn *obj, FightstgEnemyTurnData *d
         switch (obj->base.step) {
         case 0:
         default:
+#ifdef PC_PORT
+            /* A Super Rare flees once it has lost DEF_SUPER_FLEE_PCT of its HP in this battle, whatever the battle's
+             * type (port/game/definitive_superhunt.c); the same message and end as the game's own flight below. */
+            if (def_super_should_flee(fightstg_battle.state.members[1][fightstg_battle.state.current[1]].hp)) {
+                data->child = fightstg_message_create();
+                obj->args[0] = 0x5F;
+                obj->args[1] = 0x10;
+                data->child->show(data->child, 2, obj->args);
+                fightstg_events_end_battle(0);
+                obj->base.step++;
+                break;
+            }
+#endif
             if (fightstg_battle.state.type == 1) {
                 enemy = &fightstg_battle.state.members[1][fightstg_battle.state.current[1]];
                 if (enemy->hp < (s16)(enemy->max_hp / 10)) {

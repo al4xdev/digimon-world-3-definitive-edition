@@ -243,6 +243,12 @@ void def_bestiary_record_read(const unsigned char *in);
 unsigned char *def_record2_buffer(void);
 void def_record2_write(unsigned char *out);
 void def_record2_read(const unsigned char *in);
+/* The Blast Gauge's third record: memcard.c's part 7 (definitive.h's DEF_RECORD3_*). */
+#define DEF_RECORD3_SIZE 0x80
+#define DEF_RECORD3_PART 7
+unsigned char *def_record3_buffer(void);
+void def_record3_write(unsigned char *out);
+void def_record3_read(const unsigned char *in);
 #endif
 extern StgmcardContentsWindow stgmcard_contents_windows[19];
 extern s32 stgmcard_party_anims[8][7]; /* frames of the save files' sprite animations, ended by -1 */
@@ -1297,6 +1303,18 @@ void stgmcard_screen_run(StgmcardScreen *obj, StgmcardScreenData *data) {
                                           DEF_RECORD2_PART | (stgmcard_module.slot << 8));
         if (ret != 0) {
             def_record2_read(ret == 1 ? def_record2_buffer() : NULL);
+            obj->base.step = 0x4A; /* the Blast Gauge's third record next */
+        }
+        break;
+    }
+    case 0x4A: {
+        s32 ret;
+
+        /* The slot's third record (memcard.c part 7, the Blast Gauge's dark forms): any failure reads as empty */
+        ret = STGMCARD_MEMCARD_FUNCS.read(obj->port, def_record3_buffer(), DEF_RECORD3_SIZE,
+                                          DEF_RECORD3_PART | (stgmcard_module.slot << 8));
+        if (ret != 0) {
+            def_record3_read(ret == 1 ? def_record3_buffer() : NULL);
             data->frame->open(data->frame, 2, 0x14);
             obj->base.step = 0x1F4;
             data->slots->base.step = 0;
@@ -1382,6 +1400,7 @@ void stgmcard_screen_run(StgmcardScreen *obj, StgmcardScreenData *data) {
         if (def_bestiary_active()) {
             def_bestiary_record_write(def_bestiary_buffer()); /* step 0x36 writes it after the slot */
             def_record2_write(def_record2_buffer());          /* and step 0x37 the second record */
+            def_record3_write(def_record3_buffer());          /* and step 0x38 the third */
         }
 #endif
         strcpy(card->name, stgmcard_module.save->name);
@@ -1459,6 +1478,22 @@ void stgmcard_screen_run(StgmcardScreen *obj, StgmcardScreenData *data) {
 
         ret = STGMCARD_MEMCARD_FUNCS.write(obj->port, def_record2_buffer(), DEF_RECORD2_SIZE,
                                            DEF_RECORD2_PART | (stgmcard_module.slot << 8));
+        obj->status = ret;
+        if (ret != 0) {
+            if (ret == 1) {
+                obj->base.step = 0x38; /* the Blast Gauge's third record next */
+            } else {
+                obj->status = ret - 1;
+                stgmcard_screen_report_after_slots(obj, data);
+            }
+        }
+        break;
+    }
+    case 0x38: {
+        s32 ret;
+
+        ret = STGMCARD_MEMCARD_FUNCS.write(obj->port, def_record3_buffer(), DEF_RECORD3_SIZE,
+                                           DEF_RECORD3_PART | (stgmcard_module.slot << 8));
         obj->status = ret;
         if (ret != 0) {
             if (ret == 1) {

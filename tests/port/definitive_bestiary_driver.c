@@ -163,6 +163,63 @@ int main(void) {
     load_slot(1);
     check("bits above 6 on the card are masked", def_bestiary_known(7) == 0x20);
 
+    /* The Blast Gauge's records: the second's sequence, quest and Chosen; the third's dark forms. */
+    {
+        static unsigned char r2[DEF_RECORD2_SIZE], r3[DEF_RECORD3_SIZE];
+        DefBlastEntry e;
+        const DefBlastEntry *g;
+        int i, ok;
+
+        def_bestiary_reset();
+        def_record2_read(NULL);
+        def_record3_read(NULL);
+        check("blast: a new game has no form", def_record_blast_count() == 0 && def_record_blast_quest() == 0 &&
+                                                   def_record_chosen() == -1 && def_record_blast_next(3) == 0);
+        def_record_blast_set_next(3, 4);
+        def_record_blast_set_quest(DEF_BLAST_QUEST_DONE);
+        def_record_set_chosen(5);
+        def_record_set_chosen_charge(1);
+        def_record_blast_purify(9);
+        def_record_blast_owe(2, 30);
+        for (i = 0; i < DEF_BLAST_QUEST_FORMS; i++) {
+            memset(&e, 0, sizeof(e));
+            e.partner = (unsigned char)(i % 8);
+            e.step = (unsigned char)(i / 8);
+            e.stats[0] = (short)(999 - i);
+            e.stats[3] = (short)(100 + i);
+            e.hp = (short)(9999 - i);
+            e.best = 0;
+            e.best_value = e.stats[0];
+            check("blast: add", def_record_blast_add(&e) == i);
+        }
+        check("blast: an eleventh pair is refused", def_record_blast_add(&e) == -1);
+        check("blast: a pair is there once", def_record_blast_find(1, 0) == 1 && def_record_blast_find(1, 1) == 9 &&
+                                                 def_record_blast_find(7, 1) == -1);
+        def_record_blast_raise_best(4, 998);
+        def_record_blast_raise_best(4, 500); /* lower: kept */
+        def_record2_write(r2);
+        def_record3_write(r3);
+        def_record2_read(NULL);
+        def_record3_read(NULL);
+        check("blast: a read of nothing is empty", def_record_blast_count() == 0 && def_record_chosen() == -1);
+        def_record2_read(r2);
+        def_record3_read(r3);
+        check("blast: the second record keeps the sequence, quest and Chosen",
+              def_record_blast_next(3) == 4 && def_record_blast_quest() == DEF_BLAST_QUEST_DONE &&
+                  def_record_chosen() == 5 && def_record_chosen_charge() == 1 && def_record_blast_purified() == 1u << 9 &&
+                  def_record_blast_owed(2) == 30);
+        ok = def_record_blast_count() == DEF_BLAST_QUEST_FORMS;
+        for (i = 0; ok && i < DEF_BLAST_QUEST_FORMS; i++) {
+            g = def_record_blast_entry(i);
+            ok = g->partner == i % 8 && g->step == i / 8 && g->stats[0] == 999 - i && g->stats[3] == 100 + i &&
+                 g->hp == 9999 - i && g->best == 0 && g->best_value == (i == 4 ? 998 : 999 - i);
+        }
+        check("blast: the third record keeps every form, its stats and its best", ok);
+        r3[20] ^= 1;
+        def_record3_read(r3);
+        check("blast: a bad checksum reads as empty", def_record_blast_count() == 0);
+    }
+
     check("active: on outside a replay script", def_bestiary_active() == 1);
     port_script_active = 1;
     check("active: off in a script", def_bestiary_active() == 0);

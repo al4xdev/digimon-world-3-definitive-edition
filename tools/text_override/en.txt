@@ -13,6 +13,10 @@ $Unknown: ???
 $Twice: Enemy x2
 # Blast Gauge phase 1: the battle menu's temptation (a full gauge at a critical moment), above the cross.
 $BlastTempt: Blast calls...
+$ChosenRookie: Chosen needs Rookie
+# After the Blast quest the DV Plug revives the fallen in their Rookie form (def_blast_plug_revive): its item
+# description (ITMINF 76) gives way to this one (34 characters at most, the item window's).
+$PlugRevive: Revive: Rookie form, 1 HP and 1 MP
 $BatonPass: Baton Pass
 STATUS 92: Fire Affinity increased by <5,1>.
 STATUS 93: Water Affinity increased by <5,1>.
@@ -628,8 +632,9 @@ $M2T: Soccer Kid Hide, at Plug Cape, lost his<1>Gabumon card: it is on the shelv
 $M3: Fishing Pole
 $M3T: Tai Kong Wang, at Shell Beach, makes<1>one from a Bamboo Spear (Asuka Armory),<1>a Spider Web (Dokugumon, Protocol<1>Forest) and the Red Snapper stuck in<1>the Divermon of Divermon's Lake.
 # The Velvet Room's two speaking figures (port/game/definitive_velvet.c): entries 81 and 82 of the bar's talk file (map
-# 0x20F, WSTAG255) are the letter "a" in the game's own text, said by nobody. The mentor's real content is another task.
-TALK05 81: <7>Mentor<7>Soon I will teach<1>you the Blast<1>Gauge. Not yet.<2,2>
+# 0x20F, WSTAG255) are the letter "a" in the game's own text, said by nobody. The mentor's panel (the purification) opens
+# after his line.
+TALK05 81: <7>Gennai<7>Hm hm... The forms<1>a Blast calls up.<1>Let me see them.<2,2>
 TALK05 82: <7>Etemon<7>Heh heh heh! This<1>tune... I heard it<1>in another game!<2,2><3>Don't tell anyone<1>I said that!<2,2>
 # Blast Gauge phase 1 (port/game/definitive.c def_blast_plug): the DV Plug is the cursed catalyst, its description warns
 # of the price (34 characters at most, the item window's).
@@ -637,7 +642,85 @@ ITMINF 76: Blast past its limit. Costs 10 TP
 # The Velvet Room's map title (port/game/definitive_velvet.c): the bar's own name gives way to the room's when the map is
 # the room. One line, the name plate's.
 $VelvetTitle: VELVET
+# The Blast Gauge's quest, Gennai's panel (port/game/definitive_purify.c). Quoted ones keep their spaces. The 11-pixel
+# font (titles, lists, the story's pages) has no "," or ":"; a page is up to six lines of about 44 characters.
+$PfDomTitle: Dark forms
+$PfDominated: "Forms taken "
+$PfDominate: Every Blast calls one up. Dominate them<1>all and bring the ten to me.
+$PfDemand: Ten. Splendid! For my help I take a<1>modest fee.
+$PfFee: "Fee "
+$PfHeld: " Bits, held "
+$PfKeysPay: × button: Pay   △ button: Leave
+$PfNoBits: Not enough Bits.
+$PfSimTitle: Gennai's simulator
+$PfPurified: "Purified "
+$PfKeysFight: × button: Face them   △ button: Leave
+$PfKeysOk: × button: OK
+$PfKeysNext: × button: Next
+$PfDone: The forms you felled are purified.
+$PfLost: The darkness holds. Come back<1>when you are ready.
+$PfTpBack: "TP given back "
+$PfChosenTitle: Chosen Evolution
+$PfCharged: Your crest is charged again. Pick the one<1>partner who may take it. It needs level 45.
+$PfKeysChoose: × button: Choose   △ button: Leave
+$PfLv: " Lv "
+$PfChosenMark: "   Chosen"
+$PfNameGennai: Gennai
+$PfNameMyotismon: Myotismon
+$PfStory0: Hm hm hm... Ten dark forms. All of them<1>living inside your partners.<1>You did well. Better than I hoped.
+$PfStory1: Fool! I am no Gennai. I am Myotismon!<1>Every Blast fed the curse I laid on<1>your Digimon. Now they are mine...<1>and so are your Bits!
+$PfStory2: ...Easy now. The shadow is gone.<1>I am Gennai. The real one. The old man<1>you met was Myotismon in my shape.
+$PfStory3: But I believe you are a DigiDestined.<1>My simulator can purify your partners.<1>Defeat the ten dark forms inside it.
+$PfStory4: The ten forms are purified. Each one<1>left its strength in your partners. And<1>the TP the curse took is back.
+$PfStory5: The Blast is gone. In its place the<1>Chosen Evolution. One partner at its<1>Rookie form and level 45 becomes its<1>Mega. Once a battle. Then see me again.
 $VelvetTitle2: SERVER
+# The Super Rare hunts (port/game/definitive_superhunt_screen.c): the Sepikmon of the Velvet Room (actor 61, entries 14
+# and 15 of the bar's talk file, the letter "a" on the disc and said by no stage). 14 is the first meeting: it
+# introduces the hunts and gives the tutorial (Ogremon in Central Park); 15 greets after that. His board follows either.
+TALK05 14: <7>Sepikmon<7>A Tamer at last! I am<1>Sepikmon, the master<1>of hunts.<2,2><3>Strong Digimon roam<1>the sectors. I track<1>them; you hunt them.<2,2><3>Start small: Ogremon<1>bullies Central Park,<1>by Asuka City.<2,2><3>On the way, a compass<1>tells how hot the<1>trail is. Go!<2,2>
+TALK05 15: <7>Sepikmon<7>The trail is fresh.<1>Which prey today?<2,2>
+# His board: the title, a row's state tags and level, where the target roams (a sector of a server, or the tutorial's
+# park), the target's HP and the crystals, the keys, the results; the crystal's name around the species' name (quoted
+# where a space is kept).
+$SupTitle: Sepikmon's Hunts
+$SupNew: NEW
+$SupOn: HUNT
+$SupDone: DONE
+$SupLocked: --
+$SupLv: "Lv "
+$SupWhere: "Somewhere in "
+$SupOf: " - "
+$SupSec0: the North Sector
+$SupSec1: the East Sector
+$SupSec2: the Center Sector
+$SupSec3: the West Sector
+$SupSec4: the South Sector
+$SupSrv0: Asuka Server
+$SupSrv1: Amaterasu Server
+$SupTutWhere: In Central Park by Asuka City
+$SupHp: "HP left "
+$SupSlash: " of "
+$SupFled: "   Fled "
+$SupHeld: "Crystals held "
+$SupPrice: "   Sells for "
+$SupBits: " Bits"
+$SupKeysStart: × button: Hunt   □ button: Sell a crystal<1>△ button: Leave
+$SupKeysCancel: × button: Cancel the hunt<1>△ button: Leave
+$SupKeysConfirm: × button: Cancel it (it heals)<1>△ button: Back
+$SupKeysLocked: □ button: Sell a crystal<1>△ button: Leave
+$SupBusy: Finish or cancel your hunt first.
+$SupStarted: The hunt is on. Follow the compass!
+$SupTutGiven: Your first hunt is on. Follow the compass!
+$SupCancelled: Hunt cancelled. The target healed.
+$SupSold: "Sold for "
+$SupNoCrystal: No crystal of it to sell.
+$SupLockedMsg: Finish the hunt above to open it.
+$SupCrystalPre:
+$SupCrystalPost: " Crystal"
+# The results screen after a hunt won: the crystal's line ("Ogremon Crystal").
+$SupGot: "Hunt reward: "
+# Under it, after a hunt's first win: the hero's skin it unlocked ($Skin1..$Skin13), picked at the Velvet Room.
+$SupSkin: "New skin: "
 # The Velvet Room's pig (port/game/definitive_velvet.c): actor 318, the one figure whose art no stage of the game uses.
 TALK05 79: <7>????<7>Someone found me in a<1>pile of unused toys<1>and put me here.<2,2><3>...It beats the box.<2,2>
 # A talk box holds 3 lines (<1>); a longer line is split into boxes (<2,2><3>), or its first lines scroll away unread.
@@ -665,3 +748,20 @@ $MaterialsMenu: MATERIALS
 $Materials: Materials
 $MatCommon: Hunt Material
 $MatRare: Rare Core
+$MatCrystal: Hunt Crystal
+$MatCut: "."
+# The hero's skins (port/game/definitive_skins.c): skin n's name, 0 the own colours.
+$Skin0: Original
+$Skin1: Black Hair
+$Skin2: Green Hair
+$Skin3: White Outfit
+$Skin4: Gold Hair
+$Skin5: Red Outfit
+$Skin6: All Black
+$Skin7: Purple Hair
+$Skin8: Navy Outfit
+$Skin9: Silver Hair
+$Skin10: Ocean
+$Skin11: Sunset
+$Skin12: Wild Colors
+$Skin13: Silver and Black

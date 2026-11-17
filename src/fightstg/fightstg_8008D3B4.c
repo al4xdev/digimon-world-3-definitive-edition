@@ -690,7 +690,12 @@ void fightstg_item_update(FightstgItem *obj, FightstgMessage **data) {
             }
             break;
         case 1:
+#ifdef PC_PORT
+            /* after the Blast quest the DV Plug (0x4C) is a revive item: the game's own revive path below */
+            switch (obj->item == 0x4C && def_blast_chosen_mode() ? 0x46 : obj->item) {
+#else
             switch (obj->item) {
+#endif
             case 0x2B:
             default: {
                 FightstgMember *member = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
@@ -776,7 +781,9 @@ void fightstg_item_update(FightstgItem *obj, FightstgMessage **data) {
                         for (i = 0; i < 3; i++) {
                             if (fightstg_battle.state.members[0][i].hp == 0) {
 #ifdef PC_PORT
-                                s32 revived = def_revive_hp(obj->item, fightstg_battle.state.members[0][i].max_hp);
+                                s32 revived = obj->item == 0x4C
+                                                  ? def_blast_plug_revive(i)
+                                                  : def_revive_hp(obj->item, fightstg_battle.state.members[0][i].max_hp);
 
                                 if (revived > 0) {
                                     fightstg_battle.state.members[0][i].hp = revived;
@@ -4109,7 +4116,9 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
         data->tempt = message_create_window(0x1005, 1, FIGHTSTG_TEMPT_X - wide_pad, FIGHTSTG_TEMPT_Y); /* the 14-pixel
                                                                                        * font: the 9-pixel one
                                                                                        * reads badly over the arena */
-        data->tempt->set_text(data->tempt, (u8 *)(obj->tempt ? def_blast_tempt_label() : fightstg_inspect_empty), -1);
+        /* the line says the temptation, or after the quest that the Chosen Evolution takes the Rookie form */
+        data->tempt->set_text(data->tempt,
+                              (u8 *)(obj->tempt || def_blast_hint() ? def_blast_tempt_label() : fightstg_inspect_empty), -1);
         if (obj->tempt) {
             port_log("battle menu: the Blast tempts");
         }
@@ -7202,7 +7211,11 @@ FightstgEnemyRecord *fightstg_enemy_get_record(s32 id) {
 #endif
         return &recs[i];
     }
+#ifdef PC_PORT
+    return def_purify_record(id); /* a dark form in a purification: no record on the disc, the port's */
+#else
     return NULL;
+#endif
 }
 
 void fightstg_events_add(FightstgNewEvent *event) {
@@ -9486,8 +9499,14 @@ s32 fightstg_rules_roll_escape(u8 side) {
     target = &fightstg_rules.stats[1];
     if (side == 0) {
 #ifdef PC_PORT
-        if (def_hunt_active()) { /* PRD 4 layer A: a Rare Target can always be fled, whatever its boss battle blocks */
-            return 1;
+        {
+            /* PRD 4 layer A: a Rare Target can always be fled, whatever its boss battle blocks (but in a Super Rare
+             * hunt's territory: def_hunt_flee); a Super Rare too */
+            s32 flee = def_hunt_flee();
+
+            if (flee >= 0) {
+                return flee;
+            }
         }
 #endif
         if (records_state.blocked[11] != 0) {

@@ -13,6 +13,8 @@ $Neutral: -
 $Unknown: ???
 $Twice: Inimigo x2
 $BlastTempt: O Blast chama...
+$ChosenRookie: Escolhida só em Rookie
+$PlugRevive: Revive em Rookie com 1 HP e 1 MP
 $BatonPass: Baton Pass
 $MsgLibra: Fraquezas reveladas!
 $MsgRelay: Próxima troca grátis!
@@ -7431,11 +7433,83 @@ DMG900:14 1: <7>Tamer Alice<7>Bem... Vá...<1>então. O...<1>Rei... espera.<2,2>
 DMG900:15 1: <7>Guardromon<7>Eu agora acessarei o<1>Matrix Drive.<2,2>
 DMG900:16 1: <7>Guardromon<7>Eu agora acessarei o<1>Matrix Drive.<2,2>
 # A Sala Velvet (port/game/definitive_velvet.c): as entradas 81 e 82 do arquivo de falas do bar (mapa 0x20F, WSTAG255).
-TALK05 81: <7>Mentor<7>Logo eu te ensino<1>o Blast Gauge.<1>Ainda não.<2,2>
+TALK05 81: <7>Gennai<7>Hm hm... As formas<1>que o Blast chama.<1>Deixe-me vê-las.<2,2>
 TALK05 82: <7>Etemon<7>He he he! Essa<1>música... eu ouvi<1>em outro jogo!<2,2><3>Não conta pra<1>ninguém que eu<1>falei isso!<2,2>
 # O título do mapa da Sala Velvet (port/game/definitive_velvet.c).
 $VelvetTitle: VELVET
+# A quest do Blast, o painel do Gennai (port/game/definitive_purify.c). A fonte de 11 pixels não tem "," nem ":".
+$PfDomTitle: Formas sombrias
+$PfDominated: "Formas tomadas "
+$PfDominate: Cada Blast chama uma. Domine todas<1>e me traga as dez.
+$PfDemand: Dez. Esplêndido! Pela minha ajuda<1>cobro uma taxa modesta.
+$PfFee: "Taxa "
+$PfHeld: " Bits, tem "
+$PfKeysPay: Botão ×: Pagar   Botão △: Sair
+$PfNoBits: Bits insuficientes.
+$PfSimTitle: Simulador do Gennai
+$PfPurified: "Purificadas "
+$PfKeysFight: Botão ×: Enfrentar   Botão △: Sair
+$PfKeysOk: Botão ×: OK
+$PfKeysNext: Botão ×: Próximo
+$PfDone: As formas que você derrotou estão<1>purificadas.
+$PfLost: A escuridão resiste. Volte quando<1>estiver pronto.
+$PfTpBack: "TP devolvidos "
+$PfChosenTitle: Evolução Escolhida
+$PfCharged: Seu brasão foi recarregado. Escolha o<1>parceiro que pode usá-la. Exige nível 45.
+$PfKeysChoose: Botão ×: Escolher   Botão △: Sair
+$PfLv: " Nv "
+$PfChosenMark: "   Escolhido"
+$PfNameGennai: Gennai
+$PfNameMyotismon: Myotismon
+$PfStory0: Hm hm hm... Dez formas sombrias. Todas<1>vivendo dentro dos seus parceiros.<1>Muito bem. Melhor do que eu esperava.
+$PfStory1: Tolo! Eu não sou o Gennai. Sou Myotismon!<1>Cada Blast alimentou a maldição que pus<1>nos seus Digimon. Agora eles são meus...<1>e os seus Bits também!
+$PfStory2: ...Calma. A sombra se foi.<1>Eu sou o Gennai. O verdadeiro. O velho<1>que você conheceu era Myotismon.
+$PfStory3: Mas acredito que você é um Escolhido.<1>Meu simulador pode purificar seus<1>parceiros. Derrote as dez formas nele.
+$PfStory4: As dez formas estão purificadas. Cada<1>uma deixou sua força nos parceiros. E<1>os TP que a maldição tirou voltaram.
+$PfStory5: O Blast se foi. No lugar dele vem a<1>Evolução Escolhida. Um parceiro na forma<1>Rookie e no nível 45 vira seu Mega.<1>Uma por batalha. Depois me procure.
 $VelvetTitle2: SERVER
+# As caçadas de super raros (port/game/definitive_superhunt_screen.c): o Sepikmon da Sala Velvet. 14 é o primeiro
+# encontro (apresenta as caçadas e dá o tutorial), 15 cumprimenta depois.
+TALK05 14: <7>Sepikmon<7>Enfim um Tamer! Sou<1>Sepikmon, o mestre<1>das caçadas.<2,2><3>Digimon fortes rondam<1>os setores. Eu os<1>rastreio; você caça.<2,2><3>Comece pequeno: um<1>Ogremon atormenta o<1>Central Park de Asuka.<2,2><3>No caminho, a bússola<1>diz o quanto a trilha<1>está quente. Vá!<2,2>
+TALK05 15: <7>Sepikmon<7>A trilha está fresca.<1>Qual presa hoje?<2,2>
+$SupTitle: Caçadas do Sepikmon
+$SupNew: NOVA
+$SupOn: ATIVA
+$SupDone: FEITA
+$SupLocked: --
+$SupLv: "Nv "
+$SupWhere: "Em algum lugar d"
+$SupOf: " - "
+$SupSec0: o Setor Norte
+$SupSec1: o Setor Leste
+$SupSec2: o Setor Central
+$SupSec3: o Setor Oeste
+$SupSec4: o Setor Sul
+$SupSrv0: Servidor Asuka
+$SupSrv1: Servidor Amaterasu
+$SupTutWhere: No Central Park perto de Asuka City
+$SupHp: "HP restante "
+$SupSlash: " de "
+$SupFled: "   Fugiu "
+$SupHeld: "Cristais "
+$SupPrice: "   Vende por "
+$SupBits: " Bits"
+$SupKeysStart: Botão ×: Caçar   Botão □: Vender cristal<1>Botão △: Sair
+$SupKeysCancel: Botão ×: Cancelar a caçada<1>Botão △: Sair
+$SupKeysConfirm: Botão ×: Cancelar (ele se cura)<1>Botão △: Voltar
+$SupKeysLocked: Botão □: Vender cristal<1>Botão △: Sair
+$SupBusy: Termine ou cancele sua caçada antes.
+$SupStarted: A caçada começou. Siga a bússola!
+$SupTutGiven: Sua primeira caçada começou. Siga a bússola!
+$SupCancelled: Caçada cancelada. O alvo se curou.
+$SupSold: "Vendido por "
+$SupNoCrystal: Nenhum cristal dele para vender.
+$SupLockedMsg: Termine a caçada de cima para abrir.
+$SupCrystalPre: "Cristal de "
+$SupCrystalPost:
+$SupGot: "Prêmio da caçada: "
+# Embaixo, na primeira vitória de uma caçada: a skin do herói que ela abriu ($Skin1..$Skin13).
+$SupSkin: "Nova skin: "
 # O porco da Sala Velvet (port/game/definitive_velvet.c): o ator 318.
 TALK05 79: <7>????<7>Alguém me achou numa<1>pilha de brinquedos<1>que ninguém usava.<2,2><3>...Melhor que a caixa.<2,2>
 # O comerciante da Sala Velvet (port/game/definitive_velvet.c): 8 e 9 saudações alternadas, 12 depois de uma troca, 13
@@ -7452,3 +7526,20 @@ $MaterialsMenu: MATERIAIS
 $Materials: Materiais
 $MatCommon: Material de Caça
 $MatRare: Núcleo Raro
+$MatCrystal: Cristal de Caça
+$MatCut: "."
+# As skins do herói (port/game/definitive_skins.c): o nome da skin n, 0 as cores próprias.
+$Skin0: Original
+$Skin1: Cabelo Preto
+$Skin2: Cabelo Verde
+$Skin3: Roupa Branca
+$Skin4: Cabelo Dourado
+$Skin5: Roupa Vermelha
+$Skin6: Todo Preto
+$Skin7: Cabelo Roxo
+$Skin8: Roupa Marinho
+$Skin9: Cabelo Prateado
+$Skin10: Oceano
+$Skin11: Pôr do Sol
+$Skin12: Cores Malucas
+$Skin13: Prata e Preto

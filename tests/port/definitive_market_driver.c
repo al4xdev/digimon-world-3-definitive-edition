@@ -25,7 +25,7 @@ GamestateData gamestate_data;
 
 /* Rares 0 and 1 are one boss (species 100 leads both, at levels 15 and 30), 2 another (101, level 40), 3 a third (102,
  * level 20). */
-const DefHuntTarget def_hunt_targets[] = { { 0x05, 40, 15, 1 }, { 0x06, 41, 30, 2 }, { 0x07, 42, 40, 1 }, { 0x08, 43, 20, 1 } };
+const DefHuntTarget def_hunt_targets[] = { { 0x05, 40, 0, 15, 1 }, { 0x06, 41, 0, 30, 2 }, { 0x07, 42, 0, 40, 1 }, { 0x08, 43, 0, 20, 1 } };
 const int def_hunt_target_count = 4;
 int def_hunt_target_lead(int t) {
     static const int leads[4] = { 100, 100, 101, 102 };

@@ -255,6 +255,10 @@ void dw3_velvet_shop_talk(struct FieldstgActor *actor);
 int dw3_velvet_shop_greeting(void);
 /* 1 when a text entry is the port's own (its room's figures' lines): it is served in every language. */
 int dw3_velvet_text_own(s32 base_id, s32 index);
+/* The Super Rare hunts: the room pulls the player in from inn map `from` once (Seiryu City's first visit), and whether
+ * the room runs. */
+void dw3_velvet_pull(s32 from);
+int dw3_velvet_in_room(void);
 /* The market screen's own state (port/game/definitive_market_screen.c). */
 int def_bm_screen_open(void);
 int def_bm_bought(void);
@@ -320,11 +324,16 @@ void def_action_resolved(u8 side, s32 id, s32 value);
 int def_blast_ready(void);           /* the acting Digimon may set its Blast off now (the battle menu's Blast) */
 void def_blast_command(s32 command); /* the party's command, before it runs: a passive one cools the gauge */
 int def_blast_auto(void);            /* 1: the game's own gauge (filled by damage, sets itself off when full) */
-int def_blast_form(int partner, int band); /* the cursed form's records_digimon row (1-based), 0: the game's */
+int def_blast_form(int partner, int band); /* the form's records_digimon row (1-based): the sequence's, or the Chosen */
 int def_blast_tempt(void);           /* a full gauge at a critical moment: the battle menu tempts */
+void port_log(const char *fmt, ...); /* psxstack/port_runtime.h's, for the game's sources */
+int def_blast_hint(void);            /* after the quest: the Chosen Digimon is not in its Rookie form (the line says so) */
 const unsigned char *def_blast_tempt_label(void);
 int def_blast_plug(void);           /* the DV Plug was used: 1 when it set the Blast off (the port's rule) */
+int def_blast_plug_revive(int slot); /* after the quest: the HP the Plug revives fallen slot `slot` with, 0 if none */
 void def_blast_started(s32 id);      /* the Digimon `id` took its Blast form (wfightmn_blast) */
+int def_blast_dark(void);            /* the acting party member's model is to be painted dark (a Blast form) */
+int def_blast_chosen_mode(void);     /* the quest is done: the Blast button is the Chosen Evolution */
 void def_blast_price(void);          /* the battle is over and its HP and MP went back to the records: the price */
 #define DEF_BLAST_COMMAND_ID 7 /* the battle menu's Blast: its result and FightstgCommand.command (the game's: 0..6) */
 void def_enemy_turn_begins(void);
@@ -429,12 +438,29 @@ int def_hunt_encounter(int battle);
 void def_hunt_scale(void);
 int def_hunt_active(void);
 void def_hunt_skipped(void);
+int def_hunt_flee(void);
+/* The Super Rare hunts (port/game/definitive_superhunt.c): a field step (1 the battle starts, 2 give the points), the
+ * candidate points, the battle to start, its set up, its HP at the start, whether it flees now. */
+int def_super_step(int map, int x, int y);
+void def_super_set_points(const short *xy, int count, int x, int y);
+int def_super_battle(void);
+void def_super_scale(void);
+int def_super_hp_start(int max_hp);
+int def_super_should_flee(int hp_now);
 /* PRD 4 layer H, the DRI Agents' Gauntlet (port/game/definitive_dri_screen.c): a talk to `map`'s actor `actor` (always 0: a DRI Agent's own talk runs, the list opens after it), FIELDSTG's idle frame (1 while its screen owns the field), the next enemy member's entrance
  * (wfightmn_knockout) and a lost battle (1 when it was a simulation: it goes back to the field, no game over). */
 int def_dri_talk(s32 map, s32 actor);
 int def_dri_frame(void);
 void def_dri_stage_enters(int member);
 int def_dri_defeat(void);
+/* The Blast Gauge's phase 2, the purification (port/game/definitive_purify.c): the dark forms' enemy records (none on
+ * the disc), the field's frame (the mentor's panel, the next wave), a wave's next member and a lost wave. */
+struct FightstgEnemyRecord *def_purify_record(s32 id);
+int def_purify_frame(void);
+int def_superhunt_frame(void);
+int def_purify_stage_enters(int member);
+int def_purify_defeat(void);
+int def_purify_won_wave(void); /* the battle just ended was a purification's wave, won (def_log_end ran) */
 /* PRD 4 layer D: an item's buying and selling price in a shop, the definitive ones (port/game/definitive_economy.c). */
 int def_item_buy(int item);
 int def_item_sell(int item);
@@ -516,7 +542,18 @@ extern s32 port_field_slots[3][3];
  * painted the other way are dropped, so they load again. Off under a replay script; DW3_GIRLS=0/1 forces it. */
 void port_girls_loaded(s32 id, u8 *data);
 void port_girls_refresh(void);
+void port_girls_reskin(void); /* the hero's skin worn changed (definitive_skins.c): the files in memory repainted */
+struct PortState;
+void port_girls_savestate(struct PortState *s); /* what the files in memory were painted for */
 void port_girls_tim(u8 *tim); /* tim_load_all, before each TIM's upload: Junior's portrait frame -> Kaili's */
+/* The rare foes' palette swap (port/game/definitive_recolor.c): fightstg_slots_add tells which model it added with
+ * which id; fightstg_model_update tells where a model's texture went (its VRAM page); the mesh's texture command
+ * tells each CLUT it uses, and a recoloured model's CLUT is turned in VRAM the first time. */
+void def_recolor_model_added(const void *model, int id);
+int def_recolor_of(const void *model);
+void def_recolor_texture_loaded(const void *model, int x, int y);
+void def_recolor_mesh_clut(int x, int y, int cx, int cy, int tp);
+const unsigned short *def_recolor_clut(const unsigned short *src, int n, int kind);
 
 #endif /* PC_PORT */
 

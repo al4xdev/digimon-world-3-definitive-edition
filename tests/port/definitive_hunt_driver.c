@@ -34,6 +34,13 @@ int def_on(void) {
     return on;
 }
 
+/* The Super Rare hunt (definitive_superhunt.c): region `super_region` is the active hunt's territory (-1: none); no
+ * Super Rare battle is being fought (tests/port/definitive_super_stub.c). */
+static int super_region = -1;
+int def_super_in_region(int region) {
+    return region == super_region;
+}
+
 /* Super Hard off (definitive_super.c): a material's count is the game's. */
 int def_super_reward(int amount) {
     return amount;
@@ -53,7 +60,7 @@ PadRandom pad_random = { 0, NULL, next };
 /* Region 0x05 has a target (battle 40 at level 30); region 0x06 has none; 0x07 and 0x08 are there for the rewards'
  * levels. The variants: species 100 leads battle 40 (its one region: I), 101 leads 41 and 42 (0x08 at level 15 first:
  * I, then 0x07 at 70: II). */
-const DefHuntTarget def_hunt_targets[] = { { 0x05, 40, 30, 1 }, { 0x07, 41, 70, 2 }, { 0x08, 42, 15, 1 } };
+const DefHuntTarget def_hunt_targets[] = { { 0x05, 40, 0, 30, 1 }, { 0x07, 41, 0, 70, 2 }, { 0x08, 42, 0, 15, 1 } };
 const int def_hunt_target_count = 3;
 static RecordsEnemy none, e100 = { 100, 0, 0, 0, 0 }, e101 = { 101, 0, 0, 0, 0 };
 FieldstgBattle fieldstg_battles[43] = {
@@ -179,13 +186,17 @@ int main(void) {
     records_state.enemies[0].digimon = 100;
     records_state.enemies[0].level = 20;
     records_state.enemies[0].hp = 1000;
+    records_state.enemies[0].stat_scale = 16;
     records_state.enemies[1].digimon = 101;
-    records_state.enemies[1].level = 35; /* already above the target's level: left alone */
+    records_state.enemies[1].level = 35;
     records_state.enemies[1].hp = 2000;
     def_hunt_scale();
-    check("the Rare Target's enemies rise to its level, HP with them; a stronger one is left as it is",
-          records_state.enemies[0].level == 30 && records_state.enemies[0].hp == 1500 &&
-              records_state.enemies[1].level == 35 && records_state.enemies[1].hp == 2000);
+    check("the Rare Target fights alone (its slot), at its level, HP with the level times DEF_HUNT_RARE_HP_MULT",
+          records_state.enemies[0].digimon == 100 && records_state.enemies[0].level == 30 &&
+              records_state.enemies[0].hp == 1000 * 30 / 20 * DEF_HUNT_RARE_HP_MULT &&
+              records_state.enemies[0].stat_scale == 16 && records_state.enemies[1].digimon == 0 &&
+              records_state.enemies[2].digimon == 0);
+    check("the party can always flee from a Rare Target outside a Super Rare hunt", def_hunt_flee() == 1);
     check("in battle the Rare Target's name carries its region's numeral (I), one buffer per window",
           ends_with(def_hunt_foe_name(100, 0), def_str_HuntRomanI, 1) && def_hunt_foe_name(100, 0)[0] == 0x10 &&
               def_hunt_foe_name(101, 1)[0] == 0x11 && def_hunt_foe_name(100, 0)[0] == 0x10 &&
@@ -221,6 +232,8 @@ int main(void) {
     check("a rare item's count stops at its cap", def_record_rare(2) == DEF_HUNT_RARE_CAP);
 
     /* The commons: a won random encounter in a region without a target, three enemies (102 drops none). */
+    records_state.enemies[0].digimon = 100;
+    records_state.enemies[1].digimon = 101;
     records_state.enemies[2].digimon = 102;
     def_record_set_hunt(0x06, 0);
     next_value = 0; /* every draw hits */
@@ -277,6 +290,50 @@ int main(void) {
     fought = def_hunt_encounter(7);
     check("a region without a target never swaps and never draws", fought == 7 && draws == 0 && !def_hunt_active());
     def_hunt_battle_end(1);
+
+    /* A Rare Target lowered: a strong Digimon in a weak place; and one whose HP would pass the cap. */
+    def_record_set_hunt(0x05, DEF_HUNT_CHAIN_CAP);
+    next_value = 0;
+    def_hunt_encounter(7);
+    memset(&records_state, 0, sizeof(records_state));
+    records_state.enemies[0].digimon = 100;
+    records_state.enemies[0].level = 60;
+    records_state.enemies[0].hp = 3000;
+    def_hunt_scale();
+    check("a stronger Digimon is lowered to the target's level, its HP with it",
+          records_state.enemies[0].level == 30 && records_state.enemies[0].hp == 3000 * 30 / 60 * DEF_HUNT_RARE_HP_MULT);
+    def_hunt_battle_end(0);
+    def_record_set_hunt(0x05, DEF_HUNT_CHAIN_CAP);
+    def_hunt_encounter(7);
+    records_state.enemies[0].level = 10;
+    records_state.enemies[0].hp = 9000;
+    def_hunt_scale();
+    check("its HP never passes DEF_HUNT_HP_MAX", records_state.enemies[0].hp == DEF_HUNT_HP_MAX);
+    def_hunt_battle_end(0);
+    check("outside a Rare Target the game's escape rule holds", def_hunt_flee() == -1);
+
+    /* An active Super Rare hunt in region 0x05: the Rare Target comes from 2 wins, escaping it may fail. */
+    super_region = 0x05;
+    check("in the hunt's territory the chance starts after DEF_SUPER_RARE_CHAIN_MIN wins and is certain at _SURE",
+          def_hunt_chance_in(DEF_SUPER_RARE_CHAIN_MIN, 0x05) == 0 && def_hunt_chance_in(DEF_SUPER_RARE_CHAIN_MIN + 1, 0x05) == 20 &&
+              def_hunt_chance_in(DEF_SUPER_RARE_CHAIN_SURE, 0x05) == 100 &&
+              def_hunt_chance_in(DEF_SUPER_RARE_CHAIN_MIN + 1, 0x06) == 0);
+    def_record_set_hunt(0x05, 2);
+    next_value = 0;
+    fought = def_hunt_encounter(7);
+    check("so 2 wins there may already bring the Rare Target", fought == 40 && def_hunt_active());
+    next_value = DEF_SUPER_RARE_FLEE_PCT - 1;
+    i = def_hunt_flee();
+    next_value = DEF_SUPER_RARE_FLEE_PCT;
+    check("and escaping it succeeds DEF_SUPER_RARE_FLEE_PCT % of the time", i == 1 && def_hunt_flee() == 0);
+    def_hunt_battle_end(0);
+    super_region = -1;
+    def_record_set_hunt(0x05, 2);
+    next_value = 0;
+    draws = 0;
+    check("outside the territory 2 wins are still too few", def_hunt_encounter(7) == 7 && draws == 0);
+    def_hunt_battle_end(0);
+    def_record_set_hunt(0x06, 0); /* back in the region without a target */
 
     def_hunt_chain_reset();
     check("the teleport resets the chain", chain_now() == 0);

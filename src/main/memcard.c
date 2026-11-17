@@ -15,6 +15,8 @@ MemcardState memcard_state = { 0 };
 #define MEMCARD_PART_BESTIARY_AT 0x7800
 #define MEMCARD_PART_HUNT 6         /* PRD 4's second record (DEF_RECORD2_*): after the first three, 0x100 per slot */
 #define MEMCARD_PART_HUNT_AT 0x7B00
+#define MEMCARD_PART_BLAST 7 /* the Blast Gauge's third record (DEF_RECORD3_*): the file's last 0x200, 0x80 per slot */
+#define MEMCARD_PART_BLAST_AT 0x7E00
 #endif
 
 extern s32 memcard_sync_commands[]; /* MemCardSync command per memcard_run_command mode */
@@ -197,6 +199,8 @@ s32 memcard_read(s32 chan, void *buf, s32 size, s32 part) {
                 memcard_state.offset = MEMCARD_PART_BESTIARY_AT + (part >> 8) * 0x100;
             } else if ((part & 0xFF) == MEMCARD_PART_HUNT) {
                 memcard_state.offset = MEMCARD_PART_HUNT_AT + (part >> 8) * 0x100;
+            } else if ((part & 0xFF) == MEMCARD_PART_BLAST) {
+                memcard_state.offset = MEMCARD_PART_BLAST_AT + (part >> 8) * 0x80;
             } else
 #endif
             switch (part) {
@@ -285,6 +289,9 @@ s32 memcard_write(s32 chan, void *buf, s32 size, s32 part) {
                 break;
             case MEMCARD_PART_HUNT:
                 memcard_state.offset = MEMCARD_PART_HUNT_AT + (part >> 8) * 0x100;
+                break;
+            case MEMCARD_PART_BLAST:
+                memcard_state.offset = MEMCARD_PART_BLAST_AT + (part >> 8) * 0x80;
                 break;
 #endif
             case 0:

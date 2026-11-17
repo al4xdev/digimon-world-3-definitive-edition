@@ -68,6 +68,8 @@ static int log_on(void) {
 static unsigned char blast_cursed;
 /* A party member was knocked out this battle: a critical moment, when a full gauge tempts (def_blast_tempt). */
 static unsigned char blast_fallen;
+static unsigned char blast_step_taken = 0xFF; /* def_blast_form's step, for def_blast_started (0xFF: none) */
+static unsigned char chosen_used;             /* this battle's Chosen Evolution was taken (one a battle) */
 
 void def_log_begin(void) {
     int i;
@@ -77,11 +79,13 @@ void def_log_begin(void) {
     def_chain_reset(&chain);
     blast_cursed = 0;
     blast_fallen = 0;
+    chosen_used = 0;
     def_callout_show(DEF_CALLOUT_NONE, 0);
     def_hunt_reward_done(); /* PRD 4 layer B: a reward a results screen never showed does not carry over */
     def_dri_battle_begin(); /* PRD 4 layer H: whether this battle is the DRI simulation just set up */
-    if (def_hunt_active()) {
-        def_callout_show(DEF_CALLOUT_RARE, 1); /* PRD 4 layer A */
+    def_purify_battle_begin(); /* Blast phase 2: whether it is a purification's wave */
+    if (def_hunt_active() || def_super_battle_ready()) {
+        def_callout_show(DEF_CALLOUT_RARE, 1); /* PRD 4 layer A; a Super Rare too */
     }
     overfinish_hit = 0;
     overfinish_damage = 0;
@@ -290,7 +294,10 @@ void def_log_end(int result) {
     int i;
 
     def_hunt_battle_end(result); /* PRD 4 layer A: counted whether or not the log is on */
+    /* The Super Rare hunts: its HP at the end, kept when it fled (it is the enemies' first) */
+    def_super_battle_end(result, fightstg_battle.state.members[1][0].hp);
     def_dri_battle_end(result);  /* PRD 4 layer H: a simulation's stages felled and their rewards */
+    def_purify_battle_end(result); /* Blast phase 2: the dark forms felled, the next wave or the TP back */
     if (!log_on()) {
         return;
     }
@@ -358,6 +365,10 @@ void *def_text_override(void *data, s32 i) {
         }
         if (match_file < 0) {
             continue;
+        }
+        if (match_file == 0x63 && i == 76 && def_blast_chosen_mode()) {
+            extern unsigned char def_str_PlugRevive[];
+            return def_str_PlugRevive; /* ITMINF 76: after the Blast quest the DV Plug is a revive item */
         }
         if (def_is_ptbr() && def_text_override_pt_count > 0) {
             if (!def_variant_text_hidden(base_id, i)) {
@@ -604,7 +615,14 @@ void def_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, def_evo_seen_bits);
     PORT_STATE_VAR(s, blast_cursed);
     PORT_STATE_VAR(s, blast_fallen);
+    PORT_STATE_VAR(s, blast_step_taken);
+    PORT_STATE_VAR(s, chosen_used);
     def_dri_savestate(s); /* PRD 4 layer H: a battle loaded mid-simulation is still one */
+    def_purify_savestate(s); /* Blast phase 2: and mid-purification */
+    def_superhunt_screen_savestate(s); /* the Sepikmon's board and the hunts' reward panel */
+    def_recolor_savestate(s); /* which model is the rare foe's, for its palette */
+    def_skin_savestate(s);
+    port_girls_savestate(s); /* what the hero's files in memory were painted for (Kaili, the skin) */
     def_guide_savestate(s); /* the Guide's screen and notice, with the field's heap they point into */
     def_bm_savestate(s);    /* the Black Market's screen, the same way */
     dw3_velvet_savestate(s); /* the Velvet Room: the map is the room, and its shopkeeper's turn */
@@ -667,8 +685,8 @@ static void blast_add(int amount, const char *why) {
     s32 id = gamestate_data.funcs.get_party_member(fightstg_battle.state.current[0]);
     int was;
 
-    if (amount == 0 || id < 0 || id >= DEF_GAUGE_SLOTS || m->blasted) {
-        return;
+    if (amount == 0 || id < 0 || id >= DEF_GAUGE_SLOTS || m->blasted || def_blast_chosen_mode()) {
+        return; /* after the quest the gauge is gone: the Chosen Evolution has a charge instead */
     }
     was = records_state.gauges[id];
     records_state.gauges[id] = (s16)def_gauge_clamp(was + amount);
@@ -677,11 +695,103 @@ static void blast_add(int amount, const char *why) {
     }
 }
 
-void def_blast_started(s32 id) {
-    if (def_on() && id >= 0 && id < DEF_GAUGE_SLOTS) {
-        blast_cursed |= 1u << id;
-        port_log("blast: digimon %d took its Blast form", (int)id);
+/* ---- The dark forms in sequence, their record, and the Chosen Evolution (owner's redesign, 2026-11-17). */
+
+
+int def_blast_chosen_mode(void) {
+    return def_on() && def_record_blast_quest() == DEF_BLAST_QUEST_DONE;
+}
+
+int def_blast_step(int next, int level, int *advance) {
+    static const int levels[DEF_BLAST_STEPS] = DEF_BLAST_STEP_LEVELS;
+
+    next = next < 0 || next >= DEF_BLAST_STEPS ? 0 : next;
+    if (level >= levels[next]) { /* its level reaches the next form: it takes it, and the sequence moves on */
+        *advance = (next + 1) % DEF_BLAST_STEPS;
+        return next;
     }
+    *advance = next; /* not yet: the last form it reached (next > 0 here, the first form's level is 1) */
+    return next - 1;
+}
+
+int def_blast_form(int partner, int band) {
+    static const unsigned char megas[DEF_BLAST_PARTNERS] = DEF_CHOSEN_MEGAS;
+    const char *force = getenv("DW3_BLAST_STEP"); /* tests: this step for every Blast (the sequence stays) */
+    int level, k, advance;
+
+    (void)band;
+    blast_step_taken = 0xFF;
+    if (!def_on() || partner < 0 || partner >= DEF_BLAST_PARTNERS) {
+        return 0;
+    }
+    if (def_blast_chosen_mode()) {
+        return megas[partner];
+    }
+    level = gamestate_data.funcs.get_record(partner)->stats.values[0];
+    k = def_blast_step(def_record_blast_next(partner), level, &advance);
+    if (force != NULL && force[0] != '\0') {
+        k = atoi(force) % DEF_BLAST_STEPS;
+    } else {
+        def_record_blast_set_next(partner, advance);
+    }
+    blast_step_taken = (unsigned char)k;
+    port_log("blast: digimon %d at level %d takes step %d (next %d)", partner, level, k, def_record_blast_next(partner));
+    return records_digimon[partner].blast_forms[k];
+}
+
+/* The form's record: the first time a partner+form pair is taken (while the quest has room) its stats as transformed and
+ * its strongest one; any later time, the best that stat reached. */
+static void blast_record(s32 id, int k) {
+    FightstgMember *m = blast_member();
+    FightstgStats *st = fightstg_rules.get_stats(0, 0, fightstg_battle.state.current[0]);
+    DefBlastEntry e;
+    int i, j;
+
+    if (k < 0 || k >= DEF_BLAST_STEPS || st == NULL) {
+        return;
+    }
+    i = def_record_blast_find(id, k);
+    if (i >= 0) {
+        def_record_blast_raise_best(i, st->stats[def_record_blast_entry(i)->best]);
+        return;
+    }
+    memset(&e, 0, sizeof(e));
+    e.partner = (unsigned char)id;
+    e.step = (unsigned char)k;
+    for (j = 0; j < 5; j++) {
+        e.stats[j] = st->stats[j];
+        if (st->stats[j] > e.stats[e.best]) {
+            e.best = (unsigned char)j;
+        }
+    }
+    e.hp = m->max_hp;
+    e.best_value = e.stats[e.best];
+    i = def_record_blast_add(&e);
+    port_log("blast: form recorded: entry %d, digimon %d step %d, stats %d %d %d %d %d, HP %d, best %d", i, (int)id, k,
+             e.stats[0], e.stats[1], e.stats[2], e.stats[3], e.stats[4], e.hp, e.best);
+}
+
+void def_blast_started(s32 id) {
+    FightstgMember *m = blast_member();
+
+    if (!def_on() || id < 0 || id >= DEF_GAUGE_SLOTS) {
+        return;
+    }
+    if (def_blast_chosen_mode()) { /* the Chosen Evolution: no curse; it spends the charge and restores all */
+        chosen_used = 1;
+        def_record_set_chosen_charge(0);
+        m->mp = m->max_mp; /* the scene restores the HP (wfightmn_blast) */
+        port_log("blast: digimon %d took its Chosen Evolution", (int)id);
+        return;
+    }
+    blast_cursed |= 1u << id;
+    blast_record(id, blast_step_taken == 0xFF ? -1 : blast_step_taken);
+    port_log("blast: digimon %d took its Blast form (step %d, %d forms recorded)", (int)id,
+             blast_step_taken == 0xFF ? -1 : blast_step_taken, def_record_blast_count());
+}
+
+int def_blast_dark(void) {
+    return def_on() && !def_blast_chosen_mode() && blast_member()->blasted;
 }
 
 void def_blast_price(void) {
@@ -716,43 +826,26 @@ void def_blast_price(void) {
     blast_cursed = 0;
 }
 
-static const unsigned char blast_pool[DEF_BLAST_BANDS][DEF_BLAST_POOL] = {
-    { 17, 0, 0, 0 },     /* < 4: Devimon (the one dark Champion of the table) */
-    { 17, 24, 32, 0 },   /* < 19: Devimon, SkullGreymon, Digitamamon */
-    { 24, 29, 34, 0 },   /* < 39: SkullGreymon, Myotismon, Cannondramon */
-    { 29, 43, 47, 0 },   /* < 70: Myotismon, BK WarGreymon, GranKuwagamon */
-    { 43, 45, 51, 52 },  /* 70 on: BK WarGreymon, MaloMyotismon, Beelzemon, Diaboromon */
-};
+extern void fightstg_events_add_gauge_full(void);
 
-int def_blast_form(int partner, int band) {
-    const char *force = getenv("DW3_BLAST_FORM"); /* tests: one row for every Blast */
-    int n;
+/* After the quest the DV Plug revives each fallen partner in its Rookie form with 1 HP and 1 MP (the owner: one who
+ * fell after spending the Chosen stays a weak Rookie; one who still has it can take it and be healed). The item runs
+ * the game's revive path (item 0x46, fightstg_8008D3B4.c), which calls this per fallen slot and writes the HP returned.
+ * A fallen member keeps the form it fell in, so the Rookie is set here, with the Blast flag off. */
+int def_blast_plug_revive(int slot) {
+    FightstgMember *m = &fightstg_battle.state.members[0][slot];
+    s32 id = gamestate_data.funcs.get_party_member(slot);
 
-    if (force != NULL && force[0] != '\0') {
-        return atoi(force);
-    }
-    if (!def_on() || band < 0 || band >= DEF_BLAST_BANDS || partner < 0) {
+    if (!def_blast_chosen_mode() || id < 0 || id >= DEF_GAUGE_SLOTS || m->digimon == 0 || m->hp != 0) {
         return 0;
     }
-    for (n = 0; n < DEF_BLAST_POOL && blast_pool[band][n] != 0; n++) {
-    }
-    return blast_pool[band][partner % n];
+    m->digimon = records_digimon[id].id;
+    m->blasted = 0;
+    m->power_up = 0;
+    m->mp = 1;
+    port_log("blast: the DV Plug revives digimon %d in its Rookie form, HP and MP 1", (int)id);
+    return 1;
 }
-
-int def_blast_form_count(void) {
-    unsigned char seen[64] = { 0 };
-    int b, i, count = 0;
-
-    for (b = 0; b < DEF_BLAST_BANDS; b++) {
-        for (i = 0; i < DEF_BLAST_POOL && blast_pool[b][i] != 0; i++) {
-            count += !seen[blast_pool[b][i]];
-            seen[blast_pool[b][i]] = 1;
-        }
-    }
-    return count;
-}
-
-extern void fightstg_events_add_gauge_full(void);
 
 int def_blast_plug(void) {
     FightstgMember *m = blast_member();
@@ -760,13 +853,19 @@ int def_blast_plug(void) {
     GamestateRecord *r;
     int cost;
 
+    /* after the quest the Plug is a revive item instead (def_blast_plug_revive, through the game's item 0x46 path) */
+    if (!def_on() || id < 0 || id >= DEF_GAUGE_SLOTS || m->hp <= 0 || def_purify_fighting() ||
+        def_blast_chosen_mode()) {
+        return 0;
+    }
     /* the statuses that refuse a Blast leave the Plug the game's own (+gauge, capped under full) */
-    if (!def_on() || id < 0 || id >= DEF_GAUGE_SLOTS || m->blasted || m->hp <= 0 || (m->status & (8 | 0x20))) {
+    if (m->blasted || (m->status & (8 | 0x20))) {
         return 0;
     }
     r = gamestate_data.funcs.get_record(id);
     cost = r->stats.values[1] < DEF_BLAST_PLUG_TP ? r->stats.values[1] : DEF_BLAST_PLUG_TP;
     r->stats.values[1] -= (s16)cost;
+    def_record_blast_owe(id, cost); /* the quest gives it back */
     records_state.gauges[id] = DEF_GAUGE_MAX;
     fightstg_events_add_gauge_full(); /* the game's own trigger: wfightmn_blast runs next */
     port_log("blast: the DV Plug sets digimon %d off, %d TP taken (%d left)", (int)id, cost, r->stats.values[1]);
@@ -780,27 +879,51 @@ int def_blast_auto(void) {
     return !def_on();
 }
 
+/* The Chosen Evolution's conditions but the Rookie form: the acting Digimon is the one Gennai chose, at the level, with
+ * the charge, and none taken this battle. */
+static int chosen_could(void) {
+    FightstgMember *m = blast_member();
+    s32 id = gamestate_data.funcs.get_party_member(fightstg_battle.state.current[0]);
+
+    return def_blast_chosen_mode() && id >= 0 && id == def_record_chosen() &&
+           gamestate_data.funcs.get_record(id)->stats.values[0] >= DEF_CHOSEN_LEVEL && def_record_chosen_charge() &&
+           !chosen_used && !m->blasted && m->hp > 0 && !(m->status & (8 | 0x20)) && !def_purify_fighting();
+}
+
 int def_blast_ready(void) {
     FightstgMember *m = blast_member();
     s32 id = gamestate_data.funcs.get_party_member(fightstg_battle.state.current[0]);
 
+    if (def_blast_chosen_mode()) { /* only from the Rookie form */
+        return chosen_could() && m->digimon == (s16)records_digimon[id].id;
+    }
     /* the statuses that refuse Digivolve refuse the Blast too (8: no Fight/Tech/DV; 0x20: no digivolving) */
+    /* and no Blast in a purification: the party faces its dark forms without them */
     return def_on() && id >= 0 && id < DEF_GAUGE_SLOTS && records_state.gauges[id] >= DEF_GAUGE_MAX && !m->blasted &&
-           m->hp > 0 && !(m->status & (8 | 0x20));
+           m->hp > 0 && !(m->status & (8 | 0x20)) && !def_purify_fighting();
 }
 
 /* The temptation (owner's brief: "the temptation to use it at critical moments"): the gauge is full and the moment is
  * critical, a partner fell this battle or the acting Digimon is at DEF_BLAST_TEMPT_HP_PCT of its HP or less. The battle
- * menu then pulses the Blast button and says so; nothing is forced. */
+ * menu then pulses the Blast button and says so; nothing is forced. None after the quest: the curse is gone. */
 int def_blast_tempt(void) {
     FightstgMember *m = blast_member();
 
-    return def_blast_ready() && (blast_fallen || m->hp * 100 <= m->max_hp * DEF_BLAST_TEMPT_HP_PCT);
+    return !def_blast_chosen_mode() && def_blast_ready() &&
+           (blast_fallen || m->hp * 100 <= m->max_hp * DEF_BLAST_TEMPT_HP_PCT);
+}
+
+/* After the quest, the line over the cross says why the Chosen Digimon cannot take it: not in its Rookie form. */
+int def_blast_hint(void) {
+    FightstgMember *m = blast_member();
+    s32 id = gamestate_data.funcs.get_party_member(fightstg_battle.state.current[0]);
+
+    return chosen_could() && m->digimon != (s16)records_digimon[id].id;
 }
 
 const unsigned char *def_blast_tempt_label(void) {
-    extern const unsigned char def_str_BlastTempt[];
-    return def_str_BlastTempt;
+    extern const unsigned char def_str_BlastTempt[], def_str_ChosenRookie[];
+    return def_blast_chosen_mode() ? def_str_ChosenRookie : def_str_BlastTempt;
 }
 
 void def_blast_command(s32 command) {

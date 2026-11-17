@@ -27,7 +27,7 @@ def main():
         "-I", str(ROOT / "psxstack/include/psxstack"),
         "-I", str(ROOT / "port/game"),
         "-I", str(ROOT),
-        str(ROOT / "port/game/definitive.c"),
+        str(ROOT / "port/game/definitive.c"), str(ROOT / "tests/port/definitive_super_stub.c"),
         str(ROOT / "port/game/definitive_mask.c"),
         str(ROOT / "port/game/definitive_progression.c"),
         str(ROOT / "port/game/definitive_mp.c"),

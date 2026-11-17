@@ -72,6 +72,34 @@ void def_save_flag_set(int f, int on) { (void)f; (void)on; }
 void def_dri_battle_begin(void) {}
 void def_dri_battle_end(int r) { (void)r; }
 void def_dri_savestate(struct PortState *s) { (void)s; }
+void def_bm_savestate(struct PortState *s) { (void)s; }
+void dw3_velvet_savestate(struct PortState *s) { (void)s; }
+int dw3_velvet_text_own(s32 b, s32 i) { (void)b; (void)i; return 0; }
+void def_travel_savestate(struct PortState *s) { (void)s; }
+void def_evohint_savestate(struct PortState *s) { (void)s; }
+void def_callout_savestate(struct PortState *s) { (void)s; }
+void fightstg_events_add_gauge_full(void) {}
+void fightstg_events_add_revert(void) {}
+void def_superhunt_screen_savestate(struct PortState *s) { (void)s; }
+void def_recolor_savestate(struct PortState *s) { (void)s; }
+void def_skin_savestate(struct PortState *s) { (void)s; }
+/* Blast Gauge phase 2: the save's record and the purification (definitive_bestiary.c, definitive_purify.c) */
+void def_purify_battle_begin(void) {}
+void def_purify_battle_end(int r) { (void)r; }
+int def_purify_fighting(void) { return 0; }
+void def_purify_savestate(struct PortState *s) { (void)s; }
+int def_record_blast_quest(void) { return 0; }
+int def_record_blast_next(int p) { (void)p; return 0; }
+void def_record_blast_set_next(int p, int k) { (void)p; (void)k; }
+int def_record_blast_find(int p, int k) { (void)p; (void)k; return -1; }
+int def_record_blast_add(const DefBlastEntry *e) { (void)e; return -1; }
+int def_record_blast_count(void) { return 0; }
+const DefBlastEntry *def_record_blast_entry(int i) { (void)i; return 0; }
+void def_record_blast_raise_best(int i, int v) { (void)i; (void)v; }
+int def_record_chosen(void) { return -1; }
+int def_record_chosen_charge(void) { return 0; }
+void def_record_set_chosen_charge(int c) { (void)c; }
+void def_record_blast_owe(int p, int tp) { (void)p; (void)tp; }
 void def_hunt_battle_end(int r) { (void)r; }
 void def_hunt_reward_done(void) {}
 void def_hunt_savestate(struct PortState *s) { (void)s; }
@@ -125,6 +153,14 @@ int main(void) {
 
     /* 1. Overlevel Rush gap = 8 */
     reset_battle();
+    { /* the Blast's forms in sequence (owner's redesign): the next one when the level has it, else the last reached */
+        int a1, a2, a3, a4, a5, a6;
+        int k1 = def_blast_step(0, 1, &a1), k2 = def_blast_step(1, 14, &a2), k3 = def_blast_step(1, 15, &a3),
+            k4 = def_blast_step(4, 45, &a4), k5 = def_blast_step(4, 44, &a5), k6 = def_blast_step(9, 30, &a6);
+        check("blast sequence: 1st at level 1, stays at 14, 2nd at 15, 5th at 45 wraps, 4th under 45, bad next is 0",
+              k1 == 0 && a1 == 1 && k2 == 0 && a2 == 1 && k3 == 1 && a3 == 2 && k4 == 4 && a4 == 0 && k5 == 3 &&
+                  a5 == 4 && k6 == 0 && a6 == 1);
+    }
     check("overlevel: DEF_OVERLEVEL_GAP == 8", DEF_OVERLEVEL_GAP == 8);
     gamestate_data.digimon[0].record.stats.values[0] = 20;
     records_state.enemies[0].digimon = 100;

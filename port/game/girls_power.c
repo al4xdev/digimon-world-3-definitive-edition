@@ -42,6 +42,8 @@
 
 #include "common.h"
 
+#include "psxstack/savestate.h"
+
 #include "cdload.h"
 #include "filetable.h"
 #include "port_harness.h"
@@ -127,15 +129,16 @@ static int gp_on(void) {
     return !port_script_active && def_save_flag(DEF_SAVE_KAILI);
 }
 
-/* What the cached sprite files were painted for (0: as on the disc). */
-static int gp_painted;
+/* What the cached sprite files were painted for (0: as on the disc), and the hero's skin they wear (definitive_skins.c,
+ * 0: none). */
+static int gp_painted, gp_skinned;
 static const s32 gp_file_ids[] = { 0x186, 0x187, 0x3C9, 0x3CA, 0x3CB, 0x3CC, 0x190, 0x2F8 };
 
 void port_girls_refresh(void) {
     int on = gp_on();
     u32 i;
 
-    if (on == gp_painted) {
+    if (on == gp_painted && def_skin_worn() == gp_skinned) {
         return;
     }
     /* Called off the field (the title, New Game, a card's save read): no actor holds these files. A file still loading
@@ -144,7 +147,15 @@ void port_girls_refresh(void) {
         cdload_module.files.free_file(gp_file_ids[i]);
     }
     gp_painted = on;
-    port_log("girls power: the hero is %s", on ? "Kaili" : "Junior");
+    gp_skinned = def_skin_worn();
+    port_log("girls power: the hero is %s, skin %d", on ? "Kaili" : "Junior", gp_skinned);
+}
+
+/* The files in memory go with the state: without what they were painted for, a state loaded in a fresh process takes
+ * Kaili's frames for Junior's and the next skin leaves them alone (port_girls_reskin matches the hero's own CLUT). */
+void port_girls_savestate(struct PortState *s) {
+    PORT_STATE_VAR(s, gp_painted);
+    PORT_STATE_VAR(s, gp_skinned);
 }
 
 /* ---- the containers (docs/FORMATS.md "Containers"; FieldstgActor scripts) ---- */
@@ -1332,6 +1343,68 @@ static void gp_dump(const char *dir) {
     }
 }
 
+/* The hero's skin (definitive_skins.c): every frame's CLUT of a file that draws the hero (the files Junior's actors
+ * use, painted into Kaili or not; `who` NULL: not the hero's) through the skin worn, with `who`'s hair and skin
+ * colours. The skin starts from the hero's own CLUT `base` each time: a frame whose CLUT is the base, or the base
+ * through any skin, gets the base through gp_skinned, so a file already in memory is repainted when the skin changes
+ * (port_girls_reskin); a frame with another CLUT is left alone. */
+static void gp_skin(u8 *data, const GpWho *who, const u16 *base) {
+    static u16 skinned[DEF_SKIN_COUNT + 1][16];
+    s32 n = gp_count(data), k, w, h, t;
+    u16 *clut;
+    u8 *pixels;
+
+    if (who == NULL) {
+        return;
+    }
+    for (t = 0; t <= DEF_SKIN_COUNT; t++) {
+        memcpy(skinned[t], base, sizeof(skinned[t]));
+        def_skin_clut(skinned[t], t, who->cap, who->skin);
+    }
+    for (k = 0; k < n; k++) {
+        if (!gp_tim(data, k, &clut, &pixels, &w, &h)) {
+            continue;
+        }
+        for (t = 0; t <= DEF_SKIN_COUNT; t++) {
+            if (memcmp(clut, skinned[t], sizeof(skinned[t])) == 0) {
+                memcpy(clut, skinned[gp_skinned], sizeof(skinned[gp_skinned]));
+                break;
+            }
+        }
+    }
+}
+
+/* The hero's files' person: Kaili when they were painted, else Junior; and that person's own CLUT. */
+static const GpWho *gp_hero(const u16 **base) {
+    *base = gp_painted ? gp_ref_kaili.clut : gp_ref_junior.clut;
+    return gp_painted ? &gp_kaili : &gp_junior;
+}
+
+void port_girls_reskin(void) {
+    extern CdloadEntry *cdload_find_entry(s32 id);
+    int skin = def_skin_worn();
+    const GpWho *who;
+    const u16 *base;
+    u32 i;
+
+    if (skin == gp_skinned) {
+        return;
+    }
+    gp_skinned = skin;
+    if (!gp_refs()) {
+        return;
+    }
+    who = gp_hero(&base);
+    for (i = 0; i < sizeof(gp_files) / sizeof(gp_files[0]); i++) {
+        CdloadEntry *e = gp_files[i].to_kaili ? cdload_find_entry(gp_files[i].id) : NULL;
+
+        if (e != NULL && e->state == 3 && e->buffer != NULL) {
+            gp_skin(e->buffer, who, base);
+        }
+    }
+    port_log("girls power: the hero's skin is %d", skin);
+}
+
 void port_girls_loaded(s32 id, u8 *data) {
     u32 i;
 
@@ -1344,10 +1417,15 @@ void port_girls_loaded(s32 id, u8 *data) {
         return;
     }
     gp_painted = gp_on();
-    if (!gp_painted || !gp_refs()) {
-        return;
+    if (gp_painted && gp_refs()) {
+        gp_apply(i, data);
     }
-    gp_apply(i, data);
+    if (gp_files[i].to_kaili && gp_skinned != 0 && gp_refs()) {
+        const u16 *base;
+        const GpWho *who = gp_hero(&base);
+
+        gp_skin(data, who, base);
+    }
 }
 
 /* tim_load_all, before a TIM goes to VRAM (unpacked, or the file's own bytes): the VRAM page holding Junior's front

@@ -206,20 +206,17 @@ void def_gauges_decode(const unsigned char in[DEF_GAUGE_SLOTS * 2], short out[DE
  * Guard and Speed (the game's own GamestateStats.penalties, which only an inn's rest, inn_heal_party, clears; the
  * status screens already mark a penalised stat). */
 #define DEF_BLAST_CURSE_PCT 25
-/* The cursed forms (owner's brief: "a hand-picked list of dark forms scaled by the player's level"), in place of each
- * partner's RecordsDigimon.blast_forms: per level band of wfightmn_blast (<4, <19, <39, <70, more) a pool of
- * records_digimon rows (1-based, the table's own numbering), and the partner (its records_digimon index 0..7) takes
- * pool[partner % size], so every partner has its own dark path and all ten forms turn up across the party:
- * Devimon 17, SkullGreymon 24, Myotismon 29, Digitamamon 32, Cannondramon 34, BK WarGreymon 43, MaloMyotismon 45,
- * GranKuwagamon 47, Beelzemon 51, Diaboromon 52. */
+/* The dark forms (owner's redesign, 2026-11-17): the game's own (RecordsDigimon.blast_forms, five per partner, records_digimon
+ * rows), taken in sequence: each Blast of a partner takes its next form when its level has reached that form's
+ * (DEF_BLAST_STEP_LEVELS), else the last one it reached; after the fifth it starts over. Painted dark as they come in
+ * (definitive_recolor.c's DEF_RECOLOR_DARK). */
+#define DEF_BLAST_STEPS 5
+#define DEF_BLAST_STEP_LEVELS { 1, 15, 25, 35, 45 }
 /* The DV Plug (item 76), the cursed catalyst: one use fills the acting Digimon's gauge and sets the Blast off at once
  * (the game's gauge-full event), and takes this many TP (GamestateStats.values[1]; all it has when it has fewer). */
 #define DEF_BLAST_PLUG_TP 10
 #define DEF_BLAST_TEMPT_HP_PCT 25 /* the acting Digimon's HP share at or under which a full gauge tempts */
-#define DEF_BLAST_BANDS 5
-#define DEF_BLAST_POOL 4 /* rows per band at most; 0 ends a shorter pool */
-int def_blast_form(int partner, int band); /* records_digimon row (1-based), or 0: the game's own form */
-int def_blast_form_count(void);            /* the distinct cursed forms (phase 2's register counts them) */
+int def_blast_step(int partner, int level, int *advance); /* pure: the step a Blast takes, and the sequence's next */
 int def_blast_gain(int weak, int staggered, int overfinish, int extra); /* pure: the sum above */
 #define DEF_BLAST_COMMAND DEF_BLAST_COMMAND_ID /* include/port.h: the battle menu's result and FightstgCommand.command */
 
@@ -271,18 +268,22 @@ void def_callout_frame(void);
 #define DEF_HUNT_RARE_CAP 99          /* the most of one rare item the player can hold */
 #define DEF_HUNT_LINES 4              /* material lines one results screen lists: three commons and a rare at most */
 #define DEF_HUNT_LINE_SIZE 72         /* bytes of such a line, or of a Rare Target's name, in glyphs */
+#define DEF_HUNT_RARE_HP_MULT 4 /* a Rare Target's HP: its source's, scaled to its level, times this (owner, 2026-11-17) */
 typedef struct DefHuntTarget {
     unsigned char region; /* ststatus_map_areas's byte: the world map area, bit 7 the server */
-    short battle;         /* an existing boss battle: an index into fieldstg_battles */
-    short level;          /* the level its enemies fight at */
+    short battle;         /* an existing battle: an index into fieldstg_battles */
+    unsigned char slot;   /* the enemy of that battle that is the Rare Target: it fights alone (owner, 2026-11-17) */
+    short level;          /* the level it fights at, above or below its own */
     unsigned char variant; /* its rare item's numeral (layer B): the region's rank, by level, among those whose target
-                            * has the same lead species (the battle's first enemy) */
+                            * is the same species; 0 when no other region's is (no numeral) */
 } DefHuntTarget;
 extern const DefHuntTarget def_hunt_targets[];
 extern const int def_hunt_target_count;
 extern const unsigned char def_hunt_commons[]; /* each bestiary species' common material (generated; 0xFF: none) */
 /* The % chance of the Rare Target for a region's chain (0 under the minimum). */
 int def_hunt_chance(int chain);
+/* The same for a chain in region `region`: sooner in an active Super Rare hunt's territory (DEF_SUPER_RARE_CHAIN_*). */
+int def_hunt_chance_in(int chain, int region);
 /* A common Hunt Material's name (glyph bytes, 0-ended). */
 const unsigned char *def_hunt_material_name(int material);
 /* The bestiary's Hunt line (layer C): bestiary species `index`'s common material (-1: none), and of the rare items of
@@ -318,8 +319,132 @@ void def_hunt_skipped(void);
 void def_hunt_battle_end(int result);
 /* The Guardromon teleport resets the chain, whatever region it lands in. */
 void def_hunt_chain_reset(void);
+/* Whether the party's escape from the battle is decided here: 1 it succeeds, 0 it fails, -1 the game's own rule. A Rare
+ * Target is always fled, except in the territory of an active Super Rare hunt (DEF_SUPER_RARE_FLEE_PCT); a Super Rare
+ * always. */
+int def_hunt_flee(void);
 struct PortState;
 void def_hunt_savestate(struct PortState *s);
+
+/* The Super Rare hunts (definitive_superhunt.c; .plan/tasks/super-rare-hunts.md). Thirteen hunts, in order: the
+ * Sepikmon of the Velvet Room starts the next one or repeats a finished one. Hunt 0 is the tutorial (DEF_SUPER_TUTORIAL:
+ * a level 3 target in one area by Asuka City, given at the Velvet Room's first visit); the twelve Super Rares follow. The target sits in a map of its territory (a sector
+ * of one server, def_hunt_sector_of), the compass tells how close the player is, and stepping on its point starts the
+ * battle. Having lost DEF_SUPER_FLEE_PCT of its full HP in one battle it flees to another map of its territory; it keeps
+ * the HP it lost, and comes back DEF_SUPER_BUFF_PCT stronger each time. Won: its crystal. */
+#define DEF_SUPER_COUNT 13
+#define DEF_SUPER_TUTORIAL 0         /* the tutorial hunt's index */
+#define DEF_HUNT_AREAS 0x2E          /* the world map areas of a server (ststatus_map_areas & 0x7F) */
+#define DEF_HUNT_SECTORS 5           /* North, East, Center, West, South (hand-made: tools/gen_hunt_targets.py) */
+#define DEF_SUPER_FLEE_PCT 25        /* of its full HP lost in one battle: it flees */
+#define DEF_SUPER_BUFF_PCT 20        /* its stats, each battle after the first: +this % of the base, cumulative */
+#define DEF_SUPER_MEETS_CAP 10       /* the buff stops growing here (+200%) */
+#define DEF_SUPER_CRYSTAL_CAP 99
+#define DEF_SUPER_RARE_CHAIN_MIN 1   /* in the hunt's territory a Rare Target may come from 2 wins (owner, 2026-11-17)... */
+#define DEF_SUPER_RARE_CHAIN_SURE 6  /* ...20% more each win, certain at 6 */
+#define DEF_SUPER_RARE_FLEE_PCT 50   /* and the party's escape from it succeeds this often */
+#define DEF_SUPER_POINT_RADIUS 24    /* pixels: this close to the point, the battle starts */
+#define DEF_SUPER_COMPASS_REACH 3    /* exits out of the territory the compass still shows */
+#define DEF_SUPER_POINTS_MAX 256     /* candidate points the field gives for a map (encounter tiles on a grid) */
+typedef struct DefSuperRare {
+    short battle;          /* an existing battle (fieldstg_battles) */
+    unsigned char slot;    /* its enemy that is the Super Rare: it fights alone */
+    unsigned char level;   /* recommended level shown by the Sepikmon, and the level it fights at */
+    short hp;              /* its full HP */
+    signed char sector;    /* its territory: a sector (0..DEF_HUNT_SECTORS-1) */
+    unsigned char server;  /* of this server (0 Asuka, 1 Amaterasu: ststatus_map_areas's bit 7) */
+    signed char area;      /* -1: the whole sector; else only this world map area of it (the tutorial's) */
+    short species;         /* the target's species (its name on the Sepikmon's list) */
+    unsigned short price;  /* its crystal's price at the Black Market, in Bits */
+} DefSuperRare;
+extern const DefSuperRare def_super_rares[DEF_SUPER_COUNT];
+extern const signed char def_hunt_sector_of[DEF_HUNT_AREAS];
+/* The map graph (definitive_map_graph.c, generated by tools/gen_map_graph.py from the stages' exits): node i is map
+ * def_map_nodes[i]; its neighbours are def_map_edges[def_map_first[i] .. def_map_first[i + 1] - 1] (node indices);
+ * def_map_wild[i]: the map has random encounters (a Super Rare can sit there). */
+extern const unsigned short def_map_nodes[];
+extern const unsigned short def_map_first[];
+extern const unsigned short def_map_edges[];
+extern const unsigned char def_map_wild[];
+extern const int def_map_node_count;
+int def_map_node(int map);                  /* the node of a map, -1: not in the graph */
+int def_map_distance(int from, int to);     /* maps apart (exits walked), -1: no path */
+/* The compass's reading (DEF_TEMP_*): none outside the hunt's territory or with no hunt. */
+enum { DEF_TEMP_NONE, DEF_TEMP_COLD, DEF_TEMP_COOL, DEF_TEMP_WARM, DEF_TEMP_HOT, DEF_TEMP_BURNING, DEF_TEMP_COUNT };
+/* The hunts' state: the active one (-1: none), how many were finished in order (the next one to unlock), a hunt's state
+ * for the Sepikmon's list (DEF_SUPER_LOCKED, _OPEN: the next, _DONE: finished, can be repeated, _ACTIVE). */
+enum { DEF_SUPER_LOCKED, DEF_SUPER_OPEN, DEF_SUPER_DONE, DEF_SUPER_ACTIVE };
+int def_super_active(void);
+int def_super_done(void);
+int def_super_state(int hunt);
+int def_super_start(int hunt);              /* 1: started (an open or done hunt, none active) */
+void def_super_cancel(void);                /* the active hunt ends; the target heals */
+int def_super_map(void);                    /* the target's map (0: no hunt) */
+int def_super_hp_left(void);
+int def_super_meets(void);
+int def_super_crystals(int hunt);
+void def_super_crystal_add(int hunt, int n);
+int def_super_won_take(int *first);         /* the hunt just won (once), -1: none: the field's reward panel; *first: it
+                                              * was its first win (a skin unlocked) */
+int def_super_crystal_sell(int hunt);       /* one crystal sold: its price (0: none held); the caller pays it */
+/* The story's flags (saved): the Velvet Room's first visit (Seiryu City pulls the player in once, or the Sepikmon met
+ * before), and the tutorial hunt given. */
+#define DEF_SUPER_FLAG_MET 1
+#define DEF_SUPER_FLAG_TUTORIAL 2
+int def_super_flags(void);
+void def_super_flag_set(int flag);
+/* Whether map `map`, or region `region` (ststatus_map_areas's byte), is in the active hunt's territory. */
+int def_super_in_territory(int map);
+int def_super_territory_distance(int hunt, int map); /* exits to the hunt's territory, -1: none */
+int def_super_in_compass_zone(int map);              /* the territory and DEF_SUPER_COMPASS_REACH maps round it */
+int def_super_in_region(int region);
+/* The compass for the player on map `map` at pixel (x, y). */
+int def_super_temperature(int map, int x, int y);
+/* The hooks: a field step of the player on map `map` at pixel (x, y): 1 the Super Rare's battle starts now (battle
+ * def_super_battle()), 2 the target is on this map but its point is not taken yet (the field gives the candidates,
+ * then asks again), 0 nothing; the battle's set up (one enemy, its level, HP left and buffs), whether it flees now (its
+ * HP in the battle), and the battle's end (`hp`: the target's HP at the end; `result` def_log_end's: 1 won). */
+int def_super_step(int map, int x, int y);
+int def_super_battle(void);
+int def_super_battle_ready(void);           /* the battle being set up is the Super Rare's */
+void def_super_scale(void);
+/* The battle's members are set up: its HP at the start, given its full HP in the battle's units (max_hp: Super Hard's
+ * raise included); the flight and the end then count in those units. */
+int def_super_hp_start(int max_hp);
+int def_super_should_flee(int hp_now);
+void def_super_battle_end(int result, int hp);
+/* The candidate points of the target's map (x, y pairs): the field gives the walkable encounter tiles, the player
+ * being at (x, y), just come in; the one two thirds of the way from there by distance is taken. */
+void def_super_set_points(const short *xy, int count, int x, int y);
+/* The save: the hunts' bytes in the second record (definitive_bestiary.c, DEF_SUPER_RECORD bytes at its end). */
+#define DEF_SUPER_RECORD 24
+void def_super_record_write(unsigned char *out);
+void def_super_record_read(const unsigned char *in);
+int def_super_record_empty(void);
+void def_super_reset(void);
+void def_super_savestate(struct PortState *s);
+/* Sepikmon's board, the compass and Seiryu City's call to the Velvet Room (definitive_superhunt_screen.c). */
+void def_superhunt_board_offer(void);       /* his line is over: the board opens on the next idle frame */
+int def_superhunt_frame(void);              /* the field's idle step: 1 while the board or a panel owns the field */
+void def_superhunt_screen_savestate(struct PortState *s);
+/* The rare foes' palette swap (definitive_recolor.c): the kinds, and its save-state part (the hooks are in port.h). */
+enum { DEF_RECOLOR_NONE, DEF_RECOLOR_RARE, DEF_RECOLOR_SUPER, DEF_RECOLOR_DARK, DEF_RECOLOR_KINDS };
+void def_recolor_savestate(struct PortState *s);
+/* The hero's skins (definitive_skins.c): a colour recipe for the hero's field sprites, each hunt won unlocks one. */
+#define DEF_SKIN_COUNT 13   /* one per hunt (DEF_SUPER_COUNT) */
+#define DEF_SKIN_RECORD 1   /* the card's bytes: the hero's skin */
+void def_skin_reset(void);
+int def_skin_unlocked(int skin);             /* 0 (the own colours) always; skin n once n hunts were won */
+int def_skin_hero(void);                     /* the skin chosen */
+int def_skin_set_hero(int skin);             /* 0: locked or out of range */
+int def_skin_worn(void);                     /* the skin the sprites wear now (0: none, a replay script, locked) */
+/* A 16-colour CLUT through skin `skin`: `hair` and `skin_mask` are bit masks of CLUT indices (girls_power.c's GpWho). */
+void def_skin_clut(unsigned short clut[16], int skin, unsigned short hair, unsigned short skin_mask);
+int def_skin_record_empty(void);
+void def_skin_record_write(unsigned char *out);
+void def_skin_record_read(const unsigned char *in);
+void def_skin_savestate(struct PortState *s);
+extern int def_superhunt_debug;            /* tests: 1 opens the board on the next idle field frame, anywhere */
 
 /* PRD 4 layer D: the definitive prices (definitive_economy.c; the table is definitive_prices.c, generated by
  * tools/gen_item_prices.py from records_items and the shops' goods). */
@@ -721,6 +846,68 @@ int def_record_dri_unlocked(int c);
 void def_record_dri_unlock(int c);
 int def_record_dri_best(int c);
 void def_record_dri_raise_best(int c, int stage);
+/* The Blast Gauge (owner's redesign, 2026-11-17), in the same second record: each partner's next step in its sequence of
+ * dark forms, the TP the DV Plug took from each partner (0..DEF_BLAST_PARTNERS-1) that the quest gives back (adding a
+ * negative amount pays it back), the quest's stage, its forms purified (a bit per entry), the Chosen Evolution's
+ * partner (-1: none) and its charge. */
+#define DEF_BLAST_PARTNERS 8 /* the partners (gamestate_data.digimon) */
+#define DEF_BLAST_QUEST_FORMS 10 /* the quest: this many partner+form pairs taken */
+enum { DEF_BLAST_QUEST_DECEIVED, DEF_BLAST_QUEST_REVEALED, DEF_BLAST_QUEST_DONE }; /* its stages */
+int def_record_blast_next(int partner);
+void def_record_blast_set_next(int partner, int step);
+int def_record_blast_owed(int partner);
+void def_record_blast_owe(int partner, int tp);
+int def_record_blast_quest(void);
+void def_record_blast_set_quest(int stage);
+unsigned int def_record_blast_purified(void);
+void def_record_blast_purify(int entry);
+int def_record_chosen(void);
+void def_record_set_chosen(int partner);
+int def_record_chosen_charge(void);
+void def_record_set_chosen_charge(int charge);
+/* The slot's third record (memcard.c part 7, DEF_RECORD3_AT + slot * DEF_RECORD3_SIZE, the card file's last free bytes):
+ * the quest's dark forms, the first DEF_BLAST_QUEST_FORMS partner+form pairs a Blast called up, each with the stats it
+ * had the first time (the Digimon as transformed: FightstgStats.stats and its max HP), its strongest stat and the best
+ * that stat ever was. Read after the second record; nothing to keep writes all zeros. */
+#define DEF_RECORD3_SIZE 0x80
+#define DEF_RECORD3_PART 7
+#define DEF_RECORD3_AT 0x7E00
+#define DEF_RECORD3_VERSION 1
+typedef struct DefBlastEntry {
+    unsigned char partner; /* gamestate_data.digimon index */
+    unsigned char step;    /* its blast_forms index */
+    short stats[5];        /* the first time: FightstgStats.stats (0..999) */
+    short hp;              /* and its max HP */
+    unsigned char best;    /* its strongest stat (an index of stats) */
+    short best_value;      /* the best that stat ever was, any time the pair was taken */
+} DefBlastEntry;
+int def_record_blast_count(void);
+const DefBlastEntry *def_record_blast_entry(int i);
+int def_record_blast_find(int partner, int step);
+int def_record_blast_add(const DefBlastEntry *e); /* its index, -1: full, already there or out of range */
+void def_record_blast_raise_best(int i, int value);
+void def_record3_write(unsigned char *out);
+void def_record3_read(const unsigned char *in);
+unsigned char *def_record3_buffer(void);
+/* The Chosen Evolution (owner's redesign): the partner's Mega (records_digimon rows), Kumamon's Beelzemon. */
+#define DEF_CHOSEN_MEGAS { 33, 51, 34, 36, 37, 38, 39, 40 } /* GuardiAngemon, Beelzemon, Cannondramon, WarGreymon,
+                                                             * Imperialdramon, Gallantmon, Sakuyamon, Seraphimon */
+#define DEF_CHOSEN_LEVEL 45  /* the level it takes */
+#define DEF_CHOSEN_BUFF_PCT 10 /* the quest's buff: per form purified, this share of its best stat, for good */
+/* The purification (definitive_purify.c): Gennai's quest and simulator. */
+#define DEF_PURIFY_BITS 10000     /* what "Gennai" (Myotismon) takes when the quest's ten forms are there */
+#define DEF_PURIFY_WAVE 3         /* forms per wave: a battle's three enemy members */
+#define DEF_PURIFY_SIM_PCT 90     /* a form in the simulator: its first stats and HP times this / 100 */
+#define DEF_PURIFY_WEAK 60        /* its lowest resistances, as the enemy table's weaknesses (DEF_WEAK_MAX) */
+#define DEF_PURIFY_STRONG 300     /* its highest, as a strong resistance */
+#define DEF_PURIFY_TP_CAP 99      /* the TP the game's level-ups stop at (stfgtrep) */
+int def_purify_fighting(void);
+void def_purify_battle_begin(void);
+void def_purify_battle_end(int result);
+void def_purify_offer(void);
+int def_purify_open(void);
+struct PortState;
+void def_purify_savestate(struct PortState *s);
 /* 1 when the screen and the card record are in use: never in a replay script (shared with the emulator), unless
  * DW3_DEFINITIVE is set, as the rest of the layers (DW3_BESTIARY: this layer alone). */
 int def_bestiary_active(void);
