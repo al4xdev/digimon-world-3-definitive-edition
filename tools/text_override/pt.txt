@@ -78,17 +78,38 @@ $RecipeSep: ", "
 $BMTitle: MERCADO NEGRO
 $BMTabTrade: Trocar
 $BMTabReplica: Réplicas
-$BMGive: "Dar "
-$BMGet: "Receber "
-$BMHeld: "   Tem "
-$BMCost: "Custo "
-$BMPrice: "Preço "
+$BMHeadCores: Seus Núcleos Raros
+$BMHeadMats: Receber 12 de qual material?
+$BMHeadReplicas: Réplicas Lendárias
+$BMGive: "Dar: "
+$BMGet: "Receber: "
+$BMHeld: "   Tem: "
+$BMTakes: "Gasta: "
 $BMBits: " Bits"
-$BMNone: Você não tem Núcleos para trocar.
+$BMCoreTrade: Troque um por 12 de um Material de Caça.
+$BMCoreForge: As lojas fazem equipamentos com materiais.
+$BMCoreKeep: Réplicas também gastam Núcleos: 2 chefes cada.
+$BMNone: Você não tem Núcleos Raros para trocar.
+$BMNoneWhere: Inimigos fortes os deixam: veja o Bestiário.
+$BMKindWeapon: Arma
+$BMKindTwo: Duas mãos
+$BMKindArmor: Armadura
+$BMKindAcc: Acessório
+$BMStat1: Força
+$BMStat2: Defesa
+$BMStat3: Espírito
+$BMStat4: Sabedoria
+$BMStat5: Velocidade
+$BMStat6: Carisma
+$BMPlus: +
+$BMMinus: -
+$BMWears: "Quem usa: "
+$BMWearsAll: Qualquer Digimon seu pode usar.
+$BMWearsNone: Nenhum Digimon seu pode usar.
 $BMTraded: Trocado.
 $BMBought: Comprado. Réplica revende por 0 Bits.
 $BMArmed: Réplica revende por 0 Bits. Comprar?
-$BMNoRoom: Sem espaço para carregar mais.
+$BMNoRoom: Sem espaço: um material vai até 99.
 $BMNeedA: "Exige Núcleos de "
 $BMNeedB: " chefes diferentes."
 $BMNoBits: Bits insuficientes.
@@ -1537,10 +1558,10 @@ ITMNAM 352: Poder de Trovão 2
 ITMNAM 353: Poder de Trovão S
 ITMNAM 354: Poder Máquina 1
 ITMNAM 355: Poder Máquina 2
-ITMNAM 356: Metal Power S
-ITMNAM 357: Dark Power 1
-ITMNAM 358: Dark Power 2
-ITMNAM 359: Dark Power S
+ITMNAM 356: Poder Máquina S
+ITMNAM 357: Poder de Trevas 1
+ITMNAM 358: Poder de Trevas 2
+ITMNAM 359: Poder de Trevas S
 ITMNAM 360: Monmon DDNA
 ITMNAM 361: Booster 02a
 ITMNAM 362: Booster 03a
@@ -5284,7 +5305,7 @@ TALK09 126: <7>Maniac Masaki<7>Digimon Online é o<1>melhor! Espero que<1>possam
 TALK09 127: <7>Placa<7>Leste: Qing Long City<1>Oeste: Amaterasu City<1>Sul: Forest Inn<2,2>
 TALK09 128: <7>Shakkoumon<7>Parece um sonho ter o<1>Digimon Online de<1>volta novamente.<2,2><3>Nós devemos tudo ao<1>Kurt e sua equipe<1>incrível!<2,2>
 TALK09 129: <7>Zhu Que Leader<7>O quê? Você tem a<1>audácia de me desafiar?<1>Normalmente eu não<2,2><3>daria atenção nem para<1>você, mas eu aceito<1>com uma condição.<2,2><3>Primeiro você tem que<1>coletar os 5 Epic Items<1>mais fortes! Eu não<2,2><3>lutarei com você até lá.<1>Entendeu?<2,2>
-TALK09 130: <7>Zhu Que Leader<7>O quê? Você tem a<1>audácia de me<1>desafiar?<1>Então,<2,2><3>você tem os<2,2><3>5 Epic Items mais<1>fortes. Você não é tão<1>ruim assim! Muito bem.<2,2><3>Mostre−me o que você<1>tem. Eu lutarei com<1>você agora!<2,2>
+TALK09 130: <7>Zhu Que Leader<7>O quê? Você tem a<1>audácia de me<1>desafiar? Então...<2,2><3>você tem os 5 Epic<1>Items mais fortes.<1>Você não é tão ruim!<2,2><3>Muito bem. Mostre−me<1>o que você tem. Eu<1>lutarei com você agora!<2,2>
 TALK09 131: <7>Zhu Que Leader<7>Você é realmente<1>algo para me derrotar!<1>Mas lembre−se,<2,2><3>sempre há alguém<1>melhor. No momento em<1>que baixar sua<2,2><3>Defesa, você terá<1>problemas, então<1>tenha cuidado!<2,2>
 TALK09 132: <7>Bai Hu Leader<7>Oh não, outro<1>desafiante. Sem<1>ofensas, mas você não<2,2><3>está pronto<2,2><3>para lutar comigo. Se<1>você insistir, primeiro<1>encontre os 5 Epic Items<2,2><3>mais fortes<2,2><3>localizados em algum<1>lugar neste mundo. Sim,<1>isso deve ser o<2,2><3>suficiente.<2,2>
 TALK09 133: <7>Bai Hu Leader<7>Oh não, outro<1>desafiante. Hm?<1>Esses não são os 5<2,2><3>Epic Items mais <1>fortes, são?<1>Eu nunca sonhei que<2,2><3>um Tamer seria<1>capaz de obtê−los!<1>Você pode até me<2,2><3>entreter! Muito bem,<1>venha com tudo então.<2,2><3>E não me deixe<1>na mão!<2,2>
@@ -7418,11 +7439,11 @@ $VelvetTitle2: SERVER
 TALK05 79: <7>????<7>Alguém me achou numa<1>pilha de brinquedos<1>que ninguém usava.<2,2><3>...Melhor que a caixa.<2,2>
 # O comerciante da Sala Velvet (port/game/definitive_velvet.c): 8 e 9 saudações alternadas, 12 depois de uma troca, 13
 # depois de uma visita que não comprou nada.
-TALK05 8: <7>Oikawa<7>Não pergunte como<1>consegui isso... no<1>Digimundo, até os dados<1>descartados têm valor<1>para quem sabe usá-los.<2,2>
-TALK05 9: <7>Oikawa<7>Você também busca<1>poder que não<1>deveria existir? Olhe<1>rápido, não gosto de<1>chamar atenção.<2,2>
-TALK05 12: <7>Oikawa<7>Use com cuidado. Esse<1>tipo de poder cobra<1>um preço de quem o<1>carrega... eu sei bem<1>disso.<2,2>
-TALK05 13: <7>Oikawa<7>Talvez seja melhor<1>assim. Nem todo mundo<1>está pronto para<1>cruzar essa linha.<2,2>
-TALK05 77: <7>Guilmon<7>Leve a Sineta Demoníaca.<1>Os inimigos ficam mais<1>fortes e rápidos... mas<1>pagam mais Bits e<1>mais materiais.<2,2>
+TALK05 8: <7>Oikawa<7>Não pergunte como<1>consegui isso...<2,2><3>No Digimundo, até os<1>dados descartados<1>têm valor...<2,2><3>...para quem sabe<1>usá-los.<2,2>
+TALK05 9: <7>Oikawa<7>Você também busca<1>poder que não<1>deveria existir?<2,2><3>Então olhe rápido.<1>Não gosto de chamar<1>atenção.<2,2>
+TALK05 12: <7>Oikawa<7>Use com cuidado.<1>Esse tipo de poder<1>cobra um preço...<2,2><3>...de quem o carrega.<1>Eu sei bem disso.<2,2>
+TALK05 13: <7>Oikawa<7>Talvez seja melhor<1>assim.<2,2><3>Nem todo mundo está<1>pronto para cruzar<1>essa linha.<2,2>
+TALK05 77: <7>Guilmon<7>Leve a Sineta Demoníaca.<1>Os inimigos ficam<1>mais fortes e rápidos...<2,2><3>...mas pagam mais Bits<1>e mais materiais.<2,2>
 TALK05 78: <7>Guilmon<7>Devolvendo a Sineta?<1>Tudo volta ao normal.<2,2>
 ITMNAM 26: Sineta Demoníaca
 ITMINF 26: Super Difícil: inimigos fortes, prêmios dobrados.

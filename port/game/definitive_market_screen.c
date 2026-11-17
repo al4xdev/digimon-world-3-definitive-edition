@@ -8,11 +8,15 @@
  * The screen is a field overlay drawn as the Guardromon network's (definitive_travel.c): the bestiary's panels in
  * polygons, the game's font in message windows that only this file runs, fieldstg_stage.event_running held while it is
  * up (that freezes the player, the map's events and the encounters). Two tabs, L1/R1 (or left/right) to switch:
- *  - Exchange: the rare items held, one row each ("Datamon IV x2"); the confirm button on one picks the common to
- *    receive (up/down or left/right over the DEF_HUNT_MATERIALS), and each further press trades one rare item;
- *  - Replicas: def_replicas with their Bits; the cost line names the rare items the purchase would take, and the
- *    confirm button pressed twice buys.
- * A result or a refusal shows in one of the detail lines until the cursor moves.
+ *  - Exchange: the rare items held, one row each ("Datamon IV x2"); the confirm button on one turns the list into the
+ *    DEF_HUNT_MATERIALS with what is held of each, the cursor picks the common to receive, and each further press
+ *    trades one rare item;
+ *  - Replicas: def_replicas with their Bits; the detail says what the item does (its description, its stats), which of
+ *    the player's Digimon can wear it and the rare items the purchase would take, and the confirm button pressed twice
+ *    buys.
+ * The detail is written for a player who meets the screen for the first time: what a Core is worth here, what the
+ * materials are for, that the replicas spend Cores too. A result or a refusal shows in its last line until the cursor
+ * moves.
  *
  * Off in a replay script (def_on): the trader talks as the game has it. */
 #include "common.h"
@@ -33,10 +37,15 @@
 #include "psxstack/savestate.h"
 
 extern const unsigned char def_str_BMTitle[], def_str_BMTabTrade[], def_str_BMTabReplica[], def_str_BMGive[],
-    def_str_BMGet[], def_str_BMHeld[], def_str_BMCost[], def_str_BMPrice[], def_str_BMBits[], def_str_BMNone[],
-    def_str_BMTraded[], def_str_BMBought[], def_str_BMArmed[], def_str_BMNoRoom[], def_str_BMNeedA[], def_str_BMNeedB[],
-    def_str_BMNoBits[], def_str_BMBagFull[], def_str_BMKeysTrade[], def_str_BMKeysPick[], def_str_BMKeysReplica[],
-    def_str_BMKeysArmed[], def_str_HuntSpace[], def_str_HuntHeld[], def_str_RecipeSep[], def_str_Slash[];
+    def_str_BMGet[], def_str_BMHeld[], def_str_BMBits[], def_str_BMNone[], def_str_BMNoneWhere[], def_str_BMTraded[],
+    def_str_BMBought[], def_str_BMArmed[], def_str_BMNoRoom[], def_str_BMNeedA[], def_str_BMNeedB[], def_str_BMNoBits[],
+    def_str_BMBagFull[], def_str_BMKeysTrade[], def_str_BMKeysPick[], def_str_BMKeysReplica[], def_str_BMKeysArmed[],
+    def_str_BMHeadCores[], def_str_BMHeadMats[], def_str_BMHeadReplicas[], def_str_BMCoreTrade[], def_str_BMCoreForge[],
+    def_str_BMCoreKeep[], def_str_BMKindWeapon[], def_str_BMKindTwo[], def_str_BMKindArmor[], def_str_BMKindAcc[],
+    def_str_BMWears[], def_str_BMWearsAll[], def_str_BMWearsNone[], def_str_BMTakes[], def_str_BMPlus[], def_str_BMMinus[],
+    def_str_BMStat1[], def_str_BMStat2[], def_str_BMStat3[], def_str_BMStat4[], def_str_BMStat5[], def_str_BMStat6[],
+    def_str_Fire[], def_str_Water[], def_str_Ice[], def_str_Wind[], def_str_Thunder[], def_str_Machine[], def_str_Dark[],
+    def_str_HuntSpace[], def_str_HuntHeld[], def_str_RecipeSep[], def_str_Slash[];
 
 /* The trader: a figure whose own talk sets no flag and that no event script moves, so taking its talk over loses
  * nothing (tools/bm_npc_candidates.py lists the towns' figures with their lines). The pick is to confirm on the lab with
@@ -51,31 +60,45 @@ static const BmTrader traders[] = {
 };
 #define BM_TRADERS ((s32)(sizeof(traders) / sizeof(traders[0])))
 
-/* The layout (320x240), the Guardromon screen's: a title bar, the list, two detail lines and the keys. */
+/* The layout (320x240), the Guardromon screen's frame: the title bar and its tabs; the list, a heading over its rows;
+ * the detail, four lines on what the row under the cursor is, does and costs; the keys and the Bits held. All of it in
+ * the dialogues' 14-pixel font: the small one has no ',', '/' or ':' (they came out as a '0') nor accents, and its
+ * plain colour is the orange of its highlight. */
 #define BM_LAYER 0x1002 /* the field's window layer (the field menu's) */
-#define BM_LINE 14      /* a row's pitch */
+#define BM_FONT 1
+#define BM_LINE 14      /* a row's pitch: the font's height */
 #define BM_TITLE_H 23
-#define BM_ROWS 9       /* rows the list shows; it scrolls */
-#define BM_TOP 30       /* the list's first row */
+#define BM_LIST_Y 25    /* the list's panel */
+#define BM_HEAD_Y 28    /* its heading */
+#define BM_RULE_Y 44    /* the line under the heading */
+#define BM_ROWS 6       /* rows the list shows; it scrolls */
+#define BM_TOP 48       /* the first row */
 #define BM_LIST_X 2
 #define BM_LIST_W 316
+#define BM_LIST_H (BM_TOP - BM_LIST_Y + BM_ROWS * BM_LINE + 3)
 #define BM_NAME_X 18    /* a row's name, clear of the cursor */
-#define BM_COUNT_X 214  /* its count (Exchange) or price (Replicas) */
-#define BM_DETAIL_Y 162 /* the detail panel; its two lines below */
-#define BM_DETAIL_H 42
-#define BM_HINT_Y 208   /* the keys, two lines of the 14-pixel font */
+#define BM_RIGHT_X 304  /* the right column (a count, a price, the list's place) ends here */
+#define BM_DETAIL_Y (BM_LIST_Y + BM_LIST_H + 3)
+#define BM_DETAIL_LINES 4
+#define BM_DETAIL_H (BM_DETAIL_LINES * BM_LINE + 8)
+#define BM_TEXT_W (BM_RIGHT_X - BM_NAME_X) /* the room a detail line has */
+#define BM_HINT_Y 208   /* the keys, two lines */
 #define BM_TAB_X 150
 #define BM_TAB_DX 86
+/* The colours mean one thing each: white the plain text, orange the row under the cursor or what is short, green
+ * what went through or is the player's already, grey what does not apply now (the other tab, a price above the Bits
+ * held, a material that is full) and the explanations. */
 #define BM_PAL_TEXT 0
-#define BM_PAL_HOT 3  /* the row being traded or bought, a line that is short (the bestiary's orange) */
-#define BM_PAL_HELD 4 /* a replica the player holds (its green) */
-#define BM_PAL_DIM 7  /* the other tab, a price above the Bits held */
+#define BM_PAL_HOT 3
+#define BM_PAL_GOOD 4
+#define BM_PAL_DIM 7
 
 #define BM_SND_MOVE 0x8004513E
 #define BM_SND_OK 0x8004503C
 #define BM_SND_BACK 0x800450BD
 
-#define BM_FILE_ITEMS (records_language + 0x6A) /* the items' names (?SITMNAM): an entry per item ID */
+#define BM_FILE_ITEMS (records_language + DEF_TEXT_ITMNAM) /* the items' names (?SITMNAM): an entry per item ID */
+#define BM_FILE_INFO (records_language + DEF_TEXT_ITMINF)  /* and their descriptions (?SITMINF), the shops' */
 
 enum { BM_TRADE, BM_REPLICA };       /* the tabs */
 enum { BM_LIST, BM_PICK, BM_ARMED }; /* the list; the Exchange's common being chosen; a replica chosen once */
@@ -91,19 +114,23 @@ static struct {
     s32 sel; /* the row under the cursor */
     s32 top; /* the first row shown */
     s32 rows;
-    s32 common; /* the common the Exchange gives (kept between visits) */
+    s32 common; /* the common the Exchange gives (kept between visits): the materials' list's cursor */
+    s32 mtop;   /* that list's first row shown */
     s32 note;   /* a DEF_BM_* result shown in a detail line, or BM_NOTE_NONE */
     s32 bought; /* a trade or a purchase happened since the screen opened (the room's shopkeeper asks) */
     s32 layer;
     s16 rares[DEF_HUNT_RARES]; /* the Exchange's rows: the rare items held, by index of def_hunt_targets */
-    MessageWindow *title, *tabs[2], *names[BM_ROWS], *counts[BM_ROWS], *lines[2], *hint;
+    MessageWindow *title, *tabs[2], *head, *where, *names[BM_ROWS], *counts[BM_ROWS], *lines[BM_DETAIL_LINES], *hint,
+        *bits;
     MessageCursor *cursor;
 } bm_ui;
 
-/* The composed texts (a window copies its text when it is set, message_copy_line_text, so these are only scratch). */
+/* The composed texts, one buffer per window (a window copies its text when it is set, message_copy_line_text, so
+ * these are only scratch). */
 static unsigned char bm_row_text[BM_ROWS][DEF_HUNT_LINE_SIZE];
 static unsigned char bm_count_text[BM_ROWS][16];
-static unsigned char bm_line_text[2][DEF_HUNT_LINE_SIZE * 2];
+static unsigned char bm_line_text[BM_DETAIL_LINES][DEF_HUNT_LINE_SIZE * 2];
+static unsigned char bm_where_text[16], bm_bits_text[24];
 static const unsigned char bm_empty[1] = { 0 };
 
 /* A number in the game's digits (glyph 4 + d), any size (def_glyph_count stops at 99). */
@@ -124,8 +151,8 @@ static void bm_put_number(unsigned char *buf, int *p, int size, s32 n) {
     buf[*p] = 0;
 }
 
-static MessageWindow *bm_window(s32 font, s32 x, s32 y) {
-    MessageWindow *w = message_create_window(bm_ui.layer, font, x, y);
+static MessageWindow *bm_window(s32 x, s32 y) {
+    MessageWindow *w = message_create_window(bm_ui.layer, BM_FONT, x, y);
 
     w->set_ot_depth(w, 1);
     return w;
@@ -154,6 +181,59 @@ static void bm_panel(s32 x, s32 y, s32 w, s32 h, s32 band) {
     bm_rect(x, y, w, h, 107, 107, 214);
 }
 
+/* A window's text (NULL: none) and colour. */
+static void bm_set(MessageWindow *w, const unsigned char *text, s32 palette) {
+    w->set_text(w, (u8 *)(text != NULL ? text : bm_empty), -1);
+    w->set_palette(w, (u8)palette);
+}
+
+/* The same in the right column: the window is placed by the text's right end (message_measure). */
+static void bm_set_right(MessageWindow *w, const unsigned char *text, s32 palette) {
+    bm_set(w, text, palette);
+    w->measure(w, 1);
+}
+
+/* A detail line that came out wider than the panel is logged: every line is written to fit, in both languages. */
+static void bm_check_width(s32 i) {
+    MessageWindow *w = bm_ui.lines[i];
+
+    w->measure(w, 1);
+    if (w->measured_width > BM_TEXT_W) {
+        port_log("market: detail line %d is %d pixels wide, the panel holds %d", (int)i, (int)w->measured_width,
+                 BM_TEXT_W);
+    }
+    w->measure(w, 0); /* back to starting at its x */
+}
+
+static void bm_line(s32 i, const unsigned char *text, s32 palette) {
+    bm_set(bm_ui.lines[i], text, palette);
+    bm_check_width(i);
+}
+
+/* The first row to show for row `sel` to be in view, the list's first shown being `top`. */
+static s32 bm_scrolled(s32 sel, s32 top) {
+    if (sel < top) {
+        return sel;
+    }
+    if (sel >= top + BM_ROWS) {
+        return sel - BM_ROWS + 1;
+    }
+    return top;
+}
+
+/* The list on screen: the materials while the Exchange's is being picked, else the tab's rows. */
+static void bm_view(s32 *rows, s32 *sel, s32 *top) {
+    if (bm_ui.mode == BM_PICK) {
+        *rows = DEF_HUNT_MATERIALS;
+        *sel = bm_ui.common;
+        *top = bm_ui.mtop;
+    } else {
+        *rows = bm_ui.rows;
+        *sel = bm_ui.sel;
+        *top = bm_ui.top;
+    }
+}
+
 /* The tab's rows: the replicas, or the rare items held (`keep`: the cursor stays on the rare it was on, while that is
  * still there). */
 static void bm_collect(s32 keep) {
@@ -176,15 +256,11 @@ static void bm_collect(s32 keep) {
     if (bm_ui.sel >= bm_ui.rows) {
         bm_ui.sel = bm_ui.rows > 0 ? bm_ui.rows - 1 : 0;
     }
-    if (bm_ui.sel < bm_ui.top) {
-        bm_ui.top = bm_ui.sel;
-    } else if (bm_ui.sel >= bm_ui.top + BM_ROWS) {
-        bm_ui.top = bm_ui.sel - BM_ROWS + 1;
-    }
+    bm_ui.top = bm_scrolled(bm_ui.sel, bm_ui.top);
 }
 
-/* A result's text for the detail lines; NULL for what the tab's lines show by themselves (a replica's missing bosses
- * are already its first line, in orange). */
+/* A result's text for the last detail line; NULL for what the lines show by themselves (a replica's missing bosses
+ * are already its cost line, in orange). */
 static const unsigned char *bm_note_text(void) {
     switch (bm_ui.note) {
     case DEF_BM_OK:
@@ -201,24 +277,153 @@ static const unsigned char *bm_note_text(void) {
     return NULL;
 }
 
-/* The detail of the Exchange: "Give: Datamon IV x1" and "Get: Data Chip x12   Held: 30/99" (orange while it is the
- * line being chosen, or while the lot would not fit). */
+/* A stat's name (RecordsBonusStat), NULL for one the line leaves out: 7 (all of them) is no item's, and 17-21 are
+ * the rings' resistances, which their description names. The elements' are the Inspect panel's. */
+static const unsigned char *bm_stat_name(s32 stat) {
+    static const unsigned char *const names[] = {
+        NULL,          def_str_BMStat1, def_str_BMStat2, def_str_BMStat3,   def_str_BMStat4,
+        def_str_BMStat5, def_str_BMStat6, NULL,          def_str_Fire,      def_str_Water,
+        def_str_Ice,   def_str_Wind,    def_str_Thunder, def_str_Machine,   def_str_Dark,
+    };
+
+    return stat > 0 && stat < (s32)(sizeof(names) / sizeof(names[0])) ? names[stat] : NULL;
+}
+
+/* "   Strength +114" after the line so far; nothing for a stat without a name, or a 0. */
+static void bm_put_stat(unsigned char *buf, int *p, int size, s32 stat, s32 value) {
+    const unsigned char *name = bm_stat_name(stat);
+
+    if (name == NULL || value == 0) {
+        return;
+    }
+    def_glyph_put(buf, p, size, def_str_HuntSpace);
+    def_glyph_put(buf, p, size, def_str_HuntSpace);
+    def_glyph_put(buf, p, size, def_str_HuntSpace);
+    def_glyph_put(buf, p, size, name);
+    def_glyph_put(buf, p, size, def_str_HuntSpace);
+    def_glyph_put(buf, p, size, value > 0 ? def_str_BMPlus : def_str_BMMinus);
+    bm_put_number(buf, p, size, value > 0 ? value : -value);
+}
+
+/* What kind of equipment `item` is and what it adds, read from its data as the shops do (a variant's are its own):
+ * "Weapon   Strength +114   Spirit +5". A crest adds no stat: its description says what it does. */
+static void bm_stats_line(unsigned char *buf, int size, s32 item) {
+    RecordsItem *it = records_funcs.get_item(item);
+    int p = 0, k;
+
+    buf[0] = 0;
+    if (it == NULL || it->data == NULL) {
+        return;
+    }
+    if (it->category == RECORDS_ITEM_WEAPON) {
+        const RecordsWeapon *w = it->data;
+
+        def_glyph_put(buf, &p, size, w->slot == 7 ? def_str_BMKindTwo : def_str_BMKindWeapon);
+        bm_put_stat(buf, &p, size, RECORDS_BONUS_POWER, w->power);
+        for (k = 0; k < 2; k++) {
+            bm_put_stat(buf, &p, size, w->bonus_stats[k], w->bonus_values[k]);
+        }
+    } else if (it->category == RECORDS_ITEM_ARMOR) {
+        const RecordsArmor *a = it->data;
+
+        def_glyph_put(buf, &p, size, def_str_BMKindArmor);
+        bm_put_stat(buf, &p, size, RECORDS_BONUS_GUARD, a->guard);
+        for (k = 0; k < 2; k++) {
+            bm_put_stat(buf, &p, size, a->bonus_stats[k], a->bonus_values[k]);
+        }
+    } else if (it->category == RECORDS_ITEM_ACCESSORY) {
+        const RecordsAccessory *a = it->data;
+
+        def_glyph_put(buf, &p, size, def_str_BMKindAcc);
+        bm_put_stat(buf, &p, size, a->bonus_stat, a->bonus_value);
+    }
+}
+
+/* Which of the player's Digimon (those that joined) can wear `item`: RecordsEquip.members, bit i for
+ * gamestate_data.digimon[i] (stitshop_can_equip). Most weapons fit one to three of the eight, so this is what keeps
+ * a player from paying for one nobody in the party can hold; the line is orange then. Its colour is returned. */
+static s32 bm_wear_line(unsigned char *buf, int size, s32 item) {
+    RecordsItem *it = records_funcs.get_item(item);
+    const RecordsEquip *eq;
+    int p = 0;
+    s32 i, joined = 0, can = 0, n = (s32)(sizeof(gamestate_data.digimon) / sizeof(gamestate_data.digimon[0]));
+
+    buf[0] = 0;
+    if (it == NULL || it->data == NULL || it->category < RECORDS_ITEM_WEAPON) {
+        return BM_PAL_TEXT;
+    }
+    eq = it->data;
+    for (i = 0; i < n; i++) {
+        if (gamestate_data.digimon[i].joined != 0) {
+            joined++;
+            can += (eq->members >> i) & 1;
+        }
+    }
+    if (can == 0) {
+        def_glyph_put(buf, &p, size, def_str_BMWearsNone);
+        return BM_PAL_HOT;
+    }
+    if (can == joined && joined > 1) {
+        def_glyph_put(buf, &p, size, def_str_BMWearsAll);
+        return BM_PAL_TEXT;
+    }
+    def_glyph_put(buf, &p, size, def_str_BMWears);
+    for (i = 0, can = 0; i < n; i++) {
+        if (gamestate_data.digimon[i].joined != 0 && ((eq->members >> i) & 1)) {
+            if (can++ > 0) {
+                def_glyph_put(buf, &p, size, def_str_RecipeSep);
+            }
+            def_glyph_put(buf, &p, size, (const unsigned char *)gamestate_data.digimon[i].record.name);
+        }
+    }
+    return BM_PAL_TEXT;
+}
+
+/* The rare items a purchase would take ("Takes: Datamon IV, Bulbmon III"), or what is missing (orange). Its colour
+ * is returned. */
+static s32 bm_cost_line(unsigned char *buf, int size) {
+    int picks[DEF_BM_REPLICA_RARES], p = 0, k;
+
+    buf[0] = 0;
+    if (!def_bm_replica_pick(picks)) {
+        def_glyph_put(buf, &p, size, def_str_BMNeedA);
+        bm_put_number(buf, &p, size, DEF_BM_REPLICA_RARES);
+        def_glyph_put(buf, &p, size, def_str_BMNeedB);
+        return BM_PAL_HOT;
+    }
+    def_glyph_put(buf, &p, size, def_str_BMTakes);
+    for (k = 0; k < DEF_BM_REPLICA_RARES; k++) {
+        if (k > 0) {
+            def_glyph_put(buf, &p, size, def_str_RecipeSep);
+        }
+        def_hunt_target_name(buf, &p, size, picks[k]);
+    }
+    return BM_PAL_TEXT;
+}
+
+/* The Exchange's detail. On the list: what a Core is worth here, what the materials are for, and the replicas'
+ * claim on the same Cores (or, with none held, where they come from). Picking: "Give: Datamon IV x1   Held: 3" and
+ * "Get: Data Chip x12   Held: 30/99", that one orange with a warning under it while the lot would not fit. */
 static void bm_fill_trade(void) {
     unsigned char *a = bm_line_text[0], *b = bm_line_text[1];
     int pa = 0, pb = 0, size = sizeof(bm_line_text[0]);
-    s32 rare = bm_ui.sel < bm_ui.rows ? bm_ui.rares[bm_ui.sel] : -1;
+    s32 rare = bm_ui.sel < bm_ui.rows ? bm_ui.rares[bm_ui.sel] : -1, fits;
 
-    a[0] = b[0] = 0;
-    if (rare < 0) {
-        bm_ui.lines[0]->set_text(bm_ui.lines[0], (u8 *)def_str_BMNone, -1);
-        bm_ui.lines[1]->set_text(bm_ui.lines[1], (u8 *)bm_empty, -1);
+    if (bm_ui.mode != BM_PICK || rare < 0) {
+        bm_line(0, rare < 0 ? def_str_BMNone : def_str_BMCoreTrade, BM_PAL_TEXT);
+        bm_line(1, rare < 0 ? def_str_BMNoneWhere : def_str_BMCoreForge, rare < 0 ? BM_PAL_DIM : BM_PAL_TEXT);
+        bm_line(2, rare < 0 ? NULL : def_str_BMCoreKeep, BM_PAL_DIM);
+        bm_line(3, NULL, BM_PAL_TEXT);
         return;
     }
+    a[0] = b[0] = 0;
     def_glyph_put(a, &pa, size, def_str_BMGive);
     def_hunt_target_name(a, &pa, size, rare);
     def_glyph_put(a, &pa, size, def_str_HuntSpace);
     def_glyph_put(a, &pa, size, def_str_HuntHeld);
     bm_put_number(a, &pa, size, 1);
+    def_glyph_put(a, &pa, size, def_str_BMHeld);
+    bm_put_number(a, &pa, size, def_record_rare(rare));
     def_glyph_put(b, &pb, size, def_str_BMGet);
     def_glyph_put(b, &pb, size, def_hunt_material_name(bm_ui.common));
     def_glyph_put(b, &pb, size, def_str_HuntSpace);
@@ -228,116 +433,137 @@ static void bm_fill_trade(void) {
     bm_put_number(b, &pb, size, def_record_material(bm_ui.common));
     def_glyph_put(b, &pb, size, def_str_Slash);
     bm_put_number(b, &pb, size, DEF_HUNT_MATERIAL_CAP);
-    bm_ui.lines[0]->set_text(bm_ui.lines[0], (u8 *)a, -1);
-    bm_ui.lines[1]->set_text(bm_ui.lines[1], (u8 *)b, -1);
-    bm_ui.lines[1]->set_palette(bm_ui.lines[1],
-                                bm_ui.mode == BM_PICK || def_bm_exchange_check(rare, bm_ui.common) == DEF_BM_NO_ROOM
-                                    ? BM_PAL_HOT
-                                    : BM_PAL_TEXT);
+    fits = def_bm_exchange_check(rare, bm_ui.common) != DEF_BM_NO_ROOM;
+    bm_line(0, a, BM_PAL_TEXT);
+    bm_line(1, b, fits ? BM_PAL_TEXT : BM_PAL_HOT);
+    bm_line(2, fits ? NULL : def_str_BMNoRoom, BM_PAL_HOT);
+    bm_line(3, NULL, BM_PAL_TEXT);
 }
 
-/* The detail of a replica: "Cost: Datamon IV, Bulbmon III" (the rare items it would take) and "Price: 40000 Bits
- * Held: 123456", orange while short; armed, the warning that a replica resells for nothing. */
+/* A replica's detail: what it does (the shops' description of the item), its kind and stats, who can wear it, and the
+ * rare items it would take. Chosen once (armed), the last two are the cost and the warning that a replica resells for
+ * nothing; a replica none of the player's Digimon can wear keeps saying so then, in the stats' place (one that joins
+ * later may wear it, so the purchase is not refused). */
 static void bm_fill_replica(void) {
-    unsigned char *a = bm_line_text[0], *b = bm_line_text[1];
-    int pa = 0, pb = 0, size = sizeof(bm_line_text[0]), picks[DEF_BM_REPLICA_RARES], k;
-    s32 r = bm_ui.sel;
-    s32 ok = def_bm_replica_pick(picks);
+    int size = sizeof(bm_line_text[0]);
+    s32 r = bm_ui.sel, item, wear;
 
-    a[0] = b[0] = 0;
-    if (ok) {
-        def_glyph_put(a, &pa, size, def_str_BMCost);
-        for (k = 0; k < DEF_BM_REPLICA_RARES; k++) {
-            if (k > 0) {
-                def_glyph_put(a, &pa, size, def_str_RecipeSep);
-            }
-            def_hunt_target_name(a, &pa, size, picks[k]);
+    if (r >= bm_ui.rows) {
+        for (r = 0; r < BM_DETAIL_LINES; r++) {
+            bm_line(r, NULL, BM_PAL_TEXT);
         }
-    } else {
-        def_glyph_put(a, &pa, size, def_str_BMNeedA);
-        bm_put_number(a, &pa, size, DEF_BM_REPLICA_RARES);
-        def_glyph_put(a, &pa, size, def_str_BMNeedB);
-    }
-    bm_ui.lines[0]->set_text(bm_ui.lines[0], (u8 *)a, -1);
-    bm_ui.lines[0]->set_palette(bm_ui.lines[0], ok ? BM_PAL_TEXT : BM_PAL_HOT);
-    if (bm_ui.mode == BM_ARMED) {
-        bm_ui.lines[1]->set_text(bm_ui.lines[1], (u8 *)def_str_BMArmed, -1);
-        bm_ui.lines[1]->set_palette(bm_ui.lines[1], BM_PAL_HOT);
         return;
     }
-    def_glyph_put(b, &pb, size, def_str_BMPrice);
-    bm_put_number(b, &pb, size, def_replicas[r].bits);
-    def_glyph_put(b, &pb, size, def_str_BMBits);
-    def_glyph_put(b, &pb, size, def_str_BMHeld);
-    bm_put_number(b, &pb, size, gamestate_data.money);
-    bm_ui.lines[1]->set_text(bm_ui.lines[1], (u8 *)b, -1);
-    bm_ui.lines[1]->set_palette(bm_ui.lines[1], gamestate_data.money < def_replicas[r].bits ? BM_PAL_HOT : BM_PAL_TEXT);
+    item = def_replicas[r].item;
+    bm_ui.lines[0]->set_text(bm_ui.lines[0], cdload_module.files.get_file(BM_FILE_INFO), item);
+    bm_ui.lines[0]->set_palette(bm_ui.lines[0], BM_PAL_TEXT);
+    bm_check_width(0);
+    wear = bm_wear_line(bm_line_text[2], size, item);
+    if (bm_ui.mode == BM_ARMED) {
+        if (wear == BM_PAL_HOT) {
+            bm_line(1, bm_line_text[2], wear);
+        } else {
+            bm_stats_line(bm_line_text[1], size, item);
+            bm_line(1, bm_line_text[1], BM_PAL_TEXT);
+        }
+        bm_line(2, bm_line_text[3], bm_cost_line(bm_line_text[3], size));
+        bm_line(3, def_str_BMArmed, BM_PAL_HOT);
+        return;
+    }
+    bm_stats_line(bm_line_text[1], size, item);
+    bm_line(1, bm_line_text[1], BM_PAL_TEXT);
+    bm_line(2, bm_line_text[2], wear);
+    bm_line(3, bm_line_text[3], bm_cost_line(bm_line_text[3], size));
 }
 
 /* Fills the windows from the state. */
 static void bm_fill(void) {
     const unsigned char *note;
-    s32 i, k, palette;
+    s32 picking = bm_ui.mode == BM_PICK, rows, sel, top, i, k, palette, right;
     int p;
 
+    bm_view(&rows, &sel, &top);
     bm_ui.tabs[0]->set_palette(bm_ui.tabs[0], bm_ui.tab == BM_TRADE ? BM_PAL_HOT : BM_PAL_DIM);
     bm_ui.tabs[1]->set_palette(bm_ui.tabs[1], bm_ui.tab == BM_REPLICA ? BM_PAL_HOT : BM_PAL_DIM);
+    bm_set(bm_ui.head,
+           picking ? def_str_BMHeadMats : bm_ui.tab == BM_TRADE ? def_str_BMHeadCores : def_str_BMHeadReplicas,
+           BM_PAL_DIM);
+    /* where the cursor is, in a list longer than the panel: "3/16" */
+    p = 0;
+    bm_where_text[0] = 0;
+    if (rows > BM_ROWS) {
+        bm_put_number(bm_where_text, &p, sizeof(bm_where_text), sel + 1);
+        def_glyph_put(bm_where_text, &p, sizeof(bm_where_text), def_str_Slash);
+        bm_put_number(bm_where_text, &p, sizeof(bm_where_text), rows);
+    }
+    bm_set_right(bm_ui.where, bm_where_text, BM_PAL_DIM);
     for (i = 0; i < BM_ROWS; i++) {
-        k = bm_ui.top + i;
+        k = top + i;
         p = 0;
         bm_row_text[i][0] = bm_count_text[i][0] = 0;
-        palette = k == bm_ui.sel && bm_ui.mode != BM_LIST ? BM_PAL_HOT : BM_PAL_TEXT;
-        if (k >= bm_ui.rows) {
-            bm_ui.names[i]->set_text(bm_ui.names[i], (u8 *)bm_empty, -1);
-            bm_ui.counts[i]->set_text(bm_ui.counts[i], (u8 *)bm_empty, -1);
+        if (k >= rows) {
+            bm_set(bm_ui.names[i], NULL, BM_PAL_TEXT);
+            bm_set_right(bm_ui.counts[i], NULL, BM_PAL_TEXT);
             continue;
         }
-        if (bm_ui.tab == BM_TRADE) {
+        palette = k == sel ? BM_PAL_HOT : BM_PAL_TEXT;
+        right = BM_PAL_TEXT;
+        if (picking) {
+            /* a material and what is held of it against the cap, grey when the lot would not fit */
+            def_glyph_put(bm_row_text[i], &p, sizeof(bm_row_text[i]), def_hunt_material_name(k));
+            p = 0;
+            bm_put_number(bm_count_text[i], &p, sizeof(bm_count_text[i]), def_record_material(k));
+            def_glyph_put(bm_count_text[i], &p, sizeof(bm_count_text[i]), def_str_Slash);
+            bm_put_number(bm_count_text[i], &p, sizeof(bm_count_text[i]), DEF_HUNT_MATERIAL_CAP);
+            if (def_record_material(k) + DEF_BM_COMMONS > DEF_HUNT_MATERIAL_CAP) {
+                right = BM_PAL_DIM;
+                palette = palette == BM_PAL_TEXT ? BM_PAL_DIM : palette;
+            }
+            bm_set(bm_ui.names[i], bm_row_text[i], palette);
+        } else if (bm_ui.tab == BM_TRADE) {
             def_hunt_target_name(bm_row_text[i], &p, sizeof(bm_row_text[i]), bm_ui.rares[k]);
-            bm_ui.names[i]->set_text(bm_ui.names[i], (u8 *)bm_row_text[i], -1);
             p = 0;
             def_glyph_put(bm_count_text[i], &p, sizeof(bm_count_text[i]), def_str_HuntHeld);
             bm_put_number(bm_count_text[i], &p, sizeof(bm_count_text[i]), def_record_rare(bm_ui.rares[k]));
-            bm_ui.counts[i]->set_palette(bm_ui.counts[i], palette);
+            bm_set(bm_ui.names[i], bm_row_text[i], palette);
         } else {
-            bm_ui.names[i]->set_text(bm_ui.names[i], cdload_module.files.get_file(BM_FILE_ITEMS), def_replicas[k].item);
+            /* a replica, green once the player has one; its price grey above the Bits held */
             if (palette == BM_PAL_TEXT && def_record_replica(k)) {
-                palette = BM_PAL_HELD;
+                palette = BM_PAL_GOOD;
             }
+            bm_ui.names[i]->set_text(bm_ui.names[i], cdload_module.files.get_file(BM_FILE_ITEMS), def_replicas[k].item);
+            bm_ui.names[i]->set_palette(bm_ui.names[i], palette);
             bm_put_number(bm_count_text[i], &p, sizeof(bm_count_text[i]), def_replicas[k].bits);
-            bm_ui.counts[i]->set_palette(bm_ui.counts[i],
-                                         gamestate_data.money < def_replicas[k].bits ? BM_PAL_DIM : BM_PAL_TEXT);
+            right = gamestate_data.money < def_replicas[k].bits ? BM_PAL_DIM : BM_PAL_TEXT;
         }
-        bm_ui.names[i]->set_palette(bm_ui.names[i], palette);
-        bm_ui.counts[i]->set_text(bm_ui.counts[i], (u8 *)bm_count_text[i], -1);
+        bm_set_right(bm_ui.counts[i], bm_count_text[i], k == sel && right == BM_PAL_TEXT ? BM_PAL_HOT : right);
     }
-    bm_ui.lines[0]->set_palette(bm_ui.lines[0], BM_PAL_TEXT);
     if (bm_ui.tab == BM_TRADE) {
         bm_fill_trade();
     } else {
         bm_fill_replica();
     }
-    /* a result takes the line that changes least: the Exchange's "Give:" (its "Get:" line shows the count going up as
-     * the player trades on), a replica's price */
+    /* a result or a refusal takes the last line (a full material's warning is already the line above it) */
     note = bm_note_text();
-    if (note != NULL) {
-        MessageWindow *at = bm_ui.lines[bm_ui.tab == BM_TRADE ? 0 : 1];
-
-        at->set_text(at, (u8 *)note, -1);
-        at->set_palette(at, bm_ui.note == DEF_BM_OK ? BM_PAL_HELD : BM_PAL_HOT);
+    if (note != NULL && !(picking && bm_ui.note == DEF_BM_NO_ROOM)) {
+        bm_line(3, note, bm_ui.note == DEF_BM_OK ? BM_PAL_GOOD : BM_PAL_HOT);
     }
     if (bm_ui.tab == BM_TRADE) {
-        bm_ui.hint->set_text(bm_ui.hint, (u8 *)(bm_ui.mode == BM_PICK ? def_str_BMKeysPick : def_str_BMKeysTrade), -1);
+        bm_ui.hint->set_text(bm_ui.hint, (u8 *)(picking ? def_str_BMKeysPick : def_str_BMKeysTrade), -1);
     } else {
         bm_ui.hint->set_text(bm_ui.hint, (u8 *)(bm_ui.mode == BM_ARMED ? def_str_BMKeysArmed : def_str_BMKeysReplica),
                              -1);
     }
-    if (bm_ui.mode == BM_PICK) {
-        bm_ui.cursor->set_pos(bm_ui.cursor, BM_LIST_X + 4, BM_DETAIL_Y + 4 + BM_LINE);
-    } else {
-        bm_ui.cursor->set_pos(bm_ui.cursor, BM_LIST_X + 4, BM_TOP + (bm_ui.sel - bm_ui.top) * BM_LINE);
-    }
-    bm_ui.cursor->show(bm_ui.cursor, bm_ui.rows > 0);
+    /* the Bits held, orange under a replica they do not pay for (its price is grey in the list) */
+    p = 0;
+    bm_put_number(bm_bits_text, &p, sizeof(bm_bits_text), gamestate_data.money);
+    def_glyph_put(bm_bits_text, &p, sizeof(bm_bits_text), def_str_BMBits);
+    bm_set_right(bm_ui.bits, bm_bits_text,
+                 bm_ui.tab == BM_REPLICA && bm_ui.sel < bm_ui.rows && gamestate_data.money < def_replicas[bm_ui.sel].bits
+                     ? BM_PAL_HOT
+                     : BM_PAL_TEXT);
+    bm_ui.cursor->set_pos(bm_ui.cursor, BM_LIST_X + 4, BM_TOP + (sel - top) * BM_LINE);
+    bm_ui.cursor->show(bm_ui.cursor, rows > 0);
 }
 
 static void bm_open(void) {
@@ -350,21 +576,24 @@ static void bm_open(void) {
         ((void (*)(void *, s32))player->base.set_step)(player, 1);
     }
     bm_ui.layer = BM_LAYER;
-    bm_ui.title = bm_window(1, 8, 5);
+    bm_ui.title = bm_window(8, 5);
     bm_ui.title->set_text(bm_ui.title, (u8 *)def_str_BMTitle, -1);
-    bm_ui.tabs[0] = bm_window(1, BM_TAB_X, 5);
+    bm_ui.tabs[0] = bm_window(BM_TAB_X, 5);
     bm_ui.tabs[0]->set_text(bm_ui.tabs[0], (u8 *)def_str_BMTabTrade, -1);
-    bm_ui.tabs[1] = bm_window(1, BM_TAB_X + BM_TAB_DX, 5);
+    bm_ui.tabs[1] = bm_window(BM_TAB_X + BM_TAB_DX, 5);
     bm_ui.tabs[1]->set_text(bm_ui.tabs[1], (u8 *)def_str_BMTabReplica, -1);
+    bm_ui.head = bm_window(BM_NAME_X, BM_HEAD_Y);
+    bm_ui.where = bm_window(BM_RIGHT_X, BM_HEAD_Y);
     for (i = 0; i < BM_ROWS; i++) {
-        bm_ui.names[i] = bm_window(2, BM_NAME_X, BM_TOP + i * BM_LINE);
-        bm_ui.counts[i] = bm_window(2, BM_COUNT_X, BM_TOP + i * BM_LINE);
+        bm_ui.names[i] = bm_window(BM_NAME_X, BM_TOP + i * BM_LINE);
+        bm_ui.counts[i] = bm_window(BM_RIGHT_X, BM_TOP + i * BM_LINE);
     }
-    for (i = 0; i < 2; i++) {
-        bm_ui.lines[i] = bm_window(2, BM_NAME_X, BM_DETAIL_Y + 4 + i * BM_LINE);
+    for (i = 0; i < BM_DETAIL_LINES; i++) {
+        bm_ui.lines[i] = bm_window(BM_NAME_X, BM_DETAIL_Y + 4 + i * BM_LINE);
     }
-    bm_ui.hint = bm_window(1, 8, BM_HINT_Y + 2);
+    bm_ui.hint = bm_window(8, BM_HINT_Y + 2);
     bm_ui.hint->set_page_lines(bm_ui.hint, 2);
+    bm_ui.bits = bm_window(BM_RIGHT_X + 8, BM_HINT_Y + 2);
     bm_ui.cursor = message_create_cursor(bm_ui.layer, 1, BM_LIST_X + 4, BM_TOP);
     bm_ui.open = 1;
     bm_ui.fresh = 1;
@@ -377,6 +606,7 @@ static void bm_open(void) {
     if (bm_ui.common < 0 || bm_ui.common >= DEF_HUNT_MATERIALS) {
         bm_ui.common = 0;
     }
+    bm_ui.mtop = bm_scrolled(bm_ui.common, 0);
     bm_collect(0);
     bm_fill();
     port_log("market: frame %ld: the Black Market on map 0x%X (%d rare items held)", port_frames,
@@ -384,8 +614,8 @@ static void bm_open(void) {
 }
 
 static void bm_close(void) {
-    MessageWindow **all[] = { &bm_ui.title, &bm_ui.tabs[0], &bm_ui.tabs[1], &bm_ui.lines[0], &bm_ui.lines[1],
-                              &bm_ui.hint };
+    MessageWindow **all[] = { &bm_ui.title, &bm_ui.tabs[0], &bm_ui.tabs[1], &bm_ui.head, &bm_ui.where, &bm_ui.hint,
+                              &bm_ui.bits };
     s32 i;
 
     for (i = 0; i < (s32)(sizeof(all) / sizeof(all[0])); i++) {
@@ -396,6 +626,10 @@ static void bm_close(void) {
         heap_objects.stop((Object *)bm_ui.names[i]);
         heap_objects.stop((Object *)bm_ui.counts[i]);
         bm_ui.names[i] = bm_ui.counts[i] = NULL;
+    }
+    for (i = 0; i < BM_DETAIL_LINES; i++) {
+        heap_objects.stop((Object *)bm_ui.lines[i]);
+        bm_ui.lines[i] = NULL;
     }
     heap_objects.stop((Object *)bm_ui.cursor);
     bm_ui.cursor = NULL;
@@ -409,23 +643,36 @@ static void bm_run_windows(void) {
     heap_objects.try_run((Object *)bm_ui.title);
     heap_objects.try_run((Object *)bm_ui.tabs[0]);
     heap_objects.try_run((Object *)bm_ui.tabs[1]);
+    heap_objects.try_run((Object *)bm_ui.head);
+    heap_objects.try_run((Object *)bm_ui.where);
     for (i = 0; i < BM_ROWS; i++) {
         heap_objects.try_run((Object *)bm_ui.names[i]);
         heap_objects.try_run((Object *)bm_ui.counts[i]);
     }
-    heap_objects.try_run((Object *)bm_ui.lines[0]);
-    heap_objects.try_run((Object *)bm_ui.lines[1]);
+    for (i = 0; i < BM_DETAIL_LINES; i++) {
+        heap_objects.try_run((Object *)bm_ui.lines[i]);
+    }
     heap_objects.try_run((Object *)bm_ui.hint);
+    heap_objects.try_run((Object *)bm_ui.bits);
     heap_objects.try_run((Object *)bm_ui.cursor);
 }
 
 static void bm_draw(void) {
-    /* the row being traded or bought: a bar behind it (drawn before the panels' fill, which then covers all but it) */
-    if (bm_ui.mode != BM_LIST && bm_ui.sel >= bm_ui.top && bm_ui.sel < bm_ui.top + BM_ROWS) {
-        bm_rect(BM_LIST_X + 3, BM_TOP + (bm_ui.sel - bm_ui.top) * BM_LINE - 2, BM_LIST_W - 6, BM_LINE, 74, 41, 0);
+    s32 rows, sel, top;
+
+    /* the row under the cursor: a band behind it (added before the panels' fill, which then covers all but it), brown
+     * while a trade or a purchase is under way, the title's blue otherwise */
+    bm_view(&rows, &sel, &top);
+    if (rows > 0 && sel >= top && sel < top + BM_ROWS) {
+        if (bm_ui.mode != BM_LIST) {
+            bm_rect(BM_LIST_X + 3, BM_TOP + (sel - top) * BM_LINE - 1, BM_LIST_W - 6, BM_LINE, 74, 41, 0);
+        } else {
+            bm_rect(BM_LIST_X + 3, BM_TOP + (sel - top) * BM_LINE - 1, BM_LIST_W - 6, BM_LINE, 0, 0, 74);
+        }
     }
+    bm_rect(BM_LIST_X + 8, BM_RULE_Y, BM_LIST_W - 16, 1, 107, 107, 214); /* the heading's rule */
     bm_panel(0, 0, 320, BM_TITLE_H, 1);
-    bm_panel(BM_LIST_X, BM_TOP - 5, BM_LIST_W, BM_ROWS * BM_LINE + 8, 0);
+    bm_panel(BM_LIST_X, BM_LIST_Y, BM_LIST_W, BM_LIST_H, 0);
     bm_panel(BM_LIST_X, BM_DETAIL_Y, BM_LIST_W, BM_DETAIL_H, 0);
     bm_panel(0, BM_HINT_Y, 320, 240 - BM_HINT_Y, 0);
 }
@@ -440,11 +687,7 @@ static void bm_move(s32 d) {
         return;
     }
     bm_ui.sel = (bm_ui.sel + d + bm_ui.rows) % bm_ui.rows;
-    if (bm_ui.sel < bm_ui.top) {
-        bm_ui.top = bm_ui.sel;
-    } else if (bm_ui.sel >= bm_ui.top + BM_ROWS) {
-        bm_ui.top = bm_ui.sel - BM_ROWS + 1;
-    }
+    bm_ui.top = bm_scrolled(bm_ui.sel, bm_ui.top);
     bm_ui.note = BM_NOTE_NONE;
     sound_module.play(BM_SND_MOVE);
     bm_fill();
@@ -455,6 +698,7 @@ static void bm_pick_input(void) {
 
     if (d != 0) {
         bm_ui.common = (bm_ui.common + d + DEF_HUNT_MATERIALS) % DEF_HUNT_MATERIALS;
+        bm_ui.mtop = bm_scrolled(bm_ui.common, bm_ui.mtop);
         bm_ui.note = BM_NOTE_NONE;
         sound_module.play(BM_SND_MOVE);
         bm_fill();
@@ -496,7 +740,8 @@ static void bm_list_input(void) {
             sound_module.play(BM_SND_BACK); /* nothing to trade: the first line says so */
         } else if (bm_ui.tab == BM_TRADE) {
             sound_module.play(BM_SND_OK);
-            bm_ui.mode = BM_PICK;
+            bm_ui.mode = BM_PICK; /* the list becomes the materials, the cursor on the one picked last time */
+            bm_ui.mtop = bm_scrolled(bm_ui.common, bm_ui.mtop);
             bm_ui.note = BM_NOTE_NONE;
         } else if (bm_ui.mode == BM_ARMED) {
             bm_ui.note = def_bm_replica_buy(bm_ui.sel);
@@ -558,7 +803,8 @@ int def_bm_talk(s32 map, s32 actor_key1) {
     if (i >= BM_TRADERS) {
         return 0;
     }
-    cdload_module.queue_file(BM_FILE_ITEMS); /* the replicas' names, read by the list */
+    cdload_module.queue_file(BM_FILE_ITEMS); /* the replicas' names, read by the list, */
+    cdload_module.queue_file(BM_FILE_INFO);  /* and their descriptions, by the detail */
     bm_ui.request = 1;
     fieldstg_stage.event_running = 1; /* frozen from this frame on, as the screen will hold it */
     port_log("market: the trader of map 0x%X (actor %d) talked to", map, actor_key1);
