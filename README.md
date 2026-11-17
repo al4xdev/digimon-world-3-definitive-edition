@@ -1072,8 +1072,9 @@ room, entered by a **blue door in each inn** (13 door positions, e.g. map 0x20A 
 (1074,604), 0x263 at (383,235), 0x269 at (553,262), 0x26D at (396,520), 0x26F at (1156,833), plus the second-server
 copies; the table is `vl_doors` with a comment per wall). Depth 3, `VL_RADIUS` 12.
 
-- Music: the pair `music` 0x3B with `sound` 0x60EC0000 (**set `sound`, not only `music`**). Map title "VELVET /
-  SERVER". Exit is the front door at (205,348); the top door is closed.
+- Music: the pair `music` 0x3B with `sound` 0x60EC0000 (**set `sound`, not only `music`**), unless the room's own
+  arrangement was generated: then bank 72 and key `0x61200000` (`dw3_velvet_music`, see "The room's own music" below).
+  Map title "VELVET / SERVER". Exit is the front door at (205,348); the top door is closed.
 - Actors (`FieldstgPlacedActor` + `FieldstgTalk`):
   - **Oikawa**, the Black Market trader (hand-drawn, actor 42 at (275,255), dir 1, `no_turn`); TALK05 8/9/12/13.
   - **The mentor** (the Gennai old man, actor 0x39 on the organ stage at (318,165), dir 1); TALK05 81/82.
@@ -1091,7 +1092,7 @@ copies; the table is `vl_doors` with a comment per wall). Depth 3, `VL_RADIUS` 1
 - **Pitfalls:** a `POLY_F4` with semi-transparency dirties the void; the layer draws what was added last, first; the
   wstag handlers table is shifted by +1.
 - **Pending:** door sprites are to be hand-drawn and moved beside the wardrobes; the owner's approval of the 13 door
-  positions; the room's music (the owner will compose); FR/IT/DE/ES translations of port texts; a save inside the room;
+  positions; FR/IT/DE/ES translations of port texts; a save inside the room;
   the owner will arrange the room (Sepikmon's spot is next to the entrance).
 
 ### Velvet Room: details, decisions and history
@@ -1114,6 +1115,25 @@ and cupboards of the maps, as in the original text of "section 6" below, instead
 **How it works.** The entrance is a blue door (an upright rectangle against a wall) in the inn a few steps from the Guardromon; stepping on its
 foot (radius 12 px) calls `fieldstg_goto_map(0x20F, entry, 215, 335, dir 1)` with the warp sound; `vl_from` remembers the inn. In room mode (`vl_room`,
 RAM) `wstag255_setup` ends by calling `dw3_velvet_stage_setup`, which swaps `fieldstg_stage.actors` for the NPCs, the music, and paints the void.
+**The room's own music** (commit `8042491`, 2026-11-17; the owner listened and accepted it, smoothing included):
+an octet arrangement played by the game's own sequencer (LIBSND, `SsSeqCalledTbyT` every vsync), not a WAV.
+`tools/gen_velvet_music.py` runs at CMake configure: it reads the owner's local MIDI (never committed nor shipped; path
+in the script, `DW3_VELVET_MIDI` overrides) and the disc, and writes the gitignored
+`port/game/definitive_velvet_music.inc`; without the MIDI or the disc nothing is written and the room keeps bank 59
+(`ENV019`). `port/game/definitive_velvet_music.c` serves bank 72, a copy of BGM031's files with its own SEP score
+(sequence 0 the piece, 15 empty ones) and patched tones, through `PC_PORT` hooks in `src/main/sound.c`
+(`dw3_velvet_sound_bank/header/body/music/stopped/silenced`). The mix: eight parts on their own channels (horn and
+double bass shared channel 8 in the MIDI and cut each other off), CC7 levels 100/76/30/66/66/71/71/82 (flute, oboe,
+piano, violin, viola, horn, cello, bass) written into the score so a loop keeps them; programs 8, 5, 10, 4, 6, 1, 2, 3
+of BGM031; the oboe's tone centred on 62 (at 84 it played two octaves flat); the piano is BOSS01's vag 9 copied into a
+spare slot (tone volume 96, centre 66). Smoothing (why it sounded coarse: attacks of 0.2-2 ms clicked, releases of
+6-46 ms cut notes at note-off, and the game zeroes the reverb depth so the tones' reverb never sounded): attacks
+~37-62 ms and releases ~186-372 ms on the sustained parts (piano untouched), reverb type 3 depth 64 raised by the score
+and dropped when its music stops; horn and piano get the reverb flag. Knobs at the top of the generator (`ATTACK_MS`,
+`RELEASE_MS`, `REVERB_DEPTH`, `REVERB_PARTS`, `LOOP_GAP_TICKS`); `--smooth off` gives the unsmoothed mix; audition
+tools in `.dumps/velvet-live/` (`play.py --smooth on|off`, `--reverb N`). Test: `tests/port/definitive_velvet_music.py`
+(skips without the MIDI). Another tune has its own handoff (`.dumps/handoff_adventure_music.md`), left for later.
+
 **Music pitfall (already made once):** the field plays `fieldstg_stage.sound` (the track) *after* loading the bank of `fieldstg_stage.music`;
 changing only `music` changes the bank and the same tune keeps playing. The room uses the pair of map `0x25F`: `music = 0x3B`, `sound = 0x60EC0000`
 (only map `0x25F` used it). Hooks: field idle step (`fieldstg_manager_update`, RUN step 0: door and drawing), `fieldstg_goto_map_delayed` ->
