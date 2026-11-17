@@ -51,10 +51,10 @@ extern const unsigned char def_str_VelvetTitle[], def_str_VelvetTitle2[];
 #define VL_MUSIC 0x3B
 #define VL_SOUND 0x60EC0000
 #define VL_MERCHANT 42  /* the Black Market's trader: the figure that traded in map 0x20C */
-/* The mentor: 376 (0x178), a Kotemon that no map of the game places (one of the 54 actor IDs `fieldstg_actor_sprites`
- * has a figure for and no stage uses; the task that writes him picks the final one). Its frame is 32 wide, which the
- * VRAM place below holds. */
-#define VL_MENTOR 0x178
+/* The mentor (the Gennai of the room, owner 2026-11-16: an old figure of the game until one is drawn): 0x39, the old man
+ * the game's Grandpas and Tamer Genji wear (P074JIJI): bald, white-bearded, five facings. Its frame is 24x32, which the
+ * VRAM place below holds (its neighbour starts 32 pixels on). It was 0x178, a Kotemon no map places. */
+#define VL_MENTOR 0x39
 /* The Demon Bell's keeper (Super Hard Mode, definitive_super.c): 370 (0x172), a small Guilmon no map places, the red
  * one of the room. Talking to him hands over the Bell or takes it back (dw3_velvet_shop_talk picks the line). */
 #define VL_DEMON 0x172
@@ -88,11 +88,12 @@ extern const unsigned char def_str_VelvetTitle[], def_str_VelvetTitle2[];
                           * the counter's own front row */
 #define VL_MERCHANT_Y 255
 #define VL_MERCHANT_DIR 1 /* facing down-left, the way the counter runs (the owner picked it on the screenshots) */
-#define VL_MENTOR_X 100 /* on the upper floor, west of the stairs' head and off the way across it (the lower floor's
-                         * foot of the stairs, where he stood first, was the room's only passage) */
-#define VL_MENTOR_Y 216
-#define VL_MENTOR_DIR 5
-#define VL_DEMON_X 126 /* upstairs too, a few steps from the mentor */
+#define VL_MENTOR_X 318 /* on the stage between the organ pipes, at the top of the room: a dead end off the upper floor
+                         * (the floor reaches it through one strip at y 160..176), so he blocks no way, and the entry's
+                         * camera already shows its red lamps */
+#define VL_MENTOR_Y 165
+#define VL_MENTOR_DIR 1 /* down-left: towards the strip the player comes along */
+#define VL_DEMON_X 126 /* upstairs, by the stairs' head */
 #define VL_DEMON_Y 200
 #define VL_DEMON_DIR 0
 #define VL_ETEMON_X 352 /* at the piano's keys, facing them (dir 5: the keyboard is up and to his right, and the
