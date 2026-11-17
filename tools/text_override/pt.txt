@@ -78,11 +78,11 @@ $RecipeSep: ", "
 $BMTitle: MERCADO NEGRO
 $BMTabTrade: Trocar
 $BMTabReplica: Réplicas
-$BMGive: "Dar: "
-$BMGet: "Receber: "
-$BMHeld: "   Tem: "
-$BMCost: "Custo: "
-$BMPrice: "Preço: "
+$BMGive: "Dar "
+$BMGet: "Receber "
+$BMHeld: "   Tem "
+$BMCost: "Custo "
+$BMPrice: "Preço "
 $BMBits: " Bits"
 $BMNone: Você não tem Núcleos para trocar.
 $BMTraded: Trocado.
@@ -93,10 +93,10 @@ $BMNeedA: "Exige Núcleos de "
 $BMNeedB: " chefes diferentes."
 $BMNoBits: Bits insuficientes.
 $BMBagFull: Você não pode carregar mais disso.
-$BMKeysTrade: ↑↓ Escolher   L1/R1 Aba<1>Botão ×: Trocar   Botão △: Voltar
-$BMKeysPick: ↑↓ Material<1>Botão ×: Trocar um   Botão △: Voltar
-$BMKeysReplica: ↑↓ Escolher   L1/R1 Aba<1>Botão ×: Comprar   Botão △: Voltar
-$BMKeysArmed: Botão ×: Comprar<1>Botão △: Voltar
+$BMKeysTrade: ↑↓ Escolher   L1/R1 Aba<1>× Trocar   △ Voltar
+$BMKeysPick: ↑↓ Material<1>× Trocar um   △ Voltar
+$BMKeysReplica: ↑↓ Escolher   L1/R1 Aba<1>× Comprar   △ Voltar
+$BMKeysArmed: × Comprar<1>△ Voltar
 $RushPlus: 
 $RushExp: " EXP"
 $RushLvUp: "  SUBIU NV!"
@@ -1643,7 +1643,7 @@ MEMCRD 25: Formatar MEMORY CARD?<1>SIM / NÃO
 MEMCRD 26: Criar novos dados?
 MEMCRD 27: Não é possível acessar o MEMORY CARD.
 MEMCRD 28: O arquivo já existe.
-MEMCRD 29: Escolha o slot do MEMORY CARD.
+MEMCRD 29: Slot do MEMORY CARD:
 MEMCRD 30: Formatando.<1>Não toque no MEMORY CARD.
 MEMCRD 31: Salvando arquivo.<1>Não toque no MEMORY CARD.
 MEMCRD 36: Falha ao salvar.
@@ -7408,3 +7408,25 @@ DMG900:13 1: <7>Tamer Bomujii<7>Então, você partiu.<1>Domine o caminho<1>das c
 DMG900:14 1: <7>Tamer Alice<7>Bem... Vá...<1>então. O...<1>Rei... espera.<2,2>
 DMG900:15 1: <7>Guardromon<7>Eu agora acessarei o<1>Matrix Drive.<2,2>
 DMG900:16 1: <7>Guardromon<7>Eu agora acessarei o<1>Matrix Drive.<2,2>
+# A Sala Velvet (port/game/definitive_velvet.c): as entradas 81 e 82 do arquivo de falas do bar (mapa 0x20F, WSTAG255).
+TALK05 81: <7>Mentor<7>Logo eu te ensino<1>o Blast Gauge.<1>Ainda não.<2,2>
+TALK05 82: <7>Etemon<7>He he he! Essa<1>música... eu ouvi<1>em outro jogo!<2,2><3>Não conta pra<1>ninguém que eu<1>falei isso!<2,2>
+# O título do mapa da Sala Velvet (port/game/definitive_velvet.c).
+$VelvetTitle: VELVET
+$VelvetTitle2: SERVER
+# O porco da Sala Velvet (port/game/definitive_velvet.c): o ator 318.
+TALK05 79: <7>????<7>Alguém me achou numa<1>pilha de brinquedos<1>que ninguém usava.<2,2><3>...Melhor que a caixa.<2,2>
+# O comerciante da Sala Velvet (port/game/definitive_velvet.c): 8 e 9 saudações alternadas, 12 depois de uma troca, 13
+# depois de uma visita que não comprou nada.
+TALK05 8: <7>Oikawa<7>Não pergunte como<1>consegui isso... no<1>Digimundo, até os dados<1>descartados têm valor<1>para quem sabe usá-los.<2,2>
+TALK05 9: <7>Oikawa<7>Você também busca<1>poder que não<1>deveria existir? Olhe<1>rápido, não gosto de<1>chamar atenção.<2,2>
+TALK05 12: <7>Oikawa<7>Use com cuidado. Esse<1>tipo de poder cobra<1>um preço de quem o<1>carrega... eu sei bem<1>disso.<2,2>
+TALK05 13: <7>Oikawa<7>Talvez seja melhor<1>assim. Nem todo mundo<1>está pronto para<1>cruzar essa linha.<2,2>
+TALK05 77: <7>Guilmon<7>Leve a Sineta Demoníaca.<1>Os inimigos ficam mais<1>fortes e rápidos... mas<1>pagam mais Bits e<1>mais materiais.<2,2>
+TALK05 78: <7>Guilmon<7>Devolvendo a Sineta?<1>Tudo volta ao normal.<2,2>
+ITMNAM 26: Sineta Demoníaca
+ITMINF 26: Super Difícil: inimigos fortes, prêmios dobrados.
+$MaterialsMenu: MATERIAIS
+$Materials: Materiais
+$MatCommon: Material de Caça
+$MatRare: Núcleo Raro

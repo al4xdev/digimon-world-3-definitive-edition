@@ -1056,6 +1056,9 @@ void fieldstg_map_title_create_windows(Object *obj, FieldstgMapTitleData *data) 
             break;
         }
     }
+#ifdef PC_PORT
+    dw3_velvet_title_window(data->window_0, data->window_1); /* the Velvet Room's name, not the bar's */
+#endif
 }
 
 /* Moves the two edges of one axis (moving 1: left/right, 2: top/bottom) towards their targets by speed. Each

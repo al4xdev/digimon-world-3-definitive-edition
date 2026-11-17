@@ -110,6 +110,20 @@ static int nt_node_of(s32 map) {
     return -1;
 }
 
+/* The network's node of `map`: its spot in pixels and the direction the game faces the player there. 0 when the map has
+ * none (the Velvet Room's portals and its way back are placed from these). */
+int dw3_travel_node(s32 map, s32 *x, s32 *y, s32 *dir) {
+    int n = nt_node_of(map);
+
+    if (n < 0) {
+        return 0;
+    }
+    *x = nodes[n].x;
+    *y = nodes[n].y;
+    *dir = nodes[n].dir;
+    return 1;
+}
+
 /* The network is off under a replay script (the scripts are shared with the emulator, and one of them may walk to a
  * Guardromon): DW3_DEFINITIVE or DW3_FEAT_TRAVEL turns it back on there. */
 static int nt_active(void) {

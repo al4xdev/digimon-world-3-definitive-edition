@@ -515,6 +515,11 @@ s32 fieldstg_map_events_check(FieldstgMapEvents *obj) {
     obj->dir = attr >> 5;
     obj->index = attr & 0x1F;
     obj->event = &obj->events[obj->index];
+#ifdef PC_PORT
+    if (dw3_velvet_event_closed(obj->event->type, obj->event->param)) {
+        return 0; /* the Velvet Room: the bar's second door, closed while the room runs */
+    }
+#endif
     switch (obj->event->type) {
     case 5:
     case 6:
@@ -1833,6 +1838,8 @@ void fieldstg_manager_update(FieldstgManager *obj, FieldstgManagerData *data) {
             if (def_guide_frame()) {
                 break; /* the Guide, asked for by the field menu's entry */
             }
+            dw3_velvet_frame(); /* the Velvet Room's portal: it owns no screen */
+            dw3_velvet_draw();  /* and the room's blue, or the portal the player stands next to */
 #endif
             fieldstg_manager_open_menu(obj, data);
             break;
@@ -1884,6 +1891,7 @@ void fieldstg_goto_map_delayed(s32 map, s32 entry, s32 x, s32 y, s32 dir, s32 de
         if (dw3_travel_leave(gamestate_data.funcs.get_map(), map)) {
             return; /* an inn's Guardromon: the SAVE / TELEPORT screen keeps the map until the player picks */
         }
+        dw3_velvet_leave(&map, &x, &y, &dir); /* the room's own way out: the inn its portal was taken in */
 #endif
         obj->next_map = map;
         obj->map_entry = entry;
@@ -3209,6 +3217,14 @@ s32 fieldstg_actor_talk_to(FieldstgActor *obj, FieldstgPos *pos) {
     s32 i;
 
 #ifdef PC_PORT
+    /* The Velvet Room's figures reach further than the game's box (its dealer stands behind the bar's counter). */
+    if (other == NULL) {
+        other = dw3_velvet_talk_find(pos);
+    }
+    /* The Velvet Room's shopkeeper says a line first (its room picks which, and the market opens behind it). */
+    if (other != NULL && other->base.state == OBJECT_STATE_RUN) {
+        dw3_velvet_shop_talk(other);
+    }
     /* PRD 4 layers G and H: the Black Market's trader opens the port's own screen instead of its talk (on the next idle
      * frame, as the Guardromon screen does); 1 stops the player as a talk does. A DRI Agent's talk is never taken
      * (def_dri_talk is always 0): its lines and DDNA quest run, and the list opens after them. The placed actor's own
@@ -3758,6 +3774,9 @@ void fieldstg_actor_draw(void *arg0, void *arg1, s32 arg) {
     SPRT *sprt;
     DR_TPAGE *tpage;
     s32 dx;
+#ifdef PC_PORT
+    s32 own_art;
+#endif
 
     if (obj->base.state == OBJECT_STATE_RUN) {
         ot = layer->get_ot_entry(layer, obj->depth);
@@ -3765,6 +3784,11 @@ void fieldstg_actor_draw(void *arg0, void *arg1, s32 arg) {
         layer->get_scroll(layer, ofs);
         pos.x -= ofs[0];
         pos.y -= ofs[1];
+#ifdef PC_PORT
+        /* the Velvet Room's dealer: the port's own art in this actor's place (port/game/definitive_velvet.c), drawn
+         * before the sprite's packet is taken; the game's figure is then left out, its shadow kept */
+        own_art = dw3_velvet_actor_art(obj, ot, pos.x, pos.y - (obj->height >> 8));
+#endif
         poly = gfx_module.funcs.get_packet();
         pos.y -= obj->height >> 8;
         setPolyFT4(poly);
@@ -3800,6 +3824,9 @@ void fieldstg_actor_draw(void *arg0, void *arg1, s32 arg) {
         poly->v3 = obj->frame_h + vram->v;
         poly->clut = getClut(vram->clut_x, vram->clut_y);
         poly->tpage = getTPage(0, 0, vram->tpage_x, vram->tpage_y);
+#ifdef PC_PORT
+        if (!own_art)
+#endif
         addPrim(ot, poly);
         pos.y += obj->height >> 8;
         poly++;
@@ -4634,6 +4661,9 @@ FieldstgActor *fieldstg_actor_create(s32 id, s32 type, s32 vram, FieldstgPlacedA
         }
         obj->has_shadow = 1;
         obj->no_turn = flag;
+#ifdef PC_PORT
+        dw3_velvet_actor_setup(obj); /* the room's own figures: one that keeps his place instead of turning to talk */
+#endif
         if (id == 0x82) {
             obj->has_shadow = 0;
         }

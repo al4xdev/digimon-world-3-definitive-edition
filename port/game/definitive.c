@@ -321,7 +321,7 @@ static const unsigned char *lookup_override_sorted(const DefTextOverride *tab, i
 void *def_text_override(void *data, s32 i) {
     int e, k, s;
 
-    if ((records_language != 1 && records_language != 2) || data == NULL) {
+    if (data == NULL) {
         return NULL;
     }
     for (e = 0; e < 64; e++) {
@@ -360,7 +360,10 @@ void *def_text_override(void *data, s32 i) {
                 }
             }
         }
-        if (match_file == base_id) {
+        if (match_file == base_id
+            && ((records_language == 1 || records_language == 2) || dw3_velvet_text_own(base_id, i))) {
+            /* the other languages keep the disc's text, except the port's own entries: the disc has nothing where they
+             * are (a single "a"), so the English stands in for them */
             for (k = 0; k < def_text_override_count; k++) {
                 if (def_text_overrides[k].file == base_id && def_text_overrides[k].index == i) {
                     if (def_variant_text_hidden(def_text_overrides[k].file, i)) {
@@ -593,6 +596,8 @@ void def_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, def_evo_seen_bits);
     def_dri_savestate(s); /* PRD 4 layer H: a battle loaded mid-simulation is still one */
     def_guide_savestate(s); /* the Guide's screen and notice, with the field's heap they point into */
+    def_bm_savestate(s);    /* the Black Market's screen, the same way */
+    dw3_velvet_savestate(s); /* the Velvet Room: the map is the room, and its shopkeeper's turn */
 }
 
 static int target_slot(void) {

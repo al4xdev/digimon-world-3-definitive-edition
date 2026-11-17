@@ -619,6 +619,9 @@ void def_notice_reset(void);
 struct PortState;
 void def_guide_savestate(struct PortState *s);
 void def_quest_savestate(struct PortState *s);
+/* The Black Market's screen (definitive_market_screen.c) and the Velvet Room (definitive_velvet.c) in a save state. */
+void def_bm_savestate(struct PortState *s);
+void dw3_velvet_savestate(struct PortState *s);
 
 #endif /* PORT_DEFINITIVE_H */
 

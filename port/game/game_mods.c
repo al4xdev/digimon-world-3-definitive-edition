@@ -560,6 +560,7 @@ void game_savestate(struct PortState *s) {
 int dw3_feat_icons = 1;
 int dw3_feat_travel = 1;
 int dw3_feat_objective = 1;
+int dw3_feat_velvet = 1;
 
 extern u8 ststatus_map_areas[];
 
@@ -580,7 +581,9 @@ void dw3_feats_arm(void) {
     dw3_feat_icons = feat_on("DW3_FEAT_ICONS", dw3_feat_icons);
     dw3_feat_travel = feat_on("DW3_FEAT_TRAVEL", dw3_feat_travel);
     dw3_feat_objective = feat_on("DW3_FEAT_OBJECTIVE", dw3_feat_objective);
-    port_log("dw3 feats: icons %d travel %d objective %d", dw3_feat_icons, dw3_feat_travel, dw3_feat_objective);
+    dw3_feat_velvet = feat_on("DW3_FEAT_VELVET", dw3_feat_velvet);
+    port_log("dw3 feats: icons %d travel %d objective %d velvet %d", dw3_feat_icons, dw3_feat_travel, dw3_feat_objective,
+             dw3_feat_velvet);
 }
 
 /* ---- pad.map (handheld/dw3-menu.py writes it): one line per PS1 button, "<button> <gamepad input> <letter>".

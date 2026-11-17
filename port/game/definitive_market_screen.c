@@ -30,6 +30,7 @@
 
 #include "definitive.h"
 #include "port_runtime.h"
+#include "psxstack/savestate.h"
 
 extern const unsigned char def_str_BMTitle[], def_str_BMTabTrade[], def_str_BMTabReplica[], def_str_BMGive[],
     def_str_BMGet[], def_str_BMHeld[], def_str_BMCost[], def_str_BMPrice[], def_str_BMBits[], def_str_BMNone[],
@@ -45,8 +46,8 @@ typedef struct BmTrader {
     s16 actor; /* FieldstgPlacedActor.id: its actor's key1 */
 } BmTrader;
 static const BmTrader traders[] = {
-    { 0x20C, 42 }, /* WSTAG240, in the first town (the inn 0x20A's talk file): one line (entry 34), always there */
-    { 0x27B, 42 }, /* WSTAG930, the same house in the second half of the game (entry 128) */
+    { 0x20F, 42 }, /* WSTAG255, the Velvet Room (port/game/definitive_velvet.c): the trader lives there now, and the
+                    * room is reachable from every inn's Guardromon, so the screen is never out of reach */
 };
 #define BM_TRADERS ((s32)(sizeof(traders) / sizeof(traders[0])))
 
@@ -92,6 +93,7 @@ static struct {
     s32 rows;
     s32 common; /* the common the Exchange gives (kept between visits) */
     s32 note;   /* a DEF_BM_* result shown in a detail line, or BM_NOTE_NONE */
+    s32 bought; /* a trade or a purchase happened since the screen opened (the room's shopkeeper asks) */
     s32 layer;
     s16 rares[DEF_HUNT_RARES]; /* the Exchange's rows: the rare items held, by index of def_hunt_targets */
     MessageWindow *title, *tabs[2], *names[BM_ROWS], *counts[BM_ROWS], *lines[2], *hint;
@@ -545,6 +547,9 @@ int def_bm_talk(s32 map, s32 actor_key1) {
     if (!def_on() || bm_ui.open || bm_ui.request) {
         return 0;
     }
+    if (dw3_velvet_shop_greeting()) {
+        return 0; /* the Velvet Room says its line first and asks for the screen itself (dw3_velvet_frame) */
+    }
     for (i = 0; i < BM_TRADERS; i++) {
         if (traders[i].map == map && traders[i].actor == actor_key1) {
             break;
@@ -560,6 +565,16 @@ int def_bm_talk(s32 map, s32 actor_key1) {
     return 1;
 }
 
+/* 1 while the screen is up (or asked for): the Velvet Room closes its books when it goes away. */
+int def_bm_screen_open(void) {
+    return bm_ui.open || bm_ui.request;
+}
+
+/* 1 when the visit traded or bought something: its shopkeeper has a line for each way a visit ends. */
+int def_bm_bought(void) {
+    return bm_ui.bought;
+}
+
 /* One frame of FIELDSTG's idle step: 1 while the screen owns the field. Every field frame also lets a replica the
  * player no longer holds give its ID's resale back (def_bm_sweep): where the counts change (the shop's sale, an
  * event's take, a discard) has no hook of its own, and the shop pays 0 until then anyway. */
@@ -573,6 +588,7 @@ int def_bm_frame(void) {
             return 0;
         }
         bm_open();
+        bm_ui.bought = 0;
     }
     fieldstg_stage.event_running = 1;
     if (bm_ui.fresh) {
@@ -582,6 +598,9 @@ int def_bm_frame(void) {
     } else {
         bm_list_input();
     }
+    if (bm_ui.note == DEF_BM_OK) {
+        bm_ui.bought = 1;
+    }
     if (bm_ui.close) {
         bm_finish();
         return 1;
@@ -589,4 +608,11 @@ int def_bm_frame(void) {
     bm_run_windows();
     bm_draw();
     return 1;
+}
+
+/* A save state carries the screen with the field's heap its windows live in: without it a state taken before the screen
+ * opened loaded the screen still "open" over windows that heap no longer has (the player stood frozen, and the next
+ * load crashed). */
+void def_bm_savestate(struct PortState *s) {
+    PORT_STATE_VAR(s, bm_ui);
 }

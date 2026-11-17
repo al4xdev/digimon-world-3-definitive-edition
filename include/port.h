@@ -203,11 +203,12 @@ void port_bm_remember(s32 kind, s32 member, s32 value);
 void port_bm_log(s32 kind, s32 id, s32 position);
 void port_bm_log_last(s32 last);
 
-/* Handheld features. Each is a runtime if (DW3_FEAT_ICONS / _TRAVEL / _OBJECTIVE, default on).
+/* Handheld features. Each is a runtime if (DW3_FEAT_ICONS / _TRAVEL / _OBJECTIVE / _VELVET, default on).
  * A failure is logged once, never per frame. */
 extern int dw3_feat_icons;
 extern int dw3_feat_travel;
 extern int dw3_feat_objective;
+extern int dw3_feat_velvet;
 void dw3_feats_arm(void);
 /* The player's pad map (pad.map's middle column), applied by pad_read_buttons on the raw pad bits: the port keeps the
  * original PS1 positions and does not apply records_language's face-button rotation first. Identity unless
@@ -222,6 +223,41 @@ s16 dw3_button_glyph(u8 code);
  * (fieldstg_manager_update) and returns 1 while it owns the field. */
 int dw3_travel_leave(s32 map, s32 next);
 int dw3_travel_frame(void);
+/* A node of the network (`map`'s spot, in pixels and the direction the game faces the player there); 0 when the map has
+ * none. */
+int dw3_travel_node(s32 map, s32 *x, s32 *y, s32 *dir);
+/* The Velvet Room (port/game/definitive_velvet.c, .plan/tasks/velvet-room-plan.md): the Asuka City bar (map 0x20F) as a
+ * room of its own, reached through a blue door that stands in each inn of the Guardromon network, a few steps from its
+ * Guardromon. dw3_velvet_frame takes the door the player steps onto (FIELDSTG's idle step, after dw3_travel_frame; it owns
+ * no screen); dw3_velvet_draw paints the room's blue and, in an inn, its door (every frame); dw3_velvet_stage_setup runs
+ * at the end of WSTAG255's setup and makes the map the room when it was entered through a door; dw3_velvet_leave sends
+ * the room's own way out back to the inn the door was taken in; dw3_velvet_event_closed closes the room's second door. */
+int dw3_velvet_frame(void);
+void dw3_velvet_draw(void);
+void dw3_velvet_stage_setup(void);
+void dw3_velvet_leave(s32 *map, s32 *x, s32 *y, s32 *dir);
+int dw3_velvet_event_closed(s32 type, s32 param);
+/* The map title's two plates (each a MessageWindow*), renamed to the room's own when the map is the room. */
+void dw3_velvet_title_window(void *line_0, void *line_1);
+/* What the room asks of each placed figure as it is made (`no_turn` for the one that must keep facing its counter). */
+struct FieldstgActor;
+void dw3_velvet_actor_setup(struct FieldstgActor *actor);
+/* The room's figure the player talks to at its front point `pos` (a FieldstgPos*) when the game's lookup finds nobody
+ * there (the room's figures reach further: the dealer across his counter), or NULL. */
+struct FieldstgActor *dw3_velvet_talk_find(void *pos);
+/* The Velvet Room's dealer drawn in his actor's place by FIELDSTG's actor draw (ot: its ordering-table entry, x/y: the
+ * screen spot of its feet); 1 when it was, and the game's figure is left out. */
+int dw3_velvet_actor_art(struct FieldstgActor *actor, u32 *ot, s32 x, s32 y);
+/* The Velvet Room's shopkeeper (port/game/definitive_velvet.c): his lines come in turn, one per visit, and a
+ * trade or a visit that bought nothing changes the next one. dw3_velvet_shop_talk picks the line and the
+ * greeting phase; dw3_velvet_shop_greeting tells the market screen to stand back while the greeting runs. */
+void dw3_velvet_shop_talk(struct FieldstgActor *actor);
+int dw3_velvet_shop_greeting(void);
+/* 1 when a text entry is the port's own (its room's figures' lines): it is served in every language. */
+int dw3_velvet_text_own(s32 base_id, s32 index);
+/* The market screen's own state (port/game/definitive_market_screen.c). */
+int def_bm_screen_open(void);
+int def_bm_bought(void);
 /* PRD 4 layer G, the Black Market (port/game/definitive_market_screen.c): the player talks to the actor whose key1 (its
  * FieldstgPlacedActor.id) is `actor_key1` on `map`; 1 when it is the trader, and then the game's talk is skipped and the
  * screen opens on the next idle frame. def_bm_frame runs it from FIELDSTG's idle step (fieldstg_manager_update, after

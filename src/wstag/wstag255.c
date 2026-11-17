@@ -45,6 +45,9 @@ void wstag255_setup(void) {
     fieldstg_attr.set_file(0, 0x01AB0002);
     fieldstg_attr.set_file(7, 0x01AB0001);
     fieldstg_attr.init_layer(0);
+#ifdef PC_PORT
+    dw3_velvet_stage_setup(); /* the Velvet Room, when the map was entered through one of its portals */
+#endif
 }
 
 /* The stage's .data (tools/wstag_data.py). */
