@@ -50,6 +50,7 @@ extern const unsigned char def_str_VelvetTitle[], def_str_VelvetTitle2[];
  * room's own later). */
 #define VL_MUSIC 0x3B
 #define VL_SOUND 0x60EC0000
+void dw3_velvet_music(s32 *music, s32 *sound); /* definitive_velvet_music.c: the arrangement's bank and key */
 #define VL_MERCHANT 42  /* the Black Market's trader: the figure that traded in map 0x20C */
 /* The mentor (the Gennai of the room, owner 2026-11-16: an old figure of the game until one is drawn): 0x39, the old man
  * the game's Grandpas and Tamer Genji wear (P074JIJI): bald, white-bearded, five facings. Its frame is 24x32, which the
@@ -633,6 +634,7 @@ void dw3_velvet_stage_setup(void) {
     fieldstg_stage.actors = vl_actors;
     fieldstg_stage.music = VL_MUSIC;
     fieldstg_stage.sound = VL_SOUND;
+    dw3_velvet_music(&fieldstg_stage.music, &fieldstg_stage.sound); /* the room's own score, when it was generated */
     port_log("velvet: the room of map 0x%X (from map 0x%X), return_pos %d,%d dir %d entry %d", VL_MAP, vl_from,
              fieldstg_stage.return_pos.x >> 8, fieldstg_stage.return_pos.y >> 8, fieldstg_stage.return_dir,
              gamestate_data.funcs.get_map_entry());

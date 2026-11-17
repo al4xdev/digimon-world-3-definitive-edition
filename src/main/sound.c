@@ -105,6 +105,17 @@ SoundBank *sound_banks[] = {
     &sound_bank_68, &sound_bank_69, &sound_bank_70, &sound_bank_71,
 };
 
+#ifdef PC_PORT
+/* port/game/definitive_velvet_music.c: the Velvet Room's own bank (id 72, a copy of BGM031's files with its own score
+ * and tones) and the reverb its score raises. */
+extern SoundBank *dw3_velvet_sound_bank(s32 id);
+extern void dw3_velvet_sound_header(s32 id, s32 *buffer);
+extern void dw3_velvet_sound_body(s32 id, s32 *buffer, s32 spu_addr);
+extern void dw3_velvet_sound_music(s32 id);
+extern void dw3_velvet_sound_stopped(s32 id);
+extern void dw3_velvet_sound_silenced(void);
+#endif
+
 /* The three entries' buffers for the VAB header file, and their VAB bodies' SPU addresses. */
 s32 sound_buffer_0[0xE000 / 4];
 s32 sound_buffer_1[0xA000 / 4];
@@ -157,6 +168,9 @@ s32 sound_play(s32 key) {
             sound_module.stop(sound_module.current);
         }
         sound_module.current = key;
+#ifdef PC_PORT
+        dw3_velvet_sound_music(id);
+#endif
     }
     if (is_note) {
         voice = SsUtKeyOn(sound_module.entries[index].vab_id, prog, tone, note, 0, 0x7F, 0x7F);
@@ -186,6 +200,9 @@ void sound_stop_all(void) {
         }
     }
     SsUtAllKeyOff(0);
+#ifdef PC_PORT
+    dw3_velvet_sound_silenced();
+#endif
     sound_module.current = 0;
 }
 
@@ -201,6 +218,9 @@ void sound_stop(s32 key) {
         return;
     }
     SsSepStop(sound_module.entries[index].seps[sep], seq);
+#ifdef PC_PORT
+    dw3_velvet_sound_stopped(id);
+#endif
     if (sound_module.current == key) {
         sound_module.current = 0;
     }
@@ -246,7 +266,11 @@ void sound_load_bank(s32 index, s32 id) {
         entry->vab_id = -1;
     }
     load->step = 1;
+#ifdef PC_PORT
+    load->bank = dw3_velvet_sound_bank(id);
+#else
     load->bank = sound_banks[id];
+#endif
     load->entry = index;
     cdload_module.queue_file(load->bank->header_file);
 }
@@ -292,6 +316,9 @@ void sound_update_loading(void) {
             *dst++ = *src++;
         }
         cdload_module.files.free_file(load->bank->header_file);
+#ifdef PC_PORT
+        dw3_velvet_sound_header(entry->id, entry->header_buffer);
+#endif
         entry->vab_id = SsVabOpenHeadSticky(cdload_module.get_subfile(load->bank->vab_header, entry->header_buffer), index,
                                             entry->spu_addr);
         cdload_module.queue_file(load->bank->body_file);
@@ -309,6 +336,9 @@ void sound_update_loading(void) {
         }
         heap_funcs.set_state(cdload_module.files.get_file(load->bank->body_file), 0);
         cdload_module.files.free_file(load->bank->body_file);
+#ifdef PC_PORT
+        dw3_velvet_sound_body(entry->id, entry->header_buffer, entry->spu_addr);
+#endif
         for (j = 0; load->bank->seps[j] != 0; j++) {
             entry->seps[j] = SsSepOpen(cdload_module.get_subfile(load->bank->seps[j], entry->header_buffer),
                                          entry->vab_id, 16);

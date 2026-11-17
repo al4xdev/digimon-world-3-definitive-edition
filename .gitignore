@@ -103,3 +103,6 @@ android/.gradle/
 android/.cxx/
 android/app/build/
 android/app/.cxx/
+
+# The Velvet Room's score: generated from a local MIDI by tools/gen_velvet_music.py, never committed
+/port/game/definitive_velvet_music.inc
