@@ -75,7 +75,7 @@ static const char *log_label[] = {"OFF", "SOFT", "HEAVY"};
 static const char *lay_label[] = {"PS1", "XBOX", "NINTENDO", "CUSTOM"};
 static const char *filt_label[] = {"NONE", "SHARP", "SCANLINES", "CRT", "SMOOTH"};
 static const char *act_label[A_COUNT] = {"CONFIRM", "CARD", "MENU", "BACK", "L1", "R1", "START", "SELECT"};
-static const char *hud_label[H_COUNT] = {"FIGHT", "TECH", "DIGIVOLVE", "TAG", "ITEM", "RUN", "INSPECT"};
+static const char *hud_label[H_COUNT] = {"FIGHT", "TECH", "DIGIVOLVE", "TAG", "ITEM", "RUN", "INSPECT", "BLAST"};
 /* On-screen order of the pad rows follows the pad: confirm, back, menu, card first. */
 static const int act_order[A_COUNT] = {A_CROSS, A_TRIANGLE, A_CIRCLE, A_SQUARE, A_L1, A_R1, A_START, A_SELECT};
 
@@ -425,18 +425,18 @@ static void draw_hud(void) {
             else text_r(x - 16, y - 8, names, 13, col);
         }
     }
-    const char *rl[9] = {"FIGHT", "TECH", "DIGIVOLVE", "TAG", "ITEM", "RUN", "INSPECT", "REMEMBER CURSOR", "BUFFER INPUT"};
+    const char *rl[H_COUNT + 2] = {"FIGHT", "TECH", "DIGIVOLVE", "TAG", "ITEM", "RUN", "INSPECT", "BLAST", "REMEMBER CURSOR", "BUFFER INPUT"};
     int gy = (int)(cur_y >= 0 && cur_screen == S_HUD ? cur_y : row_target_y(S_HUD, sel));
     int sbd = sel < H_COUNT && (dm >> sel & 1);
     draw_focus(40, gy, W - 80, 25, 6, sbd);
-    for (int i = 0; i < 9; i++) {
+    for (int i = 0; i < H_COUNT + 2; i++) {
         char g[16], v[48];
         if (i < H_COUNT) {
             glyph(c.hud[i], g);
             if (capture && i == sel) snprintf(v, sizeof(v), "PRESS A BUTTON...");
             else snprintf(v, sizeof(v), "%s  [%s]", place_display(c.hud[i]), g);
         }
-        else if (i == 7) snprintf(v, sizeof(v), "%s", c.bmem ? "ON" : "OFF");
+        else if (i == H_COUNT) snprintf(v, sizeof(v), "%s", c.bmem ? "ON" : "OFF");
         else snprintf(v, sizeof(v), "%s", buf_label[c.bbuf]);
         int y = 180 + i * 25, bd = i < H_COUNT && (dm >> i & 1);
         text(64, y, rl[i], 17, bd ? C_RED : i == sel ? C_GOLD : C_TEXT);
@@ -1285,7 +1285,7 @@ static void on_press(int code) {
     case S_HOME: n = home_n; break;
     case S_GAME: n = game_n(); break;
     case S_VIDEO: n = VIDEO_N; break;
-    case S_HUD: n = 9; break;
+    case S_HUD: n = H_COUNT + 2; break;
     case S_CONTROLS: n = 1 + A_COUNT; break;
     case S_SAVES: n = 6; break;
     case S_BACKUPS: n = bk_count; break;
@@ -1368,8 +1368,8 @@ static void on_press(int code) {
         }
         if (is_start && sel < H_COUNT) { capture = 1; break; }
         if (d && sel < H_COUNT) c.hud[sel] = hud_cycle(c.hud[sel], d);
-        else if (sel == 7 && (ok || d)) c.bmem = !c.bmem;
-        else if (sel == 8 && (ok || d)) c.bbuf = (c.bbuf + s + 3) % 3;
+        else if (sel == H_COUNT && (ok || d)) c.bmem = !c.bmem;
+        else if (sel == H_COUNT + 1 && (ok || d)) c.bbuf = (c.bbuf + s + 3) % 3;
         break;
     case S_CONTROLS:
         if (back) leave_edit(HI_CONTROLS);

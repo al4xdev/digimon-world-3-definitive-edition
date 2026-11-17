@@ -244,8 +244,9 @@ defaults. The one exception is a replay script (`--script`), which keeps the ori
 as Weak / Resist / - and spends no turn; "Enemy x2" shows over the arena when the enemy acts twice before our next turn.
 An eighth button, **Blast** (R2, the dark star under L1; the free places when it clashes), sets the acting Digimon's Blast
 off once its gauge is full and spends the turn (Blast Gauge phase 1, `.plan/tasks/velvet-room-plan.md`); with the
-gauge not full it is grey and refused. The launcher's own screen does not list it yet: its value comes from
-`settings.json` or the default.
+gauge not full it is grey and refused; at a critical moment (a partner fell, or the acting Digimon is at a quarter of
+its HP) a full gauge pulses the button red and says "Blast calls...". Both launchers list it: the C one's battle
+buttons screen (`bm_blast`), the psxstack one from the manifest.
 Redesigns **only the battle's main command menu** (Fight, Tech, Digivolve, Tag, Item,
 Run): the list and its cursor are gone, each action has its own button, and a compact 3x3 grid shaped like the pad is
 drawn where the list was: the up and down arms (Y, B) are columns, the left and right ones (X, A) and the shoulders

@@ -72,7 +72,7 @@ static const char *log_label[3] = {"OFF", "SOFT", "HEAVY"};
 static const char *lay_label[4] = {"PS1", "XBOX", "NINTENDO", "CUSTOM"};
 static const char *act_label[A_COUNT] = {"CONFIRM / CROSS", "MENU / SQUARE", "BACK / CIRCLE", "CAM / TRIANGLE", "PREV / L1", "NEXT / R1", "START", "SELECT"};
 static const int act_order[A_COUNT] = {A_CROSS, A_CIRCLE, A_SQUARE, A_TRIANGLE, A_L1, A_R1, A_START, A_SELECT};
-static const char *hud_label[H_COUNT] = {"FIGHT", "TECH", "DIGIVOLVE", "TAG", "ITEM", "RUN", "INSPECT"};
+static const char *hud_label[H_COUNT] = {"FIGHT", "TECH", "DIGIVOLVE", "TAG", "ITEM", "RUN", "INSPECT", "BLAST"};
 
 static const char *S(const char *en) {
     return ui_tr_lookup(en, c.lang);
@@ -141,7 +141,7 @@ static int row_target_y(int s, int idx) {
     switch (s) {
     case S_HOME: return 78 + idx * 48;
     case S_GAME: return 76 + idx * 42;
-    case S_HUD: return 174 + idx * 27;
+    case S_HUD: return 174 + idx * 25;
     case S_CONTROLS: return idx == 0 ? 74 : 122 + (idx - 1) * 37;
     case S_SAVES: return 86 + idx * 52;
     case S_BACKUPS: return 114 + (idx - bk_scroll) * 44;
@@ -359,22 +359,22 @@ static void draw_hud(void) {
             else text_r(x - 16, y - 8, names, 13, col);
         }
     }
-    const char *rl[9] = {"FIGHT", "TECH", "DIGIVOLVE", "TAG", "ITEM", "RUN", "INSPECT", "REMEMBER CURSOR", "BUFFER INPUT"};
+    const char *rl[H_COUNT + 2] = {"FIGHT", "TECH", "DIGIVOLVE", "TAG", "ITEM", "RUN", "INSPECT", "BLAST", "REMEMBER CURSOR", "BUFFER INPUT"};
     int gy = (int)(cur_y >= 0 && cur_screen == S_HUD ? cur_y : row_target_y(S_HUD, sel));
     int sbd = sel < H_COUNT && ((dm >> sel) & 1);
-    draw_focus(32, gy, W - 64, 26, 6, sbd);
-    for (int i = 0; i < 9; i++) {
+    draw_focus(32, gy, W - 64, 24, 6, sbd);
+    for (int i = 0; i < H_COUNT + 2; i++) {
         char g[16], v[48];
         if (i < H_COUNT) {
             glyph(c.hud[i], g);
             if (capture && i == sel) snprintf(v, sizeof(v), "PRESS A BUTTON...");
             else snprintf(v, sizeof(v), "< %s [%s] >", place_display(c.hud[i]), g);
-        } else if (i == 7) {
+        } else if (i == H_COUNT) {
             snprintf(v, sizeof(v), "< %s >", S(c.bmem ? "ON" : "OFF"));
         } else {
             snprintf(v, sizeof(v), "< %s >", buf_label[c.bbuf]);
         }
-        int y = 174 + i * 27, bd = i < H_COUNT && ((dm >> i) & 1);
+        int y = 174 + i * 25, bd = i < H_COUNT && ((dm >> i) & 1);
         text(54, y + 3, S(rl[i]), 16, bd ? C_RED : i == sel ? C_GOLD : C_TEXT);
         text_r(W - 54, y + 3, v, 16, bd ? C_RED : i == sel ? C_GOLD : C_NOTE);
     }
@@ -677,12 +677,12 @@ static void on_touch(int code, int x, int y) {
             cfg_save(&c);
             return;
         }
-        for (int i = 0; i < 9; i++) {
-            if (in_rect(x, y, 32, 174 + i * 27, W - 64, 27)) {
+        for (int i = 0; i < H_COUNT + 2; i++) {
+            if (in_rect(x, y, 32, 174 + i * 25, W - 64, 25)) {
                 sel = i;
                 int dir = (x >= 380 && x < 500) ? -1 : +1;
                 if (i < H_COUNT) c.hud[i] = hud_cycle(c.hud[i], dir);
-                else if (i == 7) c.bmem = !c.bmem;
+                else if (i == H_COUNT) c.bmem = !c.bmem;
                 else c.bbuf = (c.bbuf + dir + 3) % 3;
                 cfg_save(&c);
                 return;
@@ -811,14 +811,14 @@ static void on_key(int code) {
         return;
     }
     if (code == K_UP) {
-        int n = screen == S_HOME ? HI_COUNT : screen == S_GAME ? GAME_N : screen == S_HUD ? 9 :
+        int n = screen == S_HOME ? HI_COUNT : screen == S_GAME ? GAME_N : screen == S_HUD ? H_COUNT + 2 :
                 screen == S_CONTROLS ? (A_COUNT + 1) : screen == S_SAVES ? SAVES_N : screen == S_DEBUG ? DEBUG_N :
                 screen == S_BROWSE ? b_count : screen == S_BACKUPS ? bk_count : 1;
         if (n > 0) sel = (sel - 1 + n) % n;
         if (screen == S_BROWSE && sel < b_scroll) b_scroll = sel;
         if (screen == S_BACKUPS && sel < bk_scroll) bk_scroll = sel;
     } else if (code == K_DOWN) {
-        int n = screen == S_HOME ? HI_COUNT : screen == S_GAME ? GAME_N : screen == S_HUD ? 9 :
+        int n = screen == S_HOME ? HI_COUNT : screen == S_GAME ? GAME_N : screen == S_HUD ? H_COUNT + 2 :
                 screen == S_CONTROLS ? (A_COUNT + 1) : screen == S_SAVES ? SAVES_N : screen == S_DEBUG ? DEBUG_N :
                 screen == S_BROWSE ? b_count : screen == S_BACKUPS ? bk_count : 1;
         if (n > 0) sel = (sel + 1) % n;

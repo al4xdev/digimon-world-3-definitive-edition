@@ -155,7 +155,7 @@ void cfg_defaults(Cfg *c) {
     c->backup_max = 10;
     c->sync_enabled = 1;
     c->sync_interval_min = 10;
-    int h[H_COUNT] = {K_EAST, K_R1, K_NORTH, K_SOUTH, K_L1, K_WEST, K_L2};
+    int h[H_COUNT] = {K_EAST, K_R1, K_NORTH, K_SOUTH, K_L1, K_WEST, K_L2, K_R2};
     memcpy(c->hud, h, sizeof(h));
     /* The face rows rotate circle and triangle against the console's own order: back is the right-hand button and
      * the menu the top one, as in any modern game; the letters follow the places, so the text never says triangle. */
@@ -335,7 +335,7 @@ void cfg_load(Cfg *c) {
             snprintf(disc_path, sizeof(disc_path), "%s", v);
         }
         else if (!strncmp(line, "bm_", 3)) {
-            static const char *const keys[H_COUNT] = {"bm_fight", "bm_tech", "bm_digivolve", "bm_tag", "bm_item", "bm_run", "bm_inspect"};
+            static const char *const keys[H_COUNT] = {"bm_fight", "bm_tech", "bm_digivolve", "bm_tag", "bm_item", "bm_run", "bm_inspect", "bm_blast"};
             for (int i = 0; i < H_COUNT; i++)
                 if (!strcmp(line, keys[i]) && hud_code(v)) c->hud[i] = hud_code(v);
         }
@@ -434,14 +434,14 @@ static int write_settings(const Cfg *c) {
         "    \"preset_language\": { \"enabled\": true, \"language\": \"%s\" },\n"
         "    \"widescreen\": { \"enabled\": %s },\n"
         "    \"battle_menu\": { \"enabled\": true, \"fight\": \"%s\", \"tech\": \"%s\", \"digivolve\": \"%s\", \"tag\": \"%s\", "
-        "\"item\": \"%s\", \"run\": \"%s\", \"inspect\": \"%s\", \"remember_cursor\": %s, \"buffer_input\": \"%s\" },\n"
+        "\"item\": \"%s\", \"run\": \"%s\", \"inspect\": \"%s\", \"blast\": \"%s\", \"remember_cursor\": %s, \"buffer_input\": \"%s\" },\n"
         "    \"led_bar\": { \"enabled\": %s }\n  },\n  \"touch_pad\": %s,\n  \"input\": { \"gamepad\": %s }\n}\n",
         disc_esc, vscale, vfull ? "true" : "false", vfill ? "true" : "false", c->hz, renderer, vfilt,
         log_names[c->logs], c->ff ? "true" : "false", ff_names[c->ff ? c->ff : 3],
         c->skip ? "true" : "false", c->battles ? "true" : "false", c->battles && c->hit ? "true" : "false",
         btext_names[c->btext], lang_names[c->lang < 0 || c->lang > 7 ? 0 : c->lang], vw ? "true" : "false",
         hud_name(c->hud[H_FIGHT]), hud_name(c->hud[H_TECH]), hud_name(c->hud[H_DV]),
-        hud_name(c->hud[H_TAG]), hud_name(c->hud[H_ITEM]), hud_name(c->hud[H_RUN]), hud_name(c->hud[H_INSPECT]),
+        hud_name(c->hud[H_TAG]), hud_name(c->hud[H_ITEM]), hud_name(c->hud[H_RUN]), hud_name(c->hud[H_INSPECT]), hud_name(c->hud[H_BLAST]),
         c->bmem ? "true" : "false", bbuf_names[c->bbuf], (!is_pc && !is_android && c->led) ? "true" : "false",
         c->touch_pad ? "true" : "false", pads);
     return write_atomic(path, text);
@@ -458,7 +458,7 @@ int cfg_save(const Cfg *c) {
         snprintf(line, sizeof(line), "disc=%s\n", disc_path);
         strcat(text, line);
     }
-    static const char *const keys[H_COUNT] = {"bm_fight", "bm_tech", "bm_digivolve", "bm_tag", "bm_item", "bm_run", "bm_inspect"};
+    static const char *const keys[H_COUNT] = {"bm_fight", "bm_tech", "bm_digivolve", "bm_tag", "bm_item", "bm_run", "bm_inspect", "bm_blast"};
     for (int i = 0; i < H_COUNT; i++) {
         snprintf(line, sizeof(line), "%s=%s\n", keys[i], hud_name(c->hud[i]));
         strcat(text, line);

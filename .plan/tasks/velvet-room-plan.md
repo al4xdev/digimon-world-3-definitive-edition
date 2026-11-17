@@ -339,8 +339,8 @@ BIN --out .dumps/tasks/blast/mods`, refazer a cada build): `blast_test.py` (R2 d
 (fotos da forma), `plug_test.py` (DV Plug). `tests/port/run.py` passa; `travel_ss.py` passa; `gen_text_override.py
 --check` e `gen_equipment.py --check` passam.
 
-Para fazer depois: o launcher (C, `launcher/cfg.c`, `H_COUNT` 7) não mostra a opção `blast`: o jogo usa R2 se não
-houver valor. Fase 2 vai precisar guardar no save as formas invocadas e os TP sacrificados (hoje só o log diz).
+Launcher: o C (`launcher/`, desktop e Android) ganhou a linha BLAST (`H_BLAST`, `bm_blast`, padrão R2; no Android
+as linhas da tela passaram de 27 para 25 px para caber); o do psxstack lê o `mod.json`. Fase 2 vai precisar guardar no save as formas invocadas e os TP sacrificados (hoje só o log diz).
 Não testado em jogo real: uma batalha comum com WEAK/Stagger enchendo o gauge até 1000 (a regra está no log
 `DW3_BATTLE_LOG`, linhas "blast gauge hit").
 
