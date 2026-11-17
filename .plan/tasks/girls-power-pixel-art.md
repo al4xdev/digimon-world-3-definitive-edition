@@ -128,6 +128,14 @@ Mark `[x]` with a short note when the frame is drawn and built.
 - [x] 28 29 (bow: his looking-down head from 3CA:59), 36 (crouch, 24 rows), 37-40 (arms out), 41-44, 45-48, 49-52:
   his own standing frames of `187` pasted, arms drawn
 
+Redrawn after the owner's review of 2026-11-16 (sets `ladder`, `fish_profile`, `fish_34front`, `fish_34back`):
+- `3CC` 2-10, 14, 15 whole: one bent arm from her shoulder (the standing frame's hanging arm plus a straight stick
+  of sleeve are gone), legs alternating as his. 0, 1, 11-13 are still as first done.
+- `3CA` 27-33 (her 3/4 front head, bowed, in place of a profile head pushed 5 px ahead of her shoulders), 37-39 (the
+  striking arm bent, the far foot forward), 41-48 and 14-19 (the head back over her shoulders, down instead of
+  forward). Front (55-68) and back (0-13) looked at, not changed. A head that leans is never slid ahead of the
+  shoulders: it goes down, or it is another head (turned), as his.
+
 All 174 are drawn. What is left is the owner's review in the game (see "Review" below) and redoing what he points at.
 
 ## Review in the game
