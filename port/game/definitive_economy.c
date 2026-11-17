@@ -14,11 +14,23 @@ extern int def_on(void); /* port.h declares it under PC_PORT only; the host test
 extern RecordsItem *records_get_item(s32 i);
 extern void port_log(const char *fmt, ...);
 
+static const DefItemPrice revive_prices[] = {
+    { DEF_REVIVE_T1_ITEM, DEF_REVIVE_T1_BUY, DEF_REVIVE_T1_SELL },
+    { DEF_REVIVE_T2_ITEM, DEF_REVIVE_T2_BUY, DEF_REVIVE_T2_SELL },
+    { DEF_REVIVE_T3_ITEM, 0, DEF_REVIVE_T3_SELL },
+};
+
 static const DefItemPrice *price_of(int item) {
     int lo = 0, hi = def_item_price_count - 1;
+    int r;
 
     if (!def_on()) {
         return NULL;
+    }
+    for (r = 0; r < 3; r++) {
+        if (revive_prices[r].item == item) {
+            return &revive_prices[r];
+        }
     }
     while (lo <= hi) {
         int mid = (lo + hi) / 2;

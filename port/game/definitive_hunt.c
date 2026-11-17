@@ -237,7 +237,7 @@ static void common_drops(void) {
         }
         m = def_hunt_common_of(def_bestiary_index(species));
         if (m >= 0) {
-            tally[m]++;
+            tally[m] += def_super_reward(1); /* Super Hard: double */
         }
     }
     for (m = 0; m < DEF_HUNT_MATERIALS; m++) {

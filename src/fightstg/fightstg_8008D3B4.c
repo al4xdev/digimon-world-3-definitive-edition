@@ -10,6 +10,7 @@
 #else
 #define FIGHTSTG_STAT_BLOCKED(k) records_state.blocked[k]
 #define FIGHTSTG_DEBUFF(k, amount) (amount)
+#define def_status_blocked(k) records_state.blocked[k]
 #endif
 
 #include "object.h"
@@ -718,7 +719,9 @@ void fightstg_item_update(FightstgItem *obj, FightstgMessage **data) {
                 break;
             }
             case 0x42:
+#ifndef PC_PORT
             case 0x43:
+#endif
             case 0x44:
             case 0x45: {
                 FightstgMember *member = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
@@ -753,6 +756,10 @@ void fightstg_item_update(FightstgItem *obj, FightstgMessage **data) {
                 obj->base.next_step(obj);
                 break;
             }
+#ifdef PC_PORT
+            case 0x2E:
+            case 0x43:
+#endif
             case 0x46:
                 switch (obj->base.substep) {
                 case 0:
@@ -768,8 +775,17 @@ void fightstg_item_update(FightstgItem *obj, FightstgMessage **data) {
 
                         for (i = 0; i < 3; i++) {
                             if (fightstg_battle.state.members[0][i].hp == 0) {
+#ifdef PC_PORT
+                                s32 revived = def_revive_hp(obj->item, fightstg_battle.state.members[0][i].max_hp);
+
+                                if (revived > 0) {
+                                    fightstg_battle.state.members[0][i].hp = revived;
+                                    wfightmn_check_regen(i);
+                                }
+#else
                                 fightstg_battle.state.members[0][i].hp = fightstg_battle.state.members[0][i].max_hp;
                                 wfightmn_check_regen(i);
+#endif
                             }
                         }
                         obj->base.next_substep(obj);
@@ -7751,6 +7767,11 @@ void fightstg_action_try_poison(void) {
     s32 value = fightstg_rules.roll_poison(fightstg_action.side, fightstg_action.tech);
 
     if (value != 0) {
+#ifdef PC_PORT
+        if (def_on()) {
+            value = def_poison_dot(&fightstg_rules.stats[0], value);
+        }
+#endif
         if (member->boosted != 0) {
             value *= 2;
         }
@@ -8393,6 +8414,9 @@ static inline void fightstg_rules_get_enemy_stats(FightstgStats *out, FightstgMe
     for (j = 0; j < 5; j++) {
         out->stats[j] = enemy->stats[j] * records_state.enemies[member].stat_scale / 16;
     }
+#ifdef PC_PORT
+    out->stats[4] = (s16)def_super_speed(out->stats[4]); /* Super Hard: past 999 the enemy acts twice */
+#endif
     for (j = 0; j < 12; j++) {
         out->resists[j] = enemy->resists[j];
     }
@@ -8847,6 +8871,11 @@ s32 fightstg_rules_get_poison_damage(FightstgPoisonArgs *args) {
     target = &fightstg_rules.stats[1];
     m = &fightstg_battle.state.members[enemy][member];
     value = (amount / 2 - (target->resists[7] + target->resists[1]) / 10) * m->max_hp / 100;
+#ifdef PC_PORT
+    if (def_poison_tick(amount, m->max_hp, enemy) >= 0) {
+        return def_poison_tick(amount, m->max_hp, enemy);
+    }
+#endif
     if (value <= 0) {
         value = 1;
     }
@@ -9108,7 +9137,7 @@ s32 fightstg_rules_roll_poison(u8 side, s32 id) {
     s32 chance;
 
     if (side == 0) {
-        if (records_state.blocked[0] != 0) {
+        if (def_status_blocked(0) != 0) {
             return 0;
         }
         fightstg_rules_get_stats(0, 1, fightstg_battle.state.current[0]);
@@ -9127,7 +9156,11 @@ s32 fightstg_rules_roll_poison(u8 side, s32 id) {
         amount = rec->effect_power;
         value = rec->effect_chance + stats->stats[3] / 8;
     }
+#ifdef PC_PORT
+    chance = def_status_chance(0, value - stats->stats[3] / 8, stats, target, target->resists[7] + target->resists[1]);
+#else
     chance = value - (target->resists[7] + target->resists[1] + target->stats[3] / 2) / 8;
+#endif
     if (chance <= 0) {
         chance = 1;
     }
@@ -9183,7 +9216,7 @@ s32 fightstg_rules_roll_confusion(u8 side, s32 id) {
     s32 chance;
 
     if (side == 0) {
-        if (records_state.blocked[2] != 0) {
+        if (def_status_blocked(2) != 0) {
             return 0;
         }
         fightstg_rules_get_stats(0, 1, fightstg_battle.state.current[0]);
@@ -9200,7 +9233,11 @@ s32 fightstg_rules_roll_confusion(u8 side, s32 id) {
     } else {
         value = rec->effect_chance + stats->stats[3] / 8;
     }
+#ifdef PC_PORT
+    chance = def_status_chance(2, value - stats->stats[3] / 8, stats, target, target->resists[9] + target->resists[3]);
+#else
     chance = value - (target->resists[9] + target->resists[3] + target->stats[3] / 2) / 8;
+#endif
     if (chance <= 0) {
         chance = 1;
     }
@@ -9218,7 +9255,7 @@ s32 fightstg_rules_roll_sleep(u8 side, s32 id) {
     s32 chance;
 
     if (side == 0) {
-        if (records_state.blocked[3] != 0) {
+        if (def_status_blocked(3) != 0) {
             return 0;
         }
         fightstg_rules_get_stats(0, 1, fightstg_battle.state.current[0]);
@@ -9231,7 +9268,11 @@ s32 fightstg_rules_roll_sleep(u8 side, s32 id) {
     target = &fightstg_rules.stats[1];
     rec = &records_techniques[id - 1];
     value = rec->effect_chance + stats->stats[3] / 8;
+#ifdef PC_PORT
+    chance = def_status_chance(3, value - stats->stats[3] / 8, stats, target, target->resists[10] + target->resists[2]);
+#else
     chance = value - (target->resists[10] + target->resists[2] + target->stats[3] / 2) / 8;
+#endif
     if (chance <= 0) {
         chance = 1;
     }
@@ -9450,6 +9491,11 @@ s32 fightstg_rules_roll_wake(u8 side, s32 amount) {
     } else {
         fightstg_rules_get_stats(0x10, 0, fightstg_battle.state.current[1]);
     }
+#ifdef PC_PORT
+    if (def_wake_on_hit(side)) {
+        return 1;
+    }
+#endif
     enemy = side != 0;
     target = &fightstg_rules.stats[1];
     i = fightstg_events.find_member(0xC, side, fightstg_battle.state.current[enemy]);

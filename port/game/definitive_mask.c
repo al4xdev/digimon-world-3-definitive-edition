@@ -140,3 +140,56 @@ int def_multiplier(int weak, int open, int resisted, int affinity) {
     }
     return m;
 }
+
+int def_status_chance_calc(int value, int atk_prec, int tgt_prec, int resist_sum, int boss, int staggered) {
+    int chance = value + (atk_prec - tgt_prec) / 8 - resist_sum / 8;
+
+    if (boss) {
+        chance = chance * DEF_BOSS_STATUS_PCT / 100;
+    }
+    if (staggered) {
+        chance = chance * 3 / 2 + DEF_STAGGER_STATUS_BONUS;
+    }
+    if (boss && chance > DEF_BOSS_STATUS_CAP) {
+        chance = DEF_BOSS_STATUS_CAP;
+    }
+    return chance < 1 ? 1 : chance > 0x7F ? 0x7F : chance;
+}
+
+int def_poison_dot_calc(int base_power, int wind_affinity, int precision, int spirit) {
+    int dot = base_power / 2 + wind_affinity / DEF_POISON_WIND_DIV + precision / DEF_POISON_PREC_DIV +
+              spirit / DEF_POISON_SPIRIT_DIV;
+
+    return dot < 1 ? 1 : dot;
+}
+
+int def_poison_cap(int amount, int max_hp) {
+    int cap = max_hp / 4;
+
+    if (amount > cap) {
+        amount = cap;
+    }
+    return amount < 1 ? 1 : amount;
+}
+
+int def_revive_tier(int item, int *chance, int *hp_pct, int *rated) {
+    switch (item) {
+    case DEF_REVIVE_T1_ITEM:
+        *chance = DEF_REVIVE_T1_CHANCE, *hp_pct = DEF_REVIVE_T1_HP_PCT, *rated = DEF_REVIVE_T1_RATED_HP;
+        return 1;
+    case DEF_REVIVE_T2_ITEM:
+        *chance = DEF_REVIVE_T2_CHANCE, *hp_pct = DEF_REVIVE_T2_HP_PCT, *rated = DEF_REVIVE_T2_RATED_HP;
+        return 1;
+    case DEF_REVIVE_T3_ITEM:
+        *chance = DEF_REVIVE_T3_CHANCE, *hp_pct = DEF_REVIVE_T3_HP_PCT, *rated = DEF_REVIVE_T3_RATED_HP;
+        return 1;
+    }
+    return 0;
+}
+
+int def_revive_chance(int chance, int rated, int max_hp) {
+    if (max_hp > rated && max_hp > 0) {
+        chance = chance * rated / max_hp;
+    }
+    return chance < DEF_REVIVE_MIN_CHANCE ? DEF_REVIVE_MIN_CHANCE : chance;
+}

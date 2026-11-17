@@ -36,6 +36,38 @@
 #define DEF_DEBUFF_LV1_PCT 15    /* Tier -1 stat debuff: -15% of base stat */
 #define DEF_DEBUFF_LV2_PCT 25    /* Tier -2 stat debuff: -25% of base stat */
 #define DEF_DEBUFF_LV3_PCT 35    /* Tier -3 stat debuff: -35% of base stat */
+#define DEF_BOSS_STATUS_PCT 60    /* percent of a status' chance that remains on a boss that the original made immune */
+#define DEF_STAGGER_STATUS_BONUS 24 /* out of 128: flat bonus (after x1.5) when the target is staggered */
+#define DEF_BOSS_STATUS_CAP 100    /* out of 128 (~78%): no status is surer than this on a boss, stagger or not */
+#define DEF_POISON_WIND_DIV 6     /* Wind affinity (0..300) divided by this feeds poison damage */
+#define DEF_POISON_PREC_DIV 4     /* Precision divided by this feeds poison damage */
+#define DEF_POISON_SPIRIT_DIV 4   /* Spirit divided by this feeds poison damage */
+#define DEF_SUPER_ITEM 26         /* Super Hard: the Demon Bell, a key item (a Japanese tag slot the US disc never gives) */
+#define DEF_SUPER_HP_PCT 150      /* percent of an enemy's HP while the player holds the Bell */
+#define DEF_SUPER_SPEED_PCT 150   /* ... and of its Speed (may pass 999: the enemy then acts twice) */
+#define DEF_SUPER_REWARD_PCT 200  /* ... and of the Bits and the Hunt Materials a won battle pays */
+#define DEF_POISON_ENEMY_PCT 8    /* percent of max HP: the most a tick takes from an enemy (a pure precision build ticks ~15% of a boss) */
+#define DEF_SLEEP_REGEN_PCT 6     /* percent of max HP a sleeping enemy regenerates each turn */
+#define DEF_STATUS_BOSS_TURNS 2   /* turns Sleep or Confusion hold an enemy */
+#define DEF_CONFUSION_BUFF_LEVEL 2 /* Attack tier an enemy gains when its confusion ends */
+#define DEF_REVIVE_T1_ITEM 67     /* Revive Disk: the first revive tier (item ID) */
+#define DEF_REVIVE_T1_CHANCE 60   /* percent chance to revive a fallen ally, at or under its rated max HP */
+#define DEF_REVIVE_T1_HP_PCT 30   /* percent of the ally's max HP it returns with */
+#define DEF_REVIVE_T1_RATED_HP 1500 /* max HP the tier is rated for: above it the chance falls in proportion */
+#define DEF_REVIVE_T1_BUY 400     /* shop price, Bits */
+#define DEF_REVIVE_T1_SELL 200
+#define DEF_REVIVE_T2_ITEM 70     /* Life Disk: the second revive tier (item ID) */
+#define DEF_REVIVE_T2_CHANCE 85
+#define DEF_REVIVE_T2_HP_PCT 60
+#define DEF_REVIVE_T2_RATED_HP 4000
+#define DEF_REVIVE_T2_BUY 2500
+#define DEF_REVIVE_T2_SELL 1250
+#define DEF_REVIVE_T3_ITEM 46     /* Max Charge: the third revive tier in battle (the menu still heals) */
+#define DEF_REVIVE_T3_CHANCE 100
+#define DEF_REVIVE_T3_HP_PCT 100
+#define DEF_REVIVE_T3_RATED_HP 9999
+#define DEF_REVIVE_T3_SELL 3000
+#define DEF_REVIVE_MIN_CHANCE 20  /* percent: the chance never falls under this */
 #define DEF_MOD_TURNS_SHORT 2    /* Duration (turns) of secondary-effect stat debuffs on attacks */
 #define DEF_MOD_TURNS_BASE 3     /* Standard duration (turns) of dedicated stat buff/debuff skills & items */
 #define DEF_MOD_TURNS_LONG 4     /* Extended duration (turns) for single-target specialist buff/debuff skills */
@@ -56,6 +88,11 @@ int def_resisted(int resist); /* 1 from DEF_RESIST_MIN up */
  * 1 + (weak ? 0.5) + (open ? 0.2) + (weak ? affinity) + (open ? affinity); resisted: DEF_MULT_RESISTED alone.
  * `affinity` from def_affinity: the element's share of the attacker's own resists (`resists[0..6]`, 0..999 each). */
 int def_affinity(int element, const short resists[7]);
+int def_status_chance_calc(int value, int atk_prec, int tgt_prec, int resist_sum, int boss, int staggered);
+int def_poison_dot_calc(int base_power, int wind_affinity, int precision, int spirit);
+int def_poison_cap(int amount, int max_hp);
+int def_revive_tier(int item, int *chance, int *hp_pct, int *rated);
+int def_revive_chance(int chance, int rated, int max_hp);
 int def_multiplier(int weak, int open, int resisted, int affinity);
 int def_mod_pct(int level);
 void def_mod_tech_spec(int tech, int kind, int amount, int *out_level, int *out_turns);

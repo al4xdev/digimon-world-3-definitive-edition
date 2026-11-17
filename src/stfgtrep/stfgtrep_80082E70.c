@@ -901,6 +901,7 @@ void stfgtrep_main_run(StfgtrepMain *obj, StfgtrepMainData *data) {
             money += stfgtrep_rewards[records_battle_results.battle].money / 5;
         }
 #ifdef PC_PORT
+        money = def_super_reward(money); /* Super Hard */
         money += def_overfinish_take_bits(); /* definitive combat: the OVERFINISH blows' Bits, in the same line */
 #endif
         data->messages->set_text(data->messages, cdload_module.files.get_file(records_language + 0x55), 10);
@@ -1318,6 +1319,7 @@ void def_rush_apply_quiet(DefRushSummary *out) {
     if (rec->equipment[4] == 0x142 || rec->equipment[5] == 0x142) {
         money += stfgtrep_rewards[records_battle_results.battle].money / 5;
     }
+    money = def_super_reward(money); /* Super Hard */
     money += def_overfinish_take_bits();
     gamestate_data.money += money;
     if (gamestate_data.money > 9999999) {

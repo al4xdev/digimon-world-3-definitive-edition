@@ -969,6 +969,7 @@ void fightstg_enemy_turn_update(FightstgEnemyTurn *obj, FightstgEnemyTurnData *d
         case 1:
 #ifdef PC_PORT
             def_log_turn(1);
+            def_enemy_status_turn();
 #endif
             member = &fightstg_battle.state.members[1][fightstg_battle.state.current[1]];
             if (member->status & 8) {

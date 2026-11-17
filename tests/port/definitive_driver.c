@@ -144,6 +144,38 @@ static void multiplier_cases(void) {
     mult_case("mult: weak alone, half Fire affinity (499): 1+.5+.149", def_multiplier(1, 0, 0, def_affinity(0, (const short[7]){ 499, 0, 0, 0, 0, 0, 0 })), 1649);
 }
 
+static void status_cases(void) {
+    int c, h, r;
+    int plain = def_status_chance_calc(30, 100, 100, 0, 0, 0);
+    int open = def_status_chance_calc(30, 100, 100, 0, 0, 1);
+    int boss = def_status_chance_calc(30, 100, 100, 0, 1, 0);
+
+    check("status: equal precision keeps the base chance", plain == 30);
+    check("status: a precision lead raises it, a deficit lowers it",
+          def_status_chance_calc(30, 200, 100, 0, 0, 0) > plain && def_status_chance_calc(30, 100, 200, 0, 0, 0) < plain);
+    check("status: stagger raises it drastically", open >= plain * 3 / 2 + DEF_STAGGER_STATUS_BONUS);
+    check("status: a boss lowers it but stagger still opens it", boss < plain && def_status_chance_calc(30, 100, 100, 0, 1, 1) > boss);
+    check("status: clamped to 1..127", def_status_chance_calc(0, 0, 999, 999, 1, 0) == 1 &&
+                                         def_status_chance_calc(120, 999, 0, 0, 0, 1) == 0x7F &&
+                                         def_status_chance_calc(120, 999, 0, 0, 1, 1) == DEF_BOSS_STATUS_CAP);
+    check("poison: wind, precision and spirit each add damage",
+          def_poison_dot_calc(10, 300, 0, 0) > def_poison_dot_calc(10, 0, 0, 0) &&
+              def_poison_dot_calc(10, 0, 200, 0) > def_poison_dot_calc(10, 0, 0, 0) &&
+              def_poison_dot_calc(10, 0, 0, 200) > def_poison_dot_calc(10, 0, 0, 0));
+    check("poison: capped at a quarter of max HP, at least 1", def_poison_cap(9999, 400) == 100 && def_poison_cap(0, 400) == 1 &&
+                                                                 def_poison_cap(30, 400) == 30);
+    check("revive: tiers known, others not", def_revive_tier(DEF_REVIVE_T1_ITEM, &c, &h, &r) &&
+                                                 def_revive_tier(DEF_REVIVE_T2_ITEM, &c, &h, &r) &&
+                                                 def_revive_tier(DEF_REVIVE_T3_ITEM, &c, &h, &r) && !def_revive_tier(1, &c, &h, &r));
+    def_revive_tier(DEF_REVIVE_T1_ITEM, &c, &h, &r);
+    check("revive: within the rated HP the chance is the tier's", def_revive_chance(c, r, r) == c);
+    check("revive: above it the chance falls, never under the floor", def_revive_chance(c, r, r * 2) == c / 2 &&
+                                                                       def_revive_chance(c, r, r * 100) == DEF_REVIVE_MIN_CHANCE);
+    check("revive: better tiers return more HP and a higher chance", DEF_REVIVE_T2_HP_PCT > DEF_REVIVE_T1_HP_PCT &&
+                                                                       DEF_REVIVE_T3_HP_PCT > DEF_REVIVE_T2_HP_PCT &&
+                                                                       DEF_REVIVE_T2_CHANCE > DEF_REVIVE_T1_CHANCE);
+}
+
 int main(void) {
     const short equal[7] = { 100, 100, 100, 100, 100, 100, 100 };
     const short one[7] = { 60, 100, 100, 100, 100, 100, 100 };
@@ -187,5 +219,6 @@ int main(void) {
     }
     chain_cases();
     multiplier_cases();
+    status_cases();
     return failures ? 1 : 0;
 }

@@ -847,7 +847,7 @@ ITMINF 42: Ticket de treinamento Rank 4.
 ITMINF 43: Recupera 500 de HP
 ITMINF 44: Recupera 2000 de HP
 ITMINF 45: Recupera 5000 de HP
-ITMINF 46: Recupera HP ao máximo.
+ITMINF 46: Batalha: revive 100%, HP cheio.
 ITMINF 47: Aumenta o HP máximo.
 ITMINF 48: Aumenta o MP máximo.
 ITMINF 49: Aumenta a Força.
@@ -868,10 +868,10 @@ ITMINF 63: Aumenta TP em 2.
 ITMINF 64: Aumenta TP em 3.
 ITMINF 65: Aumenta TP em 5.
 ITMINF 66: Cura Veneno durante a batalha.
-ITMINF 67: Cura Paralisia durante a batalha.
+ITMINF 67: Revive aliados: 60% de chance, 30% HP.
 ITMINF 68: Cura Confusão durante a batalha.
 ITMINF 69: Cura todos os males na batalha.
-ITMINF 70: Revive aliados derrotados.
+ITMINF 70: Revive aliados: 85% de chance, 60% HP.
 ITMINF 71: Recupera metade do HP e MP.
 ITMINF 72: Temp: aumenta Velocidade
 ITMINF 73: Temp: aumenta Força, diminui Defesa.

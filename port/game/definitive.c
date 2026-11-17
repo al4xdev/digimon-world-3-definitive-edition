@@ -167,7 +167,8 @@ static void classify(u8 side, s32 id) {
     RecordsTechnique *rec = &records_techniques[id - 1];
 
     hit_class = 0;
-    overfinish_hit = 0;
+    /* overfinish_hit is not reset here: classify runs on every damage roll, so one made between the blow's resolution
+     * (def_action_resolved, which sets it for each party blow) and its hit sound would turn OVERFINISH! into WEAK! */
     if (side != 0 || rec->defense_stat < 2 || rec->defense_stat > 8) {
         return;
     }
@@ -640,6 +641,7 @@ void def_action_resolved(u8 side, s32 id, s32 value) {
     if (!def_on() || side != 0) {
         return;
     }
+    overfinish_hit = 0; /* every party blow decides it afresh */
     if (value > 0 && fightstg_battle.state.members[1][target].hp <= 0) { /* it was already down: an OVERFINISH */
         overfinish_hit = 1;
         overfinish_damage += value;
@@ -1462,4 +1464,94 @@ void def_rush_results(void) {
     def_hunt_skipped(); /* a Rush-won encounter also advances the regional hunt chain and drops materials */
     port_log("rush: battle %d skipped (member %d, item %d)", (int)records_state.battle, lead,
              (int)records_battle_results.item);
+}
+
+/* ---- Negative status rework: precision gap, stagger bonus, boss tradeoffs for Sleep and Confusion, Poison as a DoT. */
+int def_status_blocked(int k) {
+    if (def_on() && (k == 0 || k == 2 || k == 3)) {
+        return 0;
+    }
+    return records_state.blocked[k];
+}
+
+int def_status_chance(int k, int value, const FightstgStats *atk, const FightstgStats *tgt, int resist_sum) {
+    return def_status_chance_calc(value, atk->stats[3], tgt->stats[3], resist_sum, records_state.blocked[k] != 0,
+                                  def_target_staggered());
+}
+
+int def_poison_dot(const FightstgStats *atk, int base_power) {
+    return def_poison_dot_calc(base_power, def_affinity(3, atk->resists), atk->stats[3], atk->stats[2]);
+}
+
+int def_poison_tick(int amount, int max_hp, int enemy) {
+    int v;
+
+    if (!def_on()) {
+        return -1;
+    }
+    v = def_poison_cap(amount, max_hp);
+    if (enemy && v > max_hp * DEF_POISON_ENEMY_PCT / 100) { /* the DoT build must not melt a boss on its own */
+        v = max_hp * DEF_POISON_ENEMY_PCT / 100;
+    }
+    return v < 1 ? 1 : v;
+}
+
+int def_wake_on_hit(u8 side) {
+    return def_on() && side != 0;
+}
+
+static unsigned char enemy_sleep_turns[3];
+static unsigned char enemy_conf_turns[3];
+
+void def_enemy_status_turn(void) {
+    int slot = fightstg_battle.state.current[1] % 3;
+    FightstgMember *m = &fightstg_battle.state.members[1][slot];
+    int e;
+
+    if (!def_on()) {
+        return;
+    }
+    if (m->status & 8) {
+        int heal = m->max_hp * DEF_SLEEP_REGEN_PCT / 100;
+
+        m->hp = (s16)(m->hp + heal > m->max_hp ? m->max_hp : m->hp + heal);
+        if (++enemy_sleep_turns[slot] > DEF_STATUS_BOSS_TURNS) {
+            m->status &= ~8;
+            e = fightstg_events.find_member(12, 0x10, fightstg_battle.state.current[1]);
+            if (e >= 0) {
+                fightstg_events.events[e].type = 0;
+            }
+            enemy_sleep_turns[slot] = 0;
+        }
+    } else {
+        enemy_sleep_turns[slot] = 0;
+    }
+    if (m->status & 4) {
+        if (++enemy_conf_turns[slot] > DEF_STATUS_BOSS_TURNS) {
+            m->status &= ~4;
+            e = fightstg_events.find_member(11, 0x10, fightstg_battle.state.current[1]);
+            if (e >= 0) {
+                fightstg_events.events[e].type = 0;
+            }
+        }
+    }
+    if (!(m->status & 4) && enemy_conf_turns[slot] != 0) {
+        enemy_conf_turns[slot] = 0;
+        def_mod_apply(1, slot, 0, DEF_CONFUSION_BUFF_LEVEL, DEF_MOD_TURNS_BASE, 0);
+    }
+}
+
+/* ---- Revive tiers: the item revives each fallen ally with a chance that falls when its max HP outgrows the tier. */
+int def_revive_hp(int item, int max_hp) {
+    int chance, pct, rated, hp;
+
+    if (max_hp <= 0 || !def_revive_tier(item, &chance, &pct, &rated)) {
+        return 0;
+    }
+    chance = def_revive_chance(chance, rated, max_hp);
+    if ((int)(pad_random.next() % 100) >= chance) {
+        return 0;
+    }
+    hp = max_hp * pct / 100;
+    return hp < 1 ? 1 : hp;
 }

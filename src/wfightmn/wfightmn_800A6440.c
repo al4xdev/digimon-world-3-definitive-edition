@@ -182,6 +182,9 @@ void wfightmn_init_members(s32 leader) {
         members[i].digimon = records_state.enemies[i].digimon;
         if (records_state.enemies[i].digimon != 0) {
             members[i].hp = members[i].max_hp = records_state.enemies[i].hp;
+#ifdef PC_PORT
+            members[i].hp = members[i].max_hp = (s16)def_super_hp(records_state.enemies[i].hp); /* Super Hard */
+#endif
             members[i].mp = members[i].max_mp = records_state.enemies[i].mp;
             digimon = fightstg_enemy_records.get(members[i].digimon);
             if (digimon->item != 0) {

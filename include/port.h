@@ -241,6 +241,21 @@ int def_on(void);
 /* PRD 2, layer A: records_state.blocked[k] as the definitive edition reads it (stat debuffs 8..10 never blocked), and a
  * debuff's amount scaled by DEF_BOSS_DEBUFF_PCT where the original would have blocked it. */
 int def_stat_blocked(int k);
+struct FightstgStats;
+int def_status_blocked(int k);
+int def_revive_hp(int item, int max_hp);
+int def_status_chance(int k, int value, const struct FightstgStats *atk, const struct FightstgStats *tgt, int resist_sum);
+int def_poison_dot(const struct FightstgStats *atk, int base_power);
+int def_poison_tick(int amount, int max_hp, int enemy);
+/* Super Hard (definitive_super.c): while the Demon Bell is in the bag, enemies' HP and Speed (the stats[4] of the
+ * battle) are scaled up, and a battle's Bits and Hunt Materials pay more; def_super_toggle gives or takes the Bell. */
+int def_super_on(void);
+int def_super_hp(int hp);
+int def_super_speed(int speed);
+int def_super_reward(int amount);
+int def_super_toggle(void);
+int def_wake_on_hit(unsigned char side);
+void def_enemy_status_turn(void);
 /* PRD 2, layer J (definitive_evohint.c): the Digi-Lab's Next Forms panel, opened with Square from the Digimon screen. */
 int def_evohint_enabled(void);
 void def_evohint_label(s32 layer, s32 show);
