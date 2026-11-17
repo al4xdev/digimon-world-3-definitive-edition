@@ -214,17 +214,6 @@
       "defaults": { "mods/skip_dialogues/enabled": "false" }
     },
     {
-      "id": "save_anywhere",
-      "label": "Save anywhere",
-      "group": "Play",
-      "help": "Adds Save to the field menu, not only at an inn. A load puts you back where you saved.",
-      "choices": [
-        { "label": "Inns only", "set": { "mods/global_save/enabled": "false" } },
-        { "label": "Anywhere", "set": { "mods/global_save/enabled": "true" } }
-      ],
-      "defaults": { "mods/global_save/enabled": "false" }
-    },
-    {
       "id": "language",
       "label": "Language",
       "group": "Play",

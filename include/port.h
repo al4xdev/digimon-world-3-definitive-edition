@@ -152,19 +152,8 @@ extern int port_mod_battle_animations;
  * outlives it (async); the toast's state (arena windows, frames left) is game_mods.c's, named in its save state. */
 extern int port_mod_battle_text;
 s32 port_battle_cut(const s16 *stream, s32 stage, const s32 *results, s32 hit_sound, s32 *sound_id, s32 *sound_arg);
-/* port_mod_global_save: global_save is on ("Save anywhere"): the field menu (src/main/fieldmenu.c) gets a last entry, SAVE (the
- * save screen's title, ?SMEMCRD entry 1), in the field's menu only; chosen, port_global_save_open sends the game to
- * STGMCARD in save mode (the inn's 0xC map for an inn's map, 0xC00 elsewhere). STGMCARD then asks
- * port_global_save_map_name for the slot summary's place name (0, none, off an inn), port_global_save_record puts the
- * map's state that a load loses (the attribute layer, depth and height, the per-visit flags) into the slot's unused tail
- * (slot offset 0x26C4, outside the checksum: a PS1 ignores it), and port_global_save_restore reads it back after a load
- * so FIELDSTG resumes the map as after a Back from the save screen (map_is_new 0). */
-extern int port_mod_global_save;
-void port_global_save_open(void);
-s32 port_global_save_map_name(s32 map_name);
-s32 port_global_save_inn(s32 map);
-void port_global_save_record(void *slot);
-void port_global_save_restore(const void *slot);
+/* The inn's save screen (STGMCARD's 0xC.. map) for a field map, or 0 off an inn (port/game/game_mods.c). */
+s32 port_inn_save_screen(s32 map);
 /* port_mod_preset_language: preset_language is on ("Preset language"): CNTY_SEL's root object (src/cnty_sel), once the
  * screen's sound bank is in, sets records_language to port_preset_language (0 JPN, 1 USA, 2-6 Europe) and goes on to
  * the opening as the menu would, without drawing the screen. */

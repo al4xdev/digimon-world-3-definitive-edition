@@ -122,7 +122,7 @@ static int nt_unlocked(int node) {
 
 /* The place's name in ?SHPNAM: STGMCARD's own entry for the inn's 0xC.. save screen (stgmcard_map_names). */
 static s32 nt_name(int node) {
-    s32 inn = port_global_save_inn(nodes[node].map);
+    s32 inn = port_inn_save_screen(nodes[node].map);
 
     return inn != 0 ? 0x2B + (inn & 0xFF) - 1 : 0;
 }

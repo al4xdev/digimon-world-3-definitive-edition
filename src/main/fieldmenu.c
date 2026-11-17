@@ -93,8 +93,8 @@ typedef struct FieldmenuWindows {
     /* 0x04 */ MessageWindow *money_unit; /* "BIT" */
     /* 0x08 */ MessageWindow *money;    /* the money */
 #ifdef PC_PORT
-    /* 0x0C */ MessageWindow *options[9]; /* the options; from [5 + extended]: the SAVE entry (global_save), the Guide and
-                                           * the bestiary (the PS1 has 6) */
+    /* 0x0C */ MessageWindow *options[9]; /* the options; from [5 + extended]: the Guide and the bestiary (the PS1
+                                           * has 6) */
 #else
     /* 0x0C */ MessageWindow *options[6]; /* the options */
 #endif
@@ -122,7 +122,6 @@ typedef struct Fieldmenu {
     /* 0x6C */ s32 anim_time; /* gfx_module.funcs.get_time() at the last step */
     /* 0x70 */ WindowAnim panel_anims[3]; /* per party member's panel; [0] also the title, [1] the options, [2] the money */
 #ifdef PC_PORT
-    s32 save_entry; /* the global_save mod's SAVE entry is there (option extended + 5) */
     s32 bestiary;   /* the bestiary entry is there (the last option) */
     s32 guide;      /* the Guide's entry is there, */
     s32 guide_at;   /* at this option */
@@ -455,9 +454,7 @@ static s32 fieldmenu_bestiary_update(Fieldmenu *obj, FieldmenuWindows *data) {
         data->money->measure(data->money, 1);
         data->help->set_text(data->help, cdload_module.files.get_file(records_language + 0xB0), 0x13);
         for (i = 0; i < obj->option_count; i++) {
-            if (obj->save_entry && i == obj->extended + 5) {
-                data->options[i]->set_text(data->options[i], cdload_module.files.get_file(records_language + 0x78), 1);
-            } else if (i == obj->option_count - 1) {
+            if (i == obj->option_count - 1) {
                 data->options[i]->set_text(data->options[i], (u8 *)def_str_BestiaryMenu, -1);
             } else if (obj->guide && i == obj->guide_at) {
                 data->options[i]->set_text(data->options[i], (u8 *)def_str_GuideMenu, -1);
@@ -521,17 +518,11 @@ void fieldmenu_update(Fieldmenu *obj, FieldmenuWindows *data) {
 #ifdef PC_PORT
         /* The destination survives this: the map page closes, STSTATUS rebuilds this menu, and the choice at case 6
          * is what consumes it. A stale one from a cancelled menu is cleared by the next START (fieldstg). */
-        if (port_mod_global_save != 0 && gamestate_data.funcs.get_map() != 0x1000) {
-            obj->option_count++; /* global_save: a SAVE entry last, in the field's menu only (docs/LAUNCHER.md) */
-            obj->save_entry = 1;
-        } else {
-            obj->save_entry = 0;
-        }
-        /* The bestiary, after SAVE, in the field's menu only; not in a replay script (shared with the emulator) */
-        obj->bestiary = def_bestiary_active() && gamestate_data.funcs.get_map() != 0x1000;
+        /* The bestiary, last; not in a replay script (shared with the emulator) */
+        obj->bestiary = def_bestiary_active();
         obj->bs_sel = -1;
-        /* The Guide, between SAVE and the bestiary (which stays the last entry), in the field's menu only */
-        obj->guide = def_guide_active() && gamestate_data.funcs.get_map() != 0x1000;
+        /* The Guide, before the bestiary (which stays the last entry) */
+        obj->guide = def_guide_active();
         if (obj->guide) {
             obj->guide_at = obj->option_count++;
         }
@@ -562,12 +553,6 @@ void fieldmenu_update(Fieldmenu *obj, FieldmenuWindows *data) {
                 fieldmenu_show_member(obj, data, 1, 1);
                 for (obj->base.timer = 0; obj->base.timer < obj->option_count; obj->base.timer++) {
 #ifdef PC_PORT
-                    if (obj->save_entry && obj->base.timer == obj->extended + 5) {
-                        /* global_save's SAVE entry: the save screen's title (?SMEMCRD entry 1, in every language) */
-                        data->options[obj->base.timer]->set_text(data->options[obj->base.timer],
-                                                                cdload_module.files.get_file(records_language + 0x78), 1);
-                        continue;
-                    }
                     if (obj->bestiary && obj->base.timer == obj->option_count - 1) {
                         data->options[obj->base.timer]->set_text(data->options[obj->base.timer], (u8 *)def_str_BestiaryMenu, -1);
                         continue;
@@ -631,11 +616,11 @@ void fieldmenu_update(Fieldmenu *obj, FieldmenuWindows *data) {
                     break;
                 }
                 if (obj->guide && obj->cursor == obj->guide_at) {
-                    /* the menu closes as on a cancel (the field's menu only: substep 1 ends it without a map change),
-                     * and the field's next idle frame opens the Guide */
+                    /* the menu closes as on a cancel (on the field substep 1 ends it without a map change; in STSTATUS
+                     * substep 0 goes back to the field), and the field's next idle frame opens the Guide */
                     def_guide_request();
                     done = 1;
-                    obj->base.substep = 1;
+                    obj->base.substep = gamestate_data.funcs.get_map() == 0x1000 ? 0 : 1;
                 } else {
 #endif
                 done = 1;
@@ -751,7 +736,7 @@ void fieldmenu_update(Fieldmenu *obj, FieldmenuWindows *data) {
                     /* the bestiary's page is six names whatever the menu has: the 6-entry panel as it is */
                     gfx.draw(cdload_module.get_subfile_by_id(0x2860000), 0x1B, 0xA8 + wide_pad, 0x28);
                 } else if (obj->option_count >= 7) {
-                    /* global_save's entry with the card case's: the bank has panels for 5 and 6 entries only, so for 7+
+                    /* the Guide and the bestiary with the card case's: the bank has panels for 5 and 6 entries only, so for 7+
                      * Stretching the sprite also stretches its 20 px bottom border to ~28 px, and its inner rule then runs
                      * through the last entry's text (9 entries: BESTIÁRIO). So from 7 entries the panel is drawn flat in
                      * the bank's colours, like the bestiary's, tall enough for the rows; it slides in from the right
@@ -858,13 +843,6 @@ void fieldmenu_update(Fieldmenu *obj, FieldmenuWindows *data) {
             }
             break;
         case 6:
-#ifdef PC_PORT
-            if (obj->save_entry && obj->cursor == obj->extended + 5) {
-                port_global_save_open(); /* global_save's SAVE: STGMCARD in save mode instead of STSTATUS */
-                obj->base.step++;
-                break;
-            }
-#endif
             if (gamestate_data.funcs.get_map() == 0x1000) {
                 gamestate_data.funcs.set_next_map(gamestate_data.field_map, 0);
             } else {

@@ -1258,9 +1258,6 @@ void stgmcard_screen_run(StgmcardScreen *obj, StgmcardScreenData *data) {
             } else {
                 *(StgmcardSaveData *)&gamestate_data = *(StgmcardSaveData *)stgmcard_module.save;
 #ifdef PC_PORT
-                if (port_mod_global_save != 0) {
-                    port_global_save_restore(stgmcard_module.save); /* the map's state from the slot's tail, if any */
-                }
                 def_gauges_slot_read(stgmcard_module.save);
 #endif
 #ifdef PC_PORT
@@ -1379,9 +1376,6 @@ void stgmcard_screen_run(StgmcardScreen *obj, StgmcardScreenData *data) {
             STGMCARD_MEMCARD_FUNCS.get_checksum((u8 *)stgmcard_module.save + 4, 0x26C0);
         stgmcard_module.save->version = 4;
 #ifdef PC_PORT
-        if (port_mod_global_save != 0) {
-            port_global_save_record(stgmcard_module.save); /* the map's state into the slot's unused tail */
-        }
         def_gauges_slot_write(stgmcard_module.save);
 #endif
 #ifdef PC_PORT
@@ -1944,9 +1938,6 @@ Object *stgmcard_main_create(void) {
         }
     }
     obj->map_name = stgmcard_map_names[i];
-#ifdef PC_PORT
-    obj->map_name = port_global_save_map_name(obj->map_name); /* global_save: no inn's name for a save off an inn */
-#endif
     sound_module.load_extra_bank(0x20);
     return &obj->base;
 }

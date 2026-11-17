@@ -1,7 +1,7 @@
 /* Definitive combat, layer 9: the bestiary's table (what the player learned of each species' elements) and its card
  * record. The record lives in the 0x800 bytes of the save file the game never writes (file offset 0x7800.., one 0x100
- * record per slot), read and written by memcard.c's part 5; the slot's own tail is taken (global_save's GsRecord at
- * 0x26C4, the MP converter's marker at 0x26EC). Records: "BEST", version, XOR checksum of the table, 193 bytes. */
+ * record per slot), read and written by memcard.c's part 5; the slot's own tail holds the MP converter's
+ * marker (0x26EC). Records: "BEST", version, XOR checksum of the table, 193 bytes. */
 #include <stdlib.h>
 #include <string.h>
 

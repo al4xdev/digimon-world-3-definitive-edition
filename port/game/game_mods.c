@@ -1,5 +1,5 @@
 /* The game's built-in mods (docs/LAUNCHER.md "Built-in mods"; psxstack/game.h game_mods): skip_dialogues,
- * battle_animations, global_save, preset_language, widescreen, led_bar, battle_menu and battle_text
+ * battle_animations, preset_language, widescreen, led_bar, battle_menu and battle_text
  * (and, after them, the handheld's features and the player's pad.map), as PortMod records the
  * runtime's engine (port/runtime/mods.c) reads the settings of, gives hotkeys to and runs every vsync. Each reaches the game's C through
  * the port_mod_* flags and functions of include/port.h, read inside `#ifdef PC_PORT` blocks. The runtime's own mod,
@@ -110,23 +110,8 @@ s32 port_battle_cut(const s16 *stream, s32 stage, const s32 *results, s32 hit_so
     return 0;
 }
 
-/* ---- global_save (docs/LAUNCHER.md "Save anywhere"): while enabled, port_mod_global_save gives the field's menu (fieldmenu.c) a last
- * entry, SAVE, which opens STGMCARD in save mode from any field map (port_global_save_open: the map change the inns'
- * event scripts make, with the inn's 0xC map when the map is an inn's, else 0xC00 and no place name in the slot
- * summary). The save then carries the map's state in the slot's unused tail (GsRecord at slot offset 0x26C4, outside
- * the game's checksum: a PS1 or the emulator ignores it), and a load with `restore_map_state` puts it back and marks
- * the map as revisited (field_last_map = field_map), so FIELDSTG resumes it as after a Back from the save screen
- * instead of as a fresh entry (which resets the attribute layer, the depth and height, the per-visit flags). */
-enum { GS_RESTORE };
-static const PortModOption gs_options[] = {
-    { .id = "restore_map_state", .type = PORT_MOD_BOOL, .def = "true", .applies = "live" },
-};
-int port_mod_global_save;
-static int gs_restore;
-static s32 gs_opened_from; /* the field map SAVE was chosen on, until STGMCARD asks; 0: STGMCARD came the game's way */
-
-/* The inns' field maps and the 0xC map their event script goes to (each inn stage file of src/wstag: FIELDSTG_EVENT_GOTO_MAP(0xC..)):
- * STGMCARD names the place by the 0xC map's low byte (stgmcard_map_names). */
+/* The inns' field maps and the 0xC map their event script goes to (each inn stage file of src/wstag:
+ * FIELDSTG_EVENT_GOTO_MAP(0xC..)): STGMCARD names the place by the 0xC map's low byte (stgmcard_map_names). */
 static const struct { s16 map, inn; } gs_inns[] = {
     { 0x20A, 0xC01 }, { 0x223, 0xC12 }, { 0x230, 0xC02 }, { 0x238, 0xC03 }, { 0x23F, 0xC04 }, { 0x247, 0xC05 },
     { 0x249, 0xC14 }, { 0x25B, 0xC13 }, { 0x25D, 0xC06 }, { 0x263, 0xC15 }, { 0x269, 0xC07 }, { 0x26D, 0xC08 },
@@ -135,29 +120,9 @@ static const struct { s16 map, inn; } gs_inns[] = {
     { 0x2D6, 0xC11 },
 };
 
-/* The map's state in the slot's tail. The slot is 0x26C4 bytes of a 0x2700-byte part; the game writes the whole part
- * from its buffer, so the tail (0x3C bytes) reaches the card and comes back with the slot. */
-#define GS_RECORD_OFFSET 0x26C4
-#define GS_RECORD_VERSION 1
-typedef struct GsRecord {
-    u8 magic[4];      /* "GSAV" */
-    u8 version;       /* GS_RECORD_VERSION */
-    u8 checksum;      /* XOR of the bytes from map_flags on */
-    u8 pad[2];
-    u8 map_flags[3];  /* gamestate_flags.map_flags: the type-0 (per-visit) flags, cleared on a fresh entry */
-    u8 pad2;
-    s32 attr_layer;   /* gamestate_data's fields after the slot that a fresh entry resets */
-    s32 alt_layout;
-    s32 player_depth;
-    s32 spot_target;
-    s32 screen_white;
-    s32 player_height;
-    s32 meter_random_count;
-} GsRecord; /* size 0x28 */
-
-/* The inn's save screen (0xC..) for a field map, or 0. The Guardromon network names a place by it too
+/* The inn's save screen (0xC..) for a field map, or 0. The Guardromon network names a place by it
  * (port/game/definitive_travel.c). */
-s32 port_global_save_inn(s32 map) {
+s32 port_inn_save_screen(s32 map) {
     size_t i;
     for (i = 0; i < sizeof(gs_inns) / sizeof(gs_inns[0]); i++) {
         if (gs_inns[i].map == map) {
@@ -165,84 +130,6 @@ s32 port_global_save_inn(s32 map) {
         }
     }
     return 0;
-}
-
-static u8 gs_checksum(const GsRecord *r) {
-    const u8 *b = (const u8 *)r;
-    u8 sum = 0;
-    size_t i;
-    for (i = offsetof(GsRecord, map_flags); i < sizeof(*r); i++) {
-        sum ^= b[i];
-    }
-    return sum;
-}
-
-static void gs_start(struct PortMod *mod) {
-    port_mod_global_save = 1;
-    gs_restore = mod->values[GS_RESTORE].number != 0;
-}
-
-void port_global_save_open(void) {
-    s32 map = gamestate_data.field_map, inn = port_global_save_inn(map);
-    gs_opened_from = map;
-    /* through a prototyped pointer: clang's -Wdeprecated-non-prototype is an error in port/runtime */
-    ((void (*)(s32, s32))gamestate_data.funcs.set_next_map)(inn != 0 ? inn : 0xC00, -1);
-    port_log("global save: frame %ld: the save screen from map 0x%X%s", port_frames, map,
-             inn != 0 ? " (an inn's map)" : "");
-}
-
-s32 port_global_save_map_name(s32 map_name) {
-    s32 from = gs_opened_from;
-    gs_opened_from = 0;
-    if (from == 0 || port_global_save_inn(from) != 0) {
-        return map_name;
-    }
-    return 0; /* ?SHPNAM entry 0, empty: the area line (stgmcard_map_areas, by the field map) still says where */
-}
-
-void port_global_save_record(void *slot) {
-    GsRecord r;
-    memset(&r, 0, sizeof(r));
-    memcpy(r.magic, "GSAV", 4);
-    r.version = GS_RECORD_VERSION;
-    memcpy(r.map_flags, gamestate_flags.map_flags, sizeof(r.map_flags));
-    r.attr_layer = gamestate_data.attr_layer;
-    r.alt_layout = gamestate_data.alt_layout;
-    r.player_depth = gamestate_data.player_depth;
-    r.spot_target = gamestate_data.spot_target;
-    r.screen_white = gamestate_data.screen_white;
-    r.player_height = gamestate_data.player_height;
-    r.meter_random_count = gamestate_data.meter_random_count;
-    r.checksum = gs_checksum(&r);
-    memcpy((u8 *)slot + GS_RECORD_OFFSET, &r, sizeof(r));
-    port_log("global save: frame %ld: the map's state saved with the slot (map 0x%X, layer %d, depth %d)", port_frames,
-             gamestate_data.field_map, r.attr_layer, r.player_depth);
-}
-
-void port_global_save_restore(const void *slot) {
-    GsRecord r;
-    memcpy(&r, (const u8 *)slot + GS_RECORD_OFFSET, sizeof(r));
-    if (memcmp(r.magic, "GSAV", 4) != 0 || r.version != GS_RECORD_VERSION || r.checksum != gs_checksum(&r)) {
-        port_log("global save: frame %ld: the slot carries no map state: a plain load", port_frames);
-        return;
-    }
-    if (!gs_restore) {
-        port_log("global save: frame %ld: the slot's map state not restored (restore_map_state off)", port_frames);
-        return;
-    }
-    memcpy(gamestate_flags.map_flags, r.map_flags, sizeof(r.map_flags));
-    gamestate_data.attr_layer = r.attr_layer;
-    gamestate_data.alt_layout = r.alt_layout;
-    gamestate_data.player_depth = r.player_depth;
-    gamestate_data.spot_target = r.spot_target;
-    gamestate_data.screen_white = r.screen_white;
-    gamestate_data.player_height = r.player_height;
-    gamestate_data.meter_random_count = r.meter_random_count;
-    /* FIELDSTG's fieldstg_update_main: the map is new (a fresh entry) when field_last_map differs; equal, it is a
-     * return to it, which keeps what was restored */
-    gamestate_data.field_last_map = gamestate_data.field_map;
-    port_log("global save: frame %ld: the map's state restored (map 0x%X, layer %d, depth %d, height 0x%X)", port_frames,
-             gamestate_data.field_map, r.attr_layer, r.player_depth, r.player_height);
 }
 
 /* ---- preset_language (docs/LAUNCHER.md "Preset language"): while enabled, port_mod_preset_language makes CNTY_SEL's root object set
@@ -634,8 +521,6 @@ static PortMod game_mod_table[] = {
       .status = sd_status },
     { .id = "battle_animations", .version = "0.1", .options = ba_options,
       .option_count = (int)(sizeof(ba_options) / sizeof(ba_options[0])), .start = ba_start },
-    { .id = "global_save", .version = "0.1", .options = gs_options,
-      .option_count = (int)(sizeof(gs_options) / sizeof(gs_options[0])), .start = gs_start },
     { .id = "preset_language", .version = "0.1", .options = pl_options,
       .option_count = (int)(sizeof(pl_options) / sizeof(pl_options[0])), .start = pl_start },
     { .id = "widescreen", .version = "0.2", .options = ws_options,
@@ -659,7 +544,6 @@ PortMod *game_mods(void) {
  * map a save-anywhere was opened from, the last battle's knocked-out party slots, the boost's tenths). Their options
  * and toggles are settings: the loading run's own. */
 void game_savestate(struct PortState *s) {
-    PORT_STATE_VAR(s, gs_opened_from);
     PORT_STATE_VAR(s, px_ko);
     PORT_STATE_VAR(s, port_battle_text_windows);
     PORT_STATE_VAR(s, port_battle_text_frames);

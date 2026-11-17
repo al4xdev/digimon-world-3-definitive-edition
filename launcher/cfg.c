@@ -431,7 +431,6 @@ static int write_settings(const Cfg *c) {
         "    \"skip_dialogues\": { \"enabled\": %s, \"fast_forward_waits\": false },\n"
         "    \"battle_animations\": { \"enabled\": %s, \"hit_reaction\": %s },\n"
         "    \"battle_text\": { \"enabled\": true, \"mode\": \"%s\" },\n"
-        "    \"global_save\": { \"enabled\": true, \"restore_map_state\": true },\n"
         "    \"preset_language\": { \"enabled\": true, \"language\": \"%s\" },\n"
         "    \"widescreen\": { \"enabled\": %s },\n"
         "    \"battle_menu\": { \"enabled\": true, \"fight\": \"%s\", \"tech\": \"%s\", \"digivolve\": \"%s\", \"tag\": \"%s\", "

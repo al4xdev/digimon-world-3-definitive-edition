@@ -130,32 +130,6 @@ the mode on.
 The handheld's menu (`handheld/dw3-menu.py`, GAME > BATTLE TEXT) cycles OFF / SKIP / ASYNC and ships it on, in
 `async`. The stack has no "on unless the settings say otherwise" for a mod: on a desktop it is off until switched on.
 
-### Save anywhere
-
-`global_save`. Option: `restore_map_state` (bool, default true). No hotkey: it acts whenever enabled
-(`port_mod_global_save`).
-
-The game only saves at an inn: the inn's event script changes the map to STGMCARD's 0xC01..0xC19 (the inn's name for
-the slot summary) with entry -1 (save mode), and Back returns to the previous map. With the mod on, the field menu
-(START; `src/main/fieldmenu.c`) gets a last entry, **SAVE** (the save screen's title, `?SMEMCRD` entry 1, so it is in
-every language), in the field's menu only (not in the status screen's copy of the menu). Chosen, it makes the same map
-change (`port_global_save_open`: the inn's 0xC map when the map is an inn's, else 0xC00), so STGMCARD, its card
-prompts and its Back work as at an inn; the slot summary shows the area (`stgmcard_map_areas` covers every field map)
-and, off an inn, no place name. Six entries use the bank's 6-entry panel; the seventh (with the card case) stretches
-it by one row.
-
-A load returns to the saved map at the saved position but as a fresh entry (`map_is_new`): the attribute layer, the
-player's depth and height, the per-visit flags and a few more fields after the slot's 0x26C4 bytes are reset, which is
-right at an inn but can put the player on the wrong floor of a multi-layer map. So the save also writes those
-(`GsRecord`, `port/game/game_mods.c`) into the slot's unused tail (slot offset 0x26C4, 0x28 bytes, written to the card with
-the slot and outside the game's checksum: a PS1 or an emulator ignores it and loads the save as a fresh entry), and a
-load with `restore_map_state` puts them back and marks the map as revisited (`field_last_map`), so FIELDSTG resumes it
-as after a Back from the save screen. A save without the record (an inn save of the plain game) loads as before. With
-the mod off, the binary is the plain game: the menu has no SAVE and a load restores nothing.
-
-`tests/port/mods.py` saves from the lab (map 0x206), returns, reboots and loads, with `restore_map_state` on and off,
-and with the mod off; `tests/saves/run.py` loads the card it writes in the emulator.
-
 ### Preset language
 
 `preset_language`. Option: `language` (enum `english french german italian spanish usa japanese`, default `english`,

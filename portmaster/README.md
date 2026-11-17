@@ -46,7 +46,7 @@ the Definitive Edition's own, with nothing to set.
 
 | main row | what it holds |
 |---|---|
-| `GAME` | `FAST-FORWARD` (speed and off/on), `SKIP DIALOGUES`, `SKIP BATTLE ANIMS` and `HIT REACTION`, `SAVE ANYWHERE`, `BATTLE MENU` (its buttons, `REMEMBER CURSOR`, `BUFFER INPUT`) |
+| `GAME` | `FAST-FORWARD` (speed and off/on), `SKIP DIALOGUES`, `SKIP BATTLE ANIMS` and `HIT REACTION`, `BATTLE MENU` (its buttons, `REMEMBER CURSOR`, `BUFFER INPUT`) |
 | `VIDEO` | `HZ` (50 or 60), `RENDERER` (`GLES` for 3D, `SOFTWARE` for 2D-heavy scenes and the byte-exact reference) |
 | `DEBUG` | `LOGS` (off / soft / heavy, off by default), `SAVE LOGS` (a `dw3-logs-<date>.zip` beside the port: the logs, the crash reports, the settings and the pad map) and `CLEAN LOGS`, after asking, which deletes those files and the old zips |
 | `LED BAR` | the console's LED bar follows the acting Digimon's HP in battle (installs a small daemon) |

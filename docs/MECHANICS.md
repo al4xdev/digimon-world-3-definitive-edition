@@ -736,9 +736,8 @@ functions are [T] (`memcard_checksum`: 9 byte patterns x the right sum, sum ^ 1,
   is created after a "Create new data?" prompt; after "Saved." STGMCARD waits for CROSS, and Back (TRIANGLE) leaves it.
 - [C] A loaded map is a fresh entry (`fieldstg_update_main`: `field_last_map` differs, so `map_is_new` = 1): the type-0 map
   flags (`gamestate_flags.map_flags`) are cleared, `player_depth` is 4, `attr_layer` is the stage's initial layer, `player_height`
-  0x3000, `meter_random_count` 16, and the spot target is re-drawn; a return from STGMCARD to the same map keeps them all. The
-  port's save-anywhere mod carries them in the slot's unused tail (file bytes 0x26C4..0x26EB of the slot, outside the checksum;
-  `docs/LAUNCHER.md` "Save anywhere"). [T] by `tests/port/mods.py` and the emulator's load of such a card in `tests/saves/run.py`.
+  0x3000, `meter_random_count` 16, and the spot target is re-drawn; a return from STGMCARD to the same map keeps them all. (The
+  port once carried them in the slot's unused tail with a save-anywhere mod; that mod is gone.)
 
 Code map: `memcard_get_checksum`, `memcard_check_checksum`, `memcard_funcs`, `memcard_read/_write`, STGMCARD (`src/stgmcard/stgmcard_80082CD0.c` `StgmcardSaveData`, `StgmcardSaveHeader`),
 `GamestateData` first 0x26C4 bytes.

@@ -520,6 +520,10 @@ int def_guide_frame(void) {
         if (!gd.request) {
             return 0;
         }
+        /* asked from STSTATUS, the map change dropped the queue made then: queue the names again (idempotent) */
+        cdload_module.queue_file(records_language + GD_SECTORS);
+        cdload_module.queue_file(records_language + GD_MAPS);
+        cdload_module.queue_file(records_language + GD_ITEMS);
         gd_open();
     }
     fieldstg_stage.event_running = 1;

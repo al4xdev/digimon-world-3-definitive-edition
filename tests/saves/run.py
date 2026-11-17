@@ -15,12 +15,6 @@ expected file of their own):
 3. The two cards' formats (tests/saves/cards.py): the directory, the save file's Sony header and icons, the game's
    header and slot, byte for byte except the fields named in cards.py (play time, the checksums that cover it, the
    stale buffer tails, directory frame 63), and every checksum valid (directory frames, the game's two XOR sums).
-A third card, from the global_save mod (docs/LAUNCHER.md "Save anywhere"; tests/port/mods/scripts/global_save.json cut
-at its `saved_anywhere` checkpoint and back to the field): the port saves from the lab (map 0x206, not an inn's map)
-with the mod on, and the emulator loads that card with the same `load` cut: its `loaded` checkpoint must be on map
-0x206 with the slot's bytes (4..0x26C4, the volatile ranges aside) equal to the port's at `saved_anywhere`, and the
-card must pass the single-card format checks (the mod's record sits in the slot's unused tail, which the game never
-reads).
 --card-port / --card-emulator skip that side's save run and use the given card (a corrupted copy, to see the checks
 fail). Outputs go to build/saves-test/ (--out): each run's log/record, the cards, the checkpoint dumps; --keep keeps
 them on a pass (they are removed otherwise, but for the cards). Exit 0 pass, 1 fail, 2 something missing.
@@ -50,8 +44,6 @@ port_test = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(port_test)
 
 SOURCE = ROOT / "tests/replay/scripts/first_battle_save.json"
-ANYWHERE = ROOT / "tests/port/mods/scripts/global_save.json"
-ANYWHERE_END = "saved_anywhere"
 EXPECTED = ROOT / "tests/replay/expected/first_battle_save.json"
 DISC = ROOT / "iso/dw2003.cue"
 # The cuts, by checkpoint and step type, so that a step added elsewhere in the source script does not move them.
@@ -77,16 +69,6 @@ def cut_scripts(source):
     save = dict(name="saves_save", max_frames=40000, steps=steps[:save_end + 1], **common)
     load = dict(name="saves_load", max_frames=10000, steps=steps[reset + 1:loaded + 1], **common)
     return save, load
-
-
-def cut_anywhere(script):
-    """global_save.json's steps to `saved_anywhere` and back to the field (the next wait_stage), as the save cut."""
-    steps = script["steps"]
-    saved = next(i for i, s in enumerate(steps) if s["type"] == "checkpoint" and s.get("name") == ANYWHERE_END)
-    end = next(i for i in range(saved + 1, len(steps))
-               if steps[i].get("until", {}).get("type") == "wait_stage" or steps[i]["type"] == "wait_stage")
-    return dict(name="saves_anywhere", max_frames=40000, steps=steps[:end + 1],
-                default_timeout=script.get("default_timeout", 3000))
 
 
 def slot_bytes(dump):
@@ -182,7 +164,7 @@ def main():
                     help="build jobs (default: $DW3_JOBS, else Ninja's)")
     args = ap.parse_args()
 
-    missing = [str(p.relative_to(ROOT)) for p in (DISC, SOURCE, EXPECTED, ANYWHERE, replay.RUN_LUA) if not p.exists()]
+    missing = [str(p.relative_to(ROOT)) for p in (DISC, SOURCE, EXPECTED, replay.RUN_LUA) if not p.exists()]
     missing += [] if replay.REDUX.exists() else ["tools/redux/pcsx-redux (scripts/setup.sh redux)"]
     try:
         env = port_test.tool_env()
@@ -200,10 +182,8 @@ def main():
     expected = {cp["name"]: cp["gamestate_sha1_stable"] for cp in expected_rec["checkpoints"]}
     try:
         save, load = cut_scripts(source)
-        anywhere = cut_anywhere(json.loads(ANYWHERE.read_text()))
     except (RuntimeError, ValueError, StopIteration) as e:
-        print(f"saves: FAIL: cannot cut {SOURCE.relative_to(ROOT)} or {ANYWHERE.relative_to(ROOT)}: "
-              f"{e or 'a step is missing'}")
+        print(f"saves: FAIL: cannot cut {SOURCE.relative_to(ROOT)}: {e or 'a step is missing'}")
         return 1
     given = {"port": Path(args.card_port).read_bytes() if args.card_port else None,
              "emulator": Path(args.card_emulator).read_bytes() if args.card_emulator else None}  # before out is cleared
@@ -217,16 +197,13 @@ def main():
         print(f"saves: FAIL: {e}")
         return 1
     print(f"saves: cuts of {SOURCE.relative_to(ROOT)}: save {len(save['steps'])} steps (to `{SAVE_END}` and back "
-          f"to the field), load {len(load['steps'])} steps (after `{LOAD_FROM}`, to `{LOAD_END}`); of "
-          f"{ANYWHERE.relative_to(ROOT)}: {len(anywhere['steps'])} steps (to `{ANYWHERE_END}` and back to the field)")
+          f"to the field), load {len(load['steps'])} steps (after `{LOAD_FROM}`, to `{LOAD_END}`)")
 
     failures = []
     t0 = time.time()
-    port_card, emu_card, any_card = out / "port.mcd", out / "emulator.mcd", out / "anywhere.mcd"
+    port_card, emu_card = out / "port.mcd", out / "emulator.mcd"
     jobs = {}
-    with ThreadPoolExecutor(max_workers=3) as pool:
-        any_job = pool.submit(run_port, binary, anywhere, any_card, out / "anywhere_save",
-                              {"global_save": {"enabled": True}})
+    with ThreadPoolExecutor(max_workers=2) as pool:
         if given["port"] is not None:
             port_card.write_bytes(given["port"])
         else:
@@ -240,13 +217,6 @@ def main():
                 check_hash(failures, who, job.result(), SAVE_END, expected)
             except (RuntimeError, subprocess.TimeoutExpired) as e:
                 failures.append(f"{who}: {e}")
-        try:
-            any_hashes, any_frames = any_job.result()
-            any_slot = slot_bytes((out / "anywhere_save" / f"gamestate_{ANYWHERE_END}.bin").read_bytes())
-            print(f"  {'port saves off an inn (mod)':<31} {ANYWHERE_END:<7} {any_hashes[ANYWHERE_END][:12]} "
-                  f"({any_frames} frames)")
-        except (RuntimeError, subprocess.TimeoutExpired, OSError, KeyError) as e:
-            failures.append(f"port saves off an inn (global_save): {e!r}")
         if failures:
             return report(failures, out, args.keep, t0)
         # Each side loads a copy of the other's card: the emulator's BIOS writes frame 63 even on a load (cards.py
@@ -257,28 +227,12 @@ def main():
                                                               out / "emulator_load"),
                 "port loads the emulator's card": pool.submit(run_port, binary, load, out / "emulator_for_port.mcd",
                                                               out / "port_load")}
-        shutil.copyfile(any_card, out / "anywhere_for_emulator.mcd")
-        any_load = pool.submit(run_emulator, load, out / "anywhere_for_emulator.mcd", out / "anywhere_load")
         for who, job in jobs.items():
             try:
                 check_hash(failures, who, job.result(), LOAD_END, expected)
             except (RuntimeError, subprocess.TimeoutExpired) as e:
                 failures.append(f"{who}: {e}")
-        who = "emulator loads the mod's card"
-        try:
-            _, frames = any_load.result()
-            dump = (out / "anywhere_load" / f"gamestate_{LOAD_END}.bin").read_bytes()
-            loaded_map = int.from_bytes(dump[0x26C4:0x26C8], "little")
-            if loaded_map == 0x206 and slot_bytes(dump) == any_slot:
-                print(f"  {who:<31} {LOAD_END:<7} map 0x206, the slot as saved ok ({frames} frames)")
-            else:
-                failures.append(f"{who}: checkpoint {LOAD_END}: map {loaded_map:#x} (expected 0x206), the slot "
-                                f"{'as saved' if slot_bytes(dump) == any_slot else 'DIFFERS from the save'}")
-        except (RuntimeError, subprocess.TimeoutExpired, OSError) as e:
-            failures.append(f"{who}: {e!r}")
 
-    print("  card format (tests/saves/cards.py): anywhere.mcd")
-    failures += cards.check_card(any_card.read_bytes(), "anywhere.mcd")[0]
     print("  card formats (tests/saves/cards.py): port.mcd vs emulator.mcd")
     failures += cards.check_pair(port_card.read_bytes(), emu_card.read_bytes(), "port.mcd", "emulator.mcd",
                                  indent="    ")
@@ -296,7 +250,7 @@ def report(failures, out, keep, t0):
         for d in out.iterdir():
             if d.is_dir():
                 shutil.rmtree(d)
-    print(f"saves: pass (port -> emulator, emulator -> port, the mod's card -> emulator, card formats; {elapsed:.0f} s; "
+    print(f"saves: pass (port -> emulator, emulator -> port, card formats; {elapsed:.0f} s; "
           f"cards in {out})")
     return 0
 
