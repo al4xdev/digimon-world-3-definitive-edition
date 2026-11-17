@@ -3658,6 +3658,7 @@ typedef struct FightstgBattleMenuData {
     MessageWindow *inspect_states[7]; /* and Weak / Resist / - / ??? (empty while the panel is closed) */
     MessageWindow *twice;             /* "Enemy x2" while the enemy acts twice before our next turn */
     MessageWindow *inspect_title;     /* the panel's title: the enemy's name */
+    MessageWindow *tempt;             /* the Blast's temptation (def_blast_tempt), above the cross; empty otherwise */
 } FightstgBattleMenuData; /* only pointers: the block is run and scanned as objects */
 
 /* The menu's object: FightstgCommandMenu's own fields, then what the animation needs (never in the data block). The
@@ -3688,6 +3689,7 @@ typedef struct FightstgBattleMenu {
     u8 panel_h[FIGHTSTG_BMENU_ACTIONS];
     s32 inspect; /* the Inspect panel is open */
     s32 tag_free; /* the Tag button shows the free swap's picture (an enemy is open and the window's swap is unspent) */
+    s32 tempt;    /* a full gauge at a critical moment: the Blast button pulses red (def_blast_tempt) */
 } FightstgBattleMenu;
 
 #define FIGHTSTG_BMENU_SLIDE 8
@@ -3981,6 +3983,9 @@ static void fightstg_battle_menu_paint(FightstgBattleMenuData *data, s32 i, u8 p
 #define FIGHTSTG_INSPECT_W 138
 #define FIGHTSTG_TWICE_X 108 /* the "Enemy x2" label: over the arena floor, under the gauges */
 #define FIGHTSTG_TWICE_Y 152
+#define FIGHTSTG_TEMPT_X 4   /* the Blast's temptation: above the cross's left wing, left of the gauges */
+#define FIGHTSTG_TEMPT_Y 150
+#define FIGHTSTG_TEMPT_PULSE 8 /* ticks lit, then as many dark */
 static const u8 fightstg_inspect_empty[1] = { 0 };
 
 static void fightstg_battle_menu_inspect_set(FightstgBattleMenuData *data, s32 open) {
@@ -4100,6 +4105,14 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
         fightstg_battle_menu_inspect_set(data, 0);
         data->twice = message_create_window(0x1005, 3, FIGHTSTG_TWICE_X - wide_pad, FIGHTSTG_TWICE_Y);
         data->twice->set_text(data->twice, (u8 *)(def_enemy_acts_twice() ? def_twice_label() : fightstg_inspect_empty), -1);
+        obj->tempt = def_blast_tempt();
+        data->tempt = message_create_window(0x1005, 1, FIGHTSTG_TEMPT_X - wide_pad, FIGHTSTG_TEMPT_Y); /* the 14-pixel
+                                                                                       * font: the 9-pixel one
+                                                                                       * reads badly over the arena */
+        data->tempt->set_text(data->tempt, (u8 *)(obj->tempt ? def_blast_tempt_label() : fightstg_inspect_empty), -1);
+        if (obj->tempt) {
+            port_log("battle menu: the Blast tempts");
+        }
         obj->base.next_state(obj);
         break;
     case OBJECT_STATE_RUN:
@@ -4126,6 +4139,9 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
             } else if (i == obj->refused) {
                 dx += (obj->refused_age & 1) ? 3 : -3;
                 glow = 2;
+            } else if (i == FIGHTSTG_BMENU_BLAST && obj->tempt && obj->press < 0 &&
+                       (obj->age / FIGHTSTG_TEMPT_PULSE) % 2 == 0) {
+                glow = 2; /* the temptation: the red of a refusal, pulsing */
             }
             fightstg_battle_menu_show(obj, data, i, dx, dy, glow);
         }

@@ -12,6 +12,7 @@ $Resist: Resist
 $Neutral: -
 $Unknown: ???
 $Twice: Inimigo x2
+$BlastTempt: O Blast chama...
 $BatonPass: Baton Pass
 $MsgLibra: Fraquezas reveladas!
 $MsgRelay: Próxima troca grátis!

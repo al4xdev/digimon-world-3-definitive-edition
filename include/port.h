@@ -321,6 +321,8 @@ int def_blast_ready(void);           /* the acting Digimon may set its Blast off
 void def_blast_command(s32 command); /* the party's command, before it runs: a passive one cools the gauge */
 int def_blast_auto(void);            /* 1: the game's own gauge (filled by damage, sets itself off when full) */
 int def_blast_form(int partner, int band); /* the cursed form's records_digimon row (1-based), 0: the game's */
+int def_blast_tempt(void);           /* a full gauge at a critical moment: the battle menu tempts */
+const unsigned char *def_blast_tempt_label(void);
 int def_blast_plug(void);           /* the DV Plug was used: 1 when it set the Blast off (the port's rule) */
 void def_blast_started(s32 id);      /* the Digimon `id` took its Blast form (wfightmn_blast) */
 void def_blast_price(void);          /* the battle is over and its HP and MP went back to the records: the price */

@@ -296,7 +296,7 @@ como no texto acima.
 - Nota de teste: o `talktest4.py` **não recarrega** o estado entre pontos (o balão anterior continua aberto e o ○
   avança a conversa dele): rodar um ponto por processo, como já dizia o plano.
 
-## Blast Gauge, fase 1 (2026-11-17: passos 1 a 5 feitos e testados; 6 pendente)
+## Blast Gauge, fase 1 (2026-11-17: feita e testada)
 
 Como o jogo fazia (lido no código): `wfightmn_add_gauge` enchia `records_state.gauges[id do Digimon]` (0..1000) só
 com **dano recebido**; em 1000 entrava o evento 0x12 → `wfightmn_blast` (mensagem 0x61 "Blasted!", forma
@@ -327,7 +327,11 @@ O que mudou (tudo sob `def_on()`; sob `--script` o jogo é o original). Números
    logo depois). Descrição: "Blast past its limit. Costs 10 TP" / "Blast além do limite. Custa 10 TP".
    `tools/gen_equipment.py` ganhou `OTHER_TEXTS` (itens fora das variantes com texto do port: 26, 46, 67, 70, 76);
    antes o check já falhava por 26/46/67/70.
-6. **Tentação** (pendente): em Hard Mode, quando um parceiro cai, oferecer o Blast.
+6. **Tentação** (feito 2026-11-17; em qualquer modo: o Hard Mode do texto do dono era só o exemplo): gauge cheio e
+   momento crítico (um parceiro caiu nesta batalha, `def_member_knockout`, ou quem age com ≤ 25% de HP,
+   `DEF_BLAST_TEMPT_HP_PCT`) → o botão Blast pulsa em vermelho (8 ticks aceso, 8 apagado) e "Blast calls..." / "O
+   Blast chama..." aparece acima da cruz, na fonte de 14 px (`def_blast_tempt`). Não força nada. Teste:
+   `.dumps/tasks/blast/tempt_test.py` (cheio+HP baixo tenta; cheio+HP cheio e vazio+HP baixo não).
 
 Testes (scratch, `.dumps/tasks/blast/`; o estado de batalha vem de `tests/port/mods.py --only battle_menu --binary
 BIN --out .dumps/tasks/blast/mods`, refazer a cada build): `blast_test.py` (R2 dispara; apanhar não enche),

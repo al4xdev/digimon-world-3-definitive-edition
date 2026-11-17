@@ -11,6 +11,8 @@ $Resist: Resist
 $Neutral: -
 $Unknown: ???
 $Twice: Enemy x2
+# Blast Gauge phase 1: the battle menu's temptation (a full gauge at a critical moment), above the cross.
+$BlastTempt: Blast calls...
 $BatonPass: Baton Pass
 STATUS 92: Fire Affinity increased by <5,1>.
 STATUS 93: Water Affinity increased by <5,1>.

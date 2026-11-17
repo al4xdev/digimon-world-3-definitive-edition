@@ -215,6 +215,7 @@ void def_gauges_decode(const unsigned char in[DEF_GAUGE_SLOTS * 2], short out[DE
 /* The DV Plug (item 76), the cursed catalyst: one use fills the acting Digimon's gauge and sets the Blast off at once
  * (the game's gauge-full event), and takes this many TP (GamestateStats.values[1]; all it has when it has fewer). */
 #define DEF_BLAST_PLUG_TP 10
+#define DEF_BLAST_TEMPT_HP_PCT 25 /* the acting Digimon's HP share at or under which a full gauge tempts */
 #define DEF_BLAST_BANDS 5
 #define DEF_BLAST_POOL 4 /* rows per band at most; 0 ends a shorter pool */
 int def_blast_form(int partner, int band); /* records_digimon row (1-based), or 0: the game's own form */

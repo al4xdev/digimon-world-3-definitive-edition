@@ -66,6 +66,8 @@ static int log_on(void) {
 /* Blast Gauge phase 1: the Digimon (bits by id) that took their Blast form this battle (def_blast_started), whose price
  * the battle's end takes (def_blast_price). Emptied when a battle begins. */
 static unsigned char blast_cursed;
+/* A party member was knocked out this battle: a critical moment, when a full gauge tempts (def_blast_tempt). */
+static unsigned char blast_fallen;
 
 void def_log_begin(void) {
     int i;
@@ -74,6 +76,7 @@ void def_log_begin(void) {
     def_mp_hook();
     def_chain_reset(&chain);
     blast_cursed = 0;
+    blast_fallen = 0;
     def_callout_show(DEF_CALLOUT_NONE, 0);
     def_hunt_reward_done(); /* PRD 4 layer B: a reward a results screen never showed does not carry over */
     def_dri_battle_begin(); /* PRD 4 layer H: whether this battle is the DRI simulation just set up */
@@ -600,6 +603,7 @@ void def_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, records_state.gauges);
     PORT_STATE_VAR(s, def_evo_seen_bits);
     PORT_STATE_VAR(s, blast_cursed);
+    PORT_STATE_VAR(s, blast_fallen);
     def_dri_savestate(s); /* PRD 4 layer H: a battle loaded mid-simulation is still one */
     def_guide_savestate(s); /* the Guide's screen and notice, with the field's heap they point into */
     def_bm_savestate(s);    /* the Black Market's screen, the same way */
@@ -783,6 +787,20 @@ int def_blast_ready(void) {
     /* the statuses that refuse Digivolve refuse the Blast too (8: no Fight/Tech/DV; 0x20: no digivolving) */
     return def_on() && id >= 0 && id < DEF_GAUGE_SLOTS && records_state.gauges[id] >= DEF_GAUGE_MAX && !m->blasted &&
            m->hp > 0 && !(m->status & (8 | 0x20));
+}
+
+/* The temptation (owner's brief: "the temptation to use it at critical moments"): the gauge is full and the moment is
+ * critical, a partner fell this battle or the acting Digimon is at DEF_BLAST_TEMPT_HP_PCT of its HP or less. The battle
+ * menu then pulses the Blast button and says so; nothing is forced. */
+int def_blast_tempt(void) {
+    FightstgMember *m = blast_member();
+
+    return def_blast_ready() && (blast_fallen || m->hp * 100 <= m->max_hp * DEF_BLAST_TEMPT_HP_PCT);
+}
+
+const unsigned char *def_blast_tempt_label(void) {
+    extern const unsigned char def_str_BlastTempt[];
+    return def_str_BlastTempt;
 }
 
 void def_blast_command(s32 command) {
@@ -1365,6 +1383,9 @@ void def_member_knockout(s32 side, s32 member) {
 
     if (!def_on() || member < 0 || member > 2) {
         return;
+    }
+    if (s == 0) {
+        blast_fallen = 1;
     }
     for (k = 0; k < 3; k++) {
         mod_level[s][member][k] = 0;
