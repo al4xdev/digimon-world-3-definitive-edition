@@ -60,8 +60,8 @@ Handoff/estado para outro harness. Dono pt-BR. Não commitar sem pedido. Scratch
     próprio jogo punha o barman (o ator do WSTAG255 está em (275,255)). A caixa de interação de
     `fieldstg_actor_find_at` é `width` de largura e **metade disso de altura** (32 × 16 px, centrada no ator), então
     ele alcança quem está até 24 px abaixo; em (275,244) ficava fora do alcance e o jogador não conseguia falar.
-  - **mentor = ator 376** (0x178, um Kotemon que **nenhum mapa do jogo coloca** — ver o estudo abaixo; vram 5, em
-    (200,318)).
+  - **mentor = ator 0x39** (o velhinho dos "Grandpa ..."; vram 5), no palco entre os tubos de órgão, em (318,165)
+    dir 1 (2026-11-17; antes era o Kotemon 0x178).
   - **Etemon** (ator 0x61 = 97, vram 4) **de costas para a sala, virado para o piano**, em (352,284) **dir 5**: o
     teclado está para cima e para a direita dele, então é o 5 que aponta para as teclas. Ele vira quando o jogador
     fala (fala: "ouvi essa música em outro jogo").
@@ -139,8 +139,8 @@ TIM errado: CLUT em bytes, `w`/`h` da imagem em palavras → quadro `w*4` × `h`
   233/234 Patamon; 236 Renamon; 237/238 Kotemon; 240 Monmon; 248–250 Knightmon; 286 WaruMonzaemon; 312/313 soldado;
   366 Agumon; 368 Veemon; 370 Guilmon; 372 Patamon; 374 Renamon; 376 Kotemon; 378/380 Kumamon; 17/18/19 corpos
   genéricos; 177/251 porcos; 275–279 "Guard A/B/C"; 353–360 são os objetos BLOK (0x148/0x15F/0x160), não NPCs.
-- **Usado na sala**: mentor = **376 (Kotemon, `P189PKEL.BIN`/0x19, 32×32, 1 anim)**, que cabe no slot
-  `vram_places[5]` (o vizinho usa u=32, então o quadro tem de ter ≤32 px de largura).
+- **Usado na sala** até 2026-11-17: mentor = 376 (Kotemon, `P189PKEL.BIN`/0x19, 32×32, 1 anim); hoje o velhinho 0x39.
+  (o slot `vram_places[5]`: o vizinho usa u=32, então o quadro tem de ter ≤32 px de largura).
 
 ## Verificação feita
 
@@ -276,23 +276,80 @@ pousadas, perto do Guardromon (decisão 4). Fazer um sprite de porta melhor (des
 o Oikawa; nada recortado do disco) e colocar cada uma num lugar melhor: ao lado dos guarda-roupas/armários dos mapas,
 como no texto acima.
 
+## Feito em 2026-11-17
+
+- **Save state das outras telas**: `def_travel_savestate` (o `nt` da tela do Guardromon), `def_evohint_savestate`
+  (`eh`), `def_callout_savestate` (`callout`) e o `def_dri_savestate` agora leva também `dri`, `dri_wait` e os buffers
+  de texto da lista. Registrados em `def_savestate` (definitive.c). Prova: `.dumps/tasks/velvet/ss/travel_ss.py BIN
+  OUT` (abre a tela do Guardromon da pousada de Asuka, salva antes e com ela aberta, carrega alternando 4 vezes e
+  confere aberta/fechada, cursor, △ e andar): o binário antigo **crasha no primeiro load**, o novo passa os 25
+  checks. `tests/port/run.py` passa.
+- **Mentor**: agora é o **velhinho 0x39** (`P074JIJI`, o corpo dos "Grandpa ..." e do Tamer Genji: careca, barba
+  branca, 24x32, 5 direções; cabe no slot de VRAM 5) **no palco entre os tubos de órgão**, no alto da sala, em
+  (318,165) dir 1. O palco é um beco sem saída ligado ao andar de cima por uma faixa (y 160..176): não bloqueia
+  passagem, e a câmera da entrada já mostra as luzes vermelhas dele. Fala de qualquer lado (testado: esquerda, baixo,
+  direita). Telas: `.dumps/tasks/velvet/mentor/new-*.png`. Alternativas vistas: Piximon (o treinador do Adventure,
+  48x40: não cabe no slot), Wizardmon (32x40), Master John.
+- **Build próprio**: `build/port-velvet/dw2003` (da árvore principal; o `build/port` é o dos outros agentes). Enquanto
+  o Black Market estava em obras usei um worktree (`.dumps/tasks/velvet/wtsync.sh`). `vrun.py` roda as ferramentas de
+  scratch contra outro binário (`DW3_BIN=...`).
+- Nota de teste: o `talktest4.py` **não recarrega** o estado entre pontos (o balão anterior continua aberto e o ○
+  avança a conversa dele): rodar um ponto por processo, como já dizia o plano.
+
+## Blast Gauge, fase 1 (2026-11-17: passos 1 a 5 feitos e testados; 6 pendente)
+
+Como o jogo fazia (lido no código): `wfightmn_add_gauge` enchia `records_state.gauges[id do Digimon]` (0..1000) só
+com **dano recebido**; em 1000 entrava o evento 0x12 → `wfightmn_blast` (mensagem 0x61 "Blasted!", forma
+`blast_forms[faixa de nível]`, HP cheio, `blasted = 1`, fim agendado pelo evento 0x13). **Atenção (erro que já foi
+cometido):** a tabela `wfightmn_handlers` é deslocada: o passo é o tipo do evento **+ 1** (evento 0x12 → passo 0x13;
+o passo 0x12 é `wfightmn_seal_end`).
+
+O que mudou (tudo sob `def_on()`; sob `--script` o jogo é o original). Números em `definitive.h` (`DEF_BLAST_*`):
+
+1. **Carga por agressividade** (`def_action_resolved` → `blast_add`, definitive.c): por golpe que acerta, WEAK +150,
+   alvo em Stagger +100, OVERFINISH +200, golpe numa ação extra (One More) +100, somados (`def_blast_gain`, pura).
+   Item e fuga esfriam −100 (`def_blast_command`). Apanhar não enche, nada dispara sozinho (`def_blast_auto`).
+2. **Ativação**: 8ª ação do `battle_menu`, **Blast**, em **R2** (opção `blast` do mod, `mod.json`, LAUNCHER.md), ícone
+   da estrela escura (`01 36`) embaixo do L1. Aceita com o gauge em 1000, sem Blast ativo, com HP, sem os status 8 e
+   0x20 (`def_blast_ready`); senão cinza e recusado. Escolha 7 → comando 7 (`DEF_BLAST_COMMAND_ID`) → passo 0x13, gasta
+   o turno como o DV. `tests/port/mods.py` agora espera "R2: refused 7" com o gauge vazio.
+3. **Formas sombrias** (`blast_pool`, definitive.c; `DW3_BLAST_FORM=linha` força uma em testes): por faixa de nível
+   do jogo, uma lista; o parceiro (índice 0..7) pega `pool[parceiro % tamanho]`, então cada parceiro tem sua linha e as
+   10 aparecem no time. <4 Devimon · <19 Devimon/SkullGreymon/Digitamamon · <39 SkullGreymon/Myotismon/Cannondramon ·
+   <70 Myotismon/BK WarGreymon/GranKuwagamon · 70+ BK WarGreymon/MaloMyotismon/Beelzemon/Diaboromon. As 10 testadas
+   uma a uma na primeira batalha (carregam, cena de Blast, sem travar): `.dumps/tasks/blast/forms/form*.png`.
+4. **Preço** (`def_blast_started` em `wfightmn_blast`, `def_blast_price` depois do write-back de HP/MP no fim da
+   batalha): HP e MP 1 e **`GamestateStats.penalties`** = 25% de Power, Guard e Speed. O jogo original nunca escreve
+   esse campo: só `inn_heal_party` zera (a pousada) e as telas de status já marcam o status penalizado. Sem campo novo
+   no save. Um segundo Blast antes da pousada não aprofunda.
+5. **DV Plug maldito** (`def_blast_plug`, efeito 0x4C de `fightstg_8008D3B4.c`): um uso enche o gauge, tira
+   `DEF_BLAST_PLUG_TP` = 10 TP (`values[1]`; o que tiver se tiver menos) e chama o evento 0x12 do jogo (o Blast vem
+   logo depois). Descrição: "Blast past its limit. Costs 10 TP" / "Blast além do limite. Custa 10 TP".
+   `tools/gen_equipment.py` ganhou `OTHER_TEXTS` (itens fora das variantes com texto do port: 26, 46, 67, 70, 76);
+   antes o check já falhava por 26/46/67/70.
+6. **Tentação** (pendente): em Hard Mode, quando um parceiro cai, oferecer o Blast.
+
+Testes (scratch, `.dumps/tasks/blast/`; o estado de batalha vem de `tests/port/mods.py --only battle_menu --binary
+BIN --out .dumps/tasks/blast/mods`, refazer a cada build): `blast_test.py` (R2 dispara; apanhar não enche),
+`price_test.py` (vence a batalha e o log diz "digimon 0 pays: HP and MP 1, penalties 12 11 8"), `form_shot.py`
+(fotos da forma), `plug_test.py` (DV Plug). `tests/port/run.py` passa; `travel_ss.py` passa; `gen_text_override.py
+--check` e `gen_equipment.py --check` passam.
+
+Para fazer depois: o launcher (C, `launcher/cfg.c`, `H_COUNT` 7) não mostra a opção `blast`: o jogo usa R2 se não
+houver valor. Fase 2 vai precisar guardar no save as formas invocadas e os TP sacrificados (hoje só o log diz).
+Não testado em jogo real: uma batalha comum com WEAK/Stagger enchendo o gauge até 1000 (a regra está no log
+`DW3_BATTLE_LOG`, linhas "blast gauge hit").
+
 ## Pendências / pedidos ao dono
 
-### Para quando a outra sessão (menus) terminar
-
-- **Save state da tela do Guardromon**: o `nt` de `port/game/definitive_travel.c` (aberta, cursor, janelas no heap do
-  campo) também não vai no save state: o mesmo defeito que a loja tinha. Registrar como `def_bm_savestate` e testar um
-  load depois de abrir a tela. Conferir também as outras telas/painéis com estado estático fora do save:
-  `definitive_callout.c`, `definitive_evohint.c`, o segundo `static struct` de `definitive_dri_screen.c`.
-- **Mentor (Gennai)**: trocar o Kotemon por outro NPC antigo e achar um canto bom da sala (decisão 10).
 - **Portas**: sprite novo desenhado à mão e reposicionar ao lado dos guarda-roupas/armários (seção "Próximas tasks").
-- **Blast Gauge**, fases 1 a 3, e o **onboarding** (seção "Próximas tasks").
+- **Blast Gauge** fases 2 e 3, e o **onboarding** (seção "Próximas tasks").
 
 ### Ao dono
 
 1. **Testar no jogo**: entrar numa pousada, achar a porta azul, entrar, falar com as figuras, sair pela frente.
 2. **Posições das 13 portas** — aprovar ou dizer "nessa pousada, sobe/desce/encosta".
-3. **Mentor**: hoje o Kotemon (0x178) com uma fala provisória; trocar por outro NPC antigo (decisão 10).
+3. **Mentor**: agora o velhinho 0x39 no palco (2026-11-17), fala ainda provisória. Aprovar ou pedir outro.
 4. **Música** da sala: hoje `0x3B` (só o mapa 0x25F usa); o dono compõe depois.
 5. **Traduções**: as duas falas existem em EN e PT-BR. O override do port só cobre inglês e PT-BR;
    FRA/ITA/GER/SPN mostram o texto do disco (a letra "a") até a tarefa de tradução geral.
@@ -311,7 +368,7 @@ como no texto acima.
 
 - **Guilmon** (ator 0x172, vram place 3) mora na sala, no andar de cima; `talk` alterna o item-chave **26** (slot de tag
   japonesa que o disco US nunca dá; renomeado "Demon Bell"/"Sineta Demoníaca" em `en.txt`/`pt.txt`). Falas: TALK05 77
-  (entregou) e 78 (tomou de volta). O **Kotemon** foi para o andar de cima (100,216), fora da passagem.
+  (entregou) e 78 (tomou de volta). O mentor (hoje o velhinho 0x39) foi para o palco no alto da sala (318,165).
 - O modo **é** o item na mochila (`def_super_on`, `port/game/definitive_super.c`): HP ×1,5 (`wfightmn_init_members`),
   Speed ×1,5 (`fightstg_rules_get_enemy_stats`, pode passar de 999 → "Enemy x2"), Bits ×2 (`stfgtrep`, os dois
   caminhos) e Hunt Materials ×2 (`common_drops`). Números em `definitive.h` (`DEF_SUPER_*`).

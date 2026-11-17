@@ -464,6 +464,7 @@ def bm_chosen(lines):
 def battle_menu(binary, out):
     """battle_menu (docs/LAUNCHER.md "Battle menu"): from the first battle's start, at its command menu, with the mod's
     default buttons each of the six presses chooses its own action; a button that is not on the menu chooses nothing;
+    R2 is Blast, refused while the gauge is not full;
     the mod off draws and reads the original's menu (no press line); a pad.map that swaps cross and square moves the
     actions with the buttons (the menu follows the player's mapping); two actions on one button fall back to the
     defaults. What the submenus do with the choice is the game's own: the tests read the menu's result only."""
@@ -479,9 +480,13 @@ def battle_menu(binary, out):
         got = bm_chosen(lines)
         check(rc == 0 and len(got) == 1 and got[0][1:] == (action, bit),
               f"{button}: action {action} from bit {bit} ({got})")
-    for button in (None, "L2", "R2", "UP", "DOWN", "START"):
+    for button in (None, "L2", "UP", "DOWN", "START"):
         rc, lines = bm_press(binary, out, state, f"none_{button}", button, {})
         check(rc == 0 and not bm_chosen(lines), f"{button or 'no press'}: no action chosen ({bm_chosen(lines)})")
+    # R2 is Blast (definitive combat): with the first battle's empty gauge it is refused, and the menu stays
+    rc, lines = bm_press(binary, out, state, "blast_empty", "R2", {})
+    got = bm_chosen(lines)
+    check(rc == 0 and got == [("refused", 7, 9)], f"R2: Blast refused with the gauge empty ({got})")
     rc, lines = bm_press(binary, out, state, "off", "CROSS", None)
     check(rc == 0 and not lines, f"the mod off: the original's menu, no press line ({lines})")
     # the player's pad: logical cross is delivered by the west button, logical square by the south one

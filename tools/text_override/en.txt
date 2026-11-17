@@ -629,6 +629,9 @@ $M3T: Tai Kong Wang, at Shell Beach, makes<1>one from a Bamboo Spear (Asuka Armo
 # 0x20F, WSTAG255) are the letter "a" in the game's own text, said by nobody. The mentor's real content is another task.
 TALK05 81: <7>Mentor<7>Soon I will teach<1>you the Blast<1>Gauge. Not yet.<2,2>
 TALK05 82: <7>Etemon<7>Heh heh heh! This<1>tune... I heard it<1>in another game!<2,2><3>Don't tell anyone<1>I said that!<2,2>
+# Blast Gauge phase 1 (port/game/definitive.c def_blast_plug): the DV Plug is the cursed catalyst, its description warns
+# of the price (34 characters at most, the item window's).
+ITMINF 76: Blast past its limit. Costs 10 TP
 # The Velvet Room's map title (port/game/definitive_velvet.c): the bar's own name gives way to the room's when the map is
 # the room. One line, the name plate's.
 $VelvetTitle: VELVET

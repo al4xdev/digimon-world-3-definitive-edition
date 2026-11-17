@@ -19,6 +19,7 @@
 #include "sound.h"
 
 #include "definitive.h"
+#include "psxstack/savestate.h"
 
 /* STFGTREP's learn list, as stfgtrep_80082E70.c declares it (that overlay's data; the lists are constant). */
 typedef struct EvoRequirement {
@@ -487,4 +488,9 @@ void def_evohint_tick(void) {
     if (eh.label != NULL && !eh.open) {
         heap_objects.try_run((Object *)eh.label);
     }
+}
+
+/* The hint's screen and its label point into the field's heap, which the save state carries: they go with it. */
+void def_evohint_savestate(struct PortState *s) {
+    PORT_STATE_VAR(s, eh);
 }

@@ -538,6 +538,7 @@ void wfightmn_party_turn(WfightmnMain *obj, WfightmnMainData *data) {
         if (fightstg_command_is_open() == 0) {
 #ifdef PC_PORT
             def_log_action(0, data->command->command, data->command->arg);
+            def_blast_command(data->command->command);
 #endif
             switch (data->command->command) {
             case 1:
@@ -572,6 +573,14 @@ void wfightmn_party_turn(WfightmnMain *obj, WfightmnMainData *data) {
             case 6:
                 obj->base.set_step(obj, 6);
                 break;
+#ifdef PC_PORT
+            case DEF_BLAST_COMMAND_ID: /* the player set the Blast off: the game's own Blast scene (the gauge-full event
+                                        * 0x12's handler, step 0x13: a step is its event's type + 1), and the turn is
+                                        * spent as a Digivolve's */
+                obj->base.set_step(obj, 0x13);
+                wfightmn_check_final_phase_end(0);
+                break;
+#endif
             case 3:
                 data->wait.obj = fightstg_item_create(data->command->arg);
                 obj->base.set_step(obj, 2);
@@ -787,6 +796,9 @@ void wfightmn_battle_end(WfightmnMain *obj, WfightmnMainData *data) {
                     gamestate_data.digimon[id].record.stats.values[4] = party[k].mp;
                 }
             }
+#ifdef PC_PORT
+            def_blast_price(); /* the Digimon that set a Blast off: HP and MP 1, and the inn's penalties */
+#endif
             data->wait.fade = fightstg_fade_create();
             data->wait.fade->start(data->wait.fade, 0, 10);
             obj->base.substep++;
@@ -1143,7 +1155,19 @@ void wfightmn_blast(WfightmnMain *obj, WfightmnMainData *data) {
             digimon = records_get_digimon_func(records_digimon[id].id);
             member->base_digimon = member->digimon;
             member->digimon = records_digimon[digimon->blast_forms[stage] - 1].id;
+#ifdef PC_PORT
+            { /* Blast Gauge phase 1: the cursed form, from the port's hand-picked pool for the level's band */
+                s32 row = def_blast_form(id, stage);
+
+                if (row > 0) {
+                    member->digimon = records_digimon[row - 1].id;
+                }
+            }
+#endif
             member->blasted = 1;
+#ifdef PC_PORT
+            def_blast_started(id); /* Blast Gauge phase 1: the battle's end takes its price from this Digimon */
+#endif
             fightstg_events_start_blast(id);
             data->wait.obj = fightstg_digivolve_create(member->digimon, 1);
             obj->base.substep++;
@@ -1658,6 +1682,13 @@ void wfightmn_add_gauge(u8 side, s32 value) {
     FightstgMember *member = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
     s32 id = gamestate_data.funcs.get_party_member(fightstg_battle.state.current[0]);
 
+#ifdef PC_PORT
+    /* Blast Gauge phase 1: the definitive gauge fills with the party's offence (def_action_resolved) and only the
+     * player sets it off (the battle menu's Blast): the damage taken neither fills it nor triggers it. */
+    if (!def_blast_auto()) {
+        return;
+    }
+#endif
     if (side != 0 && value != 0 && member->hp != 0 && member->blasted == 0) {
         records_state.gauges[id] += fightstg_rules.get_gauge_gain(value);
         if (records_state.gauges[id] >= 1000) {

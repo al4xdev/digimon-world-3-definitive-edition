@@ -8,7 +8,8 @@
  * streak with a white slash across it, snaps up past its size and settles; holds still at the place of the impact
  * (it does not follow the target); then is squeezed flat along its own slant, the white going first, so the last
  * frames are two streaks of its colour. RESIST! is the dull one: it slams down from too big, shudders and stops.
- * Purely visual: no random number, nothing the battle reads, nothing in a save state (a loaded state has no callout). */
+ * Purely visual: no random number, nothing the battle reads. A save state carries it so a battle loaded mid-callout
+ * finishes the word it showed, instead of the one the loading run happened to be drawing. */
 #include "common.h"
 #include "object.h"
 #include "heap.h"
@@ -16,6 +17,7 @@
 #include "fightstg.h"
 
 #include "definitive.h"
+#include "psxstack/savestate.h"
 
 #define CALLOUT_LAYER 0x1004 /* the models' layer: draw offset (160, 120), so the screen is -160..159 x -120..119 */
 #define GLYPH_H 16
@@ -501,4 +503,9 @@ int def_poly_text_width(int size, const char *text) {
     int w = def_poly_text(NULL, 0, 0, 0, size, text, NULL);
 
     return w <= 0 ? 0 : w - (GLYPH_GAP * size >> 8) + (GLYPH_H * ITALIC * size >> 16);
+}
+
+/* A battle loaded mid-callout finishes it (no pointers: the word is drawn from the table each frame). */
+void def_callout_savestate(struct PortState *s) {
+    PORT_STATE_VAR(s, callout);
 }

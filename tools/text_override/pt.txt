@@ -900,7 +900,7 @@ ITMINF 72: Temp: aumenta Velocidade
 ITMINF 73: Temp: aumenta Força, diminui Defesa.
 ITMINF 74: Temp: aumenta Defesa, diminui Força.
 ITMINF 75: Aumenta o efeito de ataque especial.
-ITMINF 76: Aumenta o Blast Gauge.
+ITMINF 76: Blast além do limite. Custa 10 TP
 ITMINF 77: Gera um campo de Fogo.
 ITMINF 78: Gera um campo de Água.
 ITMINF 79: Gera um campo de Gelo.

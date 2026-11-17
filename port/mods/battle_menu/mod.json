@@ -71,6 +71,14 @@
         { "id": "north", "label": "Top button" }, { "id": "east", "label": "Right button" },
         { "id": "l1", "label": "L1" }, { "id": "r1", "label": "R1" },
         { "id": "l2", "label": "L2" }, { "id": "r2", "label": "R2" }
+      ] },
+    { "id": "blast", "name": "Blast", "description": "The button for Blast (sets off the Blast Gauge once it is full; spends the turn).",
+      "type": "enum", "default": "r2", "applies": "live",
+      "values": [
+        { "id": "south", "label": "Bottom button" }, { "id": "west", "label": "Left button" },
+        { "id": "north", "label": "Top button" }, { "id": "east", "label": "Right button" },
+        { "id": "l1", "label": "L1" }, { "id": "r1", "label": "R1" },
+        { "id": "l2", "label": "L2" }, { "id": "r2", "label": "R2" }
       ] }
   ]
 }

@@ -242,6 +242,10 @@ its options (the buttons, `remember_cursor`, `buffer_input`), which apply while 
 defaults. The one exception is a replay script (`--script`), which keeps the original list. A seventh button, **Inspect**
 (L2, or R2 and then the free places when the player put an action there), opens a panel with the enemy's seven elements
 as Weak / Resist / - and spends no turn; "Enemy x2" shows over the arena when the enemy acts twice before our next turn.
+An eighth button, **Blast** (R2, the dark star under L1; the free places when it clashes), sets the acting Digimon's Blast
+off once its gauge is full and spends the turn (Blast Gauge phase 1, `.plan/tasks/velvet-room-plan.md`); with the
+gauge not full it is grey and refused. The launcher's own screen does not list it yet: its value comes from
+`settings.json` or the default.
 Redesigns **only the battle's main command menu** (Fight, Tech, Digivolve, Tag, Item,
 Run): the list and its cursor are gone, each action has its own button, and a compact 3x3 grid shaped like the pad is
 drawn where the list was: the up and down arms (Y, B) are columns, the left and right ones (X, A) and the shoulders
@@ -259,6 +263,8 @@ With the mod off nothing runs: the dispatch is one `#ifdef PC_PORT` test where t
 | `tag` | bottom button | |
 | `item` | L1 | |
 | `run` | left button | |
+| `inspect` | L2 | |
+| `blast` | R2 | |
 | `remember_cursor` | `true` | the technique and item menus open on what that Digimon used last (by member ID and kind); the command menu keeps its cursor between turns |
 | `buffer_input` | `short` | `off`, `short` (1.0 s) or `long` (1.5 s): presses made in the window right before the command menu opens are given to it as it opens (up to 2). An action's press is given without the command menu being drawn, and with a confirm behind it the remembered technique or item (see `remember_cursor`) is executed at once, without drawing that menu either; a refused press still just leaves the menu open |
 

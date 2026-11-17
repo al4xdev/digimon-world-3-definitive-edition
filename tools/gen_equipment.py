@@ -140,6 +140,11 @@ def set_items():
     return {int(x, 0) for x in re.findall(NUM, body)}
 
 
+# Items outside the variants whose text the port rewrites on purpose (not equipment, so not this rule's): the revive
+# items' tiers (46, 67, 70), the Demon Bell (26, Super Hard) and the DV Plug (76, the Blast's cursed catalyst).
+OTHER_TEXTS = {26, 46, 67, 70, 76}
+
+
 def texts():
     """{(FILE, index): text} of en.txt's ITMNAM / ITMINF lines."""
     out = {}
@@ -376,7 +381,7 @@ def checks(rows, its, c, effects):
         if desc is not None:
             out.append((len(desc) <= DESC_MAX and TEXT_OK.match(desc) is not None,
                         f"{i}: description {desc!r} ({len(desc)} <= {DESC_MAX})"))
-    extra = sorted(k for k in tx if k[1] not in ids)
+    extra = sorted(k for k in tx if k[1] not in ids and k[1] not in OTHER_TEXTS)
     out.append((not extra, f"no ITMNAM/ITMINF line for an item that is not a variant {extra}"))
     per = defaultdict(set)
     for v in rows:

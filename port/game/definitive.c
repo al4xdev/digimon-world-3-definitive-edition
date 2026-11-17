@@ -63,12 +63,17 @@ static int log_on(void) {
         fflush(log_file);                 \
     } while (0)
 
+/* Blast Gauge phase 1: the Digimon (bits by id) that took their Blast form this battle (def_blast_started), whose price
+ * the battle's end takes (def_blast_price). Emptied when a battle begins. */
+static unsigned char blast_cursed;
+
 void def_log_begin(void) {
     int i;
 
     port_hud_arm();
     def_mp_hook();
     def_chain_reset(&chain);
+    blast_cursed = 0;
     def_callout_show(DEF_CALLOUT_NONE, 0);
     def_hunt_reward_done(); /* PRD 4 layer B: a reward a results screen never showed does not carry over */
     def_dri_battle_begin(); /* PRD 4 layer H: whether this battle is the DRI simulation just set up */
@@ -594,10 +599,14 @@ void def_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, overfinish_damage);
     PORT_STATE_VAR(s, records_state.gauges);
     PORT_STATE_VAR(s, def_evo_seen_bits);
+    PORT_STATE_VAR(s, blast_cursed);
     def_dri_savestate(s); /* PRD 4 layer H: a battle loaded mid-simulation is still one */
     def_guide_savestate(s); /* the Guide's screen and notice, with the field's heap they point into */
     def_bm_savestate(s);    /* the Black Market's screen, the same way */
     dw3_velvet_savestate(s); /* the Velvet Room: the map is the room, and its shopkeeper's turn */
+    def_travel_savestate(s);  /* the Guardromon's screen, the same way as the market's */
+    def_evohint_savestate(s);
+    def_callout_savestate(s);
 }
 
 static int target_slot(void) {
@@ -637,6 +646,156 @@ void def_party_turn_begins(void) {
     }
 }
 
+/* ---- Blast Gauge, phase 1: the acting Digimon's gauge (records_state.gauges, by Digimon, as the game keeps it). */
+static FightstgMember *blast_member(void) {
+    return &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
+}
+
+int def_blast_gain(int weak, int staggered, int overfinish, int extra) {
+    return (weak ? DEF_BLAST_WEAK : 0) + (staggered ? DEF_BLAST_STAGGER : 0) + (overfinish ? DEF_BLAST_OVERFINISH : 0) +
+           (extra ? DEF_BLAST_EXTRA : 0);
+}
+
+/* Moves the acting Digimon's gauge by `amount` within 0..DEF_GAUGE_MAX. A Digimon in its Blast form gains nothing (the
+ * game's rule: its gauge is spent, and wfightmn_end_blast empties it). */
+static void blast_add(int amount, const char *why) {
+    FightstgMember *m = blast_member();
+    s32 id = gamestate_data.funcs.get_party_member(fightstg_battle.state.current[0]);
+    int was;
+
+    if (amount == 0 || id < 0 || id >= DEF_GAUGE_SLOTS || m->blasted) {
+        return;
+    }
+    was = records_state.gauges[id];
+    records_state.gauges[id] = (s16)def_gauge_clamp(was + amount);
+    if (log_on()) {
+        LOG("blast gauge %s digimon %d %d -> %d", why, (int)id, was, (int)records_state.gauges[id]);
+    }
+}
+
+void def_blast_started(s32 id) {
+    if (def_on() && id >= 0 && id < DEF_GAUGE_SLOTS) {
+        blast_cursed |= 1u << id;
+        port_log("blast: digimon %d took its Blast form", (int)id);
+    }
+}
+
+void def_blast_price(void) {
+    static const int stat_of[3] = { 0, 1, 4 }; /* penalties[j] comes off stats[stat_of[j]] (gamestate_get_stats) */
+    GamestateRecord *r;
+    int id, j, p;
+
+    if (!def_on()) {
+        blast_cursed = 0;
+        return;
+    }
+    for (id = 0; id < DEF_GAUGE_SLOTS; id++) {
+        if (!(blast_cursed & (1u << id))) {
+            continue;
+        }
+        r = gamestate_data.funcs.get_record(id);
+        r->stats.values[2] = 1;
+        r->stats.values[4] = 1;
+        for (j = 0; j < 3; j++) {
+            p = r->stats.stats[stat_of[j]] * DEF_BLAST_CURSE_PCT / 100;
+            if (p > r->stats.penalties[j]) { /* a second Blast before the inn does not deepen it */
+                r->stats.penalties[j] = (s16)p;
+            }
+        }
+        port_log("blast: digimon %d pays: HP and MP 1, penalties %d %d %d", id, r->stats.penalties[0],
+                 r->stats.penalties[1], r->stats.penalties[2]);
+        if (log_on()) {
+            LOG("blast price digimon %d penalties %d %d %d", id, r->stats.penalties[0], r->stats.penalties[1],
+                r->stats.penalties[2]);
+        }
+    }
+    blast_cursed = 0;
+}
+
+static const unsigned char blast_pool[DEF_BLAST_BANDS][DEF_BLAST_POOL] = {
+    { 17, 0, 0, 0 },     /* < 4: Devimon (the one dark Champion of the table) */
+    { 17, 24, 32, 0 },   /* < 19: Devimon, SkullGreymon, Digitamamon */
+    { 24, 29, 34, 0 },   /* < 39: SkullGreymon, Myotismon, Cannondramon */
+    { 29, 43, 47, 0 },   /* < 70: Myotismon, BK WarGreymon, GranKuwagamon */
+    { 43, 45, 51, 52 },  /* 70 on: BK WarGreymon, MaloMyotismon, Beelzemon, Diaboromon */
+};
+
+int def_blast_form(int partner, int band) {
+    const char *force = getenv("DW3_BLAST_FORM"); /* tests: one row for every Blast */
+    int n;
+
+    if (force != NULL && force[0] != '\0') {
+        return atoi(force);
+    }
+    if (!def_on() || band < 0 || band >= DEF_BLAST_BANDS || partner < 0) {
+        return 0;
+    }
+    for (n = 0; n < DEF_BLAST_POOL && blast_pool[band][n] != 0; n++) {
+    }
+    return blast_pool[band][partner % n];
+}
+
+int def_blast_form_count(void) {
+    unsigned char seen[64] = { 0 };
+    int b, i, count = 0;
+
+    for (b = 0; b < DEF_BLAST_BANDS; b++) {
+        for (i = 0; i < DEF_BLAST_POOL && blast_pool[b][i] != 0; i++) {
+            count += !seen[blast_pool[b][i]];
+            seen[blast_pool[b][i]] = 1;
+        }
+    }
+    return count;
+}
+
+extern void fightstg_events_add_gauge_full(void);
+
+int def_blast_plug(void) {
+    FightstgMember *m = blast_member();
+    s32 id = gamestate_data.funcs.get_party_member(fightstg_battle.state.current[0]);
+    GamestateRecord *r;
+    int cost;
+
+    /* the statuses that refuse a Blast leave the Plug the game's own (+gauge, capped under full) */
+    if (!def_on() || id < 0 || id >= DEF_GAUGE_SLOTS || m->blasted || m->hp <= 0 || (m->status & (8 | 0x20))) {
+        return 0;
+    }
+    r = gamestate_data.funcs.get_record(id);
+    cost = r->stats.values[1] < DEF_BLAST_PLUG_TP ? r->stats.values[1] : DEF_BLAST_PLUG_TP;
+    r->stats.values[1] -= (s16)cost;
+    records_state.gauges[id] = DEF_GAUGE_MAX;
+    fightstg_events_add_gauge_full(); /* the game's own trigger: wfightmn_blast runs next */
+    port_log("blast: the DV Plug sets digimon %d off, %d TP taken (%d left)", (int)id, cost, r->stats.values[1]);
+    if (log_on()) {
+        LOG("blast plug digimon %d tp -%d", (int)id, cost);
+    }
+    return 1;
+}
+
+int def_blast_auto(void) {
+    return !def_on();
+}
+
+int def_blast_ready(void) {
+    FightstgMember *m = blast_member();
+    s32 id = gamestate_data.funcs.get_party_member(fightstg_battle.state.current[0]);
+
+    /* the statuses that refuse Digivolve refuse the Blast too (8: no Fight/Tech/DV; 0x20: no digivolving) */
+    return def_on() && id >= 0 && id < DEF_GAUGE_SLOTS && records_state.gauges[id] >= DEF_GAUGE_MAX && !m->blasted &&
+           m->hp > 0 && !(m->status & (8 | 0x20));
+}
+
+void def_blast_command(s32 command) {
+    if (!def_on()) {
+        return;
+    }
+    if (command == 1 || command == 3) { /* Run, Item: the passive ones */
+        blast_add(-DEF_BLAST_COOL, command == 1 ? "run" : "item");
+    } else if (command == DEF_BLAST_COMMAND && log_on()) {
+        LOG("blast set off digimon %d", (int)gamestate_data.funcs.get_party_member(fightstg_battle.state.current[0]));
+    }
+}
+
 /* The player's action was resolved on the current target (wfightmn, before the pose is set): `value` > 0 is a hit. */
 void def_action_resolved(u8 side, s32 id, s32 value) {
     int target = target_slot();
@@ -655,6 +814,9 @@ void def_action_resolved(u8 side, s32 id, s32 value) {
         }
     }
     was = chain.staggered[target];
+    if (value > 0) {
+        blast_add(def_blast_gain(weak, was, overfinish_hit, chain.cur_extra), "hit");
+    }
     def_chain_player_hit(&chain, target, value > 0, weak ? hit_elem : -1, weak);
     if (value > 0 && hit_id == id && (hit_class == 1 || hit_class == 3)) { /* a weakness or a resistance found out */
         def_bestiary_discover(def_bestiary_index(fightstg_battle.state.members[1][target].digimon),

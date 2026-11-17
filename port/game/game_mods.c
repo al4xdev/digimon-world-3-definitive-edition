@@ -281,7 +281,8 @@ static const struct {
     char xbox;         /* by pad.map's name */
 } bm_slot[BM_PLACE_COUNT] = { BM_PLACES(BM_SLOT) };
 /* The options' order is the original list's (and the menu's result's): Fight, Tech, Digivolve, Tag, Item, Run. */
-enum { BM_FIGHT, BM_TECH, BM_DV, BM_TAG, BM_ITEM, BM_RUN, BM_COUNT, BM_REMEMBER = BM_COUNT, BM_BUFFER, BM_INSPECT_OPT, BM_OPTIONS };
+enum { BM_FIGHT, BM_TECH, BM_DV, BM_TAG, BM_ITEM, BM_RUN, BM_COUNT, BM_REMEMBER = BM_COUNT, BM_BUFFER, BM_INSPECT_OPT,
+       BM_BLAST_OPT, BM_OPTIONS };
 static const u8 bm_default_places[BM_COUNT] = { 3, 5, 2, 0, 4, 1 }; /* east r1 north south l1 west */
 #define BM_OPTION(name, default_place) \
     { .id = name, .type = PORT_MOD_ENUM, .def = default_place, .values = bm_places, .applies = "live" }
@@ -293,25 +294,29 @@ static const PortModOption bm_options[BM_OPTIONS] = {
     { .id = "remember_cursor", .type = PORT_MOD_BOOL, .def = "true", .applies = "live" },
     { .id = "buffer_input", .type = PORT_MOD_ENUM, .def = "\"short\"", .values = bm_buffers, .applies = "live" },
     BM_OPTION("inspect", "\"l2\""),
+    BM_OPTION("blast", "\"r2\""),
 };
 int port_mod_battle_menu;
 int port_mod_bm_remember;
 int port_mod_bm_buffer; /* frames; 0: off */
-/* The seven actions' places: the six options, then Inspect (definitive combat), which has no option (the mod's options
- * are full): the first of L2, R2, then the other places, that no action of the six took. */
-#define BM_ACTIONS (BM_COUNT + 1)
-static u8 bm_place[BM_ACTIONS] = { 3, 5, 2, 0, 4, 1, 6 }; /* by action: index into bm_places (bm_default_places) */
+/* The eight actions' places: the six options, then Inspect and Blast (definitive combat), each with its option. */
+#define BM_ACTIONS (BM_COUNT + 2)
+#define BM_INSPECT BM_COUNT       /* the actions' indexes (fightstg's FIGHTSTG_BMENU_INSPECT, _BLAST) */
+#define BM_BLAST (BM_COUNT + 1)
+static u8 bm_place[BM_ACTIONS] = { 3, 5, 2, 0, 4, 1, 6, 7 }; /* by action: index into bm_places (bm_default_places) */
 
-static void bm_pick_inspect(void) {
+/* An extra action (Inspect, Blast) whose option clashes with an action before it takes the first free place: L2, R2,
+ * then the shoulders and the face buttons. */
+static void bm_pick_free(int action) {
     static const u8 order[BM_PLACE_COUNT] = { 6, 7, 4, 5, 0, 1, 2, 3 };
     int i, a, taken;
 
     for (i = 0; i < BM_PLACE_COUNT; i++) {
-        for (taken = 0, a = 0; a < BM_COUNT; a++) {
+        for (taken = 0, a = 0; a < action; a++) {
             taken |= bm_place[a] == order[i];
         }
         if (!taken) {
-            bm_place[BM_COUNT] = order[i];
+            bm_place[action] = order[i];
             return;
         }
     }
@@ -354,13 +359,17 @@ static void bm_start(struct PortMod *mod) {
             bm_place[a] = bm_default_places[a];
         }
     }
-    /* Inspect has its own option now; it only falls back to the first free place when it collides with one of the six
-     * (an old settings file has no value, so the default l2 applies, and the launcher refuses to save duplicates). */
-    bm_place[BM_COUNT] = (u8)mod->values[BM_INSPECT_OPT].number;
-    for (a = 0; a < BM_COUNT; a++) {
-        if (bm_place[a] == bm_place[BM_COUNT]) {
-            bm_pick_inspect();
-            break;
+    /* Inspect and Blast have their own options; each only falls back to the first free place when it collides with
+     * an action before it (an old settings file has no value, so the defaults l2 and r2 apply, and the launcher refuses
+     * to save duplicates). */
+    bm_place[BM_INSPECT] = (u8)mod->values[BM_INSPECT_OPT].number;
+    bm_place[BM_BLAST] = (u8)mod->values[BM_BLAST_OPT].number;
+    for (b = BM_INSPECT; b <= BM_BLAST; b++) {
+        for (a = 0; a < b; a++) {
+            if (bm_place[a] == bm_place[b]) {
+                bm_pick_free(b);
+                break;
+            }
         }
     }
     port_mod_battle_menu = 1;

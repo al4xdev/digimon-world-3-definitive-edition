@@ -946,6 +946,17 @@ void fightstg_item_update(FightstgItem *obj, FightstgMessage **data) {
                 RecordsUsable *item = records_funcs.get_item(obj->item)->data;
                 s32 i = gamestate_data.funcs.get_party_member(fightstg_battle.state.current[0]);
 
+#ifdef PC_PORT
+                /* Blast Gauge phase 1: the DV Plug is the cursed catalyst, one use sets the Blast off (and costs TP) */
+                if (def_blast_plug()) {
+                    *data = fightstg_message_create();
+                    obj->args[0] = 0x3F;
+                    obj->args[1] = 0;
+                    (*data)->show(*data, 2, obj->args);
+                    obj->base.next_step(obj);
+                    break;
+                }
+#endif
                 records_state.gauges[i] += item->amount;
                 if (records_state.gauges[i] >= 999) {
                     records_state.gauges[i] = 999;
@@ -2909,6 +2920,14 @@ void fightstg_command_update(FightstgCommand *obj, FightstgCommandData *data) {
                     obj->choice = -1;
                     obj->base.next_timer(obj);
                 case 1:
+#ifdef PC_PORT
+                    if (obj->choice == DEF_BLAST_COMMAND_ID) { /* the battle menu's Blast: no submenu, and the list's
+                                                                 * cursor (last) keeps its own six entries */
+                        obj->command = DEF_BLAST_COMMAND_ID;
+                        obj->base.set_step(obj, 0);
+                        return;
+                    }
+#endif
                     if (obj->choice != -1) {
                         obj->last = obj->choice;
                         switch (obj->choice) {
@@ -3627,14 +3646,19 @@ void fightstg_command_menu_update(FightstgCommandMenu *obj, FightstgCommandMenuD
  * 3 Tag, 4 Item, 5 Run), and the same refusals (a Digimon with status 8 cannot Fight, Tech or Digivolve; with 0x20 it
  * cannot Digivolve). Each action is an icon window (the button's glyph, which dw3_button_glyph turns into the player's
  * own letter) and the entry's label window, placed where the button is on the player's pad. */
+/* The actions: the game's six (0 Fight, 1 Tech, 2 Digivolve, 3 Tag, 4 Item, 5 Run), 6 Inspect and 7 Blast (definitive
+ * combat; DEF_BLAST_COMMAND_ID is its result). */
+#define FIGHTSTG_BMENU_ACTIONS 8
+#define FIGHTSTG_BMENU_INSPECT 6
+#define FIGHTSTG_BMENU_BLAST 7
 typedef struct FightstgBattleMenuData {
-    /* 0x00 */ MessageWindow *icons[7];
-    /* 0x1C */ MessageWindow *labels[7];
-    /* 0x38 */ MessageWindow *inspect_names[7];  /* Inspect's panel: the element's picture, */
-    /* 0x54 */ MessageWindow *inspect_states[7]; /* and Weak / Resist / - / ??? (empty while the panel is closed) */
-    /* 0x70 */ MessageWindow *twice;             /* "Enemy x2" while the enemy acts twice before our next turn */
-    /* 0x74 */ MessageWindow *inspect_title;     /* the panel's title: the enemy's name */
-} FightstgBattleMenuData; /* size 0x78; only pointers: the block is run and scanned as objects */
+    MessageWindow *icons[FIGHTSTG_BMENU_ACTIONS];
+    MessageWindow *labels[FIGHTSTG_BMENU_ACTIONS];
+    MessageWindow *inspect_names[7];  /* Inspect's panel: the element's picture, */
+    MessageWindow *inspect_states[7]; /* and Weak / Resist / - / ??? (empty while the panel is closed) */
+    MessageWindow *twice;             /* "Enemy x2" while the enemy acts twice before our next turn */
+    MessageWindow *inspect_title;     /* the panel's title: the enemy's name */
+} FightstgBattleMenuData; /* only pointers: the block is run and scanned as objects */
 
 /* The menu's object: FightstgCommandMenu's own fields, then what the animation needs (never in the data block). The
  * animation is the little the old list had (a highlight) made for a press: the actions slide in (8 ticks), the pressed
@@ -3649,18 +3673,19 @@ typedef struct FightstgBattleMenu {
     /* 0x60 */ s32 press_age;
     /* 0x64 */ s32 refused; /* the action last refused, -1: none */
     /* 0x68 */ s32 refused_age;
-    /* Action 6 is Inspect (definitive combat): a button like the others, but it opens a panel instead of a result. */
-    s16 x[7];    /* each action's anchor: its picture's corner in the cross's middle column, else its cell's */
-    s16 y[7];
-    u8 grey[7];  /* the Digimon cannot do it now */
-    s8 sym_x[7]; /* from the anchor: the button's symbol (9-pixel font) */
-    s8 sym_y[7];
-    s8 pic_x[7]; /* the picture */
-    s8 pic_y[7];
-    s8 panel_x[7]; /* the dark panel's rectangle */
-    s8 panel_y[7];
-    u8 panel_w[7];
-    u8 panel_h[7];
+    /* Action 6 is Inspect (definitive combat): a button like the others, but it opens a panel instead of a result.
+     * Action 7 is Blast: grey until the acting Digimon's gauge is full (def_blast_ready). */
+    s16 x[FIGHTSTG_BMENU_ACTIONS];    /* each action's anchor: its picture's corner in the cross's middle column, else its cell's */
+    s16 y[FIGHTSTG_BMENU_ACTIONS];
+    u8 grey[FIGHTSTG_BMENU_ACTIONS];  /* the Digimon cannot do it now */
+    s8 sym_x[FIGHTSTG_BMENU_ACTIONS]; /* from the anchor: the button's symbol (9-pixel font) */
+    s8 sym_y[FIGHTSTG_BMENU_ACTIONS];
+    s8 pic_x[FIGHTSTG_BMENU_ACTIONS]; /* the picture */
+    s8 pic_y[FIGHTSTG_BMENU_ACTIONS];
+    s8 panel_x[FIGHTSTG_BMENU_ACTIONS]; /* the dark panel's rectangle */
+    s8 panel_y[FIGHTSTG_BMENU_ACTIONS];
+    u8 panel_w[FIGHTSTG_BMENU_ACTIONS];
+    u8 panel_h[FIGHTSTG_BMENU_ACTIONS];
     s32 inspect; /* the Inspect panel is open */
     s32 tag_free; /* the Tag button shows the free swap's picture (an enemy is open and the window's swap is unspent) */
 } FightstgBattleMenu;
@@ -3678,13 +3703,14 @@ typedef struct FightstgBattleMenu {
  * same cost as a letter): Fight a fist, Tech a lightning bolt, Digivolve the glowing figure, Tag a gear, Item a
  * book, Run a wing. All are framed 15-pixel pictures (the bare arrows 0x37/0x38 are not: they looked bigger and
  * unframed beside the others). Zero-ended; their width is the advance of what is in them. */
-static const u8 fightstg_bmenu_glyphs[7][6] = {
+static const u8 fightstg_bmenu_glyphs[FIGHTSTG_BMENU_ACTIONS][6] = {
     { 1, 0x25, 0 }, { 1, 0x33, 0 }, { 1, 0x27, 0 }, { 1, 0x35, 0 }, { 1, 0x28, 0 }, { 1, 0x31, 0 },
     { 1, 0x2C, 0 }, /* Inspect: the sparkle */
+    { 1, 0x36, 0 }, /* Blast: the dark star (the Dark element's picture): the cursed evolution */
 };
 /* Tag's picture while the swap is free (the enemy is open): the red disc in place of the gear. */
 static const u8 fightstg_bmenu_tag_free_glyph[3] = { 1, 0x2F, 0 };
-static const u8 fightstg_bmenu_glyph_w[7] = { 15, 15, 15, 15, 15, 15, 15 };
+static const u8 fightstg_bmenu_glyph_w[FIGHTSTG_BMENU_ACTIONS] = { 15, 15, 15, 15, 15, 15, 15, 15 };
 
 /* 3x3 layout matching the physical pad, packed. The button's symbol is in the 9-pixel font (3), the picture in the
  * 14-pixel one (1). Left and right (X, A, and the shoulders) are a cell, symbol then picture: 27 wide, a shoulder's
@@ -3698,9 +3724,10 @@ static const u8 fightstg_bmenu_glyph_w[7] = { 15, 15, 15, 15, 15, 15, 15 };
  * The cross sits in the screen's bottom-left corner (x 4-99, y 166-234, a margin of about 6 pixels for the handhelds'
  * overscan), under the player's Digimon and over the arena floor, so neither the Digimon nor the gauge (y 135-150,
  * x 104 on) is covered; the old list was higher (y 109-204). */
-static const s16 fightstg_battle_menu_slots[7][2] = {
+static const s16 fightstg_battle_menu_slots[FIGHTSTG_BMENU_ACTIONS][2] = {
     { 44, 177 }, { 17, 193 }, { 58, 193 }, { 44, 209 }, { 4, 177 }, { 65, 177 },
     { 65, 209 }, /* Inspect: under R1, right of the cross's foot */
+    { 4, 209 },  /* Blast: under L1, left of the cross's foot (Inspect's mirror) */
 };
 
 /* The game's text for the button of an action: direct letter from the configured place if mapped,
@@ -3902,7 +3929,7 @@ static void fightstg_battle_menu_show(FightstgBattleMenu *obj, FightstgBattleMen
  * 3 Tag -> slot 3 (Bottom of cross)
  * 4 Item -> slot 4 (Top-Left wing)
  * 5 Run -> slot 1 (Left of cross) */
-static const u8 fightstg_bmenu_action_slot[7] = { 2, 5, 0, 3, 4, 1, 6 };
+static const u8 fightstg_bmenu_action_slot[FIGHTSTG_BMENU_ACTIONS] = { 2, 5, 0, 3, 4, 1, 6, 7 };
 
 /* Where an action's symbol, picture and panel go from its anchor (see fightstg_battle_menu_slots). `face`: the symbol
  * is one letter (a shoulder button's is two); `slot` 0 and 3 are the cross's up and down arms, drawn as a column. */
@@ -4031,7 +4058,8 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
         /* buffer_input: the press already chose a valid action, so the menu is not drawn at all: the action goes to
          * the battle now (a confirm still in the buffer is left for a technique or item menu). */
         if (port_bm_peek(&b_action, &b_confirm) && b_action >= 0 &&
-            !((member->status & 8) && b_action < 3) && !((member->status & 0x20) && b_action == 2)) {
+            !((member->status & 8) && b_action < 3) && !((member->status & 0x20) && b_action == 2) &&
+            !(b_action == FIGHTSTG_BMENU_BLAST && !def_blast_ready())) {
             port_bm_take_action();
             port_battle_menu_chosen(b_action, port_battle_menu_bit(b_action), 0);
             sound_module.play(0x4001C);
@@ -4039,7 +4067,7 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
             obj->base.set_state(obj, OBJECT_STATE_END);
             break;
         }
-        for (i = 0; i < 7; i++) {
+        for (i = 0; i < FIGHTSTG_BMENU_ACTIONS; i++) {
             slot = fightstg_bmenu_action_slot[i];
             x = fightstg_battle_menu_slots[slot][0] - wide_pad;
             y = fightstg_battle_menu_slots[slot][1];
@@ -4047,7 +4075,8 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
             obj->x[i] = x;
             obj->y[i] = y;
             fightstg_battle_menu_cell(obj, i, slot, icon[1] == 0);
-            obj->grey[i] = ((member->status & 8) && i < 3) || ((member->status & 0x20) && i == 2);
+            obj->grey[i] = ((member->status & 8) && i < 3) || ((member->status & 0x20) && i == 2) ||
+                           (i == FIGHTSTG_BMENU_BLAST && !def_blast_ready());
             x -= FIGHTSTG_BMENU_SLIDE * FIGHTSTG_BMENU_SLIDE / 3; /* opens where the slide starts */
             data->icons[i] = message_create_window(0x1005, 3, x + obj->sym_x[i], y + obj->sym_y[i]);
             data->icons[i]->set_text(data->icons[i], icon, -1);
@@ -4086,7 +4115,7 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
                 obj->refused = -1;
             }
         }
-        for (i = 0; i < 7; i++) {
+        for (i = 0; i < FIGHTSTG_BMENU_ACTIONS; i++) {
             dx = -(r * r) / 3;
             dy = 0;
             glow = 0;
@@ -4122,10 +4151,10 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
             obj->inspect = !obj->inspect;
             fightstg_battle_menu_inspect_set(data, obj->inspect);
         }
-        for (i = 0; i < 7; i++) {
+        for (i = 0; i < FIGHTSTG_BMENU_ACTIONS; i++) {
             if (i == buffered || port_battle_menu_pressed(i) || (pad_state.get_pressed(0) & (1 << port_battle_menu_bit(i)))) {
                 sound_module.play(0x4001C);
-                if (i == 6) { /* Inspect: opens or closes the panel, the menu stays and no turn is spent */
+                if (i == FIGHTSTG_BMENU_INSPECT) { /* Inspect: opens or closes the panel, the menu stays and no turn is spent */
                     obj->inspect = !obj->inspect;
                     fightstg_battle_menu_inspect_set(data, obj->inspect);
                     break;
@@ -4144,7 +4173,7 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
                 port_battle_menu_chosen(i, port_battle_menu_bit(i), 0);
                 obj->press = i;
                 obj->press_age = 0;
-                for (r = 0; r < 7; r++) {
+                for (r = 0; r < FIGHTSTG_BMENU_ACTIONS; r++) {
                     fightstg_battle_menu_paint(data, r, r == i ? FIGHTSTG_BMENU_PAL_HOT : FIGHTSTG_BMENU_PAL_GREY);
                 }
                 break;

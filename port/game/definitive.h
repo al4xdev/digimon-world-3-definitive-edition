@@ -193,6 +193,35 @@ int def_gauge_clamp(int val);
 void def_gauges_encode(const short gauges[DEF_GAUGE_SLOTS], unsigned char out[DEF_GAUGE_SLOTS * 2]);
 void def_gauges_decode(const unsigned char in[DEF_GAUGE_SLOTS * 2], short out[DEF_GAUGE_SLOTS]);
 
+/* Blast Gauge, phase 1 ("the cursed evolution", velvet-room-plan.md): the gauge fills with risky offence instead of
+ * with the damage taken, and the player sets the Blast off (the battle menu's Blast button, R2 by default) instead of
+ * the full gauge doing it. What one party blow that hits adds (they add up): */
+#define DEF_BLAST_WEAK 150      /* it struck a weakness (WEAK!) */
+#define DEF_BLAST_STAGGER 100   /* its target was open (staggered) */
+#define DEF_BLAST_OVERFINISH 200 /* its target was already down (OVERFINISH!) */
+#define DEF_BLAST_EXTRA 100     /* it was an extra action (One More) */
+/* and what a passive command takes away: an item, a try to run */
+#define DEF_BLAST_COOL 100
+/* The price: a Digimon that took its Blast form ends the battle with HP and MP 1 and loses this share of its Power,
+ * Guard and Speed (the game's own GamestateStats.penalties, which only an inn's rest, inn_heal_party, clears; the
+ * status screens already mark a penalised stat). */
+#define DEF_BLAST_CURSE_PCT 25
+/* The cursed forms (owner's brief: "a hand-picked list of dark forms scaled by the player's level"), in place of each
+ * partner's RecordsDigimon.blast_forms: per level band of wfightmn_blast (<4, <19, <39, <70, more) a pool of
+ * records_digimon rows (1-based, the table's own numbering), and the partner (its records_digimon index 0..7) takes
+ * pool[partner % size], so every partner has its own dark path and all ten forms turn up across the party:
+ * Devimon 17, SkullGreymon 24, Myotismon 29, Digitamamon 32, Cannondramon 34, BK WarGreymon 43, MaloMyotismon 45,
+ * GranKuwagamon 47, Beelzemon 51, Diaboromon 52. */
+/* The DV Plug (item 76), the cursed catalyst: one use fills the acting Digimon's gauge and sets the Blast off at once
+ * (the game's gauge-full event), and takes this many TP (GamestateStats.values[1]; all it has when it has fewer). */
+#define DEF_BLAST_PLUG_TP 10
+#define DEF_BLAST_BANDS 5
+#define DEF_BLAST_POOL 4 /* rows per band at most; 0 ends a shorter pool */
+int def_blast_form(int partner, int band); /* records_digimon row (1-based), or 0: the game's own form */
+int def_blast_form_count(void);            /* the distinct cursed forms (phase 2's register counts them) */
+int def_blast_gain(int weak, int staggered, int overfinish, int extra); /* pure: the sum above */
+#define DEF_BLAST_COMMAND DEF_BLAST_COMMAND_ID /* include/port.h: the battle menu's result and FightstgCommand.command */
+
 #define DEF_EVO_FORM_MAX 512            /* form ID bitset ceiling in RAM (all playable + blast forms) */
 #define DEF_EVO_SEEN_WORDS (DEF_EVO_FORM_MAX / 32)
 #define DEF_EVO_SKIP_HOLD_FRAMES 4      /* frames Circle or Cross must be held to skip digivolve scene */
@@ -622,6 +651,11 @@ void def_quest_savestate(struct PortState *s);
 /* The Black Market's screen (definitive_market_screen.c) and the Velvet Room (definitive_velvet.c) in a save state. */
 void def_bm_savestate(struct PortState *s);
 void dw3_velvet_savestate(struct PortState *s);
+/* The other screens and overlays with state outside the game's RAM: the Guardromon's (definitive_travel.c), the
+ * evolution hint (definitive_evohint.c) and the battle callout (definitive_callout.c). */
+void def_travel_savestate(struct PortState *s);
+void def_evohint_savestate(struct PortState *s);
+void def_callout_savestate(struct PortState *s);
 
 #endif /* PORT_DEFINITIVE_H */
 

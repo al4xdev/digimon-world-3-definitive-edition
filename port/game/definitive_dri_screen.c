@@ -771,4 +771,15 @@ int def_dri_defeat(void) {
 
 void def_dri_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, dri_sim);
+    /* The list's screen points into the field's heap and at the texts below: all of it goes with the heap. */
+    PORT_STATE_VAR(s, dri);
+    PORT_STATE_VAR(s, dri_wait);
+    PORT_STATE_VAR(s, row_name);
+    PORT_STATE_VAR(s, row_state);
+    PORT_STATE_VAR(s, info_reward);
+    PORT_STATE_VAR(s, info_levels);
+    PORT_STATE_VAR(s, info_best);
+    PORT_STATE_VAR(s, deb_name);
+    PORT_STATE_VAR(s, deb_stages);
+    PORT_STATE_VAR(s, deb_reward);
 }

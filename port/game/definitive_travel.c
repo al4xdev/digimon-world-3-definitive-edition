@@ -29,6 +29,7 @@
 
 #include "definitive.h"
 #include "port_runtime.h"
+#include "psxstack/savestate.h"
 
 extern int port_script_active;
 extern const unsigned char def_str_Guardromon[], def_str_Save[], def_str_Teleport[], def_str_TravelKeys[],
@@ -475,4 +476,10 @@ int dw3_travel_frame(void) {
         nt_finish();
     }
     return 1;
+}
+
+/* A save state carries the screen with the field's heap its windows live in (as def_bm_savestate): without it a state
+ * taken before the screen opened loaded it still "open" over windows that heap no longer has. */
+void def_travel_savestate(struct PortState *s) {
+    PORT_STATE_VAR(s, nt);
 }
