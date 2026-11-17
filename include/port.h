@@ -409,6 +409,14 @@ int def_hunt_common_of(int index);
 void def_hunt_species_rares(int species, int *seen, int *total);
 const unsigned char *def_hunt_material_name(int material);
 int def_record_material(int material);
+/* The MATERIALS screen's data (port/game/definitive_materials.c): entry i is a Hunt Material, then the rare items. The
+ * name and count texts keep their buffer per `slot` (the windows hold the pointers). */
+int def_mat_count(void);
+int def_mat_known(int i);
+int def_mat_held(int i);
+const unsigned char *def_mat_name(int i, int slot);
+const unsigned char *def_mat_held_text(int i, int slot);
+const unsigned char *def_mat_kind(int i);
 void def_new_game_difficulty(int hard);
 void def_new_game_apply(void);
 void def_new_game_hero(int kaili); /* Girls Power: New Game's hero (DEF_SAVE_KAILI), asked after the difficulty */

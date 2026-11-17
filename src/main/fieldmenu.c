@@ -20,7 +20,7 @@
  * its own (fieldmenu_bestiary_panel) carries the chosen species: its name, then a line per element (picture, name,
  * Weak / Resist / - / ???). */
 extern const unsigned char def_str_Unknown[], def_str_Bestiary[], def_str_BestiaryMenu[], def_str_BestiaryHint[],
-    def_str_Slash[], def_str_Neutral[], def_str_HuntDrops[], def_str_HuntHeld[], def_str_HuntRareLabel[];
+    def_str_Slash[], def_str_Neutral[], def_str_HuntDrops[], def_str_HuntHeld[], def_str_HuntRareLabel[], def_str_MaterialsMenu[], def_str_Materials[];
 int def_bestiary_active(void);
 /* The Guide (port/game/definitive_quest_screen.c): an entry before the bestiary's. It has no screen in this menu: the
  * menu closes as on a cancel and the field opens the Guide's own. */
@@ -125,6 +125,9 @@ typedef struct Fieldmenu {
     s32 bestiary;   /* the bestiary entry is there (the last option) */
     s32 guide;      /* the Guide's entry is there, */
     s32 guide_at;   /* at this option */
+    s32 materials;  /* the MATERIALS entry is there (before the bestiary's), */
+    s32 materials_at; /* at this option */
+    s32 bs_mat;     /* the open screen is MATERIALS, not the bestiary */
     s32 bs_sel;     /* the bestiary screen's chosen species, or -1 while it is closed */
 #endif
 } Fieldmenu; /* size 0xA0 */
@@ -332,6 +335,59 @@ static void fieldmenu_bestiary_drops(Fieldmenu *obj, FieldmenuWindows *data, s32
     }
 }
 
+/* MATERIALS (port/game/definitive_materials.c) in the bestiary's windows: a page of names in the options' (grey: not
+ * known or none held), the chosen entry's name, kind and count in the info ones. */
+static void fieldmenu_materials_draw(Fieldmenu *obj, FieldmenuWindows *data) {
+    static u8 page[10]; /* the window keeps the pointer */
+    s32 total = def_mat_count();
+    s32 first = obj->bs_sel / BS_ROWS * BS_ROWS;
+    s32 pages = (total + BS_ROWS - 1) / BS_ROWS;
+    s32 chosen;
+    s32 n;
+    s32 i;
+
+    for (i = 0; i < obj->option_count; i++) {
+        if (i < BS_ROWS && first + i < total) {
+            chosen = first + i == obj->bs_sel;
+            data->options[i]->set_text(data->options[i], (u8 *)def_mat_name(first + i, i), -1);
+            data->options[i]->set_palette(data->options[i],
+                                          chosen ? 3 : (def_mat_known(first + i) && def_mat_held(first + i) > 0) ? 0 : 7);
+        } else {
+            data->options[i]->set_visible(data->options[i], 0);
+        }
+    }
+    for (i = 0; i < 8; i++) {
+        data->bs_info[i]->set_visible(data->bs_info[i], 0);
+    }
+    for (i = 0; i < 7; i++) {
+        data->bs_icons[i]->set_visible(data->bs_icons[i], 0);
+        data->bs_states[i]->set_visible(data->bs_states[i], 0);
+    }
+    data->bs_drops->set_visible(data->bs_drops, 0);
+    data->bs_info[0]->set_text(data->bs_info[0], (u8 *)def_mat_name(obj->bs_sel, 6), -1);
+    data->bs_info[0]->set_palette(data->bs_info[0], def_mat_known(obj->bs_sel) ? 0 : 7);
+    if (def_mat_known(obj->bs_sel)) {
+        data->bs_info[1]->set_text(data->bs_info[1], (u8 *)def_mat_kind(obj->bs_sel), -1);
+        data->bs_info[1]->set_palette(data->bs_info[1], 7);
+        data->bs_info[2]->set_text(data->bs_info[2], (u8 *)def_mat_held_text(obj->bs_sel, 7), -1);
+        data->bs_info[2]->set_palette(data->bs_info[2], def_mat_held(obj->bs_sel) > 0 ? 0 : 7);
+    }
+    i = first / BS_ROWS + 1;
+    n = 0;
+    if (i >= 10) {
+        page[n++] = 4 + i / 10;
+    }
+    page[n++] = 4 + i % 10;
+    for (i = 0; def_str_Slash[i] != 0; i++) {
+        page[n++] = def_str_Slash[i];
+    }
+    page[n++] = 4 + pages / 10;
+    page[n++] = 4 + pages % 10;
+    page[n] = 0;
+    data->bs_page->set_text(data->bs_page, page, -1);
+    data->cursor->set_pos(data->cursor, 0xB0 + port_video_widescreen_pad(), (obj->bs_sel - first) * 14 + 0x31);
+}
+
 /* Fills the screen for the chosen species: its page of names in the options' windows, its elements in the info ones. */
 static void fieldmenu_bestiary_draw(Fieldmenu *obj, FieldmenuWindows *data) {
     static u8 page[10]; /* the window keeps the pointer */
@@ -342,6 +398,10 @@ static void fieldmenu_bestiary_draw(Fieldmenu *obj, FieldmenuWindows *data) {
     s32 n;
     s32 i;
 
+    if (obj->bs_mat) {
+        fieldmenu_materials_draw(obj, data);
+        return;
+    }
     for (i = 0; i < obj->option_count; i++) {
         if (i < BS_ROWS && first + i < BS_SPECIES) {
             fieldmenu_bestiary_name(data->options[i], first + i, first + i == obj->bs_sel);
@@ -422,7 +482,7 @@ static void fieldmenu_bestiary_open(Fieldmenu *obj, FieldmenuWindows *data) {
     }
     data->money_unit->set_visible(data->money_unit, 0);
     data->money->set_visible(data->money, 0);
-    data->help->set_text(data->help, (u8 *)def_str_Bestiary, -1);
+    data->help->set_text(data->help, (u8 *)(obj->bs_mat ? def_str_Materials : def_str_Bestiary), -1);
     data->bs_hint->set_text(data->bs_hint, (u8 *)def_str_BestiaryHint, -1);
     data->bs_hint->set_palette(data->bs_hint, 7);
     obj->bs_sel = 0;
@@ -432,6 +492,7 @@ static void fieldmenu_bestiary_open(Fieldmenu *obj, FieldmenuWindows *data) {
 /* One frame of the open screen: up/down move, L1/R1 turn the page, triangle/circle/cross close it (returns 1). */
 static s32 fieldmenu_bestiary_update(Fieldmenu *obj, FieldmenuWindows *data) {
     s32 sel = obj->bs_sel;
+    s32 total = obj->bs_mat ? def_mat_count() : BS_SPECIES;
     s32 i;
 
     if (PAD_PRESSED(12) || PAD_PRESSED(13) || PAD_PRESSED(14)) {
@@ -458,6 +519,8 @@ static s32 fieldmenu_bestiary_update(Fieldmenu *obj, FieldmenuWindows *data) {
                 data->options[i]->set_text(data->options[i], (u8 *)def_str_BestiaryMenu, -1);
             } else if (obj->guide && i == obj->guide_at) {
                 data->options[i]->set_text(data->options[i], (u8 *)def_str_GuideMenu, -1);
+            } else if (obj->materials && i == obj->materials_at) {
+                data->options[i]->set_text(data->options[i], (u8 *)def_str_MaterialsMenu, -1);
             } else {
                 data->options[i]->set_text(data->options[i], cdload_module.files.get_file(records_language + 0xB0),
                                            fieldmenu_option_messages[obj->extended][i]);
@@ -472,13 +535,13 @@ static s32 fieldmenu_bestiary_update(Fieldmenu *obj, FieldmenuWindows *data) {
         return 1;
     }
     if (PAD_PRESSED(4) || PAD_REPEAT(4)) {
-        sel = (sel + BS_SPECIES - 1) % BS_SPECIES;
+        sel = (sel + total - 1) % total;
     } else if (PAD_PRESSED(6) || PAD_REPEAT(6)) {
-        sel = (sel + 1) % BS_SPECIES;
+        sel = (sel + 1) % total;
     } else if (PAD_PRESSED(10) || PAD_REPEAT(10)) {
         sel = sel >= BS_ROWS ? sel - BS_ROWS : 0;
     } else if (PAD_PRESSED(11) || PAD_REPEAT(11)) {
-        sel = sel + BS_ROWS < BS_SPECIES ? sel + BS_ROWS : BS_SPECIES - 1;
+        sel = sel + BS_ROWS < total ? sel + BS_ROWS : total - 1;
     }
     if (sel != obj->bs_sel) {
         obj->bs_sel = sel;
@@ -526,6 +589,12 @@ void fieldmenu_update(Fieldmenu *obj, FieldmenuWindows *data) {
         if (obj->guide) {
             obj->guide_at = obj->option_count++;
         }
+        /* MATERIALS (the Hunt Materials and rare items, which the bag does not hold), in the bestiary's windows */
+        obj->materials = obj->bestiary;
+        obj->bs_mat = 0;
+        if (obj->materials) {
+            obj->materials_at = obj->option_count++;
+        }
         if (obj->bestiary) {
             obj->option_count++;
         }
@@ -559,6 +628,10 @@ void fieldmenu_update(Fieldmenu *obj, FieldmenuWindows *data) {
                     }
                     if (obj->guide && obj->base.timer == obj->guide_at) {
                         data->options[obj->base.timer]->set_text(data->options[obj->base.timer], (u8 *)def_str_GuideMenu, -1);
+                        continue;
+                    }
+                    if (obj->materials && obj->base.timer == obj->materials_at) {
+                        data->options[obj->base.timer]->set_text(data->options[obj->base.timer], (u8 *)def_str_MaterialsMenu, -1);
                         continue;
                     }
 #endif
@@ -611,6 +684,13 @@ void fieldmenu_update(Fieldmenu *obj, FieldmenuWindows *data) {
                 }
 #ifdef PC_PORT
                 if (obj->bestiary && obj->cursor == obj->option_count - 1) {
+                    obj->bs_mat = 0;
+                    fieldmenu_bestiary_open(obj, data);
+                    obj->base.step = BS_STEP;
+                    break;
+                }
+                if (obj->materials && obj->cursor == obj->materials_at) {
+                    obj->bs_mat = 1;
                     fieldmenu_bestiary_open(obj, data);
                     obj->base.step = BS_STEP;
                     break;
