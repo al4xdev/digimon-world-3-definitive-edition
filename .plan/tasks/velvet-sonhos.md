@@ -62,6 +62,7 @@ Continuação de `velvet-historia.md`. Reaproveita a estrutura do sonho da abert
 |---|---|---|
 | I | primeiro quadro livre com a flag 0x1C0E (fim do evento 351 do WSTAG305: a Game Master acusa o Lucky Mouse, texto DMG305:1) | 12..18 |
 | II | primeiro quadro livre no passo 27 (Amaterasu Server) | 27 |
+| Oinkmon (dono, 2026-11-17) | primeiro quadro livre no passo 0x26: o evento 935 do WSTAG226 (mapa 0x276, DMG200:41: Teddy e Kurt ainda Oinkmon, "Wait here. I'll look into it.") termina no passo 0x26 e deixa o jogador livre no mapa 0x270. O Igor lembra a resposta do Ato I e pergunta o que sustenta o herói agora que está sozinho (pergunta 3, `$Dr4*`). O passo dura até os eventos do Master Room (0x27); a máquina de Qing Long fica dentro dele (flag 0x1A0A) | 0x26 |
 | III | primeiro quadro livre no passo 0x2B no mapa 0x2DF (fim do evento 1080 do WSTAG820: Snatchmon se funde com o Gunslinger, DMG800:17). No jogo o evento termina ligando a flag 0x7401, que já começa a batalha do Galacticmon: não sobrava quadro livre e o sonho nunca vinha. O port segura a batalha (`def_story_hold_galacticmon`) e a começa depois do sonho respondido (`galactic_hook`); o gatilho do evento 1080 fica fechado daí em diante | 0x2B |
 
 `DW3_DREAM=<n>` sonha a linha n da tabela no próximo quadro livre (teste).
