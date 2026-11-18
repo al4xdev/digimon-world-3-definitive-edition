@@ -7,7 +7,7 @@ also runs by hand from the repository root, with the same result. The release pr
 
 | folder | what is in it |
 |---|---|
-| [`common/`](common) | `ci_areas.sh` (which CI jobs a change runs), `check_paths.sh` (no path from somebody's machine), `check_release_contents.py` (every package held to the list of files a release has), `release_local.sh` (the release's packages built and drafted from this machine) |
+| [`common/`](common) | `ci_areas.sh` (which CI jobs a change runs), `check_paths.sh` (no path from somebody's machine), `check_release_contents.py` (every package held to the list of files a release has), `release_local.sh` (the release's packages built and drafted from this machine), `apt_install.sh` (the runners' apt, with a deadline and retries) |
 | [`linux/`](linux) | `package_appimage.sh` and the AppImage's own files in `appimage/` (AppRun, the `.desktop` file, the icon, the licences) |
 | [`windows/`](windows) | `build_windows.sh` (the cross-build with llvm-mingw, tested under Wine), `package_windows.sh` (the release zip) and the zip's own files in `package/` |
 | [`android/`](android) | `build_android.sh` and the `Dockerfile` of its builder image; the Gradle project itself is [`android/`](../android) |

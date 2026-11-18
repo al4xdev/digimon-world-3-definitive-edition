@@ -56,8 +56,7 @@ runs:
       if: inputs.apt != ''
       shell: bash
       run: |
-        sudo apt-get update -q
-        sudo apt-get install -y -q --no-install-recommends ${{ inputs.apt }}
+        .ci-cd/common/apt_install.sh --no-install-recommends ${{ inputs.apt }}   # bounded and retried: the script's header
 
     - name: Data checkout (maintainers only)
       if: inputs.disc == 'true' && inputs.deploy-key != ''

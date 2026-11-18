@@ -92,8 +92,7 @@ jobs:
       # The desktop SDL's -dev packages (X11, Wayland, PipeWire, PulseAudio, ALSA, ...): setup.sh lists them.
       - name: System packages
         run: |
-          sudo apt-get update -q
-          sudo apt-get install -y -q ninja-build cmake xz-utils $(scripts/setup.sh --sdl3-desktop-apt)
+          .ci-cd/common/apt_install.sh ninja-build cmake xz-utils $(scripts/setup.sh --sdl3-desktop-apt)
 
       # Its own cache: CI's tools/sdl3 is headless (no desktop -dev packages there), tools/sdl3-desktop never is.
       - name: Cached release tools
@@ -195,7 +194,7 @@ jobs:
 
       # wine64 alone: no 32-bit multiarch (the binaries are x86_64; `wine` is the launcher script the tests call).
       - name: System packages
-        run: sudo apt-get update -q && sudo apt-get install -y -q --no-install-recommends ninja-build cmake xz-utils wine wine64
+        run: .ci-cd/common/apt_install.sh --no-install-recommends ninja-build cmake xz-utils wine wine64   # bounded and retried
 
       - name: Cached Windows toolchain
         uses: actions/cache@v6
