@@ -50,11 +50,11 @@ Continuação de `velvet-historia.md`. Reaproveita a estrutura do sonho da abert
   > "Então até a esperança mais brilhante pode vacilar diante do inevitável... O destino já parece selado acima das
   > estrelas. Diga-me, jovem viajante: você vai aceitar a derrota e desistir aqui... ou forjará um milagre mesmo na
   > beira do abismo?"
-- **Efeito:** ponte emocional para a **Sala do Tempo** (os três testes do gatekeeper) logo antes do ponto sem retorno
-  contra o Galacticmon; transforma a derrota canônica no despertar da Chosen Evolution. O Igor lembra a resposta do Ato
-  II antes de abrir a Sala do Tempo.
-- **Muda o plano anterior:** a Sala do Tempo era no passo 40 (antes do warp). Pelo texto do dono, ela vem depois do Ato
-  III, antes do Galacticmon.
+- **Efeito:** transforma a derrota canônica no despertar da Chosen Evolution. O Igor lembra a resposta do Ato II antes
+  de perguntar, e a resposta dele lembra a Sala do Tempo já vencida.
+- **Sala do Tempo (decisão do dono, 2026-11-17):** fica no passo 40, **antes** do Warp Gate para o Gunslinger, porque
+  o jogo leva a uma área sem volta e a ideia é travar isso para o jogador não se frustrar
+  (`port/game/definitive_time_room.c`). O Igor lembra a resposta do Ato II ao abrir a Sala do Tempo.
 
 ## Onde cada ato cai (achado no código)
 
@@ -62,7 +62,7 @@ Continuação de `velvet-historia.md`. Reaproveita a estrutura do sonho da abert
 |---|---|---|
 | I | primeiro quadro livre com a flag 0x1C0E (fim do evento 351 do WSTAG305: a Game Master acusa o Lucky Mouse, texto DMG305:1) | 12..18 |
 | II | primeiro quadro livre no passo 27 (Amaterasu Server) | 27 |
-| III | primeiro quadro livre no passo 0x2B com a flag 0x7401 (fim do evento 1080 do WSTAG820: Snatchmon se funde com o Gunslinger, DMG800:17) | 0x2B |
+| III | primeiro quadro livre no passo 0x2B no mapa 0x2DF (fim do evento 1080 do WSTAG820: Snatchmon se funde com o Gunslinger, DMG800:17). No jogo o evento termina ligando a flag 0x7401, que já começa a batalha do Galacticmon: não sobrava quadro livre e o sonho nunca vinha. O port segura a batalha (`def_story_hold_galacticmon`) e a começa depois do sonho respondido (`galactic_hook`); o gatilho do evento 1080 fica fechado daí em diante | 0x2B |
 
 `DW3_DREAM=<n>` sonha a linha n da tabela no próximo quadro livre (teste).
 
@@ -94,7 +94,8 @@ Continuação de `velvet-historia.md`. Reaproveita a estrutura do sonho da abert
 - [x] Variantes do modo Kaili (o Kurt irmão da heroína; a amiga vira o Junior), incluindo a primeira cena da Kail
   (DMG200:3/4/5)
 - [ ] Ato I visto no jogo pelo gatilho real (a flag); Atos II/III idem (só testados com `DW3_DREAM`)
-- [ ] Sala do Tempo logo depois do Ato III, antes do Galacticmon
+- [x] Sala do Tempo no passo 40, antes do Warp Gate (ver `velvet-historia.md`)
+- [x] Ato III: a batalha do Galacticmon espera o sonho
 - [ ] Tradução para PT de tudo que é novo (o dono traduz)
 - [x] Nomes no modo Girls Power (decisão do dono, 2026-11-17): os papéis trocam. A heroína é a Ivy no mundo real e o
   nick no Digimundo; o Kurt é irmão dela; o amigo é o Junior (menino) nos dois mundos (guardou o nome real como nome de
@@ -118,7 +119,7 @@ O `pt_kaili.txt` (3 falas do irmão em PT) foi um passo adiantado: fica, e entra
    Pedido do dono: as escolhas têm de mudar diálogos mais à frente (falas que dependem da resposta). História
    adulta, mas não pesada; nada infantil (o jogo original pecava nisso). Pode aumentar as falas (mais páginas na
    mesma entrada) para explicar coisas ou criar teorias da lore do jogo.
-2. **Sala do Tempo** (os três testes do gatekeeper) logo depois do Ato III, antes do Galacticmon.
+2. ~~**Sala do Tempo**~~ feita: no passo 40, antes do Warp Gate (o dono corrigiu: antes da área sem volta).
 3. **Arco do Oikawa** (passo 26 -> 27, o portão do Black Market).
 4. Testes do dono (run em inglês), depois a tradução PT de tudo, depois o commit (separando os arquivos da outra
    sessão: música e rebalanceamento; o `definitive_buffs` não compila por falta do stub de `def_recipe_savestate`).
