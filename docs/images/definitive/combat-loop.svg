@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="538" viewBox="0 0 900 538" role="img" aria-labelledby="title desc">
+<title id="title">The combat loop</title>
+<desc id="desc">Storyboard of a turn. 1: hit a weakness with an elemental technique, WEAK! 2: the enemy staggers into its tired pose. 3: ONE MORE! you act again at once. Then choose: another weak family (another One More, once per weak family a round), Baton Pass (a free switch that keeps your turn), or any other blow (it gets the +0.2 stagger bonus and the stagger ends). OVERFINISH: a blow that knocks the enemy out and earns One More leaves it lying for that action, and every hit on it pays Bits worth 10% of its damage.</desc>
+<defs>
+<style>text{font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,&quot;Liberation Sans&quot;,sans-serif}
+.cx{transform-box:fill-box;transform-origin:center}
+
+.an{animation-duration:12s;animation-iteration-count:infinite;animation-timing-function:cubic-bezier(.45,0,.25,1)}
+@keyframes g1{0%,0%{opacity:0}1%,13%{opacity:1}14.2%,100%{opacity:0}}@keyframes g2{0%,12.8%{opacity:0}14%,26%{opacity:1}27.2%,100%{opacity:0}}@keyframes g3{0%,25.8%{opacity:0}27%,38%{opacity:1}39.2%,100%{opacity:0}}@keyframes g4{0%,37.8%{opacity:0}39%,50%{opacity:1}51.2%,100%{opacity:0}}@keyframes g5{0%,49.8%{opacity:0}51%,61%{opacity:1}62.2%,100%{opacity:0}}@keyframes g6{0%,60.8%{opacity:0}62%,71%{opacity:1}72.2%,100%{opacity:0}}@keyframes g7{0%,70.8%{opacity:0}72%,88%{opacity:1}89.2%,100%{opacity:0}}
+.g1{animation-name:g1}.g2{animation-name:g2}.g3{animation-name:g3}.g4{animation-name:g4}.g5{animation-name:g5}.g6{animation-name:g6}.g7{animation-name:g7}
+@keyframes proj{0%,1%{transform:translateX(-14px);opacity:0}2.5%{opacity:1}6%{transform:translateX(58px);opacity:1}6.8%{transform:translateX(62px);opacity:0}93%{transform:translateX(0);opacity:0}99%,100%{transform:translateX(0);opacity:1}}
+.proj{animation-name:proj}
+@keyframes burst{0%,5.6%{opacity:0;transform:scale(.3)}7%{opacity:1;transform:scale(1)}11%,100%{opacity:0;transform:scale(1.4)}}
+.burst{animation-name:burst}
+@keyframes weak{0%,6.2%{opacity:0;transform:scale(1.5)}9.2%,93%{opacity:1;transform:scale(1)}99%,100%{opacity:0;transform:scale(1)}}.weak{animation-name:weak}
+@keyframes more{0%,27.5%{opacity:0;transform:scale(1.5)}30.5%,93%{opacity:1;transform:scale(1)}99%,100%{opacity:0;transform:scale(1)}}.more{animation-name:more}
+@keyframes ofin{0%,75%{opacity:0;transform:scale(1.5)}78%,93%{opacity:1;transform:scale(1)}99%,100%{opacity:0;transform:scale(1)}}.ofin{animation-name:ofin}
+@keyframes wob{0%,14%{transform:rotate(-8deg)}16%{transform:rotate(7deg)}18%{transform:rotate(-6deg)}20%{transform:rotate(5deg)}22%{transform:rotate(-4deg)}24%{transform:rotate(3deg)}26%,100%{transform:rotate(-8deg)}}
+.wob{animation-name:wob;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(720deg)}}
+.spin{animation-name:spin;animation-timing-function:linear;transform-box:fill-box;transform-origin:center}
+@keyframes loopd{0%,39%{stroke-dashoffset:0;opacity:.55}40%{opacity:1}50%{stroke-dashoffset:-60;opacity:1}52%,100%{stroke-dashoffset:-60;opacity:.55}}
+.loopd{animation-name:loopd;animation-timing-function:linear}
+@keyframes swapL{0%,52%{transform:translateX(0)}56%,100%{transform:translateX(44px)}}
+@keyframes swapR{0%,52%{transform:translateX(0)}56%,100%{transform:translateX(-44px)}}
+.swapL{animation-name:swapL}.swapR{animation-name:swapR}
+@keyframes hit{0%,63%{transform:translate(0,0) rotate(0)}65%{transform:translate(-5px,4px) rotate(-14deg)}67%{transform:translate(4px,-3px) rotate(10deg)}69%,100%{transform:translate(0,0) rotate(0)}}
+.hit{animation-name:hit;transform-box:fill-box;transform-origin:center}
+@keyframes topple{0%,72%{transform:rotate(0) translate(0,0);opacity:1}75%{transform:rotate(90deg) translate(0,0)}93%{transform:rotate(90deg);opacity:1}97%{transform:rotate(90deg);opacity:0}98%{transform:rotate(0);opacity:0}100%{transform:rotate(0);opacity:1}}
+.topple{animation-name:topple;transform-box:fill-box;transform-origin:50% 85%}
+@keyframes coin1{0%,77%{transform:translateY(0);opacity:0}79%{opacity:1}86%{transform:translateY(-30px);opacity:0}100%{opacity:0}}
+@keyframes coin2{0%,80%{transform:translateY(0);opacity:0}82%{opacity:1}89%{transform:translateY(-30px);opacity:0}100%{opacity:0}}
+.coin1{animation-name:coin1}
+@keyframes eyeA{0%,73.5%{opacity:1}74%,97%{opacity:0}98%,100%{opacity:1}}.eyeA{animation-name:eyeA}
+@keyframes eyeK{0%,73.5%{opacity:0}74%,97%{opacity:1}98%,100%{opacity:0}}.eyeK{animation-name:eyeK}.coin2{animation-name:coin2}
+
+@keyframes orb0{0.0%{transform:translate(30.0px,0.0px)}6.25%{transform:translate(27.7px,3.4px)}12.5%{transform:translate(21.2px,6.4px)}18.75%{transform:translate(11.5px,8.3px)}25.0%{transform:translate(0.0px,9.0px)}31.25%{transform:translate(-11.5px,8.3px)}37.5%{transform:translate(-21.2px,6.4px)}43.75%{transform:translate(-27.7px,3.4px)}50.0%{transform:translate(-30.0px,0.0px)}56.25%{transform:translate(-27.7px,-3.4px)}62.5%{transform:translate(-21.2px,-6.4px)}68.75%{transform:translate(-11.5px,-8.3px)}75.0%{transform:translate(-0.0px,-9.0px)}81.25%{transform:translate(11.5px,-8.3px)}87.5%{transform:translate(21.2px,-6.4px)}93.75%{transform:translate(27.7px,-3.4px)}100.0%{transform:translate(30.0px,-0.0px)}}.orb0{animation:orb0 2.4s linear infinite}
+@keyframes orb1{0.0%{transform:translate(-15.0px,7.8px)}6.25%{transform:translate(-23.8px,5.5px)}12.5%{transform:translate(-29.0px,2.3px)}18.75%{transform:translate(-29.7px,-1.2px)}25.0%{transform:translate(-26.0px,-4.5px)}31.25%{transform:translate(-18.3px,-7.1px)}37.5%{transform:translate(-7.8px,-8.7px)}43.75%{transform:translate(3.9px,-8.9px)}50.0%{transform:translate(15.0px,-7.8px)}56.25%{transform:translate(23.8px,-5.5px)}62.5%{transform:translate(29.0px,-2.3px)}68.75%{transform:translate(29.7px,1.2px)}75.0%{transform:translate(26.0px,4.5px)}81.25%{transform:translate(18.3px,7.1px)}87.5%{transform:translate(7.8px,8.7px)}93.75%{transform:translate(-3.9px,8.9px)}100.0%{transform:translate(-15.0px,7.8px)}}.orb1{animation:orb1 2.4s linear infinite}
+@keyframes orb2{0.0%{transform:translate(-15.0px,-7.8px)}6.25%{transform:translate(-3.9px,-8.9px)}12.5%{transform:translate(7.8px,-8.7px)}18.75%{transform:translate(18.3px,-7.1px)}25.0%{transform:translate(26.0px,-4.5px)}31.25%{transform:translate(29.7px,-1.2px)}37.5%{transform:translate(29.0px,2.3px)}43.75%{transform:translate(23.8px,5.5px)}50.0%{transform:translate(15.0px,7.8px)}56.25%{transform:translate(3.9px,8.9px)}62.5%{transform:translate(-7.8px,8.7px)}68.75%{transform:translate(-18.3px,7.1px)}75.0%{transform:translate(-26.0px,4.5px)}81.25%{transform:translate(-29.7px,1.2px)}87.5%{transform:translate(-29.0px,-2.3px)}93.75%{transform:translate(-23.8px,-5.5px)}100.0%{transform:translate(-15.0px,-7.8px)}}.orb2{animation:orb2 2.4s linear infinite}
+@media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
+<symbol id="i-fire" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0,-15 C5,-8 11,-3 10,5 C9.5,11 5,15 0,15 C-5,15 -10,11 -10,5 C-10,-1 -6,-4 -4,-9 C-2,-4 0,-2 2,-1 C4,-6 3,-10 0,-15 Z"/></symbol>
+<symbol id="i-water" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0,-15 C5,-7 10,-1 10,5 A10,10 0 0 1 -10,5 C-10,-1 -5,-7 0,-15 Z"/></symbol>
+<symbol id="i-ice" viewBox="-16 -16 32 32"><g stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"><path transform="rotate(0)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(60)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(120)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(180)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(240)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(300)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/></g></symbol>
+<symbol id="i-wind" viewBox="-16 -16 32 32"><g stroke="currentColor" stroke-width="2.8" stroke-linecap="round" fill="none"><path d="M-14,-5 H4 C9,-5 10,-12 5,-12 C2,-12 1,-9 2,-8"/><path d="M-14,2 H9 C14,2 14,9 9,9 C6,9 5,6 6,5"/><path d="M-11,9 H-1"/></g></symbol>
+<symbol id="i-thunder" viewBox="-16 -16 32 32"><path fill="currentColor" d="M4,-15 L-9,2 H-1 L-4,15 L9,-3 H1 Z"/></symbol>
+<symbol id="i-machine" viewBox="-16 -16 32 32"><circle r="11" fill="none" stroke="currentColor" stroke-width="5" stroke-dasharray="4.32 4.32"/><path fill="currentColor" fill-rule="evenodd" d="M9,0 A9,9 0 1 0 -9,0 A9,9 0 1 0 9,0 Z M3.5,0 A3.5,3.5 0 1 1 -3.5,0 A3.5,3.5 0 1 1 3.5,0 Z"/></symbol>
+<symbol id="i-dark" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0.00,-15.00 L3.64,-5.02 L14.27,-4.64 L5.90,1.92 L8.82,12.14 L0.00,6.20 L-8.82,12.14 L-5.90,1.92 L-14.27,-4.64 L-3.64,-5.02 Z"/></symbol>
+<symbol id="u-swap" viewBox="-16 -16 32 32"><g stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M-12,-5 H11 M6,-10 L11,-5 L6,0 M12,6 H-11 M-6,1 L-11,6 L-6,11"/></g></symbol>
+<symbol id="u-sword" viewBox="-16 -16 32 32"><g stroke="currentColor" stroke-width="2.8" stroke-linecap="round" fill="none"><path d="M-5,5 L12,-12 M12,-12 H7 M12,-12 V-7 M-10,0 L0,10 M-6,6 L-12,12"/></g></symbol>
+<symbol id="u-coin" viewBox="-16 -16 32 32"><circle r="12" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M-4,-6.5 V6.5 M-4,-6.5 H1.5 C5.5,-6.5 5.5,0 1.5,0 H-4 M1.5,0 C6.5,0 6.5,6.5 1.5,6.5 H-4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/></symbol>
+<marker id="arr" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 Z" fill="#c3c2b7"/></marker>
+<marker id="arrg" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#f2c230"/></marker></defs>
+
+<rect width="900" height="538" rx="16" fill="#171a21"/>
+<text x="30" y="46" font-size="26" fill="#f0efec" font-weight="800">The combat loop</text>
+<text x="30" y="74" font-size="15.5" fill="#c3c2b7">Only your elemental techniques stagger. A round runs from one normal action to the next.</text>
+<rect x="30" y="104" width="200" height="256" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/><rect class="an g1" x="30" y="104" width="200" height="256" rx="12" fill="#ef6a3a" fill-opacity=".06" stroke="#ef6a3a" stroke-width="2.5" opacity="0"/>
+<circle cx="54" cy="130" r="12" fill="#f0efec"/><text x="54" y="135" font-size="14.5" fill="#14161c" font-weight="800" text-anchor="middle">1</text>
+<text x="74" y="136" font-size="17.5" fill="#f0efec" font-weight="700">Hit a weakness</text>
+<line x1="76" y1="254" x2="134" y2="254" stroke="#8fd3f0" stroke-width="2" stroke-dasharray="3 5" stroke-linecap="round" opacity=".6"/>
+<g transform="translate(166,256)"><path d="M-24,20 C-29,3 -25,-13 -13,-20 C-6,-24 6,-24 13,-20 C25,-13 29,3 24,20 Q0,27 -24,20 Z" fill="#3b4460" stroke="#6a7698" stroke-width="2"/><path d="M-12,-19 L-21,-34 L-4,-22 Z M12,-19 L21,-34 L4,-22 Z" fill="#6a7698"/><path d="M-15,-7 L-4,-3 L-5,2 L-15,0 Z M15,-7 L4,-3 L5,2 L15,0 Z" fill="#f2c230"/><path d="M-9,11 Q0,7 9,11" fill="none" stroke="#1a1e2a" stroke-width="2.4" stroke-linecap="round"/></g>
+<g class="an proj"><circle cx="70" cy="254" r="16" fill="#1a2a3a" stroke="#8fd3f0" stroke-width="1.5"/><use href="#i-ice" x="60.8" y="244.8" width="18.4" height="18.4" color="#8fd3f0"/></g>
+<g transform="translate(142,250)"><g class="an burst cx" style="opacity:0"><path d="M-4,-12 L-8,-22" stroke="#d8f2ff" stroke-width="2.4" stroke-linecap="round"/><path d="M6,-10 L12,-19" stroke="#d8f2ff" stroke-width="2.4" stroke-linecap="round"/><path d="M8,6 L16,12" stroke="#d8f2ff" stroke-width="2.4" stroke-linecap="round"/><path d="M-6,10 L-10,19" stroke="#d8f2ff" stroke-width="2.4" stroke-linecap="round"/></g></g>
+<g transform="translate(162,186)"><g class="cx an weak"><g transform="skewX(-14)"><rect x="-49" y="-13" width="108" height="36" rx="4" fill="#07080c" fill-opacity=".55"/><rect x="-54" y="-18" width="108" height="36" rx="4" fill="#e0662f"/></g><text y="7.9" font-size="22" fill="#14161c" font-weight="800" text-anchor="middle" font-style="italic" letter-spacing="1">WEAK!</text></g></g>
+<text x="130" y="340" font-size="14" fill="#c3c2b7" text-anchor="middle">with an elemental technique</text>
+<path d="M236,222 L244,232 L236,242" fill="none" stroke="#c3c2b7" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M446,222 L454,232 L446,242" fill="none" stroke="#c3c2b7" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="250" y="104" width="190" height="256" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/><rect class="an g2" x="250" y="104" width="190" height="256" rx="12" fill="#f2c230" fill-opacity=".06" stroke="#f2c230" stroke-width="2.5" opacity="0"/>
+<circle cx="274" cy="130" r="12" fill="#f0efec"/><text x="274" y="135" font-size="14.5" fill="#14161c" font-weight="800" text-anchor="middle">2</text>
+<text x="294" y="136" font-size="17.5" fill="#f0efec" font-weight="700">It staggers</text>
+<g transform="translate(345,256)"><g class="an wob" style="transform:rotate(-8deg)"><path d="M-24,20 C-29,3 -25,-13 -13,-20 C-6,-24 6,-24 13,-20 C25,-13 29,3 24,20 Q0,27 -24,20 Z" fill="#3b4460" stroke="#6a7698" stroke-width="2"/><path d="M-12,-19 L-21,-34 L-4,-22 Z M12,-19 L21,-34 L4,-22 Z" fill="#6a7698"/><g fill="none" stroke="#f2c230" stroke-width="2.6" stroke-linecap="round"><path d="M-15,-2 Q-10,3 -5,-2 M5,-2 Q10,3 15,-2"/></g><path d="M-6,12 Q0,9 6,12" fill="none" stroke="#1a1e2a" stroke-width="2.4" stroke-linecap="round"/><path d="M19,-14 C21,-10 23,-8 23,-6 A3.2,3.2 0 0 1 16.6,-6 C16.6,-8 18,-10 19,-14 Z" fill="#8fd3f0"/></g></g>
+<g transform="translate(345,196)"><ellipse rx="30" ry="9" fill="none" stroke="#f2c230" stroke-opacity=".3" stroke-width="1.5"/><g class="orb0" style="transform:translate(30.0px,0.0px)"><use href="#i-dark" x="-6" y="-6" width="12" height="12" color="#f2c230"/></g><g class="orb1" style="transform:translate(-15.0px,7.8px)"><use href="#i-dark" x="-5.5" y="-5.5" width="11" height="11" color="#f7dc7a"/></g><g class="orb2" style="transform:translate(-15.0px,-7.8px)"><use href="#i-dark" x="-5" y="-5" width="10" height="10" color="#f2c230"/></g></g>
+<text x="345" y="322" font-size="14" fill="#c3c2b7" text-anchor="middle">tired pose: it is open</text>
+<text x="345" y="342" font-size="14" fill="#c3c2b7" text-anchor="middle">to a +0.2 bonus</text>
+<rect x="460" y="104" width="170" height="256" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/><rect class="an g3" x="460" y="104" width="170" height="256" rx="12" fill="#3fcf98" fill-opacity=".06" stroke="#3fcf98" stroke-width="2.5" opacity="0"/>
+<circle cx="484" cy="130" r="12" fill="#f0efec"/><text x="484" y="135" font-size="14.5" fill="#14161c" font-weight="800" text-anchor="middle">3</text>
+<text x="504" y="136" font-size="17.5" fill="#f0efec" font-weight="700">Act again</text>
+<g transform="translate(545,228)"><g class="cx an more"><g transform="skewX(-14)"><rect x="-70" y="-17" width="150" height="44" rx="4" fill="#07080c" fill-opacity=".55"/><rect x="-75" y="-22" width="150" height="44" rx="4" fill="#199e70"/></g><text y="7.2" font-size="20" fill="#14161c" font-weight="800" text-anchor="middle" font-style="italic" letter-spacing="1">ONE MORE!</text></g></g>
+<text x="545" y="322" font-size="14" fill="#c3c2b7" text-anchor="middle">at once, before</text>
+<text x="545" y="342" font-size="14" fill="#c3c2b7" text-anchor="middle">the enemy moves</text>
+<path d="M630,232 H640 M640,144.0 V320.0" fill="none" stroke="#c3c2b7" stroke-width="2"/>
+<line x1="640" y1="144.0" x2="646" y2="144.0" stroke="#c3c2b7" stroke-width="2" marker-end="url(#arr)"/>
+<line x1="640" y1="232.0" x2="646" y2="232.0" stroke="#c3c2b7" stroke-width="2" marker-end="url(#arr)"/>
+<line x1="640" y1="320.0" x2="646" y2="320.0" stroke="#c3c2b7" stroke-width="2" marker-end="url(#arr)"/>
+<rect x="650" y="104" width="220" height="80" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/><rect class="an g4" x="650" y="104" width="220" height="80" rx="12" fill="#f2c230" fill-opacity=".06" stroke="#f2c230" stroke-width="2.5" opacity="0"/>
+<circle cx="676" cy="130" r="16" fill="#262c3c" stroke="#3a4257" stroke-width="1.5"/>
+<use href="#i-thunder" x="664.5" y="122.5" width="15" height="15" color="#f2c230"/><use href="#i-machine" x="675.5" y="124.5" width="13" height="13" color="#a7adb8"/>
+<text x="702" y="136" font-size="16" fill="#f0efec" font-weight="700">Another weak family</text>
+<text x="666" y="159" font-size="14" fill="#c3c2b7">Another One More: once</text>
+<text x="666" y="176" font-size="14" fill="#c3c2b7">per weak family a round</text>
+<rect x="650" y="192" width="220" height="80" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/><rect class="an g5" x="650" y="192" width="220" height="80" rx="12" fill="#3987e5" fill-opacity=".06" stroke="#3987e5" stroke-width="2.5" opacity="0"/>
+<circle cx="676" cy="218" r="16" fill="#262c3c" stroke="#3a4257" stroke-width="1.5"/>
+<use href="#u-swap" x="666" y="208" width="20" height="20" color="#7fb3f0"/>
+<text x="702" y="224" font-size="16" fill="#f0efec" font-weight="700">Baton Pass</text>
+<text x="666" y="247" font-size="14" fill="#c3c2b7">A free switch that keeps</text>
+<text x="666" y="264" font-size="14" fill="#c3c2b7">your turn, once a round</text>
+<rect x="650" y="280" width="220" height="80" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/><rect class="an g6" x="650" y="280" width="220" height="80" rx="12" fill="#ef6a3a" fill-opacity=".06" stroke="#ef6a3a" stroke-width="2.5" opacity="0"/>
+<circle cx="676" cy="306" r="16" fill="#262c3c" stroke="#3a4257" stroke-width="1.5"/>
+<g transform="translate(676,306)"><g class="an hit"><use href="#u-sword" x="-10" y="-10" width="20" height="20" color="#f3a27e"/></g></g>
+<text x="702" y="312" font-size="16" fill="#f0efec" font-weight="700">Any other blow</text>
+<text x="666" y="335" font-size="14" fill="#c3c2b7">+0.2 bonus unless resisted,</text>
+<text x="666" y="352" font-size="14" fill="#c3c2b7">then the stagger ends</text>
+<path class="an loopd" d="M760,102 V90 H545 V100" fill="none" stroke="#f2c230" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrg)" opacity=".55"/>
+<rect x="30" y="384" width="840" height="96" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/><rect class="an g7" x="30" y="384" width="840" height="96" rx="12" fill="#e34948" fill-opacity=".06" stroke="#e34948" stroke-width="2.5" opacity="0"/>
+<g transform="translate(92,442)"><g class="an topple" style="transform:rotate(90deg)"><g transform="scale(.8)"><path d="M-24,20 C-29,3 -25,-13 -13,-20 C-6,-24 6,-24 13,-20 C25,-13 29,3 24,20 Q0,27 -24,20 Z" fill="#3b4460" stroke="#6a7698" stroke-width="2"/><path d="M-12,-19 L-21,-34 L-4,-22 Z M12,-19 L21,-34 L4,-22 Z" fill="#6a7698"/><g class="an eyeA" style="opacity:0"><path d="M-15,-7 L-4,-3 L-5,2 L-15,0 Z M15,-7 L4,-3 L5,2 L15,0 Z" fill="#f2c230"/><path d="M-9,11 Q0,7 9,11" fill="none" stroke="#1a1e2a" stroke-width="2.4" stroke-linecap="round"/></g><g class="an eyeK"><g stroke="#f2c230" stroke-width="2.6" stroke-linecap="round"><path d="M-14,-6 L-6,2 M-6,-6 L-14,2 M6,-6 L14,2 M14,-6 L6,2"/></g><path d="M-7,12 H7" stroke="#1a1e2a" stroke-width="2.4" stroke-linecap="round"/></g></g></g></g>
+<g class="an coin1" style="opacity:0"><use href="#u-coin" x="118" y="406" width="20" height="20" color="#f2c230"/></g>
+<g class="an coin2" style="opacity:0"><use href="#u-coin" x="136" y="406" width="20" height="20" color="#f2c230"/></g>
+<g transform="translate(262,432)"><g class="cx an ofin"><g transform="skewX(-14)"><rect x="-83" y="-15" width="176" height="40" rx="4" fill="#07080c" fill-opacity=".55"/><rect x="-88" y="-20" width="176" height="40" rx="4" fill="#e34948"/></g><text y="7.2" font-size="20" fill="#14161c" font-weight="800" text-anchor="middle" font-style="italic" letter-spacing="1">OVERFINISH!</text></g></g>
+<text x="372" y="416" font-size="15" fill="#f0efec">Knock the enemy out with a blow that earns One More:</text>
+<text x="372" y="438" font-size="15" fill="#c3c2b7">it stays down for that action, and every hit on it pays</text>
+<text x="372" y="460" font-size="15" fill="#c3c2b7">Bits worth 10% of its damage, added to the battle's.</text>
+<line x1="30" y1="500" x2="870" y2="500" stroke="#30374a" stroke-width="1"/>
+<text x="30" y="520" font-size="14" fill="#9a9a94">The stagger also ends when the enemy acts. A blow with no element never staggers.</text>
+</svg>

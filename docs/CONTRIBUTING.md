@@ -65,8 +65,12 @@ submodule, git worktrees, and the extract, build and test commands.
 | `psxstack/` | Submodule: the runtime, the Psy-Q shim and the launcher |
 | `tests/` | The reference tests ([`tests/README.md`](../tests/README.md)); they never touch `src/` |
 | `scripts/`, `tools/` | Setup, build and test scripts; the Python tools. `tools/` also receives the built toolchain (untracked) |
+| `launcher/` | The C99 console launcher `dw3-launcher` (PortMaster, Android, a standalone PC build) |
+| `android/` | The Android APK: the entry point, the floating touch pad, the Gradle project |
+| `cloud-sync/` | The Cloudflare Worker behind the launcher's cloud save sync |
+| `cmake/` | The ARM toolchain files for `tools/build_arm.sh` |
 | `packaging/`, `portmaster/`, `handheld/` | Release packaging, the PortMaster package, the handheld launcher |
-| `docs/` | Reference documentation |
+| `docs/` | Reference documentation ([index](README.md)); the Definitive Edition's in [`docs/definitive-edition/`](definitive-edition/README.md) |
 | `iso/`, `extracted/`, `asm/`, `assets/`, `build/` | Untracked: your disc link, its contents, splat's output, build outputs |
 
 ## Making a change
@@ -92,8 +96,8 @@ match are in [`docs/MATCHING.md`](MATCHING.md). In short:
 The port's game side is `port/` (C: the adapter, `game.json`, the mods); the runtime, the Psy-Q shim and the launcher
 (C++17, Dear ImGui on SDL3) are the `psxstack` submodule, pinned by commit. Read [`docs/PORT.md`](PORT.md),
 [`docs/LAUNCHER.md`](LAUNCHER.md), [`port/README.md`](../port/README.md) and psxstack's `docs/RUNTIME.md` and
-`launcher/README.md`. A change to the runtime or the launcher is a psxstack pull request, then a pin bump here; a
-change to this game's adapter or mods is a pull request here. A change in behaviour should come with a test: a
+`psxstack/launcher/README.md`. A change to the runtime or the launcher is a psxstack pull request, then a pin bump
+here; a change to this game's adapter or mods, or to the C99 console launcher in `launcher/`, is a pull request here. A change in behaviour should come with a test: a
 layer-1 golden, a layer-2 pad script, or the launcher's self-test ([`tests/README.md`](../tests/README.md)).
 
 ### Scripts and tools

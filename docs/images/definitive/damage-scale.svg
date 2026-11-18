@@ -1,0 +1,140 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="566" viewBox="0 0 900 566" role="img" aria-labelledby="title desc">
+<title id="title">The damage multiplier</title>
+<desc id="desc">The multiplier on your elemental techniques, lowest to highest: resisted 0.5; neutral 1.0; a blow with no element on a staggered target 1.2; a neutral element on a staggered target 1.2 to 1.8; a weakness 1.5 to 2.1; a weakness on a staggered target 1.7 to 2.9. Each bar stacks the 1.0 base, +0.5 for a weakness, +0.2 for a staggered target and the affinity, which comes from your Digimon's old elemental stats: up to 0.3 for Fire and Wind, up to 0.6 for Water + Ice, Thunder + Machine and Dark.</desc>
+<defs>
+<style>text{font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,&quot;Liberation Sans&quot;,sans-serif}
+.cx{transform-box:fill-box;transform-origin:center}
+.gr{animation-duration:2.4s;animation-iteration-count:1;animation-fill-mode:both;animation-timing-function:cubic-bezier(.2,.7,.2,1);transform-box:fill-box;transform-origin:50% 100%}
+.br{animation:breath 9s cubic-bezier(.45,0,.25,1) infinite;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes breath{0%,18%{transform:scaleY(1)}46%,58%{transform:scaleY(.04)}86%,100%{transform:scaleY(1)}}
+.sh{animation:shine 9s linear infinite}
+@keyframes shine{0%{transform:translateY(60px)}100%{transform:translateY(-180px)}}
+@keyframes g0{0%,0%{transform:scaleY(0)}45%,100%{transform:scaleY(1)}}
+@keyframes l0{0%,30%{opacity:0}52%,100%{opacity:1}}
+.g0{animation-name:g0}.l0{animation-name:l0}
+@keyframes g1{0%,7%{transform:scaleY(0)}52%,100%{transform:scaleY(1)}}
+@keyframes l1{0%,37%{opacity:0}59%,100%{opacity:1}}
+.g1{animation-name:g1}.l1{animation-name:l1}
+@keyframes g2{0%,14%{transform:scaleY(0)}59%,100%{transform:scaleY(1)}}
+@keyframes l2{0%,44%{opacity:0}66%,100%{opacity:1}}
+.g2{animation-name:g2}.l2{animation-name:l2}
+@keyframes g3{0%,21%{transform:scaleY(0)}66%,100%{transform:scaleY(1)}}
+@keyframes l3{0%,51%{opacity:0}73%,100%{opacity:1}}
+.g3{animation-name:g3}.l3{animation-name:l3}
+@keyframes g4{0%,28%{transform:scaleY(0)}73%,100%{transform:scaleY(1)}}
+@keyframes l4{0%,58%{opacity:0}80%,100%{opacity:1}}
+.g4{animation-name:g4}.l4{animation-name:l4}
+@keyframes g5{0%,35%{transform:scaleY(0)}80%,100%{transform:scaleY(1)}}
+@keyframes l5{0%,65%{opacity:0}87%,100%{opacity:1}}
+.g5{animation-name:g5}.l5{animation-name:l5}
+@media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
+<symbol id="i-fire" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0,-15 C5,-8 11,-3 10,5 C9.5,11 5,15 0,15 C-5,15 -10,11 -10,5 C-10,-1 -6,-4 -4,-9 C-2,-4 0,-2 2,-1 C4,-6 3,-10 0,-15 Z"/></symbol>
+<symbol id="i-water" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0,-15 C5,-7 10,-1 10,5 A10,10 0 0 1 -10,5 C-10,-1 -5,-7 0,-15 Z"/></symbol>
+<symbol id="i-ice" viewBox="-16 -16 32 32"><g stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"><path transform="rotate(0)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(60)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(120)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(180)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(240)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(300)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/></g></symbol>
+<symbol id="i-wind" viewBox="-16 -16 32 32"><g stroke="currentColor" stroke-width="2.8" stroke-linecap="round" fill="none"><path d="M-14,-5 H4 C9,-5 10,-12 5,-12 C2,-12 1,-9 2,-8"/><path d="M-14,2 H9 C14,2 14,9 9,9 C6,9 5,6 6,5"/><path d="M-11,9 H-1"/></g></symbol>
+<symbol id="i-thunder" viewBox="-16 -16 32 32"><path fill="currentColor" d="M4,-15 L-9,2 H-1 L-4,15 L9,-3 H1 Z"/></symbol>
+<symbol id="i-machine" viewBox="-16 -16 32 32"><circle r="11" fill="none" stroke="currentColor" stroke-width="5" stroke-dasharray="4.32 4.32"/><path fill="currentColor" fill-rule="evenodd" d="M9,0 A9,9 0 1 0 -9,0 A9,9 0 1 0 9,0 Z M3.5,0 A3.5,3.5 0 1 1 -3.5,0 A3.5,3.5 0 1 1 3.5,0 Z"/></symbol>
+<symbol id="i-dark" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0.00,-15.00 L3.64,-5.02 L14.27,-4.64 L5.90,1.92 L8.82,12.14 L0.00,6.20 L-8.82,12.14 L-5.90,1.92 L-14.27,-4.64 L-3.64,-5.02 Z"/></symbol>
+<pattern id="hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="7" fill="#9085e9" fill-opacity="0.28"/><rect width="3" height="7" fill="#9085e9"/></pattern>
+<linearGradient id="shineg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".38"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+</defs>
+
+<rect width="900" height="566" rx="16" fill="#171a21"/>
+<text x="30" y="46" font-size="26" fill="#f0efec" font-weight="800">How hard a technique lands</text>
+<text x="30" y="74" font-size="15.5" fill="#c3c2b7">The multiplier on your elemental techniques. Solid parts are fixed; the hatched part is your affinity.</text>
+<rect x="30" y="96" width="14" height="14" rx="3" fill="#4a4f5c"/>
+<text x="51" y="108" font-size="14" fill="#c3c2b7">1.0 base</text>
+<rect x="135" y="96" width="14" height="14" rx="3" fill="#e0662f"/>
+<text x="156" y="108" font-size="14" fill="#c3c2b7">+0.5 weakness</text>
+<rect x="272" y="96" width="14" height="14" rx="3" fill="#199e70"/>
+<text x="293" y="108" font-size="14" fill="#c3c2b7">+0.2 staggered</text>
+<rect x="410" y="96" width="14" height="14" rx="3" fill="url(#hatch)"/>
+<text x="431" y="108" font-size="14" fill="#c3c2b7">+ affinity, up to 0.6</text>
+<rect x="574" y="96" width="14" height="14" rx="3" fill="#3987e5"/>
+<text x="595" y="108" font-size="14" fill="#c3c2b7">resisted: 0.5, flat</text>
+<line x1="96" y1="384.0" x2="870" y2="384.0" stroke="#3a4257" stroke-width="1.5"/>
+<text x="84" y="389" font-size="13.5" fill="#9a9a94" text-anchor="end">0.0</text>
+<line x1="96" y1="344.0" x2="870" y2="344.0" stroke="#262c3a" stroke-width="1"/>
+<text x="84" y="349" font-size="13.5" fill="#9a9a94" text-anchor="end">0.5</text>
+<line x1="96" y1="304.0" x2="870" y2="304.0" stroke="#262c3a" stroke-width="1"/>
+<text x="84" y="309" font-size="13.5" fill="#9a9a94" text-anchor="end">1.0</text>
+<line x1="96" y1="264.0" x2="870" y2="264.0" stroke="#262c3a" stroke-width="1"/>
+<text x="84" y="269" font-size="13.5" fill="#9a9a94" text-anchor="end">1.5</text>
+<line x1="96" y1="224.0" x2="870" y2="224.0" stroke="#262c3a" stroke-width="1"/>
+<text x="84" y="229" font-size="13.5" fill="#9a9a94" text-anchor="end">2.0</text>
+<line x1="96" y1="184.0" x2="870" y2="184.0" stroke="#262c3a" stroke-width="1"/>
+<text x="84" y="189" font-size="13.5" fill="#9a9a94" text-anchor="end">2.5</text>
+<line x1="96" y1="144.0" x2="870" y2="144.0" stroke="#262c3a" stroke-width="1"/>
+<text x="84" y="149" font-size="13.5" fill="#9a9a94" text-anchor="end">3.0</text>
+<g class="gr g0">
+<path d="M133.0,384.0 V348.0 Q133.0,344.0 137.0,344.0 H191.0 Q195.0,344.0 195.0,348.0 V384.0 Z" fill="#3987e5"/>
+</g>
+<g class="gr l0"><text x="164" y="332" font-size="17" fill="#f0efec" font-weight="800" text-anchor="middle">0.5</text></g>
+<text x="164" y="408" font-size="14.5" fill="#f0efec" font-weight="600" text-anchor="middle">Resisted</text>
+<g class="gr g1">
+<path d="M261.0,384.0 V308.0 Q261.0,304.0 265.0,304.0 H319.0 Q323.0,304.0 323.0,308.0 V384.0 Z" fill="#4a4f5c"/>
+</g>
+<g class="gr l1"><text x="292" y="292" font-size="17" fill="#f0efec" font-weight="800" text-anchor="middle">1.0</text></g>
+<text x="292" y="408" font-size="14.5" fill="#f0efec" font-weight="600" text-anchor="middle">Neutral</text>
+<g class="gr g2">
+<rect x="389.0" y="304.0" width="62" height="80.0" fill="#4a4f5c"/>
+<path d="M389.0,304.0 V292.0 Q389.0,288.0 393.0,288.0 H447.0 Q451.0,288.0 451.0,292.0 V304.0 Z" fill="#199e70"/>
+</g>
+<g class="gr l2"><text x="420" y="276" font-size="17" fill="#f0efec" font-weight="800" text-anchor="middle">1.2</text></g>
+<text x="420" y="408" font-size="14.5" fill="#f0efec" font-weight="600" text-anchor="middle">No element,</text>
+<text x="420" y="426" font-size="14.5" fill="#c3c2b7" text-anchor="middle">staggered</text>
+<g class="gr g3">
+<rect x="517.0" y="304.0" width="62" height="80.0" fill="#4a4f5c"/>
+<rect x="517.0" y="290.0" width="62" height="14.0" fill="#199e70"/>
+<rect x="517.75" y="240.75" width="60.5" height="46.5" rx="4" fill="none" stroke="#9085e9" stroke-opacity=".55" stroke-width="1.5" stroke-dasharray="4 3"/>
+<clipPath id="ac3"><rect x="517.0" y="240.0" width="62" height="46.0" rx="4"/></clipPath>
+<g class="br"><g clip-path="url(#ac3)"><rect x="517.0" y="240.0" width="62" height="46.0" fill="url(#hatch)"/><rect class="sh" x="517.0" y="240.0" width="62" height="60" fill="url(#shineg)"/></g></g>
+</g>
+<g class="gr l3"><text x="548" y="228" font-size="17" fill="#f0efec" font-weight="800" text-anchor="middle">1.2–1.8</text></g>
+<text x="548" y="408" font-size="14.5" fill="#f0efec" font-weight="600" text-anchor="middle">Neutral,</text>
+<text x="548" y="426" font-size="14.5" fill="#c3c2b7" text-anchor="middle">staggered</text>
+<g class="gr g4">
+<rect x="645.0" y="304.0" width="62" height="80.0" fill="#4a4f5c"/>
+<rect x="645.0" y="266.0" width="62" height="38.0" fill="#e0662f"/>
+<rect x="645.75" y="216.75" width="60.5" height="46.5" rx="4" fill="none" stroke="#9085e9" stroke-opacity=".55" stroke-width="1.5" stroke-dasharray="4 3"/>
+<clipPath id="ac4"><rect x="645.0" y="216.0" width="62" height="46.0" rx="4"/></clipPath>
+<g class="br"><g clip-path="url(#ac4)"><rect x="645.0" y="216.0" width="62" height="46.0" fill="url(#hatch)"/><rect class="sh" x="645.0" y="216.0" width="62" height="60" fill="url(#shineg)"/></g></g>
+</g>
+<g class="gr l4"><text x="676" y="204" font-size="17" fill="#f0efec" font-weight="800" text-anchor="middle">1.5–2.1</text></g>
+<text x="676" y="408" font-size="14.5" fill="#f0efec" font-weight="600" text-anchor="middle">Weakness</text>
+<g class="gr g5">
+<rect x="773.0" y="304.0" width="62" height="80.0" fill="#4a4f5c"/>
+<rect x="773.0" y="266.0" width="62" height="38.0" fill="#e0662f"/>
+<rect x="773.0" y="250.0" width="62" height="14.0" fill="#199e70"/>
+<rect x="773.75" y="152.75" width="60.5" height="94.5" rx="4" fill="none" stroke="#9085e9" stroke-opacity=".55" stroke-width="1.5" stroke-dasharray="4 3"/>
+<clipPath id="ac5"><rect x="773.0" y="152.0" width="62" height="94.0" rx="4"/></clipPath>
+<g class="br"><g clip-path="url(#ac5)"><rect x="773.0" y="152.0" width="62" height="94.0" fill="url(#hatch)"/><rect class="sh" x="773.0" y="152.0" width="62" height="60" fill="url(#shineg)"/></g></g>
+<rect x="787.0" y="188.0" width="34" height="22" rx="11" fill="#171a21" fill-opacity=".85"/>
+<text x="804" y="204" font-size="14.5" fill="#f0efec" font-weight="800" text-anchor="middle">2×</text>
+</g>
+<g class="gr l5"><text x="804" y="140" font-size="17" fill="#f0efec" font-weight="800" text-anchor="middle">1.7–2.9</text></g>
+<text x="804" y="408" font-size="14.5" fill="#f0efec" font-weight="600" text-anchor="middle">Weakness,</text>
+<text x="804" y="426" font-size="14.5" fill="#c3c2b7" text-anchor="middle">staggered</text>
+<rect x="30" y="446" width="840" height="96" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/>
+<rect x="30" y="460" width="4" height="68" rx="2" fill="#9085e9"/>
+<text x="54" y="480" font-size="17.5" fill="#f0efec" font-weight="700">Affinity: your old elemental stats now power your attacks.</text>
+<text x="54" y="506" font-size="14.5" fill="#c3c2b7">Added once for a weakness and once for a staggered target,</text>
+<text x="54" y="526" font-size="14.5" fill="#c3c2b7">never on a plain neutral hit. Ceiling per family:</text>
+<rect x="472" y="506" width="66" height="28" rx="14" fill="#262c3c" stroke="#3a4257" stroke-width="1"/>
+<use href="#i-fire" x="480" y="512" width="16" height="16" color="#ef6a3a"/>
+<text x="527" y="525" font-size="14.5" fill="#f0efec" font-weight="700" text-anchor="end">0.3</text>
+<rect x="544" y="506" width="84" height="28" rx="14" fill="#262c3c" stroke="#3a4257" stroke-width="1"/>
+<use href="#i-water" x="552" y="512" width="16" height="16" color="#3d8fe8"/>
+<use href="#i-ice" x="570" y="512" width="16" height="16" color="#8fd3f0"/>
+<text x="617" y="525" font-size="14.5" fill="#f0efec" font-weight="700" text-anchor="end">0.6</text>
+<rect x="634" y="506" width="66" height="28" rx="14" fill="#262c3c" stroke="#3a4257" stroke-width="1"/>
+<use href="#i-wind" x="642" y="512" width="16" height="16" color="#3fbf7f"/>
+<text x="689" y="525" font-size="14.5" fill="#f0efec" font-weight="700" text-anchor="end">0.3</text>
+<rect x="706" y="506" width="84" height="28" rx="14" fill="#262c3c" stroke="#3a4257" stroke-width="1"/>
+<use href="#i-thunder" x="714" y="512" width="16" height="16" color="#f2c230"/>
+<use href="#i-machine" x="732" y="512" width="16" height="16" color="#a7adb8"/>
+<text x="779" y="525" font-size="14.5" fill="#f0efec" font-weight="700" text-anchor="end">0.6</text>
+<rect x="796" y="506" width="66" height="28" rx="14" fill="#262c3c" stroke="#3a4257" stroke-width="1"/>
+<use href="#i-dark" x="804" y="512" width="16" height="16" color="#a58bf5"/>
+<text x="851" y="525" font-size="14.5" fill="#f0efec" font-weight="700" text-anchor="end">0.6</text>
+</svg>

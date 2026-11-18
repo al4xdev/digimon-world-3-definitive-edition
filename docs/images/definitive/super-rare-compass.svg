@@ -1,0 +1,244 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="744" viewBox="0 0 900 744" role="img" aria-labelledby="title desc">
+<title id="title">Super Rare hunts</title>
+<desc id="desc">Super Rare hunts. Each target sits on a random map of its territory, a sector of one server. The compass reads COLD four or more maps away, COOL at two or three, WARM on the next map, HOT on its map and BURNING close to its point; stepping on the point starts the battle. Once it loses 25% of its bar in one fight it flees to another map of the territory, keeping the damage, and each new meeting gives it 20% more stats, stacking; it takes half damage. 13 hunts unlock in order: the Ogremon tutorial, then 12 Super Rares from level 29 to 61. Each win gives its crystal (two with the Hunter's Mark) and a new hero skin.</desc>
+<defs>
+<style>text{font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,&quot;Liberation Sans&quot;,sans-serif}
+.sx{transform-box:fill-box;transform-origin:center}
+@keyframes k1{0.000%{transform:scale(.6);opacity:.9}50.000%{transform:scale(1.6);opacity:0}50.071%{transform:scale(.6);opacity:.9}100.000%{transform:scale(1.6);opacity:0}}
+.k1{animation:k1 14s ease-out infinite}
+@keyframes k2{0.000%{opacity:1}74.286%{opacity:1}76.429%{opacity:0}97.143%{opacity:0}99.286%{opacity:1}100.000%{opacity:1}}
+.k2{animation:k2 14s ease-in-out infinite}
+@keyframes k3{0.000%{opacity:0;}77.857%{opacity:0;}80.000%{opacity:1;}96.429%{opacity:1;}98.571%{opacity:0;}100.000%{opacity:0;}}
+.k3{animation:k3 14s ease-in-out infinite}
+@keyframes k4{0.000%{stroke-dashoffset:300;opacity:0}74.286%{stroke-dashoffset:300;opacity:0}74.643%{stroke-dashoffset:300;opacity:1}78.571%{stroke-dashoffset:0;opacity:1}95.000%{stroke-dashoffset:0;opacity:1}97.143%{stroke-dashoffset:0;opacity:0}100.000%{stroke-dashoffset:0;opacity:0}}
+.k4{animation:k4 14s ease-in-out infinite}
+@keyframes k5{0.000%{opacity:0;transform:scale(.6)}72.857%{opacity:0;transform:scale(.6)}74.643%{opacity:1;transform:scale(1.1)}76.071%{opacity:1;transform:scale(1)}95.000%{opacity:1;transform:scale(1)}97.143%{opacity:0;transform:scale(1)}100.000%{opacity:0;transform:scale(1)}}
+.k5{animation:k5 14s ease-in-out infinite}
+@keyframes k6{0.000%{transform:translate(100px,372px);opacity:1}7.143%{transform:translate(100px,372px);opacity:1}11.429%{transform:translate(182px,302px);opacity:1}17.143%{transform:translate(182px,302px);opacity:1}21.429%{transform:translate(272px,252px);opacity:1}27.143%{transform:translate(272px,252px);opacity:1}31.429%{transform:translate(356px,196px);opacity:1}37.143%{transform:translate(356px,196px);opacity:1}41.429%{transform:translate(422px,278px);opacity:1}45.714%{transform:translate(422px,278px);opacity:1}50.714%{transform:translate(478px,298px);opacity:1}55.714%{transform:translate(478px,298px);opacity:1}59.286%{transform:translate(494px,302px);opacity:1}95.714%{transform:translate(494px,302px);opacity:1}97.857%{transform:translate(494px,302px);opacity:0}98.214%{transform:translate(100px,372px);opacity:0}100.000%{transform:translate(100px,372px);opacity:1}}
+.k6{animation:k6 14s ease-in-out infinite}
+@keyframes k7{0.000%{opacity:0;transform:scale(.6)}59.286%{opacity:0;transform:scale(.6)}60.714%{opacity:1;transform:scale(1.12)}62.143%{opacity:1;transform:scale(1)}71.429%{opacity:1;transform:scale(1)}72.857%{opacity:0;transform:scale(1)}100.000%{opacity:0;transform:scale(1)}}
+.k7{animation:k7 14s ease-in-out infinite}
+@keyframes k8{0.000%{opacity:1}9.286%{opacity:1}10.143%{opacity:0}29.286%{opacity:0}30.143%{opacity:0}39.286%{opacity:0}40.143%{opacity:0}50.714%{opacity:0}51.571%{opacity:0}76.429%{opacity:0}77.286%{opacity:0}97.857%{opacity:0}98.714%{opacity:1}100.000%{opacity:1}}
+.k8{animation:k8 14s ease-in-out infinite}
+@keyframes k9{0.000%{opacity:0}9.286%{opacity:0}10.143%{opacity:1}29.286%{opacity:1}30.143%{opacity:0}39.286%{opacity:0}40.143%{opacity:0}50.714%{opacity:0}51.571%{opacity:0}76.429%{opacity:0}77.286%{opacity:1}97.857%{opacity:1}98.714%{opacity:0}100.000%{opacity:0}}
+.k9{animation:k9 14s ease-in-out infinite}
+@keyframes k10{0.000%{opacity:0}9.286%{opacity:0}10.143%{opacity:0}29.286%{opacity:0}30.143%{opacity:1}39.286%{opacity:1}40.143%{opacity:0}50.714%{opacity:0}51.571%{opacity:0}76.429%{opacity:0}77.286%{opacity:0}97.857%{opacity:0}98.714%{opacity:0}100.000%{opacity:0}}
+.k10{animation:k10 14s ease-in-out infinite}
+@keyframes k11{0.000%{opacity:0}9.286%{opacity:0}10.143%{opacity:0}29.286%{opacity:0}30.143%{opacity:0}39.286%{opacity:0}40.143%{opacity:1}50.714%{opacity:1}51.571%{opacity:0}76.429%{opacity:0}77.286%{opacity:0}97.857%{opacity:0}98.714%{opacity:0}100.000%{opacity:0}}
+.k11{animation:k11 14s ease-in-out infinite}
+@keyframes k12{0.000%{opacity:0}9.286%{opacity:0}10.143%{opacity:0}29.286%{opacity:0}30.143%{opacity:0}39.286%{opacity:0}40.143%{opacity:0}50.714%{opacity:0}51.571%{opacity:1}76.429%{opacity:1}77.286%{opacity:0}97.857%{opacity:0}98.714%{opacity:0}100.000%{opacity:0}}
+.k12{animation:k12 14s ease-in-out infinite}
+@keyframes k13{0.000%{opacity:1}9.286%{opacity:1}10.143%{opacity:1}29.286%{opacity:1}30.143%{opacity:1}39.286%{opacity:1}40.143%{opacity:1}50.714%{opacity:1}51.571%{opacity:1}76.429%{opacity:1}77.286%{opacity:1}97.857%{opacity:1}98.714%{opacity:1}100.000%{opacity:1}}
+.k13{animation:k13 14s ease-in-out infinite}
+@keyframes k14{0.000%{opacity:0}9.286%{opacity:0}10.143%{opacity:1}29.286%{opacity:1}30.143%{opacity:1}39.286%{opacity:1}40.143%{opacity:1}50.714%{opacity:1}51.571%{opacity:1}76.429%{opacity:1}77.286%{opacity:1}97.857%{opacity:1}98.714%{opacity:0}100.000%{opacity:0}}
+.k14{animation:k14 14s ease-in-out infinite}
+@keyframes k15{0.000%{opacity:0}9.286%{opacity:0}10.143%{opacity:0}29.286%{opacity:0}30.143%{opacity:1}39.286%{opacity:1}40.143%{opacity:1}50.714%{opacity:1}51.571%{opacity:1}76.429%{opacity:1}77.286%{opacity:0}97.857%{opacity:0}98.714%{opacity:0}100.000%{opacity:0}}
+.k15{animation:k15 14s ease-in-out infinite}
+@keyframes k16{0.000%{opacity:0}9.286%{opacity:0}10.143%{opacity:0}29.286%{opacity:0}30.143%{opacity:0}39.286%{opacity:0}40.143%{opacity:1}50.714%{opacity:1}51.571%{opacity:1}76.429%{opacity:1}77.286%{opacity:0}97.857%{opacity:0}98.714%{opacity:0}100.000%{opacity:0}}
+.k16{animation:k16 14s ease-in-out infinite}
+@keyframes k17{0.000%{opacity:0}9.286%{opacity:0}10.143%{opacity:0}29.286%{opacity:0}30.143%{opacity:0}39.286%{opacity:0}40.143%{opacity:0}50.714%{opacity:0}51.571%{opacity:1}76.429%{opacity:1}77.286%{opacity:0}97.857%{opacity:0}98.714%{opacity:0}100.000%{opacity:0}}
+.k17{animation:k17 14s ease-in-out infinite}
+@keyframes k18{0.000%{opacity:1}9.286%{opacity:1}10.143%{opacity:0}29.286%{opacity:0}30.143%{opacity:0}39.286%{opacity:0}40.143%{opacity:0}50.714%{opacity:0}51.571%{opacity:0}76.429%{opacity:0}77.286%{opacity:0}97.857%{opacity:0}98.714%{opacity:1}100.000%{opacity:1}}
+.k18{animation:k18 14s ease-in-out infinite}
+@keyframes k19{0.000%{opacity:0}9.286%{opacity:0}10.143%{opacity:1}29.286%{opacity:1}30.143%{opacity:0}39.286%{opacity:0}40.143%{opacity:0}50.714%{opacity:0}51.571%{opacity:0}76.429%{opacity:0}77.286%{opacity:1}97.857%{opacity:1}98.714%{opacity:0}100.000%{opacity:0}}
+.k19{animation:k19 14s ease-in-out infinite}
+@keyframes k20{0.000%{opacity:0}9.286%{opacity:0}10.143%{opacity:0}29.286%{opacity:0}30.143%{opacity:1}39.286%{opacity:1}40.143%{opacity:0}50.714%{opacity:0}51.571%{opacity:0}76.429%{opacity:0}77.286%{opacity:0}97.857%{opacity:0}98.714%{opacity:0}100.000%{opacity:0}}
+.k20{animation:k20 14s ease-in-out infinite}
+@keyframes k21{0.000%{opacity:0}9.286%{opacity:0}10.143%{opacity:0}29.286%{opacity:0}30.143%{opacity:0}39.286%{opacity:0}40.143%{opacity:1}50.714%{opacity:1}51.571%{opacity:0}76.429%{opacity:0}77.286%{opacity:0}97.857%{opacity:0}98.714%{opacity:0}100.000%{opacity:0}}
+.k21{animation:k21 14s ease-in-out infinite}
+@keyframes k22{0.000%{opacity:0}9.286%{opacity:0}10.143%{opacity:0}29.286%{opacity:0}30.143%{opacity:0}39.286%{opacity:0}40.143%{opacity:0}50.714%{opacity:0}51.571%{opacity:1}76.429%{opacity:1}77.286%{opacity:0}97.857%{opacity:0}98.714%{opacity:0}100.000%{opacity:0}}
+.k22{animation:k22 14s ease-in-out infinite}
+@keyframes k23{0.000%{transform:scaleX(1.3333)}63.571%{transform:scaleX(1.3333)}70.714%{transform:scaleX(1)}95.714%{transform:scaleX(1)}99.286%{transform:scaleX(1.3333)}100.000%{transform:scaleX(1.3333)}}
+.k23{animation:k23 14s ease-in-out infinite}
+@keyframes k24{0.000%{opacity:.35}78.571%{opacity:.35}81.429%{opacity:1}95.714%{opacity:1}98.571%{opacity:.35}100.000%{opacity:.35}}
+.k24{animation:k24 14s ease-in-out infinite}
+@keyframes k25{0.000%{opacity:.25}4.286%{opacity:.25}6.071%{opacity:1}95.000%{opacity:1}97.857%{opacity:.25}100.000%{opacity:.25}}
+.k25{animation:k25 14s ease-in-out infinite}
+@keyframes k26{0.000%{opacity:.25}9.643%{opacity:.25}11.429%{opacity:1}95.000%{opacity:1}97.857%{opacity:.25}100.000%{opacity:.25}}
+.k26{animation:k26 14s ease-in-out infinite}
+@keyframes k27{0.000%{opacity:.25}15.000%{opacity:.25}16.786%{opacity:1}95.000%{opacity:1}97.857%{opacity:.25}100.000%{opacity:.25}}
+.k27{animation:k27 14s ease-in-out infinite}
+@keyframes k28{0.000%{opacity:.25}20.357%{opacity:.25}22.143%{opacity:1}95.000%{opacity:1}97.857%{opacity:.25}100.000%{opacity:.25}}
+.k28{animation:k28 14s ease-in-out infinite}
+@keyframes k29{0.000%{opacity:.25}25.714%{opacity:.25}27.500%{opacity:1}95.000%{opacity:1}97.857%{opacity:.25}100.000%{opacity:.25}}
+.k29{animation:k29 14s ease-in-out infinite}
+@keyframes k30{0.000%{opacity:.25}31.071%{opacity:.25}32.857%{opacity:1}95.000%{opacity:1}97.857%{opacity:.25}100.000%{opacity:.25}}
+.k30{animation:k30 14s ease-in-out infinite}
+@keyframes k31{0.000%{opacity:.25}36.429%{opacity:.25}38.214%{opacity:1}95.000%{opacity:1}97.857%{opacity:.25}100.000%{opacity:.25}}
+.k31{animation:k31 14s ease-in-out infinite}
+@keyframes k32{0.000%{opacity:.25}41.786%{opacity:.25}43.571%{opacity:1}95.000%{opacity:1}97.857%{opacity:.25}100.000%{opacity:.25}}
+.k32{animation:k32 14s ease-in-out infinite}
+@keyframes k33{0.000%{opacity:.25}47.143%{opacity:.25}48.929%{opacity:1}95.000%{opacity:1}97.857%{opacity:.25}100.000%{opacity:.25}}
+.k33{animation:k33 14s ease-in-out infinite}
+@keyframes k34{0.000%{opacity:.25}52.500%{opacity:.25}54.286%{opacity:1}95.000%{opacity:1}97.857%{opacity:.25}100.000%{opacity:.25}}
+.k34{animation:k34 14s ease-in-out infinite}
+@keyframes k35{0.000%{opacity:.25}57.857%{opacity:.25}59.643%{opacity:1}95.000%{opacity:1}97.857%{opacity:.25}100.000%{opacity:.25}}
+.k35{animation:k35 14s ease-in-out infinite}
+@keyframes k36{0.000%{opacity:.25}63.214%{opacity:.25}65.000%{opacity:1}95.000%{opacity:1}97.857%{opacity:.25}100.000%{opacity:.25}}
+.k36{animation:k36 14s ease-in-out infinite}
+@keyframes k37{0.000%{opacity:.25}68.571%{opacity:.25}70.357%{opacity:1}95.000%{opacity:1}97.857%{opacity:.25}100.000%{opacity:.25}}
+.k37{animation:k37 14s ease-in-out infinite}
+@keyframes k38{0.000%{opacity:.25}5.357%{opacity:.25}7.143%{opacity:1}95.000%{opacity:1}97.857%{opacity:.25}100.000%{opacity:.25}}
+.k38{animation:k38 14s ease-in-out infinite}
+@keyframes k39{0.000%{opacity:.25}10.714%{opacity:.25}12.500%{opacity:1}95.000%{opacity:1}97.857%{opacity:.25}100.000%{opacity:.25}}
+.k39{animation:k39 14s ease-in-out infinite}
+@keyframes k40{0.000%{opacity:.25}16.071%{opacity:.25}17.857%{opacity:1}95.000%{opacity:1}97.857%{opacity:.25}100.000%{opacity:.25}}
+.k40{animation:k40 14s ease-in-out infinite}
+@keyframes k41{0.000%{opacity:.25}21.429%{opacity:.25}23.214%{opacity:1}95.000%{opacity:1}97.857%{opacity:.25}100.000%{opacity:.25}}
+.k41{animation:k41 14s ease-in-out infinite}
+@keyframes k42{0.000%{opacity:.25}26.786%{opacity:.25}28.571%{opacity:1}95.000%{opacity:1}97.857%{opacity:.25}100.000%{opacity:.25}}
+.k42{animation:k42 14s ease-in-out infinite}
+@keyframes k43{0.000%{opacity:.25}32.143%{opacity:.25}33.929%{opacity:1}95.000%{opacity:1}97.857%{opacity:.25}100.000%{opacity:.25}}
+.k43{animation:k43 14s ease-in-out infinite}
+@keyframes k44{0.000%{opacity:.25}37.500%{opacity:.25}39.286%{opacity:1}95.000%{opacity:1}97.857%{opacity:.25}100.000%{opacity:.25}}
+.k44{animation:k44 14s ease-in-out infinite}
+@keyframes k45{0.000%{opacity:.25}42.857%{opacity:.25}44.643%{opacity:1}95.000%{opacity:1}97.857%{opacity:.25}100.000%{opacity:.25}}
+.k45{animation:k45 14s ease-in-out infinite}
+@keyframes k46{0.000%{opacity:.25}48.214%{opacity:.25}50.000%{opacity:1}95.000%{opacity:1}97.857%{opacity:.25}100.000%{opacity:.25}}
+.k46{animation:k46 14s ease-in-out infinite}
+@keyframes k47{0.000%{opacity:.25}53.571%{opacity:.25}55.357%{opacity:1}95.000%{opacity:1}97.857%{opacity:.25}100.000%{opacity:.25}}
+.k47{animation:k47 14s ease-in-out infinite}
+@keyframes k48{0.000%{opacity:.25}58.929%{opacity:.25}60.714%{opacity:1}95.000%{opacity:1}97.857%{opacity:.25}100.000%{opacity:.25}}
+.k48{animation:k48 14s ease-in-out infinite}
+@keyframes k49{0.000%{opacity:.25}64.286%{opacity:.25}66.071%{opacity:1}95.000%{opacity:1}97.857%{opacity:.25}100.000%{opacity:.25}}
+.k49{animation:k49 14s ease-in-out infinite}
+@keyframes k50{0.000%{opacity:.25}69.643%{opacity:.25}71.429%{opacity:1}95.000%{opacity:1}97.857%{opacity:.25}100.000%{opacity:.25}}
+.k50{animation:k50 14s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
+<symbol id="i-crystal" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0,-15 L7,-5 L4,15 L-4,15 L-7,-5 Z"/><path fill="currentColor" fill-opacity="0.7" d="M-8,-1 L-12,6 L-9,13 L-5,13 L-6,1 Z M8,-1 L12,6 L9,13 L5,13 L6,1 Z"/><path fill="#fff" fill-opacity="0.35" d="M0,-15 L-7,-5 L0,-2 Z"/></symbol>
+<symbol id="i-map" viewBox="-16 -16 32 32"><path fill="currentColor" d="M-14,-10 L-5,-13 L5,-10 L14,-13 V10 L5,13 L-5,10 L-14,13 Z"/><path d="M-5,-13 V10 M5,-10 V13" stroke="#000" stroke-opacity="0.35" stroke-width="2"/></symbol>
+<symbol id="i-person" viewBox="-16 -16 32 32"><circle cy="-7" r="6.5" fill="currentColor"/><path fill="currentColor" d="M-12,15 C-12,4 -7,0 0,0 C7,0 12,4 12,15 Z"/></symbol>
+<pattern id="hatchred" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="7" fill="#e34948" fill-opacity="0.18"/><rect width="2.5" height="7" fill="#e34948" fill-opacity="0.6"/></pattern>
+</defs>
+<rect width="900" height="744" rx="16" fill="#171a21"/>
+<text x="30" y="46" font-size="26" fill="#f0efec" font-weight="800">Super Rare hunts</text>
+<text x="30" y="76" font-size="15.5" fill="#c3c2b7">The Sepikmon in the Velvet Room gives the hunts. A temperature compass leads you to the target.</text>
+<rect x="30" y="98" width="530" height="334" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/>
+<circle cx="54" cy="124" r="13" fill="#f0efec"/><text x="54" y="129.5" font-size="15" fill="#14161c" font-weight="800" text-anchor="middle">1</text>
+<text x="76" y="130" font-size="17" fill="#f0efec" font-weight="700">Follow the compass</text>
+<path d="M150,160 C210,138 330,140 420,170 C520,196 548,236 546,300 C544,366 500,410 420,414 C330,420 250,408 196,382 C140,356 126,300 132,240 C136,200 132,170 150,160 Z" fill="#9085e9" fill-opacity="0.08" stroke="#9085e9" stroke-opacity="0.45" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="420" y="404" font-size="13.5" fill="#b5adf0" text-anchor="middle">the target's territory</text>
+<line x1="100" y1="372" x2="182" y2="302" stroke="#3a4257" stroke-width="3" stroke-linecap="round"/>
+<line x1="92" y1="236" x2="182" y2="302" stroke="#3a4257" stroke-width="3" stroke-linecap="round"/>
+<line x1="182" y1="302" x2="272" y2="252" stroke="#3a4257" stroke-width="3" stroke-linecap="round"/>
+<line x1="272" y1="252" x2="210" y2="180" stroke="#3a4257" stroke-width="3" stroke-linecap="round"/>
+<line x1="272" y1="252" x2="356" y2="196" stroke="#3a4257" stroke-width="3" stroke-linecap="round"/>
+<line x1="272" y1="252" x2="322" y2="360" stroke="#3a4257" stroke-width="3" stroke-linecap="round"/>
+<line x1="356" y1="196" x2="468" y2="282" stroke="#3a4257" stroke-width="3" stroke-linecap="round"/>
+<line x1="322" y1="360" x2="468" y2="282" stroke="#3a4257" stroke-width="3" stroke-linecap="round"/>
+<rect x="76" y="354" width="48" height="36" rx="8" fill="#12151c" stroke="#3a4257" stroke-width="2" stroke-dasharray="4 3"/>
+<use href="#i-map" x="91.0" y="363.0" width="18" height="18" color="#4a5368"/>
+<rect x="68" y="218" width="48" height="36" rx="8" fill="#12151c" stroke="#3a4257" stroke-width="2" stroke-dasharray="4 3"/>
+<use href="#i-map" x="83.0" y="227.0" width="18" height="18" color="#4a5368"/>
+<rect x="158" y="284" width="48" height="36" rx="8" fill="#262d3e" stroke="#3a4257" stroke-width="2"/>
+<use href="#i-map" x="173.0" y="293.0" width="18" height="18" color="#4a5368"/>
+<rect x="248" y="234" width="48" height="36" rx="8" fill="#262d3e" stroke="#3a4257" stroke-width="2"/>
+<use href="#i-map" x="263.0" y="243.0" width="18" height="18" color="#4a5368"/>
+<rect x="186" y="162" width="48" height="36" rx="8" fill="#262d3e" stroke="#3a4257" stroke-width="2"/>
+<use href="#i-map" x="201.0" y="171.0" width="18" height="18" color="#4a5368"/>
+<rect x="332" y="178" width="48" height="36" rx="8" fill="#262d3e" stroke="#3a4257" stroke-width="2"/>
+<use href="#i-map" x="347.0" y="187.0" width="18" height="18" color="#4a5368"/>
+<rect x="298" y="342" width="48" height="36" rx="8" fill="#262d3e" stroke="#3a4257" stroke-width="2"/>
+<use href="#i-map" x="313.0" y="351.0" width="18" height="18" color="#4a5368"/>
+<rect x="404.0" y="230.0" width="128" height="104" rx="12" fill="#262d3e" stroke="#3a4257" stroke-width="2"/>
+<text x="100" y="412" font-size="13.5" fill="#9a9a94" text-anchor="middle">outside</text>
+<g class="k2"><circle class="sx k1" cx="500" cy="304" r="14" fill="none" stroke="#e34948" stroke-width="2"/><circle cx="500" cy="304" r="7" fill="#e34948"/></g>
+<text x="468" y="252" font-size="13.5" fill="#c3c2b7" font-weight="700" text-anchor="middle">its map</text>
+<g class="k3"><circle cx="210" cy="180" r="26" fill="none" stroke="#e34948" stroke-width="2" stroke-dasharray="4 3"/><circle cx="226" cy="166" r="7" fill="#e34948"/></g>
+<path class="k4" d="M500,294 C470,120 300,110 232,160" fill="none" stroke="#e34948" stroke-width="2" stroke-dasharray="300" stroke-dashoffset="0"/>
+<g class="sx k5"><g transform="translate(108,160) skewX(-14)"><rect x="-48.0" y="-15.0" width="96" height="30" rx="4" fill="#e34948"/></g><text x="108" y="166.1" font-size="17" fill="#14161c" font-weight="800" text-anchor="middle" font-style="italic" letter-spacing="1">FLEES!</text></g>
+<g class="k6" transform="translate(494,302)"><circle r="13" fill="#f0efec" stroke="#14161c" stroke-width="2"/><use href="#i-person" x="-8" y="-8" width="16" height="16" color="#14161c"/></g>
+<g class="sx k7"><g transform="translate(476,360) skewX(-14)"><rect x="-50.0" y="-15.0" width="100" height="30" rx="4" fill="#e0662f"/></g><text x="476" y="366.1" font-size="17" fill="#14161c" font-weight="800" text-anchor="middle" font-style="italic" letter-spacing="1">BATTLE!</text></g>
+<rect x="580" y="98" width="290" height="334" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/>
+<text x="600" y="130" font-size="17" fill="#f0efec" font-weight="700">The compass</text>
+<rect x="600" y="146" width="250" height="104" rx="10" fill="#12151c" stroke="#3a4257" stroke-width="1.5"/>
+<text class="k8" x="725" y="196" font-size="30" font-weight="800" text-anchor="middle" fill="#3987e5" letter-spacing="2" opacity="0">COLD</text>
+<text class="k9" x="725" y="196" font-size="30" font-weight="800" text-anchor="middle" fill="#5fc4e8" letter-spacing="2" opacity="0">COOL</text>
+<text class="k10" x="725" y="196" font-size="30" font-weight="800" text-anchor="middle" fill="#f2c230" letter-spacing="2" opacity="0">WARM</text>
+<text class="k11" x="725" y="196" font-size="30" font-weight="800" text-anchor="middle" fill="#ef6a3a" letter-spacing="2" opacity="0">HOT</text>
+<text class="k12" x="725" y="196" font-size="30" font-weight="800" text-anchor="middle" fill="#e34948" letter-spacing="2">BURNING</text>
+<rect x="622" y="216" width="36" height="14" rx="4" fill="#2a3040"/>
+<rect class="k13" x="622" y="216" width="36" height="14" rx="4" fill="#3987e5"/>
+<rect x="665" y="216" width="36" height="14" rx="4" fill="#2a3040"/>
+<rect class="k14" x="665" y="216" width="36" height="14" rx="4" fill="#5fc4e8"/>
+<rect x="708" y="216" width="36" height="14" rx="4" fill="#2a3040"/>
+<rect class="k15" x="708" y="216" width="36" height="14" rx="4" fill="#f2c230"/>
+<rect x="751" y="216" width="36" height="14" rx="4" fill="#2a3040"/>
+<rect class="k16" x="751" y="216" width="36" height="14" rx="4" fill="#ef6a3a"/>
+<rect x="794" y="216" width="36" height="14" rx="4" fill="#2a3040"/>
+<rect class="k17" x="794" y="216" width="36" height="14" rx="4" fill="#e34948"/>
+<rect class="k18" x="596" y="252" width="258" height="28" rx="7" fill="#2a3040" opacity="0"/>
+<circle cx="612" cy="266" r="6" fill="#3987e5"/>
+<text x="626" y="272" font-size="14.5" fill="#f0efec" font-weight="700">COLD</text>
+<text x="850" y="272" font-size="14" fill="#c3c2b7" text-anchor="end">4+ maps away</text>
+<rect class="k19" x="596" y="282" width="258" height="28" rx="7" fill="#2a3040" opacity="0"/>
+<circle cx="612" cy="296" r="6" fill="#5fc4e8"/>
+<text x="626" y="302" font-size="14.5" fill="#f0efec" font-weight="700">COOL</text>
+<text x="850" y="302" font-size="14" fill="#c3c2b7" text-anchor="end">2 or 3 maps away</text>
+<rect class="k20" x="596" y="312" width="258" height="28" rx="7" fill="#2a3040" opacity="0"/>
+<circle cx="612" cy="326" r="6" fill="#f2c230"/>
+<text x="626" y="332" font-size="14.5" fill="#f0efec" font-weight="700">WARM</text>
+<text x="850" y="332" font-size="14" fill="#c3c2b7" text-anchor="end">next map</text>
+<rect class="k21" x="596" y="342" width="258" height="28" rx="7" fill="#2a3040" opacity="0"/>
+<circle cx="612" cy="356" r="6" fill="#ef6a3a"/>
+<text x="626" y="362" font-size="14.5" fill="#f0efec" font-weight="700">HOT</text>
+<text x="850" y="362" font-size="14" fill="#c3c2b7" text-anchor="end">on its map</text>
+<rect class="k22" x="596" y="372" width="258" height="28" rx="7" fill="#2a3040"/>
+<circle cx="612" cy="386" r="6" fill="#e34948"/>
+<text x="626" y="392" font-size="14.5" fill="#f0efec" font-weight="700">BURNING</text>
+<text x="850" y="392" font-size="14" fill="#c3c2b7" text-anchor="end">close to its point</text>
+<text x="600" y="424" font-size="14" fill="#9a9a94">Step on the point: the battle starts.</text>
+<rect x="30" y="450" width="530" height="236" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/>
+<circle cx="54" cy="476" r="13" fill="#f0efec"/><text x="54" y="481.5" font-size="15" fill="#14161c" font-weight="800" text-anchor="middle">2</text>
+<text x="76" y="482" font-size="17" fill="#f0efec" font-weight="700">It flees, and comes back stronger</text>
+<text x="50" y="506" font-size="13.5" fill="#c3c2b7"></text>
+<rect x="50" y="512" width="490" height="22" rx="6" fill="#12151c" stroke="#3a4257" stroke-width="1.5"/>
+<rect x="417.5" y="512" width="122.5" height="22" rx="6" fill="url(#hatchred)"/>
+<rect class="k23" style="transform-box:fill-box;transform-origin:0 50%" x="50" y="512" width="367.5" height="22" rx="6" fill="#199e70"/>
+<line x1="172.5" y1="508" x2="172.5" y2="538" stroke="#171a21" stroke-width="3"/>
+<line x1="295.0" y1="508" x2="295.0" y2="538" stroke="#171a21" stroke-width="3"/>
+<line x1="417.5" y1="508" x2="417.5" y2="538" stroke="#171a21" stroke-width="3"/>
+<text x="478.75" y="556" font-size="14" fill="#f08a85" font-weight="700" text-anchor="middle">−25%: it flees</text>
+<text x="50" y="556" font-size="14" fill="#9a9a94">its bar, kept between fights</text>
+<text x="50" y="586" font-size="14.5" fill="#c3c2b7">Lose 25% of its bar in one fight and it runs to another map</text>
+<text x="50" y="607" font-size="14.5" fill="#c3c2b7">of its territory, keeping the damage. It takes half damage,</text>
+<text x="50" y="628" font-size="14.5" fill="#c3c2b7">so each 25% lasts twice as long.</text>
+<g class="k24"><rect x="50" y="646" width="60" height="26" rx="13" fill="#2a3040" stroke="#e0662f" stroke-width="1.5"/><text x="80" y="664" font-size="14" font-weight="800" fill="#ef6a3a" text-anchor="middle">+20%</text></g>
+<g><rect x="120" y="646" width="60" height="26" rx="13" fill="#2a3040" stroke="#e0662f" stroke-width="1.5"/><text x="150" y="664" font-size="14" font-weight="800" fill="#ef6a3a" text-anchor="middle">+40%</text></g>
+<g><rect x="190" y="646" width="60" height="26" rx="13" fill="#2a3040" stroke="#e0662f" stroke-width="1.5"/><text x="220" y="664" font-size="14" font-weight="800" fill="#ef6a3a" text-anchor="middle">+60%</text></g>
+<text x="262" y="664" font-size="14" fill="#c3c2b7">stats at each new meeting, stacking</text>
+<rect x="580" y="450" width="290" height="236" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/>
+<text x="600" y="482" font-size="17" fill="#f0efec" font-weight="700">13 hunts, in order</text>
+<text x="600" y="504" font-size="14" fill="#c3c2b7">The Ogremon tutorial, then 12</text>
+<text x="600" y="523" font-size="14" fill="#c3c2b7">Super Rares from level 29 to 61</text>
+<use class="k25" href="#i-crystal" x="601.0" y="540" width="18" height="24" color="#3fbf7f"/>
+<use class="k26" href="#i-crystal" x="620.5" y="540" width="18" height="24" color="#8fd3f0"/>
+<use class="k27" href="#i-crystal" x="640.0" y="540" width="18" height="24" color="#5fa8f0"/>
+<use class="k28" href="#i-crystal" x="659.5" y="540" width="18" height="24" color="#7f8ff0"/>
+<use class="k29" href="#i-crystal" x="679.0" y="540" width="18" height="24" color="#9085e9"/>
+<use class="k30" href="#i-crystal" x="698.5" y="540" width="18" height="24" color="#b07ae8"/>
+<use class="k31" href="#i-crystal" x="718.0" y="540" width="18" height="24" color="#d877b4"/>
+<use class="k32" href="#i-crystal" x="737.5" y="540" width="18" height="24" color="#ef6a3a"/>
+<use class="k33" href="#i-crystal" x="757.0" y="540" width="18" height="24" color="#f08a2a"/>
+<use class="k34" href="#i-crystal" x="776.5" y="540" width="18" height="24" color="#f2c230"/>
+<use class="k35" href="#i-crystal" x="796.0" y="540" width="18" height="24" color="#c8d06a"/>
+<use class="k36" href="#i-crystal" x="815.5" y="540" width="18" height="24" color="#5cc4b4"/>
+<use class="k37" href="#i-crystal" x="835.0" y="540" width="18" height="24" color="#c8ccd4"/>
+<g class="k38"><path d="M602.0,604 C602.0,594 606.0,591 610.0,591 C614.0,591 618.0,594 618.0,604 Z" fill="#4f7fd0" stroke="#4a5368" stroke-width="1"/><circle cx="610.0" cy="585" r="5.6" fill="#f1c9a5"/><path d="M604.0,585 A6,6 0 0 1 616.0,585 L617.0,583 C615.0,577 605.0,577 603.0,583 Z" fill="#2a2a2e" stroke="#4a5368" stroke-width=".8"/></g>
+<g class="k39"><path d="M621.5,604 C621.5,594 625.5,591 629.5,591 C633.5,591 637.5,594 637.5,604 Z" fill="#4f7fd0" stroke="#4a5368" stroke-width="1"/><circle cx="629.5" cy="585" r="5.6" fill="#f1c9a5"/><path d="M623.5,585 A6,6 0 0 1 635.5,585 L636.5,583 C634.5,577 624.5,577 622.5,583 Z" fill="#3fbf5f" stroke="#4a5368" stroke-width=".8"/></g>
+<g class="k40"><path d="M641.0,604 C641.0,594 645.0,591 649.0,591 C653.0,591 657.0,594 657.0,604 Z" fill="#e8e8e8" stroke="#4a5368" stroke-width="1"/><circle cx="649.0" cy="585" r="5.6" fill="#f1c9a5"/><path d="M643.0,585 A6,6 0 0 1 655.0,585 L656.0,583 C654.0,577 644.0,577 642.0,583 Z" fill="#7fb6e6" stroke="#4a5368" stroke-width=".8"/></g>
+<g class="k41"><path d="M660.5,604 C660.5,594 664.5,591 668.5,591 C672.5,591 676.5,594 676.5,604 Z" fill="#4f7fd0" stroke="#4a5368" stroke-width="1"/><circle cx="668.5" cy="585" r="5.6" fill="#f1c9a5"/><path d="M662.5,585 A6,6 0 0 1 674.5,585 L675.5,583 C673.5,577 663.5,577 661.5,583 Z" fill="#f2c230" stroke="#4a5368" stroke-width=".8"/></g>
+<g class="k42"><path d="M680.0,604 C680.0,594 684.0,591 688.0,591 C692.0,591 696.0,594 696.0,604 Z" fill="#d8443c" stroke="#4a5368" stroke-width="1"/><circle cx="688.0" cy="585" r="5.6" fill="#f1c9a5"/><path d="M682.0,585 A6,6 0 0 1 694.0,585 L695.0,583 C693.0,577 683.0,577 681.0,583 Z" fill="#7fb6e6" stroke="#4a5368" stroke-width=".8"/></g>
+<g class="k43"><path d="M699.5,604 C699.5,594 703.5,591 707.5,591 C711.5,591 715.5,594 715.5,604 Z" fill="#34343a" stroke="#4a5368" stroke-width="1"/><circle cx="707.5" cy="585" r="5.6" fill="#f1c9a5"/><path d="M701.5,585 A6,6 0 0 1 713.5,585 L714.5,583 C712.5,577 702.5,577 700.5,583 Z" fill="#2a2a2e" stroke="#4a5368" stroke-width=".8"/></g>
+<g class="k44"><path d="M719.0,604 C719.0,594 723.0,591 727.0,591 C731.0,591 735.0,594 735.0,604 Z" fill="#4f7fd0" stroke="#4a5368" stroke-width="1"/><circle cx="727.0" cy="585" r="5.6" fill="#f1c9a5"/><path d="M721.0,585 A6,6 0 0 1 733.0,585 L734.0,583 C732.0,577 722.0,577 720.0,583 Z" fill="#9a5ce0" stroke="#4a5368" stroke-width=".8"/></g>
+<g class="k45"><path d="M738.5,604 C738.5,594 742.5,591 746.5,591 C750.5,591 754.5,594 754.5,604 Z" fill="#2a3d80" stroke="#4a5368" stroke-width="1"/><circle cx="746.5" cy="585" r="5.6" fill="#f1c9a5"/><path d="M740.5,585 A6,6 0 0 1 752.5,585 L753.5,583 C751.5,577 741.5,577 739.5,583 Z" fill="#7fb6e6" stroke="#4a5368" stroke-width=".8"/></g>
+<g class="k46"><path d="M758.0,604 C758.0,594 762.0,591 766.0,591 C770.0,591 774.0,594 774.0,604 Z" fill="#4f7fd0" stroke="#4a5368" stroke-width="1"/><circle cx="766.0" cy="585" r="5.6" fill="#f1c9a5"/><path d="M760.0,585 A6,6 0 0 1 772.0,585 L773.0,583 C771.0,577 761.0,577 759.0,583 Z" fill="#c8ccd4" stroke="#4a5368" stroke-width=".8"/></g>
+<g class="k47"><path d="M777.5,604 C777.5,594 781.5,591 785.5,591 C789.5,591 793.5,594 793.5,604 Z" fill="#1f6f9a" stroke="#4a5368" stroke-width="1"/><circle cx="785.5" cy="585" r="5.6" fill="#f1c9a5"/><path d="M779.5,585 A6,6 0 0 1 791.5,585 L792.5,583 C790.5,577 780.5,577 778.5,583 Z" fill="#2a9bd8" stroke="#4a5368" stroke-width=".8"/></g>
+<g class="k48"><path d="M797.0,604 C797.0,594 801.0,591 805.0,591 C809.0,591 813.0,594 813.0,604 Z" fill="#7d3fb0" stroke="#4a5368" stroke-width="1"/><circle cx="805.0" cy="585" r="5.6" fill="#f1c9a5"/><path d="M799.0,585 A6,6 0 0 1 811.0,585 L812.0,583 C810.0,577 800.0,577 798.0,583 Z" fill="#f08a2a" stroke="#4a5368" stroke-width=".8"/></g>
+<g class="k49"><path d="M816.5,604 C816.5,594 820.5,591 824.5,591 C828.5,591 832.5,594 832.5,604 Z" fill="#d838b0" stroke="#4a5368" stroke-width="1"/><circle cx="824.5" cy="585" r="5.6" fill="#f1c9a5"/><path d="M818.5,585 A6,6 0 0 1 830.5,585 L831.5,583 C829.5,577 819.5,577 817.5,583 Z" fill="#a8e030" stroke="#4a5368" stroke-width=".8"/></g>
+<g class="k50"><path d="M836.0,604 C836.0,594 840.0,591 844.0,591 C848.0,591 852.0,594 852.0,604 Z" fill="#34343a" stroke="#4a5368" stroke-width="1"/><circle cx="844.0" cy="585" r="5.6" fill="#f1c9a5"/><path d="M838.0,585 A6,6 0 0 1 850.0,585 L851.0,583 C849.0,577 839.0,577 837.0,583 Z" fill="#c8ccd4" stroke="#4a5368" stroke-width=".8"/></g>
+<text x="600" y="634" font-size="14.5" fill="#f0efec" font-weight="700">Each win: its crystal and a</text>
+<text x="600" y="654" font-size="14.5" fill="#f0efec" font-weight="700">new hero skin.</text>
+<text x="600" y="674" font-size="13.5" fill="#9a9a94">Crystals x2 with the Hunter's Mark</text>
+<text x="30" y="716" font-size="14" fill="#9a9a94">Running away always works and the hunt goes on; the Overlevel Rush never skips a Super Rare.</text>
+</svg>

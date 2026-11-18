@@ -372,6 +372,8 @@ slot's unused tail (slot offset 0x26C4, 0x3C bytes of stale buffer the game writ
 never looks at), under its own magic, version and checksum. The slot's 0x26C4 bytes and the header stay exactly the
 game's, so every card the port writes still loads on a PS1 or an emulator (as a fresh entry to the map), and a card
 from either still loads in the port. A mod that needs more than the tail would need a sidecar file, not a changed slot.
+(The save-anywhere mod, the tail's first user, was removed in 63560b2; the rule stands, and the Definitive Edition's
+Blast gauges and MP/TP converter marker live in the tail now: `docs/definitive-edition/save-format.md`.)
 
 ## The hardware renderer: SDL_GPU beside the software GPU
 _Decided: 2026-10-07_ (issue #31, where the plan and its measurements are)

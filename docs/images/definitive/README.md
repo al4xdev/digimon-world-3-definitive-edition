@@ -1,30 +1,68 @@
 # Definitive Edition images
 
-The pictures the top-level README shows. A planned one is listed here and in the README as an HTML comment
-(`<!-- IMAGE: ... -->`), so nothing broken shows until it exists; when it is added, replace its comment with the image.
+The pictures the [player README](../../../README.md) and the [technical reference](../../definitive-edition/README.md)
+show.
 
-| File | What it explains | Numbers it shows |
+## Animated infographics (the player README)
+
+| File | What it explains | Shown in |
 |---|---|---|
-| `banner.svg` | the title banner, with the WEAK! and ONE MORE! callouts and the five element families | none |
-| `weakness.svg` | the seven elements as five families (Water + Ice, Thunder + Machine); weak / neutral / resisted / not learnt yet; what Inspect shows after a hit; how one value per family decides the state, and what Resist Down's −80 does to a neutral and a resisted family | `DEF_WEAK_MAX`, `DEF_RESIST_MIN`, `DEF_BREAK_SLOW_DELTA`, the enemy table's 60 and 100–115, `DEF_MULT_WEAK`, `DEF_MULT_RESISTED` |
-| `stagger.svg` | weakness hit -> stagger -> one more (once per weak family a round) -> hit a weakness again, Baton Pass or any other blow; OVERFINISH | `DEF_MULT_STAGGER`, `DEF_OVERFINISH_BITS_PCT` |
-| `damage.svg` | the multiplier, part by part, and each family's affinity ceiling | `DEF_MULT_*`, `DEF_AFF_*` |
-| `damage-pipeline.svg` | where the multiplier sits among the game's own damage steps | the stagger bonus with no element, the game's caps |
-| `hunt.svg` | PRD 4 A to C: the regional chain and its chance curve, the Rare Target with its region's numeral, its rewards (the region's numbered rare item, one R-Booster, more experience), the bestiary's "Hunt" and "Rare Cores" lines | `DEF_HUNT_CHAIN_MIN`, `DEF_HUNT_CHAIN_SURE`; the example "Datamon IV", "Datamon Core IV", "Rare Cores 4/13" |
-| `economy.svg` | PRD 4 B and D to H: commons and rares, what the forge, the Black Market and the DRI Gauntlet take, the gear they give; the price rule | `DEF_RECIPE_FROM`, `DEF_RECIPE_TOP`, `DEF_BM_COMMONS`, `DEF_BM_REPLICA_RARES`, `DEF_BM_REPLICA_BITS`, `DEF_REPLICAS`, `DEF_PRICE_KNEE`, `DEF_PRICE_DRAIN_PCT`, `DEF_SELL_BASE`, `DEF_SELL_ABOVE_PCT`; the 107 recipes and 27 variants of the generated tables; Tenjinmaru's recipe ("Peta Prism 0/30, Bulbmon V 0/1") |
-| `hunt-materials.svg` | superseded by `economy.svg` and no longer shown by the README (it still calls the forge, the Black Market and the DRI planned): move it out of the folder | the example only |
-| `definitive_ui.png` | a capture: the bestiary (the five element families and the Hunt line), the five-family weakness panel in battle and the technique menu's element | |
-| `inspect.png` | planned capture: the weakness panel in battle, by family | |
-| `bestiary.png` | planned capture: the bestiary, with its Hunt line | |
+| `hero.svg` | the title banner: the tagline, a WEAK! slash, the five element families | README top |
+| `combat-loop.svg` | hit a weakness → stagger → act again → another weak family, Baton Pass or any other blow; OVERFINISH | README, combat |
+| `weakness-discovery.svg` | Inspect learning a foe's families from `???`, the pair rule, Resist Down opening a weakness, Libra | README, combat |
+| `damage-scale.svg` | the multiplier ladder from 0.5 to 2.9 and what affinity adds | README, combat |
+| `buffs.svg` | buff and debuff tiers and the no-stacking rule | README, combat |
+| `hud.svg` | the direct-button battle HUD as a pad diagram | README, combat |
+| `progression.svg` | total TP by level, the Definitive Edition against the original | README, progression |
+| `hunt-chain.svg` | the regional chain, the Rare Target, its rewards, what resets the chain | README; `hunt-and-economy.md` |
+| `economy-flow.svg` | commons and Cores flowing into the forge, the Black Market and the DRI Gauntlet | README; `hunt-and-economy.md` |
+| `velvet-room.svg` | the room's guests arriving with the story, the way in, Igor, the dreams, the Time Room | README, Velvet Room |
+| `blast.svg` | the Blast arc: unlock, gauge, dark forms, the price, Purify, the Chosen Evolution | README, Blast |
+| `super-rare-compass.svg` | the temperature compass, the flee and return, the 13 hunts, crystals and skins | README, Super Rares |
+| `cross-play.svg` | cloud sync between a handheld and a PC, pairing, conflicts, snapshots | README, platforms |
 
-The numbers come from `port/game/definitive.h` and the generated tables: when one in the last column changes, the
-picture changes with it. The hunt's reward numbers (drop chance, how many materials and rares, the XP multiple, the
-R-Booster levels) stay out of the pictures and live in the README's text. The Datamon example follows the approved
-target table (Datamon leads 13 regions) and the forge example the recipe table (`definitive_recipes.c`): redraw them if
-those tables change.
+Their generator scripts were scratch (`.dumps/tasks/readme/battle/` and `world/`, local only); the SVGs are the
+source now. The numbers they show come from `port/game/definitive.h`: when one changes, redraw the picture.
 
-The SVGs are written by hand for GitHub, which shows them through `<img>`: no scripts, no `foreignObject`, no external
-fonts or images, a `viewBox` with a width and height, a system font stack, and their own dark background so they read
-on the light and the dark theme alike. The README shows them 800 px wide, so no text is smaller than 13.5 px in a
-900 px drawing. Check a change parses with `python3 -c "import sys, xml.etree.ElementTree as E; E.parse(sys.argv[1])" <file>.svg`,
-then look at it in a browser at 800 px.
+## Game captures (`shots/`)
+
+Captured from the PC port's software renderer, PNGs at 3x (960×720) and GIFs at 2x (640×480). Some states were
+staged with the debug channel to show a mechanic (an enemy's HP raised so a stagger is visible before it falls, the
+Velvet Room's story bits set to its fullest); the behaviour shown is the game's own.
+
+| File | What it shows |
+|---|---|
+| `battle-weak.gif` | a Thunder technique on a weakness: WEAK!, the stagger, the HUD back for the extra action, Inspect |
+| `battle-baton-pass.gif`, `battle-baton-pass-menu.png` | Baton Pass while the enemy is staggered |
+| `battle-overfinish.gif` | OVERFINISH! on a knocked-out enemy |
+| `battle-inspect.png`, `battle-hud.png` | the direct-button HUD and the Inspect panel |
+| `overlevel-rush.gif`, `overlevel-rush-panel.png` | the Rush prompt while walking and its rewards panel |
+| `velvet-way-in.gif` | an inn's blue light, the prompt, the VELVET / SERVER card, the room |
+| `velvet-room.png` | the room at its highest guest level |
+| `black-market-replicas.png` | the Black Market's Replicas tab |
+| `guide-quest.png` | the GUIDE's Quest tab |
+
+Still to capture: the Bestiary, the Digi-Lab's next-form requirements, Igor's dream panel, the Super Rare board and
+compass, hero skins, the forge's requirement line, the DRI Gauntlet, a Blast form, Girls Power, the Time Room, the
+widescreen GPU renderer and the launcher.
+
+## Static figures (the technical reference)
+
+| File | What it explains |
+|---|---|
+| `weakness.svg` | the five families; weak / neutral / resisted / not learnt; one value per family; Resist Down's −80 |
+| `stagger.svg` | weakness → stagger → one more, once per weak family a round; OVERFINISH |
+| `damage.svg` | the multiplier part by part and each family's affinity ceiling |
+| `damage-pipeline.svg` | where the multiplier sits among the game's own damage steps |
+| `definitive_ui.png` | a capture: the bestiary, the five-family weakness panel, the technique menu's element |
+| `banner.svg` | the previous title banner (no longer shown) |
+
+## Rules for the SVGs
+
+They are written for GitHub, which shows them through `<img>`: no scripts, no `foreignObject`, no external fonts,
+images or links, a `viewBox` with a width and height, a system font stack, and their own dark background so they read
+on the light and the dark theme alike. They are drawn 900 px wide and shown at 800, so no text is smaller than
+13.5 px. Animation is CSS `@keyframes` or SMIL; the still frame must already read as the finished picture, and
+`prefers-reduced-motion` turns the motion off. Check a change parses with
+`python3 -c "import sys, xml.etree.ElementTree as E; E.parse(sys.argv[1])" <file>.svg`, then look at it in a browser
+at 800 px.

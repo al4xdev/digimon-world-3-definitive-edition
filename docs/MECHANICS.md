@@ -404,8 +404,9 @@ a big exp award gives several levels in one call and returns 1; cap level 99; wi
     `stfgtrep_add_exp` in the panel's step 40) whichever form it fought as. A form keeps its own level and experience
     (`GamestateForm`, section 7) and gains only `tech_exp`, for the chosen forms marked in `forms[]`; the Digimon's own form gains none.
   - Only the three party members have panels; the five other Digimon (`gamestate_data.digimon[8]`, not in `party[3]`) get nothing.
-  - **The Definitive Edition** (`def_on`: always in the port, never under a replay script; PRD 3, the party_xp and xp_boost mods
-    made the game's own; `port/game/definitive.h` holds the numbers):
+  - **The Definitive Edition** (`def_on`: always in the port, never under a replay script; once launcher mods, now the game's
+    own rules; `port/game/definitive.h` holds the numbers; the player's view is
+    [`definitive-edition/progression.md`](definitive-edition/progression.md#experience)):
     - a member that did not take part gets `DEF_XP_PARTY_SHARE` (100) percent of one fighter's share, at least 1
       (`port_party_xp_share`, `port/game/game_mods.c`), and its panel adds it as a fighter's (level-ups, new form, item 0x141's
       fifth); a member at 0 HP when the battle ends (WFIGHTMN tells `port_party_xp_knocked_out`) gets none;
@@ -417,7 +418,7 @@ a big exp award gives several levels in one call and returns 1; cap level 99; wi
       runs for a chosen slot;
     - a Booster Pack drop gives `DEF_CARD_BOOST_PACKS` (15);
     - the Digimon's own experience uses one curve, `DEF_XP_CURVE` (10, Kumamon's, the highest of the eight partners);
-      the bits and the item are the original's; TP comes by level band (PRD 2, layer D). A form's own level thresholds
+      the bits and the item are the original's; TP comes by level band (progression.md "Training points"). A form's own level thresholds
       are unchanged.
 
 ## 7. Digivolution (forms)

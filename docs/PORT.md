@@ -168,7 +168,8 @@ build/port/dw2003 --disc iso/dw2003.cue --script tests/replay/scripts/first_batt
     --save-state battle_start:build/states/battle_start.state --save-state-exit
 ```
 The adapter's part is `game_savestate` (`port/game/game_mods.c`): what the mods and the Definitive Edition carry between vsyncs
-(save-anywhere's map, the shared experience's knocked-out slots, the battle state of `port/game/definitive.c`). The debug channel's `save_state`/`load_state` (MCP:
+(the shared experience's knocked-out slots, the battle toast, the battle menu's buffers, widescreen's field slots, the
+battle state of `port/game/definitive.c`). The debug channel's `save_state`/`load_state` (MCP:
 `state_save`, `state_load`) use the same files.
 
 ## Known limitations

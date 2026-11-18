@@ -8,7 +8,7 @@ separate build lines exist across CI/CD and releases:
   -DPSXSTACK_GAME_JSON=$PWD/port/game/game.json -DPSXSTACK_VERSION_ROOT=$PWD -DPSXSTACK_TOOLS_DIR=$PWD/tools`;
   `build/launcher/dw2003-launcher`). The contract between it and the game, the settings directory and file (schema 1),
   the mod manifest and runtime, its screens and self-test, and the crash report are psxstack's `docs/LAUNCHER.md` and
-  `launcher/README.md`.
+  `psxstack/launcher/README.md`.
 - **PortMaster (armhf) releases** use the shell entry `handheld/Digimon World 3.sh` together with the C99 console-first
   launcher `launcher/` (`dw3-launcher`, compiled with `-DDW3_TARGET_PORTMASTER -DHAVE_SDL2` by `tools/build_arm.sh` in
   the Debian 10 `buster` armhf container for glibc >= 2.28). It runs on `/dev/fb0` + evdev by default and falls back to
@@ -114,7 +114,7 @@ checks the scanner against every script on the disc; `tests/port/mods.py` runs t
 
 ### Battle text
 
-`battle_text`. Option: `mode` (enum `off` / `skip` / `async`, default `async`; read every vsync, so it applies live).
+`battle_text`. Option: `mode` (enum `off` / `skip` / `async`, default `skip`; read every vsync, so it applies live).
 Flag: `port_mod_battle_text` (0, 1, 2).
 
 The battle's message box (`FightstgMessage`, `src/fightstg/fightstg_8008D3B4.c`) is presentation only: the rules ran
@@ -137,13 +137,16 @@ frame, and `fightstg_slots_create` clears it for a new battle. Its state (`port_
 rule changes, but the frame count of a battle does, so the scripted replays of the disc's own battles do not apply with
 the mode on.
 
-The handheld's menu (`handheld/dw3-menu.py`, GAME > BATTLE TEXT) cycles OFF / SKIP / ASYNC and ships it on, in
-`async`. The stack has no "on unless the settings say otherwise" for a mod: on a desktop it is off until switched on.
+The C launcher (`launcher/`, GAME > BATTLE TEXT) cycles OFF / SKIP / ASYNC and ships it on, in `skip` (the
+direct-button battle HUD has no need of the messages). The stack has no "on unless the settings say otherwise" for a
+mod: on a desktop it is off until switched on.
 
 ### Preset language
 
-`preset_language`. Option: `language` (enum `english french german italian spanish usa japanese`, default `english`,
-`applies: restart`). No hotkey: it acts at boot whenever enabled (`port_mod_preset_language`).
+`preset_language`. Option: `language` (enum `english portuguese french german italian spanish usa japanese`, default
+`english`, `applies: restart`). No hotkey: it acts at boot whenever enabled (`port_mod_preset_language`). `portuguese`
+is the English text set (code 2) with the port's PT-BR texts over it
+([`definitive-edition/texts-and-translation.md`](definitive-edition/texts-and-translation.md)).
 
 The game boots into CNTY_SEL (map 0x1600), whose menu sets `records_language` (the offset of every localized text
 file ID: 0 JPN, 1 USA, 2 ENG, 3 FRA, 4 ITA, 5 GER, 6 SPN) and goes on to the opening, map 0xE02 (0xE01 for Japanese).
@@ -247,16 +250,18 @@ lock. On the host there is nothing to see: `tests/port/mods.py` keeps the mod's 
 
 ### Battle menu
 
-`battle_menu`. **Always on** (the definitive combat: `.plan/tasks/definitive-combat-prd.md`); the mod's record only carries
-its options (the buttons, `remember_cursor`, `buffer_input`), which apply while it is enabled and otherwise hold their
-defaults. The one exception is a replay script (`--script`), which keeps the original list. A seventh button, **Inspect**
-(L2, or R2 and then the free places when the player put an action there), opens a panel with the enemy's seven elements
-as Weak / Resist / - and spends no turn; "Enemy x2" shows over the arena when the enemy acts twice before our next turn.
-An eighth button, **Blast** (R2, the dark star under L1; the free places when it clashes), sets the acting Digimon's Blast
-off once its gauge is full and spends the turn (Blast Gauge phase 1, `.plan/tasks/velvet-room-plan.md`); with the
-gauge not full it is grey and refused; at a critical moment (a partner fell, or the acting Digimon is at a quarter of
-its HP) a full gauge pulses the button red and says "Blast calls...". Both launchers list it: the C one's battle
-buttons screen (`bm_blast`), the psxstack one from the manifest.
+`battle_menu`. **Always on** (the definitive combat:
+[`definitive-edition/combat.md`](definitive-edition/combat.md)); the mod's record only carries its options (the
+buttons, `remember_cursor`, `buffer_input`), which apply while it is enabled and otherwise hold their defaults. The one
+exception is a replay script (`--script`), which keeps the original list. A seventh button, **Inspect** (L2, or R2 and
+then the free places when the player put an action there), opens a panel with the enemy's five element families (weak,
+neutral or resisted once found out, `???` otherwise; combat.md "Knowing your enemy") and spends no turn; "Enemy x2"
+shows over the arena when the enemy acts twice before our next turn. An eighth button, **Blast** (R2, the dark star
+under L1; the free places when it clashes), sets the acting Digimon's Blast off once its gauge is full and spends the
+turn (see [`definitive-edition/blast.md`](definitive-edition/blast.md#the-gauge) "The gauge"); with the gauge not full
+it is grey and refused; at a critical moment (a partner fell, or the acting Digimon is at a quarter of its HP) a full
+gauge pulses the button red and says "Blast calls...". Both launchers list it: the C one's BATTLE HUD screen
+(`bm_blast`), the psxstack one from the manifest.
 Redesigns **only the battle's main command menu** (Fight, Tech, Digivolve, Tag, Item,
 Run): the list and its cursor are gone, each action has its own button, and a compact 3x3 grid shaped like the pad is
 drawn where the list was: the up and down arms (Y, B) are columns, the left and right ones (X, A) and the shoulders

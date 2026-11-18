@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="402" viewBox="0 0 900 402" role="img" aria-labelledby="title desc">
+<title id="title">Buffs and debuffs</title>
+<desc id="desc">Buffs and debuffs come in three fixed tiers of the stat's base value: buffs +20%, +35%, +50%; debuffs -15%, -25%, -35%. They last 2, 3 or 4 turns of the affected Digimon. They never stack: an attack buff of +35% with one turn left, then a +20% buff: it stays +35% with 3 turns; then a +50% buff: +50% wins; then an enemy's -15% debuff: the opposite sign overwrites it.</desc>
+<defs>
+<style>text{font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,&quot;Liberation Sans&quot;,sans-serif}
+.cx{transform-box:fill-box;transform-origin:center}
+.an{animation-duration:10s;animation-iteration-count:infinite;animation-timing-function:cubic-bezier(.45,0,.25,1)}
+@keyframes s0{0%{opacity:1}20%{opacity:1}21%{opacity:0}96%{opacity:0}97%{opacity:1}99%{opacity:1}100%{opacity:1}}
+.s0{animation-name:s0}
+@keyframes s1{0%{opacity:0}21%{opacity:0}22%{opacity:1}45%{opacity:1}46%{opacity:0}100%{opacity:0}}
+.s1{animation-name:s1}
+@keyframes s2{0%{opacity:0}46%{opacity:0}47%{opacity:1}70%{opacity:1}71%{opacity:0}100%{opacity:0}}
+.s2{animation-name:s2}
+@keyframes s3{0%{opacity:0}71%{opacity:0}72%{opacity:1}95%{opacity:1}96%{opacity:0}100%{opacity:0}}
+.s3{animation-name:s3}
+@keyframes t0{0%{fill-opacity:1}99%{fill-opacity:1}100%{fill-opacity:1}}
+.t0{animation-name:t0}
+@keyframes t1{0%{fill-opacity:0}21%{fill-opacity:0}22%{fill-opacity:1}95%{fill-opacity:1}96%{fill-opacity:0}100%{fill-opacity:0}}
+.t1{animation-name:t1}
+@keyframes t2{0%{fill-opacity:0}21%{fill-opacity:0}22%{fill-opacity:1}70%{fill-opacity:1}71%{fill-opacity:0}100%{fill-opacity:0}}
+.t2{animation-name:t2}
+
+.t3{animation-name:t3}
+@keyframes e0{0%,19.5%{opacity:0}21%,41%{opacity:1}44%,100%{opacity:0}}
+.e0{animation-name:e0}
+@keyframes e1{0%,44.5%{opacity:0}46%,66%{opacity:1}69%,100%{opacity:0}}
+.e1{animation-name:e1}
+@keyframes e2{0%,69.5%{opacity:0}71%,91%{opacity:1}94%,100%{opacity:0}}
+.e2{animation-name:e2}
+@keyframes gu0{0%{transform:scaleX(0)}12%{transform:scaleX(0)}40%,100%{transform:scaleX(1)}}
+.gu0{animation:gu0 2.2s cubic-bezier(.2,.7,.2,1) both;transform-box:fill-box;transform-origin:0 50%}
+.gd0{animation:gu0 2.2s cubic-bezier(.2,.7,.2,1) both;transform-box:fill-box;transform-origin:100% 50%}
+@keyframes gu1{0%{transform:scaleX(0)}20%{transform:scaleX(0)}48%,100%{transform:scaleX(1)}}
+.gu1{animation:gu1 2.2s cubic-bezier(.2,.7,.2,1) both;transform-box:fill-box;transform-origin:0 50%}
+.gd1{animation:gu1 2.2s cubic-bezier(.2,.7,.2,1) both;transform-box:fill-box;transform-origin:100% 50%}
+@keyframes gu2{0%{transform:scaleX(0)}28%{transform:scaleX(0)}56%,100%{transform:scaleX(1)}}
+.gu2{animation:gu2 2.2s cubic-bezier(.2,.7,.2,1) both;transform-box:fill-box;transform-origin:0 50%}
+.gd2{animation:gu2 2.2s cubic-bezier(.2,.7,.2,1) both;transform-box:fill-box;transform-origin:100% 50%}
+@media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
+<symbol id="i-fire" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0,-15 C5,-8 11,-3 10,5 C9.5,11 5,15 0,15 C-5,15 -10,11 -10,5 C-10,-1 -6,-4 -4,-9 C-2,-4 0,-2 2,-1 C4,-6 3,-10 0,-15 Z"/></symbol>
+<symbol id="i-water" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0,-15 C5,-7 10,-1 10,5 A10,10 0 0 1 -10,5 C-10,-1 -5,-7 0,-15 Z"/></symbol>
+<symbol id="i-ice" viewBox="-16 -16 32 32"><g stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"><path transform="rotate(0)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(60)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(120)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(180)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(240)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(300)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/></g></symbol>
+<symbol id="i-wind" viewBox="-16 -16 32 32"><g stroke="currentColor" stroke-width="2.8" stroke-linecap="round" fill="none"><path d="M-14,-5 H4 C9,-5 10,-12 5,-12 C2,-12 1,-9 2,-8"/><path d="M-14,2 H9 C14,2 14,9 9,9 C6,9 5,6 6,5"/><path d="M-11,9 H-1"/></g></symbol>
+<symbol id="i-thunder" viewBox="-16 -16 32 32"><path fill="currentColor" d="M4,-15 L-9,2 H-1 L-4,15 L9,-3 H1 Z"/></symbol>
+<symbol id="i-machine" viewBox="-16 -16 32 32"><circle r="11" fill="none" stroke="currentColor" stroke-width="5" stroke-dasharray="4.32 4.32"/><path fill="currentColor" fill-rule="evenodd" d="M9,0 A9,9 0 1 0 -9,0 A9,9 0 1 0 9,0 Z M3.5,0 A3.5,3.5 0 1 1 -3.5,0 A3.5,3.5 0 1 1 3.5,0 Z"/></symbol>
+<symbol id="i-dark" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0.00,-15.00 L3.64,-5.02 L14.27,-4.64 L5.90,1.92 L8.82,12.14 L0.00,6.20 L-8.82,12.14 L-5.90,1.92 L-14.27,-4.64 L-3.64,-5.02 Z"/></symbol>
+
+</defs>
+
+<rect width="900" height="402" rx="16" fill="#171a21"/>
+<text x="30" y="46" font-size="26" fill="#f0efec" font-weight="800">Buffs and debuffs: tiers, not stacks</text>
+<text x="30" y="74" font-size="15.5" fill="#c3c2b7">Each one is a fixed share of the stat's base value (attack, defense or speed). Casting more never piles up.</text>
+<rect x="30" y="98" width="410" height="280" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/>
+<text x="213" y="128" font-size="13.5" fill="#ef6a3a" font-weight="800" text-anchor="end" letter-spacing="2">DEBUFF</text>
+<text x="257" y="128" font-size="13.5" fill="#2fbf86" font-weight="800" letter-spacing="2">BUFF</text>
+<g class="gd0"><rect x="179.0" y="151" width="36.0" height="22" rx="4" fill="#ef6a3a"/></g>
+<g class="gu0"><rect x="255" y="151" width="48.0" height="22" rx="4" fill="#2fbf86"/></g>
+<circle cx="235" cy="162" r="14" fill="#2a3040" stroke="#3a4257" stroke-width="1.5"/>
+<text x="235" y="167" font-size="14.5" fill="#f0efec" font-weight="800" text-anchor="middle">1</text>
+<text x="171" y="167.5" font-size="15" fill="#f0efec" font-weight="700" text-anchor="end">−15%</text>
+<text x="311" y="167.5" font-size="15" fill="#f0efec" font-weight="700">+20%</text>
+<g class="gd1"><rect x="155.0" y="201" width="60.0" height="22" rx="4" fill="#ef6a3a"/></g>
+<g class="gu1"><rect x="255" y="201" width="84.0" height="22" rx="4" fill="#2fbf86"/></g>
+<circle cx="235" cy="212" r="14" fill="#2a3040" stroke="#3a4257" stroke-width="1.5"/>
+<text x="235" y="217" font-size="14.5" fill="#f0efec" font-weight="800" text-anchor="middle">2</text>
+<text x="147" y="217.5" font-size="15" fill="#f0efec" font-weight="700" text-anchor="end">−25%</text>
+<text x="347" y="217.5" font-size="15" fill="#f0efec" font-weight="700">+35%</text>
+<g class="gd2"><rect x="131.0" y="251" width="84.0" height="22" rx="4" fill="#ef6a3a"/></g>
+<g class="gu2"><rect x="255" y="251" width="120.0" height="22" rx="4" fill="#2fbf86"/></g>
+<circle cx="235" cy="262" r="14" fill="#2a3040" stroke="#3a4257" stroke-width="1.5"/>
+<text x="235" y="267" font-size="14.5" fill="#f0efec" font-weight="800" text-anchor="middle">3</text>
+<text x="123" y="267.5" font-size="15" fill="#f0efec" font-weight="700" text-anchor="end">−35%</text>
+<text x="383" y="267.5" font-size="15" fill="#f0efec" font-weight="700">+50%</text>
+<text x="235" y="300" font-size="13.5" fill="#9a9a94" text-anchor="middle">tier</text>
+<line x1="50" y1="318" x2="420" y2="318" stroke="#30374a" stroke-width="1"/>
+<text x="50" y="344" font-size="14.5" fill="#c3c2b7">Lasts 2, 3 or 4 turns of the Digimon it is on</text>
+<text x="50" y="364" font-size="14.5" fill="#9a9a94">(short, base, long). Bosses take debuffs too.</text>
+<rect x="460" y="98" width="410" height="280" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/>
+<text x="480" y="128" font-size="13.5" fill="#9a9a94" font-weight="800" letter-spacing="2">ONE STAT, ONE EFFECT</text>
+<rect x="480" y="142" width="370" height="58" rx="10" fill="#171b25" stroke="#3a4257" stroke-width="1.5"/>
+<text x="498" y="177" font-size="16" fill="#c3c2b7" font-weight="700">Attack</text>
+<g class="an s0" style="opacity:0"><text x="630" y="180" font-size="26" fill="#2fbf86" font-weight="800" text-anchor="middle">+35%</text><text x="696" y="177" font-size="14" fill="#9a9a94">tier 2</text></g>
+<g class="an s1" style="opacity:0"><text x="630" y="180" font-size="26" fill="#2fbf86" font-weight="800" text-anchor="middle">+35%</text><text x="696" y="177" font-size="14" fill="#9a9a94">tier 2</text></g>
+<g class="an s2" style="opacity:0"><text x="630" y="180" font-size="26" fill="#2fbf86" font-weight="800" text-anchor="middle">+50%</text><text x="696" y="177" font-size="14" fill="#9a9a94">tier 3</text></g>
+<g class="an s3"><text x="630" y="180" font-size="26" fill="#ef6a3a" font-weight="800" text-anchor="middle">−15%</text><text x="696" y="177" font-size="14" fill="#9a9a94">tier 1</text></g>
+<rect x="760" y="164" width="13" height="13" rx="3" fill="none" stroke="#5a6070" stroke-width="1.3"/>
+<rect class="an t0" x="760" y="164" width="13" height="13" rx="3" fill="#c3c2b7" fill-opacity="1"/>
+<rect x="780" y="164" width="13" height="13" rx="3" fill="none" stroke="#5a6070" stroke-width="1.3"/>
+<rect class="an t1" x="780" y="164" width="13" height="13" rx="3" fill="#c3c2b7" fill-opacity="1"/>
+<rect x="800" y="164" width="13" height="13" rx="3" fill="none" stroke="#5a6070" stroke-width="1.3"/>
+<rect class="an t2" x="800" y="164" width="13" height="13" rx="3" fill="#c3c2b7" fill-opacity="0"/>
+<rect x="820" y="164" width="13" height="13" rx="3" fill="none" stroke="#5a6070" stroke-width="1.3"/>
+<rect class="an t3" x="820" y="164" width="13" height="13" rx="3" fill="#c3c2b7" fill-opacity="0"/>
+<text x="812" y="194" font-size="13.5" fill="#9a9a94" text-anchor="middle">turns</text>
+<rect class="an e0" x="472" y="214" width="386" height="46" rx="8" fill="#2fbf86" fill-opacity=".1" stroke="#2fbf86" stroke-opacity=".55" opacity="0"/>
+<rect x="482" y="225" width="56" height="24" rx="12" fill="#2fbf86" fill-opacity=".2" stroke="#2fbf86" stroke-width="1.2"/>
+<text x="510" y="242" font-size="14" fill="#f0efec" font-weight="800" text-anchor="middle">+20%</text>
+<text x="550" y="242.5" font-size="15" fill="#f0efec" font-weight="600">Cast +20%</text>
+<text x="848" y="242.5" font-size="14" fill="#c3c2b7" text-anchor="end">+35% stays, back to 3 turns</text>
+<rect class="an e1" x="472" y="266" width="386" height="46" rx="8" fill="#2fbf86" fill-opacity=".1" stroke="#2fbf86" stroke-opacity=".55" opacity="0"/>
+<rect x="482" y="277" width="56" height="24" rx="12" fill="#2fbf86" fill-opacity=".2" stroke="#2fbf86" stroke-width="1.2"/>
+<text x="510" y="294" font-size="14" fill="#f0efec" font-weight="800" text-anchor="middle">+50%</text>
+<text x="550" y="294.5" font-size="15" fill="#f0efec" font-weight="600">Cast +50%</text>
+<text x="848" y="294.5" font-size="14" fill="#c3c2b7" text-anchor="end">the stronger tier wins</text>
+<rect class="an e2" x="472" y="318" width="386" height="46" rx="8" fill="#ef6a3a" fill-opacity=".1" stroke="#ef6a3a" stroke-opacity=".55" opacity="0"/>
+<rect x="482" y="329" width="56" height="24" rx="12" fill="#ef6a3a" fill-opacity=".2" stroke="#ef6a3a" stroke-width="1.2"/>
+<text x="510" y="346" font-size="14" fill="#f0efec" font-weight="800" text-anchor="middle">−15%</text>
+<text x="550" y="346.5" font-size="15" fill="#f0efec" font-weight="600">Enemy −15%</text>
+<text x="848" y="346.5" font-size="14" fill="#c3c2b7" text-anchor="end">opposite sign: it overwrites</text>
+</svg>

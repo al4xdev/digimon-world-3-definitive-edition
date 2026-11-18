@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="640" viewBox="0 0 900 640" role="img" aria-labelledby="title desc">
+<title id="title">Progression without the grind</title>
+<desc id="desc">Training points earned, added up by level. The original gives 5 TP every level: 490 by level 99. The Definitive Edition gives 7 a level from 2 to 20, 9 from 21 to 40, 30 from 41 to 50 and none after: 613 by level 50. TP still caps at 99 in hand. Also: after three training sessions without a perfect result the fourth succeeds on every round; digivolution forms level 14 times faster; party members who stayed out of the fight earn the same experience; card booster drops give 15 packs.</desc>
+<defs>
+<style>text{font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,&quot;Liberation Sans&quot;,sans-serif}
+.sx{transform-box:fill-box;transform-origin:center}
+@keyframes k1{0.000%{opacity:0;transform:scale(.6)}30.000%{opacity:0;transform:scale(.6)}32.500%{opacity:1;transform:scale(1.1)}34.500%{opacity:1;transform:scale(1)}93.000%{opacity:1;transform:scale(1)}97.000%{opacity:0;transform:scale(1)}100.000%{opacity:0;transform:scale(1)}}
+.k1{animation:k1 10s ease-in-out infinite}
+@keyframes k2{0.000%{opacity:0}54.000%{opacity:0}58.000%{opacity:1}93.000%{opacity:1}97.000%{opacity:0}100.000%{opacity:0}}
+.k2{animation:k2 10s ease-in-out infinite}
+@keyframes k3{0.000%{transform:scale(1)}60.000%{transform:scale(1)}62.500%{transform:scale(1.14)}65.500%{transform:scale(1)}100.000%{transform:scale(1)}}
+.k3{animation:k3 10s ease-in-out infinite}
+@keyframes k4{0.000%{transform:scale(1)}63.500%{transform:scale(1)}66.000%{transform:scale(1.14)}69.000%{transform:scale(1)}100.000%{transform:scale(1)}}
+.k4{animation:k4 10s ease-in-out infinite}
+@keyframes k5{0.000%{transform:scale(1)}67.000%{transform:scale(1)}69.500%{transform:scale(1.14)}72.500%{transform:scale(1)}100.000%{transform:scale(1)}}
+.k5{animation:k5 10s ease-in-out infinite}
+@keyframes k6{0.000%{transform:scale(1)}70.500%{transform:scale(1)}73.000%{transform:scale(1.14)}76.000%{transform:scale(1)}100.000%{transform:scale(1)}}
+.k6{animation:k6 10s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
+<symbol id="i-booster" viewBox="-16 -16 32 32"><rect x="-10" y="-14" width="20" height="28" rx="3" fill="currentColor"/><path d="M-10,-9 H10 M-10,9 H10" stroke="#000" stroke-opacity="0.3" stroke-width="2"/><text x="0" y="4.5" font-size="12" font-weight="800" text-anchor="middle" fill="#14161c" font-style="italic">R</text></symbol>
+<symbol id="i-check" viewBox="-16 -16 32 32"><path d="M-10,0 L-3,8 L11,-8" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+<symbol id="i-person" viewBox="-16 -16 32 32"><circle cy="-7" r="6.5" fill="currentColor"/><path fill="currentColor" d="M-12,15 C-12,4 -7,0 0,0 C7,0 12,4 12,15 Z"/></symbol>
+<linearGradient id="area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9085e9" stop-opacity="0.28"/><stop offset="1" stop-color="#9085e9" stop-opacity="0"/></linearGradient>
+</defs>
+<rect width="900" height="640" rx="16" fill="#171a21"/>
+<text x="30" y="46" font-size="26" fill="#f0efec" font-weight="800">Progression without the grind</text>
+<text x="30" y="76" font-size="15.5" fill="#c3c2b7">Training points (TP) per level, added up. The late game lands where the original ended: level 40 to 50.</text>
+<rect x="30" y="98" width="560" height="340" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/>
+<text x="50" y="126" font-size="13.5" fill="#9a9a94" font-weight="700">TP earned</text>
+<line x1="92" y1="404.0" x2="566" y2="404.0" stroke="#2a3040" stroke-width="1"/>
+<text x="84" y="409.0" font-size="13.5" fill="#9a9a94" text-anchor="end">0</text>
+<line x1="92" y1="328.6" x2="566" y2="328.6" stroke="#2a3040" stroke-width="1"/>
+<text x="84" y="333.57142857142856" font-size="13.5" fill="#9a9a94" text-anchor="end">200</text>
+<line x1="92" y1="253.1" x2="566" y2="253.1" stroke="#2a3040" stroke-width="1"/>
+<text x="84" y="258.1428571428571" font-size="13.5" fill="#9a9a94" text-anchor="end">400</text>
+<line x1="92" y1="177.7" x2="566" y2="177.7" stroke="#2a3040" stroke-width="1"/>
+<text x="84" y="182.71428571428572" font-size="13.5" fill="#9a9a94" text-anchor="end">600</text>
+<text x="92.0" y="426" font-size="13.5" fill="#9a9a94" text-anchor="middle">1</text>
+<text x="183.89795918367346" y="426" font-size="13.5" fill="#9a9a94" text-anchor="middle">20</text>
+<text x="280.63265306122446" y="426" font-size="13.5" fill="#9a9a94" text-anchor="middle">40</text>
+<text x="329.0" y="426" font-size="13.5" fill="#9a9a94" text-anchor="middle">50</text>
+<text x="566.0" y="426" font-size="13.5" fill="#9a9a94" text-anchor="middle">99</text>
+<text x="566" y="426" font-size="13.5" fill="#c3c2b7"></text>
+<text x="389.0" y="426" font-size="13.5" fill="#9a9a94" text-anchor="middle">level</text>
+<rect x="280.6" y="140" width="48.4" height="264" fill="#9085e9" fill-opacity="0.12"/>
+<text x="306.81632653061223" y="374" font-size="13.5" fill="#b5adf0" font-weight="700" text-anchor="middle">30 TP</text>
+<text x="306.81632653061223" y="391" font-size="13.5" fill="#b5adf0" text-anchor="middle">a level</text>
+<clipPath id="reveal"><rect x="86" y="110" width="488" height="304"><animate attributeName="width" dur="10s" repeatCount="indefinite" keyTimes="0;0.0500;0.5500;0.9300;0.9800;1" values="0;0;488;488;0;0"/></rect></clipPath>
+<g clip-path="url(#reveal)">
+<path d="M92.0,404.0 L566.0,219.2" fill="none" stroke="#8f8e88" stroke-width="2.5" stroke-dasharray="7 5"/>
+<path d="M92.0,404.0 L183.9,353.8 L280.6,286.0 L329.0,172.8 L566.0,172.8 L566.0,404.0 L92.0,404.0 Z" fill="url(#area)"/>
+<path d="M92.0,404.0 L183.9,353.8 L280.6,286.0 L329.0,172.8 L566.0,172.8" fill="none" stroke="#9085e9" stroke-width="3" stroke-linejoin="round"/>
+</g>
+<g opacity="0"><animate attributeName="opacity" dur="10s" repeatCount="indefinite" keyTimes="0;0.0500;0.5500;0.6000;1" values="0;1;1;0;0"/><animateTransform attributeName="transform" type="translate" dur="10s" repeatCount="indefinite" keyTimes="0;0.0500;0.5500;0.9300;0.9800;1" values="0,0;0,0;474,0;474,0;474,0;0,0"/><line x1="92" y1="134" x2="92" y2="404" stroke="#c3c2b7" stroke-opacity="0.45" stroke-width="1.5"/></g>
+<g class="sx k1"><circle cx="329.0" cy="172.8" r="6" fill="#9085e9" stroke="#1f2430" stroke-width="2"/><rect x="167.0" y="124.8" width="140" height="34" rx="8" fill="#f2c230"/><text x="237.0" y="147.3" font-size="15.5" font-weight="800" fill="#14161c" text-anchor="middle">613 by level 50</text></g>
+<g class="k2"><circle cx="566.0" cy="219.2" r="6" fill="#8f8e88" stroke="#1f2430" stroke-width="2"/><text x="556.0" y="205.2" font-size="14.5" font-weight="700" fill="#c3c2b7" text-anchor="end">490 by level 99</text></g>
+<line x1="440" y1="345" x2="466" y2="345" stroke="#9085e9" stroke-width="3"/>
+<text x="474" y="350" font-size="14" fill="#c3c2b7">Definitive</text>
+<line x1="440" y1="371" x2="466" y2="371" stroke="#8f8e88" stroke-width="2.5" stroke-dasharray="7 5"/>
+<text x="474" y="376" font-size="14" fill="#c3c2b7">Original</text>
+<rect x="610" y="98" width="260" height="340" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/>
+<text x="630" y="130" font-size="17" fill="#f0efec" font-weight="700">TP a level</text>
+<text x="746" y="158" font-size="13.5" fill="#9a9a94" font-weight="700" text-anchor="middle">Original</text>
+<text x="830" y="158" font-size="13.5" fill="#9a9a94" font-weight="700" text-anchor="middle">Definitive</text>
+<text x="630" y="192" font-size="15" fill="#c3c2b7">2 to 20</text>
+<text x="746" y="192" font-size="15" fill="#9a9a94" text-anchor="middle">5</text>
+<text x="830" y="192" font-size="16" fill="#f0efec" font-weight="800" text-anchor="middle">7</text>
+<text x="630" y="228" font-size="15" fill="#c3c2b7">21 to 40</text>
+<text x="746" y="228" font-size="15" fill="#9a9a94" text-anchor="middle">5</text>
+<text x="830" y="228" font-size="16" fill="#f0efec" font-weight="800" text-anchor="middle">9</text>
+<rect x="622" y="242" width="236" height="32" rx="7" fill="#9085e9" fill-opacity="0.16"/>
+<text x="630" y="264" font-size="15" fill="#c3c2b7">41 to 50</text>
+<text x="746" y="264" font-size="15" fill="#9a9a94" text-anchor="middle">5</text>
+<text x="830" y="264" font-size="16" fill="#f0efec" font-weight="800" text-anchor="middle">30</text>
+<text x="630" y="300" font-size="15" fill="#c3c2b7">51 and up</text>
+<text x="746" y="300" font-size="15" fill="#9a9a94" text-anchor="middle">5</text>
+<text x="830" y="300" font-size="16" fill="#f0efec" font-weight="800" text-anchor="middle">0</text>
+<line x1="630" y1="316" x2="850" y2="316" stroke="#30374a" stroke-width="1.5"/>
+<text x="630" y="352" font-size="15" fill="#c3c2b7">By level 50</text>
+<text x="746" y="352" font-size="15" fill="#9a9a94" text-anchor="middle">245</text>
+<text x="830" y="352" font-size="16" fill="#f2c230" font-weight="800" text-anchor="middle">613</text>
+<text x="630" y="382" font-size="14" fill="#9a9a94">TP still caps at 99 in hand:</text>
+<text x="630" y="402" font-size="14" fill="#9a9a94">train along the way.</text>
+<rect x="30" y="460" width="199" height="150" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/>
+<g class="sx k3"><circle cx="68" cy="498" r="22" fill="#2a3040"/>
+<use href="#i-check" x="55.0" y="485.0" width="26" height="26" color="#199e70"/>
+</g>
+<text x="48" y="550" font-size="15" fill="#f0efec" font-weight="700">Guaranteed training</text>
+<text x="48" y="572" font-size="13.5" fill="#c3c2b7">3 sessions with no perfect:</text>
+<text x="48" y="591" font-size="13.5" fill="#c3c2b7">the 4th wins every round</text>
+<rect x="243" y="460" width="199" height="150" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/>
+<g class="sx k4"><circle cx="281" cy="498" r="22" fill="#2a3040"/>
+<text x="281" y="504" font-size="16" fill="#9085e9" font-weight="800" text-anchor="middle">14x</text>
+</g>
+<text x="261" y="550" font-size="15" fill="#f0efec" font-weight="700">Forms level 14x faster</text>
+<text x="261" y="572" font-size="13.5" fill="#c3c2b7">digivolution forms; a rookie</text>
+<text x="261" y="591" font-size="13.5" fill="#c3c2b7">keeps the original pace</text>
+<rect x="456" y="460" width="199" height="150" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/>
+<g class="sx k5"><circle cx="494" cy="498" r="22" fill="#2a3040"/>
+<use href="#i-person" x="481.0" y="485.0" width="26" height="26" color="#8fd3f0"/>
+</g>
+<text x="474" y="550" font-size="15" fill="#f0efec" font-weight="700">The whole party levels</text>
+<text x="474" y="572" font-size="13.5" fill="#c3c2b7">a partner who never fought</text>
+<text x="474" y="591" font-size="13.5" fill="#c3c2b7">earns the same XP</text>
+<rect x="669" y="460" width="199" height="150" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/>
+<g class="sx k6"><circle cx="707" cy="498" r="22" fill="#2a3040"/>
+<use href="#i-booster" x="694.0" y="485.0" width="26" height="26" color="#e0662f"/>
+</g>
+<text x="687" y="550" font-size="15" fill="#f0efec" font-weight="700">15 boosters a drop</text>
+<text x="687" y="572" font-size="13.5" fill="#c3c2b7">card packs for the card game</text>
+<text x="687" y="591" font-size="13.5" fill="#c3c2b7">now drop 15 at a time</text>
+</svg>

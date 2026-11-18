@@ -1,0 +1,203 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="760" viewBox="0 0 900 760" role="img" aria-labelledby="title desc">
+<title id="title">The Velvet Room</title>
+<desc id="desc">The Velvet Room, a hidden room behind every inn, grows with the story. Until Repeating Tom's news at step 4 the ways in are closed; then the Sepikmon arrives (Super Rare hunts and hero skins); at step 10, The Suzaku Badge, Igor the host and Gennai with the Blast quest; at step 16, The real Leader, Guilmon with the Demon Bell (Super Hard); at step 22, Free Asuka City, Etemon and the pig; and once Oikawa is beaten, step 27, his Black Market. At step 40, before the point of no return, it becomes the Time Room: three trials, no prize. At New Game Igor hands you the key, and in four dreams he asks a question and remembers your answer. The way in: a piece of each inn's scenery glows a faint, breathing blue; stand on it, the up-arrow prompt shows, press CIRCLE.</desc>
+<defs>
+<style>text{font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,&quot;Liberation Sans&quot;,sans-serif}
+.sx{transform-box:fill-box;transform-origin:center}
+@keyframes t1{0.000%{transform:scaleX(0)}4.286%{transform:scaleX(0)}78.571%{transform:scaleX(1)}92.143%{transform:scaleX(1)}96.429%{transform:scaleX(0)}100.000%{transform:scaleX(0)}}
+.t1{animation:t1 14s linear infinite}
+@keyframes t2{0.000%{opacity:.28;transform:translateY(6px)}9.719%{opacity:.28;transform:translateY(6px)}12.933%{opacity:1;transform:translateY(0)}92.143%{opacity:1;transform:translateY(0)}96.429%{opacity:.28;transform:translateY(6px)}100.000%{opacity:.28;transform:translateY(6px)}}
+.t2{animation:t2 14s ease-in-out infinite}
+@keyframes t3{0.000%{opacity:0;transform:scale(.5)}9.719%{opacity:0;transform:scale(.5)}11.148%{opacity:1;transform:scale(1.25)}12.933%{opacity:1;transform:scale(1)}92.143%{opacity:1;transform:scale(1)}96.429%{opacity:0;transform:scale(1)}100.000%{opacity:0;transform:scale(1)}}
+.t3{animation:t3 14s ease-in-out infinite}
+@keyframes t4{0.000%{opacity:.28;transform:translateY(6px)}22.367%{opacity:.28;transform:translateY(6px)}25.582%{opacity:1;transform:translateY(0)}92.143%{opacity:1;transform:translateY(0)}96.429%{opacity:.28;transform:translateY(6px)}100.000%{opacity:.28;transform:translateY(6px)}}
+.t4{animation:t4 14s ease-in-out infinite}
+@keyframes t5{0.000%{opacity:0;transform:scale(.5)}22.367%{opacity:0;transform:scale(.5)}23.796%{opacity:1;transform:scale(1.25)}25.582%{opacity:1;transform:scale(1)}92.143%{opacity:1;transform:scale(1)}96.429%{opacity:0;transform:scale(1)}100.000%{opacity:0;transform:scale(1)}}
+.t5{animation:t5 14s ease-in-out infinite}
+@keyframes t6{0.000%{opacity:.28;transform:translateY(6px)}35.015%{opacity:.28;transform:translateY(6px)}38.230%{opacity:1;transform:translateY(0)}92.143%{opacity:1;transform:translateY(0)}96.429%{opacity:.28;transform:translateY(6px)}100.000%{opacity:.28;transform:translateY(6px)}}
+.t6{animation:t6 14s ease-in-out infinite}
+@keyframes t7{0.000%{opacity:0;transform:scale(.5)}35.015%{opacity:0;transform:scale(.5)}36.444%{opacity:1;transform:scale(1.25)}38.230%{opacity:1;transform:scale(1)}92.143%{opacity:1;transform:scale(1)}96.429%{opacity:0;transform:scale(1)}100.000%{opacity:0;transform:scale(1)}}
+.t7{animation:t7 14s ease-in-out infinite}
+@keyframes t8{0.000%{opacity:.28;transform:translateY(6px)}47.664%{opacity:.28;transform:translateY(6px)}50.878%{opacity:1;transform:translateY(0)}92.143%{opacity:1;transform:translateY(0)}96.429%{opacity:.28;transform:translateY(6px)}100.000%{opacity:.28;transform:translateY(6px)}}
+.t8{animation:t8 14s ease-in-out infinite}
+@keyframes t9{0.000%{opacity:0;transform:scale(.5)}47.664%{opacity:0;transform:scale(.5)}49.092%{opacity:1;transform:scale(1.25)}50.878%{opacity:1;transform:scale(1)}92.143%{opacity:1;transform:scale(1)}96.429%{opacity:0;transform:scale(1)}100.000%{opacity:0;transform:scale(1)}}
+.t9{animation:t9 14s ease-in-out infinite}
+@keyframes t10{0.000%{opacity:.28;transform:translateY(6px)}60.312%{opacity:.28;transform:translateY(6px)}63.526%{opacity:1;transform:translateY(0)}92.143%{opacity:1;transform:translateY(0)}96.429%{opacity:.28;transform:translateY(6px)}100.000%{opacity:.28;transform:translateY(6px)}}
+.t10{animation:t10 14s ease-in-out infinite}
+@keyframes t11{0.000%{opacity:0;transform:scale(.5)}60.312%{opacity:0;transform:scale(.5)}61.740%{opacity:1;transform:scale(1.25)}63.526%{opacity:1;transform:scale(1)}92.143%{opacity:1;transform:scale(1)}96.429%{opacity:0;transform:scale(1)}100.000%{opacity:0;transform:scale(1)}}
+.t11{animation:t11 14s ease-in-out infinite}
+@keyframes t12{0.000%{opacity:.28;transform:translateY(6px)}72.960%{opacity:.28;transform:translateY(6px)}76.174%{opacity:1;transform:translateY(0)}92.143%{opacity:1;transform:translateY(0)}96.429%{opacity:.28;transform:translateY(6px)}100.000%{opacity:.28;transform:translateY(6px)}}
+.t12{animation:t12 14s ease-in-out infinite}
+@keyframes t13{0.000%{opacity:.3}26.583%{opacity:.3}28.726%{opacity:1}92.143%{opacity:1}96.429%{opacity:.3}100.000%{opacity:.3}}
+.t13{animation:t13 14s ease-in-out infinite}
+@keyframes t14{0.000%{opacity:.3}60.312%{opacity:.3}62.455%{opacity:1}92.143%{opacity:1}96.429%{opacity:.3}100.000%{opacity:.3}}
+.t14{animation:t14 14s ease-in-out infinite}
+@keyframes t15{0.000%{opacity:.3}71.014%{opacity:.3}73.157%{opacity:1}92.143%{opacity:1}96.429%{opacity:.3}100.000%{opacity:.3}}
+.t15{animation:t15 14s ease-in-out infinite}
+@keyframes t16{0.000%{opacity:.3}76.327%{opacity:.3}78.470%{opacity:1}92.143%{opacity:1}96.429%{opacity:.3}100.000%{opacity:.3}}
+.t16{animation:t16 14s ease-in-out infinite}
+@keyframes t17{0.000%{transform:translateX(0px);opacity:0}2.143%{transform:translateX(0px);opacity:0}4.286%{transform:translateX(0px);opacity:1}78.571%{transform:translateX(834px);opacity:1}92.143%{transform:translateX(834px);opacity:1}95.714%{transform:translateX(834px);opacity:0}100.000%{transform:translateX(834px);opacity:0}}
+.t17{animation:t17 14s linear infinite}
+@keyframes v1{0.000%{transform:translate(200px,684px)}7.143%{transform:translate(200px,684px)}27.143%{transform:translate(326px,662px)}88.571%{transform:translate(326px,662px)}88.714%{transform:translate(200px,684px)}100.000%{transform:translate(200px,684px)}}
+.v1{animation:v1 7s ease-in-out infinite}
+@keyframes v2{0.000%{opacity:0;transform:translateY(6px) scale(.7)}30.000%{opacity:0;transform:translateY(6px) scale(.7)}34.286%{opacity:1;transform:translateY(0) scale(1)}60.000%{opacity:1;transform:translateY(0) scale(1)}62.857%{opacity:0;transform:translateY(0) scale(1)}100.000%{opacity:0;transform:translateY(0) scale(1)}}
+.v2{animation:v2 7s ease-in-out infinite}
+@keyframes v3{0.000%{opacity:0}61.429%{opacity:0}68.571%{opacity:1}84.286%{opacity:1}92.857%{opacity:0}100.000%{opacity:0}}
+.v3{animation:v3 7s ease-in-out infinite}
+@keyframes v4{0.000%{transform:scale(1)}47.143%{transform:scale(1)}50.000%{transform:scale(.82)}54.286%{transform:scale(1)}100.000%{transform:scale(1)}}
+.v4{animation:v4 7s ease-in-out infinite}
+@keyframes v5{0.000%{opacity:0;transform:scale(1)}49.286%{opacity:0;transform:scale(1)}50.000%{opacity:.9;transform:scale(1)}60.000%{opacity:0;transform:scale(1.8)}100.000%{opacity:0;transform:scale(1.8)}}
+.v5{animation:v5 7s ease-out infinite}
+@keyframes l1{0.000%{opacity:.586}50.000%{opacity:1}100.000%{opacity:.586}}
+.l1{animation:l1 2s linear infinite}
+@media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
+<symbol id="i-bell" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0,-13 C7,-13 10,-7 10,-1 V5 L13,9 H-13 L-10,5 V-1 C-10,-7 -7,-13 0,-13 Z"/><circle cy="12" r="3.4" fill="currentColor"/><rect x="-2" y="-16" width="4" height="4" rx="1.5" fill="currentColor"/></symbol>
+<symbol id="i-coin" viewBox="-16 -16 32 32"><circle r="13" fill="currentColor"/><circle r="9" fill="none" stroke="#000" stroke-opacity="0.3" stroke-width="2"/><text x="0" y="5.5" font-size="15" font-weight="800" text-anchor="middle" fill="#000" fill-opacity="0.55">B</text></symbol>
+<symbol id="i-crosshair" viewBox="-16 -16 32 32"><circle r="9.5" fill="none" stroke="currentColor" stroke-width="3"/><path d="M0,-15 V-6 M0,6 V15 M-15,0 H-6 M6,0 H15" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle r="2.6" fill="currentColor"/></symbol>
+<symbol id="i-hourglass" viewBox="-16 -16 32 32"><path d="M-10,-14 H10 M-10,14 H10" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M-8,-12 H8 C8,-4 2,-2 2,0 C2,2 8,4 8,12 H-8 C-8,4 -2,2 -2,0 C-2,-2 -8,-4 -8,-12 Z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M-5,10 L0,4 L5,10 Z M-4,-8 H4 L0,-3 Z" fill="currentColor"/></symbol>
+<symbol id="i-key" viewBox="-16 -16 32 32"><circle cx="-6" cy="-6" r="7.5" fill="none" stroke="currentColor" stroke-width="3.4"/><path d="M-0.5,-0.5 L12,12 M6,6 L9,3 M9.5,9.5 L12.5,6.5" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/></symbol>
+<symbol id="i-moon" viewBox="-16 -16 32 32"><path fill="currentColor" d="M4,-14 A14,14 0 1 0 14,6 A11,11 0 1 1 4,-14 Z"/></symbol>
+<symbol id="i-note" viewBox="-16 -16 32 32"><path d="M-3,9 V-11 L11,-14 V6" fill="none" stroke="currentColor" stroke-width="3"/><ellipse cx="-7.5" cy="9.5" rx="5.5" ry="4.2" fill="currentColor"/><ellipse cx="6.5" cy="6.5" rx="5.5" ry="4.2" fill="currentColor"/><path d="M-3,-6 L11,-9" stroke="currentColor" stroke-width="3"/></symbol>
+<symbol id="i-pig" viewBox="-16 -16 32 32"><path fill="currentColor" d="M-11,-12 L-4,-9 L-10,-4 Z M11,-12 L4,-9 L10,-4 Z"/><circle cy="1" r="12" fill="currentColor"/><ellipse cy="5" rx="6" ry="4.2" fill="#000" fill-opacity="0.3"/><circle cx="-2.2" cy="5" r="1.4" fill="#000" fill-opacity="0.6"/><circle cx="2.2" cy="5" r="1.4" fill="#000" fill-opacity="0.6"/><circle cx="-5" cy="-3" r="1.8" fill="#000" fill-opacity="0.7"/><circle cx="5" cy="-3" r="1.8" fill="#000" fill-opacity="0.7"/></symbol>
+<symbol id="i-spark" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0,-15 C1.5,-5 5,-1.5 15,0 C5,1.5 1.5,5 0,15 C-1.5,5 -5,1.5 -15,0 C-5,-1.5 -1.5,-5 0,-15 Z"/></symbol>
+<symbol id="i-up" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0,-12 L11,1 H4 V12 H-4 V1 H-11 Z"/></symbol>
+<linearGradient id="vbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0e1226"/><stop offset="1" stop-color="#1a1438"/></linearGradient><radialGradient id="vglow" cx="0.82" cy="0.08" r="0.6"><stop offset="0" stop-color="#3d5bd9" stop-opacity="0.22"/><stop offset="1" stop-color="#3d5bd9" stop-opacity="0"/></radialGradient><linearGradient id="vrule" x1="0" x2="1"><stop offset="0" stop-color="#9085e9" stop-opacity="0.8"/><stop offset="1" stop-color="#9085e9" stop-opacity="0"/></linearGradient><linearGradient id="vline" x1="0" x2="1"><stop offset="0" stop-color="#5b7cfa"/><stop offset="1" stop-color="#9085e9"/></linearGradient><radialGradient id="vlight"><stop offset="0" stop-color="#7fb0ff" stop-opacity="0.85"/><stop offset="0.5" stop-color="#5b7cfa" stop-opacity="0.35"/><stop offset="1" stop-color="#5b7cfa" stop-opacity="0"/></radialGradient><linearGradient id="vflash" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1b2a8a"/><stop offset="1" stop-color="#3b2a8a"/></linearGradient>
+</defs>
+<rect width="900" height="760" rx="16" fill="#171a21"/>
+<rect width="900" height="760" rx="16" fill="url(#vbg)"/>
+<rect width="900" height="760" rx="16" fill="url(#vglow)"/>
+<text x="30" y="40" font-size="14" fill="#cfc9ff" font-weight="700" letter-spacing="6">THE VELVET ROOM</text>
+<line x1="262" y1="35" x2="870" y2="35" stroke="url(#vrule)" stroke-width="1.5"/>
+<text x="30" y="74" font-size="26" fill="#f0efec" font-weight="800">The room grows with the story</text>
+<text x="30" y="102" font-size="15.5" fill="#c3c2b7">A hidden room behind every inn. Its guests arrive as the story moves on.</text>
+<line x1="34" y1="300" x2="868" y2="300" stroke="#2c3768" stroke-width="4" stroke-linecap="round"/>
+<line x1="34" y1="300" x2="95" y2="300" stroke="#171a21" stroke-width="2" stroke-dasharray="3 4"/>
+<rect class="t1" style="transform-box:fill-box;transform-origin:0 50%" x="32" y="298" width="838" height="4" rx="2" fill="url(#vline)"/>
+<g class="t2">
+<rect x="30.0" y="132" width="130" height="130" rx="12" fill="#161c38" stroke="#2c3768" stroke-width="1.5"/>
+<circle cx="95.0" cy="166" r="20" fill="#1e2650" stroke="#2c3768" stroke-width="1.5"/>
+<use href="#i-crosshair" x="83.0" y="154.0" width="24" height="24" color="#8fd3f0"/>
+<text x="95" y="210" font-size="15" fill="#f0efec" font-weight="700" text-anchor="middle">Sepikmon</text>
+<text x="95" y="230" font-size="13.5" fill="#c3c2b7" text-anchor="middle">Super Rare hunts</text>
+<text x="95" y="248" font-size="13.5" fill="#c3c2b7" text-anchor="middle">and hero skins</text>
+</g>
+<line x1="95" y1="262" x2="95" y2="287" stroke="#2c3768" stroke-width="2"/>
+<circle cx="95" cy="300" r="13" fill="#1e2650" stroke="#2c3768" stroke-width="2"/>
+<g class="sx t3"><circle cx="95" cy="300" r="13" fill="#5b7cfa"/><text x="95" y="305" font-size="14" font-weight="800" fill="#fff" text-anchor="middle">1</text></g>
+<text x="95" y="334" font-size="13.5" fill="#9a9a94" text-anchor="middle">step 4</text>
+<text x="95" y="352" font-size="13.5" fill="#c3c2b7" font-weight="700" text-anchor="middle">Tom's news</text>
+<g class="t4">
+<rect x="172.0" y="132" width="130" height="130" rx="12" fill="#161c38" stroke="#2c3768" stroke-width="1.5"/>
+<circle cx="214.0" cy="166" r="20" fill="#1e2650" stroke="#2c3768" stroke-width="1.5"/>
+<use href="#i-key" x="202.0" y="154.0" width="24" height="24" color="#cfc9ff"/>
+<circle cx="260.0" cy="166" r="20" fill="#1e2650" stroke="#2c3768" stroke-width="1.5"/>
+<use href="#i-spark" x="248.0" y="154.0" width="24" height="24" color="#9085e9"/>
+<text x="237" y="210" font-size="15" fill="#f0efec" font-weight="700" text-anchor="middle">Igor &amp; Gennai</text>
+<text x="237" y="230" font-size="13.5" fill="#c3c2b7" text-anchor="middle">your host;</text>
+<text x="237" y="248" font-size="13.5" fill="#c3c2b7" text-anchor="middle">the Blast quest</text>
+</g>
+<line x1="237" y1="262" x2="237" y2="287" stroke="#2c3768" stroke-width="2"/>
+<circle cx="237" cy="300" r="13" fill="#1e2650" stroke="#2c3768" stroke-width="2"/>
+<g class="sx t5"><circle cx="237" cy="300" r="13" fill="#5b7cfa"/><text x="237" y="305" font-size="14" font-weight="800" fill="#fff" text-anchor="middle">2</text></g>
+<text x="237" y="334" font-size="13.5" fill="#9a9a94" text-anchor="middle">step 10</text>
+<text x="237" y="352" font-size="13.5" fill="#c3c2b7" font-weight="700" text-anchor="middle">The Suzaku Badge</text>
+<g class="t6">
+<rect x="314.0" y="132" width="130" height="130" rx="12" fill="#161c38" stroke="#2c3768" stroke-width="1.5"/>
+<circle cx="379.0" cy="166" r="20" fill="#1e2650" stroke="#2c3768" stroke-width="1.5"/>
+<use href="#i-bell" x="367.0" y="154.0" width="24" height="24" color="#ef6a3a"/>
+<text x="379" y="210" font-size="15" fill="#f0efec" font-weight="700" text-anchor="middle">Guilmon</text>
+<text x="379" y="230" font-size="13.5" fill="#c3c2b7" text-anchor="middle">the Demon Bell</text>
+<text x="379" y="248" font-size="13.5" fill="#c3c2b7" text-anchor="middle">(Super Hard)</text>
+</g>
+<line x1="379" y1="262" x2="379" y2="287" stroke="#2c3768" stroke-width="2"/>
+<circle cx="379" cy="300" r="13" fill="#1e2650" stroke="#2c3768" stroke-width="2"/>
+<g class="sx t7"><circle cx="379" cy="300" r="13" fill="#5b7cfa"/><text x="379" y="305" font-size="14" font-weight="800" fill="#fff" text-anchor="middle">3</text></g>
+<text x="379" y="334" font-size="13.5" fill="#9a9a94" text-anchor="middle">step 16</text>
+<text x="379" y="352" font-size="13.5" fill="#c3c2b7" font-weight="700" text-anchor="middle">The real Leader</text>
+<g class="t8">
+<rect x="456.0" y="132" width="130" height="130" rx="12" fill="#161c38" stroke="#2c3768" stroke-width="1.5"/>
+<circle cx="498.0" cy="166" r="20" fill="#1e2650" stroke="#2c3768" stroke-width="1.5"/>
+<use href="#i-note" x="486.0" y="154.0" width="24" height="24" color="#f2c230"/>
+<circle cx="544.0" cy="166" r="20" fill="#1e2650" stroke="#2c3768" stroke-width="1.5"/>
+<use href="#i-pig" x="532.0" y="154.0" width="24" height="24" color="#f094cc"/>
+<text x="521" y="210" font-size="15" fill="#f0efec" font-weight="700" text-anchor="middle">Etemon &amp; the pig</text>
+<text x="521" y="230" font-size="13.5" fill="#c3c2b7" text-anchor="middle">just here</text>
+<text x="521" y="248" font-size="13.5" fill="#c3c2b7" text-anchor="middle">for the music</text>
+</g>
+<line x1="521" y1="262" x2="521" y2="287" stroke="#2c3768" stroke-width="2"/>
+<circle cx="521" cy="300" r="13" fill="#1e2650" stroke="#2c3768" stroke-width="2"/>
+<g class="sx t9"><circle cx="521" cy="300" r="13" fill="#5b7cfa"/><text x="521" y="305" font-size="14" font-weight="800" fill="#fff" text-anchor="middle">4</text></g>
+<text x="521" y="334" font-size="13.5" fill="#9a9a94" text-anchor="middle">step 22</text>
+<text x="521" y="352" font-size="13.5" fill="#c3c2b7" font-weight="700" text-anchor="middle">Free Asuka City</text>
+<g class="t10">
+<rect x="598.0" y="132" width="130" height="130" rx="12" fill="#161c38" stroke="#2c3768" stroke-width="1.5"/>
+<circle cx="663.0" cy="166" r="20" fill="#1e2650" stroke="#2c3768" stroke-width="1.5"/>
+<use href="#i-coin" x="651.0" y="154.0" width="24" height="24" color="#f2c230"/>
+<text x="663" y="210" font-size="15" fill="#f0efec" font-weight="700" text-anchor="middle">Oikawa</text>
+<text x="663" y="230" font-size="13.5" fill="#c3c2b7" text-anchor="middle">the Black Market</text>
+</g>
+<line x1="663" y1="262" x2="663" y2="287" stroke="#2c3768" stroke-width="2"/>
+<circle cx="663" cy="300" r="13" fill="#1e2650" stroke="#2c3768" stroke-width="2"/>
+<g class="sx t11"><circle cx="663" cy="300" r="13" fill="#5b7cfa"/><text x="663" y="305" font-size="14" font-weight="800" fill="#fff" text-anchor="middle">5</text></g>
+<text x="663" y="334" font-size="13.5" fill="#9a9a94" text-anchor="middle">step 27</text>
+<text x="663" y="352" font-size="13.5" fill="#c3c2b7" font-weight="700" text-anchor="middle">Oikawa beaten</text>
+<g class="t12"><rect x="740.0" y="132" width="130" height="130" rx="12" fill="#1f1a44" stroke="#9085e9" stroke-opacity="0.7" stroke-width="1.5"/><circle cx="805" cy="166" r="20" fill="#1e2650" stroke="#2c3768" stroke-width="1.5"/><use href="#i-hourglass" x="793.0" y="154.0" width="24" height="24" color="#cfc9ff"/><text x="805" y="210" font-size="15" fill="#f0efec" font-weight="700" text-anchor="middle">The Time Room</text><text x="805" y="230" font-size="13.5" fill="#c3c2b7" text-anchor="middle">three trials before</text><text x="805" y="248" font-size="13.5" fill="#c3c2b7" text-anchor="middle">the point of no return</text></g>
+<line x1="805" y1="262" x2="805" y2="284" stroke="#2c3768" stroke-width="2"/>
+<rect x="800" y="284" width="10" height="32" rx="3" fill="#9085e9"/>
+<text x="805" y="334" font-size="13.5" fill="#9a9a94" text-anchor="middle">step 40</text>
+<text x="805" y="352" font-size="13.5" fill="#c3c2b7" font-weight="700" text-anchor="middle">the gate</text>
+<line x1="34" y1="392" x2="868" y2="392" stroke="#2c3768" stroke-width="1.5" stroke-dasharray="2 6"/>
+<use href="#i-key" x="35.0" y="381.0" width="22" height="22" color="#cfc9ff"/>
+<text x="64" y="397" font-size="13.5" fill="#c3c2b7">New Game: Igor</text>
+<text x="64" y="415" font-size="13.5" fill="#c3c2b7">hands you the key</text>
+<rect x="284.3333333333333" y="387" width="142.0" height="10" rx="5" fill="#9085e9" fill-opacity="0.3"/>
+<g class="t13"><circle cx="355.3333333333333" cy="392" r="13" fill="#0e1226" stroke="#9085e9" stroke-width="1.5"/><use href="#i-moon" x="347.3" y="384.0" width="16" height="16" color="#cfc9ff"/></g>
+<g class="t14"><circle cx="663.0" cy="392" r="13" fill="#0e1226" stroke="#9085e9" stroke-width="1.5"/><use href="#i-moon" x="655.0" y="384.0" width="16" height="16" color="#cfc9ff"/></g>
+<g class="t15"><circle cx="783.1538461538462" cy="392" r="13" fill="#0e1226" stroke="#9085e9" stroke-width="1.5"/><use href="#i-moon" x="775.2" y="384.0" width="16" height="16" color="#cfc9ff"/></g>
+<g class="t16"><circle cx="842.8" cy="392" r="13" fill="#0e1226" stroke="#9085e9" stroke-width="1.5"/><use href="#i-moon" x="834.8" y="384.0" width="16" height="16" color="#cfc9ff"/></g>
+<text x="355.3333333333333" y="420" font-size="13.5" fill="#c3c2b7" text-anchor="middle">Igor's dreams: four questions;</text>
+<text x="355.3333333333333" y="438" font-size="13.5" fill="#c3c2b7" text-anchor="middle">your answers are remembered</text>
+<g class="t17" opacity="0"><circle cx="34" cy="300" r="11" fill="#7fb0ff" fill-opacity="0.3"/><circle cx="34" cy="300" r="5.5" fill="#fff"/></g>
+<rect x="30" y="466" width="450" height="268" rx="12" fill="#161c38" stroke="#2c3768" stroke-width="1.5"/>
+<text x="50" y="498" font-size="17" fill="#f0efec" font-weight="700">The way in</text>
+<text x="50" y="520" font-size="14.5" fill="#c3c2b7">In every inn, one piece of the scenery glows a faint</text>
+<text x="50" y="540" font-size="14.5" fill="#c3c2b7">blue. Stand on it and press CIRCLE. Open from step 4.</text>
+<clipPath id="scene"><rect x="50" y="556" width="410" height="160" rx="10"/></clipPath>
+<g clip-path="url(#scene)">
+<rect x="50" y="556" width="410" height="160" fill="#2a2433"/>
+<rect x="50" y="556" width="410" height="62" fill="#3a3550"/>
+<rect x="50" y="610" width="410" height="10" fill="#4a4262"/>
+<line x1="50" y1="633" x2="460" y2="633" stroke="#231e2c" stroke-width="2"/>
+<line x1="50" y1="646" x2="460" y2="646" stroke="#231e2c" stroke-width="2"/>
+<line x1="50" y1="659" x2="460" y2="659" stroke="#231e2c" stroke-width="2"/>
+<line x1="50" y1="672" x2="460" y2="672" stroke="#231e2c" stroke-width="2"/>
+<line x1="50" y1="685" x2="460" y2="685" stroke="#231e2c" stroke-width="2"/>
+<line x1="50" y1="698" x2="460" y2="698" stroke="#231e2c" stroke-width="2"/>
+<line x1="50" y1="711" x2="460" y2="711" stroke="#231e2c" stroke-width="2"/>
+<rect x="90" y="568" width="54" height="34" rx="3" fill="#232b48" stroke="#4a4262" stroke-width="3"/><line x1="117" y1="568" x2="117" y2="602" stroke="#4a4262" stroke-width="2"/>
+<rect x="68" y="616" width="96" height="70" rx="6" fill="#5a4a3a"/><rect x="72" y="620" width="88" height="20" rx="5" fill="#e8e2d8"/><rect x="72" y="638" width="88" height="44" rx="4" fill="#6a5acd"/>
+<rect x="300" y="602" width="70" height="46" rx="4" fill="#6b5236"/><rect x="297" y="594" width="76" height="12" rx="3" fill="#7d6142"/>
+<g class="l1"><ellipse cx="335" cy="608" rx="52" ry="20" fill="url(#vlight)"/><rect x="302" y="605" width="66" height="3" rx="1.5" fill="#bfe0ff"/></g>
+<g class="v1" transform="translate(326,662)"><ellipse cx="0" cy="2" rx="11" ry="4" fill="#000" fill-opacity="0.35"/><rect x="-7" y="-14" width="14" height="15" rx="4" fill="#4f7fd0"/><circle cx="0" cy="-22" r="9" fill="#f1c9a5"/><path d="M-10,-22 A10,10 0 0 1 10,-22 L11,-25 C8,-34 -8,-34 -11,-25 Z" fill="#7fb6e6"/><rect x="-6" y="0" width="5" height="5" rx="1.5" fill="#2a2433"/><rect x="1" y="0" width="5" height="5" rx="1.5" fill="#2a2433"/></g>
+<g class="sx v2"><rect x="311" y="588" width="30" height="26" rx="7" fill="#f0efec"/><path d="M321,613 L326,619 L331,613 Z" fill="#f0efec"/><use href="#i-up" x="317.0" y="592.0" width="18" height="18" color="#2f6fe0"/></g>
+</g>
+<g class="v3" opacity="0"><rect x="50" y="556" width="410" height="160" rx="10" fill="url(#vflash)"/><text x="255.0" y="632" font-size="22" font-weight="800" fill="#fff" text-anchor="middle" letter-spacing="5">VELVET</text><text x="255.0" y="658" font-size="15" font-weight="700" fill="#cfc9ff" text-anchor="middle" letter-spacing="5">SERVER</text></g>
+<circle class="sx v5" cx="428" cy="686" r="18" fill="none" stroke="#ef6a8a" stroke-width="2.5" opacity="0"/>
+<g class="sx v4"><circle cx="428" cy="686" r="18" fill="#1b1f2c" stroke="#3a4257" stroke-width="2"/><circle cx="428" cy="686" r="8.5" fill="none" stroke="#ef6a8a" stroke-width="3"/></g>
+<rect x="500" y="466" width="370" height="268" rx="12" fill="#161c38" stroke="#2c3768" stroke-width="1.5"/>
+<circle cx="536" cy="510" r="18" fill="#1e2650" stroke="#2c3768" stroke-width="1.5"/>
+<use href="#i-key" x="526.0" y="500.0" width="20" height="20" color="#cfc9ff"/>
+<text x="566" y="506" font-size="15.5" fill="#f0efec" font-weight="700">Igor, your host</text>
+<text x="566" y="527" font-size="14" fill="#c3c2b7">tells which DNA forms your partners</text>
+<text x="566" y="546" font-size="14" fill="#c3c2b7">could reach, and what each still needs.</text>
+<circle cx="536" cy="590" r="18" fill="#1e2650" stroke="#2c3768" stroke-width="1.5"/>
+<use href="#i-moon" x="526.0" y="580.0" width="20" height="20" color="#cfc9ff"/>
+<text x="566" y="586" font-size="15.5" fill="#f0efec" font-weight="700">His dreams</text>
+<text x="566" y="607" font-size="14" fill="#c3c2b7">Four times he pulls you in alone and</text>
+<text x="566" y="626" font-size="14" fill="#c3c2b7">asks; later dreams recall your answer.</text>
+<circle cx="536" cy="670" r="18" fill="#1e2650" stroke="#2c3768" stroke-width="1.5"/>
+<use href="#i-hourglass" x="526.0" y="660.0" width="20" height="20" color="#cfc9ff"/>
+<text x="566" y="666" font-size="15.5" fill="#f0efec" font-weight="700">The Time Room</text>
+<text x="566" y="687" font-size="14" fill="#c3c2b7">Before the point of no return, three</text>
+<text x="566" y="706" font-size="14" fill="#c3c2b7">trials check you are ready. No prize.</text>
+</svg>

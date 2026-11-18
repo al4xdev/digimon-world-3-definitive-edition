@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="506" viewBox="0 0 900 506" role="img" aria-labelledby="title desc">
+<title id="title">The battle HUD</title>
+<desc id="desc">The direct-button battle HUD, default layout with Xbox glyphs: Item on L1, Tech on R1, Fight on B, Run on X, Digivolve on Y, Tag on A, Inspect on L2 (it spends no turn), Blast on R2. Every action can be rebound from BATTLE HUD in the launcher.</desc>
+<defs>
+<style>text{font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,&quot;Liberation Sans&quot;,sans-serif}
+.cx{transform-box:fill-box;transform-origin:center}
+.an{animation-duration:12s;animation-iteration-count:infinite;animation-timing-function:cubic-bezier(.45,0,.25,1)}
+@keyframes h0{0%{opacity:0}1%,11%{opacity:1}12.5%,100%{opacity:0}}
+@keyframes p0{0%,0.6%{transform:scale(1)}1.8%{transform:scale(.84)}3.4%,100%{transform:scale(1)}}
+.h0{animation-name:h0}.p0{animation-name:p0}
+@keyframes h1{0%,12.4%{opacity:0}13.5%,23.5%{opacity:1}25%,100%{opacity:0}}
+@keyframes p1{0%,13.1%{transform:scale(1)}14.3%{transform:scale(.84)}15.9%,100%{transform:scale(1)}}
+.h1{animation-name:h1}.p1{animation-name:p1}
+@keyframes h2{0%,24.9%{opacity:0}26%,36%{opacity:1}37.5%,100%{opacity:0}}
+@keyframes p2{0%,25.6%{transform:scale(1)}26.8%{transform:scale(.84)}28.4%,100%{transform:scale(1)}}
+.h2{animation-name:h2}.p2{animation-name:p2}
+@keyframes h3{0%,37.4%{opacity:0}38.5%,48.5%{opacity:1}50%,100%{opacity:0}}
+@keyframes p3{0%,38.1%{transform:scale(1)}39.3%{transform:scale(.84)}40.9%,100%{transform:scale(1)}}
+.h3{animation-name:h3}.p3{animation-name:p3}
+@keyframes h4{0%,49.9%{opacity:0}51%,61%{opacity:1}62.5%,100%{opacity:0}}
+@keyframes p4{0%,50.6%{transform:scale(1)}51.8%{transform:scale(.84)}53.4%,100%{transform:scale(1)}}
+.h4{animation-name:h4}.p4{animation-name:p4}
+@keyframes h5{0%,62.4%{opacity:0}63.5%,73.5%{opacity:1}75%,100%{opacity:0}}
+@keyframes p5{0%,63.1%{transform:scale(1)}64.3%{transform:scale(.84)}65.9%,100%{transform:scale(1)}}
+.h5{animation-name:h5}.p5{animation-name:p5}
+@keyframes h6{0%,74.9%{opacity:0}76%,86%{opacity:1}87.5%,100%{opacity:0}}
+@keyframes p6{0%,75.6%{transform:scale(1)}76.8%{transform:scale(.84)}78.4%,100%{transform:scale(1)}}
+.h6{animation-name:h6}.p6{animation-name:p6}
+@keyframes h7{0%,87.4%{opacity:0}88.5%,98.5%{opacity:1}100%{opacity:0}}
+@keyframes p7{0%,88.1%{transform:scale(1)}89.3%{transform:scale(.84)}90.9%,100%{transform:scale(1)}}
+.h7{animation-name:h7}.p7{animation-name:p7}
+@keyframes idle{0%,100%{opacity:0}}
+.idle{animation-name:idle}
+@media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
+<symbol id="i-fire" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0,-15 C5,-8 11,-3 10,5 C9.5,11 5,15 0,15 C-5,15 -10,11 -10,5 C-10,-1 -6,-4 -4,-9 C-2,-4 0,-2 2,-1 C4,-6 3,-10 0,-15 Z"/></symbol>
+<symbol id="i-water" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0,-15 C5,-7 10,-1 10,5 A10,10 0 0 1 -10,5 C-10,-1 -5,-7 0,-15 Z"/></symbol>
+<symbol id="i-ice" viewBox="-16 -16 32 32"><g stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"><path transform="rotate(0)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(60)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(120)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(180)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(240)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(300)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/></g></symbol>
+<symbol id="i-wind" viewBox="-16 -16 32 32"><g stroke="currentColor" stroke-width="2.8" stroke-linecap="round" fill="none"><path d="M-14,-5 H4 C9,-5 10,-12 5,-12 C2,-12 1,-9 2,-8"/><path d="M-14,2 H9 C14,2 14,9 9,9 C6,9 5,6 6,5"/><path d="M-11,9 H-1"/></g></symbol>
+<symbol id="i-thunder" viewBox="-16 -16 32 32"><path fill="currentColor" d="M4,-15 L-9,2 H-1 L-4,15 L9,-3 H1 Z"/></symbol>
+<symbol id="i-machine" viewBox="-16 -16 32 32"><circle r="11" fill="none" stroke="currentColor" stroke-width="5" stroke-dasharray="4.32 4.32"/><path fill="currentColor" fill-rule="evenodd" d="M9,0 A9,9 0 1 0 -9,0 A9,9 0 1 0 9,0 Z M3.5,0 A3.5,3.5 0 1 1 -3.5,0 A3.5,3.5 0 1 1 3.5,0 Z"/></symbol>
+<symbol id="i-dark" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0.00,-15.00 L3.64,-5.02 L14.27,-4.64 L5.90,1.92 L8.82,12.14 L0.00,6.20 L-8.82,12.14 L-5.90,1.92 L-14.27,-4.64 L-3.64,-5.02 Z"/></symbol>
+<symbol id="u-flask" viewBox="-16 -16 32 32"><g stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M-5,-13 H5 M-3,-13 V-4 L-11,9 C-12,12 -10,14 -7,14 H7 C10,14 12,12 11,9 L3,-4 V-13"/></g><path fill="currentColor" d="M-7.5,4 H7.5 L10,9 C10.6,10.5 9.6,12 8,12 H-8 C-9.6,12 -10.6,10.5 -10,9 Z"/></symbol>
+<symbol id="u-spark" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0,-15 C1.6,-4.5 4.5,-1.6 15,0 C4.5,1.6 1.6,4.5 0,15 C-1.6,4.5 -4.5,1.6 -15,0 C-4.5,-1.6 -1.6,-4.5 0,-15 Z"/></symbol>
+<symbol id="u-sword" viewBox="-16 -16 32 32"><g stroke="currentColor" stroke-width="2.8" stroke-linecap="round" fill="none"><path d="M-5,5 L12,-12 M12,-12 H7 M12,-12 V-7 M-10,0 L0,10 M-6,6 L-12,12"/></g></symbol>
+<symbol id="u-run" viewBox="-16 -16 32 32"><g stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M-11,-9 L-2,0 L-11,9 M1,-9 L10,0 L1,9"/></g></symbol>
+<symbol id="u-dv" viewBox="-16 -16 32 32"><g stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M-10,0 L0,-10 L10,0 M-10,11 L0,1 L10,11"/></g><circle cy="-14" r="2.2" fill="currentColor"/></symbol>
+<symbol id="u-swap" viewBox="-16 -16 32 32"><g stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M-12,-5 H11 M6,-10 L11,-5 L6,0 M12,6 H-11 M-6,1 L-11,6 L-6,11"/></g></symbol>
+<symbol id="u-eye" viewBox="-16 -16 32 32"><path d="M-14,0 C-8,-9 8,-9 14,0 C8,9 -8,9 -14,0 Z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><circle r="4.5" fill="currentColor"/></symbol>
+</defs>
+
+<rect width="900" height="506" rx="16" fill="#171a21"/>
+<text x="30" y="46" font-size="26" fill="#f0efec" font-weight="800">One button, one action</text>
+<text x="30" y="74" font-size="15.5" fill="#c3c2b7">No battle menu to scroll: every command sits on its own button, laid out like the pad.</text>
+<g class="an p6 cx"><rect x="96" y="118" width="84" height="30" rx="10" fill="#3a4152" stroke="#566079" stroke-width="1.5"/><text x="138.0" y="138.0" font-size="14.5" fill="#f0efec" font-weight="800" text-anchor="middle">L2</text><g class="an h6" style="opacity:0"><rect x="96" y="118" width="84" height="30" rx="10" fill="#c9c4ff" stroke="#fff" stroke-width="1.5"/><text x="138.0" y="138.0" font-size="14.5" fill="#14161c" font-weight="800" text-anchor="middle">L2</text></g></g>
+<g class="an p7 cx"><rect x="300" y="118" width="84" height="30" rx="10" fill="#3a4152" stroke="#566079" stroke-width="1.5"/><text x="342.0" y="138.0" font-size="14.5" fill="#f0efec" font-weight="800" text-anchor="middle">R2</text><g class="an h7" style="opacity:0"><rect x="300" y="118" width="84" height="30" rx="10" fill="#a58bf5" stroke="#fff" stroke-width="1.5"/><text x="342.0" y="138.0" font-size="14.5" fill="#14161c" font-weight="800" text-anchor="middle">R2</text></g></g>
+<g class="an p0 cx"><rect x="86" y="152" width="104" height="26" rx="10" fill="#3a4152" stroke="#566079" stroke-width="1.5"/><text x="138.0" y="170.0" font-size="14.5" fill="#f0efec" font-weight="800" text-anchor="middle">L1</text><g class="an h0" style="opacity:0"><rect x="86" y="152" width="104" height="26" rx="10" fill="#7fd0a8" stroke="#fff" stroke-width="1.5"/><text x="138.0" y="170.0" font-size="14.5" fill="#14161c" font-weight="800" text-anchor="middle">L1</text></g></g>
+<g class="an p1 cx"><rect x="290" y="152" width="104" height="26" rx="10" fill="#3a4152" stroke="#566079" stroke-width="1.5"/><text x="342.0" y="170.0" font-size="14.5" fill="#f0efec" font-weight="800" text-anchor="middle">R1</text><g class="an h1" style="opacity:0"><rect x="290" y="152" width="104" height="26" rx="10" fill="#f2c230" stroke="#fff" stroke-width="1.5"/><text x="342.0" y="170.0" font-size="14.5" fill="#14161c" font-weight="800" text-anchor="middle">R1</text></g></g>
+<path d="M110,176 H370 C408,176 424,198 432,236 L452,322 C458,356 428,378 400,356 L360,322 H120 L80,356 C52,378 22,356 28,322 L48,236 C56,198 72,176 110,176 Z" fill="#232938" stroke="#3a4257" stroke-width="1.8"/>
+<g fill="#2d3445" stroke="#3a4257" stroke-width="1.2"><rect x="115" y="212" width="22" height="64" rx="5"/><rect x="94" y="233" width="64" height="22" rx="5"/></g>
+<circle cx="188" cy="300" r="21" fill="#1b202c" stroke="#3a4257" stroke-width="1.5"/><circle cx="188" cy="300" r="13" fill="#2a3040"/>
+<circle cx="292" cy="300" r="21" fill="#1b202c" stroke="#3a4257" stroke-width="1.5"/><circle cx="292" cy="300" r="13" fill="#2a3040"/>
+<rect x="216" y="226" width="16" height="8" rx="4" fill="#3a4257"/><rect x="248" y="226" width="16" height="8" rx="4" fill="#3a4257"/>
+<g class="an p4 cx"><circle cx="358" cy="210" r="17" fill="#1b202c" stroke="#e0b02a" stroke-width="2"/><text x="358" y="215.5" font-size="16" fill="#e0b02a" font-weight="800" text-anchor="middle">Y</text><g class="an h4" style="opacity:0"><circle cx="358" cy="210" r="22" fill="#e0b02a" opacity=".25"/><circle cx="358" cy="210" r="17" fill="#e0b02a" stroke="#fff" stroke-width="1.5"/><text x="358" y="215.5" font-size="16" fill="#14161c" font-weight="800" text-anchor="middle">Y</text></g></g>
+<g class="an p3 cx"><circle cx="324" cy="244" r="17" fill="#1b202c" stroke="#3987e5" stroke-width="2"/><text x="324" y="249.5" font-size="16" fill="#3987e5" font-weight="800" text-anchor="middle">X</text><g class="an h3" style="opacity:0"><circle cx="324" cy="244" r="22" fill="#3987e5" opacity=".25"/><circle cx="324" cy="244" r="17" fill="#3987e5" stroke="#fff" stroke-width="1.5"/><text x="324" y="249.5" font-size="16" fill="#14161c" font-weight="800" text-anchor="middle">X</text></g></g>
+<g class="an p2 cx"><circle cx="392" cy="244" r="17" fill="#1b202c" stroke="#e34948" stroke-width="2"/><text x="392" y="249.5" font-size="16" fill="#e34948" font-weight="800" text-anchor="middle">B</text><g class="an h2" style="opacity:0"><circle cx="392" cy="244" r="22" fill="#e34948" opacity=".25"/><circle cx="392" cy="244" r="17" fill="#e34948" stroke="#fff" stroke-width="1.5"/><text x="392" y="249.5" font-size="16" fill="#14161c" font-weight="800" text-anchor="middle">B</text></g></g>
+<g class="an p5 cx"><circle cx="358" cy="278" r="17" fill="#1b202c" stroke="#199e70" stroke-width="2"/><text x="358" y="283.5" font-size="16" fill="#199e70" font-weight="800" text-anchor="middle">A</text><g class="an h5" style="opacity:0"><circle cx="358" cy="278" r="22" fill="#199e70" opacity=".25"/><circle cx="358" cy="278" r="17" fill="#199e70" stroke="#fff" stroke-width="1.5"/><text x="358" y="283.5" font-size="16" fill="#14161c" font-weight="800" text-anchor="middle">A</text></g></g>
+<g class="an h0" style="opacity:0"><rect x="160" y="396" width="160" height="38" rx="19" fill="#262c3c" stroke="#7fd0a8" stroke-width="1.5"/><use href="#u-flask" x="178" y="405" width="20" height="20" color="#7fd0a8"/><text x="250" y="421" font-size="15" fill="#f0efec" font-weight="800" text-anchor="middle" letter-spacing="1.5">ITEM</text></g>
+<g class="an h1" style="opacity:0"><rect x="160" y="396" width="160" height="38" rx="19" fill="#262c3c" stroke="#f2c230" stroke-width="1.5"/><use href="#u-spark" x="178" y="405" width="20" height="20" color="#f2c230"/><text x="250" y="421" font-size="15" fill="#f0efec" font-weight="800" text-anchor="middle" letter-spacing="1.5">TECH</text></g>
+<g class="an h2" style="opacity:0"><rect x="160" y="396" width="160" height="38" rx="19" fill="#262c3c" stroke="#f3a27e" stroke-width="1.5"/><use href="#u-sword" x="178" y="405" width="20" height="20" color="#f3a27e"/><text x="250" y="421" font-size="15" fill="#f0efec" font-weight="800" text-anchor="middle" letter-spacing="1.5">FIGHT</text></g>
+<g class="an h3" style="opacity:0"><rect x="160" y="396" width="160" height="38" rx="19" fill="#262c3c" stroke="#9fb4d8" stroke-width="1.5"/><use href="#u-run" x="178" y="405" width="20" height="20" color="#9fb4d8"/><text x="250" y="421" font-size="15" fill="#f0efec" font-weight="800" text-anchor="middle" letter-spacing="1.5">RUN</text></g>
+<g class="an h4" style="opacity:0"><rect x="160" y="396" width="160" height="38" rx="19" fill="#262c3c" stroke="#8fd3f0" stroke-width="1.5"/><use href="#u-dv" x="178" y="405" width="20" height="20" color="#8fd3f0"/><text x="250" y="421" font-size="15" fill="#f0efec" font-weight="800" text-anchor="middle" letter-spacing="1.5">DIGIVOLVE</text></g>
+<g class="an h5" style="opacity:0"><rect x="160" y="396" width="160" height="38" rx="19" fill="#262c3c" stroke="#7fb3f0" stroke-width="1.5"/><use href="#u-swap" x="178" y="405" width="20" height="20" color="#7fb3f0"/><text x="250" y="421" font-size="15" fill="#f0efec" font-weight="800" text-anchor="middle" letter-spacing="1.5">TAG</text></g>
+<g class="an h6" style="opacity:0"><rect x="160" y="396" width="160" height="38" rx="19" fill="#262c3c" stroke="#c9c4ff" stroke-width="1.5"/><use href="#u-eye" x="178" y="405" width="20" height="20" color="#c9c4ff"/><text x="250" y="421" font-size="15" fill="#f0efec" font-weight="800" text-anchor="middle" letter-spacing="1.5">INSPECT</text></g>
+<g class="an h7" style="opacity:0"><rect x="160" y="396" width="160" height="38" rx="19" fill="#262c3c" stroke="#a58bf5" stroke-width="1.5"/><use href="#i-dark" x="178" y="405" width="20" height="20" color="#a58bf5"/><text x="250" y="421" font-size="15" fill="#f0efec" font-weight="800" text-anchor="middle" letter-spacing="1.5">BLAST</text></g>
+<text x="240" y="470" font-size="14" fill="#9a9a94" text-anchor="middle">The d-pad and sticks stay free for the cursor.</text>
+<rect x="472" y="98" width="398" height="332" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/>
+<rect class="an h0" x="480" y="107" width="382" height="34" rx="8" fill="#7fd0a8" fill-opacity=".12" stroke="#7fd0a8" stroke-opacity=".6" opacity="0"/>
+<rect x="486" y="112.0" width="36" height="24" rx="8" fill="#3a4152" stroke="#566079"/><text x="504" y="129.0" font-size="13.5" fill="#f0efec" font-weight="800" text-anchor="middle">L1</text>
+<use href="#u-flask" x="536" y="114" width="20" height="20" color="#7fd0a8"/>
+<text x="566" y="129.5" font-size="16" fill="#f0efec" font-weight="700">Item</text>
+<text x="850" y="129.5" font-size="14" fill="#9a9a94" text-anchor="end">last item remembered</text>
+<rect class="an h1" x="480" y="147" width="382" height="34" rx="8" fill="#f2c230" fill-opacity=".12" stroke="#f2c230" stroke-opacity=".6" opacity="0"/>
+<rect x="486" y="152.0" width="36" height="24" rx="8" fill="#3a4152" stroke="#566079"/><text x="504" y="169.0" font-size="13.5" fill="#f0efec" font-weight="800" text-anchor="middle">R1</text>
+<use href="#u-spark" x="536" y="154" width="20" height="20" color="#f2c230"/>
+<text x="566" y="169.5" font-size="16" fill="#f0efec" font-weight="700">Tech</text>
+<text x="850" y="169.5" font-size="14" fill="#9a9a94" text-anchor="end">last technique remembered</text>
+<rect class="an h2" x="480" y="187" width="382" height="34" rx="8" fill="#f3a27e" fill-opacity=".12" stroke="#f3a27e" stroke-opacity=".6" opacity="0"/>
+<circle cx="504" cy="204.0" r="13" fill="#1b202c" stroke="#e34948" stroke-width="2"/><text x="504" y="209.0" font-size="14" fill="#e34948" font-weight="800" text-anchor="middle">B</text>
+<use href="#u-sword" x="536" y="194" width="20" height="20" color="#f3a27e"/>
+<text x="566" y="209.5" font-size="16" fill="#f0efec" font-weight="700">Fight</text>
+<text x="850" y="209.5" font-size="14" fill="#9a9a94" text-anchor="end">a basic attack</text>
+<rect class="an h3" x="480" y="227" width="382" height="34" rx="8" fill="#9fb4d8" fill-opacity=".12" stroke="#9fb4d8" stroke-opacity=".6" opacity="0"/>
+<circle cx="504" cy="244.0" r="13" fill="#1b202c" stroke="#3987e5" stroke-width="2"/><text x="504" y="249.0" font-size="14" fill="#3987e5" font-weight="800" text-anchor="middle">X</text>
+<use href="#u-run" x="536" y="234" width="20" height="20" color="#9fb4d8"/>
+<text x="566" y="249.5" font-size="16" fill="#f0efec" font-weight="700">Run</text>
+<text x="850" y="249.5" font-size="14" fill="#9a9a94" text-anchor="end">try to flee</text>
+<rect class="an h4" x="480" y="267" width="382" height="34" rx="8" fill="#8fd3f0" fill-opacity=".12" stroke="#8fd3f0" stroke-opacity=".6" opacity="0"/>
+<circle cx="504" cy="284.0" r="13" fill="#1b202c" stroke="#e0b02a" stroke-width="2"/><text x="504" y="289.0" font-size="14" fill="#e0b02a" font-weight="800" text-anchor="middle">Y</text>
+<use href="#u-dv" x="536" y="274" width="20" height="20" color="#8fd3f0"/>
+<text x="566" y="289.5" font-size="16" fill="#f0efec" font-weight="700">Digivolve</text>
+<text x="850" y="289.5" font-size="14" fill="#9a9a94" text-anchor="end">change form</text>
+<rect class="an h5" x="480" y="307" width="382" height="34" rx="8" fill="#7fb3f0" fill-opacity=".12" stroke="#7fb3f0" stroke-opacity=".6" opacity="0"/>
+<circle cx="504" cy="324.0" r="13" fill="#1b202c" stroke="#199e70" stroke-width="2"/><text x="504" y="329.0" font-size="14" fill="#199e70" font-weight="800" text-anchor="middle">A</text>
+<use href="#u-swap" x="536" y="314" width="20" height="20" color="#7fb3f0"/>
+<text x="566" y="329.5" font-size="16" fill="#f0efec" font-weight="700">Tag</text>
+<text x="850" y="329.5" font-size="14" fill="#9a9a94" text-anchor="end">switch, or Baton Pass</text>
+<rect class="an h6" x="480" y="347" width="382" height="34" rx="8" fill="#c9c4ff" fill-opacity=".12" stroke="#c9c4ff" stroke-opacity=".6" opacity="0"/>
+<rect x="486" y="352.0" width="36" height="24" rx="8" fill="#3a4152" stroke="#566079"/><text x="504" y="369.0" font-size="13.5" fill="#f0efec" font-weight="800" text-anchor="middle">L2</text>
+<use href="#u-eye" x="536" y="354" width="20" height="20" color="#c9c4ff"/>
+<text x="566" y="369.5" font-size="16" fill="#f0efec" font-weight="700">Inspect</text>
+<text x="850" y="369.5" font-size="14" fill="#9a9a94" text-anchor="end">weaknesses; spends no turn</text>
+<rect class="an h7" x="480" y="387" width="382" height="34" rx="8" fill="#a58bf5" fill-opacity=".12" stroke="#a58bf5" stroke-opacity=".6" opacity="0"/>
+<rect x="486" y="392.0" width="36" height="24" rx="8" fill="#3a4152" stroke="#566079"/><text x="504" y="409.0" font-size="13.5" fill="#f0efec" font-weight="800" text-anchor="middle">R2</text>
+<use href="#i-dark" x="536" y="394" width="20" height="20" color="#a58bf5"/>
+<text x="566" y="409.5" font-size="16" fill="#f0efec" font-weight="700">Blast</text>
+<text x="850" y="409.5" font-size="14" fill="#9a9a94" text-anchor="end">with a full gauge</text>
+<line x1="472" y1="446" x2="870" y2="446" stroke="#30374a" stroke-width="1"/>
+<text x="472" y="470" font-size="14.5" fill="#c3c2b7">Rebind any of them: launcher → BATTLE HUD.</text>
+<text x="472" y="490" font-size="14.5" fill="#9a9a94">Xbox glyphs shown; Nintendo and PS1 glyphs too.</text>
+</svg>

@@ -1,0 +1,212 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="716" viewBox="0 0 900 716" role="img" aria-labelledby="title desc">
+<title id="title">Blast, the cursed evolution</title>
+<desc id="desc">The Blast arc. It opens at the Ogremon hunt, where Igor's DV Plug sets it off at once, and the first Blast is blessed. 1: fill the gauge with risky offence: WEAK +150, a staggered target +100, an extra action +100, OVERFINISH +200, summed per blow; an item or a try to run takes 100. 2: at 1000, Blast with R2. 3: the partner takes one of its five dark forms, opened at levels 1, 15, 25, 35 and 45. 4: the price: HP and MP at 1 after the battle, -25% Power, Guard and Speed until an inn, and an overheat that keeps it in Rookie, unable to digivolve, for 3 of its turns, into the next battles. 5: release ten dark forms and "Gennai" has a word for you: a familiar face, or is it? Purify them all for your TP back and +10% of each form's best stat. 6: the Chosen Evolution: no curse, one partner, its Mega: GuardiAngemon, Beelzemon, Cannondramon, WarGreymon, Imperialdramon, Gallantmon, Sakuyamon or Seraphimon.</desc>
+<defs>
+<style>text{font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,&quot;Liberation Sans&quot;,sans-serif}
+.cx{transform-box:fill-box;transform-origin:center}
+.an{animation-duration:16s;animation-iteration-count:infinite;animation-timing-function:cubic-bezier(.45,0,.25,1)}
+@keyframes fill{0%{transform:scaleX(0)}2%{transform:scaleX(0)}3.6%{transform:scaleX(0.15)}5.5%{transform:scaleX(0.15)}7.1%{transform:scaleX(0.25)}9%{transform:scaleX(0.25)}10.6%{transform:scaleX(0.35)}12.5%{transform:scaleX(0.35)}14.1%{transform:scaleX(0.55)}16%{transform:scaleX(0.55)}17.6%{transform:scaleX(0.45)}19.5%{transform:scaleX(0.45)}21.1%{transform:scaleX(0.8)}23%{transform:scaleX(0.8)}24.6%{transform:scaleX(1)}95%{transform:scaleX(1)}99%,100%{transform:scaleX(0)}}
+.fill{animation-name:fill;transform-box:fill-box;transform-origin:0 50%}
+@keyframes c0{0%{opacity:0}1.7%{opacity:0}2.4%{opacity:1}4.6%{opacity:0}19.2%{opacity:0}19.9%{opacity:1}22.1%{opacity:0}100%{opacity:0}}
+.c0{animation-name:c0}
+@keyframes c1{0%{opacity:0}5.2%{opacity:0}5.9%{opacity:1}8.1%{opacity:0}19.2%{opacity:0}19.9%{opacity:1}22.1%{opacity:0}100%{opacity:0}}
+.c1{animation-name:c1}
+@keyframes c2{0%{opacity:0}8.7%{opacity:0}9.4%{opacity:1}11.6%{opacity:0}19.2%{opacity:0}19.9%{opacity:1}22.1%{opacity:0}100%{opacity:0}}
+.c2{animation-name:c2}
+@keyframes c3{0%{opacity:0}12.2%{opacity:0}12.9%{opacity:1}15.1%{opacity:0}22.7%{opacity:0}23.4%{opacity:1}25.6%{opacity:0}100%{opacity:0}}
+.c3{animation-name:c3}
+@keyframes c4{0%{opacity:0}15.7%{opacity:0}16.4%{opacity:1}18.6%{opacity:0}100%{opacity:0}}
+.c4{animation-name:c4}
+@keyframes full{0%,24%{opacity:0}25.5%,94%{opacity:1}98%,100%{opacity:0}}
+.full{animation-name:full}
+@keyframes r2{0%,26%{transform:scale(1)}27.5%{transform:scale(.86)}29.5%,100%{transform:scale(1)}}
+.r2{animation-name:r2}
+@keyframes k2{0%,24.8%{opacity:0}26%,36%{opacity:1}37.2%,100%{opacity:0}}
+.k2{animation-name:k2}
+@keyframes k3{0%,35.8%{opacity:0}37%,49%{opacity:1}50.2%,100%{opacity:0}}
+.k3{animation-name:k3}
+@keyframes k4{0%,48.8%{opacity:0}50%,62%{opacity:1}63.2%,100%{opacity:0}}
+.k4{animation-name:k4}
+@keyframes k5{0%,61.8%{opacity:0}63%,76%{opacity:1}77.2%,100%{opacity:0}}
+.k5{animation-name:k5}
+@keyframes k6{0%,75.8%{opacity:0}77%,93%{opacity:1}94.2%,100%{opacity:0}}
+.k6{animation-name:k6}
+@keyframes f0{0%,38.5%{opacity:0}39.5%,94%{opacity:1}98%,100%{opacity:0}}
+.f0{animation-name:f0}
+@keyframes f1{0%,40.5%{opacity:0}41.5%,94%{opacity:1}98%,100%{opacity:0}}
+.f1{animation-name:f1}
+@keyframes f2{0%,42.5%{opacity:0}43.5%,94%{opacity:1}98%,100%{opacity:0}}
+.f2{animation-name:f2}
+@keyframes f3{0%,44.5%{opacity:0}45.5%,94%{opacity:1}98%,100%{opacity:0}}
+.f3{animation-name:f3}
+@keyframes f4{0%,46.5%{opacity:0}47.5%,94%{opacity:1}98%,100%{opacity:0}}
+.f4{animation-name:f4}
+@keyframes q0{0%,64%{opacity:0}64.5%,94%{opacity:1}98%,100%{opacity:0}}
+.q0{animation-name:q0}
+@keyframes q1{0%,64.9%{opacity:0}65.4%,94%{opacity:1}98%,100%{opacity:0}}
+.q1{animation-name:q1}
+@keyframes q2{0%,65.8%{opacity:0}66.3%,94%{opacity:1}98%,100%{opacity:0}}
+.q2{animation-name:q2}
+@keyframes q3{0%,66.7%{opacity:0}67.2%,94%{opacity:1}98%,100%{opacity:0}}
+.q3{animation-name:q3}
+@keyframes q4{0%,67.6%{opacity:0}68.1%,94%{opacity:1}98%,100%{opacity:0}}
+.q4{animation-name:q4}
+@keyframes q5{0%,68.5%{opacity:0}69%,94%{opacity:1}98%,100%{opacity:0}}
+.q5{animation-name:q5}
+@keyframes q6{0%,69.4%{opacity:0}69.9%,94%{opacity:1}98%,100%{opacity:0}}
+.q6{animation-name:q6}
+@keyframes q7{0%,70.3%{opacity:0}70.8%,94%{opacity:1}98%,100%{opacity:0}}
+.q7{animation-name:q7}
+@keyframes q8{0%,71.2%{opacity:0}71.7%,94%{opacity:1}98%,100%{opacity:0}}
+.q8{animation-name:q8}
+@keyframes q9{0%,72.1%{opacity:0}72.6%,94%{opacity:1}98%,100%{opacity:0}}
+.q9{animation-name:q9}
+@keyframes shine{0%,78%{transform:translateX(-120px)}90%,100%{transform:translateX(560px)}}
+.shine{animation-name:shine}
+@keyframes tempt{0%,30%{opacity:1}31%,32%{opacity:.35}33%,34%{opacity:1}35%,36%{opacity:.35}37%,100%{opacity:1}}
+.tempt{animation-name:tempt}
+@media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
+<symbol id="i-fire" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0,-15 C5,-8 11,-3 10,5 C9.5,11 5,15 0,15 C-5,15 -10,11 -10,5 C-10,-1 -6,-4 -4,-9 C-2,-4 0,-2 2,-1 C4,-6 3,-10 0,-15 Z"/></symbol>
+<symbol id="i-water" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0,-15 C5,-7 10,-1 10,5 A10,10 0 0 1 -10,5 C-10,-1 -5,-7 0,-15 Z"/></symbol>
+<symbol id="i-ice" viewBox="-16 -16 32 32"><g stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"><path transform="rotate(0)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(60)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(120)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(180)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(240)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(300)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/></g></symbol>
+<symbol id="i-wind" viewBox="-16 -16 32 32"><g stroke="currentColor" stroke-width="2.8" stroke-linecap="round" fill="none"><path d="M-14,-5 H4 C9,-5 10,-12 5,-12 C2,-12 1,-9 2,-8"/><path d="M-14,2 H9 C14,2 14,9 9,9 C6,9 5,6 6,5"/><path d="M-11,9 H-1"/></g></symbol>
+<symbol id="i-thunder" viewBox="-16 -16 32 32"><path fill="currentColor" d="M4,-15 L-9,2 H-1 L-4,15 L9,-3 H1 Z"/></symbol>
+<symbol id="i-machine" viewBox="-16 -16 32 32"><circle r="11" fill="none" stroke="currentColor" stroke-width="5" stroke-dasharray="4.32 4.32"/><path fill="currentColor" fill-rule="evenodd" d="M9,0 A9,9 0 1 0 -9,0 A9,9 0 1 0 9,0 Z M3.5,0 A3.5,3.5 0 1 1 -3.5,0 A3.5,3.5 0 1 1 3.5,0 Z"/></symbol>
+<symbol id="i-dark" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0.00,-15.00 L3.64,-5.02 L14.27,-4.64 L5.90,1.92 L8.82,12.14 L0.00,6.20 L-8.82,12.14 L-5.90,1.92 L-14.27,-4.64 L-3.64,-5.02 Z"/></symbol>
+<symbol id="u-lock" viewBox="-16 -16 32 32"><rect x="-10" y="-3" width="20" height="16" rx="3" fill="currentColor"/><path d="M-6,-3 V-7 A6,6 0 0 1 6,-7 V-3" fill="none" stroke="currentColor" stroke-width="2.8"/></symbol>
+<symbol id="u-down" viewBox="-16 -16 32 32"><g stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M0,-12 V11 M-7,4 L0,11 L7,4"/></g></symbol>
+<symbol id="u-inn" viewBox="-16 -16 32 32"><g stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M-13,-10 V11 M-13,4 H13 V11 M-13,-2 H13 V4"/></g><rect x="-10" y="-8" width="8" height="5" rx="2" fill="currentColor"/></symbol>
+<symbol id="u-heat" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0,-15 C5,-8 11,-3 10,5 C9.5,11 5,15 0,15 C-5,15 -10,11 -10,5 C-10,-1 -6,-4 -4,-9 C-2,-4 0,-2 2,-1 C4,-6 3,-10 0,-15 Z"/></symbol>
+<symbol id="u-dv" viewBox="-16 -16 32 32"><g stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M-10,0 L0,-10 L10,0 M-10,11 L0,1 L10,11"/></g><circle cy="-14" r="2.2" fill="currentColor"/></symbol>
+<symbol id="u-spark" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0,-15 C1.6,-4.5 4.5,-1.6 15,0 C4.5,1.6 1.6,4.5 0,15 C-1.6,4.5 -4.5,1.6 -15,0 C-4.5,-1.6 -1.6,-4.5 0,-15 Z"/></symbol>
+<linearGradient id="gfill" x1="0" x2="1"><stop offset="0" stop-color="#5a4fc0"/><stop offset="1" stop-color="#b3aaff"/></linearGradient>
+<pattern id="notch" width="80" height="20" patternUnits="userSpaceOnUse" x="50"><rect width="2" height="20" fill="#171a21" opacity=".75"/></pattern>
+<linearGradient id="goldsh" x1="0" x2="1"><stop offset="0" stop-color="#f2c230" stop-opacity="0"/><stop offset=".5" stop-color="#ffe9a0" stop-opacity=".22"/><stop offset="1" stop-color="#f2c230" stop-opacity="0"/></linearGradient>
+<marker id="arrv" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#9085e9"/></marker>
+</defs>
+
+<rect width="900" height="716" rx="16" fill="#171a21"/>
+<text x="30" y="46" font-size="26" fill="#f0efec" font-weight="800">Blast: power at a price</text>
+<text x="30" y="74" font-size="15.5" fill="#c3c2b7">Your partner's dark side, earned by fighting aggressively, then mastered.</text>
+<rect x="30" y="90" width="840" height="38" rx="19" fill="#211f33" stroke="#3b3762" stroke-width="1.2"/>
+<use href="#u-lock" x="43.5" y="100.5" width="17" height="17" color="#9085e9"/>
+<text x="70" y="114" font-size="14.5" fill="#c3c2b7"><tspan fill="#f0efec" font-weight="700">Opens at the Ogremon hunt.</tspan> Igor's gift, the DV Plug, sets it off at once; the first Blast is blessed: +50%, no TP.</text>
+<rect x="30" y="142" width="840" height="140" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/>
+<circle cx="54" cy="168" r="12" fill="#f0efec"/><text x="54" y="173" font-size="14.5" fill="#14161c" font-weight="800" text-anchor="middle">1</text>
+<text x="76" y="174" font-size="17.5" fill="#f0efec" font-weight="700">Fill the gauge with risky offence</text>
+<text x="850" y="174" font-size="14" fill="#9a9a94" text-anchor="end">summed per blow · plain hits and damage taken add nothing</text>
+<g transform="translate(99.9,208)"><g transform="skewX(-12)"><rect x="-49.9" y="-15" width="99.8" height="30" rx="4" fill="#e0662f" fill-opacity=".16" stroke="#e0662f" stroke-width="1.4"/></g></g>
+<g class="an c0" style="opacity:0" transform="translate(99.9,208)"><g transform="skewX(-12)"><rect x="-49.9" y="-15" width="99.8" height="30" rx="4" fill="#e0662f"/></g></g>
+<text x="99.9" y="213" font-size="14.5" text-anchor="middle" font-weight="800" fill="#f0efec" font-style="italic">WEAK! <tspan fill="#e0662f" font-style="normal">+150</tspan></text>
+<g transform="translate(221.9,208)"><g transform="skewX(-12)"><rect x="-58.1" y="-15" width="116.2" height="30" rx="4" fill="#f2c230" fill-opacity=".16" stroke="#f2c230" stroke-width="1.4"/></g></g>
+<g class="an c1" style="opacity:0" transform="translate(221.9,208)"><g transform="skewX(-12)"><rect x="-58.1" y="-15" width="116.2" height="30" rx="4" fill="#f2c230"/></g></g>
+<text x="221.9" y="213" font-size="14.5" text-anchor="middle" font-weight="800" fill="#f0efec" font-style="italic">Stagger <tspan fill="#f2c230" font-style="normal">+100</tspan></text>
+<g transform="translate(372.6,208)"><g transform="skewX(-12)"><rect x="-78.6" y="-15" width="157.2" height="30" rx="4" fill="#199e70" fill-opacity=".16" stroke="#199e70" stroke-width="1.4"/></g></g>
+<g class="an c2" style="opacity:0" transform="translate(372.6,208)"><g transform="skewX(-12)"><rect x="-78.6" y="-15" width="157.2" height="30" rx="4" fill="#199e70"/></g></g>
+<text x="372.6" y="213" font-size="14.5" text-anchor="middle" font-weight="800" fill="#f0efec" font-style="italic">Extra action <tspan fill="#199e70" font-style="normal">+100</tspan></text>
+<g transform="translate(535.6,208)"><g transform="skewX(-12)"><rect x="-70.4" y="-15" width="140.8" height="30" rx="4" fill="#e34948" fill-opacity=".16" stroke="#e34948" stroke-width="1.4"/></g></g>
+<g class="an c3" style="opacity:0" transform="translate(535.6,208)"><g transform="skewX(-12)"><rect x="-70.4" y="-15" width="140.8" height="30" rx="4" fill="#e34948"/></g></g>
+<text x="535.6" y="213" font-size="14.5" text-anchor="middle" font-weight="800" fill="#f0efec" font-style="italic">OVERFINISH <tspan fill="#e34948" font-style="normal">+200</tspan></text>
+<g transform="translate(694.5,208)"><g transform="skewX(-12)"><rect x="-74.5" y="-15" width="149" height="30" rx="4" fill="none" stroke="#6b7186" stroke-width="1.4" stroke-dasharray="4 3"/></g></g>
+<g class="an c4" style="opacity:0" transform="translate(694.5,208)"><g transform="skewX(-12)"><rect x="-74.5" y="-15" width="149" height="30" rx="4" fill="#6b7186"/></g></g>
+<text x="694.5" y="213" font-size="14.5" text-anchor="middle" font-weight="800" fill="#f0efec" font-style="italic">Item or run <tspan fill="#c3c2b7" font-style="normal">−100</tspan></text>
+<rect x="50" y="236" width="720" height="18" rx="9" fill="#11131a" stroke="#3a4257" stroke-width="1.2"/>
+<clipPath id="bar"><rect x="50" y="236" width="720" height="18" rx="9"/></clipPath>
+<g clip-path="url(#bar)"><g class="an fill"><rect x="50" y="236" width="720" height="18" fill="url(#gfill)"/></g>
+<rect x="121" y="236" width="2" height="18" fill="#171a21" opacity=".8"/><rect x="193" y="236" width="2" height="18" fill="#171a21" opacity=".8"/><rect x="265" y="236" width="2" height="18" fill="#171a21" opacity=".8"/><rect x="337" y="236" width="2" height="18" fill="#171a21" opacity=".8"/><rect x="409" y="236" width="2" height="18" fill="#171a21" opacity=".8"/><rect x="481" y="236" width="2" height="18" fill="#171a21" opacity=".8"/><rect x="553" y="236" width="2" height="18" fill="#171a21" opacity=".8"/><rect x="625" y="236" width="2" height="18" fill="#171a21" opacity=".8"/><rect x="697" y="236" width="2" height="18" fill="#171a21" opacity=".8"/></g>
+<text x="50" y="272" font-size="13.5" fill="#9a9a94" text-anchor="middle">0</text>
+<text x="410" y="272" font-size="13.5" fill="#9a9a94" text-anchor="middle">500</text>
+<text x="770" y="272" font-size="13.5" fill="#9a9a94" text-anchor="middle">1000</text>
+<g class="an full"><rect x="47" y="233" width="726" height="24" rx="12" fill="none" stroke="#b3aaff" stroke-width="1.5" opacity=".8"/></g>
+<g transform="translate(818,245)"><g class="an r2 cx"><rect x="-32" y="-17" width="64" height="34" rx="9" fill="#9085e9"/><text y="6" font-size="17" fill="#14161c" font-weight="800" text-anchor="middle">R2</text></g></g>
+<rect x="30" y="300" width="268" height="186" rx="12" fill="#1e1f2e" stroke="#30374a" stroke-width="1.5"/><rect class="an k2" x="30" y="300" width="268" height="186" rx="12" fill="#9085e9" fill-opacity=".07" stroke="#9085e9" stroke-width="2.5" opacity="0"/>
+<rect x="316" y="300" width="268" height="186" rx="12" fill="#1e1f2e" stroke="#30374a" stroke-width="1.5"/><rect class="an k3" x="316" y="300" width="268" height="186" rx="12" fill="#9085e9" fill-opacity=".07" stroke="#9085e9" stroke-width="2.5" opacity="0"/>
+<rect x="602" y="300" width="268" height="186" rx="12" fill="#1e1f2e" stroke="#30374a" stroke-width="1.5"/><rect class="an k4" x="602" y="300" width="268" height="186" rx="12" fill="#e34948" fill-opacity=".07" stroke="#e34948" stroke-width="2.5" opacity="0"/>
+<path d="M303,384 L310,393 L303,402" fill="none" stroke="#c3c2b7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M589,384 L596,393 L589,402" fill="none" stroke="#c3c2b7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="54" cy="326" r="12" fill="#f0efec"/><text x="54" y="331" font-size="14.5" fill="#14161c" font-weight="800" text-anchor="middle">2</text>
+<text x="76" y="332" font-size="17.5" fill="#f0efec" font-weight="700">Set it off</text>
+<g transform="translate(164,372)"><g><g transform="skewX(-14)"><rect x="-70" y="-16" width="150" height="42" rx="4" fill="#07080c" fill-opacity=".55"/><rect x="-75" y="-21" width="150" height="42" rx="4" fill="#9085e9"/></g><text y="8.6" font-size="24" fill="#14161c" font-weight="800" text-anchor="middle" font-style="italic" letter-spacing="1">BLAST!</text></g></g>
+<text x="50" y="418" font-size="14" fill="#c3c2b7">R2 with a full gauge. It spends</text>
+<text x="50" y="436" font-size="14" fill="#c3c2b7">the turn and never fires by itself.</text>
+<g class="an tempt"><text x="50" y="460" font-size="14" fill="#f08a89" font-weight="600">Low HP or a partner down?</text><text x="50" y="478" font-size="14" fill="#f08a89" font-weight="600">The button pulses: Blast calls…</text></g>
+<circle cx="340" cy="326" r="12" fill="#f0efec"/><text x="340" y="331" font-size="14.5" fill="#14161c" font-weight="800" text-anchor="middle">3</text>
+<text x="362" y="332" font-size="17.5" fill="#f0efec" font-weight="700">A dark form</text>
+<text x="336" y="362" font-size="14" fill="#c3c2b7">Five per partner, taken in turn</text>
+<text x="336" y="380" font-size="14" fill="#c3c2b7">as its level opens them:</text>
+<circle cx="352" cy="418" r="19" fill="#262438" stroke="#4a4478" stroke-width="1.5"/>
+<g class="an f0"><circle cx="352" cy="418" r="19" fill="#6d5fd6" fill-opacity=".35" stroke="#9085e9" stroke-width="1.5"/></g>
+<use href="#i-dark" x="342" y="408" width="20" height="20" color="#a58bf5"/>
+<text x="352" y="458" font-size="13.5" fill="#c3c2b7" font-weight="600" text-anchor="middle">Lv 1</text>
+<circle cx="401" cy="418" r="19" fill="#262438" stroke="#4a4478" stroke-width="1.5"/>
+<g class="an f1"><circle cx="401" cy="418" r="19" fill="#6d5fd6" fill-opacity=".35" stroke="#9085e9" stroke-width="1.5"/></g>
+<use href="#i-dark" x="391" y="408" width="20" height="20" color="#a58bf5"/>
+<text x="401" y="458" font-size="13.5" fill="#c3c2b7" font-weight="600" text-anchor="middle">Lv 15</text>
+<circle cx="450" cy="418" r="19" fill="#262438" stroke="#4a4478" stroke-width="1.5"/>
+<g class="an f2"><circle cx="450" cy="418" r="19" fill="#6d5fd6" fill-opacity=".35" stroke="#9085e9" stroke-width="1.5"/></g>
+<use href="#i-dark" x="440" y="408" width="20" height="20" color="#a58bf5"/>
+<text x="450" y="458" font-size="13.5" fill="#c3c2b7" font-weight="600" text-anchor="middle">Lv 25</text>
+<circle cx="499" cy="418" r="19" fill="#262438" stroke="#4a4478" stroke-width="1.5"/>
+<g class="an f3"><circle cx="499" cy="418" r="19" fill="#6d5fd6" fill-opacity=".35" stroke="#9085e9" stroke-width="1.5"/></g>
+<use href="#i-dark" x="489" y="408" width="20" height="20" color="#a58bf5"/>
+<text x="499" y="458" font-size="13.5" fill="#c3c2b7" font-weight="600" text-anchor="middle">Lv 35</text>
+<circle cx="548" cy="418" r="19" fill="#262438" stroke="#4a4478" stroke-width="1.5"/>
+<g class="an f4"><circle cx="548" cy="418" r="19" fill="#6d5fd6" fill-opacity=".35" stroke="#9085e9" stroke-width="1.5"/></g>
+<use href="#i-dark" x="538" y="408" width="20" height="20" color="#a58bf5"/>
+<text x="548" y="458" font-size="13.5" fill="#c3c2b7" font-weight="600" text-anchor="middle">Lv 45</text>
+<circle cx="626" cy="326" r="12" fill="#f08a89"/><text x="626" y="331" font-size="14.5" fill="#14161c" font-weight="800" text-anchor="middle">4</text>
+<text x="648" y="332" font-size="17.5" fill="#f0efec" font-weight="700">The price</text>
+<use href="#u-heat" x="622" y="349" width="16" height="16" color="#f08a89"/>
+<text x="648" y="362" font-size="14" fill="#c3c2b7">HP and MP at 1 after the battle</text>
+<use href="#u-down" x="622" y="377" width="16" height="16" color="#f08a89"/>
+<text x="648" y="390" font-size="14" fill="#c3c2b7">−25% Power, Guard and Speed</text>
+<text x="648" y="408" font-size="14" fill="#c3c2b7">until you rest at an inn</text>
+<use href="#u-dv" x="622" y="423" width="16" height="16" color="#9a9a94"/>
+<text x="648" y="436" font-size="14" fill="#c3c2b7">Overheat: Rookie, no digivolving</text>
+<text x="648" y="454" font-size="14" fill="#c3c2b7">for 3 of its turns, carried into</text>
+<text x="648" y="472" font-size="14" fill="#c3c2b7">the next battles (the Chosen too)</text>
+<path d="M736,486 V496 H130 V508" fill="none" stroke="#9085e9" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#arrv)"/>
+<rect x="30" y="510" width="380" height="190" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/><rect class="an k5" x="30" y="510" width="380" height="190" rx="12" fill="#f2c230" fill-opacity=".07" stroke="#f2c230" stroke-width="2.5" opacity="0"/>
+<circle cx="54" cy="536" r="12" fill="#f2c230"/><text x="54" y="541" font-size="14.5" fill="#14161c" font-weight="800" text-anchor="middle">5</text>
+<text x="76" y="542" font-size="17.5" fill="#f0efec" font-weight="700">Purify</text>
+<text x="50" y="572" font-size="14" fill="#c3c2b7">Release ten dark forms (a partner and a form</text>
+<text x="50" y="590" font-size="14" fill="#c3c2b7">each), and “Gennai” has a word for you.</text>
+<text x="50" y="616" font-size="15.5" fill="#f2c230" font-weight="700" font-style="italic">A familiar face… or is it?</text>
+<rect x="51" y="630" width="16" height="16" rx="3" fill="#2a2a3e" stroke="#4a4478"/>
+<g class="an q0"><rect x="51" y="630" width="16" height="16" rx="3" fill="#9085e9"/></g>
+<rect x="73" y="630" width="16" height="16" rx="3" fill="#2a2a3e" stroke="#4a4478"/>
+<g class="an q1"><rect x="73" y="630" width="16" height="16" rx="3" fill="#9085e9"/></g>
+<rect x="95" y="630" width="16" height="16" rx="3" fill="#2a2a3e" stroke="#4a4478"/>
+<g class="an q2"><rect x="95" y="630" width="16" height="16" rx="3" fill="#9085e9"/></g>
+<rect x="117" y="630" width="16" height="16" rx="3" fill="#2a2a3e" stroke="#4a4478"/>
+<g class="an q3"><rect x="117" y="630" width="16" height="16" rx="3" fill="#9085e9"/></g>
+<rect x="139" y="630" width="16" height="16" rx="3" fill="#2a2a3e" stroke="#4a4478"/>
+<g class="an q4"><rect x="139" y="630" width="16" height="16" rx="3" fill="#9085e9"/></g>
+<rect x="161" y="630" width="16" height="16" rx="3" fill="#2a2a3e" stroke="#4a4478"/>
+<g class="an q5"><rect x="161" y="630" width="16" height="16" rx="3" fill="#9085e9"/></g>
+<rect x="183" y="630" width="16" height="16" rx="3" fill="#2a2a3e" stroke="#4a4478"/>
+<g class="an q6"><rect x="183" y="630" width="16" height="16" rx="3" fill="#9085e9"/></g>
+<rect x="205" y="630" width="16" height="16" rx="3" fill="#2a2a3e" stroke="#4a4478"/>
+<g class="an q7"><rect x="205" y="630" width="16" height="16" rx="3" fill="#9085e9"/></g>
+<rect x="227" y="630" width="16" height="16" rx="3" fill="#2a2a3e" stroke="#4a4478"/>
+<g class="an q8"><rect x="227" y="630" width="16" height="16" rx="3" fill="#9085e9"/></g>
+<rect x="249" y="630" width="16" height="16" rx="3" fill="#2a2a3e" stroke="#4a4478"/>
+<g class="an q9"><rect x="249" y="630" width="16" height="16" rx="3" fill="#9085e9"/></g>
+<text x="274" y="643" font-size="14" fill="#f0efec" font-weight="700">10 / 10</text>
+<text x="50" y="670" font-size="14" fill="#c3c2b7">Face all ten again: your TP back, and +10%</text>
+<text x="50" y="688" font-size="14" fill="#c3c2b7">of each form's best stat, for good.</text>
+<path d="M415,596 L422,605 L415,614" fill="none" stroke="#c3c2b7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="428" y="510" width="442" height="190" rx="12" fill="#25231f" stroke="#30374a" stroke-width="1.5"/><rect class="an k6" x="428" y="510" width="442" height="190" rx="12" fill="#f2c230" fill-opacity=".07" stroke="#f2c230" stroke-width="2.5" opacity="0"/>
+<clipPath id="c6"><rect x="428" y="510" width="442" height="190" rx="12"/></clipPath>
+<g clip-path="url(#c6)"><g class="an shine"><rect x="368" y="510" width="120" height="190" fill="url(#goldsh)" transform="skewX(-18)"/></g></g>
+<circle cx="452" cy="536" r="12" fill="#f2c230"/><text x="452" y="541" font-size="14.5" fill="#14161c" font-weight="800" text-anchor="middle">6</text>
+<text x="474" y="542" font-size="17.5" fill="#ffd970" font-weight="800">The Chosen Evolution</text>
+<use href="#u-spark" x="835" y="525" width="22" height="22" color="#f2c230"/>
+<text x="448" y="572" font-size="14" fill="#c3c2b7">The Blast, purified: no curse. One partner, from</text>
+<text x="448" y="590" font-size="14" fill="#c3c2b7">Rookie at level 45, once a battle; it restores HP</text>
+<text x="448" y="608" font-size="14" fill="#c3c2b7">and MP, and its +50% goes past the 999 cap.</text>
+<line x1="448" y1="624" x2="850" y2="624" stroke="#4a4128" stroke-width="1"/>
+<text x="448" y="646" font-size="13.5" fill="#b9a36a" font-weight="700" letter-spacing="1.5">ITS MEGA, BY PARTNER</text>
+<text x="448" y="668" font-size="14" fill="#f4e3b0" font-weight="500">GuardiAngemon · Beelzemon · Cannondramon · WarGreymon</text>
+<text x="448" y="688" font-size="14" fill="#f4e3b0" font-weight="500">Imperialdramon · Gallantmon · Sakuyamon · Seraphimon</text>
+</svg>

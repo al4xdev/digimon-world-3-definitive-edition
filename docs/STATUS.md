@@ -5,7 +5,7 @@ compiles from matching C (Psy-Q's libraries stay split assembly). The PC port, b
 on Windows (cross-built): it boots the user's disc, plays the movies, the music and the effects, draws through a software
 GPU or a hardware renderer, and saves to memory-card images that an emulator can also read. A launcher and the built-in
 mods ([`LAUNCHER.md`](LAUNCHER.md) "Built-in mods") are done. An ARM build runs on Linux handhelds through PortMaster
-(see the [`README`](../README.md)).
+([`portmaster/README.md`](../portmaster/README.md), [`HANDHELD.md`](HANDHELD.md)).
 
 Issue numbers written `#NN` below are issues of the upstream repository
 [gascarcella/dw2003recomp](https://github.com/gascarcella/dw2003recomp/issues); this repository has its own tracker.
@@ -39,7 +39,7 @@ Issue numbers written `#NN` below are issues of the upstream repository
   and `first_battle_save` (registration, the first battle, a save and reload, shops and menus) reach 14 of the 19
   tier-1 overlays. The SPU write traces (`tests/sound/`, [`SOUND.md`](SOUND.md)) belong to this layer.
 - **Layer 3, formats and saves:** file table, text, stage table and flag-range checks; save round trips between the
-  port and the emulator, and the emulator's load of a save the port made off an inn (the save-anywhere mod).
+  port and the emulator, and the emulator's load of a save the port made at an inn.
 - **The port's tests:** both layer-2 scripts replayed in the port against the emulator's checkpoints (also at `-m32`
   and under ASan/UBSan), the sound replayed on the emulator's timeline, the SPU core's and XA decoder's unit goldens,
   the settings, the mods, the 60 Hz mode against the patched game in the emulator.
@@ -90,7 +90,13 @@ The design is in [`PORT.md`](PORT.md); the reasons are in [`DECISIONS.md`](DECIS
 ## Launcher and mods
 - **Launcher** (`psxstack/launcher/README.md`): Dear ImGui on SDL3. Handles the disc (with a SHA-1 check), Play,
   settings, controls (rebinding, hotkeys, chords) and the mods' pages. A headless self-test runs in CI. On handhelds the
-  launcher is `handheld/Digimon World 3.sh` with a small menu (`handheld/README.md`).
+  launcher is `handheld/Digimon World 3.sh` with the C99 pad menu `dw3-launcher` (`launcher/`; `handheld/README.md`,
+  [`LAUNCHER.md`](LAUNCHER.md)).
+- **Android (arm64) APK:** `tools/build_android.sh` and `android/`: the C launcher's touch-first build linked with the
+  game and a floating touch pad ([`LAUNCHER.md`](LAUNCHER.md),
+  [`definitive-edition/platforms.md`](definitive-edition/platforms.md)).
+- **Cloud save sync:** the launcher's SAVES & CLOUD screen (`launcher/cloud.c`) against a Cloudflare Worker
+  (`cloud-sync/`), with local backup rotation ([`definitive-edition/platforms.md`](definitive-edition/platforms.md)).
 - **Crash report** (psxstack's `docs/PORT.md` "Crash report"): the game writes one on a signal or a fatal stop; the launcher
   keeps the run's log and puts the report into its Copy text; the release carries the game's `.debug` file for
   `scripts/symbolize.py`. On Windows the report comes with a minidump (`tests/port/crash.py --wine`).
@@ -115,7 +121,8 @@ The design is in [`PORT.md`](PORT.md); the reasons are in [`DECISIONS.md`](DECIS
 - Skip dialogues does not cover the code-driven prompts of the card game and some other overlays.
 - The port's `-m32` and sanitizer builds need system packages (`gcc-multilib`/`glibc-devel.i686`, `libasan`,
   `libubsan`); CI installs its own.
-- Handheld limitations are in the [`README`](../README.md) and `portmaster/README.md`.
+- Handheld limitations are in [`HANDHELD.md`](HANDHELD.md#known-limitations) "Known limitations" and
+  [`portmaster/README.md`](../portmaster/README.md) "Known issues".
 
 ## Where work is tracked
 - **Bugs and problems:** [GitHub Issues](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues).

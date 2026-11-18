@@ -20,19 +20,21 @@ configured, tagged releases (or manual `workflow_dispatch` runs with `sync_portm
 ## Build locally
 
 ```
-tools/build_arm.sh               # build/armhf-sdl2/dw2003
+tools/build_arm.sh               # build/{armhf,aarch64}-sdl2/: dw2003 and dw3-launcher
 cd portmaster && ./make_release.sh   # dist/dw3.zip
 ```
 
 ## Open steps
 
-- [ ] **Open a testing thread** in the PortMaster Discord. It is required before a pull request. Give the device and CFW
-      tested, the resolution and the known issues (see "Known issues" in `README.md`).
+- [x] **Open a testing thread** in the PortMaster Discord. It is required before a pull request. Give the device and CFW
+      tested, the resolution and the known issues (see "Known issues" in `portmaster/README.md`). Done: the release is
+      in its testing phase there (2026-11-18), not yet in the catalogue; it was run under emulation on every CFW of
+      the test matrix ("Tested on" in `portmaster/README.md`).
 - [ ] **Fork `PortMaster-MV-New`**, sparse-checkout it, put the contents of `dist/dw3.zip` under `ports/dw3/`, run the
       repository's check (`python3 tools/build_release.py --do-check`; this script is not in this repository and its
       name has not been confirmed against the current PortMaster-MV-New), and open the pull request citing the thread.
-- [ ] **Test other firmware.** Only the XF35H on EmuELEC has been tested; the other rows of "Tested on" in `README.md`
-      are open.
+- [ ] **Test other firmware.** Only the XF35H on EmuELEC has been tested; the other rows of "Tested on" in
+      `portmaster/README.md` are open.
 
 ## After any change
 
@@ -41,5 +43,5 @@ cd portmaster && ./make_release.sh   # dist/dw3.zip
 3. Update the published release: `gh release upload dw3-port-1 dist/dw3.zip --clobber -R al4xdev/digimon-world-3-definitive-edition`.
 4. Copy the new zip's contents over `ports/dw3/` in the PortMaster-MV-New fork.
 
-The menu on a test device must be the committed one. To push it without a full install:
-see `handheld/README.md`, "Deploying the menu".
+The menu on a test device must be built from the committed `launcher/`. To push it without a full install:
+see `handheld/README.md`, "Deploying the launcher".

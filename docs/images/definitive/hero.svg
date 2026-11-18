@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="300" viewBox="0 0 900 300" role="img" aria-labelledby="title desc">
+<title id="title">Digimon World 3: Definitive Edition</title>
+<desc id="desc">Title banner of Digimon World 3: Definitive Edition. Tagline: Find the weakness. Stagger. One more. Pass the baton. A technique slashes an enemy's weakness: the WEAK! callout lands, then ONE MORE! The five element families: Fire, Water + Ice, Wind, Thunder + Machine and Dark.</desc>
+<defs>
+<style>text{font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,&quot;Liberation Sans&quot;,sans-serif}
+.cx{transform-box:fill-box;transform-origin:center}
+
+.an{animation-duration:9s;animation-iteration-count:infinite;animation-timing-function:cubic-bezier(.45,0,.25,1)}
+.slash{animation-name:slash;transform-box:fill-box;transform-origin:0% 100%}
+.weak{animation-name:pop1}
+.more{animation-name:pop2}
+.spark{animation-name:spark;transform-box:fill-box;transform-origin:center}
+.glow{animation-name:glow}
+.glow2{animation-name:glow2}
+.sweep{animation-name:sweep;animation-timing-function:linear}
+.b1{animation-name:b1} .b2{animation-name:b2} .b3{animation-name:b3}
+.w1{animation-name:w1} .w2{animation-name:w2} .w3{animation-name:w3} .w4{animation-name:w4}
+@keyframes slash{0%,4.9%{transform:scaleX(0);opacity:0}5%{transform:scaleX(0);opacity:1}11%{transform:scaleX(1);opacity:1}80%{opacity:1;transform:scaleX(1)}90%,100%{opacity:0;transform:scaleX(1)}}
+@keyframes pop1{0%,10%{transform:scale(1.5);opacity:0}13%{transform:scale(.94);opacity:1}15.5%{transform:scale(1.03)}17%{transform:scale(1)}19%{transform:rotate(-3deg)}21%{transform:rotate(2.5deg)}23%{transform:rotate(-1.5deg)}25%{transform:rotate(0)}82%{opacity:1;transform:scale(1)}90%,100%{opacity:0;transform:scale(1)}}
+@keyframes pop2{0%,27%{transform:translateX(40px);opacity:0}31%{transform:translateX(-4px);opacity:1}33%{transform:translateX(0)}84%{opacity:1;transform:translateX(0)}92%,100%{opacity:0;transform:translateX(0)}}
+@keyframes spark{0%,10.5%{opacity:0;transform:scale(.4)}12%{opacity:1;transform:scale(1)}18%,100%{opacity:0;transform:scale(1.35)}}
+@keyframes glow{0%,9%{opacity:0}12%{opacity:1}82%{opacity:1}90%,100%{opacity:0}}
+@keyframes glow2{0%,26%{opacity:0}29%{opacity:1}84%{opacity:1}92%,100%{opacity:0}}
+@keyframes sweep{0%{transform:translateX(-420px)}100%{transform:translateX(980px)}}
+@keyframes b1{0%,20%,48%,100%{opacity:0}30%,38%{opacity:.75}}
+@keyframes b2{0%,52%,80%,100%{opacity:0}62%,70%{opacity:.75}}
+@keyframes b3{0%,4%,30%,100%{opacity:.0}12%,20%{opacity:.6}}
+@keyframes w1{0%,10%{fill:#c3c2b7}13%,24%{fill:#ef6a3a}30%,100%{fill:#c3c2b7}}
+@keyframes w2{0%,17%{fill:#c3c2b7}20%,30%{fill:#f0efec}36%,100%{fill:#c3c2b7}}
+@keyframes w3{0%,27%{fill:#c3c2b7}30%,44%{fill:#3fcf98}50%,100%{fill:#c3c2b7}}
+@keyframes w4{0%,46%{fill:#c3c2b7}50%,64%{fill:#9085e9}70%,100%{fill:#c3c2b7}}
+
+@media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
+<symbol id="i-fire" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0,-15 C5,-8 11,-3 10,5 C9.5,11 5,15 0,15 C-5,15 -10,11 -10,5 C-10,-1 -6,-4 -4,-9 C-2,-4 0,-2 2,-1 C4,-6 3,-10 0,-15 Z"/></symbol>
+<symbol id="i-water" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0,-15 C5,-7 10,-1 10,5 A10,10 0 0 1 -10,5 C-10,-1 -5,-7 0,-15 Z"/></symbol>
+<symbol id="i-ice" viewBox="-16 -16 32 32"><g stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"><path transform="rotate(0)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(60)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(120)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(180)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(240)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(300)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/></g></symbol>
+<symbol id="i-wind" viewBox="-16 -16 32 32"><g stroke="currentColor" stroke-width="2.8" stroke-linecap="round" fill="none"><path d="M-14,-5 H4 C9,-5 10,-12 5,-12 C2,-12 1,-9 2,-8"/><path d="M-14,2 H9 C14,2 14,9 9,9 C6,9 5,6 6,5"/><path d="M-11,9 H-1"/></g></symbol>
+<symbol id="i-thunder" viewBox="-16 -16 32 32"><path fill="currentColor" d="M4,-15 L-9,2 H-1 L-4,15 L9,-3 H1 Z"/></symbol>
+<symbol id="i-machine" viewBox="-16 -16 32 32"><circle r="11" fill="none" stroke="currentColor" stroke-width="5" stroke-dasharray="4.32 4.32"/><path fill="currentColor" fill-rule="evenodd" d="M9,0 A9,9 0 1 0 -9,0 A9,9 0 1 0 9,0 Z M3.5,0 A3.5,3.5 0 1 1 -3.5,0 A3.5,3.5 0 1 1 3.5,0 Z"/></symbol>
+<symbol id="i-dark" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0.00,-15.00 L3.64,-5.02 L14.27,-4.64 L5.90,1.92 L8.82,12.14 L0.00,6.20 L-8.82,12.14 L-5.90,1.92 L-14.27,-4.64 L-3.64,-5.02 Z"/></symbol>
+
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#11141d"/><stop offset=".55" stop-color="#191e2b"/><stop offset="1" stop-color="#242b3f"/></linearGradient>
+<pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse" x="6" y="10"><path d="M28,0 H0 V28" fill="none" stroke="#5a6688" stroke-width="1"/></pattern>
+<radialGradient id="fade" cx="690" cy="140" r="430" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".6" stop-color="#fff" stop-opacity=".16"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<mask id="gm"><rect width="900" height="300" fill="url(#fade)"/></mask>
+<linearGradient id="band" x1="0" x2="1"><stop offset="0" stop-color="#9085e9" stop-opacity="0"/><stop offset=".5" stop-color="#b3aaff" stop-opacity=".55"/><stop offset="1" stop-color="#9085e9" stop-opacity="0"/></linearGradient>
+<linearGradient id="blade" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#ef6a3a" stop-opacity="0"/><stop offset=".45" stop-color="#ffb08a"/><stop offset=".7" stop-color="#fff4ea"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<clipPath id="card"><rect width="900" height="300" rx="16"/></clipPath>
+
+</defs>
+
+<rect width="900" height="300" rx="16" fill="url(#bg)"/>
+<g clip-path="url(#card)">
+<g mask="url(#gm)"><rect width="900" height="300" fill="url(#grid)" opacity=".8"/><g class="an sweep"><rect x="0" y="-60" width="260" height="420" fill="url(#band)" opacity=".5" transform="skewX(-24)"/></g></g>
+<rect class="an b1" x="563.5" y="63.5" width="5" height="5" fill="#9085e9" opacity="0"/>
+<rect class="an b2" x="815.5" y="259.5" width="5" height="5" fill="#8fd3f0" opacity="0"/>
+<rect class="an b3" x="871.5" y="91.5" width="5" height="5" fill="#9085e9" opacity="0"/>
+<rect class="an b2" x="507.5" y="147.5" width="5" height="5" fill="#8fd3f0" opacity="0"/>
+<rect class="an b3" x="731.5" y="35.5" width="5" height="5" fill="#9085e9" opacity="0"/>
+<rect class="an b1" x="619.5" y="259.5" width="5" height="5" fill="#9085e9" opacity="0"/>
+</g>
+<text x="48" y="104" font-size="50" fill="#f0efec" font-weight="800" letter-spacing="-.5">Digimon World 3</text>
+<text x="51" y="144" font-size="19" fill="#9085e9" font-weight="800" letter-spacing="7">DEFINITIVE EDITION</text>
+<rect x="51" y="164" width="44" height="3" rx="1.5" fill="#9085e9" opacity=".7"/>
+<text x="50" y="206" font-size="17.5" font-weight="600"><tspan class="an w1" fill="#c3c2b7">Find the weakness.</tspan> <tspan class="an w2" fill="#c3c2b7">Stagger.</tspan> <tspan class="an w3" fill="#c3c2b7">One more.</tspan> <tspan class="an w4" fill="#c3c2b7">Pass the baton.</tspan></text>
+<text x="50" y="240" font-size="15" fill="#9a9a94">A fan remaster, native on handhelds and PC — no emulator</text>
+<g class="an slash"><path d="M560,192 Q716,124 878,36 Q720,138 560,192 Z" fill="url(#blade)"/></g>
+<g transform="translate(648,95)"><g class="an spark" style="opacity:0">
+<line x1="-43.3" y1="-25.0" x2="-60.6" y2="-35.0" stroke="#ffc9a8" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="-17.8" y1="-48.9" x2="-22.6" y2="-62.0" stroke="#ffc9a8" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="76.2" y1="-44.0" x2="91.8" y2="-53.0" stroke="#ffc9a8" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="80.8" y1="29.4" x2="94.0" y2="34.2" stroke="#ffc9a8" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="-73.3" y1="26.7" x2="-90.2" y2="32.8" stroke="#ffc9a8" stroke-width="2.4" stroke-linecap="round"/>
+<line x1="-23.0" y1="39.8" x2="-30.0" y2="52.0" stroke="#ffc9a8" stroke-width="2.4" stroke-linecap="round"/>
+</g></g>
+<g transform="translate(648,95)"><g class="cx an weak"><g transform="skewX(-14)"><rect x="-79" y="-23" width="168" height="56" rx="4" fill="#07080c" fill-opacity=".55"/><rect x="-84" y="-28" width="168" height="56" rx="4" fill="#e0662f"/></g><text y="12.2" font-size="34" fill="#14161c" font-weight="800" text-anchor="middle" font-style="italic" letter-spacing="1">WEAK!</text></g></g>
+<g transform="translate(758,164)"><g class="cx an more"><g transform="skewX(-14)"><rect x="-93" y="-19" width="196" height="48" rx="4" fill="#07080c" fill-opacity=".55"/><rect x="-98" y="-24" width="196" height="48" rx="4" fill="#199e70"/></g><text y="9.7" font-size="27" fill="#14161c" font-weight="800" text-anchor="middle" font-style="italic" letter-spacing="1">ONE MORE!</text></g></g>
+<rect x="554" y="214" width="42" height="42" rx="21" fill="#1d2232" stroke="#3a4257" stroke-width="1.5"/>
+<use href="#i-fire" x="562.5" y="222.5" width="25" height="25" color="#ef6a3a"/>
+<rect x="606" y="214" width="70" height="42" rx="21" fill="#1d2232" stroke="#3a4257" stroke-width="1.5"/>
+<rect class="an glow" x="605" y="213" width="72" height="44" rx="22" fill="#e0662f" fill-opacity=".16" stroke="#ef6a3a" stroke-width="2.2"/>
+<use href="#i-water" x="615.5" y="223.5" width="23" height="23" color="#3d8fe8"/>
+<use href="#i-ice" x="643.5" y="223.5" width="23" height="23" color="#8fd3f0"/>
+<rect x="686" y="214" width="42" height="42" rx="21" fill="#1d2232" stroke="#3a4257" stroke-width="1.5"/>
+<use href="#i-wind" x="694.5" y="222.5" width="25" height="25" color="#3fbf7f"/>
+<rect x="738" y="214" width="70" height="42" rx="21" fill="#1d2232" stroke="#3a4257" stroke-width="1.5"/>
+<rect class="an glow2" x="737" y="213" width="72" height="44" rx="22" fill="#199e70" fill-opacity=".16" stroke="#3fcf98" stroke-width="2.2"/>
+<use href="#i-thunder" x="747.5" y="223.5" width="23" height="23" color="#f2c230"/>
+<use href="#i-machine" x="775.5" y="223.5" width="23" height="23" color="#a7adb8"/>
+<rect x="818" y="214" width="42" height="42" rx="21" fill="#1d2232" stroke="#3a4257" stroke-width="1.5"/>
+<use href="#i-dark" x="826.5" y="222.5" width="25" height="25" color="#a58bf5"/>
+<text x="707" y="282" font-size="13.5" fill="#9a9a94" text-anchor="middle">Fire · Water + Ice · Wind · Thunder + Machine · Dark</text>
+</svg>

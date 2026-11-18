@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520" role="img" aria-labelledby="title desc">
+<title id="title">Learning an enemy's weaknesses</title>
+<desc id="desc">Inspect shows only what you have found out. An example enemy starts with all five families unknown (???). A Fire technique: RESIST!, Fire is learnt as resisted. An Ice technique: WEAK!, and Water + Ice are learnt together because a pair shares one value. Resist Down lowers your best family, here Wind, by 80: 110 becomes 30, a new weakness. A Wind technique: WEAK!, Wind is learnt as weak. Libra reveals the rest at once: Thunder + Machine weak, Dark neutral.</desc>
+<defs>
+<style>text{font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,&quot;Liberation Sans&quot;,sans-serif}
+.cx{transform-box:fill-box;transform-origin:center}
+.an{animation-duration:14s;animation-iteration-count:infinite;animation-timing-function:cubic-bezier(.45,0,.25,1)}
+@keyframes rFire{0%,6%{opacity:0}8%,93%{opacity:1}97%,100%{opacity:0}}
+@keyframes urFire{0%,6%{opacity:1}8%,93%{opacity:0}97%,100%{opacity:1}}
+@keyframes frFire{0%,6%{opacity:0}7.5%{opacity:1}15%,100%{opacity:0}}
+.rFire{animation-name:rFire}.urFire{animation-name:urFire}.frFire{animation-name:frFire}
+@keyframes rWI{0%,22%{opacity:0}24%,93%{opacity:1}97%,100%{opacity:0}}
+@keyframes urWI{0%,22%{opacity:1}24%,93%{opacity:0}97%,100%{opacity:1}}
+@keyframes frWI{0%,22%{opacity:0}23.5%{opacity:1}31%,100%{opacity:0}}
+.rWI{animation-name:rWI}.urWI{animation-name:urWI}.frWI{animation-name:frWI}
+@keyframes rWind{0%,54%{opacity:0}56%,93%{opacity:1}97%,100%{opacity:0}}
+@keyframes urWind{0%,54%{opacity:1}56%,93%{opacity:0}97%,100%{opacity:1}}
+@keyframes frWind{0%,54%{opacity:0}55.5%{opacity:1}63%,100%{opacity:0}}
+.rWind{animation-name:rWind}.urWind{animation-name:urWind}.frWind{animation-name:frWind}
+@keyframes rTM{0%,70%{opacity:0}72%,93%{opacity:1}97%,100%{opacity:0}}
+@keyframes urTM{0%,70%{opacity:1}72%,93%{opacity:0}97%,100%{opacity:1}}
+@keyframes frTM{0%,70%{opacity:0}71.5%{opacity:1}79%,100%{opacity:0}}
+.rTM{animation-name:rTM}.urTM{animation-name:urTM}.frTM{animation-name:frTM}
+@keyframes rDark{0%,70%{opacity:0}72%,93%{opacity:1}97%,100%{opacity:0}}
+@keyframes urDark{0%,70%{opacity:1}72%,93%{opacity:0}97%,100%{opacity:1}}
+@keyframes frDark{0%,70%{opacity:0}71.5%{opacity:1}79%,100%{opacity:0}}
+.rDark{animation-name:rDark}.urDark{animation-name:urDark}.frDark{animation-name:frDark}
+@keyframes b0{0%,4%{opacity:0}6%,19%{opacity:1}21%,100%{opacity:0}}
+@keyframes p0{0%,6%{opacity:0;transform:scale(1.5)}8.5%,93%{opacity:1;transform:scale(1)}97%,100%{opacity:0;transform:scale(1)}}
+.b0{animation-name:b0}.p0{animation-name:p0}
+@keyframes b1{0%,20%{opacity:0}22%,35%{opacity:1}37%,100%{opacity:0}}
+@keyframes p1{0%,22%{opacity:0;transform:scale(1.5)}24.5%,93%{opacity:1;transform:scale(1)}97%,100%{opacity:0;transform:scale(1)}}
+.b1{animation-name:b1}.p1{animation-name:p1}
+@keyframes b2{0%,38%{opacity:0}40%,53%{opacity:1}55%,100%{opacity:0}}
+@keyframes p2{0%,40%{opacity:0;transform:scale(1.5)}42.5%,93%{opacity:1;transform:scale(1)}97%,100%{opacity:0;transform:scale(1)}}
+.b2{animation-name:b2}.p2{animation-name:p2}
+@keyframes b3{0%,52%{opacity:0}54%,67%{opacity:1}69%,100%{opacity:0}}
+@keyframes p3{0%,54%{opacity:0;transform:scale(1.5)}56.5%,93%{opacity:1;transform:scale(1)}97%,100%{opacity:0;transform:scale(1)}}
+.b3{animation-name:b3}.p3{animation-name:p3}
+@keyframes b4{0%,68%{opacity:0}70%,83%{opacity:1}85%,100%{opacity:0}}
+@keyframes p4{0%,70%{opacity:0;transform:scale(1.5)}72.5%,93%{opacity:1;transform:scale(1)}97%,100%{opacity:0;transform:scale(1)}}
+.b4{animation-name:b4}.p4{animation-name:p4}
+@keyframes drop{0%,54%{opacity:0}56%,93%{opacity:1}97%,100%{opacity:0}}
+.drop{animation-name:drop}
+@keyframes vWind{0%,40%{opacity:0}41.5%{opacity:1}49%,100%{opacity:0}}
+.vWind{animation-name:vWind}
+@keyframes scan{0%,69%{transform:translateY(0);opacity:0}70%{opacity:.9;transform:translateY(0)}75%{opacity:.9;transform:translateY(300px)}76%,100%{opacity:0;transform:translateY(300px)}}
+.scan{animation-name:scan}
+@media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
+<symbol id="i-fire" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0,-15 C5,-8 11,-3 10,5 C9.5,11 5,15 0,15 C-5,15 -10,11 -10,5 C-10,-1 -6,-4 -4,-9 C-2,-4 0,-2 2,-1 C4,-6 3,-10 0,-15 Z"/></symbol>
+<symbol id="i-water" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0,-15 C5,-7 10,-1 10,5 A10,10 0 0 1 -10,5 C-10,-1 -5,-7 0,-15 Z"/></symbol>
+<symbol id="i-ice" viewBox="-16 -16 32 32"><g stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"><path transform="rotate(0)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(60)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(120)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(180)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(240)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(300)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/></g></symbol>
+<symbol id="i-wind" viewBox="-16 -16 32 32"><g stroke="currentColor" stroke-width="2.8" stroke-linecap="round" fill="none"><path d="M-14,-5 H4 C9,-5 10,-12 5,-12 C2,-12 1,-9 2,-8"/><path d="M-14,2 H9 C14,2 14,9 9,9 C6,9 5,6 6,5"/><path d="M-11,9 H-1"/></g></symbol>
+<symbol id="i-thunder" viewBox="-16 -16 32 32"><path fill="currentColor" d="M4,-15 L-9,2 H-1 L-4,15 L9,-3 H1 Z"/></symbol>
+<symbol id="i-machine" viewBox="-16 -16 32 32"><circle r="11" fill="none" stroke="currentColor" stroke-width="5" stroke-dasharray="4.32 4.32"/><path fill="currentColor" fill-rule="evenodd" d="M9,0 A9,9 0 1 0 -9,0 A9,9 0 1 0 9,0 Z M3.5,0 A3.5,3.5 0 1 1 -3.5,0 A3.5,3.5 0 1 1 3.5,0 Z"/></symbol>
+<symbol id="i-dark" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0.00,-15.00 L3.64,-5.02 L14.27,-4.64 L5.90,1.92 L8.82,12.14 L0.00,6.20 L-8.82,12.14 L-5.90,1.92 L-14.27,-4.64 L-3.64,-5.02 Z"/></symbol>
+<symbol id="u-eye" viewBox="-16 -16 32 32"><path d="M-14,0 C-8,-9 8,-9 14,0 C8,9 -8,9 -14,0 Z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><circle r="4.5" fill="currentColor"/></symbol>
+<symbol id="u-down" viewBox="-16 -16 32 32"><g stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="M0,-12 V11 M-7,4 L0,11 L7,4"/></g></symbol>
+</defs>
+
+<rect width="900" height="520" rx="16" fill="#171a21"/>
+<text x="30" y="46" font-size="26" fill="#f0efec" font-weight="800">Learn the enemy as you fight</text>
+<text x="30" y="74" font-size="15.5" fill="#c3c2b7">Inspect (L2, no turn spent) shows only what you have found out. Hitting a weakness or a</text>
+<text x="30" y="96" font-size="15.5" fill="#c3c2b7">resistance with an elemental technique teaches its whole family. Everything else stays ???.</text>
+<line x1="56" y1="155.0" x2="56" y2="419.0" stroke="#3a4257" stroke-width="2"/>
+<rect class="an b0" x="30" y="126" width="452" height="58" rx="10" fill="#ef6a3a" fill-opacity=".09" stroke="#ef6a3a" stroke-opacity=".7" stroke-width="1.5" opacity="0"/>
+<circle cx="56" cy="155" r="17" fill="#232938" stroke="#3a4257" stroke-width="1.5"/><use href="#i-fire" x="46.225" y="145.225" width="19.55" height="19.55" color="#ef6a3a"/>
+<text x="86" y="152" font-size="16.5" fill="#f0efec" font-weight="700">Fire technique</text>
+<text x="86" y="172" font-size="14" fill="#c3c2b7">resisted: ×0.5, no stagger</text>
+<g transform="translate(430,155)"><g class="cx an p0"><g transform="skewX(-14)"><rect x="-43" y="-15" width="86" height="30" rx="4" fill="#3987e5"/></g><text y="5.8" font-size="16" fill="#14161c" font-weight="800" text-anchor="middle" font-style="italic" letter-spacing="1">RESIST!</text></g></g>
+<rect class="an b1" x="30" y="192" width="452" height="58" rx="10" fill="#8fd3f0" fill-opacity=".09" stroke="#8fd3f0" stroke-opacity=".7" stroke-width="1.5" opacity="0"/>
+<circle cx="56" cy="221" r="17" fill="#232938" stroke="#3a4257" stroke-width="1.5"/><use href="#i-ice" x="46.225" y="211.225" width="19.55" height="19.55" color="#8fd3f0"/>
+<text x="86" y="218" font-size="16.5" fill="#f0efec" font-weight="700">Ice technique</text>
+<text x="86" y="238" font-size="14" fill="#c3c2b7">a pair shares one value: both learnt</text>
+<g transform="translate(430,221)"><g class="cx an p1"><g transform="skewX(-14)"><rect x="-43" y="-15" width="86" height="30" rx="4" fill="#e0662f"/></g><text y="5.8" font-size="16" fill="#14161c" font-weight="800" text-anchor="middle" font-style="italic" letter-spacing="1">WEAK!</text></g></g>
+<rect class="an b2" x="30" y="258" width="452" height="58" rx="10" fill="#9085e9" fill-opacity=".09" stroke="#9085e9" stroke-opacity=".7" stroke-width="1.5" opacity="0"/>
+<circle cx="56" cy="287" r="17" fill="#232938" stroke="#3a4257" stroke-width="1.5"/><use href="#u-down" x="46.225" y="277.225" width="19.55" height="19.55" color="#9085e9"/>
+<text x="86" y="284" font-size="16.5" fill="#f0efec" font-weight="700">Resist Down</text>
+<text x="86" y="304" font-size="14" fill="#c3c2b7">−80 on your best family, here Wind</text>
+<g transform="translate(430,287)"><g class="cx an p2"><g transform="skewX(-14)"><rect x="-30" y="-15" width="60" height="30" rx="4" fill="#9085e9"/></g><text y="6.1" font-size="17" fill="#14161c" font-weight="800" text-anchor="middle" font-style="italic" letter-spacing="1">−80</text></g></g>
+<rect class="an b3" x="30" y="324" width="452" height="58" rx="10" fill="#3fbf7f" fill-opacity=".09" stroke="#3fbf7f" stroke-opacity=".7" stroke-width="1.5" opacity="0"/>
+<circle cx="56" cy="353" r="17" fill="#232938" stroke="#3a4257" stroke-width="1.5"/><use href="#i-wind" x="46.225" y="343.225" width="19.55" height="19.55" color="#3fbf7f"/>
+<text x="86" y="350" font-size="16.5" fill="#f0efec" font-weight="700">Wind technique</text>
+<text x="86" y="370" font-size="14" fill="#c3c2b7">Wind was neutral; now it is weak</text>
+<g transform="translate(430,353)"><g class="cx an p3"><g transform="skewX(-14)"><rect x="-43" y="-15" width="86" height="30" rx="4" fill="#e0662f"/></g><text y="5.8" font-size="16" fill="#14161c" font-weight="800" text-anchor="middle" font-style="italic" letter-spacing="1">WEAK!</text></g></g>
+<rect class="an b4" x="30" y="390" width="452" height="58" rx="10" fill="#c9c4ff" fill-opacity=".09" stroke="#c9c4ff" stroke-opacity=".7" stroke-width="1.5" opacity="0"/>
+<circle cx="56" cy="419" r="17" fill="#232938" stroke="#3a4257" stroke-width="1.5"/><use href="#u-eye" x="46.225" y="409.225" width="19.55" height="19.55" color="#c9c4ff"/>
+<text x="86" y="416" font-size="16.5" fill="#f0efec" font-weight="700">Libra</text>
+<text x="86" y="436" font-size="14" fill="#c3c2b7">reveals every family at once</text>
+<rect x="506" y="122" width="364" height="332" rx="14" fill="#1b202c" stroke="#3a4257" stroke-width="1.5"/>
+<path d="M506,166 H870" stroke="#30374a" stroke-width="1.5"/>
+<use href="#u-eye" x="521" y="134" width="22" height="22" color="#c9c4ff"/>
+<text x="552" y="151" font-size="15" fill="#f0efec" font-weight="800" letter-spacing="3">INSPECT</text>
+<g transform="translate(842,148) scale(.42)"><path d="M-24,20 C-29,3 -25,-13 -13,-20 C-6,-24 6,-24 13,-20 C25,-13 29,3 24,20 Q0,27 -24,20 Z" fill="#3b4460" stroke="#6a7698" stroke-width="2"/><path d="M-12,-19 L-21,-34 L-4,-22 Z M12,-19 L21,-34 L4,-22 Z" fill="#6a7698"/><path d="M-15,-7 L-4,-3 L-5,2 L-15,0 Z M15,-7 L4,-3 L5,2 L15,0 Z" fill="#f2c230"/><path d="M-9,11 Q0,7 9,11" fill="none" stroke="#1a1e2a" stroke-width="2.4" stroke-linecap="round"/></g>
+<text x="818" y="151" font-size="14" fill="#9a9a94" text-anchor="end">the enemy</text>
+<clipPath id="cardclip"><rect x="506" y="167" width="364" height="286" rx="14"/></clipPath>
+<rect class="an frFire" x="514" y="174" width="348" height="46" rx="8" fill="#3987e5" fill-opacity=".16" opacity="0"/>
+<use href="#i-fire" x="530" y="185" width="24" height="24" color="#ef6a3a"/>
+<text x="576" y="202.5" font-size="16" fill="#f0efec" font-weight="600">Fire</text>
+<g class="an urFire" style="opacity:0"><rect x="752" y="182" width="102" height="30" rx="7" fill="none" stroke="#5a6070" stroke-width="1.5" stroke-dasharray="5 4"/><text x="803.0" y="202.5" font-size="15" fill="#9a9a94" font-weight="800" text-anchor="middle" letter-spacing="1.5">???</text></g>
+<g class="an rFire"><rect x="752" y="182" width="102" height="30" rx="7" fill="#3987e5"/><text x="803.0" y="202.5" font-size="15" fill="#0f1422" font-weight="800" text-anchor="middle" letter-spacing="1.5">RESIST</text></g>
+<rect class="an frWI" x="514" y="228" width="348" height="46" rx="8" fill="#e0662f" fill-opacity=".16" opacity="0"/>
+<use href="#i-water" x="521.5" y="240.5" width="21" height="21" color="#3d8fe8"/><use href="#i-ice" x="545.5" y="240.5" width="21" height="21" color="#8fd3f0"/>
+<text x="576" y="256.5" font-size="16" fill="#f0efec" font-weight="600">Water + Ice</text>
+<g class="an urWI" style="opacity:0"><rect x="752" y="236" width="102" height="30" rx="7" fill="none" stroke="#5a6070" stroke-width="1.5" stroke-dasharray="5 4"/><text x="803.0" y="256.5" font-size="15" fill="#9a9a94" font-weight="800" text-anchor="middle" letter-spacing="1.5">???</text></g>
+<g class="an rWI"><rect x="752" y="236" width="102" height="30" rx="7" fill="#e0662f"/><text x="803.0" y="256.5" font-size="15" fill="#14161c" font-weight="800" text-anchor="middle" letter-spacing="1.5">WEAK</text></g>
+<rect class="an frWind" x="514" y="282" width="348" height="46" rx="8" fill="#e0662f" fill-opacity=".16" opacity="0"/>
+<rect class="an vWind" x="514" y="282" width="348" height="46" rx="8" fill="#9085e9" fill-opacity=".18" stroke="#9085e9" stroke-opacity=".6" opacity="0"/>
+<use href="#i-wind" x="530" y="293" width="24" height="24" color="#3fbf7f"/>
+<text x="576" y="304" font-size="16" fill="#f0efec" font-weight="600">Wind</text>
+<g class="an drop" style="opacity:1"><use href="#u-down" x="575.5" y="312.5" width="13" height="13" color="#9085e9"/><text x="592" y="324" font-size="13.5" fill="#b5adf5">Resist Down: 110 → 30</text></g>
+<g class="an urWind" style="opacity:0"><rect x="752" y="290" width="102" height="30" rx="7" fill="none" stroke="#5a6070" stroke-width="1.5" stroke-dasharray="5 4"/><text x="803.0" y="310.5" font-size="15" fill="#9a9a94" font-weight="800" text-anchor="middle" letter-spacing="1.5">???</text></g>
+<g class="an rWind"><rect x="752" y="290" width="102" height="30" rx="7" fill="#e0662f"/><text x="803.0" y="310.5" font-size="15" fill="#14161c" font-weight="800" text-anchor="middle" letter-spacing="1.5">WEAK</text></g>
+<rect class="an frTM" x="514" y="336" width="348" height="46" rx="8" fill="#e0662f" fill-opacity=".16" opacity="0"/>
+<use href="#i-thunder" x="521.5" y="348.5" width="21" height="21" color="#f2c230"/><use href="#i-machine" x="545.5" y="348.5" width="21" height="21" color="#a7adb8"/>
+<text x="576" y="364.5" font-size="16" fill="#f0efec" font-weight="600">Thunder + Machine</text>
+<g class="an urTM" style="opacity:0"><rect x="752" y="344" width="102" height="30" rx="7" fill="none" stroke="#5a6070" stroke-width="1.5" stroke-dasharray="5 4"/><text x="803.0" y="364.5" font-size="15" fill="#9a9a94" font-weight="800" text-anchor="middle" letter-spacing="1.5">???</text></g>
+<g class="an rTM"><rect x="752" y="344" width="102" height="30" rx="7" fill="#e0662f"/><text x="803.0" y="364.5" font-size="15" fill="#14161c" font-weight="800" text-anchor="middle" letter-spacing="1.5">WEAK</text></g>
+<rect class="an frDark" x="514" y="390" width="348" height="46" rx="8" fill="#4a4f5c" fill-opacity=".16" opacity="0"/>
+<use href="#i-dark" x="530" y="401" width="24" height="24" color="#a58bf5"/>
+<text x="576" y="418.5" font-size="16" fill="#f0efec" font-weight="600">Dark</text>
+<g class="an urDark" style="opacity:0"><rect x="752" y="398" width="102" height="30" rx="7" fill="none" stroke="#5a6070" stroke-width="1.5" stroke-dasharray="5 4"/><text x="803.0" y="418.5" font-size="15" fill="#9a9a94" font-weight="800" text-anchor="middle" letter-spacing="1.5">???</text></g>
+<g class="an rDark"><rect x="752" y="398" width="102" height="30" rx="7" fill="#4a4f5c"/><text x="803.0" y="418.5" font-size="15" fill="#e6e5e0" font-weight="800" text-anchor="middle" letter-spacing="1.5">NEUTRAL</text></g>
+<g clip-path="url(#cardclip)"><g class="an scan" style="opacity:0"><rect x="506" y="162" width="364" height="2" fill="#c9c4ff" opacity=".8"/><rect x="506" y="126" width="364" height="36" fill="#9085e9" opacity=".12"/></g></g>
+<line x1="30" y1="468" x2="870" y2="468" stroke="#30374a" stroke-width="1"/>
+<text x="30" y="496" font-size="14.5" fill="#9a9a94">Inspect shows a family's state now, debuffs counted. The Bestiary keeps what you learnt of every species.</text>
+</svg>

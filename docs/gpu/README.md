@@ -2,7 +2,9 @@
 
 What it takes to rasterise on the Mali-G31 instead of the CPU, what was measured on the device to decide, and how the
 `--renderer gles` backend was built. Notes 01-08 are the study that preceded the backend; 09-16 are its build log; 17 is
-an open item. This folder is the evidence, not a plan. The plan is the `gles` backend entry in the project backlog.
+an open item. This folder is the evidence, not a plan. The plan's outcome is in
+[`../definitive-edition/history.md`](../definitive-edition/history.md) ("Plan 4, GPU backend `gles`") and what it left
+open in [`../definitive-edition/roadmap.md`](../definitive-edition/roadmap.md) ("Performance leftovers").
 
 ## Study (01-08)
 
