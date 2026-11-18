@@ -988,7 +988,9 @@ static void vl_prompt(s32 map, s32 on) {
         port_log("velvet: frame %ld: the way in of map 0x%X prompts", port_frames, map);
     } else if (!on && vl_icon != NULL) {
         heap_objects.stop(vl_icon_closing); /* a second close before the first one's frames ran out: that one goes */
-        vl_icon->set_state(vl_icon, OBJECT_STATE_DONE); /* it closes, then ends itself */
+        /* Object's set_state has no prototype (the decomp's header, kept for the match); clang's -Werror refuses a call
+         * with arguments through it (Windows and Android builds), so it goes through a prototyped pointer. */
+        ((void (*)(Object *, s32))vl_icon->set_state)(vl_icon, OBJECT_STATE_DONE); /* it closes, then ends itself */
         vl_icon_closing = vl_icon;
         vl_icon = NULL;
         port_log("velvet: frame %ld: the prompt of map 0x%X closes", port_frames, map);
