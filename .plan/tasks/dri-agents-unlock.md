@@ -14,9 +14,9 @@ Status (2026-11-17, night):
   `def_dri_talk`) and the agent table (`tools/gen_dri_challenges.py` `AGENTS`: the eight by map). Seen in game at Johann
   (map 0x22B, party level sum about 87, over his old upper bound of 60): he gives the quest line; the DDNA's hand-in does
   not open the list on that talk, the next talk does. Script: `.dumps/tasks/dri/ingame/johann.py`.
-- **Part 2: the places are verified in game, the text waits.** Six of the eight quest lines are already rewritten by
-  the story session (`tools/text_override/en_story.txt`, which wins over `en.txt`), so their hint pages go there; see
-  "Part 2" below.
+- **Part 2: done.** Bob's and Johann's hints are in `en.txt` (`11d9e54`, Johann's seen in game); the other six are
+  in the story rewrite's `en_story.txt` (`c5e58e4`, the story session). README updated.
+- **Left:** a shot of the Gauntlet's list opening after a real agent talk (the arming is in the log).
 
 The map comes from `.dumps/tasks/dri/agents_map.py`, which writes `agents_map.txt`. That file has every agent
 variant's conditions, flags set and decoded lines.

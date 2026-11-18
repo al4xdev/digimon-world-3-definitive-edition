@@ -4,7 +4,12 @@ Status (2026-11-17, night):
 
 - **Part 1: done** (`89c46af`): the rule below is in `tools/gen_recipes.py` (`MIN_POOL`, `REACH_MAX`, `WINDOW`,
   `SPREAD`, `SECOND`), with its three checks in `--check`. Seen in game: shop 13's Shine Blade asks Chrome Digizoid,
-  shop 28's Tenjinmaru Obsidian Digizoid. The README line waits for the shared README to be free.
+  shop 28's Tenjinmaru Obsidian Digizoid.
+- **Part 2A: done** (`11d9e54`): the ten Elemental weapons of the table below, at a 25% power cost instead of the
+  heads' 50% (at 50 a weapon lost half its damage and the resists hit their 400 cap from tier 4 on). Names: Ember
+  Dagger, Mizuchimaru, Sylph Tale, Volt Fang, Shade Gun, Blaze Glove, Tidal Horn, Storm Spear; Raijin Fist and Suijin
+  Cannon keep theirs. Seen in game: shop 15's Suijin Cannon. Portuguese names: the owner's translation.
+- **Part 2B (accessory trade-offs): not started**; it needs the two engine hooks described below.
 - Part 2 needs the texts (`tools/text_override/*.txt`, `tools/gen_text_override.py`, the generated
   `definitive_text*.{c,inc}`). Those belong to the story session until it says its types are done. Part 2 also
   creates items, so the owner approves the list first (PRD rule).
