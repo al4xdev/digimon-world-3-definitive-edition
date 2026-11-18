@@ -745,7 +745,7 @@ static int vl_dealer(const FieldstgActor *actor) {
     if (!vl_on() || placed == NULL) {
         return 0;
     }
-    if (vl_room && placed == &vl_merchant) {
+    if (placed == &vl_merchant) {
         return 1;
     }
     return placed->id == VL_MERCHANT && ((vl_room && placed == def_time_challenger()) || def_story_oikawa_figure(placed));
@@ -756,7 +756,9 @@ int dw3_velvet_actor_art(FieldstgActor *actor, u32 *ot, s32 x, s32 y) {
     s32 i;
     s32 t;
 
-    if (vl_on() && vl_room && actor != NULL && actor->placed == &vl_igor) {
+    /* Igor's and the dealer's figures are the room's alone: told by the figure, not vl_room, which a way out
+     * (dw3_velvet_leave) clears as the fade out starts, the room still on screen (the opening's dream ends so) */
+    if (vl_on() && actor != NULL && actor->placed == &vl_igor) {
         return dw3_velvet_igor_head(actor, ot, x, y); /* over the game's figure, which is drawn too */
     }
     if (!vl_dealer(actor)) {
