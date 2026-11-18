@@ -1,9 +1,10 @@
 # Forge variety: every material used, new trade-off equipment
 
-Status (2026-11-17):
+Status (2026-11-17, night):
 
-- Planned and measured; nothing applied.
-- Part 1 needs no text, so it can start at any time.
+- **Part 1: done** (`89c46af`): the rule below is in `tools/gen_recipes.py` (`MIN_POOL`, `REACH_MAX`, `WINDOW`,
+  `SPREAD`, `SECOND`), with its three checks in `--check`. Seen in game: shop 13's Shine Blade asks Chrome Digizoid,
+  shop 28's Tenjinmaru Obsidian Digizoid. The README line waits for the shared README to be free.
 - Part 2 needs the texts (`tools/text_override/*.txt`, `tools/gen_text_override.py`, the generated
   `definitive_text*.{c,inc}`). Those belong to the story session until it says its types are done. Part 2 also
   creates items, so the owner approves the list first (PRD rule).

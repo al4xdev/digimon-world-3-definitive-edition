@@ -8,11 +8,15 @@ Owner's request (2026-11-17):
 3. Open the agent's intro and Simulations (DRI Gauntlet) menu only after his original event is done, so the canonical
    quest and the simulator never overlap.
 
-Status (2026-11-17): mapped, nothing applied.
+Status (2026-11-17, night):
 
-- Parts 1 and 3 touch no text and can start at once.
-- Part 2 is text (`tools/text_override/en.txt`), so it waits until the story session says the texts are free (do not
-  run `tools/gen_text_override.py` before that).
+- **Parts 1 and 3: done** (`bb15d51`), in `port/game/definitive_dri_screen.c` (`dri_quest_open`, `dri_rookie`,
+  `def_dri_talk`) and the agent table (`tools/gen_dri_challenges.py` `AGENTS`: the eight by map). Seen in game at Johann
+  (map 0x22B, party level sum about 87, over his old upper bound of 60): he gives the quest line; the DDNA's hand-in does
+  not open the list on that talk, the next talk does. Script: `.dumps/tasks/dri/ingame/johann.py`.
+- **Part 2: the places are verified in game, the text waits.** Six of the eight quest lines are already rewritten by
+  the story session (`tools/text_override/en_story.txt`, which wins over `en.txt`), so their hint pages go there; see
+  "Part 2" below.
 
 The map comes from `.dumps/tasks/dri/agents_map.py`, which writes `agents_map.txt`. That file has every agent
 variant's conditions, flags set and decoded lines.
@@ -33,10 +37,10 @@ Each variant has a `FieldstgTalk` list; the first entry whose flags pass is said
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Kazuki | 0x21D (330) | 43 | Patamon (7) | TALK02 | 39 | MagnaAngemon, South Badland 0x247 (wstag550, actor 124) | 0x602 | 45 ≤ sum < 75 |
 | Michael | 0x21D (330) | 44 | Renamon (6) | TALK02 | 38 | Taomon, North Badland W 0x24A (wstag565, actor 125) | 0x603 | 45 ≤ sum < 75 |
-| Bob | 0x226 (375) | 43 | Veemon (4) | TALK06 | 35 | Paildramon, Bulk Swamp 0x234 (wstag450, actor 127) | 0x607 | sum < 30 (no lower bound) |
+| Bob | 0x226 (375) | 43 | Veemon (4) | TALK06 | 35 | Paildramon, Bulk Bridge 0x234 (wstag450, actor 127) | 0x607 | sum < 30 (no lower bound) |
 | Johann | 0x22B (405) | 43 | Agumon (3) | TALK06 | 6 | MetalGreymon, Bulk Swamp 0x233 (wstag445, actor 123) | 0x600 | 30 ≤ sum < 60 |
 | Jimmy | 0x22E (420) | 43 | Guilmon (5) | TALK01 | 34 | WarGrowlmon, Ether Jungle 0x23C (wstag490, actor 126) | 0x601 | 30 ≤ sum < 60 |
-| Ken | 0x258 (635) | 43 | Kotemon (0) | TALK02 | 19 | Kyukimon, map 0x241 "Zhu Que City" (wstag525, actor 128) | 0x604 | 60 ≤ sum < 90 |
+| Ken | 0x258 (635) | 43 | Kotemon (0) | TALK02 | 19 | Kyukimon, Suzaku UG Lake 0x241 (wstag525, actor 128) | 0x604 | 60 ≤ sum < 90 |
 | Yuji | 0x258 (635) | 44 | Kumamon (1) | TALK02 | 395 | GrapLeomon, Ether Jungle 0x23C (wstag490, actor 129) | 0x605 | 60 ≤ sum < 90 |
 | Yang | 0x258 (635) | 163 | Monmon (2) | TALK02 | 360 | Armormon, Duel Island 0x228 (wstag385, actor 100) | 0x606 | 60 ≤ sum < 90 |
 
@@ -131,30 +135,43 @@ from the start. His original "I love Kotemon!" line stays, and the menu opens af
 
 ## Part 2: the hint line (text; waits for the texts to be free)
 
-- **Which lines:**
-  - With part 1, an agent whose quest is not done says his quest line on every talk until the DDNA is brought.
-  - So the hint goes into those quest lines, as an override of the talk file message with one page added at the
-    end. Use the `TALKnn msg:` form, as the Velvet lines do (`en.txt`, `TALK05 17`).
-- **Before writing the hints, verify in game where each boss stands.** The table above is from the stage files: map
-  0x241 for Kyukimon is "Zhu Que City" by its area, but it may be a building. Write the place as the player sees it
-  on the map screen.
-- **The eight lines** (keep the game's style: about 20 characters a line, `<1>` breaks, `<2,2><3>` pages):
+- **Which lines:** with part 1, an agent whose quest is not done says his quest line on every talk until the DDNA is
+  brought, so the hint goes into the quest line, as one more page.
+- **The places, as each map's own title shows them on arrival** (measured 2026-11-17: the area names of the hunt tool
+  were wrong for two, Bulk Bridge and Bulk Swamp were swapped, and 0x241 is not the city but its underground lake):
 
-  | file | msg | agent | hint (English draft) |
-  | --- | --- | --- | --- |
-  | TALK02 | 633 | Kazuki | "MagnaAngemon was seen in the South Badland." |
-  | TALK02 | 647 | Michael | "Taomon hides in the west of the North Badland." |
-  | TALK06 | 676 | Bob | "Paildramon roams Bulk Swamp, by the bridge." |
-  | TALK06 | 691 | Johann | "MetalGreymon is said to be at Bulk Bridge." |
-  | TALK01 | 277 | Jimmy | "WarGrowlmon lives in the Ether Jungle." |
-  | TALK02 | 831 | Ken | "Kyukimon is somewhere in Zhu Que City." (verify the spot) |
-  | TALK02 | 839 | Yuji | "GrapLeomon trains in the Ether Jungle." |
-  | TALK02 | 847 | Yang | "Armormon guards Duel Island." |
+  | map | title (sector) | boss |
+  | --- | --- | --- |
+  | 0x247 | South Badland (West Sector) | MagnaAngemon |
+  | 0x24A | North Badland W (West Sector) | Taomon |
+  | 0x234 | Bulk Bridge (South Sector) | Paildramon |
+  | 0x233 | Bulk Swamp (South Sector) | MetalGreymon |
+  | 0x23C | Ether Jungle (South Sector) | WarGrowlmon, GrapLeomon |
+  | 0x241 | Suzaku UG Lake (South Sector) | Kyukimon |
+  | 0x228 | Duel Island (East Sector) | Armormon |
+
+- **Bob and Johann (TALK06 676, 691): `en.txt`**, which has no override of them yet. Johann's disc line says "I have no
+  idea where he is", so that page becomes the hint:
+
+  ```text
+  TALK06 676: <7>DRI Bob<7>Hey, have you seen<1>Paildramon?<2,2><3>I've been looking<1>for him forever, but<1>I can't find him.<2,2><3>Folks say he flies<1>over Bulk Bridge, in<1>the South Sector.<2,2><3>If you find him, I'll<1>give you something<1>great...<2,2>
+  TALK06 691: <7>DRI Johann<7>I'm looking for<1>MetalGreymon...<2,2><3>They say he roams<1>the Bulk Swamp, in<1>the South Sector.<2,2><3>If I can get Agumon's<1>DDNA, I can go on<1>with my research...<2,2><3>Oh! If you see him,<1>can you get the<1>DDNA from him?<2,2><3>I'll add Agumon as<1>your partner as a<1>reward!<2,2>
+  ```
+
+- **The other six: the story session's `en_story.txt`** (its rewrite wins over `en.txt`). One page added before each
+  line's last page (the offer), in its style (at most 22 letters a line, 3 to a page):
+
+  | line | page to add |
+  | --- | --- |
+  | TALK02 633 (Kazuki) | `<3>MagnaAngemon was<1>seen in the South<1>Badland, West Sector.<2,2>` |
+  | TALK02 647 (Michael) | `<3>Taomon hides in the<1>North Badland W, in<1>the West Sector.<2,2>` |
+  | TALK01 277 (Jimmy) | `<3>WarGrowlmon lives in<1>the Ether Jungle, in<1>the South Sector.<2,2>` |
+  | TALK02 831 (Ken) | `<3>Kyukimon was seen by<1>the Suzaku UG Lake,<1>in the South Sector.<2,2>` |
+  | TALK02 839 (Yuji) | `<3>GrapLeomon trains in<1>the Ether Jungle, in<1>the South Sector.<2,2>` |
+  | TALK02 847 (Yang) | `<3>Armormon guards Duel<1>Island, in the East<1>Sector.<2,2>` |
 
 - **Translation:** Portuguese is the owner's translation, done later. Do not write `pt.txt`.
-- **Then:**
-  - Run `gen_text_override.py`, only after the story session's OK.
-  - Run `tests/port/text_override.py` (line widths and pages).
+- **Then:** `gen_text_override.py` and `tests/port/text_override.py` (line widths and pages), and a shot of one hint.
 
 ## Tests
 
