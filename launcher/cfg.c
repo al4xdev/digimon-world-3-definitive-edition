@@ -141,6 +141,7 @@ void cfg_defaults(Cfg *c) {
     memset(c, 0, sizeof(*c));
     c->hz = 50;
     c->ff = 3;
+    c->load = 2; /* faster loading on at 4x: the original port's default for the install and the loads */
     c->btext = 1; /* skip: the definitive HUD has no need of battle messages */
     c->bmem = 1;
     c->bbuf = 1;
@@ -269,6 +270,7 @@ static int json_enabled(const char *text, const char *mod) {
 }
 
 static const char *ff_names[] = {"off", "2x", "4x", "8x", "unlimited"};
+static const char *load_names[] = {"off", "2x", "4x", "8x", "instant"};
 static const char *lang_names[] = {"english", "portuguese", "french", "german", "italian", "spanish", "usa", "japanese"};
 static const char *bbuf_names[] = {"off", "short", "long"};
 static const char *btext_names[] = {"off", "skip", "async"};
@@ -310,6 +312,7 @@ void cfg_load(Cfg *c) {
         else if (!strcmp(line, "lang")) c->lang = n < 0 ? 0 : n > 7 ? 7 : n;
         else if (!strcmp(line, "ff")) ffon = n;
         else if (!strcmp(line, "ff_speed")) snprintf(ffspeed, sizeof(ffspeed), "%s", v);
+        else if (!strcmp(line, "load")) c->load = n < 0 ? 0 : n > 4 ? 4 : n;
         else if (!strcmp(line, "skip")) c->skip = n != 0;
         else if (!strcmp(line, "battles")) c->battles = n != 0;
         else if (!strcmp(line, "hit")) c->hit = n != 0;
@@ -421,13 +424,14 @@ static int write_settings(const Cfg *c) {
     int vfill = is_android ? 1 : (is_pc && c->fill);
     int vw = is_pc ? (c->widescreen && c->renderer_pc == 0) : (is_android ? 1 : 0);
     const char *vfilt = (is_pc || is_android) ? filter_names[c->filter] : "none";
-    char text[4600];
+    char text[6400];
     snprintf(text, sizeof(text),
         "{\n  \"schema\": 1,\n  \"disc\": { \"path\": \"%s\" },\n"
         "  \"video\": { \"window\": true, \"scale\": %d, \"fullscreen\": %s, \"fill\": %s, \"refresh\": %d, \"renderer\": \"%s\", \"filter\": \"%s\" },\n"
         "  \"audio\": { \"mute\": false },\n  \"memcard1\": \"card1.mcd\",\n  \"memcard2\": \"card2.mcd\",\n"
         "  \"watchdog\": 0,\n  \"debug\": { \"logs\": \"%s\" },\n  \"mods\": {\n"
         "    \"fast_forward\": { \"enabled\": %s, \"speed\": \"%s\", \"mute\": true, \"hold\": \"\", \"toggle\": \"\" },\n"
+        "    \"fast_loading\": { \"enabled\": %s, \"speed\": \"%s\" },\n"
         "    \"skip_dialogues\": { \"enabled\": %s, \"fast_forward_waits\": false },\n"
         "    \"battle_animations\": { \"enabled\": %s, \"hit_reaction\": %s },\n"
         "    \"battle_text\": { \"enabled\": true, \"mode\": \"%s\" },\n"
@@ -438,6 +442,7 @@ static int write_settings(const Cfg *c) {
         "    \"led_bar\": { \"enabled\": %s }\n  },\n  \"touch_pad\": %s,\n  \"input\": { \"gamepad\": %s }\n}\n",
         disc_esc, vscale, vfull ? "true" : "false", vfill ? "true" : "false", c->hz, renderer, vfilt,
         log_names[c->logs], c->ff ? "true" : "false", ff_names[c->ff ? c->ff : 3],
+        c->load ? "true" : "false", load_names[c->load ? c->load : 2],
         c->skip ? "true" : "false", c->battles ? "true" : "false", c->battles && c->hit ? "true" : "false",
         btext_names[c->btext], lang_names[c->lang < 0 || c->lang > 7 ? 0 : c->lang], vw ? "true" : "false",
         hud_name(c->hud[H_FIGHT]), hud_name(c->hud[H_TECH]), hud_name(c->hud[H_DV]),
@@ -450,9 +455,9 @@ static int write_settings(const Cfg *c) {
 int cfg_save(const Cfg *c) {
     char path[600], text[3600] = "", line[1400];
     int rc = 0;
-    snprintf(text, sizeof(text), "hz=%d\nff=%d\nff_speed=%s\nskip=%d\nbattles=%d\nhit=%d\nbtext=%d\nsaveany=1\nbmenu=1\n"
+    snprintf(text, sizeof(text), "hz=%d\nff=%d\nff_speed=%s\nload=%d\nskip=%d\nbattles=%d\nhit=%d\nbtext=%d\nsaveany=1\nbmenu=1\n"
              "bmem=%d\nbbuf=%d\nwidescreen=%d\nfullscreen=%d\ntouch_pad=%d\nfill=%d\nscale=%d\nrenderer_pc=%d\nfilter=%d\n",
-             c->hz, c->ff ? 1 : 0, ff_names[c->ff ? c->ff : 3], c->skip, c->battles, c->hit,
+             c->hz, c->ff ? 1 : 0, ff_names[c->ff ? c->ff : 3], c->load, c->skip, c->battles, c->hit,
              c->btext, c->bmem, c->bbuf, c->widescreen, c->fullscreen, c->touch_pad, c->fill, c->scale, c->renderer_pc, c->filter);
     if (disc_path[0]) {
         snprintf(line, sizeof(line), "disc=%s\n", disc_path);

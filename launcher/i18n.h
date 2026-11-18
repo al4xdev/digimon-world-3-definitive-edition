@@ -118,6 +118,13 @@ static const UiTrRow ui_tr_table[] = {
     /* GAME screen */
     {"LANGUAGE", "IDIOMA", "LANGUE", "SPRACHE", "LINGUA", "IDIOMA"},
     {"FAST-FORWARD", "AVANÇO RÁPIDO", "AVANCE RAPIDE", "VORSPULEN", "AVANZ. RAPIDO", "AVANCE RÁPIDO"},
+    {"FAST LOAD", "LEITURA RÁPIDA", "LECTURE RAPIDE", "SCHNELLES LADEN", "LETTURA RAPIDA", "LECTURA RÁPIDA"},
+    {"Reads the game's files faster. Movies keep normal speed. OFF, 2X, 4X, 8X or INSTANT.",
+     "Lê os arquivos do jogo mais rápido. Os filmes ficam na velocidade normal. OFF, 2X, 4X, 8X ou INSTANT.",
+     "Lit les fichiers du jeu plus vite. Les films gardent la vitesse normale. OFF, 2X, 4X, 8X ou INSTANT.",
+     "Liest die Spieldateien schneller. Filme bleiben normal. OFF, 2X, 4X, 8X oder INSTANT.",
+     "Legge i file del gioco più in fretta. I filmati restano normali. OFF, 2X, 4X, 8X o INSTANT.",
+     "Lee los archivos del juego más rápido. Las películas siguen a velocidad normal. OFF, 2X, 4X, 8X o INSTANT."},
     {"SKIP DIALOGUES", "PULAR DIÁLOGOS", "PASSER DIALOGUES", "DIALOGE ÜBERSPR.", "SALTA DIALOGHI", "SALTAR DIÁLOGOS"},
     {"SKIP BATTLE ANIMS", "PULAR ANIMAÇÕES", "PASSER ANIMATIONS", "KAMPFANIM. AUS", "SALTA ANIMAZIONI", "SALTAR ANIMACIONES"},
     {"   HIT REACTION", "   REAÇÃO DE DANO", "   RÉACTION D'IMPACT", "   TREFFERREAKTION", "   REAZIONE COLPO", "   REACCIÓN DE GOLPE"},

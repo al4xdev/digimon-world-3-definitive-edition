@@ -68,6 +68,7 @@ static long trans_t0;
 #define TRANS_MS 210
 
 static const char *ff_label[] = {"OFF", "2X", "4X", "8X", "UNLIMITED"};
+static const char *load_label[] = {"OFF", "2X", "4X", "8X", "INSTANT"};
 static const char *lang_label[] = {"ENGLISH", "PORTUGUÊS (BR)", "FRANÇAIS", "DEUTSCH", "ITALIANO", "ESPAÑOL", "ENGLISH (USA)", "JAPANESE"};
 static const char *buf_label[] = {"OFF", "SHORT", "LONG"};
 static const char *bt_label[] = {"OFF", "SKIP", "ASYNC"};
@@ -99,8 +100,8 @@ static int home_step(void) {
     return home_n > 7 ? 38 : 44;
 }
 
-static int game_n(void) { return is_portmaster ? 6 : 7; }
-static int game_step(void) { return is_portmaster ? 42 : 36; }
+static int game_n(void) { return is_portmaster ? 7 : 8; }
+static int game_step(void) { return is_portmaster ? 36 : 30; }
 
 static int home_index(int id) {
     for (int i = 0; i < home_n; i++) {
@@ -233,7 +234,7 @@ static const char *home_name[HI_COUNT] = {
     "PLAY", "GAME", "VIDEO", "BATTLE HUD", "CONTROLS", "SAVES & CLOUD", "LED BAR", "DEBUG", "RESET SETTINGS"
 };
 static const char *home_hint[HI_COUNT] = {
-    "Start Digimon World 3 with your saved settings.", "Language, fast-forward, skipping and battle text.",
+    "Start Digimon World 3 with your saved settings.", "Language, fast-forward, faster loading, skipping and battle text.",
     "Widescreen battles, monitor scale, fullscreen and filter.",
     "Where each battle action sits on your pad.", "Your buttons, and the letters the game shows.",
     "Cloud cross-play sync, 1-100 local save rotation and backup restore.",
@@ -376,18 +377,22 @@ static void draw_game(void) {
         const char *b = strrchr(disc_path, '/');
         disc_lbl = b ? b + 1 : disc_path;
     }
-    const char *v[7] = {lang_label[c.lang < 0 || c.lang > 7 ? 0 : c.lang], ff_label[c.ff], c.skip ? "ON" : "OFF",
-                        c.battles ? "ON" : "OFF", c.battles ? (c.hit ? "ON" : "OFF") : "-", bt_label[c.btext], disc_lbl};
-    const char *lab[7] = {"LANGUAGE", "FAST-FORWARD", "SKIP DIALOGUES", "SKIP BATTLE ANIMS", "   HIT REACTION", "BATTLE TEXT", "DISC IMAGE"};
+    const char *v[8] = {lang_label[c.lang < 0 || c.lang > 7 ? 0 : c.lang], ff_label[c.ff], load_label[c.load],
+                        c.skip ? "ON" : "OFF", c.battles ? "ON" : "OFF", c.battles ? (c.hit ? "ON" : "OFF") : "-",
+                        bt_label[c.btext], disc_lbl};
+    const char *lab[8] = {"LANGUAGE", "FAST-FORWARD", "FAST LOAD", "SKIP DIALOGUES", "SKIP BATTLE ANIMS",
+                          "   HIT REACTION", "BATTLE TEXT", "DISC IMAGE"};
     int n = game_n(), st = game_step();
     int gy = (int)(cur_y >= 0 && cur_screen == S_GAME ? cur_y : row_target_y(S_GAME, sel));
     draw_focus(40, gy, W - 80, 34, 8, 0);
     for (int i = 0; i < n; i++) {
-        int on = (i == 6) ? (disc_path[0] != 0) : (strcmp(v[i], "OFF") && strcmp(v[i], "-"));
+        int on = (i == 7) ? (disc_path[0] != 0) : (strcmp(v[i], "OFF") && strcmp(v[i], "-"));
         row(90 + i * st, lab[i], v[i], i == sel, 0, on, 0);
     }
-    static const char *desc[7] = {"Game text language (English, Portuguese BR, French, German, Italian, Spanish).",
-        "How fast the fast-forward button runs the game.", "Dialogue boxes close on their own.",
+    static const char *desc[8] = {"Game text language (English, Portuguese BR, French, German, Italian, Spanish).",
+        "How fast the fast-forward button runs the game.",
+        "Reads the game's files faster. Movies keep normal speed. OFF, 2X, 4X, 8X or INSTANT.",
+        "Dialogue boxes close on their own.",
         "Battle moves play without their animation.", "Keep the hit flinch while animations are skipped.",
         "SKIP closes battle message boxes so combat flows.", "Pick or change your .cue / .bin disc file."};
     rect(40, 346, W - 80, 1, C_EDGE, 256);
@@ -1322,15 +1327,16 @@ static void on_press(int code) {
             switch (sel) {
             case 0: c.lang = (c.lang + s + 8) % 8; break;
             case 1: c.ff = (c.ff + s + 5) % 5; break;
-            case 2: c.skip = !c.skip; break;
-            case 3: c.battles = !c.battles; if (!c.battles) c.hit = 0; break;
-            case 4: if (c.battles) c.hit = !c.hit; break;
-            case 5: c.btext = (c.btext + s + 3) % 3; break;
-            case 6:
+            case 2: c.load = (c.load + s + 5) % 5; break;
+            case 3: c.skip = !c.skip; break;
+            case 4: c.battles = !c.battles; if (!c.battles) c.hit = 0; break;
+            case 5: if (c.battles) c.hit = !c.hit; break;
+            case 6: c.btext = (c.btext + s + 3) % 3; break;
+            case 7:
                 if (ok) {
                     browse_start_dir(b_dir, sizeof(b_dir));
                     browse_load(b_dir);
-                    go(S_BROWSE, 0, 1, 90 + 6 * game_step() + 14);
+                    go(S_BROWSE, 0, 1, 90 + 7 * game_step() + 14);
                 }
                 break;
             }
@@ -1637,12 +1643,12 @@ static void on_press(int code) {
                 snprintf(next, sizeof(next), "%s/..", b_dir);
                 browse_load(next);
             } else {
-                go(S_GAME, 6, -1, 90 + 6 * game_step() + 14);
+                go(S_GAME, 7, -1, 90 + 7 * game_step() + 14);
             }
         } else if (code == c.pad[A_CIRCLE].code && is_pc) {
             if (browse_disc() == 0) {
                 cfg_save(&c);
-                go(S_GAME, 6, -1, 90 + 6 * game_step() + 14);
+                go(S_GAME, 7, -1, 90 + 7 * game_step() + 14);
             }
         } else if (ok && b_count > 0) {
             char next[1500];
@@ -1652,7 +1658,7 @@ static void on_press(int code) {
             } else {
                 snprintf(disc_path, sizeof(disc_path), "%.1199s", next);
                 cfg_save(&c);
-                go(S_GAME, 6, -1, 90 + 6 * game_step() + 14);
+                go(S_GAME, 7, -1, 90 + 7 * game_step() + 14);
             }
         }
         break;

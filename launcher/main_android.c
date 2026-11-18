@@ -29,7 +29,8 @@ enum {
     S_DEBUG, S_BROWSE, S_RESET, S_CLEAN, S_LOADING, S_ERROR
 };
 enum { HI_PLAY, HI_GAME, HI_HUD, HI_CONTROLS, HI_SAVES, HI_DEBUG, HI_RESET, HI_COUNT };
-enum { GAME_LANG, GAME_FF, GAME_SKIP, GAME_BATTLES, GAME_HIT, GAME_BTEXT, GAME_TOUCHPAD, GAME_DISC, GAME_N };
+enum { GAME_LANG, GAME_FF, GAME_LOAD, GAME_SKIP, GAME_BATTLES, GAME_HIT, GAME_BTEXT, GAME_TOUCHPAD, GAME_DISC, GAME_N };
+#define GAME_ROW_STEP 36
 enum { SAVES_SYNC, SAVES_INTERVAL, SAVES_BACKUPS, SAVES_NOW, SAVES_RESTORE, SAVES_N };
 enum { DEBUG_LOGS, DEBUG_SAVE_LOGS, DEBUG_CLEAN_LOGS, DEBUG_N };
 
@@ -66,6 +67,7 @@ static uint32_t *trans_from, *trans_to;
 
 static const char *lang_label[8] = {"ENGLISH", "PORTUGUESE BR", "FRENCH", "GERMAN", "ITALIAN", "SPANISH", "USA", "JAPANESE"};
 static const char *ff_label[5] = {"OFF", "2X", "4X", "8X", "UNLIMITED"};
+static const char *load_label[5] = {"OFF", "2X", "4X", "8X", "INSTANT"};
 static const char *bt_label[3] = {"OFF", "SKIP", "ASYNC"};
 static const char *buf_label[3] = {"OFF", "SHORT", "LONG"};
 static const char *log_label[3] = {"OFF", "SOFT", "HEAVY"};
@@ -140,7 +142,7 @@ static void footer_touch(int show_play, int show_back, const char *mid_label) {
 static int row_target_y(int s, int idx) {
     switch (s) {
     case S_HOME: return 78 + idx * 48;
-    case S_GAME: return 76 + idx * 42;
+    case S_GAME: return 76 + idx * GAME_ROW_STEP;
     case S_HUD: return 174 + idx * 25;
     case S_CONTROLS: return idx == 0 ? 74 : 122 + (idx - 1) * 37;
     case S_SAVES: return 86 + idx * 52;
@@ -312,12 +314,13 @@ static void draw_game(void) {
         disc_lbl = b ? b + 1 : disc_path;
     }
     const char *lab[GAME_N] = {
-        "LANGUAGE", "FAST-FORWARD", "SKIP DIALOGUES", "SKIP BATTLE ANIMS",
+        "LANGUAGE", "FAST-FORWARD", "FAST LOAD", "SKIP DIALOGUES", "SKIP BATTLE ANIMS",
         "   HIT REACTION", "BATTLE TEXT", "FLOATING PAD", "DISC IMAGE"
     };
     const char *val[GAME_N] = {
         lang_label[c.lang < 0 || c.lang > 7 ? 0 : c.lang],
         ff_label[c.ff],
+        load_label[c.load],
         c.skip ? "ON" : "OFF",
         c.battles ? "ON" : "OFF",
         c.battles ? (c.hit ? "ON" : "OFF") : "-",
@@ -330,7 +333,7 @@ static void draw_game(void) {
     for (int i = 0; i < GAME_N; i++) {
         int on = (i == GAME_DISC) ? (disc_path[0] != 0) : (strcmp(val[i], "OFF") != 0 && strcmp(val[i], "-") != 0);
         int arrows = (i != GAME_DISC);
-        row_touch(76 + i * 42, 38, lab[i], val[i], i == sel, 0, on, 0, arrows);
+        row_touch(76 + i * GAME_ROW_STEP, 34, lab[i], val[i], i == sel, 0, on, 0, arrows);
     }
     footer_touch(1, 1, "CHANGE");
 }
@@ -542,6 +545,7 @@ static void activate_game_row(int row, int dir) {
     switch (row) {
     case GAME_LANG: c.lang = (c.lang + dir + 8) % 8; break;
     case GAME_FF: c.ff = (c.ff + dir + 5) % 5; break;
+    case GAME_LOAD: c.load = (c.load + dir + 5) % 5; break;
     case GAME_SKIP: c.skip = !c.skip; break;
     case GAME_BATTLES: c.battles = !c.battles; break;
     case GAME_HIT: if (c.battles) c.hit = !c.hit; break;
@@ -657,7 +661,7 @@ static void on_touch(int code, int x, int y) {
         }
     } else if (screen == S_GAME) {
         for (int i = 0; i < GAME_N; i++) {
-            if (in_rect(x, y, 32, 76 + i * 42, W - 64, 40)) {
+            if (in_rect(x, y, 32, 76 + i * GAME_ROW_STEP, W - 64, GAME_ROW_STEP)) {
                 sel = i;
                 int dir = (x >= 380 && x < 490) ? -1 : +1;
                 activate_game_row(i, dir);

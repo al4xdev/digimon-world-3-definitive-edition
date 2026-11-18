@@ -57,6 +57,16 @@ record are those of an unthrottled run, which are byte-identical to a paced run'
 Test hook: `DW3_PORT_FAST_FORWARD=ON:OFF` (only while the mod is enabled) turns it on for ON vsyncs and off for OFF,
 repeating (`tests/port/settings.py`).
 
+### Faster loading
+
+`fast_loading` (runtime only, no game C). Option: `speed` (enum `2x 4x 8x instant`, default `4x`). The launcher's
+GAME screen writes it on at `4x` (`FAST LOAD`); `OFF` leaves the drive as it is.
+
+While it is enabled, cdload's data reads (overlays, maps, sound banks: the install and the loads between screens) run
+at that multiple of the drive's rate, with the seek shortened as much, or at once. The movie stream and any read with
+the XA bit keep the realistic drive, so the title demo's video and its audio stay paced. A load ends in fewer vsyncs,
+so a generator the game steps once a frame can come out differently later. With the mod off the frame log is unchanged.
+
 ### Skip dialogues
 
 `skip_dialogues`. Options: `toggle` (binding, default `F2`), `hold` (binding, unbound), `fast_forward_waits` (bool,
