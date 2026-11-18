@@ -53,9 +53,6 @@ file(GLOB DW3_ADAPTER_SRCS CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/game/*
 # -O2 for the game's own C crashes at boot here: sound_init -> sound_update_loading -> cdload_get_subfile, SIGSEGV,
 # reproducible (three runs out of three, and a core dump with that stack). Under -O0 it does not, so the decompilation
 # has undefined behaviour the optimiser is entitled to exploit. The game's objects stay at -O0 until it is found.
-# if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm|aarch")
-#     set(PSXSTACK_GAME_OPT -O2)
-# endif()
 # A Release build (the release's packages: scripts/package_appimage.sh, scripts/package_windows.sh) would compile
 # them at the build type's -O3: they stay at -O0 there too, the level the tests and the handheld run them at (the
 # runtime, the shim and the renderers keep their -O3). -DPSXSTACK_GAME_OPT= (empty) gives the game -O3 back.

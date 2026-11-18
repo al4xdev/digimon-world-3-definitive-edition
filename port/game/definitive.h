@@ -957,7 +957,6 @@ int def_record_velvet_seen(void);
 void def_record_set_velvet_seen(int level);
 int def_record_story(int bit);
 void def_record_set_story(int bit);
-int def_record_story_gate(void); /* the gatekeeper's trials won in the current run (0..3) */
 /* The story's answers, in the order it asks them (Igor's dreams): 0 not asked yet, else the option taken (1..). */
 #define DEF_STORY_ANSWERS 160 /* 0..7 Igor's dreams, 8..159 the scenes' choices (en_choices.txt Q<n>), 1..3 each */
 #define DEF_STORY_ANSWER_BYTES (DEF_STORY_ANSWERS / 4) /* two bits an answer: what the record has room for */
@@ -1045,7 +1044,6 @@ void def_time_frame(void);              /* each field frame while the room runs 
 int def_time_warp_closed(int type, int param); /* the Warp Gate held shut until the trials are passed */
 void def_time_battle_begin(void);
 void def_time_battle_end(int result);
-int def_time_fighting(void);
 void def_time_savestate(struct PortState *s);
 int def_time_text_own(int base_id, int index);
 void def_time_gate_frame(int (*say)(const int *messages, int n)); /* the shut gate's warning (def_story_frame) */
@@ -1060,7 +1058,6 @@ int def_purify_fighting(void);
 void def_purify_battle_begin(void);
 void def_purify_battle_end(int result);
 void def_purify_offer(void);
-int def_purify_open(void);
 struct PortState;
 void def_purify_savestate(struct PortState *s);
 /* 1 when the screen and the card record are in use: never in a replay script (shared with the emulator), unless

@@ -469,10 +469,6 @@ int def_time_defeat(void) {
     return 1;
 }
 
-int def_time_fighting(void) {
-    return tm.fighting;
-}
-
 /* ---- The gate itself, on map 0x288. */
 
 /* The Warp Gate's map event (FIELDSTG's check, dw3_velvet_event_closed): shut until the trials are passed. The check

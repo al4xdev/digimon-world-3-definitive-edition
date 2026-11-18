@@ -24,7 +24,6 @@
 void led_start(void) {}
 void led_frame(void) {}
 const char *led_status(void) { return NULL; }
-void led_stop(void) {}
 
 #else /* the handheld: a Unix socket to the daemon */
 

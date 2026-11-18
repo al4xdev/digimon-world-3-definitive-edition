@@ -728,10 +728,6 @@ void def_purify_offer(void) {
              def_record_blast_count(), def_record_blast_purified());
 }
 
-int def_purify_open(void) {
-    return pf.open || pf.request;
-}
-
 /* The panel's buttons: 1 when the panel closes. */
 static int pf_input(void) {
     int ok = PAD_PRESSED(13), back = PAD_PRESSED(12) || PAD_PRESSED(14);

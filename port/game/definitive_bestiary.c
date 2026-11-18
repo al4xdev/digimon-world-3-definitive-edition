@@ -546,10 +546,6 @@ void def_record_set_story_answer(int question, int option) {
     }
 }
 
-int def_record_story_gate(void) {
-    return story_gate;
-}
-
 void def_record_set_story_gate(int stage) {
     story_gate = (unsigned char)stage;
 }

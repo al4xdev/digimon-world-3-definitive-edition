@@ -81,9 +81,6 @@ __pycache__
 .dumps/
 # Local Claude Code state
 .claude/
-# The .plan task files are versioned with the project: they say why each change was made. Only the tool's own database
-# is machine state, not history.
-.plan/.state/
 # The PortMaster release built by portmaster/make_release.sh (binary + launcher, regenerable)
 /dist/
 
