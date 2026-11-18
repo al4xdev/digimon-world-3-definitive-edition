@@ -108,7 +108,7 @@ int dw3_velvet_igor_head(FieldstgActor *actor, u32 *ot, s32 x, s32 y); /* defini
                          * (the floor reaches it through one strip at y 160..176), so he blocks no way, and the entry's
                          * camera already shows its red lamps */
 #define VL_MENTOR_Y 165
-#define VL_MENTOR_DIR 1 /* down-left: towards the strip the player comes along */
+#define VL_MENTOR_DIR 6 /* facing the room's upper door beside him, the Time Room's way (owner, 2026-11-18) */
 #define VL_DEMON_X 126 /* upstairs, by the stairs' head */
 #define VL_DEMON_Y 200
 #define VL_DEMON_DIR 0
@@ -116,9 +116,10 @@ int dw3_velvet_igor_head(FieldstgActor *actor, u32 *ot, s32 x, s32 y); /* defini
                          * player finds his back; he turns to talk) */
 #define VL_ETEMON_Y 284
 #define VL_ETEMON_DIR 5
-#define VL_SEPIK_X 176 /* on the floor at the stairs' foot, left of the entry, facing the player coming in */
-#define VL_SEPIK_Y 306
-#define VL_SEPIK_DIR 7
+#define VL_SEPIK_X 170 /* upstairs beside the Demon Bell's keeper (owner, 2026-11-18), on the strip between the stairs'
+                        * head and the upper floor (free ground x 104..224 there), facing the player coming up */
+#define VL_SEPIK_Y 200
+#define VL_SEPIK_DIR 1
 #define VL_IGOR_X 268 /* on the lower floor, on the carpet's far side from the door: the first figure the entry faces */
 #define VL_IGOR_Y 318
 #define VL_IGOR_DIR 7 /* towards the door */
@@ -129,8 +130,8 @@ int dw3_velvet_igor_head(FieldstgActor *actor, u32 *ot, s32 x, s32 y); /* defini
 #define VL_SCENE_Y 340
 #define VL_SCENE_DIR 5      /* up-right, at him */
 #define VL_SCENE_IGOR_DIR 1 /* down-left, at the player */
-#define VL_PIG_X 245 /* on the room's floor, by the carpet's edge */
-#define VL_PIG_Y 292
+#define VL_PIG_X 226 /* on the room's floor, by the carpet's edge, left of the counter's front (owner: room for it) */
+#define VL_PIG_Y 296
 #define VL_PIG_DIR 0
 
 #define VL_BANDS 16 /* the backdrop's horizontal bands: 240 / 16 = one every 15 lines */
