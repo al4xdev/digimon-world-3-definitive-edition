@@ -1,4 +1,4 @@
-/* tests/port/definitive_pity.py's driver for port/game/definitive_progression.c (PRD 2, layer E). */
+/* tests/port/definitive_pity.py's driver for port/game/definitive_progression.c (training pity). */
 #include <stdio.h>
 
 #include "definitive.h"

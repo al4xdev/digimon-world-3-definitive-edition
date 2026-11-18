@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""The hero's skins (.plan/backlog/skins-npc.md): port/game/definitive_skins.c compiled alone against a driver with stand-ins
+"""The hero's skins: port/game/definitive_skins.c compiled alone against a driver with stand-ins
 for the game's state: a hunt won unlocks a skin, the skin worn (locked or a replay script: none), the hero's CLUT (hair
 and clothes changed, the skin's colours, transparent and the STP bit kept) and the record. Needs only the
 host gcc."""

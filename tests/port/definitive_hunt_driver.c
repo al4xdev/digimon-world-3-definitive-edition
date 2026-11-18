@@ -1,4 +1,4 @@
-/* tests/port/definitive_hunt.py's driver for port/game/definitive_hunt.c (PRD 4 layers A to C), linked with
+/* tests/port/definitive_hunt.py's driver for port/game/definitive_hunt.c, linked with
  * definitive_bestiary.c, whose card records keep the chain and the materials. The game's state the module reads
  * (records_state, pad_random, ststatus_map_areas, def_on, the battles, the species' names) and the generated tables are
  * stand-ins. Prints "ok name" / "FAIL name" per case; exits 1 on a failure. */

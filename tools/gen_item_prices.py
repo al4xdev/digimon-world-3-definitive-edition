@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PRD 4 layer D: the definitive prices. Advanced equipment a shop sells costs more, so OVERFINISH's Bits have somewhere
+"""The definitive prices. Advanced equipment a shop sells costs more, so OVERFINISH's Bits have somewhere
 to go, and resells for much less, so a top weapon found, won or bought cheap no longer sells for 30000.
 
   tools/venv/bin/python tools/gen_item_prices.py            # write port/game/definitive_prices.c and the list for review

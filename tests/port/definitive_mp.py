@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Definitive combat layer 8 (MP): port/game/definitive_mp.c's boot patch, compiled alone against a stand-in
-records_digimon filled with the rows of src/main/records.c, gives the PRD's table; and tools/convert_save_mp.py carries
+records_digimon filled with the rows of src/main/records.c, gives the new table; and tools/convert_save_mp.py carries
 the same numbers (old values = records.c's, new values = the patch's). Needs only the host gcc, no disc.
 New game and level-up read these same two fields (gamestate_init_records: start_mp; stfgtrep level-up: hp_mp_gains[1])."""
 import re
@@ -11,7 +11,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "build/port-test/definitive_mp"
 NAMES = ["Kotemon", "Kumamon", "Monmon", "Agumon", "Veemon", "Guilmon", "Renamon", "Patamon"]
-# PRD layer 8: rookie -> (start_mp, gain); the others keep the disc's
+# Layer 8: rookie -> (start_mp, gain); the others keep the disc's
 WANT = {0: (140, 57), 1: (140, 57), 2: (140, 57), 4: (150, 57), 5: (140, 60)}
 
 

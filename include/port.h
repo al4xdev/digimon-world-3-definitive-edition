@@ -159,7 +159,7 @@ s32 port_inn_save_screen(s32 map);
  * the opening as the menu would, without drawing the screen. */
 extern int port_mod_preset_language;
 extern s32 port_preset_language;
-/* The party's shared experience (definitive edition, PRD 3; game_mods.c): at the end of every battle WFIGHTMN tells
+/* The party's shared experience (definitive edition; game_mods.c): at the end of every battle WFIGHTMN tells
  * port_party_xp_knocked_out which party slots are at 0 HP, and STFGTREP's report sets each member's experience to
  * port_party_xp_share(slot, took_part, exp). Both only when def_on. */
 void port_party_xp_knocked_out(s32 slot, s32 knocked_out);
@@ -226,7 +226,7 @@ int dw3_travel_frame(void);
 /* A node of the network (`map`'s spot, in pixels and the direction the game faces the player there); 0 when the map has
  * none. */
 int dw3_travel_node(s32 map, s32 *x, s32 *y, s32 *dir);
-/* The Velvet Room (port/game/definitive_velvet.c, .plan/tasks/velvet-room-plan.md): the Asuka City bar (map 0x20F) as a
+/* The Velvet Room (port/game/definitive_velvet.c): the Asuka City bar (map 0x20F) as a
  * room of its own, reached through a blue door that stands in each inn of the Guardromon network, a few steps from its
  * Guardromon. dw3_velvet_frame takes the door the player steps onto (FIELDSTG's idle step, after dw3_travel_frame; it owns
  * no screen); dw3_velvet_draw paints the room's blue and, in an inn, its door (every frame); dw3_velvet_stage_setup runs
@@ -279,7 +279,7 @@ int def_story_hold_galacticmon(void); /* 1: event 1080's end leaves Galacticmon'
 /* The market screen's own state (port/game/definitive_market_screen.c). */
 int def_bm_screen_open(void);
 int def_bm_bought(void);
-/* PRD 4 layer G, the Black Market (port/game/definitive_market_screen.c): the player talks to the actor whose key1 (its
+/* The Black Market (port/game/definitive_market_screen.c): the player talks to the actor whose key1 (its
  * FieldstgPlacedActor.id) is `actor_key1` on `map`; 1 when it is the trader, and then the game's talk is skipped and the
  * screen opens on the next idle frame. def_bm_frame runs it from FIELDSTG's idle step (fieldstg_manager_update, after
  * dw3_travel_frame) and returns 1 while it owns the field. */
@@ -288,14 +288,14 @@ int def_bm_frame(void);
 /* Layout index of the story step's area on this map half, or 0. */
 s32 dw3_objective_spot(s32 region);
 
-/* Definitive combat (port/game/definitive.c; .plan/tasks/definitive-combat-prd.md). Layer 0, the battle log:
+/* Definitive combat (port/game/definitive.c). Layer 0, the battle log:
  * DW3_BATTLE_LOG=<file> appends one line per battle event; unset, every hook returns at once. def_get_damage and
  * def_get_special_damage are fightstg_rules.get_damage / .get_special_damage wrapped: same value, one line logged. */
 void def_log_begin(void);
 /* Layer 4 (definitive.c): the rules the game's turns follow. def_on is 0 under a replay script (the scripts are shared
  * with the emulator) unless DW3_DEFINITIVE is set. */
 int def_on(void);
-/* PRD 2, layer A: records_state.blocked[k] as the definitive edition reads it (stat debuffs 8..10 never blocked), and a
+/* records_state.blocked[k] as the definitive edition reads it (stat debuffs 8..10 never blocked), and a
  * debuff's amount scaled by DEF_BOSS_DEBUFF_PCT where the original would have blocked it. */
 int def_stat_blocked(int k);
 struct FightstgStats;
@@ -313,19 +313,19 @@ int def_super_reward(int amount);
 int def_super_toggle(void);
 int def_wake_on_hit(unsigned char side);
 void def_enemy_status_turn(void);
-/* PRD 2, layer J (definitive_evohint.c): the Digi-Lab's Next Forms panel, opened with Square from the Digimon screen. */
+/* The Digi-Lab's Next Forms panel (definitive_evohint.c), opened with Square from the Digimon screen. */
 int def_evohint_enabled(void);
 void def_evohint_label(s32 layer, s32 show);
 void def_evohint_open(s32 layer, s32 slot);
 int def_evohint_frame(void);
 void def_evohint_tick(void);
 s32 def_evohint_slot(void);
-/* PRD 2, layer D: a level's TP for a partner (the band's gain, capped; the loss is noted), whether the last level-up
+/* A level's TP for a partner (the band's gain, capped; the loss is noted), whether the last level-up
  * lost TP (read once, by the report's message), and that message ("Level N! TP full: train!"). */
 s16 def_level_tp(s32 digimon, s16 tp, s16 level);
 int def_tp_lost_take(s32 digimon);
 const unsigned char *def_tp_full_text(void);
-/* PRD 2, layer B: the Spirit a magic attack uses and the stat that defends against it, with the Strength and Defense
+/* The Spirit a magic attack uses and the stat that defends against it, with the Strength and Defense
  * modifiers counted (get_special_damage, with fightstg_rules.stats filled). */
 int def_magic_attack(u8 side);
 int def_magic_defense(u8 side);
@@ -436,7 +436,7 @@ s32 def_overfinish_take_bits(void);
 int def_rush_offer(void);
 void def_rush_results(void);
 int def_rush_auto(void);
-/* PRD 4 layer I (port/game/definitive_rush_panel.c; the summary's type is in definitive.h): the Rush gives its results on
+/* Overlevel Rush (port/game/definitive_rush_panel.c; the summary's type is in definitive.h): it gives its results on
  * the field (DEF_RUSH_FLOAT, DW3_RUSH_FLOAT for a test); the report's rewards without its screen (STFGTREP's routines);
  * the panel that shows them, opened (a second one replaces the first), run once a frame from the camera's update and
  * forgotten at a map's load. */
@@ -456,7 +456,7 @@ int def_guide_frame(void);
 void def_notice_frame(void);
 void def_notice_reset(void);
 void def_rush_panel_reset(void);
-/* PRD 4 layer A, the regional hunt (port/game/definitive_hunt.c): a map loaded (a new region resets the chain); a random
+/* The regional hunt (port/game/definitive_hunt.c): a map loaded (a new region resets the chain); a random
  * encounter starting (returns the battle to fight: the region's Rare Target in place of `battle` once the chain allows);
  * after fieldstg_start_battle, the Rare Target's enemies raised to its level; 1 while a Rare Target is being fought (the
  * party can always flee); the Rush took the encounter (it does not count). */
@@ -480,7 +480,7 @@ int def_super_tutorial_battle(void);
 #define DEF_SUPER_FLED_TARGET 1
 #define DEF_SUPER_FLED_PLAYER 2
 void def_super_flee_note(int who);
-/* PRD 4 layer H, the DRI Agents' Gauntlet (port/game/definitive_dri_screen.c): a talk to `map`'s actor `actor` (always 0: a DRI Agent's own talk runs, the list opens after it), FIELDSTG's idle frame (1 while its screen owns the field), the next enemy member's entrance
+/* The DRI Agents' Gauntlet (port/game/definitive_dri_screen.c): a talk to `map`'s actor `actor` (always 0: a DRI Agent's own talk runs, the list opens after it), FIELDSTG's idle frame (1 while its screen owns the field), the next enemy member's entrance
  * (wfightmn_knockout) and a lost battle (1 when it was a simulation: it goes back to the field, no game over). */
 int def_dri_talk(s32 map, s32 actor);
 int def_dri_frame(void);
@@ -501,14 +501,14 @@ void def_story_stage_setup(void); /* the Oikawa's arc: map 0x245's figures while
 int def_story_defeat(void);       /* his battle lost: no game over */
 int def_time_won(void);
 int def_time_defeat(void);
-/* PRD 4 layer D: an item's buying and selling price in a shop, the definitive ones (port/game/definitive_economy.c). */
+/* An item's buying and selling price in a shop, the definitive ones (port/game/definitive_economy.c). */
 int def_item_buy(int item);
 int def_item_sell(int item);
-/* PRD 4 layer F: the equipment variants written into the items' data (port/game/definitive_variants.c; nothing in a
+/* The equipment variants written into the items' data (port/game/definitive_variants.c; nothing in a
  * replay script), at every field map besides def_mp_hook's new game and battle start. */
 void def_variants_hook(void);
 int def_accessory_penalty(const void *data, short *stat, short *value); /* a trade-off accessory's penalty (definitive_variants.c) */
-/* PRD 4 layer E, the forge in the shops: how many the materials make, whether one, taking them, the requirements' line
+/* The forge in the shops: how many the materials make, whether one, taking them, the requirements' line
  * (NULL without a recipe; palette 3 while short) and the refusal's text. */
 void def_recipe_set_shop(int shop); /* the shop the forge's calls are about, set as STITSHOP opens */
 int def_recipe_max(int item);
@@ -516,7 +516,7 @@ int def_recipe_can_buy(int item);
 void def_recipe_pay(int item, int count);
 const unsigned char *def_recipe_label(int item, int *palette);
 const unsigned char *def_recipe_missing_text(void);
-/* PRD 4 layers B and C, the bestiary's Hunt line: bestiary species `index`'s common material (-1: none), how many of a
+/* The bestiary's Hunt line: bestiary species `index`'s common material (-1: none), how many of a
  * species' rare items were ever held of how many (the targets it leads), a material's name (glyph bytes) and how many
  * of it the player holds. */
 int def_hunt_common_of(int index);
@@ -577,7 +577,7 @@ int def_train_no_stat_loss(void);
 extern s32 port_field_wide;
 extern s32 port_field_slots[3][3];
 
-/* Girls Power (port/game/girls_power.c; .plan/tasks/girls-power-kaili-prd.md): Kaili is the hero and Junior her friend,
+/* Girls Power (port/game/girls_power.c): Kaili is the hero and Junior her friend,
  * in a save whose New Game chose her (DEF_SAVE_KAILI). cdload calls port_girls_loaded when file `id` has just been read
  * into `data`: the field sprite files of the two are repainted in place (the other's head, the clothes recoloured).
  * port_girls_refresh: the save's hero may have changed (New Game, a save read from a card): the cached sprite files

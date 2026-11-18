@@ -1721,10 +1721,10 @@ static inline void fieldstg_manager_start(FieldstgManager *obj, FieldstgManagerD
     gamestate_flags.update_map_flags();
     gamestate_flags.set_flag(gamestate_data.funcs.get_map() + 0x1E00, 1);
 #ifdef PC_PORT
-    def_hunt_map(gamestate_data.funcs.get_map()); /* PRD 4 layer A: another region resets the hunt's chain */
-    def_variants_hook(); /* PRD 4 layer F: the equipment variants, before a loaded save's first shop or status screen */
+    def_hunt_map(gamestate_data.funcs.get_map()); /* another region resets the hunt's chain */
+    def_variants_hook(); /* the equipment variants, before a loaded save's first shop or status screen */
     def_hard_party_fix(); /* Hard Mode: a party of two, whatever set it */
-    def_rush_panel_reset(); /* PRD 4 layer I: a floating Rush's panel went with the last stage's heap */
+    def_rush_panel_reset(); /* a floating Rush's panel went with the last stage's heap */
     fieldstg_rush_reset();
     def_notice_reset(); /* and so did a Guide's notice's windows */
 #endif
@@ -1838,8 +1838,8 @@ void fieldstg_manager_update(FieldstgManager *obj, FieldstgManagerData *data) {
                 break; /* the Guardromon's SAVE / TELEPORT screen owns the field */
             }
             if (def_bm_frame() || def_dri_frame() || def_purify_frame() || def_superhunt_frame()) {
-                break; /* PRD 4 layers G and H, Blast phase 2, the Super Rare hunts: the Black Market's, a DRI Agent's,
-                        * the mentor's or the Sepikmon's screen owns the field (the hunts' also draw the compass) */
+                break; /* the Black Market's, a DRI Agent's, the mentor's or the Sepikmon's screen owns the field (the
+                        * hunts' also draw the compass) */
             }
             if (def_guide_frame()) {
                 break; /* the Guide, asked for by the field menu's entry */
@@ -3232,7 +3232,7 @@ s32 fieldstg_actor_talk_to(FieldstgActor *obj, FieldstgPos *pos) {
     if (other != NULL && other->base.state == OBJECT_STATE_RUN) {
         dw3_velvet_shop_talk(other);
     }
-    /* PRD 4 layers G and H: the Black Market's trader opens the port's own screen instead of its talk (on the next idle
+    /* The Black Market's trader opens the port's own screen instead of its talk (on the next idle
      * frame, as the Guardromon screen does); 1 stops the player as a talk does. A DRI Agent's talk is never taken
      * (def_dri_talk is always 0): its lines and DDNA quest run, and the list opens after them. The placed actor's own
      * ID is asked, before the game's talk redirects. */
@@ -5082,7 +5082,7 @@ void fieldstg_encounter_reset(void) {
 /* The Overlevel Rush's question and its run (port/game/definitive.c, def_rush_offer): the random battle is set up as
  * ever, but the field's leave for it waits on this object. It asks ("EASY FIGHT! RUSH IT?", left/right, circle; cross
  * is no) in the callouts' polygon letters; no goes on to the battle; yes shows the rush for DEF_RUSH_TICKS and leaves
- * for the battle's report instead, with the results def_rush_results fills. With DEF_RUSH_FLOAT (PRD 4 layer I) yes
+ * for the battle's report instead, with the results def_rush_results fills. With DEF_RUSH_FLOAT yes
  * keeps the field: the report's rewards are given at once and a panel over the player shows them while they walk on
  * (port/game/definitive_rush_panel.c). */
 #include "port/game/definitive.h" /* DEF_RUSH_TICKS */
@@ -5111,7 +5111,7 @@ static void fieldstg_rush_text(GfxLayer *layer, s32 x, s32 y, s32 size, const ch
     def_poly_text(layer, 0, x + 1, y + 1, size, text, edge);
 }
 
-/* PRD 4 layer I: the rush taken, the field stays. fieldstg_start_battle still sets the battle up as for the report
+/* The rush taken, the field stays. fieldstg_start_battle still sets the battle up as for the report
  * (records_state, which def_rush_results reads, and a Cardmon's prize with its draw); then its leave is undone: the
  * manager's state, steps and next map as they were (it was running the map) and the player free again. The encounter
  * timer was re-armed when the encounter started (fieldstg_encounter_reset). The report's rewards are given here and the
@@ -5217,7 +5217,7 @@ void fieldstg_rush_frame(void) {
     if (fieldstg_rush.active != 0) {
         fieldstg_rush_update(&fieldstg_rush);
     }
-    def_rush_panel_frame(); /* PRD 4 layer I: the floating results, while they are up */
+    def_rush_panel_frame(); /* the floating results, while they are up */
     def_notice_frame(); /* the Guide's notices: a new objective, an auction that opened */
 }
 #endif
@@ -5349,7 +5349,7 @@ void fieldstg_encounter_start(void) {
     records_state.music = event->music;
 #ifdef PC_PORT
     {
-        /* PRD 4 layer A: the region's Rare Target in place of the encounter, on the encounter's stage and music; asked
+        /* The region's Rare Target in place of the encounter, on the encounter's stage and music; asked
          * before the Rush, which never offers to skip it. */
         s32 battle = def_hunt_encounter(event->battle);
 

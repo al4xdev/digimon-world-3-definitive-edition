@@ -17,7 +17,7 @@ $ChosenRookie: Chosen needs Rookie
 # After the Blast quest the DV Plug revives the fallen in their Rookie form (def_blast_plug_revive): its item
 # description (ITMINF 76) gives way to this one (34 characters at most, the item window's).
 $PlugRevive: Revive: Rookie form, 1 HP and 1 MP
-# The Velvet Room in the main story (port/game/definitive_story.c; .plan/tasks/velvet-historia.md). Step 4: talked to
+# The Velvet Room in the main story (port/game/definitive_story.c). Step 4: talked to
 # on the stairs of Seiryu's inn, Repeating Tom says the Leader is gone ($TomNews, for his own TALK01 79) and the player
 # feels something (TALK01 178); the room's door opens on those stairs. Through it Igor alone shows the room again
 # (TALK05 20), then the Sepikmon meets the player with his own words (TALK05 17) and hears the report once the Ogremon
@@ -51,7 +51,7 @@ $IgorOne: One is ready.
 $IgorNone: Neither is ready.
 $IgorEnd: <2,2>
 $IgorBye: <3>The rest is yours to<1>walk, my guest.<2,2>
-# Igor's dreams (definitive_story.c `dreams`; .plan/tasks/velvet-sonhos.md): his name plate, then per act his words
+# Igor's dreams (definitive_story.c `dreams`): his name plate, then per act his words
 # (Ask), the player's answers (Op, one line each, the panel's), his word on each (Re); Act III recalls Act II's answer
 # first (Rc). Lines of at most 22 letters, three to a page.
 $DrIgor: <7>Igor<7>
@@ -307,16 +307,16 @@ SKLINF 208: Foe 2 Elem Resists-2, 3 turns.
 SKLINF 209: Next attack deals extra dmg.
 SKLINF 210: Next attack deals max extra dmg.
 
-# PRD 2, layer D: the report's level-up message when the level's TP did not fit under the ceiling (ESFGTRPT 7's form)
+# The report's level-up message when the level's TP did not fit under the ceiling (ESFGTRPT 7's form)
 $LevelTpFull: <5,1><1>Level <5,2>! TP full: train!<2,2>
 
-# PRD 2, layer E: training pity indicator on STGTRAIN
+# Training pity indicator on STGTRAIN
 $TrainPityPrefix: Pity:
 $TrainPityMarks: +- /
 $TrainPityDigits: 0123456789
 $TrainPityReady: Next 100%!
 
-# PRD 2, layer J: the Digi-Lab's "Next Forms" panel (port/game/definitive_evohint.c)
+# The Digi-Lab's "Next Forms" panel (port/game/definitive_evohint.c)
 $EvoOpen: □ Next Forms
 $EvoTitle: Next Forms
 $EvoKeys: ↑↓ Form   L1/R1 Partner   △ Back
@@ -341,7 +341,7 @@ $Teleport: TELEPORT
 $TravelKeys: × button: Choose<1>△ button: Back
 $TravelKeys2: × button: Travel<1>△ button: Back
 
-# PRD 4 layer B: the Rare Target's Hunt Material line on the results screen (ESFGTRPT 11's layout,
+# The Rare Target's Hunt Material line on the results screen (ESFGTRPT 11's layout,
 # without the indent: the loader trims a text's ends), and the materials' names: one per Rare Target battle, the
 # weakest battle's first (tools/gen_hunt_targets.py).
 $HuntGotPrefix: Hunt material:<1>
@@ -363,12 +363,12 @@ $HuntMat13: Gold Digizoid
 $HuntMat14: Black Digizoid
 $HuntMat15: Obsidian Digizoid
 
-# PRD 4 layer C: the bestiary's Hunt Materials, under the elements: "Hunt" (the results screen's "Hunt material:";
+# The bestiary's Hunt Materials, under the elements: "Hunt" (the results screen's "Hunt material:";
 # "Drops" ran into the names' column), then each material and the count held after this mark ("x12").
 $HuntDrops: Hunt
 $HuntHeld: x
 
-# PRD 4 layer B, the owner's materials model of 2026-11-13: "Hunt material:" is a common one's line (with its count
+# The owner's materials model of 2026-11-13: "Hunt material:" is a common one's line (with its count
 # after $HuntHeld), "Rare material:" a region's rare item's, "<species> Core <numeral>"; the numerals' letters; a space
 # (quoted: the loader keeps a quoted text's spaces); and the bestiary's rare line, "Rare Cores 4/13".
 $HuntRarePrefix: Rare material:<1>
@@ -379,12 +379,12 @@ $HuntRomanV: V
 $HuntRomanX: X
 $HuntRareLabel: Rare Cores
 
-# PRD 4 layer E, the forge: the shop's refusal when the materials are short (as its "not enough money"), and the
+# The forge: the shop's refusal when the materials are short (as its "not enough money"), and the
 # separator of the requirements' line (quoted: its space is kept).
 $RecipeMissing: Not enough materials.
 $RecipeSep: ", "
 
-# PRD 4 layer G, the Black Market (port/game/definitive_market_screen.c), in the dialogues' font: the title and its two
+# The Black Market (port/game/definitive_market_screen.c), in the dialogues' font: the title and its two
 # tabs; the list's headings; the detail lines' words, quoted where a space is kept ("Give: Datamon IV x1   Held: 3",
 # "Get: Data Chip x12   Held: 30/99", "Takes: Datamon IV, Bulbmon III", "Needs Cores of 2 different bosses.",
 # "Wearable by: Kotemon, Renamon"); a Core's three lines (what it is worth here, what the materials are for, the
@@ -435,7 +435,7 @@ $BMKeysPick: ↑↓ Material<1>× Trade one   △ Back
 $BMKeysReplica: ↑↓ Choose   L1/R1 Tab<1>× Buy   △ Back
 $BMKeysArmed: × Buy<1>△ Back
 
-# PRD 4 layer F: the equipment variants (shop items converted in place), their names and descriptions; the entry is
+# The equipment variants (shop items converted in place), their names and descriptions; the entry is
 # the item's ID. tools/gen_equipment.py picks the items and checks that each has both lines, nothing else has one, and
 # the lengths (a name no longer than the game's longest, a description within the window). Shown only where the
 # variants' data is (def_on, DEF_EQUIP_ON): definitive_variants.c, def_variant_text_hidden.
@@ -527,7 +527,7 @@ ITMINF 295: Much more Power, less Guard.
 ITMNAM 297: Sage Ring
 ITMINF 297: Much more Wisdom, less Boost.
 
-# PRD 4 layer I, the floating Rush's panel on the field (port/game/definitive_rush.c): "120 EXP  LV UP!" after a
+# The floating Rush's panel on the field (port/game/definitive_rush.c): "120 EXP  LV UP!" after a
 # member's name, NEW TECH! / TP FULL! under it, "240 Bits", "<item> x15", "<material> x2" (quoted: the spaces are kept).
 # $RushPlus stays empty: the panel's 11-pixel font has no "+" (it drew a 0 there).
 $RushPlus:
@@ -541,7 +541,7 @@ $RushTimes: " x"
 $RushAskYes: Rush it
 $RushAskNo: Fight
 
-# PRD 4 layer H, the DRI Agents' Gauntlet (port/game/definitive_dri_screen.c): the list's title, the separator of a
+# The DRI Agents' Gauntlet (port/game/definitive_dri_screen.c): the list's title, the separator of a
 # line's stages ("Tyrannomon / MetalGreymon / BK WarGreymon"), a locked row's mark, the chosen challenge's lines (quoted:
 # the space after the colon is kept; the unlock's line goes on with the forge's requirements), the keys, and the panel
 # after a simulation.
@@ -934,7 +934,7 @@ $Skin11: Sunset
 $Skin12: Wild Colors
 $Skin13: Silver and Black
 
-# The DRI Agents' DDNA quests (port/game/definitive_dri_screen.c, .plan/tasks/dri-agents-unlock.md): with the level
+# The DRI Agents' DDNA quests (port/game/definitive_dri_screen.c): with the level
 # window gone an agent says his quest line until the DDNA is brought, so it tells where the Digimon is (each map's own
 # title). Bob's and Johann's are here; the other six agents' lines are the story rewrite's (en_story.txt).
 TALK06 676: <7>DRI Bob<7>Hey, have you seen<1>Paildramon?<2,2><3>I've been looking<1>for him forever, but<1>I can't find him.<2,2><3>Folks say he flies<1>over Bulk Bridge, in<1>the South Sector.<2,2><3>If you find him, I'll<1>give you something<1>great...<2,2>

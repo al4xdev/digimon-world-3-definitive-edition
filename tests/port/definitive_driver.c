@@ -1,4 +1,4 @@
-/* tests/port/definitive.py's driver for port/game/definitive_mask.c: closed cases of the weakness rule (PRD layer 3).
+/* tests/port/definitive.py's driver for port/game/definitive_mask.c: closed cases of the weakness rule (layer 3).
  * Prints "ok <name>" or "FAIL <name> got <mask> want <mask>" per case; exits 1 on a failure. */
 #include <stdio.h>
 

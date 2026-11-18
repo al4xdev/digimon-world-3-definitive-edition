@@ -1,4 +1,4 @@
-/* PRD 4 layer G, the Black Market's rules (the trader and its screen are definitive_market_screen.c).
+/* The Black Market's rules (the trader and its screen are definitive_market_screen.c).
  *
  * The Exchange turns one rare item (a region's "<species> Core <numeral>", definitive_bestiary.c's second record) into
  * DEF_BM_COMMONS of the common Hunt Material the player picks: the owner's economy, where surplus rares refill the
@@ -9,7 +9,7 @@
  * one each of their own DEF_BM_REPLICA_RARES rare items, Rare Targets picked by the item's theme and strength (the
  * owner, 2026-11-17: what was hunted matters), so the screen names them and what is held of each. A replica is the item's own ID, so the card record keeps one bit per replica
  * (REC_EXTRA + 26..27), and while it is set the shops pay 0 for that ID (def_item_sell), an original held besides it
- * included: the PRD's accepted simplification. The bit clears once the player holds none of the ID, in the bag or
+ * included: an accepted simplification. The bit clears once the player holds none of the ID, in the bag or
  * equipped (def_bm_sweep, every field frame), so a replica sold for nothing and a later original are told apart.
  *
  * Off in a replay script (def_on): nothing changes, every price is the game's. */

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PRD 4 layer F, the equipment variants: port/game/definitive_variants.c compiled with the generated table
+"""The equipment variants: port/game/definitive_variants.c compiled with the generated table
 (definitive_equipment.c) against stand-in items loaded with src/main/records.c's data, every variant and a few items
 that are not one. Checked: in a replay script (def_on 0) every item keeps records.c's data and every variant's name and
 description override is held back (the disc's text shows); with def_on the variants have the table's main stat, hit

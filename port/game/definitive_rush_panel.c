@@ -1,4 +1,4 @@
-/* PRD 4 layer I: the Overlevel Rush on the field, its question and its results. With DEF_RUSH_FLOAT the Rush's leave
+/* The Overlevel Rush on the field, its question and its results. With DEF_RUSH_FLOAT the Rush's leave
  * (fieldstg_rush_leave) keeps the field, gives the report's rewards at once (def_rush_apply_quiet: STFGTREP's own
  * routines in its order, so the game's state is the report's) and opens the results' panel; fieldstg_rush_frame runs
  * the question and the panel once a frame from the camera's update, whatever the player does. Neither sets

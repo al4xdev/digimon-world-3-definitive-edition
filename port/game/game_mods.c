@@ -158,7 +158,7 @@ static void pl_start(struct PortMod *mod) {
              (int)port_preset_language, i == 1);
 }
 
-/* ---- The party's shared experience (definitive edition, PRD 3, A; was the party_xp mod; docs/MECHANICS.md section 6):
+/* ---- The party's shared experience (definitive edition; was the party_xp mod; docs/MECHANICS.md section 6):
  * STFGTREP's report asks port_party_xp_share for every party member's experience. A member that took part keeps one
  * fighter's split share; one that sat out gets DEF_XP_PARTY_SHARE percent of it (at least 1 when both are above 0); a
  * knocked-out one (port_party_xp_knocked_out, from WFIGHTMN) gets none. */
@@ -257,7 +257,7 @@ static const char *led_bar_status(struct PortMod *mod) {
  * pad.map).
  *
  * Two vocabularies meet here. The launcher names a place by the physical button; pad.map names it in the game's terms,
- * because the launcher translates with PLACE_TO_GAME (dw3-menu.py) when it writes the file: physical south is the game's
+ * because the launcher translates (launcher/cfg.c, game_name) when it writes the file: physical south is the game's
  * west, west is east, east is south, north is north. The game index is that translation: `game`, an index of this same
  * table. The order is the options' values and bm_place's indexes. */
 #define BM_PLACES(X)                                \
@@ -323,7 +323,7 @@ static void bm_pick_free(int action) {
 }
 static int bm_started; /* the mod's options were applied: bm_default_hud must not overwrite them */
 
-/* Definitive combat (PRD rule 4): the battle HUD is not a mod, it is always on. The mod record stays for its options
+/* Definitive combat: the battle HUD is not a mod, it is always on. The mod record stays for its options
  * (which buttons, remember_cursor, buffer_input): when it is not enabled the defaults hold. The one exception is a
  * replay script (--script, tests/replay): the scripts are shared with the emulator and choose from the original
  * list menu, so they keep it (as they keep the console's face-button rotation). */
@@ -595,7 +595,7 @@ void dw3_feats_arm(void) {
              dw3_feat_velvet);
 }
 
-/* ---- pad.map (handheld/dw3-menu.py writes it): one line per PS1 button, "<button> <gamepad input> <letter>".
+/* ---- pad.map (the launcher, launcher/cfg.c, writes it): one line per PS1 button, "<button> <gamepad input> <letter>".
  *
  * The letter replaces the button's symbol in the game's text (dw3_button_glyph). The middle column is the player's pad,
  * which dw3_pad_permute applies inside pad_read_buttons: the handheld's SDL2 runtime (psxstack/runtime/input.c, the

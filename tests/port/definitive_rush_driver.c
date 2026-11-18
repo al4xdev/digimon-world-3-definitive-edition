@@ -1,4 +1,4 @@
-/* tests/port/definitive_rush.py's driver for port/game/definitive_rush.c (PRD 4 layer I): the floating Rush panel's
+/* tests/port/definitive_rush.py's driver for port/game/definitive_rush.c: the floating Rush panel's
  * rows from a summary (order, absent members, nothing listed for no Bits / no item, the cap), each row's texts (the
  * numbers' digits, LV UP!, the item's count and its "???" before the names are in, a results screen's material line made
  * one panel line), and the clock (open, a second Rush replacing the panel still up, time running out, the field holding

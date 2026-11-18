@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""The enemy table of the definitive combat (PRD layer 3): every species gets its archetype's weaknesses and strong
+"""The enemy table of the definitive combat (layer 3): every species gets its archetype's weaknesses and strong
 resistances, counted by element family (Fire, Water+Ice, Wind, Thunder+Machine, Dark: the owner's rule of 2026-11-13,
 a pair is one affinity, so its two elements always share one value): plain 2+1, wall 1+2, late 2+2, boss 2+2, final
 boss 1+3 (and its Dark mark), the rest neutral; a few species carry the Dark mark.
@@ -9,7 +9,7 @@ boss 1+3 (and its Dark mark), the rest neutral; a few species carry the Dark mar
   tools/venv/bin/python tools/gen_enemy_weaknesses.py --apply    # also write port/game/definitive_enemies.c (the owner approved)
 
 Deterministic (fixed seed). Reads SDIGIEDT.PRO and the names from the user's disc, the techniques from src/main/records.c
-and the battles from src/fieldstg/fieldstg_80083784.c; the disc is never written. Rules (PRD layer 3, by family):
+and the battles from src/fieldstg/fieldstg_80083784.c; the disc is never written. Rules (by family):
   - the house family of a species (the family of its techniques' commonest element, else of its one high resist, else
     of its type) is never a weakness and is the natural strong resistance;
   - a plain species that already has exactly two weak families keeps them; otherwise they are filled by opposition to

@@ -1,6 +1,6 @@
 /* tests/port/definitive_mp.py's driver for port/game/definitive_mp.c: records_digimon is a stand-in loaded from stdin.
  * Prints one "name start gain" line per rookie, in
- * the order Kotemon..Patamon, after def_mp_apply; the Python side compares them with the PRD and the converter. */
+ * the order Kotemon..Patamon, after def_mp_apply; the Python side compares them with its table and the converter. */
 #include <stdio.h>
 
 #include "records.h"

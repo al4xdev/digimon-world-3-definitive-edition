@@ -1,4 +1,4 @@
-/* "Definitive" combat (.plan/tasks/definitive-combat-prd.md). Always on in the port, no mod option. Layer 0: the battle log;
+/* "Definitive" combat. Always on in the port, no mod option. Layer 0: the battle log;
  * layer 1: the text overrides; layer 2: Inspect, the hit sounds, the "enemy acts twice" test. The game's C calls the def_* hooks under #ifdef PC_PORT; everything else lives here. */
 #include <stdio.h>
 #include <stdlib.h>
@@ -106,13 +106,13 @@ void def_log_begin(void) {
     plug_last_stand_used = 0;
     def_blast_heat_begin();
     def_callout_show(DEF_CALLOUT_NONE, 0);
-    def_hunt_reward_done(); /* PRD 4 layer B: a reward a results screen never showed does not carry over */
-    def_dri_battle_begin(); /* PRD 4 layer H: whether this battle is the DRI simulation just set up */
+    def_hunt_reward_done(); /* a reward a results screen never showed does not carry over */
+    def_dri_battle_begin(); /* whether this battle is the DRI simulation just set up */
     def_purify_battle_begin(); /* Blast phase 2: whether it is a purification's wave */
     def_time_battle_begin();   /* the Time Room: whether it is a trial */
     def_story_battle_begin();  /* the Oikawa's arc: whether it is his */
     if (def_hunt_active() || def_super_battle_ready()) {
-        def_callout_show(DEF_CALLOUT_RARE, 1); /* PRD 4 layer A; a Super Rare too */
+        def_callout_show(DEF_CALLOUT_RARE, 1); /* a Rare Target; a Super Rare too */
     }
     overfinish_hit = 0;
     overfinish_damage = 0;
@@ -320,10 +320,10 @@ s32 def_get_special_damage(u8 side, s32 id) {
 void def_log_end(int result) {
     int i;
 
-    def_hunt_battle_end(result); /* PRD 4 layer A: counted whether or not the log is on */
+    def_hunt_battle_end(result); /* the hunt's chain: counted whether or not the log is on */
     /* The Super Rare hunts: its HP at the end, kept when it fled (it is the enemies' first) */
     def_super_battle_end(result, fightstg_battle.state.members[1][0].hp);
-    def_dri_battle_end(result);  /* PRD 4 layer H: a simulation's stages felled and their rewards */
+    def_dri_battle_end(result);  /* a DRI simulation's stages felled and their rewards */
     def_purify_battle_end(result); /* Blast phase 2: the dark forms felled, the next wave or the TP back */
     def_time_battle_end(result);   /* the Time Room: a trial won or lost */
     def_story_battle_end(result);  /* the Oikawa's arc */
@@ -428,7 +428,7 @@ void *def_text_override(void *data, s32 i) {
             for (k = 0; k < def_text_override_count; k++) {
                 if (def_text_overrides[k].file == base_id && def_text_overrides[k].index == i) {
                     if (def_variant_text_hidden(def_text_overrides[k].file, i)) {
-                        return NULL; /* PRD 4 layer F: a variant's name and description go with its data (replay: the disc's) */
+                        return NULL; /* a variant's name and description go with its data (replay: the disc's) */
                     }
                     {
                         static unsigned char seen[512]; /* one line per entry, not per frame it is drawn */
@@ -662,7 +662,7 @@ void def_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, mod_turns);
     def_bestiary_savestate(s);
     def_hunt_savestate(s);
-    def_rush_savestate(s); /* PRD 4 layer I: the floating Rush's panel and the field's heap it points into */
+    def_rush_savestate(s); /* the floating Rush's panel and the field's heap it points into */
     PORT_STATE_VAR(s, hit_class);
     PORT_STATE_VAR(s, hit_elem);
     PORT_STATE_VAR(s, hit_id);
@@ -677,7 +677,7 @@ void def_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, overheat_sealed);
     PORT_STATE_VAR(s, boost_logged);
     PORT_STATE_VAR(s, plug_last_stand_used);
-    def_dri_savestate(s); /* PRD 4 layer H: a battle loaded mid-simulation is still one */
+    def_dri_savestate(s); /* a battle loaded mid-DRI-simulation is still one */
     def_purify_savestate(s); /* Blast phase 2: and mid-purification */
     def_superhunt_screen_savestate(s); /* the Sepikmon's board and the hunts' reward panel */
     def_recolor_savestate(s); /* which model is the rare foe's, for its palette */
@@ -1321,7 +1321,7 @@ int def_idle_pose(u8 side) {
 /* ---- Layer 6: the remade techniques. Libra (202, was Speed Up) learns the target's weaknesses, Relay (203, was Mega Boost)
  * makes the next swap free, Resist Down / Mega Break (207, 208, were Slow Down / Mega Break) lower the elements the
  * user is best at on the target for a few of its turns; on a boss that blocked the speed-down they replace
- * (records_state.blocked[10]) they are scaled by DEF_BOSS_DEBUFF_PCT, like every stat debuff (PRD 2, layer A). The effects run in fightstg_tech_update (class 5), before the original's own. */
+ * (records_state.blocked[10]) they are scaled by DEF_BOSS_DEBUFF_PCT, like every stat debuff. The effects run in fightstg_tech_update (class 5), before the original's own. */
 
 void def_apply_resist_mod(int side, int member, FightstgStats *out) {
     int e;
@@ -1429,7 +1429,7 @@ static void patch_techniques(void) {
     records_techniques[202 - 1].target = 2;            /* Libra reads the enemy */
     records_techniques[203 - 1].mp_cost = DEF_RELAY_MP;
 
-    /* Layer H (tecnicas-v2): reworked damaging attacks with secondary debuffs (E=0) */
+    /* Layer H: reworked damaging attacks with secondary debuffs (E=0) */
     records_techniques[81 - 1].mp_cost = 84;           /* Grisly Wing: Atk-2, 3 turns */
     records_techniques[81 - 1].effect_power = 40;
     records_techniques[108 - 1].mp_cost = 38;          /* Cold Slash: Ice phys + Atk-1, 2 turns */
@@ -1510,11 +1510,11 @@ void def_mp_hook(void) {
     if (def_on()) {
         def_mp_apply();
         patch_techniques();
-        def_variants_hook(); /* PRD 4 layer F: the equipment variants, written the same way at the same points */
+        def_variants_hook(); /* the equipment variants, written the same way at the same points */
     }
 }
 
-/* ---- Layer 5: the damage of an elemental technique, by the multiplier of the PRD (definitive_mask.c). Called from the
+/* ---- Layer 5: the damage of an elemental technique, by the definitive multiplier (definitive_mask.c). Called from the
  * rules (scale_damage for physical techniques, get_special_damage for magic) with the stats of the call in
  * fightstg_rules.stats ([0] the attacker, [1] the target). `terms` (above) is what the log prints. */
 
@@ -1557,7 +1557,7 @@ int def_open_bonus(u8 side, int defense_stat, int value) {
     return value * terms.mult / DEF_MULT_ONE;
 }
 
-/* ---- PRD 2, layer A: a boss is immune to status (blocked[0..4], [7]), not to stat debuffs (blocked[8..10]: Strength,
+/* ---- A boss is immune to status (blocked[0..4], [7]), not to stat debuffs (blocked[8..10]: Strength,
  * Defense, Speed down). With def_on the flag no longer blocks; where it would have, the debuff is scaled. */
 int def_stat_blocked(int k) {
     if (def_on() && k >= 8 && k <= 10) {
@@ -1778,7 +1778,7 @@ int def_mod_turns_left(int side, int slot, int kind) {
     return mod_turns[s][slot][kind];
 }
 
-/* ---- PRD 2, layer B: the stat modifiers count for magic. The engine has none for Spirit; get_special_damage (with
+/* ---- The stat modifiers count for magic. The engine has none for Spirit; get_special_damage (with
  * fightstg_rules.stats filled: [0] the attacker, [1] the target, both with their modifiers in) asks for these:
  *  - the attack: Spirit scaled as Strength is by its modifier (now / (now - modifier));
  *  - the defence: the player's Defense (already modified: layer 7), or the enemy's Spirit scaled as its Defense is. The
@@ -1813,7 +1813,7 @@ int def_magic_defense(u8 side) {
     return scaled(t->stats[2], t->stats[1], m->modifiers[1]);
 }
 
-/* ---- PRD 2, layer D: the game's side of the TP bands (the rule is definitive_progression.c). */
+/* ---- The game's side of the TP bands (the rule is definitive_progression.c). */
 static unsigned char tp_lost[8]; /* per partner: the last level-up lost TP to the ceiling (the report's message) */
 
 s16 def_level_tp(s32 digimon, s16 tp, s16 level) {
@@ -1842,7 +1842,7 @@ const unsigned char *def_tp_full_text(void) {
     return def_str_LevelTpFull;
 }
 
-/* ---- PRD 2, layer E: training pity label for STGTRAIN. */
+/* ---- Training pity label for STGTRAIN. */
 static void put_dec(unsigned char *out, int *p, int v, const unsigned char *digits) {
     if (v >= 10) {
         put_dec(out, p, v / 10, digits);
@@ -1893,7 +1893,7 @@ const unsigned char *def_train_pity_label(int *palette) {
     return buf;
 }
 
-/* ---- PRD 2, layer F: persist Blast Gauges in the unused tail of each save slot. */
+/* ---- Persist Blast Gauges in the unused tail of each save slot. */
 void def_gauges_slot_write(void *slot_save) {
     if (!def_on() || slot_save == NULL) {
         return;
@@ -1908,7 +1908,7 @@ void def_gauges_slot_read(const void *slot_save) {
     def_gauges_decode((const unsigned char *)slot_save + DEF_GAUGE_SLOT_OFFSET, records_state.gauges);
 }
 
-/* ---- PRD 2, layer G: session RAM tracking of seen digivolution/blast animations. */
+/* ---- Session RAM tracking of seen digivolution/blast animations. */
 int def_evo_form_seen(int form_id) {
     return def_on() && def_evo_seen_get(def_evo_seen_bits, form_id);
 }
@@ -1920,7 +1920,7 @@ void def_evo_form_mark(int form_id) {
     def_evo_seen_set(def_evo_seen_bits, form_id);
 }
 
-/* ---- PRD 2, layer I: resistance training without secondary stat loss. */
+/* ---- Resistance training without secondary stat loss. */
 int def_train_no_stat_loss(void) {
     return def_on() && def_train_no_stat_loss_on();
 }
@@ -1928,7 +1928,7 @@ int def_train_no_stat_loss(void) {
 /* ---- Overlevel Rush: a random battle against enemies DEF_OVERLEVEL_GAP levels or more under the party's best is
  * offered as a skip (the field asks; fieldstg_rush_update). Taken, the battle is not loaded: the field leaves for the
  * battle's report (STFGTREP, map 0x1400) with the results a win by the first member would have left, so experience,
- * Bits and the drop come from the game's own routine. With DEF_RUSH_FLOAT (PRD 4 layer I) the field stays instead and
+ * Bits and the drop come from the game's own routine. With DEF_RUSH_FLOAT the field stays instead and
  * the report's routines give them there, shown in a panel over the player (definitive_rush_panel.c, def_rush_float).
  * DW3_RUSH_TEST (a test's): 1 offers it whatever the levels, 2 also takes it without asking. */
 int def_rush_test_mode = -1; /* -1: DW3_RUSH_TEST not read yet (a debug session may set it directly) */

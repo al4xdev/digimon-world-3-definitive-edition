@@ -1,10 +1,10 @@
-/* "Definitive" combat (.plan/tasks/definitive-combat-prd.md): the constants (rule 6: every number is a constant, with
+/* "Definitive" combat: the constants (every number is a constant, with
  * a line saying what it controls) and the hooks the game's C calls. Always on; no mod option, no port_mod_* flag.
  * The hooks' prototypes are in include/port.h (the game's units reach them through common.h). */
 #ifndef PORT_DEFINITIVE_H
 #define PORT_DEFINITIVE_H
 
-/* Layer 0 has no tunable numbers; layers 3+ add theirs here (the PRD's table). */
+/* Layer 0 has no tunable numbers; layers 3+ add theirs here. */
 #define DEF_FAMILIES 5          /* element families on the grouped screens (Water+Ice, Thunder+Machine as one each) */
 #define DEF_OVERFINISH_BITS_PCT 10 /* Bits earned per 100 damage dealt to an enemy already knocked out (OVERFINISH) */
 #define DEF_OVERLEVEL_GAP 8        /* levels the party's best must be above the enemies' best for a random battle to offer the Overlevel Rush */
@@ -100,7 +100,7 @@ int def_mod_level(int side, int slot, int kind);
 int def_mod_turns_left(int side, int slot, int kind);
 
 /* Layer 4 (definitive_mask.c, pure): stagger, the chain of extra actions and the free swap. Fed by definitive.c with the
- * game's events; tests/port/definitive_driver.c plays the PRD's acceptance sequences on it. */
+ * game's events; tests/port/definitive_driver.c plays the acceptance sequences on it. */
 typedef struct DefChain {
     unsigned char staggered[3];  /* per enemy slot: open */
     unsigned char window_used;   /* weakness families (their elements' bits) that already gave their extra action */
@@ -140,7 +140,7 @@ typedef struct DefTextOverride {
     int index;
     const unsigned char *bytes;
 } DefTextOverride;
-/* The story rewrite (.plan/tasks/velvet-sonhos.md; tools/text_override/en_story.txt, en_kaili.txt, en_choices.txt,
+/* The story rewrite (tools/text_override/en_story.txt, en_kaili.txt, en_choices.txt,
  * generated into definitive_story_text.c, read by definitive_story.c): sorted by file then entry, the file named as
  * def_text_override matches it (a DMG container's table: file | (table + 1) << 16). `hero` (Kaili mode): the balloon
  * moves to the hero. A choice: the hero line `index` the player picks among `count` (labels for the panel, lines for
@@ -190,9 +190,9 @@ void def_language_kaili(int on); /* the port's own strings name Kail's friend Ju
 
 /* Layer 8: MP (port/game/definitive_mp.c). The MP is the rookie's; the forms have none of their own. */
 #define DEF_MP_START 140        /* starting MP and max MP of Kotemon, Kumamon, Monmon and Guilmon (Veemon keeps its 150) */
-#define DEF_MP_START_VEEMON 150 /* Veemon's starting MP: already the PRD's value, listed so the table is complete */
+#define DEF_MP_START_VEEMON 150 /* Veemon's starting MP: already the disc's value, listed so the table is complete */
 #define DEF_MP_GAIN 57          /* max MP gain base per level of Kotemon, Kumamon, Monmon and Veemon */
-#define DEF_MP_GAIN_GUILMON 60  /* Guilmon's max MP gain base per level: already the PRD's value */
+#define DEF_MP_GAIN_GUILMON 60  /* Guilmon's max MP gain base per level: already the disc's value */
 
 /* One rookie's MP row: its records_digimon index (the gamestate_data.digimon index too), starting MP, gain base. */
 typedef struct DefMpRow {
@@ -206,7 +206,7 @@ extern const int def_mp_row_count;
 /* Writes the rows into records_digimon (the boot patch; the src/ table stays as the matching build has it). */
 void def_mp_apply(void);
 
-/* ---- PRD 2 (definitive_progression.c) ---- */
+/* ---- Progression and comfort (definitive_progression.c) ---- */
 #define DEF_TP_GAIN_LV_2_20 7     /* TP a level gives, levels 2..20 */
 #define DEF_TP_GAIN_LV_21_40 9    /* levels 21..40 */
 #define DEF_TP_GAIN_LV_41_50 30   /* levels 41..50 */
@@ -234,7 +234,7 @@ int def_gauge_clamp(int val);
 void def_gauges_encode(const short gauges[DEF_GAUGE_SLOTS], unsigned char out[DEF_GAUGE_SLOTS * 2]);
 void def_gauges_decode(const unsigned char in[DEF_GAUGE_SLOTS * 2], short out[DEF_GAUGE_SLOTS]);
 
-/* Blast Gauge, phase 1 ("the cursed evolution", velvet-room-plan.md): the gauge fills with risky offence instead of
+/* Blast Gauge, phase 1 ("the cursed evolution"): the gauge fills with risky offence instead of
  * with the damage taken, and the player sets the Blast off (the battle menu's Blast button, R2 by default) instead of
  * the full gauge doing it. What one party blow that hits adds (they add up): */
 #define DEF_BLAST_WEAK 150      /* it struck a weakness (WEAK!) */
@@ -275,7 +275,7 @@ int def_evo_skip_update(int *hold_frames, int skip_pressed);
 #endif
 int def_train_no_stat_loss_on(void);
 
-/* ---- PRD 3: the mods the owner played with, made the game's own (party_xp, xp_boost) ---- */
+/* ---- The mods the owner played with, made the game's own (party_xp, xp_boost) ---- */
 #define DEF_XP_CURVE 10          /* every partner levels on this curve (Kumamon's, the highest of the eight:
                                    * Monmon 6, Guilmon/Renamon 7, Kotemon/Veemon 8, Agumon/Patamon 9, Kumamon 10).
                                    * The form's own level thresholds are unchanged. */
@@ -294,14 +294,14 @@ enum { DEF_CALLOUT_NONE, DEF_CALLOUT_WEAK, DEF_CALLOUT_RESIST, DEF_CALLOUT_OVERF
 void def_callout_show(int kind, int side);
 void def_callout_frame(void);
 
-/* PRD 4 layer A: the regional hunt chain and the Rare Target (definitive_hunt.c; the table is
+/* The regional hunt chain and the Rare Target (definitive_hunt.c; the table is
  * definitive_hunt_targets.c, generated by tools/gen_hunt_targets.py and approved by the owner). */
 #define DEF_HUNT_CHAIN_MIN 5    /* won random encounters in a row in one region with no Rare Target chance yet */
 #define DEF_HUNT_CHAIN_SURE 10  /* from this many the next encounter is the Rare Target; past the minimum the chance rises
                                  * evenly to it (owner, 2026-11-13: 20% at 6 wins, 40% at 7, ..., certain at 10) */
 #define DEF_HUNT_CHAIN_CAP 255  /* the chain stops counting here (one byte of the card record) */
 #define DEF_HUNT_HP_MAX 30000   /* a raised Rare Target's HP never passes this (RecordsEnemy.hp is an s16) */
-/* PRD 4 layer B: the Rare Target's rewards. */
+/* The Rare Target's rewards. */
 #define DEF_HUNT_XP_MULT 10           /* XP: this many times the random encounter the Rare Target replaced */
 #define DEF_HUNT_MATERIALS 16         /* common Hunt Materials: one u8 counter each in the card record (REC_EXTRA + 10..25) */
 #define DEF_HUNT_MATERIAL_CAP 99      /* the most of one material the player can hold */
@@ -340,14 +340,14 @@ void def_hunt_species_rares(int species, int *seen, int *total);
 const unsigned char *def_hunt_foe_name(int species, int slot);
 /* A species' name in the game's glyphs (its record's line of text 0x4E: definitive.c), NULL when not loaded. */
 const unsigned char *def_species_name(int species);
-/* The results screen of a Rare Target won (PRD 4 layer B; STFGTREP): the battle whose XP it pays DEF_HUNT_XP_MULT times
+/* The results screen of a Rare Target won (STFGTREP): the battle whose XP it pays DEF_HUNT_XP_MULT times
  * (-1: none pending), the rare Booster it drops when the battle left no item (0: none), 1 while a material line (the
  * commons of any won encounter, a Rare Target's rare item) has not been shown, the next one (glyph bytes, marks it
  * shown), and the end of the screen. */
 int def_hunt_reward_battle(void);
 int def_hunt_reward_pack(void);
 /* The screen gives that Booster (returns it, as def_hunt_reward_pack), and how many packs an item the screen shows is:
- * DEF_HUNT_PACKS for the Booster it gave, 0 for any other item (the PRD 3 count stays theirs). */
+ * DEF_HUNT_PACKS for the Booster it gave, 0 for any other item (the definitive experience's count stays theirs). */
 int def_hunt_take_pack(void);
 int def_hunt_pack_count(int item);
 int def_hunt_material_pending(void);
@@ -371,7 +371,7 @@ int def_hunt_flee(void);
 struct PortState;
 void def_hunt_savestate(struct PortState *s);
 
-/* The Super Rare hunts (definitive_superhunt.c; .plan/tasks/super-rare-hunts.md). Thirteen hunts, in order: the
+/* The Super Rare hunts (definitive_superhunt.c). Thirteen hunts, in order: the
  * Sepikmon of the Velvet Room starts the next one or repeats a finished one. Hunt 0 is the tutorial (DEF_SUPER_TUTORIAL:
  * a level 3 target in one area by Asuka City, given at the Velvet Room's first visit); the twelve Super Rares follow. The target sits in a map of its territory (a sector
  * of one server, def_hunt_sector_of), the compass tells how close the player is, and stepping on its point starts the
@@ -510,7 +510,7 @@ void def_skin_record_read(const unsigned char *in);
 void def_skin_savestate(struct PortState *s);
 extern int def_superhunt_debug;            /* tests: 1 opens the board on the next idle field frame, anywhere */
 
-/* PRD 4 layer D: the definitive prices (definitive_economy.c; the table is definitive_prices.c, generated by
+/* The definitive prices (definitive_economy.c; the table is definitive_prices.c, generated by
  * tools/gen_item_prices.py from records_items and the shops' goods). */
 #define DEF_PRICE_KNEE 10000    /* a shop's weapon, armour or accessory from this buying price up is "advanced"... */
 #define DEF_PRICE_DRAIN_PCT 150 /* ...and costs this % of it, so the Bits of OVERFINISH have somewhere to go */
@@ -527,7 +527,7 @@ extern const int def_item_price_count;
  * script); 0 for no item. */
 int def_item_buy(int item);
 int def_item_sell(int item);
-/* PRD 4 layer E: the forge (definitive_economy.c; the recipes are definitive_recipes.c, generated by
+/* The forge (definitive_economy.c; the recipes are definitive_recipes.c, generated by
  * tools/gen_recipes.py). Every weapon, armour and accessory a shop sells asks for Hunt Materials of the hunting regions
  * around that shop (the owner, 2026-11-17: the vendor's own region), so one item can ask for different ones in two
  * towns. The game reads only the table; the generator reads these: */
@@ -563,7 +563,7 @@ void def_glyph_roman(unsigned char *buf, int *p, int size, int n);
 /* Rare item `rare`'s Rare Target as the battle names it, "Datamon IV" (definitive_hunt.c). */
 void def_hunt_target_name(unsigned char *buf, int *p, int size, int rare);
 
-/* PRD 4 layer H: the DRI Agents' Gauntlet (definitive_dri.c the rules, definitive_dri_screen.c the screen and the
+/* The DRI Agents' Gauntlet (definitive_dri.c the rules, definitive_dri_screen.c the screen and the
  * battle; the table is definitive_dri_table.c, generated by tools/gen_dri_challenges.py). A challenge is one ordinary
  * battle whose three enemy members are an evolution line's stages, Champion to Mega: when one falls the battle brings
  * the next in at its own full HP while the party keeps its HP, MP and spent items (wfightmn_knockout). Stage n felled
@@ -654,7 +654,7 @@ int def_dri_defeat(void);
 extern int def_dri_debug;
 struct PortState;
 void def_dri_savestate(struct PortState *s);
-/* PRD 4 layer G: the Black Market (definitive_market.c: the rules; definitive_market_screen.c: the trader and its
+/* The Black Market (definitive_market.c: the rules; definitive_market_screen.c: the trader and its
  * screen; the replicas are definitive_replicas.c, generated by tools/gen_replicas.py). */
 #define DEF_REPLICAS 16        /* Legendary Replicas: their bits in the card record (REC_EXTRA + 26..27, def_replicas' index) */
 #define DEF_BM_COMMONS 12      /* commons one rare item buys at the Exchange; it happens only if all of them fit the cap */
@@ -700,7 +700,7 @@ void def_bm_sweep(void);
 /* Rare item `rare`'s boss: its Rare Target's lead species, the battle's first enemy (definitive_hunt.c). */
 int def_hunt_target_lead(int rare);
 
-/* PRD 4 layer F: the equipment variants, shop items converted in place (definitive_variants.c; the table is
+/* The equipment variants, shop items converted in place (definitive_variants.c; the table is
  * definitive_equipment.c, generated by tools/gen_equipment.py: the game reads only DEF_EQUIP_ON below, the generator
  * the rest). A variant is built against its tier's best plain item of its slot: */
 #define DEF_EQUIP_ON 1            /* 0: no variant is written (their names and descriptions go with them) */
@@ -747,7 +747,7 @@ int def_variant_text_hidden(int file, int index);
 /* Append a whole number (0 and up, every digit) at buf[*p] (definitive_glyph.c). */
 void def_glyph_number(unsigned char *buf, int *p, int size, int n);
 
-/* PRD 4 layer I: the Overlevel Rush's results on the field, without the battle's report (definitive_rush.c, pure: the
+/* The Overlevel Rush's results on the field, without the battle's report (definitive_rush.c, pure: the
  * panel's rows and clock; definitive_rush_panel.c: the panel and the switch; def_rush_apply_quiet in
  * src/stfgtrep/stfgtrep_80082E70.c: the report's rewards, by its own routines and in its order). DW3_RUSH_FLOAT (read
  * once: 0 the report, else the panel) overrides DEF_RUSH_FLOAT for a test; def_rush_float_mode is that switch. */
@@ -890,19 +890,19 @@ unsigned int def_network_mask(void);
 void def_network_unlock(int node);
 int def_save_flag(int flag);
 void def_save_flag_set(int flag, int on);
-/* The hunt's chain and the region it counts in (PRD 4 layer A), kept in the same record (REC_EXTRA + 8, + 9). */
+/* The hunt's chain and the region it counts in, kept in the same record (REC_EXTRA + 8, + 9). */
 void def_record_hunt(int *region, int *chain);
 void def_record_set_hunt(int region, int chain);
-/* The Hunt Materials held (PRD 4 layer B), same record (REC_EXTRA + 10..25): the count of one, and adding to it
+/* The Hunt Materials held, same record (REC_EXTRA + 10..25): the count of one, and adding to it
  * (clamped to 0..DEF_HUNT_MATERIAL_CAP). */
 int def_record_material(int material);
 void def_record_material_add(int material, int n);
-/* The rare items held (PRD 4 layer B), in the slot's second record: the count of one (its index in def_hunt_targets),
+/* The rare items held, in the slot's second record: the count of one (its index in def_hunt_targets),
  * adding to it (clamped to 0..DEF_HUNT_RARE_CAP; a gain also marks it as ever held), and whether it ever was. */
 int def_record_rare(int rare);
 void def_record_rare_add(int rare, int n);
 int def_record_rare_seen(int rare);
-/* The Legendary Replicas held (PRD 4 layer G), a bit each in the first record (REC_EXTRA + 26..27): replica `r`'s
+/* The Legendary Replicas held, a bit each in the first record (REC_EXTRA + 26..27): replica `r`'s
  * (an index of def_replicas), and setting or clearing it. */
 int def_record_replica(int r);
 void def_record_replica_set(int r, int on);
@@ -916,7 +916,7 @@ void def_bestiary_savestate(struct PortState *s);
  * badly summed record (or NULL) reads as an empty table. */
 void def_bestiary_record_write(unsigned char *out);
 void def_bestiary_record_read(const unsigned char *in);
-/* The slot's second record (PRD 4 layer B: memcard.c part DEF_RECORD2_PART at DEF_RECORD2_AT + slot * 0x100, the card
+/* The slot's second record (memcard.c part DEF_RECORD2_PART at DEF_RECORD2_AT + slot * 0x100, the card
  * file's free area after the first three): the rare items. The first record's rules: nothing to keep writes all
  * zeros, a missing or damaged one reads as empty. Read after the first, whose read resets the slot's port state. */
 #define DEF_RECORD2_SIZE 0x100
@@ -926,7 +926,7 @@ void def_bestiary_record_read(const unsigned char *in);
 void def_record2_write(unsigned char *out);
 void def_record2_read(const unsigned char *in);
 unsigned char *def_record2_buffer(void);
-/* PRD 4 layer H, in the same second record: whether DRI challenge `c` is unlocked, unlocking it, its best stage (0..3) and
+/* In the same second record: whether DRI challenge `c` is unlocked, unlocking it, its best stage (0..3) and
  * raising it (it never falls). */
 int def_record_dri_unlocked(int c);
 void def_record_dri_unlock(int c);
@@ -969,7 +969,7 @@ void def_blast_heat_begin(void);
 void def_blast_cool_party(void);
 void def_record_set_blast_boost(int steps);
 int def_blast_boost_pct(void);    /* the Blast form's boost now, % */
-/* The Velvet Room's story hooks (.plan/tasks/velvet-historia.md), in the same second record: a bit per hook seen or done
+/* The Velvet Room's story hooks, in the same second record: a bit per hook seen or done
  * and the gatekeeper's stage. */
 enum {
     DEF_STORY_IGOR,          /* the opening: Igor gave the key */

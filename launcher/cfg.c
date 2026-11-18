@@ -88,7 +88,7 @@ int hud_cycle(int code, int dir) {
     return hud_places[((i < NHUD ? i : 0) + dir + NHUD) % NHUD].code;
 }
 
-/* pad.map names the places in the game's SDL vocabulary, a quarter turn from the kernel's (dw3-menu.py PLACE_TO_GAME). */
+/* pad.map names the places in the game's SDL vocabulary, a quarter turn from the kernel's. */
 static const char *game_name(int code) {
     switch (code) {
     case K_SOUTH: return "west";

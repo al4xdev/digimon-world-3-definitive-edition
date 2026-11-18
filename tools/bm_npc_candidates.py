@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PRD 4 layer G: the town figures that could be the Black Market's trader (port/game/definitive_market_screen.c,
+"""The town figures that could be the Black Market's trader (port/game/definitive_market_screen.c,
 `traders`: a map and a FieldstgPlacedActor.id).
 
   tools/venv/bin/python tools/bm_npc_candidates.py              # the towns of the Guardromon inns, with the lines

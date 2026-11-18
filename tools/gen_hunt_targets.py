@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""The hunt's tables (PRD 4 layer A, redone 2026-11-17, .plan/tasks/super-rare-hunts.md): the Rare Target of each
+"""The hunt's tables (redone 2026-11-17): the Rare Target of each
 region (one Digimon), the twelve Super Rares and their territories, and the common materials. The owner approves the
 proposal before it is applied.
 

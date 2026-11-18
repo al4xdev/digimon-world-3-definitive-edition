@@ -1,4 +1,4 @@
-/* PRD 4: the glyph strings the port composes, in the game's font (a main glyph is one byte, an extra one two: `01 xx`;
+/* The glyph strings the port composes, in the game's font (a main glyph is one byte, an extra one two: `01 xx`;
  * the digits are glyph 4 + d). A window keeps the pointer it is given, so callers keep their texts in static buffers;
  * every function here appends at buf[*p], never past `size` - 1, and keeps the text 0-ended. */
 #include <stddef.h>

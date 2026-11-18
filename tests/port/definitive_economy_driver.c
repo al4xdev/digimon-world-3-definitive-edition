@@ -1,4 +1,4 @@
-/* tests/port/definitive_economy.py's driver for port/game/definitive_economy.c (PRD 4 layers D and E): the prices and
+/* tests/port/definitive_economy.py's driver for port/game/definitive_economy.c: the prices and
  * the forge's recipes through stand-in tables, items, held materials and def_on. Prints "ok name" / "FAIL name" per
  * case; exits 1 on a failure. */
 #include <stdio.h>

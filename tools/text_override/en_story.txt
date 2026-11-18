@@ -1,4 +1,4 @@
-# The story rewrite, in English (.plan/tasks/velvet-sonhos.md; .dumps/tasks/story/rewrite/BRIEF.md): `FILE:sub index:
+# The story rewrite, in English: `FILE:sub index:
 # text` for an event scene's table (DMG*), `FILE index: text` for a talk file. Replaces the game's line in English;
 # definitive_story.c reads it (DW3_STORY=0: the game's own). Lines of at most 22 letters in balloons, 3 to a page.
 # chapter 1

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""The Super Rare hunts (.plan/tasks/super-rare-hunts.md): port/game/definitive_superhunt.c compiled alone against a
+"""The Super Rare hunts: port/game/definitive_superhunt.c compiled alone against a
 driver with stand-ins for the game's state, a small world and the hunts' table: the map graph's distances, the hunts'
 order (open, locked, done, repeated, cancelled), the territory, the compass, the point, the battle (one enemy, the HP
 it keeps, the buffs, the flight at DEF_SUPER_FLEE_PCT), the crystal, the record and a replay script. Also that the

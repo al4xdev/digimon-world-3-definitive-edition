@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""The Time Room's trials (owner, 2026-11-17; .plan/tasks/velvet-historia.md): the gatekeeper before the Warp Gate to
+"""The Time Room's trials (owner, 2026-11-17): the gatekeeper before the Warp Gate to
 the Gunslinger. Each trial is one battle of three enemy members brought in one after the other (a boss battle's native
 entrance, as the DRI Gauntlet's), the challenger's own team; the levels climb towards Galacticmon's (65, then 70) so the
 three together tell whether the party is ready for the point of no return.

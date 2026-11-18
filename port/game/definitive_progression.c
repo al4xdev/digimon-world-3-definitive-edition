@@ -1,4 +1,4 @@
-/* Definitive edition, PRD 2 (.plan/tasks/definitive-progression-prd.md): progression and comfort. Pure where it can be
+/* Definitive edition: progression and comfort. Pure where it can be
  * (tests/port/definitive.py compiles the rules), the game's hooks call in under #ifdef PC_PORT. */
 #include "definitive.h"
 

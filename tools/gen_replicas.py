@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PRD 4 layer G: the Black Market's Legendary Replicas, the equipment the player can only find, win or get from an
+"""The Black Market's Legendary Replicas, the equipment the player can only find, win or get from an
 event (so can miss), sold again as replicas for rare items and Bits.
 
   tools/venv/bin/python tools/gen_replicas.py            # write port/game/definitive_replicas.c and the list for review

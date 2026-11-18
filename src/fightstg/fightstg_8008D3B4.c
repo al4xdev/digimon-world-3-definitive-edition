@@ -3379,7 +3379,7 @@ void fightstg_hud_update_names(FightstgHud *obj, FightstgHudData *data) {
         }
         if (digimon != NULL) {
 #ifdef PC_PORT
-            const unsigned char *rare = def_hunt_foe_name(digimon->id, 0); /* PRD 4 layer B: "Datamon IV" */
+            const unsigned char *rare = def_hunt_foe_name(digimon->id, 0); /* a Rare Target: "Datamon IV" */
 
             if (rare != NULL) {
                 data->enemy_name->set_text(data->enemy_name, (u8 *)rare, -1);
@@ -3835,7 +3835,7 @@ static void fightstg_battle_menu_quad(s32 x, s32 y, s32 w, s32 h, s32 abr, u8 r,
 }
 
 #ifdef PC_PORT
-/* PRD 2, layer C: the acting member's buffs and debuffs, on a strip just under its HUD frame (clear of the frame's
+/* The acting member's buffs and debuffs, on a strip just under its HUD frame (clear of the frame's
  * edge and of the member squares' tab), from the frame's outer end inwards. A stat is its letter and an arrow, green
  * up or red down (A Attack, D Defense, S Speed); a lowered resist is the element family's own picture (the one the
  * bestiary and Inspect show) with the red arrow over its corner, so it reads as "this element, down" and never as a
@@ -4056,7 +4056,7 @@ static void fightstg_battle_menu_inspect_set(FightstgBattleMenuData *data, s32 o
     rec = fightstg_enemy_records.get(fightstg_battle.state.members[1][fightstg_battle.state.current[1]].digimon);
     if (rec != NULL) {
 #ifdef PC_PORT
-        const unsigned char *rare = def_hunt_foe_name(rec->id, 1); /* PRD 4 layer B: the HUD's numeral here too */
+        const unsigned char *rare = def_hunt_foe_name(rec->id, 1); /* a Rare Target: the HUD's numeral here too */
 
         if (rare != NULL) {
             data->inspect_title->set_text(data->inspect_title, (u8 *)rare, -1);
@@ -8911,7 +8911,7 @@ s32 fightstg_rules_get_special_damage(u8 side, s32 id) {
         power = rec->power * records_state.enemies[member].stat_scale / 16;
     }
 #ifdef PC_PORT
-    if (def_on()) { /* definitive combat: Defense stands against magic (layer 7), buffs count for magic (PRD 2, B) */
+    if (def_on()) { /* definitive combat: Defense stands against magic (layer 7), buffs count for magic */
         base = power * (def_magic_attack(side) * 50 / def_magic_defense(side) + 50) / 100;
     } else
 #endif
@@ -9562,7 +9562,7 @@ s32 fightstg_rules_roll_escape(u8 side) {
     if (side == 0) {
 #ifdef PC_PORT
         {
-            /* PRD 4 layer A: a Rare Target can always be fled, whatever its boss battle blocks (but in a Super Rare
+            /* A Rare Target can always be fled, whatever its boss battle blocks (but in a Super Rare
              * hunt's territory: def_hunt_flee); a Super Rare too */
             s32 flee = def_hunt_flee();
 

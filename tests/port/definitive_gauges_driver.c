@@ -1,4 +1,4 @@
-/* tests/port/definitive_gauges.py's driver for port/game/definitive_progression.c (PRD 2, layer F). */
+/* tests/port/definitive_gauges.py's driver for port/game/definitive_progression.c (Blast Gauges in the save). */
 #include <stdio.h>
 #include <string.h>
 

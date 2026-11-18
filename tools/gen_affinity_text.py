@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Rewrite the status and training texts that call the elemental resists "Tolerance" or "Defense" (definitive combat PRD,
+"""Rewrite the status and training texts that call the elemental resists "Tolerance" or "Defense" (definitive combat,
 layers 5 and 7: they are the player's affinity now, the element's damage bonus, not a defence).
 
   tools/venv/bin/python tools/gen_affinity_text.py      # rewrites the STATUS and TRAINI lines of tools/text_override/en.txt

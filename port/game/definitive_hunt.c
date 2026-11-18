@@ -1,4 +1,4 @@
-/* PRD 4 layers A and B: the regional hunt chain, the Rare Target and the Hunt's materials.
+/* The regional hunt chain, the Rare Target and the Hunt's materials.
  *
  * A won random encounter adds one to the chain of the region the player is in (a world map area plus the server bit,
  * ststatus_map_areas's byte); entering another region, the Guardromon teleport and fighting a Rare Target reset it. The

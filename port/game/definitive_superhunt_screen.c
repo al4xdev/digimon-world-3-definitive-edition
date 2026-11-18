@@ -1,4 +1,4 @@
-/* The Super Rare hunts, the game's side (the rules are definitive_superhunt.c; .plan/tasks/super-rare-hunts.md).
+/* The Super Rare hunts, the game's side (the rules are definitive_superhunt.c).
  *
  * The Sepikmon of the Velvet Room (definitive_velvet.c) says his line and his board opens: every hunt with its level,
  * its state and its target's name (locked ones too: the owner wants the levels shown from the start, "whoever wants to

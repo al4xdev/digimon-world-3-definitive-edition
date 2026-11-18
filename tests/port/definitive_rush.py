@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PRD 4 layer I (the Overlevel Rush's results on the field): port/game/definitive_rush.c, the panel's rows, texts and
+"""The Overlevel Rush's results on the field: port/game/definitive_rush.c, the panel's rows, texts and
 clock, compiled alone with definitive_glyph.c against a driver with stand-in words (byte-for-byte checks of the rows'
 texts, the material line made one panel line, the clock's replace-on-a-second-Rush and its closing). The rewards
 themselves (def_rush_apply_quiet) are STFGTREP's routines and are checked in the game against the results screen (the

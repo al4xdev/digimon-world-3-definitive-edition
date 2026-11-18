@@ -1,4 +1,4 @@
-/* The Velvet Room (the owner's plan, .plan/tasks/velvet-room-plan.md): the Asuka City bar (map 0x20F, WSTAG255) run as a
+/* The Velvet Room (the owner's design): the Asuka City bar (map 0x20F, WSTAG255) run as a
  * room of its own, where the Black Market's trader, a mentor and Etemon live, reached through a blue door that stands in
  * every inn of the Guardromon network (port/game/definitive_travel.c's nodes).
  *
@@ -82,7 +82,7 @@ int dw3_velvet_igor_head(FieldstgActor *actor, u32 *ot, s32 x, s32 y); /* defini
 #define VL_SEPIK 61
 #define VL_SEPIK_INTRO 14
 #define VL_SEPIK_LINE 15
-/* Igor, the room's master (the story's, definitive_story.c; .plan/tasks/velvet-historia.md): until his own art is drawn,
+/* Igor, the room's master (the story's, definitive_story.c): until his own art is drawn,
  * actor 109 (0x6D), WSTAG212's man in a black suit (P055GMGD; the owner's "NPC de terno"). Actor 53 (P068SARM) is the
  * other suit of the game, brown with goggles. His line is the story's to pick (def_story_igor_line): the key at the
  * opening, then his reading of the party's DNA forms. */

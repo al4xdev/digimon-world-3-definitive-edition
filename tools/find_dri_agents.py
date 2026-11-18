@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PRD 4 layer H: find the DRI Agents, the field actors whose talk opens the Gauntlet's list. Needs the user's disc.
+"""Find the DRI Agents, the field actors whose talk opens the Gauntlet's list. Needs the user's disc.
 
   tools/venv/bin/python tools/find_dri_agents.py               # actors whose talk text says "DRI"
   tools/venv/bin/python tools/find_dri_agents.py -g Agent -g D.R.I.   # other words (case-insensitive), any of them

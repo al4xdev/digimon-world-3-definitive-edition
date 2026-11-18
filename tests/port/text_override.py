@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""The port's text overrides (definitive combat PRD, layer 1): port/game/definitive_text.c is what
+"""The port's text overrides (definitive combat, layer 1): port/game/definitive_text.c is what
 tools/gen_text_override.py makes of tools/text_override/en.txt, and every technique or item description fits the window
 (34 characters, the longest text of the disc). Needs the disc (the glyph table is read from the EXE)."""
 import subprocess

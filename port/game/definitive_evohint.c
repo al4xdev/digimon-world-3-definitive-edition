@@ -1,4 +1,4 @@
-/* Definitive edition, PRD 2 layer J: the Digi-Lab's "Next Forms" panel. Read only: it shows, for a party member, the
+/* Definitive edition: the Digi-Lab's "Next Forms" panel. Read only: it shows, for a party member, the
  * forms one step ahead (DEF_EVO_HINT_DEPTH) and what each still needs, from the game's own learn lists
  * (stfgtrep_learn_lists, checked by stfgtrep_learn_technique at each level-up). It changes no rule and no save.
  *

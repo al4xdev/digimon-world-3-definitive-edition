@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """The Velvet Room's music: the owner's local MIDI score, encoded as a SEP the port's LIBSND plays, plus the edits the
-bank (BGM031) needs to sound like the arrangement the owner accepted (.dumps/handoff_velvet_music.md).
+bank (BGM031) needs to sound like the arrangement the owner accepted.
 
   tools/venv/bin/python tools/gen_velvet_music.py            # summary and the smoothing's before/after table
   tools/venv/bin/python tools/gen_velvet_music.py --apply    # write port/game/definitive_velvet_music.inc
@@ -28,7 +28,7 @@ sys.path.insert(0, str(ROOT / "tests/sound"))
 OUT = ROOT / "port/game/definitive_velvet_music.inc"
 MIDI_DEFAULT = Path.home() / "Downloads/Persona 5 - Aria of the Soul - Octet - Aragi Shota.mid"
 
-# ---- The accepted mix (handoff_velvet_music.md): do not change without the owner ----
+# ---- The accepted mix: do not change without the owner ----
 BANK_DIR = "BGM031"  # the bank whose samples the room plays (sound bank 33)
 # part name in the MIDI, channel (one each: horn and bass shared channel 8 in the MIDI), program, level 0-100, pan
 PARTS = [

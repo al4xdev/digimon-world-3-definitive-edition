@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""The map graph of the Super Rare hunts' compass (.plan/tasks/super-rare-hunts.md): which maps an exit leads to from
+"""The map graph of the Super Rare hunts' compass: which maps an exit leads to from
 each map, and which maps have random encounters (where a Super Rare can sit).
 
   tools/venv/bin/python tools/gen_map_graph.py           # summary only

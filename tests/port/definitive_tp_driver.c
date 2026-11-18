@@ -1,4 +1,4 @@
-/* tests/port/definitive_tp.py's driver for port/game/definitive_progression.c (PRD 2, layer D). */
+/* tests/port/definitive_tp.py's driver for port/game/definitive_progression.c (TP by level band). */
 #include <stdio.h>
 
 #include "definitive.h"

@@ -11,7 +11,7 @@ extern int ui_scale, ui_w, ui_h;
 
 #define RGB(r, g, b) (((uint32_t)(r) << 16) | ((uint32_t)(g) << 8) | (uint32_t)(b))
 
-/* The palette (docs: plan 13 "Paleta"). */
+/* The palette. */
 #define C_BG0 RGB(7, 16, 25)
 #define C_BG1 RGB(12, 27, 42)
 #define C_GRID RGB(16, 40, 58)

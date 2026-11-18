@@ -1,4 +1,4 @@
-/* The Velvet Room in the main story (owner, 2026-11-17; .plan/tasks/velvet-historia.md): the hooks that send the
+/* The Velvet Room in the main story (owner, 2026-11-17): the hooks that send the
  * player into the room's arcs at set story steps (gamestate_data.progress), and the talks they show.
  *
  * A story talk is the game's own talk balloon (fieldstg_dialog_create_talk, the stage's talk file) on the player, with
@@ -530,7 +530,7 @@ static void igor_read(int first) {
     def_glyph_put(buf, &p, size, told ? def_str_IgorBye : def_str_IgorBlank);
 }
 
-/* ---- Igor's dreams (.plan/tasks/velvet-sonhos.md; owner, 2026-11-17): at set moments of the story Igor pulls the
+/* ---- Igor's dreams (owner, 2026-11-17): at set moments of the story Igor pulls the
  * player into the room alone, as in the opening (the portal's sound, the room with him only, the two face to face),
  * says his piece and asks; the answer is kept in the save, in the order the story asks (def_record_story_answer), and
  * changes no event: later dreams recall it. Then the player is sent back to the very spot the dream took them from. A
@@ -1023,7 +1023,7 @@ int def_story_sepik_line(int met) {
     return 0;
 }
 
-/* ---- The Oikawa's arc (.plan/tasks/velvet-historia.md, step 26 -> 27): Bulbmon beaten in the Bug Maze Pit, event 711
+/* ---- The Oikawa's arc (step 26 -> 27): Bulbmon beaten in the Bug Maze Pit, event 711
  * sets step 27 and leaves the player in the maze's hall (map 0x245, WSTAG540) on the way out to Amaterasu. There the
  * hooded dealer stands in the way (the Black Market's trader, actor 42: the same figure the Velvet Room draws over),
  * calls the player over and fights (def_oikawa_fight: Arukenimon, Mummymon, VenomMyotismon, Lv28..32; no escape). A

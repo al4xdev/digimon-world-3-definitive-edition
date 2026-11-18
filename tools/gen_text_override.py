@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Encode the port's text overrides (definitive combat PRD, layer 1 + PT-BR localization) into port/game/definitive_text.c.
+"""Encode the port's text overrides (definitive combat, layer 1 + PT-BR localization) into port/game/definitive_text.c.
 
   tools/venv/bin/python tools/gen_text_override.py            # write port/game/definitive_text.c (+ definitive_text_pt.inc)
   tools/venv/bin/python tools/gen_text_override.py --check    # exit 1 if the committed file is stale
@@ -25,7 +25,7 @@ SRC = ROOT / "tools/text_override/en.txt"
 SRC_PT = ROOT / "tools/text_override/pt.txt"
 OUT = ROOT / "port/game/definitive_text.c"
 OUT_PT = ROOT / "port/game/definitive_text_pt.inc"
-# The story rewrite (.plan/tasks/velvet-sonhos.md): English lines that replace the game's story text, the Kaili hero
+# The story rewrite: English lines that replace the game's story text, the Kaili hero
 # mode's variants of them, and the hero's choice points (definitive_story.c reads the tables).
 SRC_STORY = ROOT / "tools/text_override/en_story.txt"
 SRC_KAILI = ROOT / "tools/text_override/en_kaili.txt"

@@ -1,4 +1,4 @@
-/* The rare foes' colours (.plan/tasks/super-rare-hunts.md, the owner's "shiny"): a regional Rare Target and a Super
+/* The rare foes' colours (the owner's "shiny"): a regional Rare Target and a Super
  * Rare come with their palette swapped, a real palette swap (their texture's CLUT turned on the colour wheel as it is
  * uploaded), not a tint.
  *

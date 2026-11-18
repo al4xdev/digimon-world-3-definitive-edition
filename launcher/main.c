@@ -1,4 +1,4 @@
-/* dw3-launcher: the console-first menu (plan 13). One canvas, one pad, no widgets: every screen is a short list. */
+/* dw3-launcher: the console-first menu. One canvas, one pad, no widgets: every screen is a short list. */
 #include <errno.h>
 #include <fcntl.h>
 #include <poll.h>

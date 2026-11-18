@@ -1,4 +1,4 @@
-/* PRD 4 layer G: the Black Market's trader and its screen (the rules are definitive_market.c).
+/* The Black Market's trader and its screen (the rules are definitive_market.c).
  *
  * The trader is one placed actor of the field (traders below: a map and the actor's FieldstgPlacedActor.id, which is
  * its object's key1), a figure of a secondary area chosen with tools/bm_npc_candidates.py. Talking to it does not

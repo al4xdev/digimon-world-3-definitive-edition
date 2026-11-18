@@ -13,7 +13,7 @@ MemcardState memcard_state = { 0 };
  * bytes (0x8000 file, the game uses up to 0x7800), 0x100 per slot. Same numbers as DEF_BESTIARY_PART/_RECORD_AT. */
 #define MEMCARD_PART_BESTIARY 5
 #define MEMCARD_PART_BESTIARY_AT 0x7800
-#define MEMCARD_PART_HUNT 6         /* PRD 4's second record (DEF_RECORD2_*): after the first three, 0x100 per slot */
+#define MEMCARD_PART_HUNT 6         /* the second record (DEF_RECORD2_*): after the first three, 0x100 per slot */
 #define MEMCARD_PART_HUNT_AT 0x7B00
 #define MEMCARD_PART_BLAST 7 /* the Blast Gauge's third record (DEF_RECORD3_*): the file's last 0x200, 0x80 per slot */
 #define MEMCARD_PART_BLAST_AT 0x7E00

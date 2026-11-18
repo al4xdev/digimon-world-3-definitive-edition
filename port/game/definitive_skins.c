@@ -1,4 +1,4 @@
-/* The hero's skins (.plan/backlog/skins-npc.md): new colours for the hero (Kaili, or Junior without Girls Power),
+/* The hero's skins: new colours for the hero (Kaili, or Junior without Girls Power),
  * picked at the Velvet Room's skins NPC. The hero's field sprites are 4-bit frames, each with its own 16-colour CLUT
  * (girls_power.c paints Junior's files into Kaili as cdload reads them); a skin changes that CLUT: the hair (or cap)
  * and the clothes each turned on the colour wheel and given a saturation and a lightness, the skin's colours left as

@@ -33,7 +33,7 @@ preset_language (no script of its own):
   - French through new_game.json's route from the opening (its CNTY_SEL steps replaced by a wait for map 0xE02) to
     the first field map: the opening well before the emulator's (which goes through the screen), and the new game's
     deck names (gamestate_init_records, at the title's New Game) are the French text file's.
-definitive_xp (the party_xp and xp_boost mods, now the game's own: PRD 3): first_battle_save's route to
+definitive_xp (the party_xp and xp_boost mods, now the game's own): first_battle_save's route to
 back_on_field (party member 0 fights alone, 4 experience). With DW3_DEFINITIVE=1 the members who sat out gain the
 fighter's whole share (4, 4, 4) and the money stays 50 (no bits boost); without it, the original's (4, 0, 0) with the
 emulator's stable hashes up to battle_won. The 14x form experience is not reached by a scripted run (member 0 fights
@@ -393,7 +393,7 @@ def first_battle_runs(binary, out, runs, env=None, same_battle=True):
 
 
 def definitive_xp(binary, out):
-    """The definitive edition's experience (PRD 3, A: the party_xp and xp_boost mods made the game's own): with
+    """The definitive edition's experience (the party_xp and xp_boost mods made the game's own): with
     DW3_DEFINITIVE=1 and no mod, the first battle's report gives the two members who sat out the fighter's whole share
     (DEF_XP_PARTY_SHARE 100) and the money is the battle's own (no bits boost); without it, the original's report."""
     print("mods: definitive_xp (first_battle_save to back_on_field: one member of three fights, 4 experience)")

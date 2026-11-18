@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PRD 4 layer E: the forge's recipes. The shops keep their own buying screen, but every weapon, armour and accessory
+"""The forge's recipes. The shops keep their own buying screen, but every weapon, armour and accessory
 they sell asks for Hunt Materials as well as Bits, and those of the hunting regions around the shop (the owner,
 2026-11-17: the vendor's own region; commons in large amounts, a rare for the best gear). One item sold in two towns
 can ask for different materials in each, so the table is by shop and item.
@@ -77,7 +77,7 @@ LEVEL_AT = [(40, 3), (200, 6), (500, 10), (1000, 14), (2500, 21), (5000, 27), (9
             (30000, 48), (60000, 50)]
 AMOUNT = [(40, 2), (200, 3), (500, 5), (1000, 6), (2500, 8), (5000, 12), (9500, 15), (15000, 20), (22000, 25),
           (30000, 30), (60000, 40)]
-# The commons' spread (forge-variety.md Part 1, measured in .dumps/tasks/forge/proto.py): a shop's pool widens up to
+# The commons' spread (measured in .dumps/tasks/forge/proto.py): a shop's pool widens up to
 # REACH_MAX exits while it has fewer than MIN_POOL commons; an item's candidates are within WINDOW levels of the nearest,
 # scored by the level gap plus SPREAD per earlier use in the shop; armour takes the second within SECOND points.
 MIN_POOL, REACH_MAX, WINDOW, SPREAD, SECOND = 3, 7, 8, 2, 2
@@ -207,7 +207,7 @@ def table():
 
 
 def spread_ok(rows):
-    """The Part 1 checks: (every common asked, no shop on a single common, the worst level gap outside
+    """The spread checks: (every common asked, no shop on a single common, the worst level gap outside
     OFF_LEVEL_SHOP within MAX_GAP), with the details for the message."""
     from collections import defaultdict
     _info, _mr, mid, _g, _a = world()

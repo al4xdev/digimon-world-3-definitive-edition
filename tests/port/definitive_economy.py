@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PRD 4's economy (layers D and E): port/game/definitive_economy.c compiled alone against a driver with stand-in
+"""The economy (prices and the forge): port/game/definitive_economy.c compiled alone against a driver with stand-in
 items, tables and held materials; and the generated tables checked against their rules (tools/gen_item_prices.py and
 tools/gen_recipes.py --check: records_items, the shops' goods and the Rare Target table, no disc). Needs only the host
 gcc."""

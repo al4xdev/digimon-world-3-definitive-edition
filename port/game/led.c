@@ -35,7 +35,7 @@ const char *led_status(void) { return NULL; }
 #include <unistd.h>
 
 #define LEDD_SOCK "/tmp/ledd.sock"
-/* The daemon the whole card shares, put there by the handheld menu's install (handheld/dw3-menu.py, led_install), and this
+/* The daemon the whole card shares, put there by the handheld menu's install (launcher/cfg.c, led_install), and this
  * port's own copy as the fallback for a card where nobody has installed it yet. */
 #define LEDD_SHARED "/storage/.config/ledd/ledd.py"
 #define LEDD_FILE "ledd.py" /* in the package's directory, which is the game's working directory (handheld/dw3.sh) */

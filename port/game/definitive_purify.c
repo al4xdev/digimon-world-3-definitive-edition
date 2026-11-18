@@ -1,4 +1,4 @@
-/* The Blast Gauge's quest (owner's redesign, 2026-11-17; .plan/tasks/velvet-room-plan.md): Gennai, the Velvet Room's old
+/* The Blast Gauge's quest (owner's redesign, 2026-11-17): Gennai, the Velvet Room's old
  * man, his simulator and the Chosen Evolution.
  *
  * The stages (def_record_blast_quest), each opened by his talk (the panel comes after his line, definitive_velvet.c):

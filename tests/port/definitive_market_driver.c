@@ -1,4 +1,4 @@
-/* tests/port/definitive_market.py's driver for port/game/definitive_market.c (PRD 4 layer G, the Black Market's rules),
+/* tests/port/definitive_market.py's driver for port/game/definitive_market.c (the Black Market's rules),
  * linked with definitive_bestiary.c, whose card records keep the materials, the rare items and the replicas' bits. The
  * Rare Target table, its lead species, the replica table, gamestate_data and def_on are stand-ins. Prints "ok name" /
  * "FAIL name" per case; exits 1 on a failure. */

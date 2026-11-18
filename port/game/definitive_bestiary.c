@@ -16,10 +16,9 @@ extern int fightstg_enemy_find_record(int id);
 #define REC_TABLE 8 /* offset of the table in the record (magic 4, version 1, checksum 1, 2 unused) */
 /* The record's spare bytes after the table carry the slot's other port state (the slot's own tail is full): at
  * REC_EXTRA "X1", the flags (DEF_SAVE_HARD), a byte unused, the Guardromon network's mask (4 bytes, low first), then the
- * hunt's region and chain (PRD 4 layer A), then the Hunt Materials, a byte each (layer B), then the Legendary
- * Replicas held, a bit each, low byte first (layer G; the PRD's budget gives the rest of the 48 bytes to the later
- * layers). A record without the "X1" (an older save) reads as none of it, and one written before a layer existed reads
- * its bytes as 0. */
+ * hunt's region and chain, then the Hunt Materials, a byte each, then the Legendary Replicas held, a bit each, low
+ * byte first (the rest of the 48 bytes is spare). A record without the "X1" (an older save) reads as none of it, and
+ * one written before a field existed reads its bytes as 0. */
 #define REC_EXTRA 0xD0
 
 static unsigned char extra_flags;
@@ -27,15 +26,15 @@ static unsigned int extra_network;
 static unsigned char extra_region, extra_chain;
 static unsigned char extra_materials[DEF_HUNT_MATERIALS];
 static unsigned short extra_replicas; /* DEF_REPLICAS bits: two bytes of the record */
-/* The second record (PRD 4 layer B): "HUNT", version, XOR checksum of the rest, a byte unused, the rare items' counts,
- * then the bits of the ones ever held (the bestiary's collection); the rest of the 0x100 is the later layers'. */
+/* The second record: "HUNT", version, XOR checksum of the rest, a byte unused, the rare items' counts,
+ * then the bits of the ones ever held (the bestiary's collection); the rest of the 0x100 is spare. */
 #define REC2_RARES 8
 #define REC2_SEEN (REC2_RARES + DEF_HUNT_RARES)
 static unsigned char rares[DEF_HUNT_RARES];
 static unsigned char rares_seen[DEF_HUNT_RARES / 8];
 static unsigned char buffer2[DEF_RECORD2_SIZE];
-/* PRD 4 layer H, after the rares' bits: the DRI challenges unlocked, a bit each (2 bytes, low first), then each one's best
- * stage, 2 bits each (4 bytes, low first). The record's version stays 1: one written before the layer reads them as 0, and
+/* After the rares' bits: the DRI challenges unlocked, a bit each (2 bytes, low first), then each one's best
+ * stage, 2 bits each (4 bytes, low first). The record's version stays 1: one written before them reads them as 0, and
  * the checksum already covered these bytes as zeros. */
 #define REC2_DRI (REC2_SEEN + DEF_HUNT_RARES / 8)
 typedef char rec2_dri_fits[DEF_DRI_CHALLENGES <= 16 && REC2_DRI + 6 <= DEF_RECORD2_SIZE ? 1 : -1];

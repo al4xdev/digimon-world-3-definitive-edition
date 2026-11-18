@@ -1,4 +1,4 @@
-/* PRD 4 layer I, the Overlevel Rush's results on the field: what the panel lists and how long it stays up. Pure (no
+/* The Overlevel Rush's results on the field: what the panel lists and how long it stays up. Pure (no
  * game state: tests/port/definitive_rush.py drives it); definitive_rush_panel.c draws it, and the rewards themselves are
  * STFGTREP's own routines (def_rush_apply_quiet, src/stfgtrep/stfgtrep_80082E70.c), applied before the panel opens.
  *

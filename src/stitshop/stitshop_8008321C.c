@@ -11,7 +11,7 @@
 #include "stitshop.h"
 
 #ifdef PC_PORT
-/* PRD 4 layer D: the prices through the definitive table (port/game/definitive_economy.c); a price may pass 65535 */
+/* The prices through the definitive table (port/game/definitive_economy.c); a price may pass 65535 */
 #define STITSHOP_BUY(item) def_item_buy(item)
 #define STITSHOP_SELL(item) def_item_sell(item)
 #else
@@ -266,7 +266,7 @@ void stitshop_buy_run(StitshopBuy *obj, StitshopBuyData *data) {
     s32 i;
     s32 digimon;
 #ifdef PC_PORT
-    s32 price; /* PRD 4 layer D: past 65535 */
+    s32 price; /* the definitive prices: past 65535 */
 #else
     u16 price;
 #endif
@@ -306,7 +306,7 @@ void stitshop_buy_run(StitshopBuy *obj, StitshopBuyData *data) {
                 data->messages->set_visible(data->messages, 0);
                 obj->base.step = 45;
 #ifdef PC_PORT
-            } else if (!def_recipe_can_buy(obj->item)) { /* PRD 4 layer E: the forge's materials, refused as the money */
+            } else if (!def_recipe_can_buy(obj->item)) { /* the forge's materials, refused as the money */
                 data->messages->set_text(data->messages, (u8 *)def_recipe_missing_text(), -1);
                 data->messages->set_visible(data->messages, 0);
                 obj->base.step = 45;
@@ -344,7 +344,7 @@ void stitshop_buy_run(StitshopBuy *obj, StitshopBuyData *data) {
         }
 #ifdef PC_PORT
         if (obj->max > def_recipe_max(obj->item)) {
-            obj->max = def_recipe_max(obj->item); /* PRD 4 layer E: as many as the materials make */
+            obj->max = def_recipe_max(obj->item); /* the forge: as many as the materials make */
         }
 #endif
         obj->base.step++;
@@ -469,7 +469,7 @@ void stitshop_buy_run(StitshopBuy *obj, StitshopBuyData *data) {
                 data->info->set_item(data->info, obj->item, obj->count);
                 gamestate_data.money -= STITSHOP_BUY(obj->item) * obj->count;
 #ifdef PC_PORT
-                def_recipe_pay(obj->item, obj->count); /* PRD 4 layer E: the forge's materials with the Bits */
+                def_recipe_pay(obj->item, obj->count); /* the forge's materials with the Bits */
 #endif
                 obj->main->show_money(obj->main);
             }

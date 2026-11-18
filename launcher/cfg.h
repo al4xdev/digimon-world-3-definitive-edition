@@ -1,7 +1,7 @@
 #ifndef DW3_CFG_H
 #define DW3_CFG_H
 /* What the launcher edits and writes: tui.state, pad.map and settings.json (the same files and formats as the
- * handheld/dw3-menu.py it replaces, so the game and an older menu read them unchanged). */
+ * Python menu it replaced, so the game and an older menu read them unchanged). */
 #include <stddef.h>
 
 enum { A_CROSS, A_SQUARE, A_CIRCLE, A_TRIANGLE, A_L1, A_R1, A_START, A_SELECT, A_COUNT };

@@ -1,4 +1,4 @@
-/* tests/port/definitive_dri.py's driver for port/game/definitive_dri.c (PRD 4 layer H, the DRI Gauntlet's rules), linked
+/* tests/port/definitive_dri.py's driver for port/game/definitive_dri.c (the DRI Gauntlet's rules), linked
  * with definitive_bestiary.c, whose second card record keeps the unlocked challenges and their best stages and whose
  * first and second records hold the materials the unlocks take. The challenge and agent tables, def_on and the names
  * are stand-ins. Prints "ok name" / "FAIL name" per case; exits 1 on a failure. */

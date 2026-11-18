@@ -43,7 +43,7 @@ void def_guide_request(void);
 #define BS_STATE_X 100 /* its state */
 #define BS_HINT_Y 0xA5
 #define BS_PAGE_X 0x112 /* the page, at the title bar's right end */
-#define BS_DROPS_Y (BS_ROW_Y + BS_FAMILIES * 14) /* PRD 4 layer C: the Hunt Materials' two lines, under the families' */
+#define BS_DROPS_Y (BS_ROW_Y + BS_FAMILIES * 14) /* the Hunt Materials' two lines, under the families' */
 #define BS_HELD_X 136   /* a material's count, clear of the longest name */
 #define BS_RARE_X 122   /* the rare items' "13/13", clear of the frame */
 #define BS_MATERIALS 16 /* DEF_HUNT_MATERIALS */
@@ -106,7 +106,7 @@ typedef struct FieldmenuWindows {
     MessageWindow *bs_states[7]; /* and states */
     MessageWindow *bs_page;      /* "3/33" */
     MessageWindow *bs_hint;      /* the page buttons */
-    MessageWindow *bs_drops;     /* "Drops" (PRD 4 layer C): the materials' names and counts take bs_info[6..7], bs_states[5..6] */
+    MessageWindow *bs_drops;     /* "Drops": the materials' names and counts take bs_info[6..7], bs_states[5..6] */
 #endif
 } FieldmenuWindows; /* size 0xAC */
 
@@ -271,7 +271,7 @@ static void fieldmenu_bestiary_name(MessageWindow *win, s32 index, s32 chosen) {
     }
 }
 
-/* PRD 4 layers B and C (the owner's materials model of 2026-11-13): under the families, the species' Hunt line. The
+/* The owner's materials model of 2026-11-13: under the families, the species' Hunt line. The
  * first line its common material and how many the player holds (grey at none; "-" for a species no random encounter
  * has); the second, for a species that leads Rare Targets, its rare items as a collection: how many of its regions'
  * ones were ever held, of how many ("4/13", orange when all). "???" while nothing of the species is known. */
@@ -465,7 +465,7 @@ static void fieldmenu_bestiary_panel(Fieldmenu *obj) {
     s32 x = BS_PANEL_X - port_video_widescreen_pad();
     s32 i;
 
-    for (i = 1; i <= BS_FAMILIES; i++) { /* between the families' lines, and above the Hunt Materials' (PRD 4 layer C) */
+    for (i = 1; i <= BS_FAMILIES; i++) { /* between the families' lines, and above the Hunt Materials' */
         fieldmenu_bestiary_rect(obj, x + 6, BS_ROW_Y + i * 14 - 1, BS_PANEL_W - 12, 1, 41, 41, 115);
     }
     fieldmenu_bestiary_rect(obj, x + 2, BS_PANEL_Y + 2, BS_PANEL_W - 4, BS_ROW_Y - 4 - BS_PANEL_Y, 0, 0, 74);

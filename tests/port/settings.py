@@ -297,7 +297,7 @@ def main():
     _, s, _ = printed(binary, a / "settings.json")
     check(s["mods"]["fast_forward"]["enabled"] is False, "a mod absent from the settings is off")
     # The slider cap (an option above slider_max kept only with its input_toggle) was checked on xp_boost, the one mod
-    # that had such options; it left the build with the definitive edition (PRD 3), and no builtin mod has one now.
+    # that had such options; it left the build with the definitive edition, and no builtin mod has one now.
 
     print("settings: errors (exit 64, the key named)")
     bad = {

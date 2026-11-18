@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PRD 4 layer G, the Black Market's rules: port/game/definitive_market.c and definitive_bestiary.c compiled alone
+"""The Black Market's rules: port/game/definitive_market.c and definitive_bestiary.c compiled alone
 against a driver with stand-ins for the Rare Targets, their lead species, the replicas, gamestate_data and def_on: the
 Exchange's rate and cap (no value made or lost outside it), the replicas' distinct bosses, a purchase and its refusals,
 the resale 0 and the bit's end, the bits in the card record (written, read back, an older record as none) and a replay

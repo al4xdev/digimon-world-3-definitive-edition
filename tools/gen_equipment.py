@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PRD 4 layer F: the equipment variants (build crafting). There is no free item ID (records_items has 1..402 and the
+"""The equipment variants (build crafting). There is no free item ID (records_items has 1..402 and the
 save's inventory is items[0x193]), so a variant is an existing shop item converted in place: same ID, icon (type),
 slot, group, who can wear it, charisma, price and forge recipe; new modifiers, name and description. Three archetypes
 for a party of two or three, one of each in every equipment shop's goods (a "tier"):
@@ -10,7 +10,7 @@ for a party of two or three, one of each in every equipment shop's goods (a "tie
   - Tank: body armour or a shield above the tier's best guard, with Spirit, paid with Boost.
 And a fourth, picked by hand (ELEMENT_WEAPONS below, not by the selection rule): the Elemental weapon, a plain
 one-handed weapon that gives up power for one family's resists.
-And the Trade-off accessories, also by hand (TRADES below, forge-variety.md Part 2B): a Gem or Ring that gives
+And the Trade-off accessories, also by hand (TRADES below): a Gem or Ring that gives
 TRADE_GAIN % more of its stat than its list's plain piece and pays the extra in a second stat, at the budget's weights,
 so it scores what the plain piece does. RecordsAccessory has one bonus; the penalty is kept in its unused bytes and
 added by the port (def_accessory_penalty).
@@ -68,7 +68,7 @@ STAT = {1: "Power", 2: "Guard", 3: "Spirit", 4: "Wisdom", 5: "Boost", 6: "Charis
 ENUM = {v: k for k, v in BONUS.items() if k != "0"}
 FAMILIES = [(8,), (9, 10), (11,), (12, 13), (14,)]  # definitive_mask.c's: Fire, Water+Ice, Wind, Thunder+Machine, Dark
 SPEED, ELEMENT, TANK, ELEMENT_WEAPON, TRADE = 0, 1, 2, 3, 4
-# The Elemental weapons (forge-variety.md Part 2A, the owner's list of 2026-11-17): one per tier, two in the last, picked
+# The Elemental weapons (the owner's list of 2026-11-17): one per tier, two in the last, picked
 # by hand so every Rookie gets one and the families rotate. Each is a plain one-handed weapon that gives up
 # ELEMENT_WEAPON_COST % of the tier's best power for its family's resists (the heads give up guard instead), at most
 # DEF_EQUIP_ELEM_MAX each. The game sees an Elemental piece (DEF_EQUIP_ELEMENT) with the weapon's fields.
@@ -76,7 +76,7 @@ ELEMENT_WEAPONS = {0: [("Dagger", 0)], 1: [("Shishioumaru", 1)], 2: [("Fairy Tal
                    4: [("Shotgun", 4)], 5: [("Tiger Glove", 0)], 6: [("Scissor Horn", 1)], 7: [("Royal Spear", 2)],
                    8: [("Raijin Fist", 3), ("Suijin Cannon", 1)]}
 ELEMENT_WEAPON_COST = 25  # half the heads' 50: a weapon's power is the whole damage, and at 50 the resists hit their cap
-# The Trade-off accessories (forge-variety.md Part 2B): (the item converted, the stat it gives, the stat it costs). The
+# The Trade-off accessories: (the item converted, the stat it gives, the stat it costs). The
 # Gems list (shops 1, 8, 23) and the Rings list (shop 16) each convert two pieces, and a piece is converted in one list
 # only when its stat's piece in the other list stays plain: Power and Wisdom keep their Rings, Guard and Spirit their
 # Gems, so no stat loses its last plain accessory. Boost is the Sage pieces' price (Wisdom drives the support buffs).

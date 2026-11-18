@@ -10,7 +10,7 @@
 #include "stitshop.h"
 
 #ifdef PC_PORT
-/* PRD 4 layer D: the prices through the definitive table (port/game/definitive_economy.c); a price may pass 65535 */
+/* The prices through the definitive table (port/game/definitive_economy.c); a price may pass 65535 */
 #define STITSHOP_BUY(item) def_item_buy(item)
 #define STITSHOP_SELL(item) def_item_sell(item)
 #else
@@ -1319,7 +1319,7 @@ void stitshop_info_create_windows(StitshopInfo *obj, StitshopInfoData *data) {
 /* Shows (`show`) or hides the item's name, how many are equipped and owned, and the price. */
 void stitshop_info_show_item(StitshopInfo *obj, StitshopInfoData *data, s32 show) {
 #ifdef PC_PORT
-    s32 price; /* PRD 4 layer D: past 65535 */
+    s32 price; /* the definitive prices: past 65535 */
 #else
     u16 price;
 #endif
@@ -1361,7 +1361,7 @@ void stitshop_info_show_description(StitshopInfo *obj, StitshopInfoData *data, s
         entry = records_funcs.get_item(obj->item);
 #ifdef PC_PORT
         data->slot->set_palette(data->slot, 0);
-        if (obj->selling == 0) { /* PRD 4 layer E: the forge's requirements in the slot's line, orange while short */
+        if (obj->selling == 0) { /* the forge's requirements in the slot's line, orange while short */
             int palette;
             const unsigned char *needs = def_recipe_label(obj->item, &palette);
 
@@ -2013,7 +2013,7 @@ StitshopMain *stitshop_main_create(void) {
     obj->layer_id = 0x1000;
     obj->shop = gamestate_data.funcs.get_map_entry();
 #ifdef PC_PORT
-    def_recipe_set_shop(obj->shop); /* PRD 4 layer E: this shop's recipes (its regions' materials) */
+    def_recipe_set_shop(obj->shop); /* the forge: this shop's recipes (its regions' materials) */
 #endif
     return obj;
 }

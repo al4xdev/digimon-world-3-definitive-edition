@@ -853,7 +853,7 @@ void wfightmn_battle_end(WfightmnMain *obj, WfightmnMainData *data) {
             break;
         case 2:
 #ifdef PC_PORT
-            /* PRD 4 layer H, Blast phase 2, the Time Room, the Oikawa's arc: a lost simulation, purification, trial or
+            /* The Gauntlet, Blast phase 2, the Time Room, the Oikawa's arc: a lost simulation, purification, trial or
              * fight with him is no game over: back to the field */
             if (def_dri_defeat() || def_purify_defeat() || def_time_defeat() || def_story_defeat()) {
                 gamestate_data.funcs.set_next_map(gamestate_data.field_map, 0);
@@ -1381,7 +1381,7 @@ void wfightmn_knockout(WfightmnMain *obj, WfightmnMainData *data) {
         if (data->wait.scene->done != 0) {
             fightstg_battle.state.current[1] = obj->msg_args[0];
 #ifdef PC_PORT
-            def_dri_stage_enters(obj->msg_args[0]); /* PRD 4 layer H: a DRI simulation's next stage, its callout */
+            def_dri_stage_enters(obj->msg_args[0]); /* a DRI simulation's next stage, its callout */
             def_purify_stage_enters(obj->msg_args[0]); /* Blast phase 2: a purification's next dark form */
 #endif
             obj->base.substep++;

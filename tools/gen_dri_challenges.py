@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""PRD 4 layer H: the DRI Agents' Gauntlet. Each challenge is one battle whose three enemy members are the stages of an
+"""The DRI Agents' Gauntlet. Each challenge is one battle whose three enemy members are the stages of an
 evolution line, Champion to Mega; the battle brings in the next member when one falls (wfightmn_knockout), so the
 "next form" comes in at its own full HP while the party keeps its state. The owner approves the list.
 
@@ -64,7 +64,7 @@ LINES = [
 # actor's base.key1); map -1 matches any map. Found on the lab with tools/find_dri_agents.py (needs the disc): the DDNA
 # quests' researchers (Kazuki and Michael on 0x21D; Bob, Johann, Jimmy, Ken, Yuji, Yang). Their story's pig forms
 # ("Oink...", actors 157..161) are left out: a quest's state, not an agent.
-# The eight DRI Agents, each with his DDNA quest (.plan/tasks/dri-agents-unlock.md): (map, actor ID). Only these open
+# The eight DRI Agents, each with his DDNA quest: (map, actor ID). Only these open
 # the Gauntlet: an actor of the same sprite elsewhere is an ordinary NPC. The agent's Rookie is read from his own talk
 # (the "joined" conditions), so it is not listed here.
 AGENTS = [

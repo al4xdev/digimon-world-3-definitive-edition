@@ -1,4 +1,4 @@
-/* The Time Room (owner, 2026-11-17; .plan/tasks/velvet-historia.md): the gatekeeper before the point of no return.
+/* The Time Room (owner, 2026-11-17): the gatekeeper before the point of no return.
  *
  * Step 40: in the Master Room of Asuka (map 0x288, WSTAG311) Megadeath's voice opens the Warp Gate to the Gunslinger
  * (a map event of type 14 to map 0x2DD), and nothing on the Gunslinger leads back. The port holds the gate shut until

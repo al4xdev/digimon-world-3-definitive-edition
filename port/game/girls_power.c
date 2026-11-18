@@ -1,4 +1,4 @@
-/* Girls Power (.plan/tasks/girls-power-kaili-prd.md): Kaili is the hero and Junior her friend, with no text changed.
+/* Girls Power: Kaili is the hero and Junior her friend, with no text changed.
  *
  * The field draws people from 4-bit TIM frames in FIELD/SPRT P-files (docs/FORMATS.md "Actor sprites"). Junior's
  * are P001PLAY (actor 1, the scenes), P002PLAY (actor 2, the one the player walks) and the action files P002PLYD/F/K/L

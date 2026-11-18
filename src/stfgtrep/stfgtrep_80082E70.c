@@ -917,18 +917,18 @@ void stfgtrep_main_run(StfgtrepMain *obj, StfgtrepMainData *data) {
     case 21:
 #ifdef PC_PORT
         if (records_battle_results.item == 0) {
-            records_battle_results.item = def_hunt_take_pack(); /* PRD 4 layer B: a Rare Target's rare Booster */
+            records_battle_results.item = def_hunt_take_pack(); /* a Rare Target's rare Booster */
         }
 #endif
         if (records_battle_results.item != 0) {
             s32 item_gain = 1;
 #ifdef PC_PORT
-            /* definitive edition (PRD 3, A): a Booster Pack drop gives DEF_CARD_BOOST_PACKS of them */
+            /* definitive edition: a Booster Pack drop gives DEF_CARD_BOOST_PACKS of them */
             if (def_on() && (records_battle_results.item == 91 ||
                              (records_battle_results.item >= 361 && records_battle_results.item <= 394))) {
                 item_gain = DEF_CARD_BOOST_PACKS;
             }
-            if (def_hunt_pack_count(records_battle_results.item) != 0) { /* PRD 4 layer B: the Rare Target's, one */
+            if (def_hunt_pack_count(records_battle_results.item) != 0) { /* the Rare Target's, one */
                 item_gain = def_hunt_pack_count(records_battle_results.item);
             }
 #endif
@@ -939,7 +939,7 @@ void stfgtrep_main_run(StfgtrepMain *obj, StfgtrepMainData *data) {
             obj->base.substep = 1;
 #ifdef PC_PORT
             if (def_hunt_material_pending()) {
-                obj->base.substep = 2; /* PRD 4 layer B: the Hunt Material's line after the item's */
+                obj->base.substep = 2; /* the Hunt Material's line after the item's */
             }
 #endif
             gamestate_data.items[records_battle_results.item] += item_gain;
@@ -950,13 +950,13 @@ void stfgtrep_main_run(StfgtrepMain *obj, StfgtrepMainData *data) {
             obj->base.step = 50;
 #ifdef PC_PORT
             if (def_hunt_material_pending()) {
-                obj->base.step = 22; /* PRD 4 layer B: no item, but a Hunt Material */
+                obj->base.step = 22; /* no item, but a Hunt Material */
             }
 #endif
         }
         break;
 #ifdef PC_PORT
-    case 22: /* PRD 4 layer B: the battle's material lines (commons, a Rare Target's rare item), shown like an item ("Item
+    case 22: /* the battle's material lines (commons, a Rare Target's rare item), shown like an item ("Item
               * gained:" in ESFGTRPT 11), one press each */
         data->messages->set_text(data->messages, (u8 *)def_hunt_material_text(), -1);
         data->messages->set_speed(data->messages, 6);
@@ -1117,7 +1117,7 @@ void stfgtrep_main_update(StfgtrepMain *obj, StfgtrepMainData *data) {
                 break;
             }
 #ifdef PC_PORT
-            if (def_hunt_reward_battle() >= 0) { /* PRD 4 layer B: a Rare Target pays DEF_HUNT_XP_MULT times the random
+            if (def_hunt_reward_battle() >= 0) { /* a Rare Target pays DEF_HUNT_XP_MULT times the random
                                                   * encounter it replaced, split between the members as above */
                 exp = stfgtrep_rewards[def_hunt_reward_battle()].exp * DEF_HUNT_XP_MULT;
                 exp = n == 2 ? exp * 6 / 10 : n == 3 ? exp / 3 : exp;
@@ -1133,7 +1133,7 @@ void stfgtrep_main_update(StfgtrepMain *obj, StfgtrepMainData *data) {
                 }
             }
 #ifdef PC_PORT
-            if (def_on()) { /* definitive edition (PRD 3, A): the members who sat out share the experience */
+            if (def_on()) { /* definitive edition: the members who sat out share the experience */
                 for (i = 0; i < obj->member_count; i++) {
                     m = data->members[i];
                     m->exp_gained = port_party_xp_share(i, records_battle_results.members[i].took_part, exp);
@@ -1169,7 +1169,7 @@ void stfgtrep_main_update(StfgtrepMain *obj, StfgtrepMainData *data) {
 }
 
 #ifdef PC_PORT
-/* PRD 4 layer I: the report's rewards without the report, for the Overlevel Rush's panel on the field (the field calls
+/* The report's rewards without the report, for the Overlevel Rush's panel on the field (the field calls
  * this right after def_rush_results, port/game/definitive_rush_panel.c). STFGTREP is not the loaded overlay then, but
  * on the port its code and its tables (stfgtrep_rewards, the learn lists, the gain tables: constants, none set up by
  * the stage) are the binary's own, as the Digi-Lab's Next Forms panel reads the learn lists from STGDGLAB.
@@ -1594,7 +1594,7 @@ s32 stfgtrep_add_exp(s32 digimon, s32 exp) {
                 rec->stats.values[0] = 99;
             }
 #ifdef PC_PORT
-            if (def_on()) { /* definitive edition (PRD 2, layer D): TP by level band; what the ceiling eats is noted */
+            if (def_on()) { /* definitive edition: TP by level band; what the ceiling eats is noted */
                 rec->stats.values[1] = def_level_tp(digimon, rec->stats.values[1], rec->stats.values[0]);
             } else {
                 rec->stats.values[1] += 5;
@@ -1810,7 +1810,7 @@ s32 stfgtrep_get_technique_exp(s32 digimon, s32 tech, s32 exp, s32 n) {
     }
 #ifdef PC_PORT
     if (def_on()) {
-        e = e * DEF_XP_FORM_MULT > 9999999 ? 9999999 : e * DEF_XP_FORM_MULT; /* PRD 3, A: the form experience */
+        e = e * DEF_XP_FORM_MULT > 9999999 ? 9999999 : e * DEF_XP_FORM_MULT; /* the definitive form experience */
     }
 #endif
     return e;
