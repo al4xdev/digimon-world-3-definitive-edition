@@ -1714,6 +1714,7 @@ static inline void fieldstg_manager_start(FieldstgManager *obj, FieldstgManagerD
         data->stage = OVERLAY_FN(2, fieldstg_stage.entry)(obj);
     }
 #ifdef PC_PORT
+    dw3_velvet_field_loaded(); /* the Velvet Room's prompt went with the last stage's objects */
     def_time_stage_setup(); /* the Time Room's trial areas: the stage as the trial has it (definitive_time_room.c) */
     def_story_stage_setup(); /* the Oikawa's arc: he waits in the Bug Maze Pit's hall (definitive_story.c) */
 #endif

@@ -7,10 +7,11 @@
  * use and paints the map's holes in the room's blue (the backdrop). The bar is unchanged when the map is entered the way
  * the game enters it (its own two doors from Asuka City), so nothing of the story is lost.
  *
- * The portal: a door of blue light on the floor of each inn, its back to a wall, a few steps from the Guardromon
- * (`doors`: one spot per inn map, the second half's copies sharing the first half's layouts). Stepping onto its foot
- * (VL_RADIUS) leaves for the room; `dw3_velvet_leave` takes the room's front door back to the inn the portal was taken
- * in, and closes the other one (`dw3_velvet_event_closed`).
+ * The way in: a spot of each inn (`doors`: one per inn map, the second half's copies sharing the first half's layouts)
+ * in front of a piece of its own scenery (a wardrobe, a door, a crate) that a faint blue light marks (`looks`: no door
+ * of its own, the owner's call). Standing there (VL_RADIUS) shows the map exits' prompt; CIRCLE takes it, as a map exit
+ * is taken. `dw3_velvet_leave` takes the room's front door back to the inn the way was taken in, and closes the other
+ * one (`dw3_velvet_event_closed`).
  *
  * The state is the port's RAM, not the save: a slot saved inside the room loads the bar as the game has it, at the saved
  * spot (a place the game can be in anyway). */
@@ -24,6 +25,7 @@
 #include "gfx.h"
 #include "heap.h"
 #include "message.h"
+#include "pad.h"
 #include "records.h"
 
 #include "psyq/libgpu.h"
@@ -45,8 +47,10 @@ extern const unsigned char def_str_VelvetTitle[], def_str_VelvetTitle2[], def_st
                            * 3 is in front of the floor (7) and the walls, and behind the actors (4), so the player
                            * stands in front of his door instead of vanishing behind it */
 #define VL_BG_DEPTH 0       /* the backdrop is behind everything else of its layer */
-#define VL_LIGHT_BANDS 6 /* the doorway's light: a band per VL_LIGHT_BANDS rows, dim at the lintel */
-#define VL_RADIUS 12        /* pixels: the player this close to a portal's centre takes it */
+#define VL_RADIUS 12        /* pixels: the player this close to a door's spot gets its prompt */
+#define VL_PAD_CIRCLE 0x2000 /* the button a map exit's prompt waits for (fieldstg_map_events_update) */
+#define VL_ICON_TYPE 10     /* the prompt's animation: a map exit's "go in" arrow (a type 1 event facing 4) */
+#define VL_ICON_ID 6        /* the map events' own prompt object id */
 /* The room's music: the bank and the track of the game's that map 0x25F alone uses (the field plays
  * `fieldstg_stage.sound` after loading `fieldstg_stage.music`'s bank, so both have to change; the owner composes the
  * room's own later). */
@@ -151,27 +155,195 @@ typedef struct VelvetDoor {
     s16 y;
 } VelvetDoor;
 
+/* The light that marks a way in, on the map's own scenery, in map pixels. Additive, so it only brightens what is there:
+ * a glow (an ellipse at x0,y0 of radii x1,y1, blue at its heart and nothing at its rim) or a seam (a thin line of light
+ * from x0,y0 to x1,y1, a door's or a lid's crack, with a soft halo). `power` scales it, 255 the brightest. `front`
+ * draws it over the map's foreground tiles (the furniture an actor walks behind) instead of on the floor and the walls
+ * behind the actors. `dim` first takes red and green out of what it lies on (255 the most): blue added to a light
+ * surface only whitens it, the dimming turns it towards the light's own blue. */
+enum { VL_HINT_NONE, VL_HINT_GLOW, VL_HINT_SEAM, VL_HINT_PIXELS };
+/* VL_HINT_PIXELS lights the scenery's own pixels: x0 is the first of `vl_runs` and x1 their count, each run a row of
+ * map pixels picked off a screenshot (a circuit trace, a joint, a pin), so the light keeps the art's own shape. */
+typedef struct VelvetRun {
+    s16 y;
+    s16 x0;
+    s16 x1; /* inclusive */
+} VelvetRun;
+typedef struct VelvetHint {
+    u8 kind;
+    u8 power;
+    u8 front;
+    u8 dim;
+    s16 x0;
+    s16 y0;
+    s16 x1;
+    s16 y1;
+} VelvetHint;
+#define VL_HINTS 4
+typedef struct VelvetLook {
+    s16 map;
+    VelvetHint hint[VL_HINTS];
+} VelvetLook;
+
 static VelvetDoor doors[] = {
-    /* map, x, y: the foot of the doorway. Each one was looked at on its own inn, at 2x, with the room's own figures
-     * where the game puts them: on the floor, its back to a wall or a rock, and never in front of a figure. Where a map
-     * has no wall to stand against (the canyon of 0x247, the floating platform of 0x25B) the doorway's own frame holds
-     * it. */
-    { 0x20A, 339, 192 }, { 0x279, 339, 192 }, /* Asuka City: the room's right wall, by the stairs */
-    { 0x223, 205, 269 }, { 0x292, 205, 269 }, /* the deck's log end, between the bedroom and the lower room */
-    /* the upper landing, on the rug beside Repeating Tom: the door his news opens (definitive_story.c) */
-    { 0x230, 228, 388 }, { 0x29E, 228, 388 },
-    { 0x238, 300, 440 }, { 0x2A5, 300, 440 }, /* the shop's floor: no wall there, but nothing in front of it */
-    { 0x23F, 580, 392 }, { 0x2AC, 580, 392 }, /* the bazaar's white wall, by the vine arch */
+    /* map, x, y: the spot in front of the scenery its light marks (`looks`), on the walkable floor. Each one was picked
+     * on a stitched screenshot of the whole inn with its walkable cells over it. */
+    { 0x20A, 339, 192 }, { 0x279, 339, 192 }, /* Asuka City: under the wall niche right of the stairs */
+    { 0x223, 205, 269 }, { 0x292, 205, 269 }, /* the deck's log end, under its lantern */
+    { 0x230, 210, 300 }, { 0x29E, 210, 300 }, /* before the painted stage, light under its lip */
+    { 0x238, 504, 296 }, { 0x2A5, 504, 296 }, /* before the red double door, light through its crack */
+    { 0x23F, 628, 392 }, { 0x2AC, 628, 392 }, /* before the bedside chest, its lid leaking light */
     { 0x247, 540, 304 }, { 0x2B1, 540, 304 }, /* the canyon: at the foot of the metal ramp */
-    { 0x249, 403, 187 }, { 0x2B3, 403, 187 }, /* the ledge's rock step */
-    { 0x25B, 355, 313 }, { 0x2C4, 355, 313 }, /* the floating platform's edge */
-    { 0x25D, 1074, 604 }, { 0x2C6, 1074, 604 }, /* the paved ledge, against the brick wall */
-    { 0x263, 383, 235 }, { 0x2CB, 383, 235 }, /* the cabin's log wall, by the armchair */
-    { 0x269, 553, 262 }, { 0x2D1, 553, 262 }, /* the machine block's face */
-    { 0x26D, 396, 520 },
-    { 0x26F, 1156, 833 }, { 0x2D6, 1156, 833 }, /* the base's metal wall, clear of its figures */
+    { 0x249, 403, 187 }, { 0x2B3, 403, 187 }, /* the sand, by the pipe lying on it */
+    { 0x25B, 355, 313 }, { 0x2C4, 355, 313 }, /* the floating platform, at its two pins */
+    { 0x25D, 1074, 604 }, { 0x2C6, 1074, 604 }, /* the paved ledge, under a lit mortar joint */
+    { 0x263, 383, 235 }, { 0x2CB, 383, 235 }, /* the cabin: before the barrels in the corner */
+    { 0x269, 553, 262 }, { 0x2D1, 553, 262 }, /* the workshop: before the vent in the machine's base */
+    { 0x26D, 156, 500 },                      /* the platform's west end, under the last capsule */
+    { 0x26F, 1120, 830 }, { 0x2D6, 1120, 830 }, /* the base: before the capsule in the alcove */
 };
 #define VL_DOORS ((s32)(sizeof(doors) / sizeof(doors[0])))
+
+/* Each way in's light (VelvetHint), drawn on the piece of scenery its spot faces; the Time Room's door beside the Warp
+ * Gate (map 0x288) has its own. Every map was looked at on a screenshot, the light judged on it alone. The table and
+ * `vl_runs` (the pixels of a trace, a joint, a pin, read off a screenshot without the lights) are written by a tuning
+ * script from the screenshots; DW3_VELVET_NOHINT leaves the lights out, for that bare screenshot. */
+static const VelvetRun vl_runs[] = {
+    { 241, 512, 512 },
+    { 242, 512, 512 },
+    { 243, 512, 512 },
+    { 244, 512, 512 },
+    { 245, 512, 512 },
+    { 246, 512, 512 },
+    { 247, 512, 512 },
+    { 248, 512, 512 },
+    { 249, 512, 512 },
+    { 250, 512, 512 },
+    { 251, 512, 512 },
+    { 252, 512, 512 },
+    { 253, 512, 512 },
+    { 254, 512, 512 },
+    { 255, 512, 512 },
+    { 315, 353, 353 },
+    { 315, 357, 357 },
+    { 316, 352, 353 },
+    { 316, 357, 357 },
+    { 317, 352, 353 },
+    { 317, 356, 357 },
+    { 318, 352, 352 },
+    { 318, 356, 357 },
+    { 319, 352, 352 },
+    { 319, 356, 357 },
+    { 320, 356, 356 },
+    { 580, 1072, 1073 },
+    { 581, 1070, 1071 },
+    { 582, 1068, 1069 },
+    { 583, 1066, 1067 },
+    { 584, 1064, 1065 },
+    { 197, 403, 404 },
+    { 198, 403, 404 },
+    { 199, 403, 404 },
+    { 200, 403, 404 },
+    { 201, 403, 404 },
+    { 202, 403, 404 },
+    { 203, 403, 404 },
+    { 204, 403, 404 },
+    { 205, 403, 404 },
+    { 206, 403, 404 },
+    { 207, 403, 404 },
+    { 208, 403, 404 },
+    { 209, 403, 404 },
+    { 210, 402, 403 },
+    { 211, 403, 404 },
+    { 212, 404, 405 },
+    { 213, 404, 405 },
+    { 214, 405, 406 },
+    { 215, 405, 406 },
+    { 216, 406, 407 },
+    { 217, 406, 407 },
+    { 218, 407, 408 },
+    { 219, 407, 408 },
+    { 220, 407, 408 },
+    { 221, 406, 407 },
+    { 222, 406, 407 },
+    { 197, 405, 405 },
+    { 198, 405, 405 },
+    { 199, 405, 405 },
+    { 200, 405, 405 },
+    { 201, 405, 405 },
+    { 202, 405, 405 },
+    { 203, 405, 405 },
+    { 204, 405, 405 },
+    { 205, 405, 405 },
+    { 206, 405, 405 },
+    { 207, 405, 405 },
+    { 208, 405, 405 },
+    { 209, 405, 405 },
+    { 210, 404, 404 },
+    { 211, 405, 405 },
+    { 212, 406, 406 },
+    { 213, 406, 406 },
+    { 214, 407, 407 },
+    { 215, 407, 407 },
+    { 216, 408, 408 },
+    { 217, 408, 408 },
+    { 218, 409, 409 },
+    { 219, 409, 409 },
+    { 220, 409, 409 },
+    { 221, 408, 408 },
+    { 222, 408, 408 },
+    { 229, 557, 566 },
+    { 230, 558, 565 },
+    { 772, 1118, 1120 },
+    { 773, 1118, 1123 },
+    { 774, 1117, 1138 },
+    { 775, 1117, 1133 },
+    { 775, 1138, 1138 },
+    { 433, 160, 164 },
+    { 434, 162, 166 },
+    { 435, 164, 167 },
+    { 436, 166, 169 },
+    { 437, 168, 171 },
+    { 438, 171, 173 },
+    { 439, 173, 175 },
+    { 440, 174, 177 },
+    { 441, 176, 179 },
+    { 442, 178, 181 },
+    { 443, 180, 183 },
+    { 444, 182, 185 },
+    { 445, 184, 187 },
+    { 446, 186, 190 },
+};
+
+static const VelvetLook looks[] = {
+    { 0x20A, { { VL_HINT_GLOW, 255, 0, 0, 345, 150, 5, 7 } } }, /* the niche's dark pane lit from inside */
+    { 0x279, { { VL_HINT_GLOW, 255, 0, 0, 345, 150, 5, 7 } } }, /* the niche's dark pane lit from inside */
+    { 0x223, { { VL_HINT_GLOW, 220, 0, 0, 215, 233, 7, 7 }, { VL_HINT_GLOW, 70, 0, 0, 215, 236, 22, 16 } } }, /* the lantern on the logs burns blue */
+    { 0x292, { { VL_HINT_GLOW, 220, 0, 0, 215, 233, 7, 7 }, { VL_HINT_GLOW, 70, 0, 0, 215, 236, 22, 16 } } }, /* the lantern on the logs burns blue */
+    { 0x230, { { VL_HINT_SEAM, 220, 0, 0, 186, 299, 232, 273 } } }, /* light under the stage's lip */
+    { 0x29E, { { VL_HINT_SEAM, 220, 0, 0, 186, 299, 232, 273 } } }, /* light under the stage's lip */
+    { 0x238, { { VL_HINT_PIXELS, 130, 0, 255, 0, 0, 15, 0 }, { VL_HINT_GLOW, 90, 0, 90, 512, 248, 5, 11 } } }, /* light through the door's middle crack */
+    { 0x2A5, { { VL_HINT_PIXELS, 130, 0, 255, 0, 0, 15, 0 }, { VL_HINT_GLOW, 90, 0, 90, 512, 248, 5, 11 } } }, /* light through the door's middle crack */
+    { 0x23F, { { VL_HINT_SEAM, 200, 1, 0, 609, 362, 624, 368 }, { VL_HINT_SEAM, 200, 1, 0, 624, 368, 638, 361 } } }, /* light under the chest's lid */
+    { 0x2AC, { { VL_HINT_SEAM, 200, 1, 0, 609, 362, 624, 368 }, { VL_HINT_SEAM, 200, 1, 0, 624, 368, 638, 361 } } }, /* light under the chest's lid */
+    { 0x247, { { VL_HINT_SEAM, 90, 0, 0, 500, 289, 544, 311 }, { VL_HINT_GLOW, 150, 0, 65, 526, 303, 12, 5 } } }, /* light from the gap under the ramp's foot, on the sand */
+    { 0x2B1, { { VL_HINT_SEAM, 90, 0, 0, 500, 289, 544, 311 }, { VL_HINT_GLOW, 150, 0, 65, 526, 303, 12, 5 } } }, /* light from the gap under the ramp's foot, on the sand */
+    { 0x249, { { VL_HINT_GLOW, 215, 0, 0, 370, 173, 8, 6 }, { VL_HINT_GLOW, 110, 0, 0, 372, 177, 16, 7 } } }, /* the pipe's open end */
+    { 0x2B3, { { VL_HINT_GLOW, 215, 0, 0, 370, 173, 8, 6 }, { VL_HINT_GLOW, 110, 0, 0, 372, 177, 16, 7 } } }, /* the pipe's open end */
+    { 0x25B, { { VL_HINT_PIXELS, 230, 0, 255, 15, 0, 11, 0 }, { VL_HINT_GLOW, 120, 0, 120, 355, 321, 9, 4 } } }, /* the platform's two pins run blue */
+    { 0x2C4, { { VL_HINT_PIXELS, 230, 0, 255, 15, 0, 11, 0 }, { VL_HINT_GLOW, 120, 0, 120, 355, 321, 9, 4 } } }, /* the platform's two pins run blue */
+    { 0x25D, { { VL_HINT_PIXELS, 130, 0, 0, 26, 0, 5, 0 }, { VL_HINT_SEAM, 70, 0, 0, 1064, 584, 1073, 580 } } }, /* a mortar joint of the brick wall, light through it */
+    { 0x2C6, { { VL_HINT_PIXELS, 130, 0, 0, 26, 0, 5, 0 }, { VL_HINT_SEAM, 70, 0, 0, 1064, 584, 1073, 580 } } }, /* a mortar joint of the brick wall, light through it */
+    { 0x263, { { VL_HINT_PIXELS, 100, 0, 120, 31, 0, 26, 0 }, { VL_HINT_PIXELS, 70, 0, 0, 57, 0, 26, 0 }, { VL_HINT_GLOW, 60, 0, 0, 408, 224, 6, 2 } } }, /* light from behind the barrels, on their rim and the post */
+    { 0x2CB, { { VL_HINT_PIXELS, 100, 0, 120, 31, 0, 26, 0 }, { VL_HINT_PIXELS, 70, 0, 0, 57, 0, 26, 0 }, { VL_HINT_GLOW, 60, 0, 0, 408, 224, 6, 2 } } }, /* light from behind the barrels, on their rim and the post */
+    { 0x269, { { VL_HINT_PIXELS, 200, 1, 0, 83, 0, 2, 0 }, { VL_HINT_GLOW, 100, 1, 0, 561, 229, 7, 3 } } }, /* a slit vent in the machine's dark base */
+    { 0x2D1, { { VL_HINT_PIXELS, 200, 1, 0, 83, 0, 2, 0 }, { VL_HINT_GLOW, 100, 1, 0, 561, 229, 7, 3 } } }, /* a slit vent in the machine's dark base */
+    { 0x26D, { { VL_HINT_SEAM, 130, 1, 120, 131, 426, 151, 426 }, { VL_HINT_GLOW, 90, 1, 56, 140, 432, 11, 7 } } }, /* the last capsule lit inside its hood */
+    { 0x26F, { { VL_HINT_PIXELS, 170, 1, 0, 85, 0, 5, 0 }, { VL_HINT_GLOW, 90, 1, 0, 1127, 774, 12, 3 }, { VL_HINT_GLOW, 90, 1, 0, 1127, 778, 11, 3 } } }, /* the capsule by the hatch lit inside its hood */
+    { 0x2D6, { { VL_HINT_PIXELS, 170, 1, 0, 85, 0, 5, 0 }, { VL_HINT_GLOW, 90, 1, 0, 1127, 774, 12, 3 }, { VL_HINT_GLOW, 90, 1, 0, 1127, 778, 11, 3 } } }, /* the capsule by the hatch lit inside its hood */
+    { 0x288, { { VL_HINT_PIXELS, 150, 0, 0, 90, 0, 14, 0 } } }, /* the Time Room's: the floor's circuit trace by the gate carries the light */
+};
+#define VL_LOOKS ((s32)(sizeof(looks) / sizeof(looks[0])))
 
 /* The mentor's and Etemon's one line each: the game's own dialog, from the bar's talk file (WSTAG255's
  * records_language + 0xE8), with the port's own text there. */
@@ -362,50 +534,198 @@ static void vl_backdrop(void) {
     }
 }
 
-/* A portal: a doorway of blue light standing at (x, y) — a near-black frame of two posts, a lintel and a threshold, and
- * between them the light, brightest at the floor — pulsing with the frame counter. Drawn to stand on its own, so a spot
- * with no wall behind still reads as a door and not as a plaque on the ground. */
-static void vl_portal(s32 x, s32 y) {
-    static const u8 frame_rgb[3] = { 6, 10, 34 };
-    static const u8 light_rgb[VL_LIGHT_BANDS][3] = { { 40, 88, 196 }, { 60, 112, 214 }, { 92, 148, 236 },
-        { 126, 184, 250 }, { 168, 214, 255 }, { 216, 242, 255 } };
+/* The blue of the hints' light at full power, and the pulse that breathes it (a triangle of VL_PULSE frames, from
+ * VL_PULSE_LOW/256 up to full): slow and shallow, a light that is there more than one that calls. */
+#define VL_HINT_R 26
+#define VL_HINT_G 62
+#define VL_HINT_B 150
+#define VL_LIT_R 70 /* a lit pixel's own light at full power: paler than a glow's, a light source more than a cast */
+#define VL_LIT_G 140
+#define VL_LIT_B 255
+#define VL_DIM_R 150 /* what a hint's dimming takes out at 255, before its blue goes on */
+#define VL_DIM_G 100
+#define VL_PULSE 120
+#define VL_PULSE_LOW 150
+#define VL_GLOW_SIDES 16
+#define VL_SEAM_SPREAD 4 /* a crack's halo, pixels either side of its line */
+/* The layer draws its ordering table from the far end: the map's back tiles at 11 and 7, the actors at 4 (or the depth
+ * a map's event gives the player), the foreground tiles at 3 (fieldstg_tile_ot_depths). */
+#define VL_HINT_DEPTH 5       /* on the floor and the walls, behind the actors */
+#define VL_HINT_FRONT_DEPTH 2 /* over the foreground tiles: a chest's or a hatch's own face */
+
+/* One additive Gouraud triangle (a black corner adds nothing). The blend is set by the DR_TPAGE vl_hints_draw queues. */
+static s32 vl_hint_depth;
+
+static void vl_tri(GfxLayer *layer, s32 x0, s32 y0, s32 x1, s32 y1, s32 x2, s32 y2, const u8 *c0, const u8 *c1,
+                   const u8 *c2) {
+    POLY_G3 *poly = gfx_module.funcs.get_packet();
+
+    setPolyG3(poly);
+    setSemiTrans(poly, 1);
+    setRGB0(poly, c0[0], c0[1], c0[2]);
+    setRGB1(poly, c1[0], c1[1], c1[2]);
+    setRGB2(poly, c2[0], c2[1], c2[2]);
+    poly->x0 = x0;
+    poly->y0 = y0;
+    poly->x1 = x1;
+    poly->y1 = y1;
+    poly->x2 = x2;
+    poly->y2 = y2;
+    addPrim(layer->get_ot_entry(layer, vl_hint_depth), poly);
+    gfx_module.funcs.set_packet(poly + 1);
+}
+
+/* A quad of two triangles, (0, 1) one side and (2, 3) the other, each corner its own colour. */
+static void vl_quad_g(GfxLayer *layer, const s32 *x, const s32 *y, const u8 *const *c) {
+    vl_tri(layer, x[0], y[0], x[1], y[1], x[2], y[2], c[0], c[1], c[2]);
+    vl_tri(layer, x[1], y[1], x[3], y[3], x[2], y[2], c[1], c[3], c[2]);
+}
+
+/* A table's hint, at the screen offset (sx, sy) of the map, its heart `core` (the blend is the caller's). */
+static void vl_hint(GfxLayer *layer, const VelvetHint *h, s32 sx, s32 sy, const u8 *core) {
+    static const u8 none[3] = { 0, 0, 0 };
+    u8 halo[3];
+    s32 i;
+
+    if (h->kind == VL_HINT_PIXELS) {
+        /* each run a flat strip a pixel high; the first and last quarter of the runs come up and go out, so the lit
+         * stretch has no hard ends */
+        s32 n = h->x1;
+        s32 fade = n / 4 > 0 ? n / 4 : 1;
+
+        for (i = 0; i < n; i++) {
+            const VelvetRun *r = &vl_runs[h->x0 + i];
+            s32 edge = i < n - 1 - i ? i : n - 1 - i;
+            s32 f = edge >= fade ? 256 : 256 * (edge + 1) / (fade + 1);
+            u8 c[3];
+            const u8 *cs[4] = { c, c, c, c };
+            s32 qx[4], qy[4];
+
+            c[0] = (u8)(core[0] * f / 256);
+            c[1] = (u8)(core[1] * f / 256);
+            c[2] = (u8)(core[2] * f / 256);
+            qx[0] = qx[2] = r->x0 - sx;
+            qx[1] = qx[3] = r->x1 + 1 - sx;
+            qy[0] = qy[1] = r->y - sy;
+            qy[2] = qy[3] = r->y + 1 - sy;
+            vl_quad_g(layer, qx, qy, cs);
+        }
+    } else if (h->kind == VL_HINT_GLOW) {
+        /* a fan of triangles: the heart's colour at the centre, black at the rim */
+        static const s16 cs[VL_GLOW_SIDES + 1][2] = { { 256, 0 }, { 237, 98 }, { 181, 181 }, { 98, 237 }, { 0, 256 },
+            { -98, 237 }, { -181, 181 }, { -237, 98 }, { -256, 0 }, { -237, -98 }, { -181, -181 }, { -98, -237 },
+            { 0, -256 }, { 98, -237 }, { 181, -181 }, { 237, -98 }, { 256, 0 } };
+        s32 cx = h->x0 - sx;
+        s32 cy = h->y0 - sy;
+
+        for (i = 0; i < VL_GLOW_SIDES; i++) {
+            vl_tri(layer, cx, cy, cx + cs[i][0] * h->x1 / 256, cy + cs[i][1] * h->y1 / 256,
+                   cx + cs[i + 1][0] * h->x1 / 256, cy + cs[i + 1][1] * h->y1 / 256, core, none, none);
+        }
+    } else if (h->kind == VL_HINT_SEAM) {
+        /* the crack: a line a pixel wide at twice the heart, and a halo either side fading out; along it, the light
+         * comes up over the first quarter and goes out over the last, so the crack has no hard ends */
+        s32 x0 = h->x0 - sx, y0 = h->y0 - sy, x1 = h->x1 - sx, y1 = h->y1 - sy;
+        s32 steep = (y1 - y0) * (y1 - y0) >= (x1 - x0) * (x1 - x0);
+        s32 ox = steep ? 1 : 0, oy = steep ? 0 : 1; /* the line's width goes across it */
+        static const s32 across[4] = { -(VL_SEAM_SPREAD - 1), 0, 1, VL_SEAM_SPREAD }; /* the halo, the line, the halo */
+        s32 px[4], py[4];
+        s32 k, j;
+
+        for (i = 0; i < 3; i++) {
+            halo[i] = (u8)(core[i] * 2 > 255 ? 255 : core[i] * 2);
+        }
+        px[0] = x0;
+        py[0] = y0;
+        px[1] = x0 + (x1 - x0) / 4;
+        py[1] = y0 + (y1 - y0) / 4;
+        px[2] = x1 - (x1 - x0) / 4;
+        py[2] = y1 - (y1 - y0) / 4;
+        px[3] = x1;
+        py[3] = y1;
+        for (k = 0; k < 3; k++) { /* fade in, full, fade out */
+            for (j = 0; j < 3; j++) { /* the near halo, the line, the far halo */
+                const u8 *lit = j == 1 ? halo : core;
+                const u8 *c[4];
+                s32 qx[4], qy[4];
+
+                /* corners: (k, across j), (k + 1, across j), (k, across j + 1), (k + 1, across j + 1) */
+                qx[0] = px[k] + ox * across[j];
+                qy[0] = py[k] + oy * across[j];
+                qx[1] = px[k + 1] + ox * across[j];
+                qy[1] = py[k + 1] + oy * across[j];
+                qx[2] = px[k] + ox * across[j + 1];
+                qy[2] = py[k] + oy * across[j + 1];
+                qx[3] = px[k + 1] + ox * across[j + 1];
+                qy[3] = py[k + 1] + oy * across[j + 1];
+                c[0] = k == 0 || j == 0 ? none : lit;
+                c[1] = k == 2 || j == 0 ? none : lit;
+                c[2] = k == 0 || j == 2 ? none : lit;
+                c[3] = k == 2 || j == 2 ? none : lit;
+                vl_quad_g(layer, qx, qy, c);
+            }
+        }
+    }
+}
+
+/* The look of `map`'s way in: its hints, breathing. Each depth's packets are queued backwards (addPrim puts each in
+ * front of the last): drawn, they go the subtracting DR_TPAGE, the dimmings, the adding DR_TPAGE, the lights, then a
+ * DR_TPAGE that puts the field's opaque mode back, so no later primitive of the depth inherits a blend. */
+/* The blends go without dithering: dithered, a faint light or dimming is a checkerboard, not a glow. The field's own
+ * mode (abr 0) is put back dithered, as it was. */
+static void vl_tpage(u32 *ot, s32 abr) {
+    DR_TPAGE *tpage = gfx_module.funcs.get_packet();
+
+    SetDrawTPage(tpage, 0, abr == 0, getTPage(1, abr, 0, 0));
+    addPrim(ot, tpage);
+    gfx_module.funcs.set_packet(tpage + 1);
+}
+
+static void vl_hints_draw(const VelvetLook *look) {
     GfxLayer *layer = gfx_module.funcs.get_layer(VL_LAYER);
     s32 ofs[2];
-    s32 pulse = gfx_module.funcs.get_frames() % 48;
-    s32 lit;
+    s32 pulse = gfx_module.funcs.get_frames() % VL_PULSE;
+    s32 level;
+    s32 front;
     s32 i;
-    const s32 half = 13; /* the doorway's half width */
-    const s32 tall = 44; /* and its height */
-    const s32 post = 3;  /* the frame's thickness */
-    s32 inner_w = half - post;
-    s32 inner_h = tall - post;
 
-    if (pulse >= 24) {
-        pulse = 48 - pulse; /* 0..23, up and down */
+    if (pulse >= VL_PULSE / 2) {
+        pulse = VL_PULSE - pulse;
     }
-    lit = 200 + pulse * 2; /* the pulse: 200..246 of 255 */
+    level = VL_PULSE_LOW + (256 - VL_PULSE_LOW) * pulse * 2 / VL_PULSE;
     layer->get_scroll(layer, ofs);
-    x -= ofs[0];
-    y -= ofs[1];
-    if (x < -40 || x > 360 || y < -80 || y > 280) {
-        return;
-    }
-    /* the frame goes in first: the layer draws what is added last behind, so the frame stays in front of its light */
-    vl_quad(VL_LAYER, VL_PORTAL_DEPTH, x - half, y - tall, x - half + post, y - tall, x - half, y, x - half + post, y,
-            frame_rgb[0], frame_rgb[1], frame_rgb[2]);
-    vl_quad(VL_LAYER, VL_PORTAL_DEPTH, x + half - post, y - tall, x + half, y - tall, x + half - post, y, x + half, y,
-            frame_rgb[0], frame_rgb[1], frame_rgb[2]);
-    vl_quad(VL_LAYER, VL_PORTAL_DEPTH, x - half, y - tall, x + half, y - tall, x - half, y - tall + post, x + half,
-            y - tall + post, frame_rgb[0], frame_rgb[1], frame_rgb[2]);
-    vl_quad(VL_LAYER, VL_PORTAL_DEPTH, x - half - 3, y - 2, x + half + 3, y - 2, x - half - 1, y + 5, x + half + 1, y + 5,
-            frame_rgb[0], frame_rgb[1], frame_rgb[2]);
-    /* the light between them: three bands, the dimmest at the lintel */
-    for (i = 0; i < VL_LIGHT_BANDS; i++) {
-        s32 y0 = y - inner_h + (inner_h * i) / VL_LIGHT_BANDS;
-        s32 y1 = y - inner_h + (inner_h * (i + 1)) / VL_LIGHT_BANDS;
+    for (front = 0; front < 2; front++) {
+        u32 *ot;
 
-        vl_quad(VL_LAYER, VL_PORTAL_DEPTH, x - inner_w, y0, x + inner_w, y0, x - inner_w, y1, x + inner_w, y1,
-                (u8)(light_rgb[i][0] * lit / 255), (u8)(light_rgb[i][1] * lit / 255), (u8)(light_rgb[i][2] * lit / 255));
+        vl_hint_depth = front ? VL_HINT_FRONT_DEPTH : VL_HINT_DEPTH;
+        ot = layer->get_ot_entry(layer, vl_hint_depth);
+        vl_tpage(ot, 0);
+        for (i = 0; i < VL_HINTS && look->hint[i].kind != VL_HINT_NONE; i++) {
+            const VelvetHint *h = &look->hint[i];
+            u8 core[3];
+
+            if (h->front == front) {
+                s32 lit = h->kind == VL_HINT_PIXELS;
+
+                core[0] = (u8)((lit ? VL_LIT_R : VL_HINT_R) * h->power / 255 * level / 256);
+                core[1] = (u8)((lit ? VL_LIT_G : VL_HINT_G) * h->power / 255 * level / 256);
+                core[2] = (u8)((lit ? VL_LIT_B : VL_HINT_B) * h->power / 255 * level / 256);
+                vl_hint(layer, h, ofs[0], ofs[1], core);
+            }
+        }
+        vl_tpage(ot, 1); /* abr 1: the lights add to what is behind them */
+        for (i = 0; i < VL_HINTS && look->hint[i].kind != VL_HINT_NONE; i++) {
+            const VelvetHint *h = &look->hint[i];
+            u8 core[3];
+
+            if (h->front == front && h->dim != 0) {
+                core[0] = (u8)(VL_DIM_R * h->dim / 255 * level / 256);
+                core[1] = (u8)(VL_DIM_G * h->dim / 255 * level / 256);
+                core[2] = 0;
+                vl_hint(layer, h, ofs[0], ofs[1], core);
+            }
+        }
+        vl_tpage(ot, 2); /* abr 2: the dimmings take away from it */
     }
 }
 
@@ -562,6 +882,7 @@ static const VelvetDoor *vl_door_at(s32 map, s32 *gate);
 void dw3_velvet_draw(void) {
     const VelvetDoor *door;
     s32 gate;
+    s32 i;
 
     if (!vl_on()) {
         return;
@@ -600,7 +921,26 @@ void dw3_velvet_draw(void) {
     }
     door = vl_door_at(gamestate_data.funcs.get_map(), &gate);
     if (door != NULL && fieldstg_stage.title_shown == 0 && def_story_velvet_level() > 0) {
-        vl_portal(door->x, door->y);
+        for (i = 0; i < VL_LOOKS; i++) {
+            if (looks[i].map == door->map && getenv("DW3_VELVET_NOHINT") == NULL) { /* the tests' bare shot */
+                vl_hints_draw(&looks[i]);
+                break;
+            }
+        }
+        if (getenv("DW3_TIME_TEST") != NULL) { /* the tests' screenshots: where the spot is, each time the view moves */
+            static s32 last[2] = { -9999, -9999 };
+            GfxLayer *layer = gfx_module.funcs.get_layer(VL_LAYER);
+            s32 ofs[2];
+
+            layer->get_scroll(layer, ofs);
+            if (ofs[0] == last[0] && ofs[1] == last[1]) {
+                return;
+            }
+            last[0] = ofs[0];
+            last[1] = ofs[1];
+            port_log("velvet: test: map 0x%X's door %d,%d on the screen at %ld,%ld", door->map, door->x, door->y,
+                     (long)(door->x - ofs[0]), (long)(door->y - ofs[1]));
+        }
     }
 }
 
@@ -620,7 +960,41 @@ static const VelvetDoor *vl_door_at(s32 map, s32 *gate) {
     return vl_door(map);
 }
 
-/* One frame of the field's idle step: takes the portal the player stands on. 0 always: the room owns no screen. */
+/* The prompt over the player at a way in: the map events' own icon object (fieldstg_icon_create), opened and closed as
+ * a map exit's is. A map exit's icon runs as a child of the map events' object; ours belongs to no object, so
+ * vl_icons_run runs it each idle frame (heap_objects.try_run: it draws, and frees it once it has ended). One that was
+ * told to close goes on running in vl_icon_closing until its closing frames are over. Both are dropped at every stage
+ * setup (dw3_velvet_field_loaded: the stage's objects went with the last one). */
+extern void *fieldstg_icon_create(s32 style, s32 type, s32 id);
+static Object *vl_icon;
+static Object *vl_icon_closing;
+
+/* A stage was set up (FIELDSTG's stage entry, every map load, a reload of the same map too): its objects are new. */
+void dw3_velvet_field_loaded(void) {
+    vl_icon = NULL;
+    vl_icon_closing = NULL;
+}
+
+static void vl_icons_run(void) {
+    vl_icon = heap_objects.try_run(vl_icon);
+    vl_icon_closing = heap_objects.try_run(vl_icon_closing);
+}
+
+static void vl_prompt(s32 map, s32 on) {
+    if (on && vl_icon == NULL) {
+        vl_icon = (Object *)fieldstg_icon_create(0, VL_ICON_TYPE, VL_ICON_ID);
+        port_log("velvet: frame %ld: the way in of map 0x%X prompts", port_frames, map);
+    } else if (!on && vl_icon != NULL) {
+        heap_objects.stop(vl_icon_closing); /* a second close before the first one's frames ran out: that one goes */
+        vl_icon->set_state(vl_icon, OBJECT_STATE_DONE); /* it closes, then ends itself */
+        vl_icon_closing = vl_icon;
+        vl_icon = NULL;
+        port_log("velvet: frame %ld: the prompt of map 0x%X closes", port_frames, map);
+    }
+}
+
+/* One frame of the field's idle step: the way in the player stands at shows its prompt, and CIRCLE takes it. 0 always:
+ * the room owns no screen. */
 int dw3_velvet_frame(void) {
     FieldstgActor *player;
     const VelvetDoor *door;
@@ -629,29 +1003,44 @@ int dw3_velvet_frame(void) {
     s32 dy;
     s32 gate;
 
-    if (!vl_on() || vl_room || fieldstg_stage.event_running != 0 || fieldstg_stage.menu_open != 0
-        || fieldstg_stage.battle_starting != 0 || fieldstg_stage.title_shown != 0) {
+    vl_icons_run();
+    if (!vl_on() || vl_room) {
         return 0;
     }
     map = gamestate_data.funcs.get_map();
+    if (fieldstg_stage.event_running != 0 || fieldstg_stage.menu_open != 0 || fieldstg_stage.battle_starting != 0
+        || fieldstg_stage.title_shown != 0) {
+        vl_prompt(map, 0);
+        return 0;
+    }
     door = vl_door_at(map, &gate);
     if (door == NULL || def_story_velvet_level() == 0) {
         vl_armed = 0;
+        vl_prompt(map, 0);
         return 0; /* the doors open with the story (Repeating Tom's news) */
     }
     player = (FieldstgActor *)heap_objects.find(5, -1, 0);
     if (player == NULL || player->base.state != OBJECT_STATE_RUN || player->base.step >= 5 || player->control == NULL) {
+        vl_prompt(map, 0);
         return 0;
     }
     dx = player->pixel_pos.x - door->x;
     dy = player->pixel_pos.y - door->y;
     if (dx * dx + dy * dy > VL_RADIUS * VL_RADIUS) {
         vl_armed = 1;
+        vl_prompt(map, 0);
         return 0;
     }
     if (!vl_armed) {
-        return 0; /* a door that opened under the player (Tom's news) takes him once he stepped off and back on */
+        return 0; /* a door that opened under the player (Tom's news) prompts once he stepped off and back on */
     }
+    vl_prompt(map, 1);
+    if ((pad_state.get_pressed(0) & VL_PAD_CIRCLE) == 0 || fieldstg_stage.actor_busy != 0) {
+        return 0; /* the prompt waits for the button, as a map exit's does */
+    }
+    heap_objects.stop(vl_icon); /* the room's load is next: the icon goes now */
+    heap_objects.stop(vl_icon_closing);
+    vl_icon = vl_icon_closing = NULL;
     vl_armed = 0;
     vl_from = map;
     vl_room = 1;
@@ -667,7 +1056,7 @@ int dw3_velvet_frame(void) {
         vl_pulled = vl_newcomer();
     }
     sound_module.play(VL_SND_PORTAL);
-    port_log("velvet: frame %ld: the portal of map 0x%X taken (scene %d, who %d calls over)", port_frames, map, vl_scene,
+    port_log("velvet: frame %ld: the way in of map 0x%X taken (scene %d, who %d calls over)", port_frames, map, vl_scene,
              vl_pulled);
     vl_enter();
     return 0;

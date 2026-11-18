@@ -235,6 +235,7 @@ int dw3_travel_node(s32 map, s32 *x, s32 *y, s32 *dir);
 int dw3_velvet_frame(void);
 void dw3_velvet_draw(void);
 void dw3_velvet_stage_setup(void);
+void dw3_velvet_field_loaded(void);
 void dw3_velvet_leave(s32 *map, s32 *x, s32 *y, s32 *dir);
 int dw3_velvet_event_closed(s32 type, s32 param);
 /* The map title's two plates (each a MessageWindow*), renamed to the room's own when the map is the room. */

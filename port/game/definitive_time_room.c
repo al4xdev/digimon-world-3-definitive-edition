@@ -588,6 +588,9 @@ static void test_survey(void) {
         }
     }
     port_log("time: test survey of map 0x%X (%dx%d)", map, w, h);
+    if (getenv("DW3_TIME_SURVEY") == NULL) {
+        return; /* the events and the grid on demand: some maps' event cells name entries past their list */
+    }
     for (k = 0; k < 32; k++) {
         if (box[k][2] >= 0) {
             FieldstgMapEvent *ev = &fieldstg_stage.map_events[k];

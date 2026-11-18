@@ -21,9 +21,11 @@ Handoff/estado para outro harness. Dono pt-BR. Não commitar sem pedido. Scratch
 
 ### Como funciona
 
-- **Entrada**: a porta azul (retângulo em pé encostado numa parede) fica na pousada, a poucos passos do
-  Guardromon. O jogador pisa no pé da porta (raio 12 px) → `fieldstg_goto_map(0x20F, entry, 215, 335, dir 1)`
-  com o som do warp. `vl_from` guarda a pousada de origem.
+- **Entrada** (refeita em 2026-11-18): não há mais porta desenhada. Cada pousada tem um **ponto** no chão (raio 12 px)
+  diante de uma peça do cenário que ganhou uma **luz azul sutil** (ver "Entradas integradas" abaixo). No ponto aparece
+  o **ícone de entrar** das saídas de mapa (o balão com a seta para cima, tipo 10 do `fieldstg_icon_create`) e só o
+  **CIRCLE** entra, como numa troca de mapa; sem o botão, nada acontece. Sair do ponto fecha o ícone; uma porta que
+  abriu sob o jogador só oferece depois que ele sai e volta. `vl_from` guarda a pousada de origem.
 - **Modo sala**: `vl_room` (RAM) → `wstag255_setup` termina chamando `dw3_velvet_stage_setup`, que troca
   `fieldstg_stage.actors` pelos NPCs, a música e pinta o vazio em azul (gradiente de 16 faixas na camada 0x1000,
   medido do mock do dono).
@@ -95,34 +97,46 @@ Handoff/estado para outro harness. Dono pt-BR. Não commitar sem pedido. Scratch
   comerciante (com a loja abrindo), Etemon e o porco, sem travar (`talktest3.py`).
 - **Fora da sala** o mapa 0x20F continua sendo o bar do jogo: nada muda entrando pelas portas normais.
 
-### Posições das portas (25 mapas = 13 pousadas + 12 cópias da segunda metade)
+### Entradas integradas (2026-11-18; 25 mapas = 13 pousadas + 12 cópias da segunda metade)
 
-**Refeitas de verdade.** A primeira vez foi por algoritmo + folha de contato (o dono pegou porta na frente de Digimon
-e no meio do cenário); a segunda foi olhando 13 telas pequenas e eu errei o que estava atrás em várias. Agora:
+O dono vetou as portas azuis desenhadas: a entrada tem que ser parte do mapa, uma luz azul **bem de leve** numa
+peça que faça sentido (guarda-roupa com um friso azul etc.), sem portas novas. Cada mapa foi olhado com calma e cada
+luz julgada **só pela imagem** por agentes Sonnet (antes/depois, tela inteira e zoom), em até 5 rodadas.
 
-- A porta é um **portal em forma de porta**: batente escuro (dois batentes, lintel e soleira) com a luz em 6 faixas
-  (apagada no lintel, clara no chão), então ela se sustenta em qualquer lugar e não parece uma placa.
-- Profundidade **3** (a camada desenha de trás para frente): fica na frente do chão e das paredes e **atrás do
-  jogador** — antes, com a profundidade 2, o jogador desaparecia atrás da porta.
-- Cada uma das 13 foi conferida **no seu mapa, em 2x**, com os atores onde o jogo os põe (a busca exclui 56 px em
-  volta de todo ator). **O dono liberou qualquer ponto do mapa**, não precisa ser ao lado do Guardromon.
+| Mapa | Ponto | A luz | Juiz |
+|---|---|---|---|
+| 0x20A | 339,192 | o vidro escuro do nicho na parede acende por dentro | passou |
+| 0x223 | 205,269 | a lanterna sobre as toras queima azul | passou |
+| 0x230 | 210,300 | luz vazando por baixo da borda do palco | passou |
+| 0x238 | 504,296 | luz pela fresta do meio da porta dupla vermelha | dividido |
+| 0x23F | 628,392 | luz sob a tampa do baú ao lado da cama | passou |
+| 0x247 | 540,304 | luz no vão sob o pé da rampa, na areia | passou |
+| 0x249 | 403,187 | a boca do cano caído brilha | passou |
+| 0x25B | 355,313 | os dois pinos laranja da plataforma ficam azuis | dividido |
+| 0x25D | 1074,604 | uma junta de argamassa da mureta deixa passar luz | dividido |
+| 0x263 | 383,235 | luz atrás dos barris, no contorno deles e no poste | dividido |
+| 0x269 | 553,262 | uma fenda na base escura da máquina | dividido |
+| 0x26D | 156,500 | a última cápsula acesa sob o capuz | passou |
+| 0x26F | 1120,830 | a cápsula da alcova acesa na fresta do capuz | dividido |
+| 0x288 | 160,440 | (porta do Time Room) um traço de circuito do chão conduz a luz | passou |
 
-```
-0x20A (339,192) parede direita, junto da escada   0x223 (205,269) ponta de toras do deque
-0x230 (516,380) patamar da escada, vitral         0x238 (300,440) chão da loja (sem parede; nada na frente)
-0x23F (580,392) parede branca do balcão           0x247 (540,304) pé da rampa metálica (sem parede)
-0x249 (403,187) degrau de pedra da trilha         0x25B (355,313) borda da plataforma (sem parede)
-0x25D (1074,604) mureta de tijolo                 0x263 (383,235) parede de tora, junto da poltrona
-0x269 (553,262) face do bloco de máquinas         0x26D (396,520) parede da torre
-0x26F (1156,833) parede metálica, longe dos Digimon
-```
+"Dividido": nas últimas rodadas os juízes oscilaram entre "fraco demais" e "forte/desenhado demais" sem convergir, e
+erraram fatos conferidos no pixel (os pinos já azuis, a fresta no lugar). Ficou o meio-termo; o dono decide no jogo.
+A segunda metade (0x279...) tem o mesmo cenário com a paleta do mundo digital (azul/magenta): as luzes caem nos mesmos
+lugares, mais discretas sobre o azul.
 
-Segunda metade: mesmas coordenadas em 0x279, 0x292, 0x29E, 0x2A5, 0x2AC, 0x2B1, 0x2B3, 0x2C4, 0x2C6, 0x2CB,
-0x2D1, 0x2D6 (0x26D não tem cópia). Prova: `.dumps/tasks/velvet/doors/*.png` (as 25 telas),
-`doors_final_a.png` e `doors_final_b.png`.
+Técnica (`definitive_velvet.c`, tabela `looks` + `vl_runs`): três tipos de dica. **GLOW**: elipse em leque Gouraud.
+**SEAM**: fresta de 1 px com halo, que acende e apaga nas pontas. **PIXELS**: acende os **pixels do próprio
+cenário** (um traço, uma junta, um pino), lidos de uma tela sem as luzes. Todas são somadas (abr 1) sem dithering; um `dim`
+opcional subtrai vermelho/verde antes (abr 2), porque azul somado numa superfície clara só embranquece. `front`
+desenha sobre os tiles da frente (móveis). Pulso lento (120 frames, 150/256 a 256/256). A tabela é gerada por
+`.dumps/tasks/velvet/looks/looks.py` (com `runs/*.json` de `mask.py`); `DW3_VELVET_NOHINT=1` tira as luzes para
+a tela de comparação. Ferramentas: `all.sh SUF` (as 14 telas), `judge.py` (a imagem do juiz), `diff.py`, `zoomshot.py`.
 
-Compromissos assumidos: 0x223, 0x238, 0x247 e 0x25B **não têm parede** onde a porta caiba sem cobrir ator ou prop —
-nesses quatro ela fica em pé no chão aberto, sustentada pelo próprio batente.
+Teste do prompt (`.dumps/tasks/story/time/prompt.py`): fora do ponto sem ícone; no ponto o ícone e **nenhuma entrada
+em 180 frames sem CIRCLE**; sair fecha, voltar reabre; CIRCLE entra (mapa 0x20F). Passou em 0x23F, 0x25D (x > 960) e
+0x288 (abre o Time Room). Bug achado no caminho: o ícone criado à mão não roda sozinho (o do jogo é filho do objeto
+de eventos do mapa) e ficava invisível; agora `vl_icons_run` o roda a cada frame e o destrói ao entrar.
 
 ## Atores que o jogo nunca usa (estudo de 2026-11-16)
 
