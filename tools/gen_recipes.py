@@ -14,9 +14,16 @@ The numbers are definitive.h's (DEF_RECIPE_*) and LEVEL_AT / AMOUNT below. Rule,
   - the shop's regions: those whose maps are up to DEF_RECIPE_REACH exits from one of the shop's maps, on the shop's
     server, at most DEF_RECIPE_OVER over the level the shop's dearest item is bought at (LEVEL_AT); none: the lowest of
     them (and the ones within DEF_RECIPE_OVER of it);
-  - an item's common: of the commons those regions' random encounters leave, the one whose species' levels are nearest
-    the level the item is bought at; a weapon takes the nearest, an armour or accessory the second nearest when there
-    are two (the same shelf asks for both); AMOUNT of it by price;
+  - the shop's commons: those its regions' random encounters leave; a shop with fewer than MIN_POOL looks one exit
+    further at a time, up to REACH_MAX, and keeps the wider ring only where it adds a common (the rares stay those of
+    the DEF_RECIPE_REACH regions);
+  - an item's common, the shop's equipment walked cheapest first: of the commons whose species' mid level is at most
+    WINDOW further from the item's level than the nearest one's, the best by |mid level - item level| + SPREAD * the
+    times this shop already asked it (the owner, 2026-11-17: every material in some recipe, no shop on one material); a
+    weapon takes the best, an armour or accessory the second when it is within SECOND of the best (the same shelf asks
+    for both); AMOUNT of it by price;
+  - a common no recipe asks then goes to the shop of its regions' server whose dearest item's level is nearest the
+    common's mid level, as the common of that shop's three dearest items (a safety net: no common needs it today);
   - from DEF_RECIPE_RARE_FROM a rare item too, of one of the shop's regions: the regions by their Rare Target's level,
     highest first, dealt to the shop's rare items dearest first; two from DEF_RECIPE_TWO_RARES.
 """
@@ -70,6 +77,13 @@ LEVEL_AT = [(40, 3), (200, 6), (500, 10), (1000, 14), (2500, 21), (5000, 27), (9
             (30000, 48), (60000, 50)]
 AMOUNT = [(40, 2), (200, 3), (500, 5), (1000, 6), (2500, 8), (5000, 12), (9500, 15), (15000, 20), (22000, 25),
           (30000, 30), (60000, 40)]
+# The commons' spread (forge-variety.md Part 1, measured in .dumps/tasks/forge/proto.py): a shop's pool widens up to
+# REACH_MAX exits while it has fewer than MIN_POOL commons; an item's candidates are within WINDOW levels of the nearest,
+# scored by the level gap plus SPREAD per earlier use in the shop; armour takes the second within SECOND points.
+MIN_POOL, REACH_MAX, WINDOW, SPREAD, SECOND = 3, 7, 8, 2, 2
+# The checks: outside OFF_LEVEL_SHOP (Zhu Que's rings on the second server, cheap but only reached late: no low region
+# is near it, accepted), no recipe's common is further than MAX_GAP levels from the item's.
+OFF_LEVEL_SHOP, MAX_GAP = 23, 25
 
 
 def curve(points, price):
@@ -141,9 +155,10 @@ def table():
                                                         (ROOT / "port/game/definitive_hunt_targets.c").read_text()
                                                         .split("def_super_rares")[0])):
         rare_region[int(r, 16)] = i
+    from collections import Counter
     lists, shops_of = ge.goods()
     towns = ge.shop_towns()
-    out = []
+    out, plans = [], {}
     for n, ids in lists:
         for shop in shops_of[n]:
             eq = sorted({i for i in ids if its.get(i, {}).get("cat") in EQUIP}, key=lambda i: (its[i]["price"], i))
@@ -152,20 +167,57 @@ def table():
             top_level = curve(LEVEL_AT, its[eq[-1]]["price"])
             regs = shop_regions(sorted(towns[shop]), info, map_region, graph, areas, top_level, c)
             pool = sorted({m for k in regs for m in info[k][1]})
+            for reach in range(c["DEF_RECIPE_REACH"] + 1, REACH_MAX + 1):
+                if len(pool) >= MIN_POOL:
+                    break
+                wide = shop_regions(sorted(towns[shop]), info, map_region, graph, areas, top_level,
+                                    dict(c, DEF_RECIPE_REACH=reach))
+                wider = sorted({m for k in wide for m in info[k][1]})
+                if len(wider) > len(pool):
+                    pool = wider
             assert pool, f"shop {shop}: no region around it leaves a common"
             dealt = sorted((k for k in regs if k in rare_region), key=lambda k: (-rare_level[rare_region[k]], k))
             dear = sorted((i for i in eq if its[i]["price"] >= c["DEF_RECIPE_RARE_FROM"]),
                           key=lambda i: (-its[i]["price"], i))
             rare_of = {i: rare_region[dealt[r % len(dealt)]] for r, i in enumerate(dear)} if dealt else {}
+            used = Counter()
             for i in eq:
                 lv = curve(LEVEL_AT, its[i]["price"])
-                near = sorted(pool, key=lambda m: (abs(mid[m] - lv), -m))
-                second = its[i]["cat"] != "RECORDS_ITEM_WEAPON" and len(near) > 1
+                g0 = min(abs(mid[m] - lv) for m in pool)
+                score = {m: abs(mid[m] - lv) + SPREAD * used[m] for m in pool if abs(mid[m] - lv) <= g0 + WINDOW}
+                near = sorted(score, key=lambda m: (score[m], -m))
+                second = (its[i]["cat"] != "RECORDS_ITEM_WEAPON" and len(near) > 1 and
+                          score[near[1]] - score[near[0]] < SECOND)
                 common = near[1 if second else 0]
+                used[common] += 1
                 rare = rare_of.get(i, -1)
                 rn = 0 if rare < 0 else 2 if its[i]["price"] >= c["DEF_RECIPE_TWO_RARES"] else 1
                 out.append((shop, i, its[i], common, amount(its[i]["price"]), rare, rn))
+            plans[shop] = (eq, top_level, areas[min(towns[shop]) & 0xFF] >> 7)
+    asked = Counter(r[3] for r in out)
+    servers = {m: {k >> 7 for k, (_lv, cnt) in info.items() if m in cnt and k != 0xFF} for m in range(16)}
+    for m in range(16):
+        shops = [sh for sh, (_eq, _top, srv) in plans.items() if srv in servers[m]]
+        if asked[m] or not shops:
+            continue
+        sh = min(shops, key=lambda sh: (abs(plans[sh][1] - mid[m]), sh))
+        dear = set(sorted(plans[sh][0], key=lambda i: (-its[i]["price"], i))[:3])
+        out = [r[:3] + (m,) + r[4:] if r[0] == sh and r[1] in dear else r for r in out]
     return sorted(out, key=lambda r: (r[0], r[1]))
+
+
+def spread_ok(rows):
+    """The Part 1 checks: (every common asked, no shop on a single common, the worst level gap outside
+    OFF_LEVEL_SHOP within MAX_GAP), with the details for the message."""
+    from collections import defaultdict
+    _info, _mr, mid, _g, _a = world()
+    every = {r[3] for r in rows} == set(range(16))
+    per = defaultdict(set)
+    for r in rows:
+        per[r[0]].add(r[3])
+    single = sorted(sh for sh, ms in per.items() if len(ms) < 2)
+    gap = max(abs(mid[r[3]] - curve(LEVEL_AT, r[2]["price"])) for r in rows if r[0] != OFF_LEVEL_SHOP)
+    return every, single, gap
 
 
 def render(rows):
@@ -220,9 +272,13 @@ def main():
     if a.check:
         ok = GEN.exists() and GEN.read_text() == text
         sane = all(0 <= com < 16 and 0 < n <= 99 and (rare == -1) == (rn == 0) for *_x, com, n, rare, rn in rows)
+        every, single, gap = spread_ok(rows)
         print(f"{'ok' if ok else 'FAIL'} the recipes are the rule's ({len(rows)} rows); {'ok' if sane else 'FAIL'} "
               "materials and counts in range")
-        return 0 if ok and sane else 1
+        print(f"{'ok' if every else 'FAIL'} all 16 commons asked; {'ok' if not single else 'FAIL'} no shop on one "
+              f"common{'' if not single else ' (' + ', '.join(map(str, single)) + ')'}; {'ok' if gap <= MAX_GAP else 'FAIL'} "
+              f"worst level gap {gap:.1f} (outside shop {OFF_LEVEL_SHOP}, at most {MAX_GAP})")
+        return 0 if ok and sane and every and not single and gap <= MAX_GAP else 1
     GEN.write_text(text)
     write_md(rows)
     print(f"{GEN.relative_to(ROOT)}: {len(rows)} recipes; {OUT / 'receitas.md'}")
