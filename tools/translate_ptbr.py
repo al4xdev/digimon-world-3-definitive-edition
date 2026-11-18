@@ -457,7 +457,7 @@ def validate_translation(en_text: str, pt_text: str, kind: str, max_len: int) ->
 SYSTEM_PROMPT_BASE = """You are localizing Digimon World 3 (PS1) from English to Brazilian Portuguese (PT-BR).
 Strict Rules:
 1. Preserve ALL control tags (<1>, <2,2>, <3>, <5,1>, <5,2>, <7>, <8,1>, <9>) in the exact same order.
-   - If a string starts with `<7>Speaker<7>`, keep `<7>...<7>` at the start (keep proper names like Junior, Kaili, Teddy, Kurt, Lisa, Keith, Nick, Asuka, Seiryu, Suzaku, Byakko, Genbu, Amaterasu, A.o.A., MAGAMI; translate generic titles like Guard -> Guarda, Boy -> Garoto, Clerk -> Atendente).
+   - If a string starts with `<7>Speaker<7>`, keep `<7>...<7>` at the start (keep proper names like Junior, Kail, Ivy, Teddy, Kurt, Lisa, Keith, Nick, Asuka, Seiryu, Suzaku, Byakko, Genbu, Amaterasu, A.o.A., MAGAMI; translate generic titles like Guard -> Guarda, Boy -> Garoto, Clerk -> Atendente).
    - If a string starts with `<7><9><7>`, keep `<7><9><7>` untouched.
 2. Keep RPG/combat terms in English: Digimon, Digi-Lab, Load Tech, Blast Gauge, Bits, TP, MP, HP, AP, Baton Pass, Relay, Libra, OVERFINISH, WEAK, RESIST, DDNA, Digi-Egg, Card, Booster, Folder, Tamer, Server, Gym, Badge.
    - Keep all Digimon species names and technique names in English.

@@ -70,6 +70,11 @@ static unsigned char blast_cursed;
 static unsigned char blast_fallen;
 static unsigned char blast_step_taken = 0xFF; /* def_blast_form's step, for def_blast_started (0xFF: none) */
 static unsigned char chosen_used;             /* this battle's Chosen Evolution was taken (one a battle) */
+/* The overheat after a Blast or Chosen form (by party slot): own turns still sealed from digivolving, and whether the
+ * seal (status 0x20, the game's own digivolve seal) is ours to lift. */
+static unsigned char overheat_turns[3], overheat_sealed[3];
+static unsigned char boost_off; /* blast_record: the form's stats as they are, without the boost */
+static unsigned char boost_logged; /* slots whose boost the log named this battle */
 
 void def_log_begin(void) {
     int i;
@@ -80,6 +85,9 @@ void def_log_begin(void) {
     blast_cursed = 0;
     blast_fallen = 0;
     chosen_used = 0;
+    memset(overheat_turns, 0, sizeof(overheat_turns));
+    memset(overheat_sealed, 0, sizeof(overheat_sealed));
+    boost_logged = 0;
     def_callout_show(DEF_CALLOUT_NONE, 0);
     def_hunt_reward_done(); /* PRD 4 layer B: a reward a results screen never showed does not carry over */
     def_dri_battle_begin(); /* PRD 4 layer H: whether this battle is the DRI simulation just set up */
@@ -366,6 +374,12 @@ void *def_text_override(void *data, s32 i) {
         if (match_file < 0) {
             continue;
         }
+        if (def_story_text(match_file, i) != NULL) {
+            return (void *)def_story_text(match_file, i); /* a line a story hook changes while it holds the story */
+        }
+        if ((records_language == 1 || records_language == 2) && def_story_line(match_file, i) != NULL) {
+            return (void *)def_story_line(match_file, i); /* the story rewrite (in Portuguese: only the Kaili names) */
+        }
         if (match_file == 0x63 && i == 76 && def_blast_chosen_mode()) {
             extern unsigned char def_str_PlugRevive[];
             return def_str_PlugRevive; /* ITMINF 76: after the Blast quest the DV Plug is a revive item */
@@ -617,6 +631,9 @@ void def_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, blast_fallen);
     PORT_STATE_VAR(s, blast_step_taken);
     PORT_STATE_VAR(s, chosen_used);
+    PORT_STATE_VAR(s, overheat_turns);
+    PORT_STATE_VAR(s, overheat_sealed);
+    PORT_STATE_VAR(s, boost_logged);
     def_dri_savestate(s); /* PRD 4 layer H: a battle loaded mid-simulation is still one */
     def_purify_savestate(s); /* Blast phase 2: and mid-purification */
     def_superhunt_screen_savestate(s); /* the Sepikmon's board and the hunts' reward panel */
@@ -630,6 +647,7 @@ void def_savestate(struct PortState *s) {
     def_travel_savestate(s);  /* the Guardromon's screen, the same way as the market's */
     def_evohint_savestate(s);
     def_callout_savestate(s);
+    def_story_savestate(s); /* the story hooks' talk, with the field's heap it lives in */
 }
 
 static int target_slot(void) {
@@ -654,6 +672,7 @@ void def_party_turn_begins(void) {
     }
     def_chain_party_turn(&chain);
     if (!chain.cur_extra) {
+        def_blast_overheat_turn(m);
         for (k = 0; k < 3; k++) {
             if (mod_turns[0][m][k] != 0 && --mod_turns[0][m][k] == 0) {
                 mod_level[0][m][k] = 0;
@@ -744,9 +763,13 @@ int def_blast_form(int partner, int band) {
  * its strongest one; any later time, the best that stat reached. */
 static void blast_record(s32 id, int k) {
     FightstgMember *m = blast_member();
-    FightstgStats *st = fightstg_rules.get_stats(0, 0, fightstg_battle.state.current[0]);
+    FightstgStats *st;
     DefBlastEntry e;
     int i, j;
+
+    boost_off = 1; /* the record keeps the form's own stats: the boost is bought on top */
+    st = fightstg_rules.get_stats(0, 0, fightstg_battle.state.current[0]);
+    boost_off = 0;
 
     if (k < 0 || k >= DEF_BLAST_STEPS || st == NULL) {
         return;
@@ -793,6 +816,76 @@ void def_blast_started(s32 id) {
 
 int def_blast_dark(void) {
     return def_on() && !def_blast_chosen_mode() && blast_member()->blasted;
+}
+
+int def_blast_boost_pct(void) {
+    if (def_blast_chosen_mode()) {
+        return DEF_CHOSEN_BOOST_PCT;
+    }
+    return def_record_blast_boost() * DEF_BLAST_BOOST_STEP;
+}
+
+/* fightstg_rules_get_stats, the party's side: a member in its Blast or Chosen form fights with the boost on its five
+ * stats. Past 999 on purpose (the owner: the Chosen is the one power that breaks the cap; the last bosses are scaled
+ * for it); 9999 keeps the damage formulas in range. */
+void def_blast_boost_stats(int member, FightstgStats *out) {
+    FightstgMember *m = &fightstg_battle.state.members[0][member];
+    int pct, i, v;
+
+    if (!def_on() || boost_off || !m->blasted || def_purify_fighting()) {
+        return;
+    }
+    pct = def_blast_boost_pct();
+    if (pct > 0 && member >= 0 && member < 3 && !(boost_logged >> member & 1)) {
+        boost_logged |= (unsigned char)(1u << member);
+        port_log("blast: slot %d fights with its boost +%d%% (stat 0 %d -> %d)", member, pct, out->stats[0],
+                 out->stats[0] + out->stats[0] * pct / 100);
+    }
+    for (i = 0; i < 5 && pct > 0; i++) {
+        v = out->stats[i] + out->stats[i] * pct / 100;
+        out->stats[i] = (s16)(v > 9999 ? 9999 : v);
+    }
+}
+
+/* A Blast or Chosen form ends (wfightmn_end_blast, the timer's end or an enemy's revert): the Digimon is back in its
+ * Rookie form (wfightmn_blast_end asks def_blast_end_form) and overheats, sealed from digivolving (and from the Baton
+ * Pass's digivolution, which the game's seal refuses too) for DEF_BLAST_OVERHEAT_TURNS of its own turns. */
+void def_blast_overheat(s32 slot) {
+    FightstgMember *m;
+
+    if (!def_on() || slot < 0 || slot >= 3) {
+        return;
+    }
+    m = &fightstg_battle.state.members[0][slot];
+    overheat_turns[slot] = DEF_BLAST_OVERHEAT_TURNS;
+    overheat_sealed[slot] = !(m->status & 0x20); /* a seal already on is the game's: its own event lifts it */
+    m->status |= 0x20;
+    port_log("blast: slot %d overheats, no digivolving for %d turns", (int)slot, DEF_BLAST_OVERHEAT_TURNS);
+}
+
+s32 def_blast_end_form(s32 slot, s32 form) {
+    s32 id = gamestate_data.funcs.get_party_member(slot);
+
+    if (!def_on() || id < 0 || id >= DEF_GAUGE_SLOTS) {
+        return form;
+    }
+    return records_digimon[id].id;
+}
+
+/* The slot's own turn begins (a normal action): one sealed turn spent; the turn after the last one lifts the seal. */
+void def_blast_overheat_turn(int slot) {
+    FightstgMember *m = &fightstg_battle.state.members[0][slot];
+
+    if (overheat_turns[slot] != 0) {
+        overheat_turns[slot]--;
+        port_log("blast: slot %d overheated, %d turns left after this one", slot, overheat_turns[slot]);
+    } else if (overheat_sealed[slot]) {
+        overheat_sealed[slot] = 0;
+        if (m->hp > 0) {
+            m->status &= ~0x20;
+        }
+        port_log("blast: slot %d cooled down", slot);
+    }
 }
 
 void def_blast_price(void) {
@@ -844,6 +937,8 @@ int def_blast_plug_revive(int slot) {
     m->blasted = 0;
     m->power_up = 0;
     m->mp = 1;
+    overheat_turns[slot] = 0; /* the knockout cleared its statuses, the seal with them */
+    overheat_sealed[slot] = 0;
     port_log("blast: the DV Plug revives digimon %d in its Rookie form, HP and MP 1", (int)id);
     return 1;
 }

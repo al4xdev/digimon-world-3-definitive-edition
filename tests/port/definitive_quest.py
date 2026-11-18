@@ -29,7 +29,7 @@ def tables_ok():
         a_ok &= ev[0] == progress and ev[1] == 0x400 + n and ev[2] == 0x7074 + money
     print(f"{'ok' if a_ok else 'FAIL'} the auctions are FIELDSTG's: step, attended flag and price, in order")
     ok &= a_ok
-    flag = r"(ANY|ITEM\(\d+\))"
+    flag = r"(ANY|ITEM\(\d+\)|STORY\(\w+\))"
     rows = re.findall(r"\{ (\d+), (\d+), " + flag + r", (\d), (0x[0-9A-F]+|0), def_str_(\w+), def_str_(\w+) \}", src)
     body = src[src.index("const DefQuest def_quests[]"):src.index("const int def_quest_count")]
     main = [r for r in rows if f"def_str_{r[5]}," in body]

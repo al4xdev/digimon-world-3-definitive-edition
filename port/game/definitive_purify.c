@@ -52,7 +52,8 @@ extern const unsigned char def_str_PfDomTitle[], def_str_PfDominated[], def_str_
     def_str_PfTpBack[], def_str_PfChosenTitle[], def_str_PfCharged[], def_str_PfKeysChoose[], def_str_PfLv[],
     def_str_PfChosenMark[], def_str_PfNameGennai[], def_str_PfNameMyotismon[], def_str_PfStory0[], def_str_PfStory1[],
     def_str_PfStory2[], def_str_PfStory3[], def_str_PfStory4[], def_str_PfStory5[], def_str_DriSep[], def_str_DriOf[],
-    def_str_HuntSpace[], def_str_Unknown[];
+    def_str_HuntSpace[], def_str_Unknown[], def_str_PfBoostOffer[], def_str_PfBoost[], def_str_PfBoostTo[],
+    def_str_PfBoostFor[], def_str_PfBits[], def_str_PfPct[], def_str_PfKeysBuy[], def_str_PfKeysBuyNext[];
 
 #define PF_LAYER 0x1002 /* the field's window layer */
 #define PF_Y 56         /* the panel */
@@ -522,14 +523,51 @@ static void list_of(unsigned int mask) {
     put_forms(t_list, &p, sizeof(t_list), mask);
 }
 
+/* The Blast's boost on sale (owner, 2026-11-17): a step for each form recorded, the next one's price. */
+static int boost_offer(void) {
+    return def_record_blast_quest() == DEF_BLAST_QUEST_DECEIVED && def_record_blast_boost() < def_record_blast_count();
+}
+
+static int boost_price(void) {
+    return (def_record_blast_boost() + 1) * DEF_BLAST_BOOST_BITS;
+}
+
+/* "Boost +6% to +9% for 3000 Bits", or "Boost +9%" with nothing on sale. */
+static void put_boost(unsigned char *buf) {
+    int p = 0, now = def_record_blast_boost() * DEF_BLAST_BOOST_STEP;
+
+    buf[0] = 0;
+    def_glyph_put(buf, &p, PF_TEXT, def_str_PfBoost);
+    def_glyph_count(buf, &p, PF_TEXT, now);
+    if (!boost_offer()) {
+        def_glyph_put(buf, &p, PF_TEXT, def_str_PfPct);
+        return;
+    }
+    def_glyph_put(buf, &p, PF_TEXT, def_str_PfBoostTo);
+    def_glyph_count(buf, &p, PF_TEXT, now + DEF_BLAST_BOOST_STEP);
+    def_glyph_put(buf, &p, PF_TEXT, def_str_PfBoostFor);
+    def_glyph_number(buf, &p, PF_TEXT, boost_price());
+    def_glyph_put(buf, &p, PF_TEXT, def_str_PfBits);
+}
+
 static void status_open(void) {
+    int offer = boost_offer();
+
     pf_text(2, 3, def_str_PfDomTitle, PF_PAL_HOT, 1);
     put_count(t_line, def_str_PfDominated, def_record_blast_count());
     pf_text(1, 22, t_line, PF_PAL_TEXT, 1);
     list_of(all_entries());
     pf_text(2, 38, t_list, PF_PAL_TEXT, 4);
-    pf_text(2, 104, def_str_PfDominate, PF_PAL_DIM, 2);
-    pf_text(1, 148, def_str_PfKeysOk, PF_PAL_TEXT, 1);
+    pf_text(2, 92, offer ? def_str_PfBoostOffer : def_str_PfDominate, PF_PAL_DIM, 2);
+    if (offer || def_record_blast_boost() > 0) {
+        put_boost(t_fee);
+        pf.fee = pf_text(1, 126, t_fee, offer && gamestate_data.money < boost_price() ? PF_PAL_HOT : PF_PAL_TEXT, 1);
+    }
+    pf_text(1, 148,
+            !offer                                             ? def_str_PfKeysOk
+            : def_record_blast_count() >= DEF_BLAST_QUEST_FORMS ? def_str_PfKeysBuyNext
+                                                                : def_str_PfKeysBuy,
+            PF_PAL_TEXT, 1);
 }
 
 static void demand_open(void) {
@@ -669,8 +707,8 @@ static int stage_mode(void) {
         return PF_CHOSEN;
     case DEF_BLAST_QUEST_REVEALED:
         return PF_SIM;
-    default:
-        return def_record_blast_count() >= DEF_BLAST_QUEST_FORMS ? PF_DEMAND : PF_STATUS;
+    default: /* with the ten, the boost still on sale comes first (△ goes on to the demand) */
+        return def_record_blast_count() >= DEF_BLAST_QUEST_FORMS && !boost_offer() ? PF_DEMAND : PF_STATUS;
     }
 }
 
@@ -696,6 +734,30 @@ static int pf_input(void) {
     int ok = PAD_PRESSED(13), back = PAD_PRESSED(12) || PAD_PRESSED(14);
 
     switch (pf.mode) {
+    case PF_STATUS:
+        if (back || (ok && !boost_offer())) {
+            sound_module.play(back ? PF_SND_BACK : PF_SND_OK);
+            if (def_record_blast_count() >= DEF_BLAST_QUEST_FORMS) { /* the ten are there: on to his demand */
+                pf_reopen(PF_DEMAND);
+                return 0;
+            }
+            return 1;
+        }
+        if (ok && gamestate_data.money < boost_price()) {
+            sound_module.play(PF_SND_BACK);
+            if (pf.fee != NULL) {
+                pf.fee->set_text(pf.fee, (u8 *)def_str_PfNoBits, -1);
+                pf.fee->set_palette(pf.fee, PF_PAL_HOT);
+            }
+        } else if (ok) { /* "Gennai" sells a step of the Blast's boost */
+            sound_module.play(PF_SND_OK);
+            gamestate_data.money -= boost_price();
+            def_record_set_blast_boost(def_record_blast_boost() + 1);
+            port_log("purify: \"Gennai\" sells a Blast boost step: now +%d%%, %d Bits left", def_blast_boost_pct(),
+                     (int)gamestate_data.money);
+            pf_reopen(PF_STATUS);
+        }
+        return 0;
     case PF_DEMAND:
         if (back) {
             sound_module.play(PF_SND_BACK);

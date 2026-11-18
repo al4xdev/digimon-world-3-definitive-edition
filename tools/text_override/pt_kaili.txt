@@ -1,0 +1,7 @@
+# As falas em português do modo Kaili (Girls Power) que a troca automática de nome não resolve: as que falam do irmão.
+# No modo Kaili o Kurt é irmão da heroína; a amiga continua sendo a Ivy, com o nome de conta Junior (no jogo, Kail).
+# O resto sai de pt.txt com Kail trocado por Junior (tools/gen_text_override.py), e as falas que en_kaili.txt passa
+# para a heroína (`>hero `) passam aqui também. Mesmo formato de en_kaili.txt.
+DMG600:15 16: <7><9><7>O quê?! Então o<1>Lucky Mouse é...<2,2><3>...meu irmão?!<2,2>
+DMG600:15 17: <7>Lucky Mouse<7>...sim, meu nome<1>real é Kurt. Eu sou<1>seu irmão mais velho.<2,2><3>Mas como a A.o.A <1>descobriu este <1>lugar!? <2,2><3>E por que vocês<1>dois...?<2,2>
+TALK06 816: <7>Junior<7>...ei <8,1><5,1>, <1>você viu o Kurt...<2,2><3>...hum, <1>não, não é nada!<2,2>

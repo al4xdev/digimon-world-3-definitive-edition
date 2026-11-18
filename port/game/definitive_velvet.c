@@ -18,11 +18,13 @@
 
 #include "common.h"
 
+#include "cdload.h"
 #include "fieldstg.h"
 #include "gamestate.h"
 #include "gfx.h"
 #include "heap.h"
 #include "message.h"
+#include "records.h"
 
 #include "psyq/libgpu.h"
 #include "sound.h"
@@ -51,6 +53,7 @@ extern const unsigned char def_str_VelvetTitle[], def_str_VelvetTitle2[];
 #define VL_MUSIC 0x3B
 #define VL_SOUND 0x60EC0000
 void dw3_velvet_music(s32 *music, s32 *sound); /* definitive_velvet_music.c: the arrangement's bank and key */
+int dw3_velvet_igor_head(FieldstgActor *actor, u32 *ot, s32 x, s32 y); /* definitive_velvet_igor.c: his own head */
 #define VL_MERCHANT 42  /* the Black Market's trader: the figure that traded in map 0x20C */
 /* The mentor (the Gennai of the room, owner 2026-11-16: an old figure of the game until one is drawn): 0x39, the old man
  * the game's Grandpas and Tamer Genji wear (P074JIJI): bald, white-bearded, five facings. Its frame is 24x32, which the
@@ -75,6 +78,11 @@ void dw3_velvet_music(s32 *music, s32 *sound); /* definitive_velvet_music.c: the
 #define VL_SEPIK 61
 #define VL_SEPIK_INTRO 14
 #define VL_SEPIK_LINE 15
+/* Igor, the room's master (the story's, definitive_story.c; .plan/tasks/velvet-historia.md): until his own art is drawn,
+ * actor 109 (0x6D), WSTAG212's man in a black suit (P055GMGD; the owner's "NPC de terno"). Actor 53 (P068SARM) is the
+ * other suit of the game, brown with goggles. His line is the story's to pick (def_story_igor_line): the key at the
+ * opening, then his reading of the party's DNA forms. */
+#define VL_IGOR 109
 /* The shopkeeper's lines (entries of the same file that no stage's talk reaches): the two greetings, said in turn one
  * per visit, the one after a trade, and the one after a visit that bought nothing. */
 #define VL_SHOP_GREET_A 8
@@ -110,6 +118,16 @@ void dw3_velvet_music(s32 *music, s32 *sound); /* definitive_velvet_music.c: the
 #define VL_SEPIK_X 176 /* on the floor at the stairs' foot, left of the entry, facing the player coming in */
 #define VL_SEPIK_Y 306
 #define VL_SEPIK_DIR 7
+#define VL_IGOR_X 268 /* on the lower floor, on the carpet's far side from the door: the first figure the entry faces */
+#define VL_IGOR_Y 318
+#define VL_IGOR_DIR 7 /* towards the door */
+/* Igor's scenes (vl_scene: the dreams, Seiryu's showing): the player comes in beside him, the two face each other. */
+/* Igor faces down-left, the one facing his own head is drawn for (definitive_velvet_igor.c: frame 9; facing left would
+ * show the game's figure's head), so the player stands two steps in front of him that way (fieldstg_front_offsets[1]). */
+#define VL_SCENE_X 246
+#define VL_SCENE_Y 340
+#define VL_SCENE_DIR 5      /* up-right, at him */
+#define VL_SCENE_IGOR_DIR 1 /* down-left, at the player */
 #define VL_PIG_X 245 /* on the room's floor, by the carpet's edge */
 #define VL_PIG_Y 292
 #define VL_PIG_DIR 0
@@ -139,7 +157,8 @@ static VelvetDoor doors[] = {
      * it. */
     { 0x20A, 339, 192 }, { 0x279, 339, 192 }, /* Asuka City: the room's right wall, by the stairs */
     { 0x223, 205, 269 }, { 0x292, 205, 269 }, /* the deck's log end, between the bedroom and the lower room */
-    { 0x230, 516, 380 }, { 0x29E, 516, 380 }, /* the stair landing, against the stained glass */
+    /* the upper landing, on the rug beside Repeating Tom: the door his news opens (definitive_story.c) */
+    { 0x230, 228, 388 }, { 0x29E, 228, 388 },
     { 0x238, 300, 440 }, { 0x2A5, 300, 440 }, /* the shop's floor: no wall there, but nothing in front of it */
     { 0x23F, 580, 392 }, { 0x2AC, 580, 392 }, /* the bazaar's white wall, by the vine arch */
     { 0x247, 540, 304 }, { 0x2B1, 540, 304 }, /* the canyon: at the foot of the metal ramp */
@@ -160,6 +179,7 @@ static FieldstgTalk vl_etemon_talks[2] = { { NULL, NULL, VL_ETEMON_LINE }, { NUL
 static FieldstgTalk vl_demon_talks[2] = { { NULL, NULL, VL_DEMON_GIVE }, { NULL, NULL, 0 } };
 static FieldstgTalk vl_pig_talks[2] = { { NULL, NULL, VL_PIG_LINE }, { NULL, NULL, 0 } };
 static FieldstgTalk vl_sepik_talks[2] = { { NULL, NULL, VL_SEPIK_LINE }, { NULL, NULL, 0 } };
+static FieldstgTalk vl_igor_talks[2] = { { NULL, NULL, 0 }, { NULL, NULL, 0 } };
 
 /* The room's figures (FieldstgPlacedActor: flags, talks, ID, VRAM place, x, y, dir). The VRAM places are three of the
  * bar's own patron slots, free while the patrons are away. */
@@ -172,7 +192,26 @@ static FieldstgPlacedActor vl_demon = { NULL, vl_demon_talks, VL_DEMON, 3, VL_DE
 static FieldstgPlacedActor vl_pig = { NULL, vl_pig_talks, VL_PIG, 6, VL_PIG_X, VL_PIG_Y, VL_PIG_DIR };
 /* VRAM place 11 (the bar's 13th): the last patron's, free while they are away */
 static FieldstgPlacedActor vl_sepik = { NULL, vl_sepik_talks, VL_SEPIK, 11, VL_SEPIK_X, VL_SEPIK_Y, VL_SEPIK_DIR };
-static FieldstgPlacedActor *vl_actors[] = { &vl_merchant, &vl_mentor, &vl_etemon, &vl_pig, &vl_demon, &vl_sepik, NULL };
+/* VRAM place 8 (the bar's 10th patron's). Of the bar's places the room leaves free, 8, 9 and 10 draw him; 7, 12 and 13
+ * show garbage for any figure here, the Sepikmon's too (tried 2026-11-17, .dumps/tasks/story/try). */
+static FieldstgPlacedActor vl_igor = { NULL, vl_igor_talks, VL_IGOR, 8, VL_IGOR_X, VL_IGOR_Y, VL_IGOR_DIR };
+/* The room's guests and the level each comes in at (def_story_velvet_level, owner 2026-11-17: they arrive with the
+ * story, the Sepikmon first and the Black Market last), with the code it calls the player over by on the first visit
+ * after (0: never; the Bell's keeper would hand the Bell over by being talked to). */
+static const struct {
+    FieldstgPlacedActor *who;
+    s32 level;
+    s32 greet;
+} vl_guests[] = {
+    { &vl_sepik, 1, DW3_VELVET_PULL_SEPIK }, { &vl_mentor, 2, DW3_VELVET_PULL_MENTOR }, /* Gennai greets at 2 */
+    { &vl_igor, 2, DW3_VELVET_PULL_IGOR },   { &vl_demon, 3, 0 },
+    { &vl_etemon, 4, DW3_VELVET_PULL_ETEMON }, { &vl_pig, 4, 0 },
+    { &vl_merchant, DEF_VELVET_LEVEL_MAX, DW3_VELVET_PULL_MERCHANT },
+};
+#define VL_GUESTS ((s32)(sizeof(vl_guests) / sizeof(vl_guests[0])))
+static FieldstgPlacedActor *vl_actors[VL_GUESTS + 1]; /* the guests of the room's level (vl_guests_now) */
+/* Igor alone, a scene (the owner's, 2026-11-17): the opening's dream, and Seiryu's showing of the room. */
+static FieldstgPlacedActor *vl_dream_actors[] = { &vl_igor, NULL };
 
 static s32 vl_shop_greet;  /* which greeting the next visit begins with (they cycle) */
 static s32 vl_shop_last;   /* how the last visit ended: 0 nothing, 1 it traded, 2 it bought nothing */
@@ -182,7 +221,10 @@ static s32 vl_mentor_phase; /* 1 the mentor's line is on screen: his panel (the 
 static s32 vl_room; /* the room is running (set when a portal is taken, cleared when the map is left) */
 static s32 vl_from; /* the inn the portal was taken in */
 static s32 vl_sepik_phase; /* 1 the Sepikmon's line is on screen: his board opens after it */
-static s32 vl_pulled; /* the room was entered by dw3_velvet_pull: the Sepikmon speaks to the player on arrival */
+static s32 vl_pulled; /* the room was entered by dw3_velvet_pull: who speaks to the player on arrival (VL_PULL_*) */
+static s32 vl_igor_phase; /* 1 Igor's line is on screen: the story hears when it closes (def_story_igor_done) */
+static s32 vl_scene;      /* 1 Igor alone (vl_dream_actors), 0 the room as its level has it */
+static s32 vl_armed;      /* the player was seen off the map's door: standing on it now takes it */
 
 /* The feature (DW3_FEAT_VELVET, default on): off under a replay script, which must replay the emulator's own frames. */
 static int vl_on(void) {
@@ -193,6 +235,60 @@ static int vl_on(void) {
              && (!port_script_active || getenv("DW3_DEFINITIVE") != NULL || getenv("DW3_FEAT_VELVET") != NULL);
     }
     return on;
+}
+
+/* Into the room: by its door, or beside Igor in his scenes. */
+static void vl_enter(void) {
+    if (vl_scene) {
+        fieldstg_goto_map(VL_MAP, -1, VL_SCENE_X << 8, VL_SCENE_Y << 8, VL_SCENE_DIR);
+    } else {
+        fieldstg_goto_map(VL_MAP, -1, VL_ENTRY_X << 8, VL_ENTRY_Y << 8, VL_ENTRY_DIR);
+    }
+}
+
+/* The guests of the room's level, as the stage's actor list. */
+static FieldstgPlacedActor **vl_guests_now(void) {
+    s32 level = def_story_velvet_level(), i, n = 0;
+
+    for (i = 0; i < VL_GUESTS; i++) {
+        if (vl_guests[i].level <= level) {
+            vl_actors[n++] = vl_guests[i].who;
+        }
+    }
+    vl_actors[n] = NULL;
+    return vl_actors;
+}
+
+/* The figure a call-over code names. */
+static FieldstgPlacedActor *vl_who(s32 code) {
+    s32 i;
+
+    if (code == DW3_VELVET_PULL_IGOR) {
+        return &vl_igor;
+    }
+    for (i = 0; i < VL_GUESTS; i++) {
+        if (vl_guests[i].greet == code) {
+            return vl_guests[i].who;
+        }
+    }
+    return &vl_sepik;
+}
+
+/* The first visit after the room's level rose: the newest guest that greets calls the player over (0: none). */
+static s32 vl_newcomer(void) {
+    s32 level = def_story_velvet_level(), i, code = 0, best = 0;
+
+    if (level <= def_record_velvet_seen()) {
+        return 0;
+    }
+    def_record_set_velvet_seen(level);
+    for (i = 0; i < VL_GUESTS; i++) {
+        if (vl_guests[i].greet != 0 && vl_guests[i].level <= level && vl_guests[i].level > best) {
+            best = vl_guests[i].level;
+            code = vl_guests[i].greet;
+        }
+    }
+    return code;
 }
 
 static const VelvetDoor *vl_door(s32 map) {
@@ -292,7 +388,8 @@ static void vl_portal(s32 x, s32 y) {
     }
 }
 
-/* The room's shopkeeper, the Black Market's dealer: his own art (definitive_velvet_art.h, drawn by hand for this port)
+/* Igor first: the game's figure keeps being drawn, with his own head over it (definitive_velvet_igor.c).
+ * The room's shopkeeper, the Black Market's dealer: his own art (definitive_velvet_art.h, drawn by hand for this port)
  * drawn by FIELDSTG's actor draw in place of the game's figure of actor VL_MERCHANT, so he takes the actor's own place in
  * the field's drawing order (the player passes in front of him and behind him as of any figure) and the figure under
  * him never shows. One flat quad per run of one palette colour: no VRAM, no CLUT. `ot` is the actor's ordering-table
@@ -304,7 +401,10 @@ int dw3_velvet_actor_art(FieldstgActor *actor, u32 *ot, s32 x, s32 y) {
     s32 i;
     s32 t;
 
-    if (!vl_on() || !vl_room || actor == NULL || actor->base.key2 != 1 || actor->base.key1 != VL_MERCHANT) {
+    if (vl_on() && vl_room && actor != NULL && actor->placed == &vl_igor) {
+        return dw3_velvet_igor_head(actor, ot, x, y); /* over the game's figure, which is drawn too */
+    }
+    if (!vl_on() || !vl_room || actor == NULL || actor->placed != &vl_merchant) {
         return 0;
     }
     x -= VELVET_ART_LEFT;
@@ -348,7 +448,9 @@ extern s32 fieldstg_actor_talk_to(FieldstgActor *obj, FieldstgPos *pos);
 
 /* The Sepikmon speaks to the player as if talked to (the room's first visit, dw3_velvet_pull): once the field is idle
  * and the player has control. 1 when the talk began. */
-static int vl_sepik_talk_start(void) {
+extern FieldstgPos fieldstg_front_offsets[8];
+
+static int vl_call_over(const FieldstgPlacedActor *who) {
     FieldstgActor *player;
     FieldstgActor *obj;
 
@@ -361,29 +463,58 @@ static int vl_sepik_talk_start(void) {
         return 0;
     }
     for (obj = (FieldstgActor *)heap_objects.find(5, -1, 1); obj != NULL; obj = (FieldstgActor *)heap_objects.find_next()) {
-        if (obj->base.key1 == VL_SEPIK && obj->base.key2 == 1 && obj->base.state == OBJECT_STATE_RUN) {
+        if (obj->placed == who && obj->base.state == OBJECT_STATE_RUN) {
             FieldstgPos pos = obj->pixel_pos;
+            s32 dx = pos.x - player->pixel_pos.x, dy = pos.y - player->pixel_pos.y, d, best = 0, score = -0x7FFFFFFF;
 
-            port_log("velvet: frame %ld: the Sepikmon calls the player over", port_frames);
+            for (d = 0; d < 8; d++) { /* the player turns to the caller (the entry left him facing the door) */
+                s32 dot = dx * fieldstg_front_offsets[d].x + dy * fieldstg_front_offsets[d].y;
+
+                if (dot > score) {
+                    score = dot;
+                    best = d;
+                }
+            }
+            player->dir = best;
+            port_log("velvet: frame %ld: actor %d calls the player over", port_frames, who->id);
             return fieldstg_actor_talk_to(player, &pos) != 0;
         }
     }
     return 0; /* his actor is not made yet (the stage is still setting up): the next frame */
 }
 
-/* The room pulls the player in from map `from` (an inn: the room's door goes back to its Guardromon), as a portal
- * taken there would, and the Sepikmon speaks first (the Super Rare hunts' introduction, Seiryu City's first visit). */
-void dw3_velvet_pull(s32 from) {
+/* The room pulls the player in from map `from` (an inn: the room's door goes back to its Guardromon; another map: the
+ * story sends the player back itself), as a portal taken there would, and `who` speaks first: the Sepikmon
+ * (DW3_VELVET_PULL_SEPIK) or Igor (DW3_VELVET_PULL_IGOR, the opening's dream: definitive_story.c). */
+void dw3_velvet_pull_by(s32 from, s32 who) {
     if (!vl_on() || vl_room) {
         return;
     }
     vl_from = from;
     vl_room = 1;
-    vl_pulled = 1;
+    vl_pulled = who;
+    vl_scene = who == DW3_VELVET_PULL_IGOR; /* the opening's dream: Igor alone */
     sound_module.play(VL_SND_PORTAL);
     port_log("velvet: frame %ld: pulled into the room from map 0x%X (back to map 0x%X)", port_frames,
              gamestate_data.funcs.get_map(), from);
-    fieldstg_goto_map(VL_MAP, -1, VL_ENTRY_X << 8, VL_ENTRY_Y << 8, VL_ENTRY_DIR);
+    vl_enter();
+}
+
+void dw3_velvet_pull(s32 from) {
+    dw3_velvet_pull_by(from, DW3_VELVET_PULL_SEPIK);
+}
+
+/* The screen cuts inside the room (the story's: Igor's scene is over): the map is entered again, now as its level has
+ * it, and `who` calls the player over. */
+void dw3_velvet_cut(s32 who) {
+    if (!vl_on() || !vl_room) {
+        return;
+    }
+    vl_scene = 0;
+    vl_pulled = who;
+    def_record_set_velvet_seen(def_story_velvet_level()); /* the newcomer is greeted by this call */
+    port_log("velvet: frame %ld: the scene cuts (who %d calls over)", port_frames, who);
+    vl_enter();
 }
 
 int dw3_velvet_in_room(void) {
@@ -399,8 +530,12 @@ void dw3_velvet_draw(void) {
     }
     if (vl_room) {
         vl_backdrop();
-        if (vl_pulled && vl_sepik_talk_start()) {
+        if (vl_pulled && vl_call_over(vl_who(vl_pulled))) {
             vl_pulled = 0;
+        }
+        if (vl_igor_phase == 1 && fieldstg_stage.actor_busy == 0) {
+            vl_igor_phase = 0;
+            def_story_igor_done(); /* the opening's dream ends with his line */
         }
         if (vl_sepik_phase == 1 && fieldstg_stage.actor_busy == 0) {
             vl_sepik_phase = 0;
@@ -424,7 +559,7 @@ void dw3_velvet_draw(void) {
         return;
     }
     door = vl_door(gamestate_data.funcs.get_map());
-    if (door != NULL && fieldstg_stage.title_shown == 0) {
+    if (door != NULL && fieldstg_stage.title_shown == 0 && def_story_velvet_level() > 0) {
         vl_portal(door->x, door->y);
     }
 }
@@ -443,8 +578,9 @@ int dw3_velvet_frame(void) {
     }
     map = gamestate_data.funcs.get_map();
     door = vl_door(map);
-    if (door == NULL) {
-        return 0;
+    if (door == NULL || def_story_velvet_level() == 0) {
+        vl_armed = 0;
+        return 0; /* the doors open with the story (Repeating Tom's news) */
     }
     player = (FieldstgActor *)heap_objects.find(5, -1, 0);
     if (player == NULL || player->base.state != OBJECT_STATE_RUN || player->base.step >= 5 || player->control == NULL) {
@@ -453,13 +589,27 @@ int dw3_velvet_frame(void) {
     dx = player->pixel_pos.x - door->x;
     dy = player->pixel_pos.y - door->y;
     if (dx * dx + dy * dy > VL_RADIUS * VL_RADIUS) {
+        vl_armed = 1;
         return 0;
     }
+    if (!vl_armed) {
+        return 0; /* a door that opened under the player (Tom's news) takes him once he stepped off and back on */
+    }
+    vl_armed = 0;
     vl_from = map;
     vl_room = 1;
+    vl_scene = 0;
+    vl_pulled = 0;
+    if (def_story_room_intro()) {
+        vl_scene = 1; /* Seiryu: Igor alone shows the room again, then the scene cuts (dw3_velvet_cut) */
+        vl_pulled = DW3_VELVET_PULL_IGOR;
+    } else {
+        vl_pulled = vl_newcomer();
+    }
     sound_module.play(VL_SND_PORTAL);
-    port_log("velvet: frame %ld: the portal of map 0x%X taken", port_frames, map);
-    fieldstg_goto_map(VL_MAP, -1, VL_ENTRY_X << 8, VL_ENTRY_Y << 8, VL_ENTRY_DIR);
+    port_log("velvet: frame %ld: the portal of map 0x%X taken (scene %d, who %d calls over)", port_frames, map, vl_scene,
+             vl_pulled);
+    vl_enter();
     return 0;
 }
 
@@ -475,7 +625,9 @@ void dw3_velvet_leave(s32 *map, s32 *x, s32 *y, s32 *dir) {
     }
     vl_room = 0;
     vl_pulled = 0;
-    if (dw3_travel_node(vl_from, &node_x, &node_y, &node_dir)) {
+    if (vl_scene) { /* a dream: the story sends the player back where it found him */
+        vl_scene = 0;
+    } else if (dw3_travel_node(vl_from, &node_x, &node_y, &node_dir)) {
         *x = node_x << 8; /* at the Guardromon of the inn it was entered from, as a teleport lands there */
         *y = node_y << 8;
         *dir = node_dir;
@@ -497,7 +649,7 @@ void dw3_velvet_actor_setup(FieldstgActor *actor) {
     if (!vl_on() || !vl_room || actor == NULL || actor->base.key2 != 1) {
         return;
     }
-    if (actor->base.key1 == VL_MERCHANT) {
+    if (actor->placed == &vl_merchant || actor->placed == &vl_igor) { /* Igor's head is drawn for one facing */
         actor->no_turn = 1;
     }
 }
@@ -530,7 +682,7 @@ FieldstgActor *dw3_velvet_talk_find(void *front) {
         if (obj->base.key2 != 1 || obj->base.state != OBJECT_STATE_RUN) {
             continue;
         }
-        if (obj->base.key1 == VL_MERCHANT) {
+        if (obj->placed == &vl_merchant) {
             in = dx >= -VL_COUNTER_X && dx <= VL_COUNTER_X && dy >= -VL_COUNTER_UP && dy <= VL_COUNTER_DOWN;
         } else {
             in = dx >= -VL_REACH_X && dx <= VL_REACH_X && dy >= -VL_REACH_Y && dy <= VL_REACH_Y;
@@ -547,6 +699,9 @@ FieldstgActor *dw3_velvet_talk_find(void *front) {
  * has nothing in them (the letter "a", said by nobody) and no other language has either, so the English text is served
  * for every language. */
 int dw3_velvet_text_own(s32 base_id, s32 index) {
+    if (def_story_text_own(base_id, index)) {
+        return 1; /* the story hooks' entries (definitive_story.c) */
+    }
     if (base_id != 0xE8) {
         return 0; /* TALK05, the bar's talk file (records_language + 0xE8) */
     }
@@ -579,7 +734,11 @@ void dw3_velvet_shop_talk(FieldstgActor *actor) {
     }
     if (vl_on() && vl_room && actor != NULL && actor->base.key1 == VL_SEPIK && actor->base.key2 == 1) {
         /* the first meeting introduces the hunts (and gives the tutorial, on his board) */
-        vl_sepik_talks[0].message = (def_super_flags() & DEF_SUPER_FLAG_MET) ? VL_SEPIK_LINE : VL_SEPIK_INTRO;
+        s32 story = def_story_sepik_line((def_super_flags() & DEF_SUPER_FLAG_MET) != 0); /* the missing Leader's */
+
+        vl_sepik_talks[0].message = story != 0                                ? story
+                                    : (def_super_flags() & DEF_SUPER_FLAG_MET) ? VL_SEPIK_LINE
+                                                                               : VL_SEPIK_INTRO;
         def_super_flag_set(DEF_SUPER_FLAG_MET);
         vl_sepik_phase = 1;
         port_log("velvet: the Sepikmon, message %d", vl_sepik_talks[0].message);
@@ -589,7 +748,13 @@ void dw3_velvet_shop_talk(FieldstgActor *actor) {
         vl_mentor_phase = 1;
         return;
     }
-    if (!vl_on() || !vl_room || actor == NULL || actor->base.key1 != VL_MERCHANT || vl_shop_phase != 0) {
+    if (vl_on() && vl_room && actor != NULL && actor->placed == &vl_igor) {
+        vl_igor_talks[0].message = def_story_igor_line(); /* the key, or his reading of the party's bonds */
+        vl_igor_phase = 1;
+        port_log("velvet: Igor, message %d", vl_igor_talks[0].message);
+        return;
+    }
+    if (!vl_on() || !vl_room || actor == NULL || actor->placed != &vl_merchant || vl_shop_phase != 0) {
         return;
     }
     if (vl_shop_last != 0 && vl_shop_last != vl_shop_said) {
@@ -607,6 +772,7 @@ void dw3_velvet_shop_talk(FieldstgActor *actor) {
 int dw3_velvet_shop_greeting(void) {
     return vl_shop_phase == 1;
 }
+
 
 /* The map title's two plates: the room's own name (two lines, as the title card has them), when the map is the room;
  * the bar's name stays otherwise. */
@@ -631,7 +797,9 @@ void dw3_velvet_stage_setup(void) {
     if (!vl_on() || !vl_room || gamestate_data.funcs.get_map() != VL_MAP) {
         return;
     }
-    fieldstg_stage.actors = vl_actors;
+    vl_igor.dir = vl_scene ? VL_SCENE_IGOR_DIR : VL_IGOR_DIR;
+    fieldstg_stage.actors = vl_scene ? vl_dream_actors : vl_guests_now();
+    cdload_module.is_loading(records_language + 0x4E); /* queues the names Igor reads the party's forms with */
     fieldstg_stage.music = VL_MUSIC;
     fieldstg_stage.sound = VL_SOUND;
     dw3_velvet_music(&fieldstg_stage.music, &fieldstg_stage.sound); /* the room's own score, when it was generated */
@@ -652,4 +820,7 @@ void dw3_velvet_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, vl_mentor_phase);
     PORT_STATE_VAR(s, vl_sepik_phase);
     PORT_STATE_VAR(s, vl_pulled);
+    PORT_STATE_VAR(s, vl_igor_phase);
+    PORT_STATE_VAR(s, vl_scene);
+    PORT_STATE_VAR(s, vl_armed);
 }

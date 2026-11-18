@@ -8693,6 +8693,7 @@ FightstgStats *fightstg_rules_get_stats(u8 side, s32 first, s32 member) {
         }
 #ifdef PC_PORT
         def_apply_resist_mod(0, member, out); /* an enemy's Resist Down lowers the party's affinities */
+        def_blast_boost_stats(member, out);   /* a Blast or Chosen form's boost */
 #endif
     } else {
         m = &fightstg_battle.state.members[1][member];

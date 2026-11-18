@@ -139,6 +139,12 @@ void fieldstg_event_update(FieldstgEvent *obj, FieldstgEventData *data) {
                     arg1 = script[2];
                     id = script[3];
                     arg2 = script[4];
+#ifdef PC_PORT
+                    if (def_story_event_dialog(arg1, &id)) {
+                        running = 0; /* the hero's choice is on screen: this command again next frame */
+                        break;
+                    }
+#endif
                     if (arg2 != 4) {
                         actor = fieldstg_event_find_actor(obj, id);
                         if (actor != NULL) {
@@ -192,6 +198,17 @@ void fieldstg_event_update(FieldstgEvent *obj, FieldstgEventData *data) {
                         break;
                     }
                     break;
+#ifdef PC_PORT
+                case 0x7F: /* the port's story command (definitive_story.c): the Velvet Room's dream at the opening */
+                    if (def_story_event_command(script[1])) {
+                        obj->base.set_state(obj, OBJECT_STATE_DONE); /* it changed the map: the event ends as 0x304's */
+                        obj->end = NULL; /* but the scene is not over: the map's teardown must not end the story step */
+                        running = 0;
+                    } else {
+                        script += 2;
+                    }
+                    break;
+#endif
                 case 6:
                     switch (sub) {
                     case 0:
@@ -250,6 +267,9 @@ FieldstgEvent *fieldstg_event_start(s32 id) {
         if (event->id == id) {
             obj->id = id;
             obj->script_pos = event->script;
+#ifdef PC_PORT
+            obj->script_pos = def_story_event_script(id, event->script); /* the story's own cut of it, if any */
+#endif
             obj->start = event->start;
             obj->end = event->end;
             text = event->text;

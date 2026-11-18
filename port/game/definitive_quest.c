@@ -28,6 +28,7 @@ extern s32 gamestate_money_check[];
 
 #define ITEM(id) (0x8000 | (id)) /* the flag of an item owned or equipped (gamestate_get_flag, types 0x80..0x8E) */
 #define ANY DEF_QUEST_NO_FLAG
+#define STORY(cond) (DEF_STORY_FLAG | (cond)) /* a Velvet Room story hook's condition (def_story_cond) */
 
 extern const unsigned char def_str_Q0[], def_str_Q0T[], def_str_Q1[], def_str_Q1T[], def_str_Q2[], def_str_Q2T[],
     def_str_Q3[], def_str_Q3T[], def_str_Q4[], def_str_Q4T[], def_str_Q5[], def_str_Q5T[], def_str_Q5b[],
@@ -43,7 +44,7 @@ extern const unsigned char def_str_Q0[], def_str_Q0T[], def_str_Q1[], def_str_Q1
     def_str_Q33[], def_str_Q33T[], def_str_Q34[], def_str_Q34T[], def_str_Q35[], def_str_Q35T[], def_str_Q36[],
     def_str_Q36T[], def_str_Q37[], def_str_Q37T[], def_str_Q38[], def_str_Q38T[], def_str_Q39[], def_str_Q39T[],
     def_str_Q40[], def_str_Q40T[], def_str_Q41[], def_str_Q41T[], def_str_Q43[], def_str_Q43T[], def_str_Q45[],
-    def_str_Q45T[];
+    def_str_Q45T[], def_str_Q4s[], def_str_Q4sT[], def_str_Q4a[], def_str_Q4aT[];
 extern const unsigned char def_str_M0[], def_str_M0T[], def_str_M1[], def_str_M1T[], def_str_M2[], def_str_M2T[],
     def_str_M3[], def_str_M3T[];
 extern const unsigned char def_str_AucWhen0[], def_str_AucWhen1[], def_str_AucWhen2[], def_str_AucWhen3[],
@@ -58,6 +59,8 @@ const DefQuest def_quests[] = {
     { 1, 1, ANY, 0, 0x207, def_str_Q1, def_str_Q1T },
     { 2, 2, ANY, 0, 0x204, def_str_Q2, def_str_Q2T },
     { 3, 3, ANY, 0, 0x200, def_str_Q3, def_str_Q3T },
+    { 4, 4, STORY(DEF_STORY_COND_SEIRYU_ASK), 1, 0x230, def_str_Q4a, def_str_Q4aT }, /* ask Repeating Tom */
+    { 4, 4, STORY(DEF_STORY_COND_SEIRYU), 1, 0x230, def_str_Q4s, def_str_Q4sT },     /* the Leader is missing */
     { 4, 4, ANY, 0, 0x22E, def_str_Q4, def_str_Q4T },
     { 5, 5, ITEM(398), 1, 0x22C, def_str_Q5c, def_str_Q5cT }, /* the Blue Card */
     { 5, 5, ITEM(399), 1, 0x224, def_str_Q5b, def_str_Q5bT }, /* only the 8lue Card */
@@ -155,6 +158,9 @@ static int quest_matches(const DefQuest *q) {
     if (progress < q->first || progress > q->last) {
         return 0;
     }
+    if (q->flag != DEF_QUEST_NO_FLAG && q->flag >= DEF_STORY_FLAG) {
+        return (def_story_cond(q->flag - DEF_STORY_FLAG) != 0) == (q->value != 0);
+    }
     return q->flag == DEF_QUEST_NO_FLAG || gamestate_flags.get_flag(q->flag, q->value) != 0;
 }
 
@@ -232,6 +238,8 @@ int def_guide_can_travel(int a, int map) {
     return 1;
 }
 
+int dw3_velvet_in_room(void);
+
 /* What the session last announced; -2: nothing yet. */
 static int seen_quest = -2, seen_auction = -2;
 
@@ -240,8 +248,8 @@ static int seen_quest = -2, seen_auction = -2;
 int def_quest_notice(int *arg) {
     int quest, auction;
 
-    if (!def_guide_active()) {
-        return DEF_NOTICE_NONE;
+    if (!def_guide_active() || dw3_velvet_in_room()) {
+        return DEF_NOTICE_NONE; /* not over Igor's scenes and dreams: the room's way out shows it */
     }
     quest = def_quest_main_index();
     if (quest != seen_quest) {

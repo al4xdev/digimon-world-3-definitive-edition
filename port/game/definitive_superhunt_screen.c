@@ -9,10 +9,9 @@
  * each hunt won unlocks one, so the hunts' master hands them out; the owner's of 2026-11-17, no NPC of their own): the
  * confirm button wears an unlocked one, a locked one names the hunt that opens it; L1 turns back.
  *
- * Seiryu City, the first city after Asuka in the story, calls the player into the room once (the owner's of
- * 2026-11-17): the first idle frame there from story step 4 on, with the Sepikmon not met yet, the room pulls the player
- * in from the city's inn (dw3_velvet_pull) and the Sepikmon speaks first. Meeting him earlier through any inn's door
- * counts the same.
+ * The story sends the player to him (definitive_story.c, owner's of 2026-11-17): in Seiryu City the Leader is gone
+ * and the Guide asks for the Sepikmon, whose tutorial is the hunt that finds him. Meeting him earlier through any inn's
+ * door counts the same.
  *
  * The compass: in the active hunt's ground, a small thermometer at the top left of the field, in the callouts' polygon
  * letters (no window: nothing lives on the field's heap between frames), five steps from cold (4 maps or more away) to
@@ -88,12 +87,6 @@ extern const unsigned char def_str_SupTitle[], def_str_SupNew[], def_str_SupOn[]
 #define SH_SND_BACK 0x800450BD
 #define SH_MONEY_MAX 9999999
 
-/* Seiryu City (world map area 0x0E of the first server: maps 0x22E..0x231) and its inn, Zephyr Tower, where the
- * room's door leads back to; from story step 4 ("The Seiryu Badge": the city is the step's goal) on. */
-#define SH_SEIRYU_AREA 0x0E
-#define SH_SEIRYU_INN 0x230
-#define SH_SEIRYU_STEP 4
-
 /* The compass: top left, clear of the Rush's panels (top centre). */
 #define SH_CMP_LAYER 0x1004 /* the Rush's layer, over the field's sprites */
 #define SH_CMP_X 8
@@ -118,7 +111,6 @@ static struct {
     s32 close;
     s32 won;     /* the debrief's hunt */
     s32 skin;    /* the skin its first win unlocked, 0: none (a hunt won again) */
-    s32 pulled;  /* Seiryu City called the player in this session (once: the talk sets the flag) */
     s32 skins;   /* the board shows the skins' page */
     s32 ssel, stop; /* its cursor and first row */
     const unsigned char *msg; /* the board's last result line, NULL: none */
@@ -605,26 +597,6 @@ void def_superhunt_board_offer(void) {
              def_super_flags());
 }
 
-/* Seiryu City's call: the first idle frame there, the story at step 4 or past it, with the Sepikmon not met. */
-static void seiryu_call(void) {
-    s32 map = gamestate_data.funcs.get_map();
-    FieldstgActor *player;
-
-    if (sh.pulled || (def_super_flags() & DEF_SUPER_FLAG_MET) || gamestate_data.progress < SH_SEIRYU_STEP ||
-        map < 0x200 || map >= 0x300 || ststatus_map_areas[map & 0xFF] != SH_SEIRYU_AREA || !idle() ||
-        dw3_velvet_in_room()) {
-        return;
-    }
-    player = (FieldstgActor *)heap_objects.find(5, -1, 0);
-    if (player == NULL || player->base.state != OBJECT_STATE_RUN || player->base.step >= 5 || player->control == NULL) {
-        return;
-    }
-    sh.pulled = 1;
-    port_log("superhunt: frame %ld: Seiryu City (map 0x%X, step %d): the Velvet Room calls", port_frames, map,
-             gamestate_data.progress);
-    dw3_velvet_pull(SH_SEIRYU_INN);
-}
-
 /* ---- The compass. */
 
 static void cmp_quad(GfxLayer *layer, s32 x, s32 y, s32 w, s32 h, s32 abr, u8 r, u8 g, u8 b) {
@@ -710,7 +682,6 @@ int def_superhunt_frame(void) {
             sh.request = 1;
             sh.mode = SH_DEBRIEF;
         } else {
-            seiryu_call();
             compass_draw();
             return 0;
         }

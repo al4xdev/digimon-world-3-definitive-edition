@@ -44,16 +44,36 @@ static unsigned int dri_best;
 /* The Blast Gauge (owner's redesign, 2026-11-17), after the DRI's bytes: each partner's next dark form in its sequence
  * (a byte each), the TP the DV Plug took from each (2 bytes each, low first) that the purification gives back, the
  * quest's stage, the quest's forms purified (a bit per entry of the third record, 2 bytes), the Chosen Evolution's
- * partner + 1 (0: none) and its charge. Version 1 still: an older record reads them as 0. */
+ * partner + 1 (0: none) and its charge; then the Blast's boost bought from the false Gennai (steps of
+ * DEF_BLAST_BOOST_STEP %), and the Velvet Room's story hooks (DEF_STORY_* bits, 2 bytes, and the gatekeeper's stage).
+ * Version 1 still: an older record reads them as 0. */
 #define REC2_BLAST (REC2_DRI + 6)
 #define REC2_BLAST_OWED (REC2_BLAST + DEF_BLAST_PARTNERS)
 #define REC2_BLAST_QUEST (REC2_BLAST_OWED + 2 * DEF_BLAST_PARTNERS)
-#define REC2_BLAST_END (REC2_BLAST_QUEST + 5)
+#define REC2_BLAST_END (REC2_BLAST_QUEST + 9)
 typedef char rec2_blast_fits[DEF_BLAST_QUEST_FORMS <= 16 && REC2_BLAST_END <= DEF_RECORD2_SIZE ? 1 : -1];
 static unsigned char blast_next[DEF_BLAST_PARTNERS];
 static unsigned short blast_owed[DEF_BLAST_PARTNERS];
 static unsigned char blast_quest, chosen_partner, chosen_charge; /* chosen_partner: the partner + 1, 0 none */
 static unsigned short blast_purified;
+static unsigned char blast_boost, story_gate;
+static unsigned short story_flags;
+/* The story's answers (definitive_story.c: Igor's dreams and the scenes' choices), two bits per question, four to a
+ * byte from the low bits: 0 not asked yet, else the option taken (1..3). Right after the Blast's bytes; an older record
+ * reads them as 0. */
+#define REC2_ANSWERS REC2_BLAST_END
+static unsigned char story_answers[DEF_STORY_ANSWER_BYTES];
+
+static int any_answer(void) {
+    int i;
+
+    for (i = 0; i < DEF_STORY_ANSWER_BYTES; i++) {
+        if (story_answers[i] != 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
 /* The third record (DEF_RECORD3_*, memcard.c part 7): "BLST", version, XOR checksum of the rest, the entries' count, a
  * byte unused, then the quest's dark forms, the first DEF_BLAST_QUEST_FORMS partner+form pairs a Blast called up, each
  * packed in REC3_ENTRY bytes (low bit first): the pair (partner * DEF_BLAST_STEPS + step, 6 bits), its first stats (5 x
@@ -72,7 +92,7 @@ typedef char rec2_super_fits[REC2_BLAST_END <= REC2_SUPER ? 1 : -1];
 /* The hero's skin (definitive_skins.c), just before the hunts' bytes. Version 1 still: an older record reads it as 0
  * (the own colours). */
 #define REC2_SKIN (REC2_SUPER - DEF_SKIN_RECORD)
-typedef char rec2_skin_fits[REC2_BLAST_END <= REC2_SKIN ? 1 : -1];
+typedef char rec2_skin_fits[REC2_ANSWERS + DEF_STORY_ANSWER_BYTES <= REC2_SKIN ? 1 : -1];
 
 static unsigned char table[DEF_BESTIARY_SPECIES];
 static unsigned char buffer[DEF_BESTIARY_RECORD_SIZE];
@@ -84,6 +104,10 @@ static void blast_reset2(void) {
     chosen_partner = 0;
     chosen_charge = 0;
     blast_purified = 0;
+    blast_boost = 0;
+    story_flags = 0;
+    story_gate = 0;
+    memset(story_answers, 0, sizeof(story_answers));
 }
 
 static void blast_reset(void) {
@@ -100,7 +124,8 @@ static int blast_any(void) {
             return 1;
         }
     }
-    return blast_quest != 0 || chosen_partner != 0 || chosen_charge != 0 || blast_purified != 0;
+    return blast_quest != 0 || chosen_partner != 0 || chosen_charge != 0 || blast_purified != 0 || blast_boost != 0 ||
+           story_flags != 0 || story_gate != 0 || any_answer();
 }
 
 void def_bestiary_reset(void) {
@@ -218,6 +243,10 @@ void def_bestiary_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, chosen_partner);
     PORT_STATE_VAR(s, chosen_charge);
     PORT_STATE_VAR(s, blast_purified);
+    PORT_STATE_VAR(s, blast_boost);
+    PORT_STATE_VAR(s, story_flags);
+    PORT_STATE_VAR(s, story_gate);
+    PORT_STATE_VAR(s, story_answers);
     PORT_STATE_VAR(s, blast_entries);
     PORT_STATE_VAR(s, blast_count);
     def_super_savestate(s);
@@ -345,6 +374,11 @@ void def_record2_write(unsigned char *out) {
     out[REC2_BLAST_QUEST + 2] = (unsigned char)(blast_purified >> 8);
     out[REC2_BLAST_QUEST + 3] = chosen_partner;
     out[REC2_BLAST_QUEST + 4] = chosen_charge;
+    out[REC2_BLAST_QUEST + 5] = blast_boost;
+    out[REC2_BLAST_QUEST + 6] = (unsigned char)story_flags;
+    out[REC2_BLAST_QUEST + 7] = (unsigned char)(story_flags >> 8);
+    out[REC2_BLAST_QUEST + 8] = story_gate;
+    memcpy(out + REC2_ANSWERS, story_answers, sizeof(story_answers));
     def_super_record_write(out + REC2_SUPER);
     def_skin_record_write(out + REC2_SKIN);
     out[5] = sum(out + REC2_RARES, DEF_RECORD2_SIZE - REC2_RARES);
@@ -381,6 +415,10 @@ void def_record2_read(const unsigned char *in) {
     blast_purified = (unsigned short)(in[REC2_BLAST_QUEST + 1] | in[REC2_BLAST_QUEST + 2] << 8);
     chosen_partner = in[REC2_BLAST_QUEST + 3] <= DEF_BLAST_PARTNERS ? in[REC2_BLAST_QUEST + 3] : 0;
     chosen_charge = in[REC2_BLAST_QUEST + 4] ? 1 : 0;
+    blast_boost = in[REC2_BLAST_QUEST + 5] <= DEF_BLAST_QUEST_FORMS ? in[REC2_BLAST_QUEST + 5] : 0;
+    story_flags = (unsigned short)(in[REC2_BLAST_QUEST + 6] | in[REC2_BLAST_QUEST + 7] << 8);
+    story_gate = in[REC2_BLAST_QUEST + 8];
+    memcpy(story_answers, in + REC2_ANSWERS, sizeof(story_answers));
     def_super_record_read(in + REC2_SUPER);
     def_skin_record_read(in + REC2_SKIN);
     port_log("hunt: the slot's second record read");
@@ -450,6 +488,56 @@ int def_record_chosen_charge(void) {
 
 void def_record_set_chosen_charge(int charge) {
     chosen_charge = (unsigned char)(charge != 0);
+}
+
+int def_record_blast_boost(void) {
+    return blast_boost;
+}
+
+void def_record_set_blast_boost(int steps) {
+    blast_boost = (unsigned char)(steps < 0 ? 0 : steps > DEF_BLAST_QUEST_FORMS ? DEF_BLAST_QUEST_FORMS : steps);
+}
+
+int def_record_story(int bit) {
+    return bit >= 0 && bit < 16 && (story_flags >> bit & 1);
+}
+
+void def_record_set_story(int bit) {
+    if (bit >= 0 && bit < 16) {
+        story_flags = (unsigned short)(story_flags | 1u << bit);
+    }
+}
+
+/* The Velvet Room's level its last new guest was greeted at: story_flags' bits 12..14 (the hooks' bits stay below). */
+#define STORY_SEEN_SHIFT 12
+int def_record_velvet_seen(void) {
+    return story_flags >> STORY_SEEN_SHIFT & 7;
+}
+
+void def_record_set_velvet_seen(int level) {
+    level = level < 0 ? 0 : level > 7 ? 7 : level;
+    story_flags = (unsigned short)((story_flags & ~(7u << STORY_SEEN_SHIFT)) | (unsigned)level << STORY_SEEN_SHIFT);
+}
+
+int def_record_story_answer(int question) {
+    return question >= 0 && question < DEF_STORY_ANSWERS ? story_answers[question >> 2] >> ((question & 3) * 2) & 3 : 0;
+}
+
+void def_record_set_story_answer(int question, int option) {
+    if (question >= 0 && question < DEF_STORY_ANSWERS) {
+        int shift = (question & 3) * 2;
+
+        option = option < 0 ? 0 : option > 3 ? 3 : option;
+        story_answers[question >> 2] = (unsigned char)((story_answers[question >> 2] & ~(3 << shift)) | option << shift);
+    }
+}
+
+int def_record_story_gate(void) {
+    return story_gate;
+}
+
+void def_record_set_story_gate(int stage) {
+    story_gate = (unsigned char)stage;
 }
 
 int def_record_blast_count(void) {

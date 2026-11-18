@@ -85,6 +85,9 @@ void fightstg_events_add_revert(void) {}
 void def_superhunt_screen_savestate(struct PortState *s) { (void)s; }
 void def_recolor_savestate(struct PortState *s) { (void)s; }
 void def_skin_savestate(struct PortState *s) { (void)s; }
+void def_story_savestate(struct PortState *s) { (void)s; }
+const unsigned char *def_story_text(int base_id, int index) { (void)base_id; (void)index; return NULL; }
+const unsigned char *def_story_line(int file, int index) { (void)file; (void)index; return NULL; }
 /* Blast Gauge phase 2: the save's record and the purification (definitive_bestiary.c, definitive_purify.c) */
 void def_purify_battle_begin(void) {}
 void def_purify_battle_end(int r) { (void)r; }
@@ -101,6 +104,7 @@ void def_record_blast_raise_best(int i, int v) { (void)i; (void)v; }
 int def_record_chosen(void) { return -1; }
 int def_record_chosen_charge(void) { return 0; }
 void def_record_set_chosen_charge(int c) { (void)c; }
+int def_record_blast_boost(void) { return 0; }
 void def_record_blast_owe(int p, int tp) { (void)p; (void)tp; }
 void def_hunt_battle_end(int r) { (void)r; }
 void def_hunt_reward_done(void) {}

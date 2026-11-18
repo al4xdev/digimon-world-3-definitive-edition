@@ -17,6 +17,69 @@ $ChosenRookie: Chosen needs Rookie
 # After the Blast quest the DV Plug revives the fallen in their Rookie form (def_blast_plug_revive): its item
 # description (ITMINF 76) gives way to this one (34 characters at most, the item window's).
 $PlugRevive: Revive: Rookie form, 1 HP and 1 MP
+# The Velvet Room in the main story (port/game/definitive_story.c; .plan/tasks/velvet-historia.md). Step 4: talked to
+# on the stairs of Seiryu's inn, Repeating Tom says the Leader is gone ($TomNews, for his own TALK01 79) and the player
+# feels something (TALK01 178); the room's door opens on those stairs. Through it Igor alone shows the room again
+# (TALK05 20), then the Sepikmon meets the player with his own words (TALK05 17) and hears the report once the Ogremon
+# hunt is won (16). While the Leader is missing Tom says $TomGone. TALK01 178 and TALK05 16/17/20 are the disc's letter
+# "a", said by no stage.
+$TomNews: <7>Repeating Tom<7>Did you hear? Did<1>you hear? Seiryu<1>Leader is gone!<2,2><3>He walked out of the<1>city last night and<1>never came back.<2,2><3>Nobody knows where.<1>Nobody! Did you<1>hear?<2,2>
+TALK01 178: <7><9><7>Gone...?<2,2><3>My partner is<1>shaking. Something<1>is wrong here.<2,2><3>Like a cold wind<1>from behind a door<1>I never opened...<2,2><3>...There! On the<1>stairs. A blue door<1>that was not there.<2,2>
+$TomGone: <7>Repeating Tom<7>Seiryu Leader is<1>gone! Gone, I say!<2,2><3>And that blue door<1>on the stairs? It was<1>never there before!<2,2>
+TALK05 17: <7>Sepikmon<7>So, Tamer. You felt<1>it too. The cold in<1>the wind.<2,2><3>I am Sepikmon, the<1>master of hunts. The<1>sectors are restless.<2,2><3>Your Leader ran off<1>after a shadow. It<1>started small.<2,2><3>Ogremon bullies<1>Central Park, by<1>Asuka City. Hunt it.<2,2><3>The compass tells<1>how hot the trail<1>is. Then come back.<2,2>
+TALK05 16: <7>Sepikmon<7>Ogremon is tamed. The<1>cold wind is gone.<2,2><3>And your Leader? My<1>trackers saw him at<1>the Protocol Ruins.<2,2><3>He chased the same<1>shadow and stayed to<1>train. Go to him!<2,2>
+# Step 0 (definitive_story.c): the opening cut in two around the Velvet Room. Igor gives the key (TALK05 18); back in
+# the real world Ivy and Teddy ask why Junior froze ($Open*: the scene's event texts 1..4, said anew in its second half).
+TALK05 18: <7>Igor<7>Ah... welcome, my<1>guest. Fear not. Your<1>body waits for you.<2,2><3>This is the Velvet<1>Room. It lies between<1>the wire and a dream.<2,2><3>I am Igor. I attend<1>those who stand at a<1>crossroads. Like you.<2,2><3>Three packs, and you<1>love every Digimon in<1>them. A fine trouble.<2,2><3>Know this: no bond is<1>ever wasted. Two forms<1>can join into one.<2,2><3>Take this key. When<1>the time is right, a<1>blue door will open.<2,2><3>Now go. Your friends<1>grow impatient. We<1>shall meet again...<2,2>
+TALK05 19: <7>Igor<7>Welcome back, my<1>guest. Your partners'<1>bonds are still faint.<2,2>
+TALK05 20: <7>Igor<7>Welcome back, my<1>guest. Yes... you felt<1>the cold wind too.<2,2><3>The key I gave you<1>has found its door.<1>The room is yours.<2,2><3>From now on it will<1>grow with your road.<1>Guests will gather.<2,2><3>Each comes when your<1>story calls for them.<1>One already waits.<2,2><3>He knows where your<1>Leader went. Listen<1>to him well...<2,2>
+$OpenIvy1: <7>Ivy:<7>Junior? Junior!<1>Hello? Earth to<1>Junior!<2,2>
+$OpenTeddy: <7>Teddy<7>Just stood there,<1>eyes wide open, for<1>a whole minute.<2,2><3>Not even blinking.<1>Creepy...<2,2>
+$OpenJunior: <7>Junior:<7>Huh? I was... in a<1>blue room. A man in<1>a suit was there.<2,2><3>He gave me a key...<2,2>
+$OpenIvy2: <7>Ivy:<7>A key? You were<1>dreaming on your<1>feet!<2,2>
+# Igor's reading of the party's DNA forms (definitive_story.c igor_read): greeting, then one page per partner:
+# "<partner> could become<1><form>, born of<1>two forms:<2,2><3><a> Lv<n><1><b> Lv<m><1><done><2,2>", farewell.
+$IgorMeet: <7>Igor<7>Ah... a guest who<1>found my door alone.<2,2><3>I am Igor. In this<1>room I read the bonds<1>between partners.<2,2>
+$IgorBack: <7>Igor<7>Welcome back to the<1>Velvet Room. Let us<1>read your bonds.<2,2>
+$IgorPage: <3>
+$IgorCould: " could become<1>"
+$IgorBorn: , born of<1>two forms:<2,2><3>
+$IgorLv: " Lv"
+$IgorLine: <1>
+$IgorBoth: Both are ready.
+$IgorOne: One is ready.
+$IgorNone: Neither is ready.
+$IgorEnd: <2,2>
+$IgorBye: <3>The rest is yours to<1>walk, my guest.<2,2>
+# Igor's dreams (definitive_story.c `dreams`; .plan/tasks/velvet-sonhos.md): his name plate, then per act his words
+# (Ask), the player's answers (Op, one line each, the panel's), his word on each (Re); Act III recalls Act II's answer
+# first (Rc). Lines of at most 22 letters, three to a page.
+$DrIgor: <7>Igor<7>
+$Dr1Ask: Ah... the Game Master<1>named a culprit, and<1>everyone cheered.<2,2><3>Eyes often see only<1>the shadow cast upon<1>the wall.<2,2><3>Not every mask<1>belongs to the true<1>culprit.<2,2><3>Look beyond what you<1>are told to hate.<2,2><3>...Yet I see you will<1>go on all the same.<1>Tell me.<2,2>
+$Dr1Op1: I'll go after Lucky Mouse.
+$Dr1Op2: Let him prove he's clean.
+$Dr1Op3: ...(Say nothing, go on.)
+$Dr1Re1: Then go. The hunt<1>teaches too... those<1>who can bear to lose.<2,2><3>When the mask falls,<1>remember this room.<2,2>
+$Dr1Re2: Proof... Yes. But be<1>wary of whoever hands<1>it to you ready-made.<2,2><3>Go. The door stays<1>open for you.<2,2>
+$Dr1Re3: Silence is an answer<1>as well. Go...<2,2><3>One day, what you<1>would not hear today<1>will speak louder.<2,2>
+$Dr2Ask: You crossed the bridge<1>between the servers.<1>The air is heavy.<2,2><3>Here, those who once<1>played now wander as<1>Oinkmon, voiceless.<2,2><3>Beyond this threshold<1>there is no easy way<1>back.<2,2><3>The ruin of a whole<1>world now rests on<1>the shoulders of a<2,2><3>single child...<2,2><3>Do you choose to bear<1>this burden of your<1>own will?<2,2>
+$Dr2Op1: Yes. Of my own will.
+$Dr2Op2: I didn't choose. I'll go.
+$Dr2Op3: I'm scared... but I'll go.
+$Dr2Re1: Of your own will...<1>Then this burden is<1>also your strength.<2,2><3>I will keep these<1>words. One day you<1>will need them.<2,2>
+$Dr2Re2: Few choose their own<1>burden. But those who<1>carry it...<2,2><3>...choose it again<1>with every step. Go.<1>I will remember.<2,2>
+$Dr2Re3: Fear is honest. Who<1>walks with it knows<1>what they protect.<2,2><3>I will keep this. One<1>day you and your fear<1>will face each other.<2,2>
+$Dr3Rc1: Do you remember? You<1>chose this burden of<1>your own will.<2,2>
+$Dr3Rc2: Do you remember? You<1>said you did not<1>choose, yet you went.<2,2>
+$Dr3Rc3: Do you remember? You<1>said you were afraid,<1>and you went anyway.<2,2>
+$Dr3Ask: So even the brightest<1>hope may falter before<1>the inevitable.<2,2><3>Fate seems sealed<1>above the stars.<2,2><3>Tell me, young<1>traveler: will you<1>accept defeat and<2,2><3>stop here... or forge<1>a miracle at the<1>edge of the abyss?<2,2>
+$Dr3Op1: Forge a miracle.
+$Dr3Op2: I won't give up now.
+$Dr3Op3: ...I don't know anymore.
+$Dr3Re1: So be it. A miracle<1>does not fall from the<1>sky: it is forged.<2,2><3>A door will open: the<1>Time Room. There you<1>will prove it.<2,2>
+$Dr3Re2: Stubborn... The same<1>stubbornness that led<1>you to my door.<2,2><3>A door will open: the<1>Time Room. There it<1>will be put to test.<2,2>
+$Dr3Re3: Not knowing is where<1>every choice begins.<1>Yet you still stand.<2,2><3>A door will open: the<1>Time Room. There you<1>will find out.<2,2>
+$IgorBlank: <3>Your partners' paths<1>are still unwritten.<1>Come back later.<2,2>
 $BatonPass: Baton Pass
 STATUS 92: Fire Affinity increased by <5,1>.
 STATUS 93: Water Affinity increased by <5,1>.
@@ -532,6 +595,10 @@ $Q3: First steps
 $Q3T: Leave the lobby. Tamer Genji wants a<1>Digimon Battle outside.
 $Q4: The Seiryu Badge
 $Q4T: Train near Asuka City, then go east by<1>the Wire Forest and the Wind Prairie to<1>Seiryu City. Its Leader trains at the<1>Protocol Ruins and only fights whoever<1>beat MasterTyrannomon (Tyranno Valley).
+$Q4s: The missing Leader
+$Q4sT: Repeating Tom says Seiryu Leader is gone,<1>and a blue door opened on the stairs of<1>Seiryu's inn. Go through it to the Velvet<1>Room and ask the Sepikmon. Hunt what he<1>names, then go back to him.
+$Q4a: The Seiryu Leader
+$Q4aT: Train near Asuka City, then go east by<1>Wire Forest and Wind Prairie to Seiryu<1>City. Ask around for the Leader: Repeating<1>Tom, on the stairs of the city's inn,<1>hears all the news.
 $Q5: To the South Sector
 $Q5T: The gondola of East Station, past the<1>Kicking Forest, asks for a Blue Card.<1>A Guilmon has it: ask at the Asuka Inn,<1>the Forest Inn and the inn of Zephyr<1>Tower, in Seiryu City.
 $Q5b: A fake card
@@ -665,6 +732,15 @@ $PfLv: " Lv "
 $PfChosenMark: "   Chosen"
 $PfNameGennai: Gennai
 $PfNameMyotismon: Myotismon
+# The Blast's boost on sale in "Gennai"'s status panel (a step per form recorded; numbers come from the code).
+$PfBoostOffer: Each form you take feeds the Blast.<1>For Bits I will make it stronger. Heh.
+$PfBoost: "Boost +"
+$PfBoostTo: "% to +"
+$PfBoostFor: "% for "
+$PfBits: " Bits"
+$PfPct: %
+$PfKeysBuy: × button: Buy   △ button: Leave
+$PfKeysBuyNext: × button: Buy   △ button: Next
 $PfStory0: Hm hm hm... Ten dark forms. All of them<1>living inside your partners.<1>You did well. Better than I hoped.
 $PfStory1: Fool! I am no Gennai. I am Myotismon!<1>Every Blast fed the curse I laid on<1>your Digimon. Now they are mine...<1>and so are your Bits!
 $PfStory2: ...Easy now. The shadow is gone.<1>I am Gennai. The real one. The old man<1>you met was Myotismon in my shape.

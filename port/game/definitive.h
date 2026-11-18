@@ -140,12 +140,50 @@ typedef struct DefTextOverride {
     int index;
     const unsigned char *bytes;
 } DefTextOverride;
+/* The story rewrite (.plan/tasks/velvet-sonhos.md; tools/text_override/en_story.txt, en_kaili.txt, en_choices.txt,
+ * generated into definitive_story_text.c, read by definitive_story.c): sorted by file then entry, the file named as
+ * def_text_override matches it (a DMG container's table: file | (table + 1) << 16). `hero` (Kaili mode): the balloon
+ * moves to the hero. A choice: the hero line `index` the player picks among `count` (labels for the panel, lines for
+ * the balloon); its answer is kept as story answer `question` (def_record_story_answer). */
+typedef struct DefStoryLine {
+    int file;
+    int index;
+    int hero;
+    const unsigned char *bytes;
+} DefStoryLine;
+typedef struct DefStoryChoice {
+    int file;
+    int index;
+    int question;
+    int count;
+    const unsigned char *labels[3];
+    const unsigned char *lines[3];
+} DefStoryChoice;
+extern const DefStoryLine def_story_lines[], def_kaili_lines[], def_kaili_lines_pt[];
+extern const int def_story_line_count, def_kaili_line_count, def_kaili_line_pt_count;
+extern const DefStoryChoice def_story_choices[];
+extern const int def_story_choice_count;
+/* A line that remembers an earlier answer (en_echoes.txt): said in place of the entry's line while story answer
+ * `question` is one of `answers` (bit k: option k). `mode` 0 in both heroes' games, 1 only without Girls Power, 2 only
+ * with it. An entry's echoes are in the file's order; the first that holds wins. */
+typedef struct DefStoryEcho {
+    int file;
+    int index;
+    int question;
+    int answers;
+    int mode;
+    const unsigned char *bytes;
+} DefStoryEcho;
+extern const DefStoryEcho def_story_echoes[];
+extern const int def_story_echo_count;
+const unsigned char *def_story_line(int file, int index); /* the rewrite's English line for an entry, NULL: the game's */
 extern const DefTextOverride def_text_overrides[];
 extern const int def_text_override_count;
 extern const DefTextOverride def_text_overrides_pt[];
 extern const int def_text_override_pt_count;
 void def_language_set(int ptbr);
 int def_is_ptbr(void);
+void def_language_kaili(int on); /* the port's own strings name Kail's friend Junior in the Kaili mode */
 
 /* Layer 8: MP (port/game/definitive_mp.c). The MP is the rookie's; the forms have none of their own. */
 #define DEF_MP_START 140        /* starting MP and max MP of Kotemon, Kumamon, Monmon and Guilmon (Veemon keeps its 150) */
@@ -869,6 +907,62 @@ int def_record_chosen(void);
 void def_record_set_chosen(int partner);
 int def_record_chosen_charge(void);
 void def_record_set_chosen_charge(int charge);
+/* The Blast's boost (owner, 2026-11-17): a Digimon in its Blast form fights with its stats raised by the steps bought from
+ * the false Gennai times DEF_BLAST_BOOST_STEP %; a step goes on sale with each new form recorded (up to the quest's
+ * ten, so +30%), the k-th for k * DEF_BLAST_BOOST_BITS. The Chosen Evolution has DEF_CHOSEN_BOOST_PCT from the start.
+ * When either form ends the Digimon is back in its Rookie form, sealed from digivolving for DEF_BLAST_OVERHEAT_TURNS of
+ * its own turns. */
+#define DEF_BLAST_BOOST_STEP 3
+#define DEF_BLAST_BOOST_BITS 1000
+#define DEF_CHOSEN_BOOST_PCT 50
+#define DEF_BLAST_OVERHEAT_TURNS 3
+int def_record_blast_boost(void); /* the steps bought, 0..DEF_BLAST_QUEST_FORMS */
+void def_record_set_blast_boost(int steps);
+int def_blast_boost_pct(void);    /* the Blast form's boost now, % */
+/* The Velvet Room's story hooks (.plan/tasks/velvet-historia.md), in the same second record: a bit per hook seen or done
+ * and the gatekeeper's stage. */
+enum {
+    DEF_STORY_IGOR,          /* the opening: Igor gave the key */
+    DEF_STORY_SEIRYU_CALL,   /* step 4: the Leader is missing, Junior felt something */
+    DEF_STORY_SEIRYU_DONE,   /* the Ogremon hunt reported to the Sepikmon: the Leader is back */
+    DEF_STORY_OIKAWA_BEATEN, /* step 26: the Oikawa fought on the way to Amaterasu */
+    DEF_STORY_MARKET_OPEN,   /* the Oikawa behind the counter opened the Black Market */
+    DEF_STORY_GATE_WARNED,   /* step 40: the warning before the warp gate was given */
+    DEF_STORY_GATE_PASSED,   /* the three trials were won: the warp gate opens */
+    DEF_STORY_SEIRYU_ROOM    /* step 4: Igor showed the room again, the Sepikmon took his place */
+};
+/* The Velvet Room's level (definitive_story.c): who is in the room, rising with the story. 0 the doors are closed; 1
+ * (Repeating Tom's news, step 4) the Sepikmon; 2 Gennai and Igor; 3 the Demon Bell's keeper; 4 Etemon and the pig;
+ * DEF_VELVET_LEVEL_MAX (the Oikawa beaten) the Black Market. The level the room last greeted a guest at is kept too. */
+#define DEF_VELVET_LEVEL_MAX 5
+int def_story_velvet_level(void);
+int def_record_velvet_seen(void);
+void def_record_set_velvet_seen(int level);
+int def_record_story(int bit);
+void def_record_set_story(int bit);
+int def_record_story_gate(void); /* the gatekeeper's trials won in the current run (0..3) */
+/* The story's answers, in the order it asks them (Igor's dreams): 0 not asked yet, else the option taken (1..). */
+#define DEF_STORY_ANSWERS 160 /* 0..7 Igor's dreams, 8..159 the scenes' choices (en_choices.txt Q<n>), 1..3 each */
+#define DEF_STORY_ANSWER_BYTES (DEF_STORY_ANSWERS / 4) /* two bits an answer: what the record has room for */
+int def_record_story_answer(int question);
+void def_record_set_story_answer(int question, int option);
+void def_record_set_story_gate(int stage);
+/* The hooks themselves (definitive_story.c): the Guide's conditions on them (a quest row's flag STORY(cond)), the talk
+ * entries they own and the disc lines they change, the Sepikmon's line, and the field's frame. */
+enum {
+    DEF_STORY_COND_SEIRYU = 1, /* step 4: the Leader is missing, the Ogremon hunt not reported */
+    DEF_STORY_COND_SEIRYU_ASK  /* step 4, before Repeating Tom's news: ask around Seiryu City */
+};
+#define DEF_STORY_FLAG 0xF000 /* a quest row's flag at or past it is a story condition (game flags stay below) */
+int def_story_cond(int cond);
+int def_story_text_own(int base_id, int index);
+const unsigned char *def_story_text(int file, int index);
+int def_story_sepik_line(int met);
+int def_story_igor_line(void); /* Igor's line as he is talked to (definitive_velvet.c), and when it closed */
+void def_story_igor_done(void);
+int def_story_room_intro(void); /* 1: the next entry through a door is Seiryu's, Igor alone shows the room again */
+struct PortState;
+void def_story_savestate(struct PortState *s);
 /* The slot's third record (memcard.c part 7, DEF_RECORD3_AT + slot * DEF_RECORD3_SIZE, the card file's last free bytes):
  * the quest's dark forms, the first DEF_BLAST_QUEST_FORMS partner+form pairs a Blast called up, each with the stats it
  * had the first time (the Digimon as transformed: FightstgStats.stats and its max HP), its strongest stat and the best

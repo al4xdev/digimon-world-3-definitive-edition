@@ -487,6 +487,9 @@ void wfightmn_end_blast(void) {
         }
         records_state.gauges[id] = 0;
         member->blasted = 0;
+#ifdef PC_PORT
+        def_blast_overheat(fightstg_battle.state.current[0]); /* the form's end: sealed from digivolving a while */
+#endif
         event = fightstg_events.find_member(8, 0, fightstg_battle.state.current[0]);
         if (event >= 0) {
             fightstg_events.events[event].type = 0;
@@ -1216,6 +1219,9 @@ void wfightmn_blast_end(WfightmnMain *obj, WfightmnMainData *data) {
     default:
         member = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
         member->digimon = member->base_digimon;
+#ifdef PC_PORT
+        member->digimon = def_blast_end_form(fightstg_battle.state.current[0], member->digimon); /* back to Rookie */
+#endif
         wfightmn_end_blast();
         data->wait.scene = fightstg_entrance_create(member->digimon, 0, wfightmn_update_idle_anim(0, 0));
         obj->base.substep++;

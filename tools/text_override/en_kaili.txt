@@ -1,0 +1,131 @@
+# The story's lines in Girls Power's Kaili mode, same format as en_story.txt. The roles swap: the hero is the girl
+# (Ivy in the Real World, the player's account name in the Digital World) and Kurt is her brother; the friend is the
+# boy, Junior, in both worlds (he kept his real name as his account name, where the original's Ivy took Kail). A text
+# starting `>hero ` is said by the hero (the balloon moves to the player). Every entry left out that names Junior, Ivy
+# or Kail gets them swapped by tools/gen_text_override.py (Junior -> Ivy, Ivy and Kail -> Junior; not Smith Junior):
+# only the lines the swap alone gets wrong (his/her, the brother's lines, the account name joke) are written here.
+# chapter 1
+# chapter 2
+# chapter 3
+# chapter 4
+# chapter ch1
+DMG700:0 2: <7>Ivy<7>I didn't want Junior<1>along. Teddy and his<1>big mouth told him.<2,2><3>They should have<1>picked up a Login Pass<1>ahead of time.<2,2><3>Now we'll queue like<1>everyone else. Nobody<1>listens to me.<2,2>
+# chapter ch2
+# chapter ch3
+# chapter ch4
+# chapter ch1
+# chapter ch2
+DMG500:3 1: <7>Junior<7>...Hey, <8,1><5,1>. Good<1>timing.<2,2><3>We've been out here a<1>long while. Shouldn't<1>we go back?<2,2>
+DMG500:3 3: <7>Junior<7>Teddy's fine. He's in<1>Asuka City, at the<1>Administration Center.<2,2><3>Last time I saw him,<1>that's where he said<1>he was heading.<2,2>
+DMG200:24 4: <7>Junior<7>...Wait. What now?<2,2>
+DMG200:24 12: <7>Junior<7>Still not fixed.<2,2><3>So still no way back<1>to the Real World.<1>Great.<2,2>
+DMG200:24 14: <7>Junior<7>Lucky Mouse?!<2,2><3>...Why would you say<1>that? What do you<1>know?<2,2>
+DMG200:24 16: <7>Junior<7>...Is Teddy at the<1>Administration Center,<1>looking for something?<2,2>
+DMG200:24 17: <7>Junior<7>...Hey, <8,1><5,1>.<1>Let's go find Teddy.<2,2><3>There's something I<1>need to ask him. It<1>can't wait.<2,2>
+DMG200:26 1: <7>Junior<7>...Annoying. We can't<1>get in.<2,2>
+DMG200:26 3: <7>Junior<7>...Standing here won't<1>change anything.<2,2><3>Let's split up and see<1>what we can learn.<2,2><3>Ask around the city.<2,2>
+DMG200:27 1: <7>Junior<7>So how exactly do we<1>pass for Digimon?<2,2>
+DMG200:27 3: <7>Junior<7>Perfect. Those will<1>do.<2,2><3>We wear the Agumon<1>Suits and look for<1>Teddy from the inside.<2,2>
+DMG200:28 2: <7>Junior<7>Quiet! Not a word.<2,2><3>If they find out we're<1>not Digimon, we're<1>finished.<2,2>
+DMG200:28 4: <7>Junior<7>...There's something I<1>need to look into, so<1>I'll go ahead.<2,2><3><8,1><5,1>, keep looking<1>for Teddy.<2,2><3>The moment I'm done,<1>I'll catch up.<2,2>
+DMG200:28 6: <7>Junior<7>Don't worry. I'm not<1>like you.<2,2>
+DMG200:28 7: <7><9><7>What's with Junior?<1>He's been strange<1>since we got here...<2,2><3>No time. Teddy first.<2,2>
+DMG200:32 2: <7>Junior<7>Sorry. I just<1>remembered something.<1>I have to go...<2,2>
+DMG200:32 3: <7><9><7>...Junior? What's<1>going on with him?<2,2><3>Well. I have partners<1>I can count on.<2,2><3>All right, team. We're<1>heading to West<1>Sector.<2,2>
+DMG300:3 1: <7>Junior<7>There you are,<1><8,1><5,1>. You're late.<2,2>
+DMG300:3 2: <7><9><7>Junior? You're done<1>already?<2,2>
+DMG300:3 3: <7>Junior<7>Uh... yes. Done.<2,2><3>Any sign of Teddy?<2,2>
+DMG300:3 5: <7>Junior<7>...Same here. I looked<1>everywhere.<2,2><3>He did say he was<1>going to the Admin<1>Center...<2,2>
+DMG300:3 7: <7>Junior<7>.....<2,2>
+DMG300:3 8: <7>Junior<7>...Don't you feel it?<1>That he's in there<1>somewhere?<2,2>
+DMG300:3 10: <7>Junior<7>Gee, thanks. Very<1>helpful.<2,2><3>Fine. Let's go in.<2,2>
+DMG305:0 1: <7>Junior<7>The Game Master. Get<1>down!<2,2>
+DMG305:1 8: <7>Junior<7>.........<2,2>
+DMG600:15 13: <7>Lucky Mouse<7>...Junior?!<2,2>
+DMG600:15 14: <7><9><7>...Junior!<2,2>
+DMG600:15 15: <7>Junior<7><8,1><5,1>!<2,2><3>...That's Kurt!<2,2>
+DMG600:15 16: <7><9><7>What?! Then Lucky<1>Mouse is...<2,2><3>...my brother?!<2,2>
+DMG600:15 17: <7>Lucky Mouse<7>...Yes. My real name<1>is Kurt. I'm your<1>older brother.<2,2><3>But how did the A.o.A<1>find this place?<2,2><3>And why are you two<1>here...?<2,2>
+DMG600:15 18: <7>General<7>We followed that kid<1>from Asuka City.<2,2><3>He was following the<1>kid too, until we<1>caught him.<2,2>
+DMG600:15 19: <7>Lucky Mouse<7>Let go of Junior. Now.<2,2>
+DMG600:15 20: <7>General<7>Ha ha ha ha! Not so<1>fast. It's not that<1>simple.<2,2><3>Return what you stole,<1>and I'll let him go.<2,2>
+DMG600:15 23: <7>Attacker<7>A promise is a<1>promise. Go. He's<1>yours.<2,2>
+DMG600:15 24: <7>Junior<7>Kurt...! <8,1><5,1>!<2,2>
+DMG600:15 28: >hero <7><9><7>Kurt!<2,2>
+DMG600:16 3: >hero <7><9><7>But Kurt...!<2,2><3>I thought I had<1>finally found him...<2,2><3>...and now this.<2,2>
+DMG600:16 6: <7>Junior<7>Count me in. We take<1>the A.o.A down.<2,2><3>And change Kurt back.<2,2>
+DMG600:16 9: <7><9><7>All right, Junior. I'm<1>going.<2,2>
+DMG600:16 10: <7>Junior<7>Listen. If you lose, I<1>will never forgive<1>you. Got that?<2,2>
+DMG600:22 1: <7>Junior<7>...Hey, <8,1><5,1>.<1>What's wrong?<2,2>
+DMG600:22 3: <7>Junior<7>A Staff Pass?<2,2>
+DMG600:22 5: >hero <7><9><7>What are you trying to<1>say, Kurt?<2,2>
+DMG600:22 6: <7><9><7>Kurt might have one.<2,2>
+DMG600:22 7: <7>Junior<7>That must be it! Kurt<1>used to work here.<2,2>
+DMG600:22 9: <7>Lisa<7>As you can see, this<1>room is a mess.<2,2><3>So I'm cleaning it up<1>with Junior.<2,2>
+DMG600:22 10: <7>Junior<7>Hey, Lisa. Did you<1>come across a Staff<1>Pass?<2,2>
+DMG600:22 13: <7>Junior<7>What do we do? I'm<1>sure it's here.<2,2>
+# chapter ch3
+DMG600:23 6: <7>Junior<7>Um... Lisa. Who are<1>those two?<2,2>
+DMG600:23 8: <7>Junior<7>Oh. I see...<2,2>
+DMG600:23 9: <7>Junior<7>Just friends. Are you<1>sure?<2,2>
+DMG600:24 15: <7><9><7>Junior, Lisa. I'm off.<1>Look after Kurt.<2,2>
+DMG600:24 17: <7>Junior<7>Be careful, OK?<1>...I mean it.<2,2>
+DMG305:4 22: <7>Junior<7>...I hope so.<2,2>
+DMG305:4 30: <7>Junior<7>I wonder what's<1>happening in the Real<1>World.<2,2>
+# chapter ch4
+DMG300:22 1: <7>Junior<7><8,1><5,1>!<1>Thank heavens.<1>You're all right.<2,2>
+DMG300:22 2: <7><9><7>...Junior!<1>What happened?<2,2><3>Why have they all<1>turned into Oinkmon?<2,2>
+DMG300:22 3: <7>Junior<7>It was Vemmon.<1>They did this.<2,2>
+DMG300:22 5: <7>Junior<7>A swarm of Vemmon<1>left Amaterasu's<1>Administration Center.<2,2><3>They fired beams...<2,2><3>and everyone turned<1>into Oinkmon.<2,2>
+DMG300:22 7: <7>Junior<7>I don't know...<2,2><3>I hid in the basement<1>with the others.<2,2><3>I was the only one<1>who wasn't changed.<2,2><3>Teddy and Lisa...<1>They are Oinkmon now.<2,2>
+DMG300:22 10: <7>Junior<7>They all went straight<1>to the Master Room.<2,2>
+DMG300:22 11: <7><9><7>Then the Master Room<1>holds some secret.<2,2><3>So I'm going.<2,2><3>Junior, find somewhere<1>safe to hide.<2,2>
+DMG300:22 12: <7>Junior<7>What?<1>But... <8,1><5,1>...<2,2>
+DMG300:22 14: <7>Junior<7>...All right.<1>I'll believe in you,<1><8,1><5,1>.<2,2><3>But you'd better come<1>back. That is not a<1>request.<2,2>
+DMG300:22 16: <7>Junior<7>Be careful...<1><8,1><5,1>...<2,2>
+DMG300:22 17: <7>Junior<7>...But the A.o.A<1>isn't finished yet...<2,2>
+DMG300:22 19: <7>Junior<7>Yeah... Teddy, Lisa<1>and the others are<1>Oinkmon now.<2,2>
+DMG300:22 20: <7><9><7>Hey. Junior?<2,2>
+DMG300:22 23: >hero <7><9><7>Kurt is still like<1>this...<2,2><3>I wonder what's<1>happening in the Real<1>World...<2,2><3>I'm afraid to know.<2,2>
+DMG200:41 3: <7><9><7>...Junior!<2,2>
+DMG200:41 4: <7>Teddy<7>Junior!<2,2>
+DMG200:41 5: >hero <7><9><7>Why won't Kurt change<1>back?<2,2><3>Kurt... It's me.<2,2>
+DMG200:41 7: >hero <7><9><7>Is Kurt... Is<1>everyone going to stay<1>like this?<2,2>
+DMG200:41 11: <7>Junior<7>...Hey, <8,1><5,1>.<1>Teddy...<2,2>
+DMG200:41 12: <7>Junior<7>We beat the A.o.A.<2,2><3>...Right?<2,2>
+DMG700:36 4: <7><9><7>My brother really<1>did it.<2,2><3>Kurt built a new<1>company from scratch.<2,2><3>And Digimon Online<1>runs again, in place<1>of MAGAMI.<2,2>
+DMG900:4 5: <7><9><7>I've felt the same.<2,2><3>Who else would I want<1>across from me than<1>my brother?<2,2>
+DMG900:5 1: <7><9><7>I did it.<1>I beat Kurt. My own<1>brother.<2,2>
+# chapter talkA
+TALK00 1163: <7>Junior<7>Please, <8,1><5,1>. Not only for<1>your brother, but for<1>everyone.<2,2><3>And for the peace of<1>the Real World, stop<1>the A.o.A.<2,2>
+TALK00 77: <7>Junior<7><8,1><5,1>, find anything? I<1>didn't.<2,2><3>Let's keep gathering<1>information.<2,2>
+TALK00 78: <7>Junior<7><8,1><5,1>, find anything?<2,2><3>...What? The Center<1>lets lost Digimon in?<2,2><3>There's an old couple<1>who want to become<1>Digimon.<2,2><3>Let's ask them. They<1>might know something.<2,2>
+TALK00 79: <7>Junior<7>...What? A man in<1>Etemon's place?<2,2><3>Look closer. It is<1>Etemon. In an Etemon<1>Suit.<2,2><3>Ask him. He'll tell<1>you about Digimon<1>suits.<2,2><3>Good luck. I'll wait<1>at the Underground<1>Path.<2,2>
+TALK00 676: <7>Junior<7>I'll look around Asuka<1>City for now.<2,2><3>You go ahead.<2,2>
+TALK00 1160: <7>Junior<7>...Why are you back?<2,2><3>Go ask about the<1>Digimon suits.<2,2>
+TALK02 765: <7>Lisa<7>Your brother is an<1>important friend of<1>mine.<2,2><3>We were going to fight<1>the A.o.A together.<2,2><3>Please, <8,1><5,1>.<2,2><3>Fight the A.o.A for<1>Kurt as well.<2,2>
+TALK02 766: >hero <7><9><7>Kurt hadn't come home<1>for a while.<2,2><3>I thought he was in<1>the Digital World, so<1>I came here with<2,2><3>Junior.<2,2><3>How could this have<1>happened?<2,2>
+TALK02 769: <7>Junior<7>Please, <8,1><5,1>. Defeat the<1>A.o.A.<2,2><3>And bring your brother<1>back to normal.<2,2>
+TALK02 774: <7>Junior<7>Good luck, <8,1><5,1>.<2,2><3>For your brother's<1>sake too.<2,2>
+TALK03 506: >hero <7><9><7>We defeated the A.o.A.<2,2><3>So why isn't my<1>brother back to<1>normal?<2,2>
+TALK03 513: <7>Kurt<7>Thanks for everything,<1><8,1><5,1>.<2,2><3>I know what it cost<1>you.<2,2><3>I'm checking the<1>Matrix Chamber now.<2,2><3>Something is affecting<1>the system from<1>outside.<2,2>
+TALK03 520: <7>Junior<7><8,1><5,1>, you did it.<2,2><3>Your brother is back<1>to normal.<2,2><3>He'll fix the program<1>now.<2,2><3>We can go back to the<1>Real World soon.<2,2>
+TALK04 838: <7>Junior<7>Vemmon went to the<1>Master Room.<2,2><3>But I suppose that<1>saved us.<2,2><3>So don't worry.<2,2>
+TALK04 922: <7>Junior<7>Vemmon went to the<1>Master Room.<2,2><3>But I suppose that<1>saved us.<2,2><3>So don't worry.<2,2>
+# chapter talkB
+TALK05 88: <7>Junior<7>...<8,1><5,1>. Over here.<2,2>
+TALK05 1166: <7>Lisa<7>Your brother isn't<1>here. That makes you<1>our best chance, <8,1><5,1>.<2,2><3>Work with us. We can<1>still save the world.<2,2>
+TALK06 816: <7>Junior<7><8,1><5,1>, have you seen Kurt?<2,2><3>...No. Never mind.<1>He's your brother.<1>You'd have told me.<2,2>
+TALK06 817: <7>Junior<7><8,1><5,1>, listen.<2,2><3>A Digimon with an<1>unforgettable face<1>headed for East<2,2><3>Sector.<2,2><3>I think it was<1>Baronmon.<2,2>
+TALK08 11: <7>Junior<7><8,1><5,1>, your brother is<1>remarkable.<2,2><3>He rebuilt a lot of<1>Digimon Online.<2,2><3>You could learn<1>something just<1>watching him.<2,2>
+TALK08 63: <7>Nick<7>Oh, right. Your<1>brother gave me this<1>to hold.<2,2><3>Here, your Folder Bag.<1>You hadn't gotten it<1>yet, right?<2,2><3>Cards, folders... a<1>tamer's whole kit.<2,2>
+TALK08 64: <7>Nick<7>Your brother invited<1>me to play today.<2,2><3>So where is everybody?<2,2>
+TALK08 106: <7>Kurt<7><8,1><5,1>. You made it.<2,2><3>I'm proud of you, sis.<1>Digimon Online opens<1>again because of you.<2,2><3>Now go and enjoy it.<2,2>
+TALK08 107: <7>Kurt<7>Your level has really<1>gone up, sis.<2,2><3>Go take a look at the<1>arena.<2,2>
+TALK08 108: <7>Kurt<7>You never stop<1>surprising me.<2,2><3>You're going to be the<1>next World Champ. I'd<1>bet on it.<2,2>
+DMG200:3 7: <7>Junior<7>Junior in here too.<1>I kept my name.<2,2>
+DMG200:3 8: <7><9><7>Your real name, as<1>your account name?<2,2><3>Huh. Bold choice.<1>Anyone could find<1>you.<2,2>
+DMG200:4 7: <7>Junior<7>Junior in here too.<1>I kept my name.<2,2>
+DMG200:4 8: <7><9><7>Your real name, as<1>your account name?<2,2><3>Huh. Bold choice.<1>Anyone could find<1>you.<2,2>
+DMG200:5 7: <7>Junior<7>Junior in here too.<1>I kept my name.<2,2>
+DMG200:5 8: <7><9><7>Your real name, as<1>your account name?<2,2><3>Huh. Bold choice.<1>Anyone could find<1>you.<2,2>

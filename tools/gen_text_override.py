@@ -25,6 +25,16 @@ SRC = ROOT / "tools/text_override/en.txt"
 SRC_PT = ROOT / "tools/text_override/pt.txt"
 OUT = ROOT / "port/game/definitive_text.c"
 OUT_PT = ROOT / "port/game/definitive_text_pt.inc"
+# The story rewrite (.plan/tasks/velvet-sonhos.md): English lines that replace the game's story text, the Kaili hero
+# mode's variants of them, and the hero's choice points (definitive_story.c reads the tables).
+SRC_STORY = ROOT / "tools/text_override/en_story.txt"
+SRC_KAILI = ROOT / "tools/text_override/en_kaili.txt"
+SRC_CHOICES = ROOT / "tools/text_override/en_choices.txt"
+# Lines that remember an earlier answer (a choice's or a dream's): said instead of the entry's line while it holds.
+SRC_ECHOES = ROOT / "tools/text_override/en_echoes.txt"
+# Girls Power's Kaili mode in Portuguese: only the lines the name swap below cannot fix (the brother's).
+SRC_KAILI_PT = ROOT / "tools/text_override/pt_kaili.txt"
+OUT_STORY = ROOT / "port/game/definitive_story_text.c"
 ALIAS = {
     "-": "−", "–": "−", "—": "―",
     "'": "’", "‘": "’", "`": "’",
@@ -137,14 +147,101 @@ def roundtrip(tables, inv):
     return bad
 
 
-def dollar_cap(en_b, pt_b=b""):
-    need = max(len(en_b), len(pt_b))
+# ---- Girls Power's Kaili mode: the roles swap. The hero is the girl (Ivy in the Real World, the player's account name
+# in the Digital World) and the friend is the boy, Junior, in both worlds (his account name stands in for Kail). So
+# every text with no line of its own in en_kaili.txt / pt_kaili.txt names Junior as Ivy, and Ivy or Kail as Junior;
+# Smith Junior, the Black Market's boy, keeps his name. A line that no longer fits its box is rewrapped within its page.
+# Portuguese swaps only Kail for now: its Real World lines need their articles and endings turned too ("a Ivy",
+# "sozinho"), which waits for the translation of the rewrite (.plan/tasks/velvet-sonhos.md).
+NAMES = re.compile(r"(?<!Smith )(?<![A-Za-z])(Junior|Ivy|Kail)(?![a-z])")
+NAMES_PT = re.compile(r"(?<![A-Za-z])(Kail)(?![a-z])")
+NAME_AS = {"Junior": "Ivy", "Ivy": "Junior", "Kail": "Junior"}
+
+
+def names_swap(s, names=NAMES):
+    return names.sub(lambda m: NAME_AS[m[1]], s)
+
+
+CODE = re.compile(r"<[\d,]+>")
+
+
+def _width(s):
+    return len(CODE.sub("", s))
+
+
+def _wrap(lines, width, max_lines):
+    """The page's words greedily in lines of `width` letters (codes not counted); None if they need more lines."""
+    words = " ".join(x.strip() for x in lines).split()
+    out = [""]
+    for w in words:
+        cand = (out[-1] + " " + w) if out[-1] else w
+        if _width(cand) <= width or not out[-1]:
+            out[-1] = cand
+        else:
+            out.append(w)
+    return out if len(out) <= max_lines else None
+
+
+def kaili_swap(text, width, max_lines=3, names=NAMES):
+    """`text` with the names swapped (names_swap): each line that grew past `width` (or past its own old width, when the original was
+    already wider) has its page rewrapped. None when a page no longer fits `max_lines` lines."""
+    m = re.match(r"(>hero )?(<7>.*?<7>)?", text)
+    head, body = text[:m.end()], text[m.end():]
+    head = names_swap(head, names)
+    pages = body.split("<2,2>")
+    out = []
+    for page in pages:
+        lead = "<3>" if page.startswith("<3>") else ""
+        old = page[len(lead):].split("<1>")
+        new = [names_swap(x, names) for x in old]
+        limit = max([width] + [_width(x) for x in old])
+        if any(_width(x) > limit for x in new):
+            new = _wrap(new, limit, max(max_lines, len(old)))
+            if new is None:
+                return None
+        out.append(lead + "<1>".join(new))
+    return head + "<2,2>".join(out)
+
+
+def disc_name_entries(tables):
+    """{(FILE[:sub], index): text} of every English disc text entry that names Junior, Ivy or Kail (dump_text's
+    notation)."""
+    found = {}
+    for e in df.files():
+        p = e.path.split("/")
+        if len(p) != 5 or p[2] != "COUNTRY" or p[3] != "ENG":
+            continue
+        d = (df.DISC / e.path).read_bytes()
+        for sub, offs in dt.tables_of(d):
+            for i, o in enumerate(offs):
+                t = dt.decode(d, o, tables)[0].replace("\n    ", "")
+                if NAMES.search(t):
+                    found[(p[4][2:-4] + ("" if sub is None else f":{sub}"), i)] = t
+    return found
+
+
+def kaili_dollars(rows, src_name, names=NAMES):
+    """{$NAME: text} of the port's own strings that name Junior, Ivy or Kail, swapped (a balloon's lines are up to 22
+    letters, the Guide's up to 44)."""
+    out = {}
+    for name, _, text in rows:
+        if name.startswith("$") and names.search(text):
+            t = kaili_swap(text + "<2,2>", 22 if text.startswith("<7>") else 44, text.count("<1>") + 1, names)
+            if t is None:
+                sys.exit(f"{src_name}: {name} does not fit its lines with the names swapped: give it its own")
+            out[name] = t[:-len("<2,2>")]
+    return out
+
+
+def dollar_cap(en_b, pt_b=b"", *more):
+    need = max([len(en_b), len(pt_b)] + [len(b) for b in more])
     return 448 if need > 96 else 128
 
 
 def render(en_rows, pt_rows, tables, inv):
     pt_dollars = {name: encode(text, inv, SRC_PT.name).replace(b"\xe6", b"\x01\x09") + b"\0"
                   for name, _, text in pt_rows if name.startswith("$")}
+    k_dollars = [kaili_dollars(en_rows, SRC.name), kaili_dollars(pt_rows, SRC_PT.name, NAMES_PT)]
     lines = ["/* Generated by tools/gen_text_override.py from tools/text_override/en.txt: do not edit. */",
              '#include "definitive.h"', ""]
     over = [r for r in en_rows if not r[0].startswith("$")]
@@ -152,7 +249,8 @@ def render(en_rows, pt_rows, tables, inv):
         b = encode(text, inv, SRC.name) + b"\0"
         if name.startswith("$"):  # the port's own labels are drawn in the HUD's 9-pixel font, which has no glyph 0xE6
             b = b.replace(b"\xe6", b"\x01\x09")  # ('?'): the extra glyph draws it
-            cap = dollar_cap(b, pt_dollars.get(name, b""))
+            cap = dollar_cap(b, pt_dollars.get(name, b""),
+                             *(encode(k[name], inv) + b"\0" for k in k_dollars if name in k))
             sym = f"def_str_{name[1:]}"
             lines.append(f"unsigned char {sym}[{cap}] = {{ "
                          + ", ".join(f"0x{x:02X}" for x in b) + f" }}; /* {text} */")
@@ -177,11 +275,23 @@ def render_pt(en_rows, pt_rows, tables, inv):
     lines = ["/* Generated by tools/gen_text_override.py from tools/text_override/pt.txt: do not edit. */",
              "#include <stdlib.h>", "#include <string.h>", ""]
 
+    k_en, k_pt = kaili_dollars(en_rows, SRC.name), kaili_dollars(pt_rows, SRC_PT.name, NAMES_PT)
+
+    def dollar(text, src):
+        return encode(text, inv, src).replace(b"\xe6", b"\x01\x09") + b"\0"
+
+    kaili = {}  # $NAME -> (English, Portuguese) of the Kaili mode, for the strings that name Kail in either
     for name, en_b in en_dollars:
         pt_b = pt_dollar_map.get(name, en_b)
         sym = name[1:]
         lines.append(f"static const unsigned char def_en_str_{sym}[] = {{ " + ", ".join(f"0x{x:02X}" for x in en_b) + " };")
         lines.append(f"static const unsigned char def_pt_str_{sym}[] = {{ " + ", ".join(f"0x{x:02X}" for x in pt_b) + " };")
+        if name in k_en or name in k_pt:
+            kaili[name] = (dollar(k_en[name], SRC.name) if name in k_en else en_b,
+                           dollar(k_pt[name], SRC_PT.name) if name in k_pt else pt_b)
+            for tag, b in zip(("enk", "ptk"), kaili[name]):
+                lines.append(f"static const unsigned char def_{tag}_str_{sym}[] = {{ "
+                             + ", ".join(f"0x{x:02X}" for x in b) + " };")
 
     pt_over = []
     seen_keys = set()
@@ -208,6 +318,7 @@ def render_pt(en_rows, pt_rows, tables, inv):
 
     lines += [
         "static int def_lang_ptbr = -1;",
+        "static int def_lang_kaili; /* Girls Power's Kaili mode: the strings with Junior, Ivy and Kail swapped */",
         "",
         "void def_language_set(int ptbr) {",
         "    def_lang_ptbr = ptbr ? 1 : 0;",
@@ -215,11 +326,27 @@ def render_pt(en_rows, pt_rows, tables, inv):
     for name, en_b in en_dollars:
         pt_b = pt_dollar_map.get(name, en_b)
         sym = name[1:]
+        if name in kaili:
+            enk, ptk = kaili[name]
+            lines.append(
+                f"    if (def_lang_kaili) memcpy(def_str_{sym}, def_lang_ptbr ? def_ptk_str_{sym} : def_enk_str_{sym}, "
+                f"def_lang_ptbr ? {len(ptk)} : {len(enk)});")
+            lines.append(
+                f"    else memcpy(def_str_{sym}, def_lang_ptbr ? def_pt_str_{sym} : def_en_str_{sym}, "
+                f"def_lang_ptbr ? {len(pt_b)} : {len(en_b)});")
+            continue
         lines.append(
             f"    memcpy(def_str_{sym}, def_lang_ptbr ? def_pt_str_{sym} : def_en_str_{sym}, "
             f"def_lang_ptbr ? {len(pt_b)} : {len(en_b)});"
         )
     lines += [
+        "}",
+        "",
+        "void def_language_kaili(int on) {",
+        "    if ((on != 0) != def_lang_kaili) {",
+        "        def_lang_kaili = on != 0;",
+        "        def_language_set(def_is_ptbr());",
+        "    }",
         "}",
         "",
         "int def_is_ptbr(void) {",
@@ -231,6 +358,177 @@ def render_pt(en_rows, pt_rows, tables, inv):
         "}",
         "",
     ]
+    return "\n".join(lines)
+
+
+def load_choices(path=SRC_CHOICES):
+    """`Q<n> FILE[:sub] index@<k>: label | text` -> {(name, index): (n, [(k, label, text)])}."""
+    out = {}
+    if not path.exists():
+        return out
+    for n, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        m = re.match(r"Q(\d+)\s+(\S+)\s+(\d+)@([123]):\s*(.*?)\s*\|\s*(.*)$", line)
+        if not m:
+            sys.exit(f"{path.name}:{n}: expected `Q<n> FILE index@<k>: label | text`")
+        q, name, idx, k, label, text = int(m[1]), m[2].upper(), int(m[3]), int(m[4]), m[5], m[6].strip()
+        if len(label) > 26:
+            sys.exit(f"{path.name}:{n}: the label is longer than 26 letters")
+        key = (name, idx)
+        if key in out and out[key][0] != q:
+            sys.exit(f"{path.name}:{n}: {name} {idx} has two question numbers")
+        out.setdefault(key, (q, []))[1].append((k, label, text))
+    # a question on several entries is one scene's copies (the partner packs' DMG200:3/4/5...): one plays, the same
+    # options in each
+    count = {}
+    for (name, idx), (q, opts) in out.items():
+        if count.setdefault(q, len(opts)) != len(opts):
+            sys.exit(f"{path.name}: Q{q}'s copies do not have the same options")
+    return out
+
+
+ECHO = re.compile(r"Q(\d+)=([123](?:,[123])*)\s+(?:(kaili)\s+)?(\S+)\s+(\d+):\s*(.*)$")
+DREAMS = 8  # story answers 0..7 are Igor's dreams (definitive_story.c), 3 options each
+
+
+def load_echoes(choices, path=SRC_ECHOES):
+    """`Q<n>=<k>[,<k>...] [kaili] FILE[:sub] index: text` -> [(name, index, n, mask, kaili, text)] in the file's order.
+    `kaili` marks the Girls Power line; without one, that mode gets the line with the names swapped."""
+    out = []
+    if not path.exists():
+        return out
+    asked = {q: len(opts) for (q, opts) in choices.values()}
+    for n, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        if not line.strip() or line.lstrip().startswith("#"):
+            continue
+        m = ECHO.match(line)
+        if not m:
+            sys.exit(f"{path.name}:{n}: expected `Q<n>=<k> [kaili] FILE index: text`")
+        q, ks, name, idx, text = int(m[1]), [int(k) for k in m[2].split(",")], m[4].upper(), int(m[5]), m[6].strip()
+        if q >= 160 or (q >= DREAMS and q not in asked):
+            sys.exit(f"{path.name}:{n}: Q{q} is no question (en_choices.txt, or 0..{DREAMS - 1} for the dreams)")
+        if any(k > asked.get(q, 3) for k in ks):
+            sys.exit(f"{path.name}:{n}: Q{q} has {asked.get(q, 3)} options")
+        if (name, idx) in choices:
+            sys.exit(f"{path.name}:{n}: {name} {idx} is itself a choice")
+        if text.startswith(">hero "):
+            sys.exit(f"{path.name}:{n}: an echo keeps the entry's speaker (en_kaili.txt moves a balloon to the hero)")
+        out.append((name, idx, q, sum(1 << k for k in ks), bool(m[3]), text))
+    return out
+
+
+def render_story(tables, inv, en_rows, pt_rows):
+    def arr(sym, b, static=True):
+        return (("static " if static else "") + f"const unsigned char {sym}[] = {{ "
+                + ", ".join(f"0x{x:02X}" for x in b) + " };")
+
+    lines = ["/* Generated by tools/gen_text_override.py from tools/text_override/en_story.txt, en_kaili.txt,",
+             " * en_choices.txt and pt_kaili.txt (+ en.txt, pt.txt and the disc for the Kaili mode's name swap): do not",
+             " * edit. */", '#include "definitive.h"', ""]
+    story = sorted(((jpn_id(n), i, n, t) for n, i, t in load_source(SRC_STORY) if not n.startswith("$")),
+                   key=lambda r: (r[0], r[1]))
+    for k, (fid, idx, name, text) in enumerate(story):
+        lines.append(arr(f"st_line_{k}", encode(text, inv, SRC_STORY.name) + b"\0"))
+    lines += ["", "const DefStoryLine def_story_lines[] = {"]
+    lines += [f"    {{ 0x{fid:X}, {idx}, 0, st_line_{k} }}, /* {name} {idx} */" for k, (fid, idx, name, _) in enumerate(story)]
+    lines += ["    { 0, 0, 0, 0 },", "};", f"const int def_story_line_count = {len(story)};", ""]
+
+    def kaili_rows(hand, base, src_name, hero_keys=frozenset(), names=NAMES):
+        """The hand-written lines of `hand`, then every text of `base` ({(FILE, index): text}) that names Junior, Ivy or
+        Kail (or that
+        the English moves to the hero: `hero_keys`) with the name swapped."""
+        rows = {}
+        for n, i, t in load_source(hand):
+            if not n.startswith("$"):
+                rows[(n, i)] = t
+        for (n, i), t in sorted(base.items()):
+            if (n, i) in rows or not (names.search(t) or (n, i) in hero_keys):
+                continue
+            plated = t.startswith("<7>")
+            new = kaili_swap(t, 22 if plated else 38, names=names)
+            if new is None:
+                sys.exit(f"{src_name}: {n} {i} does not fit its box with the names swapped: give it its own line")
+            if (n, i) in hero_keys:
+                new = ">hero " + re.sub(r"^<7>.*?<7>", "<7><9><7>", new)
+            rows[(n, i)] = new
+        out = []
+        for (n, i), t in rows.items():
+            hero = t.startswith(">hero ")
+            out.append((jpn_id(n), i, n, t[len(">hero "):] if hero else t, hero))
+        return sorted(out, key=lambda r: (r[0], r[1]))
+
+    def table(sym, count, rows, prefix, src_name):
+        for k, (fid, idx, name, text, hero) in enumerate(rows):
+            lines.append(arr(f"{prefix}_{k}", encode(text, inv, src_name) + b"\0"))
+        lines.extend(["", f"const DefStoryLine {sym}[] = {{"])
+        lines.extend(f"    {{ 0x{fid:X}, {idx}, {int(hero)}, {prefix}_{k} }}, /* {name} {idx} */"
+                     for k, (fid, idx, name, _, hero) in enumerate(rows))
+        lines.extend(["    { 0, 0, 0, 0 },", "};", f"const int {count} = {len(rows)};", ""])
+
+    # English: the rewrite's line, else en.txt's, else the disc's
+    base = disc_name_entries(tables)
+    base.update({(n, i): t for n, i, t in en_rows if not n.startswith("$") and ":" not in n})
+    base.update({(n, i): t for n, i, t in load_source(SRC_STORY) if not n.startswith("$")})
+    kaili = kaili_rows(SRC_KAILI, base, SRC_KAILI.name)
+    table("def_kaili_lines", "def_kaili_line_count", kaili, "st_kaili", SRC_KAILI.name)
+    # Portuguese (pt.txt's lines; the rewrite is English only until it is translated): the lines the English gives the
+    # hero go to her too
+    hero_keys = frozenset((n, i) for _, i, n, _, hero in kaili if hero)
+    pt_base = {(n, i): t for n, i, t in pt_rows if not n.startswith("$")}
+    table("def_kaili_lines_pt", "def_kaili_line_pt_count", kaili_rows(SRC_KAILI_PT, pt_base, SRC_KAILI_PT.name,
+                                                                      hero_keys, NAMES_PT), "st_kaili_pt", SRC_KAILI_PT.name)
+
+    loaded = load_choices()
+    # a choice's lines are said in both heroes' games as written: no name the Kaili mode swaps, and no entry that mode
+    # says its own way
+    kaili_keys = {(n.upper(), i) for n, i, _ in load_source(SRC_KAILI)}
+    for (name, idx), (q, opts) in loaded.items():
+        if (name, idx) in kaili_keys:
+            sys.exit(f"{SRC_CHOICES.name}: Q{q} {name} {idx} has a line of its own in {SRC_KAILI.name}")
+        if any(NAMES.search(text) for _, _, text in opts):
+            sys.exit(f"{SRC_CHOICES.name}: Q{q} {name} {idx} names Junior, Ivy or Kail (the Kaili mode cannot swap it)")
+    choices = sorted(((jpn_id(name), idx, name, q, sorted(opts)) for (name, idx), (q, opts) in loaded.items()),
+                     key=lambda r: (r[0], r[1]))
+    for c, (fid, idx, name, q, opts) in enumerate(choices):
+        for k, label, text in opts:
+            lines.append(arr(f"st_choice_{c}_label_{k}", encode(label, inv, SRC_CHOICES.name)
+                             .replace(b"\xe6", b"\x01\x09") + b"\0"))
+            lines.append(arr(f"st_choice_{c}_line_{k}", encode(text, inv, SRC_CHOICES.name) + b"\0"))
+    lines += ["", "const DefStoryChoice def_story_choices[] = {"]
+    for c, (fid, idx, name, q, opts) in enumerate(choices):
+        labels = ", ".join(f"st_choice_{c}_label_{k}" for k, _, _ in opts) + ", 0" * (3 - len(opts))
+        texts = ", ".join(f"st_choice_{c}_line_{k}" for k, _, _ in opts) + ", 0" * (3 - len(opts))
+        lines.append(f"    {{ 0x{fid:X}, {idx}, {q}, {len(opts)}, {{ {labels} }}, {{ {texts} }} }}, /* {name} {idx} */")
+    lines += ["    { 0, 0, 0, 0, { 0, 0, 0 }, { 0, 0, 0 } },", "};",
+              f"const int def_story_choice_count = {len(choices)};", ""]
+
+    # the echoes: mode 0 both heroes, 1 without Girls Power, 2 with it (its own line, or the names swapped)
+    echoes, hand_k = [], {(n, i, q, mask) for n, i, q, mask, k, _ in load_echoes(loaded) if k}
+    for order, (n, i, q, mask, k, text) in enumerate(load_echoes(loaded)):
+        if k:
+            echoes.append((n, i, q, mask, 2, text, order))
+            continue
+        swapped = kaili_swap(text, 22 if text.startswith("<7>") else 38)
+        if swapped is None:
+            sys.exit(f"{SRC_ECHOES.name}: {n} {i} does not fit its box with the names swapped: give it a kaili line")
+        if (n, i) in hero_keys:
+            swapped = re.sub(r"^<7>.*?<7>", "<7><9><7>", swapped)
+        if (n.upper(), i) in kaili_keys and (n, i, q, mask) not in hand_k:
+            sys.exit(f"{SRC_ECHOES.name}: Q{q} {n} {i} has a line of its own in {SRC_KAILI.name}: give the echo a kaili twin")
+        if (n, i, q, mask) in hand_k or swapped != text:
+            echoes.append((n, i, q, mask, 1, text, order))
+            if (n, i, q, mask) not in hand_k:
+                echoes.append((n, i, q, mask, 2, swapped, order))
+        else:
+            echoes.append((n, i, q, mask, 0, text, order))
+    echoes.sort(key=lambda r: (jpn_id(r[0]), r[1], r[6]))
+    for k, (n, i, q, mask, mode, text, _) in enumerate(echoes):
+        lines.append(arr(f"st_echo_{k}", encode(text, inv, SRC_ECHOES.name) + b"\0"))
+    lines += ["", "const DefStoryEcho def_story_echoes[] = {"]
+    lines += [f"    {{ 0x{jpn_id(n):X}, {i}, {q}, 0x{mask:X}, {mode}, st_echo_{k} }}, /* {n} {i} */"
+              for k, (n, i, q, mask, mode, _, _) in enumerate(echoes)]
+    lines += ["    { 0, 0, 0, 0, 0, 0 },", "};", f"const int def_story_echo_count = {len(echoes)};", ""]
     return "\n".join(lines)
 
 
@@ -247,12 +545,15 @@ def main():
     pt_rows = load_source(SRC_PT)
     text = render(en_rows, pt_rows, tables, inv)
     text_pt = render_pt(en_rows, pt_rows, tables, inv)
+    text_story = render_story(tables, inv, en_rows, pt_rows)
     if a.check:
         ok = OUT.exists() and OUT.read_text(encoding="utf-8") == text
         ok_pt = OUT_PT.exists() and OUT_PT.read_text(encoding="utf-8") == text_pt
-        sys.exit(0 if (ok and ok_pt) else 1)
+        ok_story = OUT_STORY.exists() and OUT_STORY.read_text(encoding="utf-8") == text_story
+        sys.exit(0 if (ok and ok_pt and ok_story) else 1)
     OUT.write_text(text, encoding="utf-8")
     OUT_PT.write_text(text_pt, encoding="utf-8")
+    OUT_STORY.write_text(text_story, encoding="utf-8")
     print(f"{OUT.relative_to(ROOT)}: {len([r for r in en_rows if not r[0].startswith('$')])} EN overrides, "
           f"{len([r for r in pt_rows if not r[0].startswith('$')])} PT overrides")
 

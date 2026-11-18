@@ -255,10 +255,24 @@ void dw3_velvet_shop_talk(struct FieldstgActor *actor);
 int dw3_velvet_shop_greeting(void);
 /* 1 when a text entry is the port's own (its room's figures' lines): it is served in every language. */
 int dw3_velvet_text_own(s32 base_id, s32 index);
-/* The Super Rare hunts: the room pulls the player in from inn map `from` once (Seiryu City's first visit), and whether
- * the room runs. */
+/* The room pulls the player in from map `from` (an inn, or the opening's: definitive_story.c), `who` speaking first;
+ * dw3_velvet_pull is the Sepikmon's. And whether the room runs. */
+enum {
+    DW3_VELVET_PULL_SEPIK = 1,
+    DW3_VELVET_PULL_IGOR,
+    DW3_VELVET_PULL_MENTOR,
+    DW3_VELVET_PULL_ETEMON,
+    DW3_VELVET_PULL_MERCHANT
+};
+void dw3_velvet_pull_by(s32 from, s32 who);
+void dw3_velvet_cut(s32 who); /* the story cuts Igor's scene: the room as its level has it, `who` calls over */
 void dw3_velvet_pull(s32 from);
 int dw3_velvet_in_room(void);
+/* The story's event scripts (definitive_story.c): the one an event runs instead of its own (the opening split around
+ * the Velvet Room), and the port's script command 0x7F00 (1: the event ends, as a map change ends it). */
+short *def_story_event_script(int id, short *script);
+int def_story_event_command(int cmd);
+int def_story_event_dialog(s32 msg, s32 *actor); /* 1: the event's dialog waits (the hero's choice) */
 /* The market screen's own state (port/game/definitive_market_screen.c). */
 int def_bm_screen_open(void);
 int def_bm_bought(void);
@@ -331,6 +345,11 @@ int def_blast_hint(void);            /* after the quest: the Chosen Digimon is n
 const unsigned char *def_blast_tempt_label(void);
 int def_blast_plug(void);           /* the DV Plug was used: 1 when it set the Blast off (the port's rule) */
 int def_blast_plug_revive(int slot); /* after the quest: the HP the Plug revives fallen slot `slot` with, 0 if none */
+void def_blast_boost_stats(int member, struct FightstgStats *out); /* the Blast/Chosen form's boost on the party's stats */
+void def_blast_overheat(s32 slot);   /* a Blast/Chosen form ended (wfightmn_end_blast): the overheat's seal */
+s32 def_blast_end_form(s32 slot, s32 form); /* the form a Blast/Chosen ends in (wfightmn_blast_end): the Rookie */
+void def_blast_overheat_turn(int slot); /* the slot's own turn begins: the overheat counts down */
+void def_story_frame(void);          /* the Velvet Room's story hooks (definitive_story.c), each idle field frame */
 void def_blast_started(s32 id);      /* the Digimon `id` took its Blast form (wfightmn_blast) */
 int def_blast_dark(void);            /* the acting party member's model is to be painted dark (a Blast form) */
 int def_blast_chosen_mode(void);     /* the quest is done: the Blast button is the Chosen Evolution */
@@ -543,6 +562,7 @@ extern s32 port_field_slots[3][3];
  * painted the other way are dropped, so they load again. Off under a replay script; DW3_GIRLS=0/1 forces it. */
 void port_girls_loaded(s32 id, u8 *data);
 void port_girls_refresh(void);
+int port_girls_on(void); /* 1: Kaili is the hero (the story's Kaili-mode lines, definitive_story.c) */
 void port_girls_reskin(void); /* the hero's skin worn changed (definitive_skins.c): the files in memory repainted */
 struct PortState;
 void port_girls_savestate(struct PortState *s); /* what the files in memory were painted for */

@@ -16,6 +16,8 @@ GamestateData gamestate_data;
 GamestateFlags gamestate_flags;
 s32 gamestate_money_check[] = { 800, 1600, 2700, 4000, 6000, 8700, 11500, 17500, 24000, 32000 };
 int port_script_active;
+int def_story_cond(int cond) { (void)cond; return 0; } /* the story hooks (definitive_story.c): none holds the story */
+int dw3_velvet_in_room(void) { return 0; }
 void port_log(const char *fmt, ...) {
     (void)fmt;
 }

@@ -110,16 +110,16 @@ static const StdwtitlQuestion stdwtitl_q_difficulty_pt = {
     "ESCOLHA SEU DESTINO!", { "FACIL", "DIFICIL" }, { "3 DIGIMON", "2 DIGIMON  MODO DUPLA" },
     { "QUER UM COBERTOR TAMBEM?", "AGORA SIM!" }, 90, { { 96, 200, 255 }, { 255, 72, 56 } },
 };
-/* Girls Power (port/game/girls_power.c): who the hero is. Kaili first: the question exists for her. */
+/* Girls Power (port/game/girls_power.c): who the hero is. Kail first: the question exists for her. */
 static const StdwtitlQuestion stdwtitl_q_hero = {
-    "CHOOSE YOUR HERO!", { "KAILI", "JUNIOR" }, { "GIRLS POWER", "THE ORIGINAL" },
+    "CHOOSE YOUR HERO!", { "KAIL", "JUNIOR" }, { "GIRLS POWER", "THE ORIGINAL" },
     { "GIRLS RULE THE WORLD!", "OLD SCHOOL IS GOLD!" }, 104, { { 255, 120, 170 }, { 96, 160, 255 } },
 };
 static const StdwtitlQuestion stdwtitl_q_hero_pt = {
-    "ESCOLHA SEU HEROI!", { "KAILI", "JUNIOR" }, { "GAROTAS NO PODER", "O CLASSICO" },
+    "ESCOLHA SEU HEROI!", { "KAIL", "JUNIOR" }, { "GAROTAS NO PODER", "O CLASSICO" },
     { "AS GAROTAS MANDAM!", "RAIZ E OUTRO NIVEL!" }, 104, { { 255, 120, 170 }, { 96, 160, 255 } },
 };
-static s32 hero_cursor; /* 0 Kaili, 1 Junior */
+static s32 hero_cursor; /* 0 Kail, 1 Junior */
 
 /* One frame of a question: 0 while it is open, 1 confirmed (*cursor), -1 cancelled. Everything is queued front to
  * back: the words, the frame's lines, the cursor's bar, then the dark panel. */

@@ -1839,6 +1839,7 @@ void fieldstg_manager_update(FieldstgManager *obj, FieldstgManagerData *data) {
             if (def_guide_frame()) {
                 break; /* the Guide, asked for by the field menu's entry */
             }
+            def_story_frame();  /* the Velvet Room's story hooks: a talk on the player holds the field */
             dw3_velvet_frame(); /* the Velvet Room's portal: it owns no screen */
             dw3_velvet_draw();  /* and the room's blue, or the portal the player stands next to */
 #endif
@@ -4662,9 +4663,6 @@ FieldstgActor *fieldstg_actor_create(s32 id, s32 type, s32 vram, FieldstgPlacedA
         }
         obj->has_shadow = 1;
         obj->no_turn = flag;
-#ifdef PC_PORT
-        dw3_velvet_actor_setup(obj); /* the room's own figures: one that keeps his place instead of turning to talk */
-#endif
         if (id == 0x82) {
             obj->has_shadow = 0;
         }
@@ -4684,6 +4682,11 @@ FieldstgActor *fieldstg_actor_create(s32 id, s32 type, s32 vram, FieldstgPlacedA
             obj->has_shadow = 0;
         }
         obj->placed = placed;
+#ifdef PC_PORT
+        /* the room's own figures: one that keeps his place instead of turning to talk (after `placed`: it is told
+         * apart by it) */
+        dw3_velvet_actor_setup(obj);
+#endif
     }
     return obj;
 }

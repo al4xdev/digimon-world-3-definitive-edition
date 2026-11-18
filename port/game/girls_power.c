@@ -129,6 +129,10 @@ static int gp_on(void) {
     return !port_script_active && def_save_flag(DEF_SAVE_KAILI);
 }
 
+int port_girls_on(void) {
+    return gp_on();
+}
+
 /* What the cached sprite files were painted for (0: as on the disc), and the hero's skin they wear (definitive_skins.c,
  * 0: none). */
 static int gp_painted, gp_skinned;

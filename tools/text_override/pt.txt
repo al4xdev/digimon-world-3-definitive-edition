@@ -15,6 +15,31 @@ $Twice: Inimigo x2
 $BlastTempt: O Blast chama...
 $ChosenRookie: Escolhida só em Rookie
 $PlugRevive: Revive em Rookie com 1 HP e 1 MP
+$TomNews: <7>Tom Repetitivo<7>Soube? Soube? O<1>Líder do Seiryu<1>sumiu!<2,2><3>Saiu da cidade<1>ontem à noite e<1>nunca mais voltou.<2,2><3>Ninguém sabe onde.<1>Ninguém! Soube?<2,2>
+TALK01 178: <7><9><7>Sumiu...?<2,2><3>Meu parceiro está<1>tremendo. Tem algo<1>errado aqui.<2,2><3>Como um vento frio<1>vindo de uma porta<1>que nunca abri...<2,2><3>...Ali! Na escada.<1>Uma porta azul que<1>não estava ali.<2,2>
+$TomGone: <7>Tom Repetitivo<7>O Líder do Seiryu<1>sumiu! Sumiu, digo!<2,2><3>E aquela porta azul<1>na escada? Ela nunca<1>esteve ali!<2,2>
+TALK05 17: <7>Sepikmon<7>Então, Tamer. Você<1>também sentiu. O<1>frio no vento.<2,2><3>Sou Sepikmon, o<1>mestre das caçadas.<1>Os setores se agitam.<2,2><3>Seu Líder correu<1>atrás de uma sombra.<1>Ela começou pequena.<2,2><3>Um Ogremon atormenta<1>o Central Park de<1>Asuka. Cace-o.<2,2><3>A bússola diz o<1>quanto a trilha está<1>quente. Depois volte.<2,2>
+TALK05 16: <7>Sepikmon<7>O Ogremon se acalmou.<1>O vento frio passou.<2,2><3>E seu Líder? Ele<1>foi visto nas Ruínas<1>do Protocolo.<2,2><3>Ele seguiu a mesma<1>sombra e ficou para<1>treinar. Vá até ele!<2,2>
+TALK05 18: <7>Igor<7>Ah... bem-vindo, meu<1>hóspede. Não tema.<1>Seu corpo te espera.<2,2><3>Esta é a Velvet Room.<1>Ela fica entre o fio<1>e o sonho.<2,2><3>Sou Igor. Atendo quem<1>está numa<1>encruzilhada. Como você.<2,2><3>Três pacotes, e você<1>ama todos os Digimon<1>deles. Belo problema.<2,2><3>Saiba: nenhum laço<1>se perde. Duas formas<1>podem virar uma.<2,2><3>Tome esta chave. Na<1>hora certa, uma porta<1>azul se abrirá.<2,2><3>Agora vá. Seus amigos<1>estão impacientes.<1>Nós nos veremos...<2,2>
+TALK05 19: <7>Igor<7>Bem-vindo de volta,<1>meu hóspede. Os laços<1>ainda estão fracos.<2,2>
+TALK05 20: <7>Igor<7>Bem-vindo de volta,<1>meu hóspede. Sim...<1>você sentiu o frio.<2,2><3>A chave que te dei<1>achou sua porta. A<1>sala é sua agora.<2,2><3>Daqui em diante, ela<1>cresce com a sua<1>jornada.<2,2><3>Hóspedes virão<1>quando a história<1>chamar. Um já espera.<2,2><3>Ele sabe para onde<1>seu Líder foi. Ouça<1>bem o que ele diz...<2,2>
+$OpenIvy1: <7>Ivy:<7>Junior? Junior!<1>Alô? Terra chamando<1>Junior!<2,2>
+$OpenTeddy: <7>Teddy<7>Ficou parado de<1>olhos abertos por um<1>minuto inteiro.<2,2><3>Nem piscava.<1>Sinistro...<2,2>
+$OpenJunior: <7>Junior:<7>Hã? Eu estava... numa<1>sala azul. Tinha um<1>homem de terno lá.<2,2><3>Ele me deu uma<1>chave...<2,2>
+$OpenIvy2: <7>Ivy:<7>Uma chave? Você<1>sonhou em pé!<2,2>
+$IgorMeet: <7>Igor<7>Ah... um hóspede que<1>achou minha porta só.<2,2><3>Sou Igor. Nesta sala<1>leio os laços entre<1>parceiros.<2,2>
+$IgorBack: <7>Igor<7>Bem-vindo de volta à<1>Velvet Room. Vamos<1>ler seus laços.<2,2>
+$IgorPage: <3>
+$IgorCould: " pode virar<1>"
+$IgorBorn: , nascido de<1>duas formas:<2,2><3>
+$IgorLv: " Nv"
+$IgorLine: <1>
+$IgorBoth: As duas estão prontas.
+$IgorOne: Uma está pronta.
+$IgorNone: Nenhuma está pronta.
+$IgorEnd: <2,2>
+$IgorBye: <3>O resto do caminho é<1>seu, meu hóspede.<2,2>
+$IgorBlank: <3>Os caminhos dos seus<1>parceiros ainda não<1>foram escritos.<2,2>
 $BatonPass: Baton Pass
 $MsgLibra: Fraquezas reveladas!
 $MsgRelay: Próxima troca grátis!
@@ -211,6 +236,10 @@ $Q3: Primeiros passos
 $Q3T: Saia do lobby. O Tamer Genji quer uma<1>Digimon Battle lá fora.
 $Q4: O Seiryu Badge
 $Q4T: Treine perto de Asuka City, vá para o<1>leste por Wire Forest e Wind Prairie até<1>Seiryu City. O Líder treina nas<1>Protocol Ruins e só luta contra quem<1>derrotou MasterTyrannomon (Tyranno Valley).
+$Q4s: O Líder sumido
+$Q4sT: O Tom Repetitivo diz que o Líder do<1>Seiryu sumiu, e uma porta azul se abriu<1>na escada da pousada de Seiryu. Entre por<1>ela na Velvet Room e fale com o Sepikmon.<1>Cace o que ele pedir e volte a ele.
+$Q4a: O Líder de Seiryu
+$Q4aT: Treine perto de Asuka City e vá para o<1>leste por Wire Forest e Wind Prairie até<1>Seiryu City. Pergunte pelo Líder: o Tom<1>Repetitivo, na escada da pousada, ouve<1>todas as novidades.
 $Q5: Para o Setor Sul
 $Q5T: O teleférico de East Station, após a<1>Kicking Forest, pede um Blue Card.<1>Um Guilmon o possui: pergunte na Asuka Inn,<1>na Forest Inn e na estalagem da Zephyr<1>Tower, em Seiryu City.
 $Q5b: Um Card falso
@@ -7459,6 +7488,14 @@ $PfLv: " Nv "
 $PfChosenMark: "   Escolhido"
 $PfNameGennai: Gennai
 $PfNameMyotismon: Myotismon
+$PfBoostOffer: Cada forma tomada alimenta o Blast.<1>Por Bits eu o deixo mais forte. Heh.
+$PfBoost: "Boost +"
+$PfBoostTo: "% para +"
+$PfBoostFor: "% por "
+$PfBits: " Bits"
+$PfPct: %
+$PfKeysBuy: Botão ×: Comprar   Botão △: Sair
+$PfKeysBuyNext: Botão ×: Comprar   Botão △: Próximo
 $PfStory0: Hm hm hm... Dez formas sombrias. Todas<1>vivendo dentro dos seus parceiros.<1>Muito bem. Melhor do que eu esperava.
 $PfStory1: Tolo! Eu não sou o Gennai. Sou Myotismon!<1>Cada Blast alimentou a maldição que pus<1>nos seus Digimon. Agora eles são meus...<1>e os seus Bits também!
 $PfStory2: ...Calma. A sombra se foi.<1>Eu sou o Gennai. O verdadeiro. O velho<1>que você conheceu era Myotismon.
