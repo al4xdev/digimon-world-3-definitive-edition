@@ -135,7 +135,7 @@ TRAINI 110: Results:<1>Thunder Affinity is up by <5,1>!<2,2>
 TRAINI 111: Results:<2,2><3>Machine Affinity is up by <5,1>!<1>Max HP is up by <5,2>!<2,2>
 TRAINI 112: Results:<1>Dark Affinity is up by <5,1>!<2,2>
 
-# Layer 6 & Layer H: the remade techniques' names and battle messages (shown by message type 23, fightstg_message_show).
+# The remade and reworked techniques' names and battle messages (shown by message type 23, fightstg_message_show).
 SKLNAM 131: Armor Pierce
 SKLNAM 132: Suppress Shot
 SKLNAM 134: Siege Salvo

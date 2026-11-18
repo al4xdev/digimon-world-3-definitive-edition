@@ -1,6 +1,6 @@
 /* tests/port/definitive_buffs.py's driver: exercises port/game/definitive.c's 3-tier fixed stat buff/debuff
  * system, turn-based expiration, non-stacking / tier-upgrade / opposite-sign overwrite rules, Overlevel Rush gap = 8,
- * and Layer H technique patching. Prints "ok <name>" or "FAIL <name>" per case; exits 1 on any failure. */
+ * and the technique rework's patching. Prints "ok <name>" or "FAIL <name>" per case; exits 1 on any failure. */
 #include <stdio.h>
 #include <string.h>
 
@@ -290,7 +290,7 @@ int main(void) {
     stub_get_stats(0x10, 0, 0);
     check("magic attack scales +50% with Tier +3 Attack buff (200 -> 300)", def_magic_attack(0) == 300);
 
-    /* 9. Technique spec mapping & Layer H patching */
+    /* 9. Technique spec mapping & the technique rework's patching */
     def_mod_tech_spec(132, 0, -28, &lvl, &turns);
     check("spec 132 Suppress Shot -> -1, 2t", lvl == -1 && turns == 2);
     def_mod_tech_spec(131, 1, -24, &lvl, &turns);
@@ -322,7 +322,7 @@ int main(void) {
     def_mod_tech_spec(206, 1, -48, &lvl, &turns);
     check("spec 206 Armor Off -> -3, 3t", lvl == -3 && turns == 3);
 
-    /* Verify Layer H patches applied by def_log_begin() -> def_mp_hook() -> patch_techniques() */
+    /* Verify the technique rework's patches applied by def_log_begin() -> def_mp_hook() -> patch_techniques() */
     check("patch_techniques: 194/195 converted to element 5 Atk-down & Digimon slots updated",
           records_techniques[194 - 1].element == 5 && records_techniques[194 - 1].kind == 26 &&
           records_techniques[194 - 1].mp_cost == 34 &&

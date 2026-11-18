@@ -229,7 +229,7 @@ static s32 stgmcard_icon_frame;
 #define STGMCARD_MEMCARD_FUNCS memcard_funcs
 #define STGMCARD_ICON_FRAME stgmcard_icon_frame
 
-/* The bestiary's card record (port/game/definitive_bestiary.c, layer 9): a 0x100-byte record per slot at the end of the
+/* The bestiary's card record (port/game/definitive_bestiary.c): a 0x100-byte record per slot at the end of the
  * save file, memcard.c's part 5 with the slot in part >> 8 (same numbers as definitive.h's DEF_BESTIARY_*). */
 #define DEF_BESTIARY_RECORD_SIZE 0x100
 #define DEF_BESTIARY_PART 5

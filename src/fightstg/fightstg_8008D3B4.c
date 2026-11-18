@@ -1826,7 +1826,7 @@ void fightstg_tech_update(FightstgTech *obj, FightstgMessage **data) {
                         s32 def_msg;
                         s32 def_done = def_tech_effect(obj->side, obj->tech, &def_msg);
 
-                        if (def_done == 1) { /* Libra, Relay, Resist Down, Mega Break (definitive combat, layer 6) */
+                        if (def_done == 1) { /* Libra, Relay, Resist Down, Mega Break (definitive combat) */
                             obj->args[0] = def_msg;
                             obj->args[1] = obj->side;
                             (*data)->show(*data, 23, obj->args);
@@ -4016,7 +4016,7 @@ static void fightstg_battle_menu_paint(FightstgBattleMenuData *data, s32 i, u8 p
     data->labels[i]->set_palette(data->labels[i], palette);
 }
 
-/* Inspect (definitive combat, layer 2): the current enemy's seven elements as Weak / Resist / - (neutral) / ??? (not
+/* Inspect (definitive combat): the current enemy's seven elements as Weak / Resist / - (neutral) / ??? (not
  * learnt), from its resists as they stand now (buffs and debuffs included). Open: the text is set; closed: the windows
  * are emptied. The panel is a title (the enemy's name) over two columns of picture + state in the 14-pixel font (the
  * 9-pixel one has two usable colours and reads badly at 320x240): Fire, Water, Ice, Wind | Thunder, Machine, Dark.
@@ -8823,7 +8823,7 @@ s32 fightstg_rules_scale_damage(side, id, base)
     }
     if (rec->defense_stat >= 2) {
 #ifdef PC_PORT
-        if (def_on()) { /* definitive combat: weakness, stagger and affinity replace the resist term (layer 5) */
+        if (def_on()) { /* definitive combat: weakness, stagger and affinity replace the resist term */
             value = def_scale_physical(side, rec->defense_stat - 2, value, rec->element_power);
         } else
 #endif
@@ -8911,7 +8911,7 @@ s32 fightstg_rules_get_special_damage(u8 side, s32 id) {
         power = rec->power * records_state.enemies[member].stat_scale / 16;
     }
 #ifdef PC_PORT
-    if (def_on()) { /* definitive combat: Defense stands against magic (layer 7), buffs count for magic */
+    if (def_on()) { /* definitive combat: Defense stands against magic, buffs count for magic */
         base = power * (def_magic_attack(side) * 50 / def_magic_defense(side) + 50) / 100;
     } else
 #endif
@@ -8926,7 +8926,7 @@ s32 fightstg_rules_get_special_damage(u8 side, s32 id) {
     value += fightstg_rules_get_field_bonus(value, rec->defense_stat);
     if (rec->defense_stat >= 2) {
 #ifdef PC_PORT
-        if (def_on()) { /* definitive combat: the multiplier of layer 5 replaces the bands */
+        if (def_on()) { /* definitive combat: the damage multiplier replaces the bands */
             value = def_scale_magic(side, rec->defense_stat - 2, value);
         } else {
             defense = target->resists[rec->defense_stat - 2];

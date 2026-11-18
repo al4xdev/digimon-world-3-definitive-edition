@@ -1,5 +1,5 @@
-/* "Definitive" combat. Always on in the port, no mod option. Layer 0: the battle log;
- * layer 1: the text overrides; layer 2: Inspect, the hit sounds, the "enemy acts twice" test. The game's C calls the def_* hooks under #ifdef PC_PORT; everything else lives here. */
+/* "Definitive" combat. Always on in the port, no mod option. Here: the battle log;
+ * the text overrides; Inspect, the hit sounds, the "enemy acts twice" test. The game's C calls the def_* hooks under #ifdef PC_PORT; everything else lives here. */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,7 +23,7 @@ s32 fightstg_rules_get_special_damage(u8 side, s32 id);
 
 /* ---- DW3_BATTLE_LOG=<file>: one plain-text line per battle event, appended. Read once; unset = every hook is a no-op.
  * The line order is the game's own, so two runs with the same seed and inputs write the same file. */
-/* Layer 5: the terms of the last multiplier, for the log line of the damage it made (0 when none applied). */
+/* The terms of the last damage multiplier, for the log line of the damage it made (0 when none applied). */
 static struct {
     int weak, open, resisted, affinity, mult;
 } terms;
@@ -33,8 +33,8 @@ static struct {
  * (DEF_OVERFINISH_BITS_PCT). `overfinish_hit`: the blow being shown is one; `overfinish_damage`: the battle's total. */
 static int overfinish_hit;
 static s32 overfinish_damage;
-static DefChain chain; /* layer 4: stagger, window, free swap (definitive_mask.c) */
-static short resist_mod[2][3][7]; /* layer 6: per side (0 party, 1 enemy) and slot, what Resist Down took off each element */
+static DefChain chain; /* stagger, window, free swap (definitive_mask.c) */
+static short resist_mod[2][3][7]; /* per side (0 party, 1 enemy) and slot, what Resist Down took off each element */
 static unsigned char resist_turns[2][3]; /* and the turns of that side it still lasts */
 static signed char mod_level[2][3][3]; /* 3-tier stat buff/debuff level (-3..+3) per side, slot, kind (0 Atk, 1 Def, 2 Spd) */
 static unsigned char mod_turns[2][3][3]; /* turns of that side remaining before the stat modifier expires */
@@ -176,13 +176,13 @@ void def_log_action(int side, int kind, int arg) {
     }
 }
 
-/* Layer 2: how the last damage the player dealt with an elemental technique met the target (0 none, 1 effective,
+/* The hit sounds: how the last damage the player dealt with an elemental technique met the target (0 none, 1 effective,
  * 2 neutral, 3 resisted); def_hit_feedback plays its sound when the hit's own sound does. */
 static int hit_class;
 static int hit_elem; /* its element index, valid with hit_class */
 static s32 hit_id;
 
-/* Layer 3: the species' Dark mark (the row table), 0 for a species with no row. */
+/* The species' Dark mark (the row table), 0 for a species with no row. */
 static int dark_mark(int species) {
     int i;
 
@@ -357,7 +357,7 @@ static const unsigned char *lookup_override_sorted(const DefTextOverride *tab, i
     return NULL;
 }
 
-/* ---- Text overrides (layer 1). font_get_entry only gets the file's buffer, so the file is found by looking the buffer
+/* ---- Text overrides. font_get_entry only gets the file's buffer, so the file is found by looking the buffer
  * up in the CD module's loaded entries (no load, no side effect). Only the English sets (records_language 1, 2): the
  * other languages keep the disc's text. When Portuguese (PT-BR) is active, def_text_overrides_pt is searched first in
  * O(log N) (including DMG200..DMG900 container sub-tables), falling back to def_text_overrides and then the disc's
@@ -446,11 +446,11 @@ void *def_text_override(void *data, s32 i) {
     return NULL;
 }
 
-/* ---- Inspect and the hit sounds (layer 2), by layer 3's rule (def_weakness_mask, def_resisted). */
+/* ---- Inspect and the hit sounds, by the weakness rule (def_weakness_mask, def_resisted). */
 extern const unsigned char def_str_Fire[], def_str_Water[], def_str_Ice[], def_str_Wind[], def_str_Thunder[],
     def_str_Machine[], def_str_Dark[], def_str_Weak[], def_str_Resist[], def_str_Neutral[];
 
-/* "Enemy acts twice" (layer 2): with the command menu open, E the time left to the enemy's turn, Pe the delay its next
+/* "Enemy acts twice": with the command menu open, E the time left to the enemy's turn, Pe the delay its next
  * turn would take and P the one ours would (fightstg_events.get_delay kind 0: no draw, but it rewrites
  * fightstg_rules.stats, so only here, with the menu open and nothing being calculated), the enemy acts again before
  * we do when E + Pe < P. */
@@ -617,7 +617,7 @@ const unsigned char *def_bestiary_family_state(FightstgEnemyRecord *rec, int ind
     return family_state(def_bestiary_known(index), rec->resists, rec->id, f, palette);
 }
 
-/* ---- Layer 3: the enemy table. Applied each time the game asks for the record (idempotent), so it holds after a reload
+/* ---- The enemy table. Applied each time the game asks for the record (idempotent), so it holds after a reload
  * of SDIGIEDT and a load state alike. */
 void def_enemy_override(FightstgEnemyRecord *rec) {
     int i, e;
@@ -636,7 +636,7 @@ void def_enemy_override(FightstgEnemyRecord *rec) {
     }
 }
 
-/* ---- Layer 4: turns, stagger, the chain, the free swap (the rules are in definitive_mask.c's DefChain). Everything here
+/* ---- Turns, stagger, the chain, the free swap (the rules are in definitive_mask.c's DefChain). Everything here
  * is the game's side of it. A replay script (shared with the emulator) keeps the original rules: def_on is 0 under
  * --script unless DW3_DEFINITIVE is set (the tests that drive the new rules by script). */
 
@@ -698,7 +698,8 @@ static int target_slot(void) {
     return fightstg_battle.state.current[1];
 }
 
-/* The current target is open: its pose is the tired one, and layer 5 gives the player's next blow its bonus. */
+/* The current target is open: its pose is the tired one, and the damage multiplier gives the player's next blow its
+ * bonus. */
 int def_target_staggered(void) {
     return def_on() && chain.staggered[target_slot() % 3];
 }
@@ -1318,7 +1319,7 @@ int def_idle_pose(u8 side) {
     return chain.staggered[target_slot() % 3];
 }
 
-/* ---- Layer 6: the remade techniques. Libra (202, was Speed Up) learns the target's weaknesses, Relay (203, was Mega Boost)
+/* ---- The remade techniques. Libra (202, was Speed Up) learns the target's weaknesses, Relay (203, was Mega Boost)
  * makes the next swap free, Resist Down / Mega Break (207, 208, were Slow Down / Mega Break) lower the elements the
  * user is best at on the target for a few of its turns; on a boss that blocked the speed-down they replace
  * (records_state.blocked[10]) they are scaled by DEF_BOSS_DEBUFF_PCT, like every stat debuff. The effects run in fightstg_tech_update (class 5), before the original's own. */
@@ -1425,11 +1426,11 @@ const unsigned char *def_message(int i) {
 static void patch_techniques(void) {
     int i;
 
-    /* Layer 6: Libra, Relay */
+    /* The remade techniques: Libra, Relay */
     records_techniques[202 - 1].target = 2;            /* Libra reads the enemy */
     records_techniques[203 - 1].mp_cost = DEF_RELAY_MP;
 
-    /* Layer H: reworked damaging attacks with secondary debuffs (E=0) */
+    /* The technique rework: damaging attacks with secondary debuffs (E=0) */
     records_techniques[81 - 1].mp_cost = 84;           /* Grisly Wing: Atk-2, 3 turns */
     records_techniques[81 - 1].effect_power = 40;
     records_techniques[108 - 1].mp_cost = 38;          /* Cold Slash: Ice phys + Atk-1, 2 turns */
@@ -1454,7 +1455,7 @@ static void patch_techniques(void) {
     records_techniques[136 - 1].kind = 27;
     records_techniques[136 - 1].effect_power = 40;
 
-    /* Layer H: recycled unused confusion cures (P=0, E=0) -> dedicated Atk debuffs */
+    /* The technique rework: recycled unused confusion cures (P=0, E=0) -> dedicated Atk debuffs */
     records_techniques[194 - 1].mp_cost = 34;          /* Power Seal (ex-Anti-Confuse): Foe Atk-2, 3 turns */
     records_techniques[194 - 1].element = 5;
     records_techniques[194 - 1].target = 2;
@@ -1473,7 +1474,7 @@ static void patch_techniques(void) {
     records_techniques[195 - 1].hit_sound = 49;
     records_techniques[195 - 1].anim_script = 16;
 
-    /* Layer H: MP adjustments on support / heal / charge / field skills (all E=0) */
+    /* The technique rework: MP adjustments on support / heal / charge / field skills (all E=0) */
     records_techniques[188 - 1].mp_cost = 175;         /* Final Heal */
     records_techniques[198 - 1].mp_cost = 36;          /* Double Power */
     records_techniques[201 - 1].mp_cost = 72;          /* Mega Protection */
@@ -1484,7 +1485,7 @@ static void patch_techniques(void) {
         records_techniques[i - 1].mp_cost = 48;        /* Elemental Fields */
     }
 
-    /* Layer H: Digimon form learnsets (records_digimon[idx], 0-indexed) */
+    /* The technique rework: Digimon form learnsets (records_digimon[idx], 0-indexed) */
     records_digimon[12].techniques[4] = 194;           /* ExVeemon [4] (Lv 50): Antidote -> Power Seal */
     records_digimon[18].techniques[1] = 184;           /* Angewomon [1] (Lv 15): Antidote -> Small Heal */
     records_digimon[18].techniques[3] = 194;           /* Angewomon [3] (Lv 30): Anti-Paralysis -> Power Seal */
@@ -1503,7 +1504,7 @@ static void patch_techniques(void) {
     records_digimon[48].techniques[3] = 199;           /* Omnimon [3] (Lv 35): Giga Fire -> Mega Strength */
 }
 
-/* Layer 8: the rookies' MP rows (definitive_mp.c) into records_digimon, written every time (the reset restores the table). */
+/* The rookies' MP rows (definitive_mp.c) into records_digimon, written every time (the reset restores the table). */
 void def_mp_apply(void);
 
 void def_mp_hook(void) {
@@ -1514,7 +1515,7 @@ void def_mp_hook(void) {
     }
 }
 
-/* ---- Layer 5: the damage of an elemental technique, by the definitive multiplier (definitive_mask.c). Called from the
+/* ---- The damage of an elemental technique, by the definitive multiplier (definitive_mask.c). Called from the
  * rules (scale_damage for physical techniques, get_special_damage for magic) with the stats of the call in
  * fightstg_rules.stats ([0] the attacker, [1] the target). `terms` (above) is what the log prints. */
 
@@ -1781,7 +1782,7 @@ int def_mod_turns_left(int side, int slot, int kind) {
 /* ---- The stat modifiers count for magic. The engine has none for Spirit; get_special_damage (with
  * fightstg_rules.stats filled: [0] the attacker, [1] the target, both with their modifiers in) asks for these:
  *  - the attack: Spirit scaled as Strength is by its modifier (now / (now - modifier));
- *  - the defence: the player's Defense (already modified: layer 7), or the enemy's Spirit scaled as its Defense is. The
+ *  - the defence: the player's Defense (already modified), or the enemy's Spirit scaled as its Defense is. The
  *    final boss (state.type 6) sets its own Defense and Spirit modifiers: its Spirit is left as it comes. */
 static int scaled(int stat, int now, int modifier) {
     int base = now - modifier;

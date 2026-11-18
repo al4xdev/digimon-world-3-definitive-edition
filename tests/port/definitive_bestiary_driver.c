@@ -1,4 +1,4 @@
-/* tests/port/definitive_bestiary.py's driver for port/game/definitive_bestiary.c (layer 9): the table and the card
+/* tests/port/definitive_bestiary.py's driver for port/game/definitive_bestiary.c: the table and the card
  * record's serialization, on a stand-in 0x800-byte tail of the save file (three 0x100 records). Prints "ok name" or
  * "FAIL name" per case; exits 1 on a failure. The game's two lookups the module reaches are stubbed. */
 #include <stdio.h>

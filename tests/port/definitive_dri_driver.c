@@ -199,7 +199,7 @@ int main(void) {
 
     def_bestiary_reset();
     def_record_rare_add(3, 2);
-    def_record2_write(rec2); /* a record of the layer before: rares only, zeros at 152.. */
+    def_record2_write(rec2); /* a record from before the DRI: rares only, zeros at 152.. */
     check("a rares-only record has zeros where the DRI state goes", all_zero(rec2 + 152, 6));
     def_record_dri_unlock(4);
     def_record2_read(rec2);

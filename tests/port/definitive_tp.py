@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Definitive progression layer D (TP): port/game/definitive_progression.c's TP table and tools/convert_save_mp.py
+"""Definitive progression (TP): port/game/definitive_progression.c's TP table and tools/convert_save_mp.py
 conversion, idempotency, --dry-run warning, and binary diff. Needs only the host gcc, no disc."""
 import re
 import shutil

@@ -3,7 +3,7 @@
 
   tools/venv/bin/python tools/gen_tech_text.py [--report FILE]    # rewrite SKLINF lines of en.txt; before/after table
 
-Definitive combat, layer 1: effect first, no flourish, at most MAX characters (the longest text the disc has: 34).
+Definitive combat text: effect first, no flourish, at most MAX characters (the longest text the disc has: 34).
 Reads src/main/records.c (RecordsTechnique) and the disc's own SKLINF/SKLNAM. A technique whose `kind` this script does
 not know (enemy-only effects) keeps the disc's text, as do the unnamed placeholders ("a"). Only what is true of the code
 today: a later layer that changes a technique rewrites its line (by hand in en.txt, or by teaching this script).
@@ -50,7 +50,7 @@ def text_file(name):
     return [dt.decode(d, o, tables, latin=False)[0].replace("−", "-").replace("’", "'") for o in offs]
 
 
-# The techniques remade or standardized onto the 3-tier buff/debuff system (definitive combat, layer H):
+# The techniques remade or standardized onto the 3-tier buff/debuff system (definitive combat):
 REMADE = {
     202: "Reveals the enemy's weaknesses.",
     203: "Relay: the next swap is free.",

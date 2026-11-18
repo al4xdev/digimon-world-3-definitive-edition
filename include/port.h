@@ -288,11 +288,11 @@ int def_bm_frame(void);
 /* Layout index of the story step's area on this map half, or 0. */
 s32 dw3_objective_spot(s32 region);
 
-/* Definitive combat (port/game/definitive.c). Layer 0, the battle log:
+/* Definitive combat (port/game/definitive.c). The battle log:
  * DW3_BATTLE_LOG=<file> appends one line per battle event; unset, every hook returns at once. def_get_damage and
  * def_get_special_damage are fightstg_rules.get_damage / .get_special_damage wrapped: same value, one line logged. */
 void def_log_begin(void);
-/* Layer 4 (definitive.c): the rules the game's turns follow. def_on is 0 under a replay script (the scripts are shared
+/* Turns (definitive.c): the rules the game's turns follow. def_on is 0 under a replay script (the scripts are shared
  * with the emulator) unless DW3_DEFINITIVE is set. */
 int def_on(void);
 /* records_state.blocked[k] as the definitive edition reads it (stat debuffs 8..10 never blocked), and a
@@ -366,13 +366,14 @@ void def_events_before_take(void);
 void def_swap_chosen(void);
 void def_baton_paid(void);                 /* the switch menu's Baton Pass was confirmed and its MP paid */
 const unsigned char *def_baton_label(void);
-/* Layer 5 (definitive.c), called by the rules when def_on: the damage of an elemental technique (physical: with the old
- * formula's own power term against the player; magic), and the open-target bonus of a blow with no element. */
+/* The damage multiplier (definitive.c), called by the rules when def_on: the damage of an elemental technique
+ * (physical: with the old formula's own power term against the player; magic), and the open-target bonus of a blow
+ * with no element. */
 int def_scale_physical(u8 side, int element, int value, int power);
 int def_scale_magic(u8 side, int element, int value);
 int def_open_bonus(u8 side, int defense_stat, int value);
 struct PortState;
-/* Layer 9 (definitive_bestiary.c): what the player has learnt of each enemy species, one byte each (bit = element index,
+/* Bestiary (definitive_bestiary.c): what the player has learnt of each enemy species, a byte each (bit = element index,
  * Fire..Dark), saved per slot in the card's spare tail. `index` is the species' record in SDIGIEDT (0..192); the id of
  * a FightstgEnemyRecord goes through def_bestiary_index. */
 void def_bestiary_reset(void);
@@ -380,8 +381,8 @@ void def_bestiary_discover(int index, int element_mask);
 int def_bestiary_known(int index);
 int def_bestiary_index(int species_id);
 void def_bestiary_savestate(struct PortState *s);
-void def_mp_hook(void); /* layer 8: the rookies' MP patch, at a new game and at each battle's start (not under a script) */
-/* Layer 6 (definitive.c): the remade techniques. def_tech_effect runs one of Libra / Relay / Resist Down / Mega Break
+void def_mp_hook(void); /* the rookies' MP patch, at a new game and at each battle's start (not under a script) */
+/* The remade techniques (definitive.c). def_tech_effect runs one of Libra / Relay / Resist Down / Mega Break
  * (0: not one of them, 1: done with a message, 2: no effect); def_apply_resist_mod lowers an enemy's resists as
  * get_stats builds them; def_message is the text of message type 23. */
 struct FightstgStats;
@@ -399,9 +400,9 @@ void port_hud_arm(void); /* game_mods.c: the battle HUD defaults, at each battle
 void def_log_turn(int side);
 void def_log_action(int side, int kind, int arg);
 void def_log_end(int result);
-/* Layer 1: the replacement for entry `i` of the text file loaded at `data` (font_get_entry), or NULL. */
+/* Text overrides: the replacement for entry `i` of the text file loaded at `data` (font_get_entry), or NULL. */
 void *def_text_override(void *data, s32 i);
-/* Layer 2, Inspect: the glyph-byte label of element `e` (0..6: Fire, Water, Ice, Wind, Thunder, Machine, Dark), and the
+/* Inspect: the glyph-byte label of element `e` (0..6: Fire, Water, Ice, Wind, Thunder, Machine, Dark), and the
  * label for element `e` of a target with these resists (Weak / Resist / -, ??? while not learnt), with its palette in
  * the 14-pixel font in *palette. */
 const unsigned char *def_inspect_element(int e);
@@ -424,7 +425,7 @@ void def_tech_icon(struct MessageWindow *w, int tech, int palette);
 struct FightstgEnemyRecord;
 const unsigned char *def_bestiary_state(struct FightstgEnemyRecord *rec, int index, int e, int *palette);
 const unsigned char *def_bestiary_family_state(struct FightstgEnemyRecord *rec, int index, int f, int *palette);
-/* Layer 2: the sound that tells a hit on a weakness, a neutral one or a resisted one (the player's elemental
+/* The hit sounds: the sound that tells a hit on a weakness, a neutral one or a resisted one (the player's elemental
  * techniques), played where the hit's own sound plays (fightstg_script_run_sound). */
 void def_hit_feedback(void);
 /* OVERFINISH: the Bits earned by the blows that hit an enemy already knocked out in the battle just won; given once. */
@@ -544,11 +545,12 @@ void def_callout_frame(void);
 struct GfxLayer;
 int def_poly_text(struct GfxLayer *layer, s32 depth, int x, int y, int size, const char *text, const u8 *rgb);
 int def_poly_text_width(int size, const char *text);
-/* Layer 3: overrides the resists of an enemy record (FightstgEnemyRecord) by the port's table, if the species has a row. */
+/* The enemy table: overrides the resists of an enemy record (FightstgEnemyRecord) by the port's table, if the species
+ * has a row. */
 struct FightstgEnemyRecord;
 void def_enemy_override(struct FightstgEnemyRecord *rec);
-/* Layer 2: 1 when the enemy acts twice before our next turn (call with the command menu open, never mid-calculation),
- * and the label shown then. */
+/* "Enemy acts twice": 1 when the enemy acts twice before our next turn (call with the command menu open, never
+ * mid-calculation), and the label shown then. */
 int def_enemy_acts_twice(void);
 const unsigned char *def_twice_label(void);
 s32 def_get_damage(u8 side, s32 id);

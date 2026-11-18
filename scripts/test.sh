@@ -137,17 +137,17 @@ for L in $LAYERS; do
             "$PY" "$ROOT/tests/port/text_override.py"   # the generated text overrides are current (definitive combat)
             "$PY" "$ROOT/tests/port/definitive.py"       # the weakness rule, case by case (definitive combat)
             "$PY" "$ROOT/tests/port/definitive_buffs.py" # 3-tier fixed stat buffs/debuffs & overlevel gap 8
-            "$PY" "$ROOT/tests/port/definitive_mp.py"    # the rookies' MP patch and the save converter agree (definitive combat, layer 8)
-            "$PY" "$ROOT/tests/port/definitive_bestiary.py"   # the bestiary's card record: magic/version/checksum, 3 slots (definitive combat, layer 9)
+            "$PY" "$ROOT/tests/port/definitive_mp.py"    # the rookies' MP patch and the save converter agree (definitive combat)
+            "$PY" "$ROOT/tests/port/definitive_bestiary.py"   # the bestiary's card record: magic/version/checksum, 3 slots (definitive combat)
             "$PY" "$ROOT/tests/port/definitive_hunt.py"   # the regional hunt: chain, one-Digimon Rare Target, materials
             "$PY" "$ROOT/tests/port/definitive_superhunt.py"   # the Super Rare hunts: order, compass, point, flight, record
             "$PY" "$ROOT/tests/port/definitive_skins.py"   # the hero's skins: unlocks, the CLUT recipes, record
             "$PY" "$ROOT/tests/port/definitive_velvet_music.py"   # the Velvet Room's score through the sound hooks (skips without the local MIDI)
-            "$PY" "$ROOT/tests/port/definitive_tp.py"    # TP table + save converter DFV2 (definitive progression, layer D)
-            "$PY" "$ROOT/tests/port/definitive_pity.py"  # training pity counter & guarantee (definitive progression, layer E)
-            "$PY" "$ROOT/tests/port/definitive_gauges.py" # Blast Gauge slot save/load & clamp (definitive progression, layer F)
-            "$PY" "$ROOT/tests/port/definitive_evo_anim.py" # short/skippable digivolve animation state (definitive progression, layer G)
-            "$PY" "$ROOT/tests/port/definitive_train_loss.py" # resistance training no stat loss toggle (definitive progression, layer I)
+            "$PY" "$ROOT/tests/port/definitive_tp.py"    # TP table + save converter DFV2 (definitive progression)
+            "$PY" "$ROOT/tests/port/definitive_pity.py"  # training pity counter & guarantee (definitive progression)
+            "$PY" "$ROOT/tests/port/definitive_gauges.py" # Blast Gauge slot save/load & clamp (definitive progression)
+            "$PY" "$ROOT/tests/port/definitive_evo_anim.py" # short/skippable digivolve animation state (definitive progression)
+            "$PY" "$ROOT/tests/port/definitive_train_loss.py" # resistance training no stat loss toggle (definitive progression)
             "$PY" "$ROOT/tests/port/girls_power.py"      # Kaili the hero: the repainted sprite files against the disc's
             "$PY" "$ROOT/tests/port/vram.py"       # the first battle's textures in VRAM against the emulator's
             "$PY" "$ROOT/tests/port/subpixel_jitter.py" run   # the GTE shadow in the first battle (sub-pixel precision, ~40 s)

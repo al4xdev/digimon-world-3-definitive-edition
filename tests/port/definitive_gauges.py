@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Definitive progression layer F (Blast Gauge save/load): pure serialization + clamping rules compiled from
+"""Definitive progression (Blast Gauge save/load): pure serialization + clamping rules compiled from
 port/game/definitive_progression.c with tests/port/definitive_gauges_driver.c. Needs only host gcc, no disc."""
 import subprocess
 import sys

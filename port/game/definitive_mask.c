@@ -1,4 +1,4 @@
-/* Definitive combat, layer 3: which elements an enemy is weak to and which it resists, from its resists as they stand
+/* Definitive weaknesses: which elements an enemy is weak to and which it resists, from its resists as they stand
  * right now. Pure (no game headers): tests/port/definitive.py compiles it alone and checks it case by case. */
 #include "definitive.h"
 
@@ -30,7 +30,7 @@ int def_resisted(int resist) {
     return resist >= DEF_RESIST_MIN;
 }
 
-/* ---- Layer 4: stagger, the chain of extra actions and the free swap, as a state machine on its own (the game feeds it
+/* ---- Stagger, the chain of extra actions and the free swap, as a state machine on its own (the game feeds it
  * events: definitive.c). A weakness hit with an elemental technique opens the target; the next blow it takes, or its own
  * action, closes it. Each weakness family hit gives one extra action per window (Ice after Water gives none); the window starts again with every
  * normal action of the player (an extra one does not start it). While a target is open one swap is free per window. */
@@ -79,7 +79,7 @@ int def_chain_swap_free(const DefChain *c, int target) {
 }
 
 void def_chain_relay_set(DefChain *c) {
-    c->relay = 1; /* Relay (layer 6): the next swap is free, stagger or not */
+    c->relay = 1; /* Relay: the next swap is free, stagger or not */
 }
 
 void def_chain_swap_chosen(DefChain *c, int target) {
@@ -103,7 +103,7 @@ int def_chain_take_extra(DefChain *c) {
     return 1;
 }
 
-/* ---- Layer 5: the multiplier. Fire and Wind count on their own resist, Water with Ice and Thunder with Machine on the
+/* ---- The damage multiplier. Fire and Wind count on their own resist, Water with Ice and Thunder with Machine on the
  * pair's sum, Dark on its own; each is its ceiling times the share of the maximum (999 a stat). */
 static int stat_cap(int v) {
     return v < 0 ? 0 : v > 999 ? 999 : v;

@@ -2,7 +2,7 @@
  * (tests/port/definitive.py compiles the rules), the game's hooks call in under #ifdef PC_PORT. */
 #include "definitive.h"
 
-/* ---- Layer D: TP by the band of the level reached (the original gives 5 a level, to 99). After 50 only the Train Chip
+/* ---- TP by the band of the level reached (the original gives 5 a level, to 99). After 50 only the Train Chip
  * gives TP. The ceiling stays DEF_TP_CAP on purpose: TP cannot be hoarded for the last gym. */
 int def_tp_gain(int level) {
     if (level <= 1) {
@@ -42,7 +42,7 @@ int def_tp_add(int tp, int level, int *lost) {
     return tp + gain;
 }
 
-/* ---- Layer E: training pity (RAM-only, shared across Digimon). ---- */
+/* ---- Training pity (RAM-only, shared across Digimon). ---- */
 static int train_pity = 0;
 
 int def_train_pity_count(void) {
@@ -68,7 +68,7 @@ void def_train_pity_reset(void) {
     train_pity = 0;
 }
 
-/* ---- Layer F: Blast Gauge slot serialization (0..DEF_GAUGE_MAX). ---- */
+/* ---- Blast Gauge slot serialization (0..DEF_GAUGE_MAX). ---- */
 int def_gauge_clamp(int val) {
     return (val < 0 || val > DEF_GAUGE_MAX) ? 0 : val;
 }

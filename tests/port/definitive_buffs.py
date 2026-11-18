@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Definitive combat 3-tier fixed stat buff/debuff system, turn-based expiration, Layer H technique patches, and
+"""Definitive combat 3-tier fixed stat buff/debuff system, turn-based expiration, the technique rework's patches, and
 Overlevel Rush gap = 8: compiles port/game/definitive.c with stand-in game structs and drives every case.
 Needs only the host gcc, no disc."""
 import subprocess

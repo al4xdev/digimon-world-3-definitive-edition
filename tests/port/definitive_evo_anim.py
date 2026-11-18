@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Definitive progression layer G (short repeat and skippable digivolution animations): pure RAM seen-bitmask
+"""Definitive progression (short repeat and skippable digivolution animations): pure RAM seen-bitmask
 and skip-hold logic compiled from port/game/definitive_progression.c with tests/port/definitive_evo_anim_driver.c."""
 import subprocess
 import sys

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Definitive combat layer 9 (bestiary): the table's card record (port/game/definitive_bestiary.c) compiled alone against a
+"""Definitive combat, the bestiary: the table's card record (port/game/definitive_bestiary.c) compiled alone against a
 stand-in for the save file's last 0x800 bytes: magic, version, checksum, an empty table as zeros, a missing / wrongly
 versioned / badly summed record as an empty table, three independent slots. Also that the constants the game's C repeats
 (src/main/memcard.c, src/stgmcard) carry the same numbers as definitive.h. Needs only the host gcc, no disc."""

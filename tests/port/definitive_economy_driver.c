@@ -23,7 +23,7 @@ RecordsItem *records_get_item(s32 i) {
     return i >= 1 && i <= 3 ? &items[i - 1] : NULL;
 }
 const DefItemPrice def_item_prices[] = { { 2, 90000, 9000 } };
-/* Layer G: item 2 is a Legendary Replica the player holds while `replica_held` (definitive_market.c's rule; its own
+/* Replicas: item 2 is a Legendary Replica the player holds while `replica_held` (definitive_market.c's rule; its own
  * test is tests/port/definitive_market.py). */
 static int replica_held;
 int def_bm_resale_zero(int item) {
@@ -76,7 +76,7 @@ int main(void) {
     int palette = -1;
     const unsigned char *label;
 
-    /* Layer D */
+    /* The definitive prices */
     check("an item the price table has: its new prices, past the u16", def_item_buy(2) == 90000 && def_item_sell(2) == 9000);
     check("an item it does not have: the game's", def_item_buy(1) == 400 && def_item_sell(1) == 200 &&
                                                       def_item_buy(3) == 100 && def_item_sell(3) == 50);
@@ -86,7 +86,7 @@ int main(void) {
                                                                        def_item_sell(1) == 200);
     replica_held = 0;
 
-    /* Layer E */
+    /* The forge */
     check("no shop open: no recipe", def_recipe_max(10) == 99 && def_recipe_label(10, &palette) == NULL);
     def_recipe_set_shop(7);
     mats[1] = 12;

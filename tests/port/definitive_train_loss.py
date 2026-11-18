@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Definitive progression layer I (resistance training without secondary stat loss):
+"""Definitive progression (resistance training without secondary stat loss):
 checks DEF_TRAIN_NO_STAT_LOSS=1 (default) and =0 (disabled) from port/game/definitive_progression.c."""
 import subprocess
 import sys

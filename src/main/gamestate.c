@@ -731,8 +731,8 @@ void gamestate_init_records(void) {
     u16 *s;
 
 #ifdef PC_PORT
-    def_mp_hook(); /* definitive combat, layer 8: a new game starts with the rookies' new MP */
-    def_bestiary_reset(); /* layer 9: and with nothing learnt of the enemies */
+    def_mp_hook(); /* definitive combat: a new game starts with the rookies' new MP */
+    def_bestiary_reset(); /* the bestiary: and with nothing learnt of the enemies */
     def_new_game_apply(); /* Hard Mode, when New Game chose it */
 #endif
     font_init(&funcs);

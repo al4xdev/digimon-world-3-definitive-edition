@@ -96,7 +96,7 @@ static int chain_now(void) {
     return chain;
 }
 
-/* A Rare Target won in `region` (its chain at the cap, a draw that always hits): layer B's reward is then pending. */
+/* A Rare Target won in `region` (its chain at the cap, a draw that always hits): its reward is then pending. */
 static void win_rare(int region) {
     def_record_set_hunt(region, DEF_HUNT_CHAIN_CAP);
     next_value = 0;
@@ -211,7 +211,7 @@ int main(void) {
     check("fighting the Rare Target resets the chain and ends the escape rule", chain_now() == 0 && !def_hunt_active());
     check("outside a Rare Target no name is changed", def_hunt_foe_name(100, 0) == NULL);
 
-    /* Layer B: the reward of that win (the stand-in target is level 30; R-Booster 02 from 25). */
+    /* The reward of that win (the stand-in target is level 30; R-Booster 02 from 25). */
     check("the win counts the region's rare item in the second record at once, and remembers it",
           def_record_rare(0) == 1 && def_record_rare_seen(0) && def_record_rare(1) == 0 && !def_record_rare_seen(1));
     check("no common material comes with a Rare Target", def_record_material(5) == 0);
@@ -269,7 +269,7 @@ int main(void) {
           def_record_material(5) == 4 && lines_pending() == 1 && chain_now() == 3);
     def_hunt_reward_done();
 
-    /* Layer C: what the bestiary lists under a species. */
+    /* The bestiary: what it lists under a species. */
     check("the bestiary's common material: by index, none for a species without one, none outside the table",
           def_hunt_common_of(0) == 5 && def_hunt_common_of(2) == -1 && def_hunt_common_of(-1) == -1 &&
               def_hunt_common_of(DEF_BESTIARY_SPECIES) == -1);

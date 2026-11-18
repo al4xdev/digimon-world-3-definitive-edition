@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""The definitive combat's pure rules (layers 3 and 5), compiled alone and checked case by case: port/game/definitive_mask.c
-with tests/port/definitive_driver.c. Needs only the host gcc, no disc."""
+"""The definitive combat's pure rules (the weakness rule and the damage multiplier), compiled alone and checked case
+by case: port/game/definitive_mask.c with tests/port/definitive_driver.c. Needs only the host gcc, no disc."""
 import subprocess
 import sys
 from pathlib import Path

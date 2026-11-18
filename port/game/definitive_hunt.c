@@ -10,7 +10,7 @@
  * (but in an active Super Rare hunt's territory, where it also comes sooner: def_hunt_chance_in, def_hunt_flee). The Overlevel Rush never
  * offers to skip it: fieldstg_encounter_start asks here before the Rush.
  *
- * The materials (layer B, the owner's model of 2026-11-13). Common: the DEF_HUNT_MATERIALS Hunt Materials, one per band
+ * The materials (the owner's model of 2026-11-13). Common: the DEF_HUNT_MATERIALS Hunt Materials, one per band
  * of species (def_hunt_commons, generated: the weakest species give the first); each enemy of a won random encounter, or
  * of one the Rush took, leaves its species' one with a DEF_HUNT_COMMON_PCT chance. Rare: one per region with a Rare
  * Target (index i of def_hunt_targets is region i's), "<lead species> Core <numeral>", the numeral (the table's variant)
@@ -44,11 +44,11 @@ static struct {
     signed char rare;           /* and it is the Rare Target */
     signed char hard;           /* in the territory of an active Super Rare hunt: escaping it may fail */
     short level;                /* the Rare Target's level */
-    short base;                 /* the encounter's own battle, the one it replaced (layer B's XP) */
+    short base;                 /* the encounter's own battle, the one it replaced (the reward's XP) */
     short target;               /* the Rare Target's index in def_hunt_targets: its rare item */
 } hunt;
 
-/* A Rare Target won, until its results screen ends (layer B). */
+/* A Rare Target won, until its results screen ends. */
 static struct {
     signed char pending; /* a results screen has its XP and Booster to give */
     short base;          /* the battle whose XP it pays DEF_HUNT_XP_MULT times */
@@ -56,7 +56,7 @@ static struct {
     short pack;          /* the rare Booster the screen gave (def_hunt_take_pack), 0 before */
 } reward;
 
-/* The results screen's material lines (layer B): composed at the battle's end, when the species' names are loaded. */
+/* The results screen's material lines: composed at the battle's end, when the species' names are loaded. */
 static struct {
     unsigned char text[DEF_HUNT_LINES][DEF_HUNT_LINE_SIZE];
     signed char count, shown;
@@ -122,7 +122,7 @@ static unsigned char *line_new(void) {
     return lines.text[lines.count++];
 }
 
-/* ---- The chain and the Rare Target (layer A). */
+/* ---- The chain and the Rare Target. */
 /* In %: none up to DEF_HUNT_CHAIN_MIN wins, then even steps to certain at DEF_HUNT_CHAIN_SURE. 100 always hits: the
  * draw is (x % 100) < chance. */
 static int chance_of(int chain, int min, int sure) {
@@ -261,7 +261,7 @@ const unsigned char *def_hunt_foe_name(int species, int slot) {
     return buf[slot];
 }
 
-/* ---- The materials (layer B). */
+/* ---- The materials. */
 
 /* A won (or Rush-taken) random encounter: each enemy leaves its species' common material at DEF_HUNT_COMMON_PCT, one
  * line per material ("Hunt material: Bit Shard x2"). A draw per enemy, whatever its species. */

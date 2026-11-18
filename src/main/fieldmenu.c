@@ -14,7 +14,7 @@
 #include "fightstg.h"
 #include "psyq/libgpu.h"
 
-/* The bestiary screen (definitive combat, layer 9; port/game/definitive_bestiary.c): a last entry of the field's menu that
+/* The bestiary screen (definitive combat; port/game/definitive_bestiary.c): a last entry of the field's menu that
  * lists the species of SDIGIEDT with what the player learned of their elements. It reuses the menu's own windows: the
  * title bar carries its name and the page, the option windows a page of names; in the member panels' place a panel of
  * its own (fieldmenu_bestiary_panel) carries the chosen species: its name, then a line per element (picture, name,

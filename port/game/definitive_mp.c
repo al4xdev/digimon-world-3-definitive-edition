@@ -1,4 +1,4 @@
-/* Definitive combat, layer 8: the rookies' MP, patched into records_digimon (def_mp_hook, definitive.c: at a new game and
+/* Definitive combat: the rookies' MP, patched into records_digimon (def_mp_hook, definitive.c: at a new game and
  * at each battle's start, when def_on; not at boot, where a replay script is not yet known and its state, shared with
  * the emulator, must keep the disc's numbers). The reset restores the table, so the patch is written again each time.
  * src/main/records.c is matching source and is not edited.

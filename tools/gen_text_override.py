@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Encode the port's text overrides (definitive combat, layer 1 + PT-BR localization) into port/game/definitive_text.c.
+"""Encode the port's text overrides (definitive combat + PT-BR localization) into port/game/definitive_text.c.
 
   tools/venv/bin/python tools/gen_text_override.py            # write port/game/definitive_text.c (+ definitive_text_pt.inc)
   tools/venv/bin/python tools/gen_text_override.py --check    # exit 1 if the committed file is stale

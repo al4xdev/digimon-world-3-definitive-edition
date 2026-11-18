@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Definitive progression layer E (training pity): pure counter/guarantee rules compiled alone from
+"""Definitive progression (training pity): pure counter/guarantee rules compiled alone from
 port/game/definitive_progression.c with tests/port/definitive_pity_driver.c, including DEF_TRAIN_PITY_AFTER=0
 disable check. Needs only host gcc, no disc."""
 import subprocess
