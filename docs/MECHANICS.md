@@ -416,7 +416,9 @@ a big exp award gives several levels in one call and returns 1; cap level 99; wi
       left in the lab is not chosen and earns nothing: it could otherwise reach 99 without a skill, because `learn_skill` only
       runs for a chosen slot;
     - a Booster Pack drop gives `DEF_CARD_BOOST_PACKS` (15);
-    - the Digimon's own experience, the bits and the item are the original's; TP comes by level band (PRD 2, layer D).
+    - the Digimon's own experience uses one curve, `DEF_XP_CURVE` (10, Kumamon's, the highest of the eight partners);
+      the bits and the item are the original's; TP comes by level band (PRD 2, layer D). A form's own level thresholds
+      are unchanged.
 
 ## 7. Digivolution (forms)
 

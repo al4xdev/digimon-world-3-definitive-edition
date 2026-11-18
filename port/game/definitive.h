@@ -272,6 +272,9 @@ int def_evo_skip_update(int *hold_frames, int skip_pressed);
 int def_train_no_stat_loss_on(void);
 
 /* ---- PRD 3: the mods the owner played with, made the game's own (party_xp, xp_boost) ---- */
+#define DEF_XP_CURVE 10          /* every partner levels on this curve (Kumamon's, the highest of the eight:
+                                   * Monmon 6, Guilmon/Renamon 7, Kotemon/Veemon 8, Agumon/Patamon 9, Kumamon 10).
+                                   * The form's own level thresholds are unchanged. */
 #define DEF_XP_PARTY_SHARE 100   /* % of one fighter's share that a member who sat out (not knocked out) receives */
 #define DEF_XP_FORM_MULT 14      /* multiplier of a won battle's form (digivolution) experience; the clamp is skipped */
 #define DEF_XP_ALL_FORMS 1       /* the three chosen forms of every party member earn form experience, fought or not;

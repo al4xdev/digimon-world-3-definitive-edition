@@ -1555,6 +1555,9 @@ s32 stfgtrep_add_exp(s32 digimon, s32 exp) {
     s32 lv;
     s32 k;
     s32 more;
+#ifdef PC_PORT
+    s32 curve;
+#endif
 
     rec = gamestate_data.funcs.get_record(digimon);
     d = &records_digimon[digimon];
@@ -1577,7 +1580,14 @@ s32 stfgtrep_add_exp(s32 digimon, s32 exp) {
         } else {
             break;
         }
+#ifdef PC_PORT
+        /* Definitive: one curve for all eight partners, Kumamon's (the highest). The disc's per-species factor
+         * stays for a replay script (def_on is 0 there). The PS1 line below is unchanged, so the match holds. */
+        curve = def_on() ? DEF_XP_CURVE : d->exp_curve;
+        if ((lv * lv * lv + lv * 5 - 6) * curve / 10 + stfgtrep_level_exp_bonus[k] < rec->exp) {
+#else
         if ((lv * lv * lv + lv * 5 - 6) * d->exp_curve / 10 + stfgtrep_level_exp_bonus[k] < rec->exp) {
+#endif
             if (++rec->stats.values[0] < 100) {
                 stfgtrep_raise_stats(digimon, rec->stats.values[0]);
             } else {
