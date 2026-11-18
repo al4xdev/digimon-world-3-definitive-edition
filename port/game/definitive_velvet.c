@@ -104,11 +104,10 @@ int dw3_velvet_igor_head(FieldstgActor *actor, u32 *ot, s32 x, s32 y); /* defini
                           * the counter's own front row */
 #define VL_MERCHANT_Y 255
 #define VL_MERCHANT_DIR 1 /* facing down-left, the way the counter runs (the owner picked it on the screenshots) */
-#define VL_MENTOR_X 318 /* on the stage between the organ pipes, at the top of the room: a dead end off the upper floor
-                         * (the floor reaches it through one strip at y 160..176), so he blocks no way, and the entry's
-                         * camera already shows its red lamps */
-#define VL_MENTOR_Y 165
-#define VL_MENTOR_DIR 6 /* facing the room's upper door beside him, the Time Room's way (owner, 2026-11-18) */
+#define VL_MENTOR_X 352 /* in front of the room's upper door (its cells x 336..376, y 168..184), the Time Room's way
+                         * (owner, 2026-11-18): the door is still reached from the left, along the strip at y 176 */
+#define VL_MENTOR_Y 194
+#define VL_MENTOR_DIR 1 /* down-left: towards the room */
 #define VL_DEMON_X 126 /* upstairs, by the stairs' head */
 #define VL_DEMON_Y 200
 #define VL_DEMON_DIR 0
@@ -116,10 +115,10 @@ int dw3_velvet_igor_head(FieldstgActor *actor, u32 *ot, s32 x, s32 y); /* defini
                          * player finds his back; he turns to talk) */
 #define VL_ETEMON_Y 284
 #define VL_ETEMON_DIR 5
-#define VL_SEPIK_X 170 /* upstairs beside the Demon Bell's keeper (owner, 2026-11-18), on the strip between the stairs'
-                        * head and the upper floor (free ground x 104..224 there), facing the player coming up */
-#define VL_SEPIK_Y 200
-#define VL_SEPIK_DIR 1
+#define VL_SEPIK_X 86 /* upstairs in the corner left of the Demon Bell's keeper (owner, 2026-11-18): off the way from
+                       * the stairs' head to the upper floor (free ground x 72..100 there) */
+#define VL_SEPIK_Y 214
+#define VL_SEPIK_DIR 7 /* down-right: towards the stairs' head */
 #define VL_IGOR_X 268 /* on the lower floor, on the carpet's far side from the door: the first figure the entry faces */
 #define VL_IGOR_Y 318
 #define VL_IGOR_DIR 7 /* towards the door */
