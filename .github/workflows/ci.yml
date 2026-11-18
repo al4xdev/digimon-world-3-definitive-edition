@@ -97,7 +97,7 @@ jobs:
       android: ${{ steps.areas.outputs.android }}
       data: ${{ steps.data.outputs.present }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0   # the areas need the base commit (the repository is a few MB)
 
@@ -133,7 +133,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: recursive   # psxstack at its pin (PSXSTACK_TOKEN: see the header)
           token: ${{ secrets.PSXSTACK_TOKEN || github.token }}
@@ -171,7 +171,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           submodules: recursive   # psxstack at its pin (PSXSTACK_TOKEN: see the header)
           token: ${{ secrets.PSXSTACK_TOKEN || github.token }}
@@ -203,7 +203,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0   # the port's version stamp (psxstack/cmake/version.cmake: git describe over this repository's tags)
           submodules: recursive   # psxstack at its pin (PSXSTACK_TOKEN: see the header)
@@ -228,7 +228,7 @@ jobs:
       # directory or under build/: readable from the run's artifacts, with the stack as exe+offset addresses.
       - name: Crash reports
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: crash-reports-port
           path: |
@@ -244,7 +244,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           submodules: recursive   # psxstack at its pin (PSXSTACK_TOKEN: see the header)
@@ -266,7 +266,7 @@ jobs:
 
       - name: Crash reports
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: crash-reports-mods
           path: |
@@ -287,7 +287,7 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           submodules: recursive   # psxstack at its pin (PSXSTACK_TOKEN: see the header)
@@ -342,7 +342,7 @@ jobs:
 
       - name: Crash reports
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: crash-reports-launcher
           path: |
@@ -361,7 +361,7 @@ jobs:
     env:
       WINEDEBUG: "-all"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           submodules: recursive   # psxstack at its pin (PSXSTACK_TOKEN: see the header)
@@ -405,7 +405,7 @@ jobs:
 
       - name: Crash reports
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: crash-reports-windows
           # Not build/**: the Wine prefix's dosdevices/z: links to /, which the glob cannot walk.
@@ -424,17 +424,17 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           submodules: recursive
           token: ${{ secrets.PSXSTACK_TOKEN || github.token }}
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Build ARM cross-compile image (armhf, cached)
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .ci-cd/portmaster
           file: .ci-cd/portmaster/Dockerfile.armhf
@@ -444,7 +444,7 @@ jobs:
           cache-to: type=gha,scope=armhf-builder,mode=max
 
       - name: Build ARM64 cross-compile image (aarch64, cached)
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .ci-cd/portmaster
           file: .ci-cd/portmaster/Dockerfile.aarch64
@@ -489,17 +489,17 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           submodules: recursive
           token: ${{ secrets.PSXSTACK_TOKEN || github.token }}
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Build Android toolchain image (cached)
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .ci-cd/android
           file: .ci-cd/android/Dockerfile
@@ -511,7 +511,7 @@ jobs:
       # build_android.sh compiles psxstack's HLSL to SPIR-V on the host before it enters Docker, so the job needs the
       # pinned dxc (scripts/setup.sh dxc) the appimage and windows jobs already install and cache.
       - name: Cached dxc (the renderer's shaders, HLSL to SPIR-V)
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             tools/dxc

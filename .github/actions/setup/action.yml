@@ -61,7 +61,7 @@ runs:
 
     - name: Data checkout (maintainers only)
       if: inputs.disc == 'true' && inputs.deploy-key != ''
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
       with:
         repository: ${{ github.repository_owner }}/dw2003-gamedata
         ssh-key: ${{ inputs.deploy-key }}
@@ -77,7 +77,7 @@ runs:
     # Every tool directory setup.sh can install: the ones this job's steps install exist and get saved; the others are
     # skipped (actions/cache saves whatever of the list exists).
     - name: Cached tools
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         path: |
           tools/binutils
@@ -110,7 +110,7 @@ runs:
     # newest run of this job (restore-keys) and saved under this commit's key.
     - name: Cached ccache
       if: inputs.ccache == 'true'
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         path: ~/.cache/ccache
         key: ccache-${{ inputs.cache }}-${{ runner.os }}-${{ github.sha }}
