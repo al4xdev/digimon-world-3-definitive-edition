@@ -64,10 +64,18 @@ LINES = [
 # actor's base.key1); map -1 matches any map. Found on the lab with tools/find_dri_agents.py (needs the disc): the DDNA
 # quests' researchers (Kazuki and Michael on 0x21D; Bob, Johann, Jimmy, Ken, Yuji, Yang). Their story's pig forms
 # ("Oink...", actors 157..161) are left out: a quest's state, not an agent.
+# The eight DRI Agents, each with his DDNA quest (.plan/tasks/dri-agents-unlock.md): (map, actor ID). Only these open
+# the Gauntlet: an actor of the same sprite elsewhere is an ordinary NPC. The agent's Rookie is read from his own talk
+# (the "joined" conditions), so it is not listed here.
 AGENTS = [
-    (-1, 43),  # every map it is on: 0x21d, 0x226, 0x22b, 0x22e, 0x258
-    (-1, 44),  # every map it is on: 0x21d, 0x258
-    (-1, 163),  # every map it is on: 0x258
+    (0x21D, 43),  # Kazuki, Patamon
+    (0x21D, 44),  # Michael, Renamon
+    (0x226, 43),  # Bob, Veemon
+    (0x22B, 43),  # Johann, Agumon
+    (0x22E, 43),  # Jimmy, Guilmon
+    (0x258, 43),  # Ken, Kotemon
+    (0x258, 44),  # Yuji, Kumamon
+    (0x258, 163),  # Yang, Monmon
 ]
 
 
@@ -258,7 +266,7 @@ def c_text(rows_, names):
               "/* (map, actor ID); map -1: any map. */",
               "const DefDriAgent def_dri_agents[] = {"]
     for m, a in AGENTS:
-        lines.append(f"    {{ {m}, {a} }},")
+        lines.append(f"    {{ {m if m < 0 else hex(m).upper().replace('0X', '0x')}, {a} }},")
     if not AGENTS:
         lines.append("    { 0, 0 }, /* none yet (a placeholder; the count is 0): tools/find_dri_agents.py on the lab */")
     lines += ["};", f"const int def_dri_agent_count = {len(AGENTS)};", ""]

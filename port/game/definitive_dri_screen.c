@@ -606,9 +606,123 @@ static void list_request(void) {
     fieldstg_stage.event_running = 1; /* the player stands still from the talk on */
 }
 
+/* ---- The agents' own DDNA quests (the owner's, 2026-11-17; .plan/tasks/dri-agents-unlock.md).
+ *
+ * In the game an agent gives his quest only inside a window of the party's level sum (below it he is "too busy", over
+ * it the party "doesn't need" his Digimon), so a strong party could never get it. Each talk with an agent rewrites his
+ * talk entries' conditions in the stage's data before the game picks the entry: the quest line (the entry that sets
+ * the quest flag) loses its level conditions, and the entries that hold the player off by level never match. The
+ * rewrite writes absolute values, so doing it on every talk is the same as doing it once, and a replay script (def_on
+ * 0) never gets here. The Gauntlet's list opens only once the agent's own Rookie has joined: his quest is done, or the
+ * Rookie was a starter, so the canonical quest and the simulator never share a talk. */
+typedef struct DriCondition { /* gamestate_conditions' entry (gamestate.c's GamestateCondition) */
+    u8 id;
+    u8 type;
+    u8 arg;
+} DriCondition;
+extern DriCondition gamestate_conditions[];
+
+#define DRI_FLAG_COND 0x70     /* gamestate_get_flag's type of a gamestate_conditions entry */
+#define DRI_COND_JOINED 0x11   /* cond_digimon 1: Rookie `arg` has joined */
+#define DRI_COND_JOIN 0x13     /* cond_digimon 3: Rookie `arg` joins (the hand-in's flag) */
+#define DRI_COND_LEVEL 0x15    /* cond_digimon 5: the party's level sum is at least arg * 15 + 30 */
+#define DRI_COND_UNJOINED 0x16 /* cond_digimon 6: Rookie `arg` has not joined */
+#define DRI_QUEST_FLAG_LO 0x600 /* the quest flags the agents' quest lines set (one per agent, 0x600..0x607) */
+#define DRI_QUEST_FLAG_HI 0x607
+#define DRI_ALWAYS 0x5000 /* a flag type gamestate_get_flag does not know: it holds whatever the value */
+#define DRI_NEVER 0x61FF  /* with value 1: progress == 511, never */
+
+/* The gamestate_conditions entry a (flag, value) pair checks, NULL when it is not a condition. */
+static const DriCondition *dri_condition(u16 flag) {
+    const DriCondition *c;
+
+    if (((flag >> 8) & ~1) != DRI_FLAG_COND) {
+        return NULL;
+    }
+    for (c = gamestate_conditions; c->id != 0xFF; c++) {
+        if (c->id == (flag & 0x1FF)) {
+            return c;
+        }
+    }
+    return NULL;
+}
+
+static int dri_sets_quest(const u16 *list) {
+    for (; list != NULL && *list != 0xFFFF; list += 2) {
+        if (*list >= DRI_QUEST_FLAG_LO && *list <= DRI_QUEST_FLAG_HI) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+/* The agent's talk with its level window lifted (see above). */
+static void dri_quest_open(const FieldstgPlacedActor *placed) {
+    FieldstgTalk *t;
+    u16 *p;
+    int quest;
+
+    for (t = placed->talks; t != NULL && (t->flags_required != NULL || t->flags_set != NULL || t->message != 0); t++) {
+        quest = dri_sets_quest(t->flags_set);
+        for (p = t->flags_required; p != NULL && *p != 0xFFFF; p += 2) {
+            const DriCondition *c = dri_condition(*p);
+
+            if (c == NULL || c->type != DRI_COND_LEVEL) {
+                continue;
+            }
+            if (quest) {
+                p[0] = DRI_ALWAYS;
+                p[1] = 1;
+            } else {
+                p[0] = DRI_NEVER; /* one never-pair is enough: the entry is out */
+                p[1] = 1;
+                break;
+            }
+        }
+    }
+}
+
+/* The agent's Rookie, read from his own talk (the joined / not joined / join conditions); -1: none (not an agent). */
+static int dri_rookie(const FieldstgPlacedActor *placed) {
+    const FieldstgTalk *t;
+    const u16 *p;
+
+    for (t = placed->talks; t != NULL && (t->flags_required != NULL || t->flags_set != NULL || t->message != 0); t++) {
+        const u16 *lists[2] = { t->flags_required, t->flags_set };
+        int k;
+
+        for (k = 0; k < 2; k++) {
+            for (p = lists[k]; p != NULL && *p != 0xFFFF; p += 2) {
+                const DriCondition *c = dri_condition(*p);
+
+                if (c != NULL && (c->type == DRI_COND_JOINED || c->type == DRI_COND_JOIN || c->type == DRI_COND_UNJOINED) &&
+                    c->arg < 8) {
+                    return c->arg;
+                }
+            }
+        }
+    }
+    return -1;
+}
+
 int def_dri_talk(s32 map, s32 actor) {
-    if (!def_dri_agent(map, actor) || dri.open || dri.request || dri_sim.pending ||
-        gamestate_data.progress == DRI_PROGRESS_SPECIAL) {
+    FieldstgActor *agent;
+    int rookie = -1;
+
+    if (!def_dri_agent(map, actor)) {
+        return 0;
+    }
+    agent = (FieldstgActor *)heap_objects.find(5, actor, 1);
+    if (agent != NULL && agent->placed != NULL) {
+        dri_quest_open(agent->placed);
+        rookie = dri_rookie(agent->placed);
+    }
+    if (dri.open || dri.request || dri_sim.pending || gamestate_data.progress == DRI_PROGRESS_SPECIAL) {
+        return 0;
+    }
+    if (rookie < 0 || gamestate_data.digimon[rookie].joined == 0) {
+        port_log("dri: the DRI Agent %d of map 0x%X: his DDNA quest first (Rookie %d not joined), no list", actor, map,
+                 rookie);
         return 0;
     }
     port_log("dri: the DRI Agent %d of map 0x%X: its own talk first, the list after it", actor, map);

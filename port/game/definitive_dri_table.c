@@ -20,8 +20,13 @@ const int def_dri_challenge_count = 5;
 
 /* (map, actor ID); map -1: any map. */
 const DefDriAgent def_dri_agents[] = {
-    { -1, 43 },
-    { -1, 44 },
-    { -1, 163 },
+    { 0x21D, 43 },
+    { 0x21D, 44 },
+    { 0x226, 43 },
+    { 0x22B, 43 },
+    { 0x22E, 43 },
+    { 0x258, 43 },
+    { 0x258, 44 },
+    { 0x258, 163 },
 };
-const int def_dri_agent_count = 3;
+const int def_dri_agent_count = 8;
