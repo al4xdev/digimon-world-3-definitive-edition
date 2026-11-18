@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<defs><style>text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif}</style><symbol id="i-fire" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0,-15 C5,-8 11,-3 10,5 C9.5,11 5,15 0,15 C-5,15 -10,11 -10,5 C-10,-1 -6,-4 -4,-9 C-2,-4 0,-2 2,-1 C4,-6 3,-10 0,-15 Z"/></symbol>
+<symbol id="i-water" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0,-15 C5,-7 10,-1 10,5 A10,10 0 0 1 -10,5 C-10,-1 -5,-7 0,-15 Z"/></symbol>
+<symbol id="i-ice" viewBox="-16 -16 32 32"><g stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"><path transform="rotate(0)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(60)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(120)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(180)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(240)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/><path transform="rotate(300)" d="M0,0 V-14 M-4,-12 L0,-8 L4,-12"/></g></symbol>
+<symbol id="i-wind" viewBox="-16 -16 32 32"><g stroke="currentColor" stroke-width="2.8" stroke-linecap="round" fill="none"><path d="M-14,-5 H4 C9,-5 10,-12 5,-12 C2,-12 1,-9 2,-8"/><path d="M-14,2 H9 C14,2 14,9 9,9 C6,9 5,6 6,5"/><path d="M-11,9 H-1"/></g></symbol>
+<symbol id="i-thunder" viewBox="-16 -16 32 32"><path fill="currentColor" d="M4,-15 L-9,2 H-1 L-4,15 L9,-3 H1 Z"/></symbol>
+<symbol id="i-machine" viewBox="-16 -16 32 32"><circle r="11" fill="none" stroke="currentColor" stroke-width="5" stroke-dasharray="4.32 4.32"/><path fill="currentColor" fill-rule="evenodd" d="M9,0 A9,9 0 1 0 -9,0 A9,9 0 1 0 9,0 Z M3.5,0 A3.5,3.5 0 1 1 -3.5,0 A3.5,3.5 0 1 1 3.5,0 Z"/></symbol>
+<symbol id="i-dark" viewBox="-16 -16 32 32"><path fill="currentColor" d="M0.00,-15.00 L3.64,-5.02 L14.27,-4.64 L5.90,1.92 L8.82,12.14 L0.00,6.20 L-8.82,12.14 L-5.90,1.92 L-14.27,-4.64 L-3.64,-5.02 Z"/></symbol>
+<radialGradient id="bg" cx="50%" cy="42%" r="70%"><stop offset="0" stop-color="#2a2f52"/><stop offset=".55" stop-color="#181c2a"/><stop offset="1" stop-color="#0f1118"/></radialGradient>
+<radialGradient id="halo" cx="50%" cy="50%" r="50%"><stop offset=".55" stop-color="#9085e9" stop-opacity=".0"/><stop offset=".78" stop-color="#9085e9" stop-opacity=".35"/><stop offset="1" stop-color="#9085e9" stop-opacity="0"/></radialGradient>
+<linearGradient id="three" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#c9c4ff"/></linearGradient>
+<linearGradient id="slash" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#ef6a3a" stop-opacity="0"/><stop offset=".35" stop-color="#ef6a3a"/><stop offset=".7" stop-color="#ffd2b8"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+</defs>
+<rect width="512" height="512" rx="96" fill="url(#bg)"/>
+<circle cx="256" cy="256" r="200" fill="url(#halo)"/>
+<circle cx="256" cy="256" r="168" fill="none" stroke="#9085e9" stroke-opacity=".55" stroke-width="4"/>
+<circle cx="256" cy="256" r="180" fill="none" stroke="#9085e9" stroke-opacity=".18" stroke-width="2" stroke-dasharray="3 9"/>
+<circle cx="256.0" cy="88.0" r="38.0" fill="#161a26" stroke="#4a4f6e" stroke-width="3.5"/>
+<use href="#i-fire" x="237.9" y="70.0" width="36.1" height="36.1" color="#ef6a3a"/>
+<circle cx="415.8" cy="204.1" r="42.0" fill="#161a26" stroke="#4a4f6e" stroke-width="3.5"/>
+<use href="#i-water" x="382.4" y="187.7" width="32.8" height="32.8" color="#3d8fe8"/>
+<use href="#i-ice" x="416.4" y="187.7" width="32.8" height="32.8" color="#8fd3f0"/>
+<circle cx="354.7" cy="391.9" r="38.0" fill="#161a26" stroke="#4a4f6e" stroke-width="3.5"/>
+<use href="#i-wind" x="336.7" y="373.9" width="36.1" height="36.1" color="#3fbf7f"/>
+<circle cx="157.3" cy="391.9" r="42.0" fill="#161a26" stroke="#4a4f6e" stroke-width="3.5"/>
+<use href="#i-thunder" x="123.8" y="375.5" width="32.8" height="32.8" color="#f2c230"/>
+<use href="#i-machine" x="157.9" y="375.5" width="32.8" height="32.8" color="#a7adb8"/>
+<circle cx="96.2" cy="204.1" r="38.0" fill="#161a26" stroke="#4a4f6e" stroke-width="3.5"/>
+<use href="#i-dark" x="78.2" y="186.0" width="36.1" height="36.1" color="#a58bf5"/>
+<text x="250" y="340" text-anchor="middle" font-size="250" font-weight="900" fill="url(#three)" font-style="italic">3</text>
+<path d="M168,338 L352,168" stroke="url(#slash)" stroke-width="13" stroke-linecap="round"/>
+</svg>
