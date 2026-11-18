@@ -146,7 +146,8 @@ int main(void) {
     hold_rares(4, 4, 0, 0);
     check("other Cores than its own: refused", def_bm_replica_buy(1) == DEF_BM_NO_CORES && def_record_rare(1) == 4 &&
                                                    gamestate_data.money == 1000000);
-    check("no such replica: refused", def_bm_replica_buy(2) == DEF_BM_NO_CORES && def_bm_replica_buy(-1) == DEF_BM_NO_CORES);
+    check("no such replica: refused", def_bm_replica_buy(def_bm_replica_rows()) == DEF_BM_NO_CORES &&
+                                          def_bm_replica_buy(-1) == DEF_BM_NO_CORES);
 
     /* ---- Resale 0 and the bit's end */
     gamestate_data.items[341] = 1;
@@ -160,6 +161,28 @@ int main(void) {
     gamestate_data.items_equipped[341] = 0;
     def_bm_sweep();
     check("none held any more: the bit clears and the ID resells again", !def_record_replica(0) && !def_bm_resale_zero(341));
+
+    /* ---- The Hunter's Mark: the list's last row, DEF_HUNT_MARK_BITS and two different rare items (the ones held most) */
+    def_bestiary_reset();
+    gamestate_data.items[DEF_HUNT_MARK_ITEM] = 0;
+    gamestate_data.money = 1000000;
+    hold_rares(1, 0, 0, 0);
+    check("the Mark is the row after the replicas; one rare item is not enough",
+          def_bm_replica_rows() == def_replica_count + 1 && def_bm_replica_check(def_replica_count, picks) == DEF_BM_NO_CORES &&
+              def_hunt_mark_mult(3) == 3);
+    hold_rares(5, 2, 0, 9);
+    check("the two held most, each a different one", def_bm_replica_pick(def_replica_count, picks) && picks[0] == 3 &&
+                                                         picks[1] == 0);
+    gamestate_data.money = DEF_HUNT_MARK_BITS - 1;
+    check("short of Bits: refused", def_bm_replica_buy(def_replica_count) == DEF_BM_NO_BITS &&
+                                        gamestate_data.items[DEF_HUNT_MARK_ITEM] == 0);
+    gamestate_data.money = 1000000;
+    check("bought: Bits and the two rare items go, the item comes, rewards double",
+          def_bm_replica_buy(def_replica_count) == DEF_BM_OK && gamestate_data.money == 1000000 - DEF_HUNT_MARK_BITS &&
+              def_record_rare(3) == 8 && def_record_rare(0) == 4 && gamestate_data.items[DEF_HUNT_MARK_ITEM] == 1 &&
+              def_hunt_mark_mult(3) == 6 && def_bm_replica_owned(def_replica_count));
+    check("only one: a second is refused", def_bm_replica_buy(def_replica_count) == DEF_BM_OWNED);
+    gamestate_data.items[DEF_HUNT_MARK_ITEM] = 0;
 
     /* ---- The card record */
     def_bestiary_reset();

@@ -18,6 +18,11 @@ int def_on(void) {
     return on;
 }
 
+/* The Hunter's Mark (definitive_market.c): not held here. */
+int def_hunt_mark_mult(int n) {
+    return n;
+}
+
 RecordsState records_state;
 unsigned char ststatus_map_areas[0xF0];
 

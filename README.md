@@ -1861,6 +1861,17 @@ idle step: `def_story_frame`, `dw3_velvet_frame`, `dw3_velvet_draw`); `src/field
 - Win: a crystal (cap `DEF_SUPER_CRYSTAL_CAP` 99), the hunt ends, `def_super_won_take` feeds the panel.
   `def_super_crystal_sell` returns the row's price.
 - Rare chain inside the territory starts at 2 wins, sure at 6; a party flee against a regional Rare there is 50%.
+- **Toughness** (2026-11-18): the battle's HP is an `s16`, so a bar cannot be doubled; every hit of the player on a Super Rare
+  (not the tutorial's Ogremon) does `DEF_SUPER_DAMAGE_PCT` 50% (`def_super_damage`, hooked after `wfightmn_cap_damage` in
+  `fightstg_8008D3B4.c`): each 25% before the flee takes twice as long.
+- **The Blast opens at the Ogremon** (`blast_unlocked` in `definitive.c`): the button and the DV Plug only work in the tutorial
+  hunt's battle and for good once it is won. Igor gives the Plug on his Seiryu visit (`TALK05` 20, `def_story_igor_done`).
+  **The blessed Blast** (the tutorial's battle, or the first Blast of the game: story bit `DEF_STORY_BLAST_FIRST`): the Plug
+  costs no TP, the form carries `DEF_SUPER_TUTORIAL_BOOST_PCT` 50% more and a Super Rare target no longer flees from that battle.
+- **The Hunter's Mark** (key item 27, a Japanese tag slot the disc never gives; `ITMNAM/ITMINF 27`): the Black Market's replicas
+  list ends with it, `DEF_HUNT_MARK_BITS` 50000 and `DEF_HUNT_MARK_RARES` 2 different rare items (the two held most). Holding
+  it a Rare Target leaves 2x its item (`rare_won`) and a Super Rare 2x its crystals (`def_hunt_mark_mult`). Tests:
+  `tests/port/definitive_market.py`.
 
 ### Screen, compass, call (`definitive_superhunt_screen.c`, `def_superhunt_frame` in the field's idle step)
 

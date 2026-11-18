@@ -991,6 +991,9 @@ void def_story_igor_done(void) {
     }
     if (def_story_room_intro()) {
         def_record_set_story(DEF_STORY_SEIRYU_ROOM);
+        if (gamestate_data.items[DEF_PLUG_ITEM] < DEF_BM_ITEM_CAP) {
+            gamestate_data.items[DEF_PLUG_ITEM]++; /* Igor's gift for the Ogremon hunt */
+        }
         port_log("story: frame %ld: Igor showed the room again: the Sepikmon takes his place", port_frames);
         dw3_velvet_cut(DW3_VELVET_PULL_SEPIK); /* the screen cuts: the room as its level has it, he calls over */
         return;

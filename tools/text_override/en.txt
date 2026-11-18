@@ -32,7 +32,7 @@ TALK05 16: <7>Sepikmon<7>Ogremon is tamed. The<1>cold wind is gone.<2,2><3>And y
 # the real world Ivy and Teddy ask why Junior froze ($Open*: the scene's event texts 1..4, said anew in its second half).
 TALK05 18: <7>Igor<7>Ah... welcome, my<1>guest. Fear not. Your<1>body waits for you.<2,2><3>This is the Velvet<1>Room. It lies between<1>the wire and a dream.<2,2><3>I am Igor. I attend<1>those who stand at a<1>crossroads. Like you.<2,2><3>Three packs, and you<1>love every Digimon in<1>them. A fine trouble.<2,2><3>Know this: no bond is<1>ever wasted. Two forms<1>can join into one.<2,2><3>Take this key. When<1>the time is right, a<1>blue door will open.<2,2><3>Now go. Your friends<1>grow impatient. We<1>shall meet again...<2,2>
 TALK05 19: <7>Igor<7>Welcome back, my<1>guest. Your partners'<1>bonds are still faint.<2,2>
-TALK05 20: <7>Igor<7>Welcome back, my<1>guest. Yes... you felt<1>the cold wind too.<2,2><3>The key I gave you<1>has found its door.<1>The room is yours.<2,2><3>From now on it will<1>grow with your road.<1>Guests will gather.<2,2><3>Each comes when your<1>story calls for them.<1>One already waits.<2,2><3>He knows where your<1>Leader went. Listen<1>to him well...<2,2>
+TALK05 20: <7>Igor<7>Welcome back, my<1>guest. Yes... you felt<1>the cold wind too.<2,2><3>The key I gave you<1>has found its door.<1>The room is yours.<2,2><3>From now on it will<1>grow with your road.<1>Guests will gather.<2,2><3>One more gift: a DV<1>Plug. Out there it is<1>a cursed catalyst.<2,2><3>This one is clean. It<1>costs you no TP, and<1>it burns brighter.<2,2><3>Use it on the Ogremon,<1>when it becomes too<1>much for you.<2,2><3>Each guest comes when<1>your story calls for<1>them. One already waits.<2,2><3>He knows where your<1>Leader went. Listen<1>to him well...<2,2>
 $OpenIvy1: <7>Ivy:<7>Junior? Junior!<1>Hello? Earth to<1>Junior!<2,2>
 $OpenTeddy: <7>Teddy<7>Just stood there,<1>eyes wide open, for<1>a whole minute.<2,2><3>Not even blinking.<1>Creepy...<2,2>
 $OpenJunior: <7>Junior:<7>Huh? I was... in a<1>blue room. A man in<1>a suit was there.<2,2><3>He gave me a key...<2,2>
@@ -428,6 +428,7 @@ $BMArmed: A replica resells for 0 Bits. Buy it?
 $BMNoRoom: No room: a material holds 99 at most.
 $BMNoBits: Not enough Bits.
 $BMBagFull: You can't carry any more of it.
+$BMOwned: You already hold the Mark.
 $BMKeysTrade: ↑↓ Choose   L1/R1 Tab<1>× Trade   △ Back
 $BMKeysPick: ↑↓ Material<1>× Trade one   △ Back
 $BMKeysReplica: ↑↓ Choose   L1/R1 Tab<1>× Buy   △ Back
@@ -956,3 +957,7 @@ $GrNode12: Slow and steady wins the<1>race. Unless a blue shell<1>shows up. Save
 TALK01 3: <7>Guardromon<7>Save officer<1>Guardromon, online.<2,2><3>Save, or warp to a<1>node you've met?<1>Talk to me.<2,2>
 TALK05 395: <7>Guardromon<7>Guardian Net: all<1>green. Need to save,<1>or to warp?<2,2><3>Walk up to any of<1>us. We share our<1>nodes with tamers.<2,2>
 TALK06 361: <7>Guardromon<7>Another tamer! My<1>buffer is ready.<2,2><3>Save here, or warp<1>to any node you<1>have met.<2,2>
+
+# The Hunter's Mark (Black Market, definitive_market.c): item 27, a Japanese tag slot the US disc never gives.
+ITMNAM 27: Hunter's Mark
+ITMINF 27: Rare hunts: 2x Cores and crystals

@@ -39,7 +39,7 @@
 extern const unsigned char def_str_BMTitle[], def_str_BMTabTrade[], def_str_BMTabReplica[], def_str_BMGive[],
     def_str_BMGet[], def_str_BMHeld[], def_str_BMBits[], def_str_BMNone[], def_str_BMNoneWhere[], def_str_BMTraded[],
     def_str_BMBought[], def_str_BMArmed[], def_str_BMNoRoom[], def_str_BMNoBits[],
-    def_str_BMBagFull[], def_str_BMKeysTrade[], def_str_BMKeysPick[], def_str_BMKeysReplica[], def_str_BMKeysArmed[],
+    def_str_BMBagFull[], def_str_BMOwned[], def_str_BMKeysTrade[], def_str_BMKeysPick[], def_str_BMKeysReplica[], def_str_BMKeysArmed[],
     def_str_BMHeadCores[], def_str_BMHeadMats[], def_str_BMHeadReplicas[], def_str_BMCoreTrade[], def_str_BMCoreForge[],
     def_str_BMCoreKeep[], def_str_BMKindWeapon[], def_str_BMKindTwo[], def_str_BMKindArmor[], def_str_BMKindAcc[],
     def_str_BMWears[], def_str_BMWearsAll[], def_str_BMWearsNone[], def_str_BMTakes[], def_str_BMPlus[], def_str_BMMinus[],
@@ -241,7 +241,7 @@ static void bm_collect(s32 keep) {
     s32 t;
 
     if (bm_ui.tab == BM_REPLICA) {
-        bm_ui.rows = def_replica_count < DEF_REPLICAS ? def_replica_count : DEF_REPLICAS;
+        bm_ui.rows = def_bm_replica_rows();
     } else {
         bm_ui.rows = 0;
         for (t = 0; t < def_hunt_target_count && t < DEF_HUNT_RARES; t++) {
@@ -273,6 +273,8 @@ static const unsigned char *bm_note_text(void) {
         return def_str_BMNoBits;
     case DEF_BM_BAG_FULL:
         return def_str_BMBagFull;
+    case DEF_BM_OWNED:
+        return def_str_BMOwned;
     }
     return NULL;
 }
@@ -452,7 +454,7 @@ static void bm_fill_replica(void) {
         }
         return;
     }
-    item = def_replicas[r].item;
+    item = def_bm_replica_item(r);
     bm_ui.lines[0]->set_text(bm_ui.lines[0], cdload_module.files.get_file(BM_FILE_INFO), item);
     bm_ui.lines[0]->set_palette(bm_ui.lines[0], BM_PAL_TEXT);
     bm_check_width(0);
@@ -526,13 +528,13 @@ static void bm_fill(void) {
             bm_set(bm_ui.names[i], bm_row_text[i], palette);
         } else {
             /* a replica, green once the player has one; its price grey above the Bits held */
-            if (palette == BM_PAL_TEXT && def_record_replica(k)) {
+            if (palette == BM_PAL_TEXT && def_bm_replica_owned(k)) {
                 palette = BM_PAL_GOOD;
             }
-            bm_ui.names[i]->set_text(bm_ui.names[i], cdload_module.files.get_file(BM_FILE_ITEMS), def_replicas[k].item);
+            bm_ui.names[i]->set_text(bm_ui.names[i], cdload_module.files.get_file(BM_FILE_ITEMS), def_bm_replica_item(k));
             bm_ui.names[i]->set_palette(bm_ui.names[i], palette);
-            bm_put_number(bm_count_text[i], &p, sizeof(bm_count_text[i]), def_replicas[k].bits);
-            right = gamestate_data.money < def_replicas[k].bits ? BM_PAL_DIM : BM_PAL_TEXT;
+            bm_put_number(bm_count_text[i], &p, sizeof(bm_count_text[i]), def_bm_replica_bits(k));
+            right = gamestate_data.money < def_bm_replica_bits(k) ? BM_PAL_DIM : BM_PAL_TEXT;
         }
         bm_set_right(bm_ui.counts[i], bm_count_text[i], k == sel && right == BM_PAL_TEXT ? BM_PAL_HOT : right);
     }
@@ -557,7 +559,7 @@ static void bm_fill(void) {
     bm_put_number(bm_bits_text, &p, sizeof(bm_bits_text), gamestate_data.money);
     def_glyph_put(bm_bits_text, &p, sizeof(bm_bits_text), def_str_BMBits);
     bm_set_right(bm_ui.bits, bm_bits_text,
-                 bm_ui.tab == BM_REPLICA && bm_ui.sel < bm_ui.rows && gamestate_data.money < def_replicas[bm_ui.sel].bits
+                 bm_ui.tab == BM_REPLICA && bm_ui.sel < bm_ui.rows && gamestate_data.money < def_bm_replica_bits(bm_ui.sel)
                      ? BM_PAL_HOT
                      : BM_PAL_TEXT);
     bm_ui.cursor->set_pos(bm_ui.cursor, BM_LIST_X + 4, BM_TOP + (sel - top) * BM_LINE);

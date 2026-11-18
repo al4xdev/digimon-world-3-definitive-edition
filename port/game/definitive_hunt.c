@@ -307,7 +307,7 @@ static void rare_won(int t) {
     if (t < 0 || t >= def_hunt_target_count) {
         return;
     }
-    def_record_rare_add(t, 1);
+    def_record_rare_add(t, def_hunt_mark_mult(1)); /* the Hunter's Mark: double */
     port_log("hunt: rare %d (now %d)", t, def_record_rare(t));
     if ((line = line_new()) != NULL) {
         def_glyph_put(line, &p, DEF_HUNT_LINE_SIZE, def_str_HuntRarePrefix);

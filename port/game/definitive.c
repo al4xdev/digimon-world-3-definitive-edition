@@ -77,6 +77,18 @@ static unsigned char chosen_used;             /* this battle's Chosen Evolution 
 static unsigned char overheat_sealed[3];
 static unsigned char boost_off; /* blast_record: the form's stats as they are, without the boost */
 static unsigned char boost_logged; /* slots whose boost the log named this battle */
+static unsigned char blessed_now;  /* this battle's Blast was the blessed one (the flag is already set by then) */
+
+/* The Blast opens at the Ogremon (owner, 2026-11-18, so nobody sets it off by accident before the tutorial): in the tutorial
+ * hunt's battle, and for good once that hunt is won. */
+static int blast_unlocked(void) {
+    return def_super_tutorial_battle() || def_super_done() > DEF_SUPER_TUTORIAL;
+}
+
+/* The tutorial hunt's battle, or the first Blast of the game not yet set off. */
+static int blast_blessed(void) {
+    return def_super_tutorial_battle() || !def_record_story(DEF_STORY_BLAST_FIRST);
+}
 
 void def_log_begin(void) {
     int i;
@@ -89,6 +101,7 @@ void def_log_begin(void) {
     chosen_used = 0;
     memset(overheat_sealed, 0, sizeof(overheat_sealed));
     boost_logged = 0;
+    blessed_now = 0;
     def_blast_heat_begin();
     def_callout_show(DEF_CALLOUT_NONE, 0);
     def_hunt_reward_done(); /* PRD 4 layer B: a reward a results screen never showed does not carry over */
@@ -829,6 +842,12 @@ void def_blast_started(s32 id) {
         port_log("blast: digimon %d took its Chosen Evolution", (int)id);
         return;
     }
+    if (blast_blessed()) {
+        blessed_now = 1;
+        def_super_blast_note();
+        def_record_set_story(DEF_STORY_BLAST_FIRST);
+        port_log("blast: digimon %d took the blessed Blast", (int)id);
+    }
     blast_cursed |= 1u << id;
     blast_record(id, blast_step_taken == 0xFF ? -1 : blast_step_taken);
     port_log("blast: digimon %d took its Blast form (step %d, %d forms recorded)", (int)id,
@@ -843,7 +862,7 @@ int def_blast_boost_pct(void) {
     if (def_blast_chosen_mode()) {
         return DEF_CHOSEN_BOOST_PCT;
     }
-    return def_record_blast_boost() * DEF_BLAST_BOOST_STEP;
+    return def_record_blast_boost() * DEF_BLAST_BOOST_STEP + ((blessed_now || def_super_tutorial_battle()) ? DEF_SUPER_TUTORIAL_BOOST_PCT : 0);
 }
 
 /* fightstg_rules_get_stats, the party's side: a member in its Blast or Chosen form fights with the boost on its five
@@ -1026,7 +1045,7 @@ int def_blast_plug(void) {
 
     /* after the quest the Plug is a revive item instead (def_blast_plug_revive, through the game's item 0x46 path) */
     if (!def_on() || id < 0 || id >= DEF_GAUGE_SLOTS || m->hp <= 0 || def_purify_fighting() ||
-        def_blast_chosen_mode()) {
+        def_blast_chosen_mode() || !blast_unlocked()) {
         return 0;
     }
     /* the statuses that refuse a Blast leave the Plug the game's own (+gauge, capped under full) */
@@ -1034,7 +1053,8 @@ int def_blast_plug(void) {
         return 0;
     }
     r = gamestate_data.funcs.get_record(id);
-    cost = r->stats.values[1] < DEF_BLAST_PLUG_TP ? r->stats.values[1] : DEF_BLAST_PLUG_TP;
+    /* Igor's Plug is clean for the blessed Blast: no TP taken, nothing for the quest to give back */
+    cost = blast_blessed() ? 0 : r->stats.values[1] < DEF_BLAST_PLUG_TP ? r->stats.values[1] : DEF_BLAST_PLUG_TP;
     r->stats.values[1] -= (s16)cost;
     def_record_blast_owe(id, cost); /* the quest gives it back */
     records_state.gauges[id] = DEF_GAUGE_MAX;
@@ -1070,6 +1090,9 @@ int def_blast_ready(void) {
     }
     /* the statuses that refuse Digivolve refuse the Blast too (8: no Fight/Tech/DV; 0x20: no digivolving) */
     /* and no Blast in a purification: the party faces its dark forms without them */
+    if (!blast_unlocked()) {
+        return 0;
+    }
     return def_on() && id >= 0 && id < DEF_GAUGE_SLOTS && records_state.gauges[id] >= DEF_GAUGE_MAX && !m->blasted &&
            m->hp > 0 && !(m->status & (8 | 0x20)) && !def_purify_fighting();
 }

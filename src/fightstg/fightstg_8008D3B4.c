@@ -8270,6 +8270,9 @@ void fightstg_action_run(u8 side, s32 id) {
         fightstg_action.damage = wfightmn_cap_damage(side, fightstg_action.damage,
                                                    fightstg_action.effects[9] ? fightstg_action.hit_count : 0);
     }
+#ifdef PC_PORT
+    fightstg_action.damage = def_super_damage(side, fightstg_action.damage); /* a Super Rare takes half (the hunt's rhythm) */
+#endif
 }
 
 /* Sets the frames of this tick (frames) by the battle speed. */

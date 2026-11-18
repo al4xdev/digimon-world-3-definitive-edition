@@ -94,8 +94,62 @@ int def_bm_exchange(int rare, int common) {
 }
 
 /* ---- The Legendary Replicas */
+int def_hunt_mark_on(void) {
+    return def_on() && gamestate_data.items[DEF_HUNT_MARK_ITEM] > 0;
+}
+
+int def_hunt_mark_mult(int n) {
+    return def_hunt_mark_on() ? n * 2 : n;
+}
+
+int def_bm_replica_rows(void) {
+    return (def_replica_count < DEF_REPLICAS ? def_replica_count : DEF_REPLICAS) + 1;
+}
+
+static int is_mark(int r) {
+    return r == (def_replica_count < DEF_REPLICAS ? def_replica_count : DEF_REPLICAS);
+}
+
+int def_bm_replica_item(int r) {
+    return is_mark(r) ? DEF_HUNT_MARK_ITEM : def_replicas[r].item;
+}
+
+int def_bm_replica_bits(int r) {
+    return is_mark(r) ? DEF_HUNT_MARK_BITS : def_replicas[r].bits;
+}
+
+int def_bm_replica_owned(int r) {
+    return is_mark(r) ? gamestate_data.items[DEF_HUNT_MARK_ITEM] > 0 : def_record_replica(r);
+}
+
+/* The Mark takes the rare items the player holds the most of (the ones he can best spare), each a different one. */
+static int mark_pick(int picks[DEF_BM_REPLICA_RARES]) {
+    int k, t, best, all = 1;
+
+    for (k = 0; k < DEF_BM_REPLICA_RARES; k++) {
+        best = -1;
+        for (t = 0; t < def_hunt_target_count && t < DEF_HUNT_RARES; t++) {
+            int again = 0, j;
+
+            for (j = 0; j < k; j++) {
+                again |= picks[j] == t;
+            }
+            if (!again && def_record_rare(t) > 0 && (best < 0 || def_record_rare(t) > def_record_rare(best))) {
+                best = t;
+            }
+        }
+        picks[k] = best;
+        all &= best >= 0;
+    }
+    return all;
+}
+
 int def_bm_replica_pick(int r, int picks[DEF_BM_REPLICA_RARES]) {
     int k, all = 1;
+
+    if (is_mark(r)) {
+        return mark_pick(picks);
+    }
 
     for (k = 0; k < DEF_BM_REPLICA_RARES; k++) {
         picks[k] = r >= 0 && r < def_replica_count ? def_replicas[r].cores[k] : -1;
@@ -108,13 +162,19 @@ int def_bm_replica_check(int r, int picks[DEF_BM_REPLICA_RARES]) {
     if (!def_on()) {
         return DEF_BM_OFF;
     }
-    if (r < 0 || r >= def_replica_count || r >= DEF_REPLICAS || !def_bm_replica_pick(r, picks)) {
+    if (r < 0 || r >= def_bm_replica_rows()) {
         return DEF_BM_NO_CORES;
     }
-    if (gamestate_data.money < def_replicas[r].bits) {
+    if (is_mark(r) && gamestate_data.items[DEF_HUNT_MARK_ITEM] > 0) {
+        return DEF_BM_OWNED;
+    }
+    if (!def_bm_replica_pick(r, picks)) {
+        return DEF_BM_NO_CORES;
+    }
+    if (gamestate_data.money < def_bm_replica_bits(r)) {
         return DEF_BM_NO_BITS;
     }
-    if (gamestate_data.items[def_replicas[r].item] >= DEF_BM_ITEM_CAP) {
+    if (gamestate_data.items[def_bm_replica_item(r)] >= DEF_BM_ITEM_CAP) {
         return DEF_BM_BAG_FULL;
     }
     return DEF_BM_OK;
@@ -129,10 +189,12 @@ int def_bm_replica_buy(int r) {
     for (k = 0; k < DEF_BM_REPLICA_RARES; k++) {
         def_record_rare_add(picks[k], -1);
     }
-    gamestate_data.money -= def_replicas[r].bits;
-    gamestate_data.items[def_replicas[r].item]++;
-    def_record_replica_set(r, 1);
-    port_log("market: replica %d (item %d) for %d Bits and rares %d, %d", r, def_replicas[r].item, def_replicas[r].bits,
+    gamestate_data.money -= def_bm_replica_bits(r);
+    gamestate_data.items[def_bm_replica_item(r)]++;
+    if (!is_mark(r)) {
+        def_record_replica_set(r, 1);
+    }
+    port_log("market: replica %d (item %d) for %d Bits and rares %d, %d", r, def_bm_replica_item(r), def_bm_replica_bits(r),
              picks[0], DEF_BM_REPLICA_RARES > 1 ? picks[DEF_BM_REPLICA_RARES - 1] : -1);
     return DEF_BM_OK;
 }

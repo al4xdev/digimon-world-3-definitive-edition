@@ -46,6 +46,12 @@ int def_super_reward(int amount) {
     return amount;
 }
 
+
+/* The Hunter's Mark (definitive_market.c): not held here, a reward is as it was. */
+int def_hunt_mark_mult(int n) {
+    return n;
+}
+
 RecordsState records_state;
 unsigned char ststatus_map_areas[0xF0];
 

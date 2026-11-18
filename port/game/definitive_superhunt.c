@@ -46,6 +46,7 @@ static struct {
     short hp_max;        /* its full HP in the battle's units (Super Hard raises it: def_super_hp) */
     signed char won;     /* a hunt just won + 1, for the field's panel (def_super_won_take); 0: none */
     signed char first;   /* that win was the hunt's first: it raised done, so it unlocked a skin */
+    signed char blasted; /* a Blast was set off in the tutorial battle: the target stays to the end */
 } run;
 
 /* ---- The map graph. */
@@ -391,6 +392,7 @@ int def_super_step(int map, int x, int y) {
         return 0;
     }
     run.battle = 1;
+    run.blasted = 0;
     port_log("super: hunt %d, the target found on map 0x%X (HP %d left, battle %d)", st.active, map, def_super_hp_left(),
              st.meets + 1);
     return 1;
@@ -439,8 +441,28 @@ int def_super_hp_start(int max_hp) {
     return run.hp_start;
 }
 
+int def_super_tutorial_battle(void) {
+    return def_super_battle_ready() && st.active == DEF_SUPER_TUTORIAL;
+}
+
+void def_super_blast_note(void) {
+    if (def_super_battle_ready()) {
+        run.blasted = 1;
+        port_log("super: the blessed Blast is up: the target will not flee");
+    }
+}
+
+/* The player's hit on a Super Rare: its share (DEF_SUPER_DAMAGE_PCT), never to nothing. The tutorial's hits are whole. */
+int def_super_damage(int side, int damage) {
+    if (side != 0 || damage <= 0 || !def_super_battle_ready() || st.active == DEF_SUPER_TUTORIAL || !def_on()) {
+        return damage;
+    }
+    damage = damage * DEF_SUPER_DAMAGE_PCT / 100;
+    return damage < 1 ? 1 : damage;
+}
+
 int def_super_should_flee(int hp_now) {
-    if (!def_super_battle_ready() || hp_now <= 0) {
+    if (!def_super_battle_ready() || hp_now <= 0 || run.blasted) {
         return 0;
     }
     return (run.hp_start - hp_now) * 100 >= run.hp_max * DEF_SUPER_FLEE_PCT;
@@ -456,7 +478,7 @@ void def_super_battle_end(int result, int hp) {
     run.battle = 0;
     run.set = 0;
     if (result == 1 || hp <= 0) {
-        def_super_crystal_add(hunt, 1);
+        def_super_crystal_add(hunt, def_hunt_mark_mult(1)); /* the Hunter's Mark: double */
         run.first = hunt == st.done && st.done < DEF_SUPER_COUNT;
         if (run.first) {
             st.done++;

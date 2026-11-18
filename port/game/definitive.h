@@ -256,6 +256,7 @@ void def_gauges_decode(const unsigned char in[DEF_GAUGE_SLOTS * 2], short out[DE
 /* The DV Plug (item 76), the cursed catalyst: one use fills the acting Digimon's gauge and sets the Blast off at once
  * (the game's gauge-full event), and takes this many TP (GamestateStats.values[1]; all it has when it has fewer). */
 #define DEF_BLAST_PLUG_TP 10
+#define DEF_PLUG_ITEM 76 /* the DV Plug's item ID (ITMNAM/ITMINF 76) */
 #define DEF_BLAST_TEMPT_HP_PCT 25 /* the acting Digimon's HP share at or under which a full gauge tempts */
 int def_blast_step(int partner, int level, int *advance); /* pure: the step a Blast takes, and the sequence's next */
 int def_blast_gain(int weak, int staggered, int overfinish, int extra); /* pure: the sum above */
@@ -381,6 +382,14 @@ void def_hunt_savestate(struct PortState *s);
 #define DEF_HUNT_AREAS 0x2E          /* the world map areas of a server (ststatus_map_areas & 0x7F) */
 #define DEF_HUNT_SECTORS 5           /* North, East, Center, West, South (hand-made: tools/gen_hunt_targets.py) */
 #define DEF_SUPER_FLEE_PCT 25        /* of its full HP lost in one battle: it flees */
+/* The hits a Super Rare takes (but the tutorial's) do this percent of their damage: the battle's HP is an s16, so its bar
+ * cannot be doubled (the rows already hold 15000 to 30000); halving the damage is the same, and each 25% takes twice as
+ * long to take off (owner, 2026-11-18: the flee-and-chase rhythm is the hunt). */
+#define DEF_SUPER_DAMAGE_PCT 50
+/* The blessed Blast: the tutorial hunt's battle, and the first Blast of the whole game wherever it comes (a player who
+ * beats the Ogremon without one still has it for his first hard fight). Igor's DV Plug used for it costs no TP, the form
+ * carries this much more boost, and a Super Rare no longer flees from that battle once it is set off. */
+#define DEF_SUPER_TUTORIAL_BOOST_PCT 50
 #define DEF_SUPER_BUFF_PCT 20        /* its stats, each battle after the first: +this % of the base, cumulative */
 #define DEF_SUPER_MEETS_CAP 10       /* the buff stops growing here (+200%) */
 #define DEF_SUPER_CRYSTAL_CAP 99
@@ -455,6 +464,9 @@ void def_super_scale(void);
 /* The battle's members are set up: its HP at the start, given its full HP in the battle's units (max_hp: Super Hard's
  * raise included); the flight and the end then count in those units. */
 int def_super_hp_start(int max_hp);
+int def_super_tutorial_battle(void); /* 1 while the tutorial hunt's battle is the one being fought */
+void def_super_blast_note(void);     /* the blessed Blast was set off in a Super Rare's battle: the target stops fleeing */
+int def_super_damage(int side, int damage);
 int def_super_should_flee(int hp_now);
 void def_super_battle_end(int result, int hp);
 /* The candidate points of the target's map (x, y pairs): the field gives the walkable encounter tiles, the player
@@ -649,7 +661,20 @@ typedef struct DefReplica {
 extern const DefReplica def_replicas[];
 extern const int def_replica_count;
 /* What an exchange or a purchase did, or why it was refused. */
-enum { DEF_BM_OK, DEF_BM_OFF, DEF_BM_NO_RARE, DEF_BM_NO_ROOM, DEF_BM_NO_CORES, DEF_BM_NO_BITS, DEF_BM_BAG_FULL };
+enum { DEF_BM_OK, DEF_BM_OFF, DEF_BM_NO_RARE, DEF_BM_NO_ROOM, DEF_BM_NO_CORES, DEF_BM_NO_BITS, DEF_BM_BAG_FULL, DEF_BM_OWNED };
+/* The Hunter's Mark (owner, 2026-11-18): a key item (27, a Japanese tag slot the US disc never gives, as the Demon Bell is
+ * 26) the Black Market sells for DEF_HUNT_MARK_BITS and DEF_HUNT_MARK_RARES different rare items: holding it, a Rare
+ * Target leaves 2x its item and a Super Rare 2x its crystals. It is the replicas' list's last row: index def_replica_count
+ * stands for it in the replica calls below. */
+#define DEF_HUNT_MARK_ITEM 27
+#define DEF_HUNT_MARK_BITS 50000
+#define DEF_HUNT_MARK_RARES DEF_BM_REPLICA_RARES
+int def_hunt_mark_on(void);
+int def_hunt_mark_mult(int n); /* n, doubled while the Mark is held */
+int def_bm_replica_rows(void); /* the replicas' list: the replicas and the Mark */
+int def_bm_replica_item(int r);
+int def_bm_replica_bits(int r);
+int def_bm_replica_owned(int r); /* a replica's bit, or the Mark held */
 /* The Exchange: one of rare item `rare` (an index of def_hunt_targets) for DEF_BM_COMMONS of common `common`. */
 int def_bm_exchange_check(int rare, int common);
 int def_bm_exchange(int rare, int common);
@@ -946,7 +971,8 @@ enum {
     DEF_STORY_MARKET_OPEN,   /* the Oikawa behind the counter opened the Black Market */
     DEF_STORY_GATE_WARNED,   /* step 40: the warning before the warp gate was given */
     DEF_STORY_GATE_PASSED,   /* the three trials were won: the warp gate opens */
-    DEF_STORY_SEIRYU_ROOM    /* step 4: Igor showed the room again, the Sepikmon took his place */
+    DEF_STORY_SEIRYU_ROOM,   /* step 4: Igor showed the room again, the Sepikmon took his place */
+    DEF_STORY_BLAST_FIRST    /* the first Blast of the game was set off (it is the blessed one: see DEF_SUPER_TUTORIAL_BOOST_PCT) */
 };
 /* The Velvet Room's level (definitive_story.c): who is in the room, rising with the story. 0 the doors are closed; 1
  * (Repeating Tom's news, step 4) the Sepikmon; 2 Gennai and Igor; 3 the Demon Bell's keeper; 4 Etemon and the pig;
