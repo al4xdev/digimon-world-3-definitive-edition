@@ -113,8 +113,6 @@ $BMTraded: Trocado.
 $BMBought: Comprado. Réplica revende por 0 Bits.
 $BMArmed: Réplica revende por 0 Bits. Comprar?
 $BMNoRoom: Sem espaço: um material vai até 99.
-$BMNeedA: "Exige Núcleos de "
-$BMNeedB: " chefes diferentes."
 $BMNoBits: Bits insuficientes.
 $BMBagFull: Você não pode carregar mais disso.
 $BMKeysTrade: ↑↓ Escolher   L1/R1 Aba<1>× Trocar   △ Voltar
@@ -7494,10 +7492,10 @@ $SupFled: "   Fugiu "
 $SupHeld: "Cristais "
 $SupPrice: "   Vende por "
 $SupBits: " Bits"
-$SupKeysStart: Botão ×: Caçar   Botão □: Vender cristal<1>Botão △: Sair
-$SupKeysCancel: Botão ×: Cancelar a caçada<1>Botão △: Sair
+$SupKeysStart: Botão ×: Caçar   Botão □: Vender cristal<1>Botão △: Sair   R1: Skins
+$SupKeysCancel: Botão ×: Cancelar a caçada<1>Botão △: Sair   R1: Skins
 $SupKeysConfirm: Botão ×: Cancelar (ele se cura)<1>Botão △: Voltar
-$SupKeysLocked: Botão □: Vender cristal<1>Botão △: Sair
+$SupKeysLocked: Botão □: Vender cristal<1>Botão △: Sair   R1: Skins
 $SupBusy: Termine ou cancele sua caçada antes.
 $SupStarted: A caçada começou. Siga a bússola!
 $SupTutGiven: Sua primeira caçada começou. Siga a bússola!
@@ -7510,6 +7508,15 @@ $SupCrystalPost:
 $SupGot: "Prêmio da caçada: "
 # Embaixo, na primeira vitória de uma caçada: a skin do herói que ela abriu ($Skin1..$Skin13).
 $SupSkin: "Nova skin: "
+# A página de skins do quadro (R1 no quadro): as skins do herói, uma por caçada vencida.
+$SupSkinsTitle: Skins do Herói
+$SupSkinWorn: USANDO
+$SupSkinFrom: "Vença a caçada de "
+$SupSkinOwn: Sua, de uma caçada vencida.
+$SupSkinOriginal: Suas cores de sempre.
+$SupSkinSet: Pronto. Ande para ver.
+$SupSkinLocked: Vença a caçada antes.
+$SupKeysSkins: Botão ×: Usar<1>Botão △: Sair   L1: Caçadas
 # O porco da Sala Velvet (port/game/definitive_velvet.c): o ator 318.
 TALK05 79: <7>????<7>Alguém me achou numa<1>pilha de brinquedos<1>que ninguém usava.<2,2><3>...Melhor que a caixa.<2,2>
 # O comerciante da Sala Velvet (port/game/definitive_velvet.c): 8 e 9 saudações alternadas, 12 depois de uma troca, 13

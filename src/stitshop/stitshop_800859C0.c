@@ -2007,6 +2007,9 @@ StitshopMain *stitshop_main_create(void) {
     obj->show_money = stitshop_main_show_money;
     obj->layer_id = 0x1000;
     obj->shop = gamestate_data.funcs.get_map_entry();
+#ifdef PC_PORT
+    def_recipe_set_shop(obj->shop); /* PRD 4 layer E: this shop's recipes (its regions' materials) */
+#endif
     return obj;
 }
 

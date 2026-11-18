@@ -30,9 +30,13 @@ int def_bm_resale_zero(int item) {
     return replica_held && item == 2;
 }
 const int def_item_price_count = 1;
-/* Item 10: 30 of common 3; item 20: 40 of common 12 and 2 of rare 5. */
-const DefRecipe def_recipes[] = { { 10, 3, 30, -1, 0 }, { 20, 12, 40, 5, 2 } };
-const int def_recipe_count = 2;
+/* Shop 4: item 10, 30 of common 3; item 20, 40 of common 12 and 2 of rare 5. Shop 7 sells item 10 for 5 of common 1.
+ * Sorted by shop, then item. */
+const DefRecipe def_recipes[] = { { 4, 3, 10, 30, 0, -1 }, { 4, 12, 20, 40, 2, 5 }, { 7, 1, 10, 5, 0, -1 } };
+const int def_recipe_count = 3;
+void port_state_bytes(struct PortState *s, const char *name, void *p, size_t n) {
+    (void)s, (void)name, (void)p, (void)n;
+}
 
 static int mats[DEF_HUNT_MATERIALS], rares[DEF_HUNT_RARES];
 int def_record_material(int m) {
@@ -83,6 +87,13 @@ int main(void) {
     replica_held = 0;
 
     /* Layer E */
+    check("no shop open: no recipe", def_recipe_max(10) == 99 && def_recipe_label(10, &palette) == NULL);
+    def_recipe_set_shop(7);
+    mats[1] = 12;
+    check("another shop's recipe for the same item: its own materials (12/5 = 2)", def_recipe_max(10) == 2 &&
+                                                                                       def_recipe_max(20) == 99);
+    mats[1] = 0;
+    def_recipe_set_shop(4);
     check("an item without a recipe: no limit, no label", def_recipe_max(1) == 99 && def_recipe_can_buy(1) &&
                                                              def_recipe_label(1, &palette) == NULL);
     mats[3] = 29;

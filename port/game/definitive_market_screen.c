@@ -38,7 +38,7 @@
 
 extern const unsigned char def_str_BMTitle[], def_str_BMTabTrade[], def_str_BMTabReplica[], def_str_BMGive[],
     def_str_BMGet[], def_str_BMHeld[], def_str_BMBits[], def_str_BMNone[], def_str_BMNoneWhere[], def_str_BMTraded[],
-    def_str_BMBought[], def_str_BMArmed[], def_str_BMNoRoom[], def_str_BMNeedA[], def_str_BMNeedB[], def_str_BMNoBits[],
+    def_str_BMBought[], def_str_BMArmed[], def_str_BMNoRoom[], def_str_BMNoBits[],
     def_str_BMBagFull[], def_str_BMKeysTrade[], def_str_BMKeysPick[], def_str_BMKeysReplica[], def_str_BMKeysArmed[],
     def_str_BMHeadCores[], def_str_BMHeadMats[], def_str_BMHeadReplicas[], def_str_BMCoreTrade[], def_str_BMCoreForge[],
     def_str_BMCoreKeep[], def_str_BMKindWeapon[], def_str_BMKindTwo[], def_str_BMKindArmor[], def_str_BMKindAcc[],
@@ -259,7 +259,7 @@ static void bm_collect(s32 keep) {
     bm_ui.top = bm_scrolled(bm_ui.sel, bm_ui.top);
 }
 
-/* A result's text for the last detail line; NULL for what the lines show by themselves (a replica's missing bosses
+/* A result's text for the last detail line; NULL for what the lines show by themselves (a replica's missing Cores
  * are already its cost line, in orange). */
 static const unsigned char *bm_note_text(void) {
     switch (bm_ui.note) {
@@ -379,26 +379,24 @@ static s32 bm_wear_line(unsigned char *buf, int size, s32 item) {
     return BM_PAL_TEXT;
 }
 
-/* The rare items a purchase would take ("Takes: Datamon IV, Bulbmon III"), or what is missing (orange). Its colour
- * is returned. */
-static s32 bm_cost_line(unsigned char *buf, int size) {
-    int picks[DEF_BM_REPLICA_RARES], p = 0, k;
+/* The rare items replica `r` takes, with what is held of each: "Takes: Datamon 3/1, Fujinmon 0/1", orange while one is
+ * short (the forge's line). Its colour is returned. */
+static s32 bm_cost_line(int r, unsigned char *buf, int size) {
+    int picks[DEF_BM_REPLICA_RARES], p = 0, k, all = def_bm_replica_pick(r, picks);
 
     buf[0] = 0;
-    if (!def_bm_replica_pick(picks)) {
-        def_glyph_put(buf, &p, size, def_str_BMNeedA);
-        bm_put_number(buf, &p, size, DEF_BM_REPLICA_RARES);
-        def_glyph_put(buf, &p, size, def_str_BMNeedB);
-        return BM_PAL_HOT;
-    }
     def_glyph_put(buf, &p, size, def_str_BMTakes);
-    for (k = 0; k < DEF_BM_REPLICA_RARES; k++) {
+    for (k = 0; k < DEF_BM_REPLICA_RARES && picks[k] >= 0; k++) {
         if (k > 0) {
             def_glyph_put(buf, &p, size, def_str_RecipeSep);
         }
         def_hunt_target_name(buf, &p, size, picks[k]);
+        def_glyph_put(buf, &p, size, def_str_HuntSpace);
+        def_glyph_count(buf, &p, size, def_record_rare(picks[k]));
+        def_glyph_put(buf, &p, size, def_str_Slash);
+        def_glyph_count(buf, &p, size, 1);
     }
-    return BM_PAL_TEXT;
+    return all ? BM_PAL_TEXT : BM_PAL_HOT;
 }
 
 /* The Exchange's detail. On the list: what a Core is worth here, what the materials are for, and the replicas'
@@ -466,14 +464,14 @@ static void bm_fill_replica(void) {
             bm_stats_line(bm_line_text[1], size, item);
             bm_line(1, bm_line_text[1], BM_PAL_TEXT);
         }
-        bm_line(2, bm_line_text[3], bm_cost_line(bm_line_text[3], size));
+        bm_line(2, bm_line_text[3], bm_cost_line(r, bm_line_text[3], size));
         bm_line(3, def_str_BMArmed, BM_PAL_HOT);
         return;
     }
     bm_stats_line(bm_line_text[1], size, item);
     bm_line(1, bm_line_text[1], BM_PAL_TEXT);
     bm_line(2, bm_line_text[2], wear);
-    bm_line(3, bm_line_text[3], bm_cost_line(bm_line_text[3], size));
+    bm_line(3, bm_line_text[3], bm_cost_line(r, bm_line_text[3], size));
 }
 
 /* Fills the windows from the state. */

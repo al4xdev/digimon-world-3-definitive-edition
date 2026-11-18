@@ -73,6 +73,8 @@ void def_dri_battle_begin(void) {}
 void def_dri_battle_end(int r) { (void)r; }
 void def_dri_savestate(struct PortState *s) { (void)s; }
 void def_bm_savestate(struct PortState *s) { (void)s; }
+void def_recipe_savestate(struct PortState *s) { (void)s; }
+void port_girls_savestate(struct PortState *s) { (void)s; }
 void dw3_velvet_savestate(struct PortState *s) { (void)s; }
 int dw3_velvet_text_own(s32 b, s32 i) { (void)b; (void)i; return 0; }
 void def_travel_savestate(struct PortState *s) { (void)s; }

@@ -5,7 +5,9 @@
  * try, tries"), and for the one under the cursor where it roams, the HP it has left or the crystals held and their
  * price. The confirm button starts an open or finished hunt (one at a time) or, pressed twice, cancels the active one
  * (its target heals); the square sells one of the chosen hunt's crystals for its price. The first time the board opens
- * it gives the tutorial hunt (Ogremon in Central Park) at once.
+ * it gives the tutorial hunt (Ogremon in Central Park) at once. R1 turns the board to the hero's skins (definitive_skins.c:
+ * each hunt won unlocks one, so the hunts' master hands them out; the owner's of 2026-11-17, no NPC of their own): the
+ * confirm button wears an unlocked one, a locked one names the hunt that opens it; L1 turns back.
  *
  * Seiryu City, the first city after Asuka in the story, calls the player into the room once (the owner's of
  * 2026-11-17): the first idle frame there from story step 4 on, with the Sepikmon not met yet, the room pulls the player
@@ -50,7 +52,9 @@ extern const unsigned char def_str_SupTitle[], def_str_SupNew[], def_str_SupOn[]
     def_str_SupLockedMsg[], def_str_SupCrystalPre[], def_str_SupCrystalPost[], def_str_SupGot[], def_str_DriOk[],
     def_str_Unknown[], def_str_SupSkin[], def_str_Skin1[], def_str_Skin2[], def_str_Skin3[], def_str_Skin4[],
     def_str_Skin5[], def_str_Skin6[], def_str_Skin7[], def_str_Skin8[], def_str_Skin9[], def_str_Skin10[], def_str_Skin11[],
-    def_str_Skin12[], def_str_Skin13[];
+    def_str_Skin12[], def_str_Skin13[], def_str_Skin0[], def_str_SupSkinsTitle[], def_str_SupSkinWorn[],
+    def_str_SupSkinFrom[], def_str_SupSkinOwn[], def_str_SupSkinOriginal[], def_str_SupSkinSet[], def_str_SupSkinLocked[],
+    def_str_SupKeysSkins[];
 
 #define SH_LAYER 0x1002 /* the field's window layer */
 #define SH_LINE 14      /* a row's pitch */
@@ -74,8 +78,11 @@ extern const unsigned char def_str_SupTitle[], def_str_SupNew[], def_str_SupOn[]
 #define SH_PAL_HOT 3    /* the active hunt, a refusal (the bestiary's orange) */
 #define SH_PAL_DONE 4   /* finished, sold (its green) */
 #define SH_PAL_DIM 7    /* locked */
-#define SH_KEYS ((1 << 12) | (1 << 13) | (1 << 14) | (1 << 15))
+#define SH_KEYS ((1 << 10) | (1 << 11) | (1 << 12) | (1 << 13) | (1 << 14) | (1 << 15))
 #define SH_KEY_SELL 15  /* the square */
+#define SH_KEY_HUNTS 10 /* L1: the hunts' page */
+#define SH_KEY_SKINS 11 /* R1: the skins' page */
+#define SH_SKIN_ROWS (DEF_SKIN_COUNT + 1) /* the own colours, then a skin per hunt */
 #define SH_SND_MOVE 0x8004513E
 #define SH_SND_OK 0x8004503C
 #define SH_SND_BACK 0x800450BD
@@ -112,11 +119,13 @@ static struct {
     s32 won;     /* the debrief's hunt */
     s32 skin;    /* the skin its first win unlocked, 0: none (a hunt won again) */
     s32 pulled;  /* Seiryu City called the player in this session (once: the talk sets the flag) */
+    s32 skins;   /* the board shows the skins' page */
+    s32 ssel, stop; /* its cursor and first row */
     const unsigned char *msg; /* the board's last result line, NULL: none */
     s32 msg_pal;
     s32 count;
     MessageWindow *wins[SH_WINDOWS];
-    MessageWindow *states[SH_ROWS], *levels[SH_ROWS], *names[SH_ROWS], *where, *detail, *note, *hint;
+    MessageWindow *title, *states[SH_ROWS], *levels[SH_ROWS], *names[SH_ROWS], *where, *detail, *note, *hint;
     MessageCursor *cursor;
 } sh;
 
@@ -147,6 +156,16 @@ static void put_crystal(unsigned char *buf, int *p, int size, int hunt) {
     def_glyph_put(buf, p, size, def_str_SupCrystalPre);
     def_glyph_put(buf, p, size, target_name(hunt));
     def_glyph_put(buf, p, size, def_str_SupCrystalPost);
+}
+
+/* Skin n's name (1..DEF_SKIN_COUNT; 0 the own colours). */
+static const unsigned char *skin_name(int skin) {
+    static const unsigned char *const names[SH_SKIN_ROWS] = {
+        def_str_Skin0, def_str_Skin1, def_str_Skin2,  def_str_Skin3,  def_str_Skin4,  def_str_Skin5,  def_str_Skin6,
+        def_str_Skin7, def_str_Skin8, def_str_Skin9, def_str_Skin10, def_str_Skin11, def_str_Skin12, def_str_Skin13,
+    };
+
+    return names[skin < 0 || skin > DEF_SKIN_COUNT ? 0 : skin];
 }
 
 /* ---- The windows and panels (the DRI list's). */
@@ -186,8 +205,59 @@ static void sh_panel(s32 x, s32 y, s32 w, s32 h, s32 band) {
 
 /* ---- The board. */
 
+/* The skins' page in the board's windows: the level column is left empty, the state says which is worn, the info
+ * panel what a locked one needs (skin n opens with hunt n - 1 won, def_skin_unlocked). */
+static void skins_fill(void) {
+    int r, k, p, open, worn = def_skin_hero();
+
+    sh.title->set_text(sh.title, (u8 *)def_str_SupSkinsTitle, -1);
+    for (r = 0; r < SH_ROWS; r++) {
+        k = sh.stop + r;
+        sh.levels[r]->set_visible(sh.levels[r], 0);
+        sh.states[r]->set_visible(sh.states[r], k < SH_SKIN_ROWS);
+        sh.names[r]->set_visible(sh.names[r], k < SH_SKIN_ROWS);
+        if (k >= SH_SKIN_ROWS) {
+            continue;
+        }
+        open = def_skin_unlocked(k);
+        sh.states[r]->set_text(sh.states[r], (u8 *)(k == worn ? def_str_SupSkinWorn : def_str_SupLocked), -1);
+        sh.states[r]->set_visible(sh.states[r], k == worn || !open); /* an open one not worn: no state */
+        /* worn: the active hunt's colour (the small font's green garbles WORN) */
+        sh.states[r]->set_palette(sh.states[r], k == worn ? SH_PAL_HOT : SH_PAL_DIM);
+        sh.names[r]->set_text(sh.names[r], (u8 *)skin_name(k), -1);
+        sh.names[r]->set_palette(sh.names[r], open ? SH_PAL_TEXT : SH_PAL_DIM);
+    }
+    k = sh.ssel;
+    p = 0;
+    info_where[0] = 0;
+    if (k == 0) {
+        def_glyph_put(info_where, &p, SH_TEXT, def_str_SupSkinOriginal);
+    } else if (def_skin_unlocked(k)) {
+        def_glyph_put(info_where, &p, SH_TEXT, def_str_SupSkinOwn);
+    } else {
+        def_glyph_put(info_where, &p, SH_TEXT, def_str_SupSkinFrom);
+        def_glyph_put(info_where, &p, SH_TEXT, target_name(k - 1));
+    }
+    sh.where->set_text(sh.where, info_where, -1);
+    sh.detail->set_visible(sh.detail, 0);
+    sh.note->set_visible(sh.note, sh.msg != NULL);
+    if (sh.msg != NULL) {
+        sh.note->set_text(sh.note, (u8 *)sh.msg, -1);
+        sh.note->set_palette(sh.note, sh.msg_pal);
+    }
+    sh.hint->set_text(sh.hint, (u8 *)def_str_SupKeysSkins, -1);
+    sh.cursor->set_pos(sh.cursor, 6, SH_TOP + (sh.ssel - sh.stop) * SH_LINE);
+}
+
 static void board_fill(void) {
     int r, h, p, state, pal;
+
+    if (sh.skins) {
+        skins_fill();
+        return;
+    }
+    sh.title->set_text(sh.title, (u8 *)def_str_SupTitle, -1);
+    sh.detail->set_visible(sh.detail, 1);
 
     for (r = 0; r < SH_ROWS; r++) {
         h = sh.top + r;
@@ -292,12 +362,11 @@ static void board_open(void) {
         sh.sel = 0;
     }
     sh.top = sh.sel >= SH_ROWS ? sh.sel - SH_ROWS + 1 : 0;
+    sh.skins = 0;
+    sh.ssel = def_skin_hero();
+    sh.stop = sh.ssel >= SH_ROWS ? sh.ssel - SH_ROWS + 1 : 0;
 
-    {
-        MessageWindow *w = sh_window(1, 8, 5);
-
-        w->set_text(w, (u8 *)def_str_SupTitle, -1);
-    }
+    sh.title = sh_window(1, 8, 5);
     for (r = 0; r < SH_ROWS; r++) {
         sh.states[r] = sh_window(2, SH_STATE_X, SH_TOP + r * SH_LINE);
         sh.levels[r] = sh_window(2, SH_LV_X, SH_TOP + r * SH_LINE);
@@ -317,7 +386,7 @@ static void board_open(void) {
 }
 
 static void board_draw(void) {
-    if (sh.armed >= sh.top && sh.armed < sh.top + SH_ROWS) {
+    if (!sh.skins && sh.armed >= sh.top && sh.armed < sh.top + SH_ROWS) {
         sh_rect(5, SH_TOP + (sh.armed - sh.top) * SH_LINE - 2, 310, SH_LINE, 74, 41, 0);
     }
     sh_panel(0, 0, 320, SH_TITLE_H, 1);
@@ -339,8 +408,61 @@ static void board_move(int sel) {
     board_fill();
 }
 
+static void skins_move(int k) {
+    sh.ssel = k;
+    if (sh.ssel < sh.stop) {
+        sh.stop = sh.ssel;
+    } else if (sh.ssel >= sh.stop + SH_ROWS) {
+        sh.stop = sh.ssel - SH_ROWS + 1;
+    }
+    sh.msg = NULL;
+    sound_module.play(SH_SND_MOVE);
+    board_fill();
+}
+
+static void skins_input(void) {
+    int k = sh.ssel;
+
+    if (PAD_PRESSED(4) || PAD_REPEAT(4)) {
+        skins_move((k + SH_SKIN_ROWS - 1) % SH_SKIN_ROWS);
+    } else if (PAD_PRESSED(6) || PAD_REPEAT(6)) {
+        skins_move((k + 1) % SH_SKIN_ROWS);
+    } else if (PAD_PRESSED(13)) {
+        if (def_skin_set_hero(k)) { /* the sprites follow on the field (port_girls_reskin) */
+            sound_module.play(SH_SND_OK);
+            say(def_str_SupSkinSet, SH_PAL_DONE);
+            port_log("superhunt: the hero's skin %d chosen", k);
+        } else {
+            sound_module.play(SH_SND_BACK);
+            say(def_str_SupSkinLocked, SH_PAL_HOT);
+        }
+        board_fill();
+    } else if (PAD_PRESSED(SH_KEY_HUNTS)) {
+        sh.skins = 0;
+        sh.msg = NULL;
+        sound_module.play(SH_SND_MOVE);
+        board_fill();
+    } else if (PAD_PRESSED(12) || PAD_PRESSED(14)) {
+        sound_module.play(SH_SND_BACK);
+        sh.close = 1;
+    }
+}
+
 static void board_input(void) {
     int h = sh.sel, state = def_super_state(h), price;
+
+    if (sh.skins) {
+        skins_input();
+        return;
+    }
+    if (PAD_PRESSED(SH_KEY_SKINS)) {
+        sh.skins = 1;
+        sh.armed = -1;
+        sh.msg = NULL;
+        sound_module.play(SH_SND_MOVE);
+        board_fill();
+        return;
+    }
 
     if (PAD_PRESSED(4) || PAD_REPEAT(4)) {
         board_move((h + DEF_SUPER_COUNT - 1) % DEF_SUPER_COUNT);
@@ -403,15 +525,6 @@ static void board_input(void) {
 }
 
 /* ---- The reward's panel: the hunt won and its crystal. */
-
-static const unsigned char *skin_name(int skin) {
-    static const unsigned char *const names[DEF_SKIN_COUNT] = {
-        def_str_Skin1, def_str_Skin2, def_str_Skin3,  def_str_Skin4,  def_str_Skin5,  def_str_Skin6, def_str_Skin7,
-        def_str_Skin8, def_str_Skin9, def_str_Skin10, def_str_Skin11, def_str_Skin12, def_str_Skin13,
-    };
-
-    return names[skin - 1];
-}
 
 static void debrief_open(void) {
     MessageWindow *w;

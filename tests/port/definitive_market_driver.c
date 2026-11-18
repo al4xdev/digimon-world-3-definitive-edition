@@ -32,8 +32,8 @@ int def_hunt_target_lead(int t) {
 
     return t >= 0 && t < 4 ? leads[t] : 0;
 }
-/* Replica 0 is item 341 at 40000 Bits, replica 1 item 121 at 30000. */
-const DefReplica def_replicas[DEF_REPLICAS] = { { 341, 40000 }, { 121, 30000 } };
+/* Replica 0 is item 341 at 40000 Bits for rares 0 and 2, replica 1 item 121 at 30000 for rares 1 and 3. */
+const DefReplica def_replicas[DEF_REPLICAS] = { { 341, { 0, 2 }, 40000 }, { 121, { 1, 3 }, 30000 } };
 const int def_replica_count = 2;
 
 static int failures;
@@ -117,17 +117,15 @@ int main(void) {
     }
     check("400 exchanges: no value made or lost outside the rate, no common past the cap", ok);
 
-    /* ---- The replicas' rare items: distinct bosses */
+    /* ---- The replicas' rare items: their own two */
     def_bestiary_reset();
-    hold_rares(5, 3, 0, 0);
-    check("rare items of one boss only (two regions of one lead species): no replica", !def_bm_replica_pick(picks) &&
-                                                                                          def_bm_replica_check(0, picks) == DEF_BM_NO_BOSSES);
-    hold_rares(5, 3, 1, 0);
-    check("a second boss: the most plentiful of each", def_bm_replica_pick(picks) && picks[0] == 0 && picks[1] == 2);
-    hold_rares(2, 0, 2, 2);
-    check("ties: the weaker target first", def_bm_replica_pick(picks) && picks[0] == 0 && picks[1] == 3);
-    hold_rares(0, 2, 0, 0);
-    check("two of one rare item are not two bosses", !def_bm_replica_pick(picks));
+    hold_rares(5, 3, 0, 9);
+    check("one of its own Cores missing: no replica, whatever else is held", !def_bm_replica_pick(0, picks) &&
+              picks[0] == 0 && picks[1] == 2 && def_bm_replica_check(0, picks) == DEF_BM_NO_CORES);
+    hold_rares(1, 0, 1, 0);
+    check("one of each: its own two, in the table's order", def_bm_replica_pick(0, picks) && picks[0] == 0 &&
+                                                                 picks[1] == 2 && !def_bm_replica_pick(1, picks));
+    check("no such replica: none", !def_bm_replica_pick(5, picks) && picks[0] == -1);
 
     /* ---- Buying */
     hold_rares(3, 1, 2, 0);
@@ -136,18 +134,19 @@ int main(void) {
     ok = def_bm_replica_buy(0) == DEF_BM_OK && gamestate_data.money == 10000 && gamestate_data.items[341] == 1 &&
          def_record_replica(0) && !def_record_replica(1);
     ok &= def_record_rare(0) == 2 && def_record_rare(1) == 1 && def_record_rare(2) == 1;
-    check("a purchase: its Bits, one rare item of each of two bosses, the item, the replica's bit", ok);
+    check("a purchase: its Bits, one of each of its own two Cores, the item, the replica's bit", ok);
+    def_record_rare_add(3, 1); /* replica 1's Cores are 1 and 3: held, so only the Bits are short */
     check("short of Bits: refused, nothing moves", def_bm_replica_buy(1) == DEF_BM_NO_BITS && gamestate_data.money == 10000 &&
-                                                       gamestate_data.items[121] == 0 && def_record_rare(0) == 2 &&
-                                                       !def_record_replica(1));
+                                                       gamestate_data.items[121] == 0 && def_record_rare(1) == 1 &&
+                                                       def_record_rare(3) == 1 && !def_record_replica(1));
     gamestate_data.money = 1000000;
     gamestate_data.items[341] = DEF_BM_ITEM_CAP;
     check("a full bag: refused", def_bm_replica_buy(0) == DEF_BM_BAG_FULL && gamestate_data.money == 1000000 &&
                                      def_record_rare(0) == 2);
     hold_rares(4, 4, 0, 0);
-    check("rare items of one boss: refused", def_bm_replica_buy(1) == DEF_BM_NO_BOSSES && def_record_rare(0) == 4 &&
-                                                 gamestate_data.money == 1000000);
-    check("no such replica: refused", def_bm_replica_buy(2) == DEF_BM_NO_BOSSES && def_bm_replica_buy(-1) == DEF_BM_NO_BOSSES);
+    check("other Cores than its own: refused", def_bm_replica_buy(1) == DEF_BM_NO_CORES && def_record_rare(1) == 4 &&
+                                                   gamestate_data.money == 1000000);
+    check("no such replica: refused", def_bm_replica_buy(2) == DEF_BM_NO_CORES && def_bm_replica_buy(-1) == DEF_BM_NO_CORES);
 
     /* ---- Resale 0 and the bit's end */
     gamestate_data.items[341] = 1;

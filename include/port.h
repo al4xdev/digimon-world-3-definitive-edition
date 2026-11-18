@@ -469,6 +469,7 @@ int def_item_sell(int item);
 void def_variants_hook(void);
 /* PRD 4 layer E, the forge in the shops: how many the materials make, whether one, taking them, the requirements' line
  * (NULL without a recipe; palette 3 while short) and the refusal's text. */
+void def_recipe_set_shop(int shop); /* the shop the forge's calls are about, set as STITSHOP opens */
 int def_recipe_max(int item);
 int def_recipe_can_buy(int item);
 void def_recipe_pay(int item, int count);

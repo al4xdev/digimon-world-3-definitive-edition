@@ -1,14 +1,14 @@
 # Skins do herói (Kaili, ou Junior sem Girls Power)
 
-Estado em 2026-11-17: **a base está pronta e testada no jogo; falta o NPC e a tela de escolha.** Nada commitado: entra
-no commit da caçada (`.plan/tasks/super-rare-hunts.md`), depois que a sessão do Blast commitar a parte dela.
+Estado em 2026-11-17 (noite): **pronto e testado no jogo.** A base foi no commit do Blast (`8c0971b`); a página de
+skins no quadro do Sepikmon foi no commit da forja regional.
 
 ## Decisões do dono
 
 - **Skin só do protagonista.** Os Digimon do jogador ficam com as cores deles (pintar o time foi fora do escopo e saiu).
   Só os inimigos raros mudam de cor (`definitive_recolor.c`, parte da caçada).
-- O NPC fica na **Velvet Room que já existe** (a mesma sala do Sepikmon, do Oikawa e do Guilmon): **não vai ter sala
-  nova.** O lugar dele na sala o dono decide quando arrumar a Velvet Room.
+- **Quem entrega as skins é o próprio Sepikmon** (decisão de 2026-11-17, depois de "sem sala nova"): ele é o mestre das
+  caçadas e cada caçada vencida libera uma skin, então não há NPC próprio nem mudança em `definitive_velvet.c`.
 - Ligação com a caçada: **cada caçada vencida libera uma skin.** É recompensa sem mexer em Bits e XP, que o dono tem
   medo de quebrar.
 
@@ -57,10 +57,13 @@ o boné verde-oliva, skin 6 boné e roupa pretos com o rosto igual, skin 0 volto
 
 ## Falta
 
-1. **O NPC e a tela**, na Velvet Room atual (`port/game/definitive_velvet.c`, padrão `FieldstgPlacedActor` +
-   `FieldstgTalk`, como o Sepikmon). A tela pode seguir o quadro do Sepikmon (`definitive_superhunt_screen.c`: janela,
-   lista, × escolhe, △ sai): lista as 14 skins com o nome, "--" nas travadas, e chama `def_skin_set_hero`. O jogador vê
-   a mudança ao andar. Falas novas em `TALK05` em entradas livres (`dw3_velvet_text_own`).
+1. ~~O NPC e a tela.~~ Feito em 2026-11-17 como uma página do quadro do Sepikmon (`definitive_superhunt_screen.c`,
+   `skins_fill` e `skins_input`): R1 no quadro abre "Skins do Herói", L1 volta às caçadas. Lista as 14 (Original e as
+   13), USANDO na que está vestida (paleta 3, a da caçada ativa: o verde da fonte pequena desenha o "O" esquisito; o dono gostou desse estilo no
+   "DONE" das caçadas, que fica como está), "--" e nome apagado nas
+   travadas; embaixo, "Vença a caçada de <alvo>" na travada ou "Sua, de uma caçada vencida."; × veste
+   (`def_skin_set_hero`, "Pronto. Ande para ver."), × numa travada recusa. A dica das caçadas ganhou "R1: Skins".
+   Visto no jogo: `.dumps/tasks/hunt/play/skins_page.png`, `skins_locked.png`, `skins_green_walk.png`.
 2. ~~O painel de recompensa da caçada ganha a linha "Nova skin: <nome>".~~ Feito em 2026-11-17: aparece embaixo do
    cristal só na primeira vitória de uma caçada (`def_super_won_take(&first)`, texto `$SupSkin`); vencer de novo não
    abre skin. Testado no host (`definitive_superhunt.py`) e visto na tela (`.dumps/tasks/hunt/play/skin_debrief.png`: "New skin: Alt Outfit", o painel com 82 px).
@@ -70,5 +73,5 @@ o boné verde-oliva, skin 6 boné e roupa pretos com o rosto igual, skin 0 volto
    próximo quadro de animação, então com menos de um segundo andando. Para fotografar: um processo por skin (carregar o
    mesmo estado várias vezes no mesmo processo não repintava; não investigado, porque savestate é só de
    desenvolvimento, `--load-state` e o canal de debug, e o jogador nunca carrega um).
-4. Fora da primeira versão: retratos e menus (status, Digi-Lab) e a tela de nome/cartão que mostram o herói (são outras
-   imagens; `port_girls_tim` troca a do Junior pela da Kaili, sem skin).
+4. ~~Retratos, menus (status, Digi-Lab) e a tela de nome/cartão com skin.~~ Descartado pelo dono em 2026-11-17
+   ("besteira"): essas imagens ficam com o herói sem skin.

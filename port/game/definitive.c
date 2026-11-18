@@ -625,6 +625,7 @@ void def_savestate(struct PortState *s) {
     port_girls_savestate(s); /* what the hero's files in memory were painted for (Kaili, the skin) */
     def_guide_savestate(s); /* the Guide's screen and notice, with the field's heap they point into */
     def_bm_savestate(s);    /* the Black Market's screen, the same way */
+    def_recipe_savestate(s); /* the open shop, whose regions' recipes it shows */
     dw3_velvet_savestate(s); /* the Velvet Room: the map is the room, and its shopkeeper's turn */
     def_travel_savestate(s);  /* the Guardromon's screen, the same way as the market's */
     def_evohint_savestate(s);

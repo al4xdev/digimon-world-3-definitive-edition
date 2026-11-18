@@ -306,7 +306,7 @@ $HuntRareLabel: Rare Cores
 
 # PRD 4 layer E, the forge: the shop's refusal when the materials are short (as its "not enough money"), and the
 # separator of the requirements' line (quoted: its space is kept).
-$RecipeMissing: You don't have enough materials.
+$RecipeMissing: Not enough materials.
 $RecipeSep: ", "
 
 # PRD 4 layer G, the Black Market (port/game/definitive_market_screen.c), in the dialogues' font: the title and its two
@@ -330,7 +330,7 @@ $BMTakes: "Takes: "
 $BMBits: " Bits"
 $BMCoreTrade: Trade one for 12 of any Hunt Material.
 $BMCoreForge: Shops make new gear out of materials.
-$BMCoreKeep: Replicas take Cores too, 2 bosses each.
+$BMCoreKeep: Replicas take Cores too: each its own two.
 $BMNone: You have no Rare Cores to trade.
 $BMNoneWhere: Strong foes drop them: see the Bestiary.
 $BMKindWeapon: Weapon
@@ -352,8 +352,6 @@ $BMTraded: Traded.
 $BMBought: Bought. A replica resells for 0 Bits.
 $BMArmed: A replica resells for 0 Bits. Buy it?
 $BMNoRoom: No room: a material holds 99 at most.
-$BMNeedA: "Needs Cores of "
-$BMNeedB: " different bosses."
 $BMNoBits: Not enough Bits.
 $BMBagFull: You can't carry any more of it.
 $BMKeysTrade: ↑↓ Choose   L1/R1 Tab<1>× Trade   △ Back
@@ -704,10 +702,10 @@ $SupFled: "   Fled "
 $SupHeld: "Crystals held "
 $SupPrice: "   Sells for "
 $SupBits: " Bits"
-$SupKeysStart: × button: Hunt   □ button: Sell a crystal<1>△ button: Leave
-$SupKeysCancel: × button: Cancel the hunt<1>△ button: Leave
+$SupKeysStart: × button: Hunt   □ button: Sell a crystal<1>△ button: Leave   R1: Skins
+$SupKeysCancel: × button: Cancel the hunt<1>△ button: Leave   R1: Skins
 $SupKeysConfirm: × button: Cancel it (it heals)<1>△ button: Back
-$SupKeysLocked: □ button: Sell a crystal<1>△ button: Leave
+$SupKeysLocked: □ button: Sell a crystal<1>△ button: Leave   R1: Skins
 $SupBusy: Finish or cancel your hunt first.
 $SupStarted: The hunt is on. Follow the compass!
 $SupTutGiven: Your first hunt is on. Follow the compass!
@@ -721,6 +719,15 @@ $SupCrystalPost: " Crystal"
 $SupGot: "Hunt reward: "
 # Under it, after a hunt's first win: the hero's skin it unlocked ($Skin1..$Skin13), picked at the Velvet Room.
 $SupSkin: "New skin: "
+# The board's skins page (R1 on the board): the hero's skins, one per hunt won.
+$SupSkinsTitle: Hero Skins
+$SupSkinWorn: WORN
+$SupSkinFrom: "Win the hunt for "
+$SupSkinOwn: Yours, from a hunt you won.
+$SupSkinOriginal: Your own colours.
+$SupSkinSet: Done. Walk to see it.
+$SupSkinLocked: Win its hunt first.
+$SupKeysSkins: × button: Wear it<1>△ button: Leave   L1: Hunts
 # The Velvet Room's pig (port/game/definitive_velvet.c): actor 318, the one figure whose art no stage of the game uses.
 TALK05 79: <7>????<7>Someone found me in a<1>pile of unused toys<1>and put me here.<2,2><3>...It beats the box.<2,2>
 # A talk box holds 3 lines (<1>); a longer line is split into boxes (<2,2><3>), or its first lines scroll away unread.
@@ -733,15 +740,15 @@ TALK05 12: <7>Oikawa<7>Use it with care.<1>That kind of power<1>charges a price.
 TALK05 13: <7>Oikawa<7>Perhaps it is better<1>that way.<2,2><3>Not everyone is ready<1>to cross that line.<2,2>
 
 # Revive tiers (DEF_REVIVE_*): the chance and the HP returned are in the description; high max HP lowers the chance.
-ITMINF 67: Revives the fallen: 60% chance, 30% HP.
-ITMINF 70: Revives the fallen: 85% chance, 60% HP.
+ITMINF 67: Revives the fallen: 60%, 30% HP.
+ITMINF 70: Revives the fallen: 85%, 60% HP.
 ITMINF 46: In battle: revives, 100%, full HP.
 # The Demon Bell's keeper (Super Hard Mode, port/game/definitive_super.c): entries 77 and 78 of the same file (also the
 # letter "a" on the disc), and the Bell itself, item 26 (a Japanese tag slot the US disc never gives).
 TALK05 77: <7>Guilmon<7>Take the Demon Bell.<1>Foes grow stronger<1>and faster...<2,2><3>...but they pay more<1>Bits and more<1>materials.<2,2>
 TALK05 78: <7>Guilmon<7>Giving up the Bell? Fine.<1>Everything goes back<1>to normal.<2,2>
 ITMNAM 26: Demon Bell
-ITMINF 26: Super Hard: foes stronger, rewards doubled.
+ITMINF 26: Super Hard: stronger foes, 2x loot
 
 # The MATERIALS screen (src/main/fieldmenu.c, port/game/definitive_materials.c): the menu's entry, the title, the two kinds.
 $MaterialsMenu: MATERIALS
