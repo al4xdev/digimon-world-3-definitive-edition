@@ -883,6 +883,9 @@ void wfightmn_escape(WfightmnMain *obj, WfightmnMainData *data) {
                 obj->msg_args[0] = 0x5F;
                 obj->msg_args[1] = ev->args[0];
             } else {
+#ifdef PC_PORT
+                def_super_flee_note(DEF_SUPER_FLED_PLAYER);
+#endif
                 obj->msg_args[0] = 0x43;
                 obj->msg_args[1] = ev->args[0];
             }
@@ -1318,6 +1321,33 @@ void wfightmn_knockout(WfightmnMain *obj, WfightmnMainData *data) {
                     fightstg_battle.state.current[1] = obj->msg_args[1];
                 }
             } else {
+#ifdef PC_PORT
+                if (ev->args[0] == 0 && def_blast_plug_last_stand(fightstg_battle.state.current[0])) {
+                    s32 cur = fightstg_battle.state.current[0];
+                    s32 k;
+
+                    /* Clear any pending Blast/boost-end events for the revived slot and ensure the player acts before
+                     * any queued enemy turn (even a faster enemy with a 0-delay second turn). */
+                    for (k = 0; k < 99; k++) {
+                        if ((fightstg_events.events[k].type == 0x13 || fightstg_events.events[k].type == 8) &&
+                            fightstg_events.events[k].args[0] == 0 && fightstg_events.events[k].args[1] == cur) {
+                            fightstg_events.events[k].type = 0;
+                        } else if (fightstg_events.events[k].type == 3 && fightstg_events.events[k].delay < 1) {
+                            fightstg_events.events[k].delay = 1;
+                        }
+                    }
+                    wfightmn_check_regen(cur);
+                    k = fightstg_events.find(2);
+                    if (k >= 0) {
+                        fightstg_events.events[k].delay = 0;
+                    } else {
+                        fightstg_events_add_party_turn(0);
+                    }
+                    data->wait.scene = fightstg_entrance_create(members[cur].digimon, 0, wfightmn_update_idle_anim(0, 0));
+                    obj->base.substep = 6;
+                    break;
+                }
+#endif
                 data->wait.msg = fightstg_message_create();
                 if (ev->args[0] == 0) {
                     fightstg_events_end_battle(2);
@@ -1396,6 +1426,17 @@ void wfightmn_knockout(WfightmnMain *obj, WfightmnMainData *data) {
             break;
         }
         break;
+#ifdef PC_PORT
+    case 6:
+        if (data->wait.obj == NULL) {
+            data->wait.msg = fightstg_message_create();
+            obj->msg_args[0] = 3;
+            obj->msg_args[1] = 0;
+            data->wait.msg->show(data->wait.msg, 23, obj->msg_args);
+            obj->base.set_step(obj, 2);
+        }
+        break;
+#endif
     }
 }
 

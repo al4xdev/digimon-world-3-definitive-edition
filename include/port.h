@@ -348,6 +348,7 @@ int def_blast_hint(void);            /* after the quest: the Chosen Digimon is n
 const unsigned char *def_blast_tempt_label(void);
 int def_blast_plug(void);           /* the DV Plug was used: 1 when it set the Blast off (the port's rule) */
 int def_blast_plug_revive(int slot); /* after the quest: the HP the Plug revives fallen slot `slot` with, 0 if none */
+int def_blast_plug_last_stand(int slot); /* global: auto-revives the last fallen Digimon (1 HP/MP, full Blast gauge, once/battle) */
 void def_blast_boost_stats(int member, struct FightstgStats *out); /* the Blast/Chosen form's boost on the party's stats */
 void def_blast_overheat(s32 slot);   /* a Blast/Chosen form ended (wfightmn_end_blast): the overheat's seal */
 s32 def_blast_end_form(s32 slot, s32 form); /* the form a Blast/Chosen ends in (wfightmn_blast_end): the Rookie */
@@ -474,6 +475,11 @@ void def_super_scale(void);
 int def_super_hp_start(int max_hp);
 int def_super_should_flee(int hp_now);
 int def_super_damage(int side, int damage);
+int def_super_tutorial_battle(void);
+#define DEF_SUPER_FLED_NONE 0
+#define DEF_SUPER_FLED_TARGET 1
+#define DEF_SUPER_FLED_PLAYER 2
+void def_super_flee_note(int who);
 /* PRD 4 layer H, the DRI Agents' Gauntlet (port/game/definitive_dri_screen.c): a talk to `map`'s actor `actor` (always 0: a DRI Agent's own talk runs, the list opens after it), FIELDSTG's idle frame (1 while its screen owns the field), the next enemy member's entrance
  * (wfightmn_knockout) and a lost battle (1 when it was a simulation: it goes back to the field, no game over). */
 int def_dri_talk(s32 map, s32 actor);

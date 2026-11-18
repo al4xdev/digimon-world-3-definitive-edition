@@ -231,6 +231,9 @@ int def_hunt_active(void) {
 }
 
 int def_hunt_flee(void) {
+    if (def_super_tutorial_battle()) {
+        return 0; /* tutorial Ogremon: the player cannot flee, though Ogremon itself can */
+    }
     if (def_super_battle_ready()) {
         return 1;
     }

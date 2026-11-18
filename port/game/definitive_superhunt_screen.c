@@ -53,7 +53,9 @@ extern const unsigned char def_str_SupTitle[], def_str_SupNew[], def_str_SupOn[]
     def_str_Skin5[], def_str_Skin6[], def_str_Skin7[], def_str_Skin8[], def_str_Skin9[], def_str_Skin10[], def_str_Skin11[],
     def_str_Skin12[], def_str_Skin13[], def_str_Skin0[], def_str_SupSkinsTitle[], def_str_SupSkinWorn[],
     def_str_SupSkinFrom[], def_str_SupSkinOwn[], def_str_SupSkinOriginal[], def_str_SupSkinSet[], def_str_SupSkinLocked[],
-    def_str_SupKeysSkins[];
+    def_str_SupKeysSkins[], def_str_SupFledTarget[], def_str_SupFledPlayer[];
+
+extern void *fieldstg_dialog_create_talk(FieldstgActor *actor, s32 message);
 
 #define SH_LAYER 0x1002 /* the field's window layer */
 #define SH_LINE 14      /* a row's pitch */
@@ -119,7 +121,18 @@ static struct {
     MessageWindow *wins[SH_WINDOWS];
     MessageWindow *title, *states[SH_ROWS], *levels[SH_ROWS], *names[SH_ROWS], *where, *detail, *note, *hint;
     MessageCursor *cursor;
+    void *flee_dialog; /* Junior's field talk balloon after a Super Rare hunt escape */
+    s32 flee_map;
 } sh;
+
+static const unsigned char *flee_talk_text;
+
+const unsigned char *def_super_talk_text(void) {
+    const unsigned char *t = flee_talk_text;
+
+    flee_talk_text = NULL;
+    return t;
+}
 
 static unsigned char row_lv[SH_ROWS][16], info_where[SH_TEXT], info_detail[SH_TEXT], info_note[SH_TEXT],
     deb_line[SH_TEXT], deb_skin[SH_TEXT];
@@ -625,7 +638,8 @@ static void compass_draw(void) {
     FieldstgActor *player;
     GfxLayer *layer;
     const char *word;
-    int t, i, w;
+    char prox_text[16];
+    int map, t, p, i, w, lit;
 
     if (def_super_active() < 0 || fieldstg_stage.menu_open || fieldstg_stage.title_shown || dw3_velvet_in_room()) {
         return;
@@ -634,7 +648,8 @@ static void compass_draw(void) {
     if (player == NULL) {
         return;
     }
-    t = def_super_temperature(gamestate_data.funcs.get_map(), player->pixel_pos.x, player->pixel_pos.y);
+    map = gamestate_data.funcs.get_map();
+    t = def_super_temperature(map, player->pixel_pos.x, player->pixel_pos.y);
     if (t <= DEF_TEMP_NONE || t >= DEF_TEMP_COUNT) {
         return;
     }
@@ -659,6 +674,56 @@ static void compass_draw(void) {
     cmp_quad(layer, SH_CMP_X, SH_CMP_Y, w, 1, 1, 214, 160, 80);
     cmp_quad(layer, SH_CMP_X, SH_CMP_Y + SH_CMP_H - 1, w, 1, 1, 214, 160, 80);
     cmp_quad(layer, SH_CMP_X, SH_CMP_Y, w, SH_CMP_H, 2, 60, 40, 20);
+
+    /* Second high-precision thermometer on the target's map: shows exact proximity 0..100% to the spawn point. */
+    p = def_super_proximity(map, player->pixel_pos.x, player->pixel_pos.y);
+    if (p >= 0) {
+        s32 y2 = SH_CMP_Y + SH_CMP_H + 2;
+        s32 h2 = 30;
+        s32 bar_w = p * 79 / 100;
+        const char *pfx = def_is_ptbr() ? "ALVO " : "POS ";
+        int k = 0, c = p >= 90 ? 5 : p >= 75 ? 4 : p >= 50 ? 3 : p >= 25 ? 2 : 1;
+
+        while (*pfx) {
+            prox_text[k++] = *pfx++;
+        }
+        if (p == 100) {
+            prox_text[k++] = '1';
+            prox_text[k++] = '0';
+            prox_text[k++] = '0';
+        } else {
+            if (p >= 10) {
+                prox_text[k++] = (char)('0' + p / 10);
+            }
+            prox_text[k++] = (char)('0' + p % 10);
+        }
+        prox_text[k++] = '%';
+        prox_text[k] = 0;
+
+        lit = (p + 9) / 10;
+        if (p == 0) {
+            lit = 0;
+        }
+        def_poly_text(layer, 0, SH_CMP_X + 6, y2 + 4, SH_CMP_SIZE, prox_text, rgb[c]);
+        def_poly_text(layer, 0, SH_CMP_X + 7, y2 + 5, SH_CMP_SIZE, prox_text, edge);
+        for (i = 0; i < 10; i++) {
+            s32 x = SH_CMP_X + 6 + i * 8;
+            int sc = i >= 8 ? 5 : i >= 6 ? 4 : i >= 4 ? 3 : i >= 2 ? 2 : 1;
+
+            if (i < lit) {
+                cmp_quad(layer, x, y2 + 18, 7, 5, -1, rgb[sc][0], rgb[sc][1], rgb[sc][2]);
+            } else {
+                cmp_quad(layer, x, y2 + 18, 7, 5, -1, 30, 34, 60);
+            }
+        }
+        if (bar_w > 0) {
+            cmp_quad(layer, SH_CMP_X + 6, y2 + 25, bar_w, 2, -1, rgb[c][0], rgb[c][1], rgb[c][2]);
+        }
+        cmp_quad(layer, SH_CMP_X + 6, y2 + 25, 79, 2, -1, 30, 34, 60);
+        cmp_quad(layer, SH_CMP_X, y2, w, 1, 1, 214, 160, 80);
+        cmp_quad(layer, SH_CMP_X, y2 + h2 - 1, w, 1, 1, 214, 160, 80);
+        cmp_quad(layer, SH_CMP_X, y2, w, h2, 2, 60, 40, 20);
+    }
 }
 
 int def_superhunt_frame(void) {
@@ -666,11 +731,23 @@ int def_superhunt_frame(void) {
     if (!def_on()) {
         return 0;
     }
+    if (sh.flee_dialog != NULL) {
+        if (sh.flee_map != gamestate_data.funcs.get_map()) {
+            sh.flee_dialog = NULL;
+        } else {
+            fieldstg_stage.event_running = 1;
+            sh.flee_dialog = heap_objects.try_run((Object *)sh.flee_dialog);
+            if (sh.flee_dialog == NULL) {
+                sh.releasing = 1;
+            }
+            return 1;
+        }
+    }
     if (sh.releasing) {
         return sh_release();
     }
     if (!sh.open && !sh.request) {
-        int won, first;
+        int won, first, fled;
 
         if (def_superhunt_debug && idle()) {
             def_superhunt_debug = 0;
@@ -681,6 +758,22 @@ int def_superhunt_frame(void) {
             sh.skin = first && won + 1 <= DEF_SKIN_COUNT ? won + 1 : 0;
             sh.request = 1;
             sh.mode = SH_DEBRIEF;
+        } else if (idle() && fieldstg_stage.talk_file > 0 && cdload_module.is_loading(fieldstg_stage.talk_file) == 0 &&
+                   (fled = def_super_fled_take()) != DEF_SUPER_FLED_NONE) {
+            FieldstgActor *player = (FieldstgActor *)heap_objects.find(5, -1, 0);
+
+            if (player != NULL) {
+                flee_talk_text = fled == DEF_SUPER_FLED_PLAYER ? def_str_SupFledPlayer : def_str_SupFledTarget;
+                sh.flee_map = gamestate_data.funcs.get_map();
+                sh.flee_dialog = fieldstg_dialog_create_talk(player, 0);
+                fieldstg_stage.event_running = 1;
+                sh.flee_dialog = heap_objects.try_run((Object *)sh.flee_dialog);
+                flee_talk_text = NULL;
+                if (sh.flee_dialog == NULL) {
+                    sh.releasing = 1;
+                }
+                return 1;
+            }
         } else {
             compass_draw();
             return 0;

@@ -78,6 +78,7 @@ static unsigned char overheat_sealed[3];
 static unsigned char boost_off; /* blast_record: the form's stats as they are, without the boost */
 static unsigned char boost_logged; /* slots whose boost the log named this battle */
 static unsigned char blessed_now;  /* this battle's Blast was the blessed one (the flag is already set by then) */
+static unsigned char plug_last_stand_used; /* global auto-revive on last Digimon KO (at most once per battle) */
 
 /* The Blast opens at the Ogremon (owner, 2026-11-18, so nobody sets it off by accident before the tutorial): in the tutorial
  * hunt's battle, and for good once that hunt is won. */
@@ -102,6 +103,7 @@ void def_log_begin(void) {
     memset(overheat_sealed, 0, sizeof(overheat_sealed));
     boost_logged = 0;
     blessed_now = 0;
+    plug_last_stand_used = 0;
     def_blast_heat_begin();
     def_callout_show(DEF_CALLOUT_NONE, 0);
     def_hunt_reward_done(); /* PRD 4 layer B: a reward a results screen never showed does not carry over */
@@ -365,6 +367,13 @@ void *def_text_override(void *data, s32 i) {
 
     if (data == NULL) {
         return NULL;
+    }
+    {
+        const unsigned char *sup = def_super_talk_text();
+
+        if (sup != NULL) {
+            return (void *)sup;
+        }
     }
     for (e = 0; e < 64; e++) {
         const CdloadEntry *ent = &cdload_module.entries[e];
@@ -667,6 +676,7 @@ void def_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, chosen_used);
     PORT_STATE_VAR(s, overheat_sealed);
     PORT_STATE_VAR(s, boost_logged);
+    PORT_STATE_VAR(s, plug_last_stand_used);
     def_dri_savestate(s); /* PRD 4 layer H: a battle loaded mid-simulation is still one */
     def_purify_savestate(s); /* Blast phase 2: and mid-purification */
     def_superhunt_screen_savestate(s); /* the Sepikmon's board and the hunts' reward panel */
@@ -847,8 +857,9 @@ void def_blast_started(s32 id) {
         def_super_blast_note();
         def_record_set_story(DEF_STORY_BLAST_FIRST);
         port_log("blast: digimon %d took the blessed Blast", (int)id);
+    } else {
+        blast_cursed |= 1u << id;
     }
-    blast_cursed |= 1u << id;
     blast_record(id, blast_step_taken == 0xFF ? -1 : blast_step_taken);
     port_log("blast: digimon %d took its Blast form (step %d, %d forms recorded)", (int)id,
              blast_step_taken == 0xFF ? -1 : blast_step_taken, def_record_blast_count());
@@ -1021,7 +1032,8 @@ int def_blast_plug_revive(int slot) {
     FightstgMember *m = &fightstg_battle.state.members[0][slot];
     s32 id = gamestate_data.funcs.get_party_member(slot);
 
-    if (!def_blast_chosen_mode() || id < 0 || id >= DEF_GAUGE_SLOTS || m->digimon == 0 || m->hp != 0) {
+    if ((!def_blast_chosen_mode() && !def_super_tutorial_battle()) || id < 0 || id >= DEF_GAUGE_SLOTS ||
+        m->digimon == 0 || m->hp != 0) {
         return 0;
     }
     m->digimon = records_digimon[id].id;
@@ -1034,6 +1046,42 @@ int def_blast_plug_revive(int slot) {
         m->status |= 0x20;
     }
     port_log("blast: the DV Plug revives digimon %d in its Rookie form, HP and MP 1", (int)id);
+    return 1;
+}
+
+/* Global safety net (once per battle): when the last party member falls and a DV Plug is in the bag (after Ogremon
+ * unlocks Blast, outside Purification), spend 1 DV Plug to revive that last Digimon in Rookie form with 1 HP, 1 MP,
+ * and a full Blast gauge so the player gets a turn to act. */
+int def_blast_plug_last_stand(int slot) {
+    FightstgMember *m;
+    s32 id;
+
+    if (!def_on() || def_purify_fighting() || !blast_unlocked() || plug_last_stand_used ||
+        gamestate_data.items[DEF_PLUG_ITEM] <= 0 || slot < 0 || slot >= 3) {
+        return 0;
+    }
+    m = &fightstg_battle.state.members[0][slot];
+    id = gamestate_data.funcs.get_party_member(slot);
+    if (id < 0 || id >= DEF_GAUGE_SLOTS || m->digimon == 0 || m->hp != 0) {
+        return 0;
+    }
+    plug_last_stand_used = 1;
+    gamestate_data.items[DEF_PLUG_ITEM]--;
+    m->digimon = records_digimon[id].id;
+    m->blasted = 0;
+    m->power_up = 0;
+    m->hp = 1;
+    m->mp = 1;
+    overheat_sealed[slot] = 0;
+    if (id < DEF_BLAST_PARTNERS && def_record_heat(id) != 0) {
+        overheat_sealed[slot] = 1;
+        m->status |= 0x20;
+    }
+    if (!def_blast_chosen_mode()) {
+        records_state.gauges[id] = DEF_GAUGE_MAX;
+    }
+    port_log("blast: last-stand DV Plug revives digimon %d in Rookie form (1 HP, 1 MP, gauge full; %d left)",
+             (int)id, gamestate_data.items[DEF_PLUG_ITEM]);
     return 1;
 }
 
@@ -1366,8 +1414,9 @@ int def_tech_effect(u8 side, int tech, int *msg) {
 }
 
 const unsigned char *def_message(int i) {
-    extern const unsigned char def_str_MsgLibra[], def_str_MsgRelay[], def_str_MsgBreak[];
-    static const unsigned char *const m[3] = { def_str_MsgLibra, def_str_MsgRelay, def_str_MsgBreak };
+    extern const unsigned char def_str_MsgLibra[], def_str_MsgRelay[], def_str_MsgBreak[], def_str_MsgPlugLastStand[];
+    static const unsigned char *const m[4] = { def_str_MsgLibra, def_str_MsgRelay, def_str_MsgBreak,
+                                               def_str_MsgPlugLastStand };
 
     return m[i];
 }

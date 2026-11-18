@@ -453,6 +453,14 @@ int def_super_in_compass_zone(int map);              /* the territory and DEF_SU
 int def_super_in_region(int region);
 /* The compass for the player on map `map` at pixel (x, y). */
 int def_super_temperature(int map, int x, int y);
+int def_super_proximity(int map, int x, int y); /* 0..100 precision on the target's map once placed, -1 elsewhere */
+/* Why a Super Rare battle ended in escape (0): target fled or player fled, reported once back on the field. */
+#define DEF_SUPER_FLED_NONE 0
+#define DEF_SUPER_FLED_TARGET 1
+#define DEF_SUPER_FLED_PLAYER 2
+void def_super_flee_note(int who);
+int def_super_fled_take(void);
+const unsigned char *def_super_talk_text(void);
 /* The hooks: a field step of the player on map `map` at pixel (x, y): 1 the Super Rare's battle starts now (battle
  * def_super_battle()), 2 the target is on this map but its point is not taken yet (the field gives the candidates,
  * then asks again), 0 nothing; the battle's set up (one enemy, its level, HP left and buffs), whether it flees now (its

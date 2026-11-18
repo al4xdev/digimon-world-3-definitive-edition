@@ -148,6 +148,7 @@ SKLNAM 207: Resist Down
 $MsgLibra: Weaknesses revealed!
 $MsgRelay: The next swap is free!
 $MsgBreak: Resistance lowered!
+$MsgPlugLastStand: Revived by DV Plug! Blast up!
 $Bestiary: Bestiary
 $BestiaryMenu: BESTIARY
 $BestiaryHint: L1/R1: Page
@@ -869,6 +870,8 @@ $SupStarted: The hunt is on. Follow the compass!
 $SupTutGiven: Your first hunt is on. Follow the compass!
 $SupCancelled: Hunt cancelled. The target healed.
 $SupSold: "Sold for "
+$SupFledTarget: <7><9><7>Damn, it got away!<1>Next time I find it,<1>it'll be even stronger!<2,2>
+$SupFledPlayer: <7><9><7>Too strong right now...<1>I have to fall back!<1>It'll get tougher next time.<2,2>
 $SupNoCrystal: No crystal of it to sell.
 $SupLockedMsg: Finish the hunt above to open it.
 $SupCrystalPre:

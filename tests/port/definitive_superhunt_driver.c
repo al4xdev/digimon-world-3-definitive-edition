@@ -127,7 +127,7 @@ int main(void) {
           records_state.enemies[0].digimon == 301 && records_state.enemies[0].level == 40 &&
               records_state.enemies[0].hp == 10000 && records_state.enemies[0].stat_scale == 20 &&
               records_state.enemies[1].digimon == 0 && records_state.enemies[2].digimon == 0 && def_super_hp_left() == 10000);
-    check("the party can always flee from it", def_hunt_flee() == 1);
+    check("the party cannot flee from the tutorial hunt", def_hunt_flee() == 0);
     check("it flees once it has lost DEF_SUPER_FLEE_PCT of its full HP in the battle, not before, nor when it falls",
           !def_super_should_flee(10000 - 2499) && def_super_should_flee(10000 - 2500) && !def_super_should_flee(0));
     next_value = 0;
@@ -283,6 +283,47 @@ int main(void) {
     check("a crystal sold gives its price and one fewer; none held gives nothing",
           def_super_crystal_sell(1) == 12000 && def_super_crystals(1) == 1 && def_super_crystal_sell(2) == 0 &&
               def_super_crystal_sell(-1) == 0 && def_super_crystal_sell(DEF_SUPER_COUNT) == 0);
+
+    /* Tutorial Ogremon: player cannot flee, though Ogremon can flee (unless blessed Blast); non-tutorial allows flee
+     * with buff tradeoff and never vanishes after 10 flees, reporting who fled. */
+    def_super_reset();
+    next_value = 0;
+    def_super_start(0);
+    def_super_step(def_super_map(), 0, 0);
+    def_super_set_points(points, 3, 20, 20);
+    def_super_step(def_super_map(), 300, 200);
+    check("tutorial Ogremon blocks player flee while target flee and precision proximity work",
+          def_super_tutorial_battle() && def_hunt_flee() == 0 &&
+              def_super_proximity(def_super_map(), 300, 200) == 100 &&
+              def_super_proximity(def_super_map(), 220, 150) > def_super_proximity(def_super_map(), 50, 50) &&
+              def_super_proximity(def_super_map(), 50, 50) > def_super_proximity(def_super_map(), 20, 20) &&
+              def_super_proximity(0x280, 0, 0) == -1);
+    def_super_flee_note(DEF_SUPER_FLED_TARGET);
+    def_super_battle_end(0, 360);
+    check("target flee in tutorial records DEF_SUPER_FLED_TARGET once",
+          def_super_fled_take() == DEF_SUPER_FLED_TARGET && def_super_fled_take() == DEF_SUPER_FLED_NONE);
+    def_super_cancel();
+
+    /* Non-tutorial Super Rare: player fleeing 15 times keeps HP, caps meets at DEF_SUPER_MEETS_CAP, never vanishes */
+    def_super_reset();
+    memset(rec, 0, sizeof(rec));
+    rec[1] = 1;
+    def_super_record_read(rec);
+    next_value = 0;
+    def_super_start(1);
+    for (i = 0; i < 15; i++) {
+        next_value = i;
+        def_super_step(def_super_map(), 0, 0);
+        def_super_set_points(points, 0, 0, 0);
+        def_super_step(def_super_map(), 0, 0);
+        check("player can flee non-tutorial Super Rare", def_hunt_flee() == 1);
+        def_super_flee_note(DEF_SUPER_FLED_PLAYER);
+        def_super_battle_end(0, 18000);
+    }
+    check("after 15 player flees, Super Rare stays active, keeps HP, caps meets at DEF_SUPER_MEETS_CAP, notes player flee",
+          def_super_active() == 1 && def_super_hp_left() == 18000 && def_super_meets() == DEF_SUPER_MEETS_CAP &&
+              def_super_fled_take() == DEF_SUPER_FLED_PLAYER && def_super_fled_take() == DEF_SUPER_FLED_NONE);
+    def_super_cancel();
 
     on = 0;
     def_super_reset();

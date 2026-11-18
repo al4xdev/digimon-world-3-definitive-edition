@@ -957,14 +957,43 @@ void fightstg_item_update(FightstgItem *obj, FightstgMessage **data) {
                 s32 i = gamestate_data.funcs.get_party_member(fightstg_battle.state.current[0]);
 
 #ifdef PC_PORT
-                /* Blast Gauge phase 1: the DV Plug is the cursed catalyst, one use sets the Blast off (and costs TP) */
-                if (def_blast_plug()) {
-                    *data = fightstg_message_create();
-                    obj->args[0] = 0x3F;
-                    obj->args[1] = 0;
-                    (*data)->show(*data, 2, obj->args);
-                    obj->base.next_step(obj);
-                    break;
+                {
+                    /* In the Ogremon tutorial the DV Plug also revives any fallen partners while triggering the
+                     * blessed Blast on the acting Digimon. */
+                    s32 revived_any = 0;
+                    s32 blasted;
+
+                    if (def_super_tutorial_battle()) {
+                        s32 s;
+
+                        for (s = 0; s < 3; s++) {
+                            if (fightstg_battle.state.members[0][s].hp == 0) {
+                                s32 revived = def_blast_plug_revive(s);
+
+                                if (revived > 0) {
+                                    fightstg_battle.state.members[0][s].hp = revived;
+                                    wfightmn_check_regen(s);
+                                    revived_any = 1;
+                                }
+                            }
+                        }
+                    }
+                    /* Blast Gauge phase 1: the DV Plug is the cursed catalyst, one use sets the Blast off (and costs TP) */
+                    blasted = def_blast_plug();
+                    if (revived_any || blasted) {
+                        *data = fightstg_message_create();
+                        if (revived_any) {
+                            obj->args[0] = 0;
+                            obj->args[1] = 5;
+                            (*data)->show(*data, 9, obj->args);
+                        } else {
+                            obj->args[0] = 0x3F;
+                            obj->args[1] = 0;
+                            (*data)->show(*data, 2, obj->args);
+                        }
+                        obj->base.next_step(obj);
+                        break;
+                    }
                 }
 #endif
                 records_state.gauges[i] += item->amount;
@@ -3602,6 +3631,11 @@ void fightstg_command_menu_open(FightstgCommandMenu *obj) {
         if (member->status & 0x20) {
             data->windows[0]->set_palette(data->windows[2], 7);
         }
+#ifdef PC_PORT
+        if (def_super_tutorial_battle()) {
+            data->windows[0]->set_palette(data->windows[5], 7);
+        }
+#endif
     }
 }
 
@@ -3638,6 +3672,11 @@ void fightstg_command_menu_update(FightstgCommandMenu *obj, FightstgCommandMenuD
                     if ((member->status & 0x20) && data->cursor->sel == 2) {
                         break;
                     }
+#ifdef PC_PORT
+                    if (def_super_tutorial_battle() && data->cursor->sel == 5) {
+                        break;
+                    }
+#endif
                     *obj->result = data->cursor->sel;
                     obj->base.set_state(obj, OBJECT_STATE_END);
                     data->cursor->locked = 1;
@@ -3659,6 +3698,7 @@ void fightstg_command_menu_update(FightstgCommandMenu *obj, FightstgCommandMenuD
 /* The actions: the game's six (0 Fight, 1 Tech, 2 Digivolve, 3 Tag, 4 Item, 5 Run), 6 Inspect and 7 Blast (definitive
  * combat; DEF_BLAST_COMMAND_ID is its result). */
 #define FIGHTSTG_BMENU_ACTIONS 8
+#define FIGHTSTG_BMENU_RUN 5
 #define FIGHTSTG_BMENU_INSPECT 6
 #define FIGHTSTG_BMENU_BLAST 7
 typedef struct FightstgBattleMenuData {
@@ -4074,6 +4114,7 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
          * the battle now (a confirm still in the buffer is left for a technique or item menu). */
         if (port_bm_peek(&b_action, &b_confirm) && b_action >= 0 &&
             !((member->status & 8) && b_action < 3) && !((member->status & 0x20) && b_action == 2) &&
+            !(b_action == FIGHTSTG_BMENU_RUN && def_super_tutorial_battle()) &&
             !(b_action == FIGHTSTG_BMENU_BLAST && !def_blast_ready())) {
             port_bm_take_action();
             port_battle_menu_chosen(b_action, port_battle_menu_bit(b_action), 0);
@@ -4091,6 +4132,7 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
             obj->y[i] = y;
             fightstg_battle_menu_cell(obj, i, slot, icon[1] == 0);
             obj->grey[i] = ((member->status & 8) && i < 3) || ((member->status & 0x20) && i == 2) ||
+                           (i == FIGHTSTG_BMENU_RUN && def_super_tutorial_battle()) ||
                            (i == FIGHTSTG_BMENU_BLAST && !def_blast_ready());
             x -= FIGHTSTG_BMENU_SLIDE * FIGHTSTG_BMENU_SLIDE / 3; /* opens where the slide starts */
             data->icons[i] = message_create_window(0x1005, 3, x + obj->sym_x[i], y + obj->sym_y[i]);

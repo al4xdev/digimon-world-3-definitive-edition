@@ -924,6 +924,7 @@ void fightstg_enemy_turn_update(FightstgEnemyTurn *obj, FightstgEnemyTurnData *d
             /* A Super Rare flees once it has lost DEF_SUPER_FLEE_PCT of its HP in this battle, whatever the battle's
              * type (port/game/definitive_superhunt.c); the same message and end as the game's own flight below. */
             if (def_super_should_flee(fightstg_battle.state.members[1][fightstg_battle.state.current[1]].hp)) {
+                def_super_flee_note(DEF_SUPER_FLED_TARGET);
                 data->child = fightstg_message_create();
                 obj->args[0] = 0x5F;
                 obj->args[1] = 0x10;

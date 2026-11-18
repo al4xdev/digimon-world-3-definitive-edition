@@ -39,14 +39,17 @@ static struct {
 /* The target's point on its map, and the battle being fought (neither is saved: the point is taken again at the first
  * step on the map after a load, a battle is never saved in the middle). The point stays while the target stays. */
 static struct {
-    signed char set;     /* a point was taken */
-    short px, py;        /* the point */
-    signed char battle;  /* the battle being set up or fought is the Super Rare's */
-    short hp_start;      /* its HP when the battle began, in the battle's units */
-    short hp_max;        /* its full HP in the battle's units (Super Hard raises it: def_super_hp) */
-    signed char won;     /* a hunt just won + 1, for the field's panel (def_super_won_take); 0: none */
-    signed char first;   /* that win was the hunt's first: it raised done, so it unlocked a skin */
-    signed char blasted; /* a Blast was set off in the tutorial battle: the target stays to the end */
+    signed char set;      /* a point was taken */
+    short px, py;         /* the point */
+    short range;          /* farthest candidate distance from the point (for the precision thermometer) */
+    signed char battle;   /* the battle being set up or fought is the Super Rare's */
+    short hp_start;       /* its HP when the battle began, in the battle's units */
+    short hp_max;         /* its full HP in the battle's units (Super Hard raises it: def_super_hp) */
+    signed char won;      /* a hunt just won + 1, for the field's panel (def_super_won_take); 0: none */
+    signed char first;    /* that win was the hunt's first: it raised done, so it unlocked a skin */
+    signed char blasted;  /* a Blast was set off in the tutorial battle: the target stays to the end */
+    signed char fled_who; /* why this battle is ending in escape (DEF_SUPER_FLED_*) */
+    signed char fled;     /* pending escape notice for the field (def_super_fled_take) */
 } run;
 
 /* ---- The map graph. */
@@ -258,6 +261,8 @@ int def_super_start(int hunt) {
     st.meets = 0;
     st.map = (unsigned short)draw_map(hunt, -1, -1);
     run.set = 0;
+    run.fled_who = 0;
+    run.fled = 0;
     port_log("super: hunt %d started, the target on map 0x%X", hunt, st.map);
     return 1;
 }
@@ -271,6 +276,8 @@ void def_super_cancel(void) {
     st.lost = 0;
     st.meets = 0;
     run.set = 0;
+    run.fled_who = 0;
+    run.fled = 0;
 }
 
 int def_super_map(void) {
@@ -333,10 +340,26 @@ static int dist2(int x0, int y0, int x1, int y1) {
     return (x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0);
 }
 
+static int isqrt_i(int n) {
+    int x, nx;
+
+    if (n <= 0) {
+        return 0;
+    }
+    x = n;
+    while (1) {
+        nx = (x + n / x) >> 1;
+        if (nx >= x) {
+            return x;
+        }
+        x = nx;
+    }
+}
+
 void def_super_set_points(const short *xy, int count, int x, int y) {
     static short order[DEF_SUPER_POINTS_MAX];
     static int dist[DEF_SUPER_POINTS_MAX];
-    int i, j;
+    int i, j, max_d2 = 0, max_d;
 
     if (count > DEF_SUPER_POINTS_MAX) {
         count = DEF_SUPER_POINTS_MAX;
@@ -345,6 +368,7 @@ void def_super_set_points(const short *xy, int count, int x, int y) {
     if (count <= 0) {
         run.px = (short)x; /* no candidate (a map without encounter tiles): it is found where the player stands */
         run.py = (short)y;
+        run.range = 240;
         return;
     }
     /* By distance from where the player came in (an insertion sort: a few hundred candidates, once per placement); the
@@ -363,6 +387,15 @@ void def_super_set_points(const short *xy, int count, int x, int y) {
     i = order[count * 2 / 3];
     run.px = xy[2 * i];
     run.py = xy[2 * i + 1];
+    for (i = 0; i < count; i++) {
+        int d = dist2(run.px, run.py, xy[2 * i], xy[2 * i + 1]);
+
+        if (d > max_d2) {
+            max_d2 = d;
+        }
+    }
+    max_d = isqrt_i(max_d2);
+    run.range = (short)(max_d < 240 ? 240 : max_d);
 }
 
 int def_super_temperature(int map, int x, int y) {
@@ -379,6 +412,30 @@ int def_super_temperature(int map, int x, int y) {
     }
     d = def_map_distance(map, st.map);
     return d == 1 ? DEF_TEMP_WARM : d >= 2 && d <= 3 ? DEF_TEMP_COOL : DEF_TEMP_COLD;
+}
+
+int def_super_proximity(int map, int x, int y) {
+    int d, r, p;
+
+    if (!def_super_in_compass_zone(map) || map != st.map || !run.set) {
+        return -1;
+    }
+    d = isqrt_i(dist2(x, y, run.px, run.py));
+    if (d <= DEF_SUPER_POINT_RADIUS) {
+        return 100;
+    }
+    r = run.range > 240 ? run.range : 240;
+    if (d >= r) {
+        return 0;
+    }
+    if (r <= 160) {
+        p = 100 * (r - d) / (r - DEF_SUPER_POINT_RADIUS);
+    } else if (d <= 160) {
+        p = 60 + 39 * (160 - d) / (160 - DEF_SUPER_POINT_RADIUS);
+    } else {
+        p = 60 * (r - d) / (r - 160);
+    }
+    return p < 0 ? 0 : p > 100 ? 100 : p;
 }
 
 int def_super_step(int map, int x, int y) {
@@ -468,16 +525,32 @@ int def_super_should_flee(int hp_now) {
     return (run.hp_start - hp_now) * 100 >= run.hp_max * DEF_SUPER_FLEE_PCT;
 }
 
+void def_super_flee_note(int who) {
+    if (def_super_battle_ready()) {
+        run.fled_who = (signed char)who;
+    }
+}
+
+int def_super_fled_take(void) {
+    int who = run.fled;
+
+    run.fled = 0;
+    return who;
+}
+
 void def_super_battle_end(int result, int hp) {
     int hunt = st.active;
 
     if (!run.battle || hunt < 0) {
         run.battle = 0;
+        run.fled_who = 0;
         return;
     }
     run.battle = 0;
     run.set = 0;
     if (result == 1 || hp <= 0) {
+        run.fled_who = 0;
+        run.fled = 0;
         def_super_crystal_add(hunt, def_hunt_mark_mult(1)); /* the Hunter's Mark: double */
         run.first = hunt == st.done && st.done < DEF_SUPER_COUNT;
         if (run.first) {
@@ -488,6 +561,12 @@ void def_super_battle_end(int result, int hp) {
         run.won = (signed char)(hunt + 1);
         return;
     }
+    if (result == 0) {
+        run.fled = (signed char)(run.fled_who ? run.fled_who : DEF_SUPER_FLED_TARGET);
+    } else {
+        run.fled = 0;
+    }
+    run.fled_who = 0;
     /* its HP back in the table's units */
     hp = run.hp_max > 0 ? (int)((long)hp * def_super_rares[hunt].hp / run.hp_max) : hp;
     st.lost = (unsigned short)(def_super_rares[hunt].hp - (hp < 1 ? 1 : hp));
@@ -495,7 +574,8 @@ void def_super_battle_end(int result, int hp) {
         st.meets++;
     }
     st.map = (unsigned short)draw_map(hunt, st.map, -1);
-    port_log("super: hunt %d, the target fled to map 0x%X (HP %d left)", hunt, st.map, hp);
+    port_log("super: hunt %d, %s to map 0x%X (HP %d left, meets %d)", hunt,
+             run.fled == DEF_SUPER_FLED_PLAYER ? "the player fled" : "the target fled", st.map, hp, st.meets);
 }
 
 /* ---- The save: DEF_SUPER_RECORD bytes, all zero with nothing to keep. [0] the active hunt + 1, [1] done, [2..3] the

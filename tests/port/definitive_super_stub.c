@@ -21,6 +21,12 @@ void def_super_savestate(struct PortState *s) {
 int def_super_battle_ready(void) {
     return 0;
 }
+int def_super_tutorial_battle(void) {
+    return 0;
+}
+const unsigned char *def_super_talk_text(void) {
+    return NULL;
+}
 void def_super_battle_end(int result, int hp) {
     (void)result;
     (void)hp;
