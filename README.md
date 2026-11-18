@@ -1,5 +1,7 @@
 <p align="center"><img src="docs/images/definitive/hero.svg" width="900" alt="Digimon World 3: Definitive Edition. Find the weakness. Stagger. One more. Pass the baton."></p>
 
+<p align="center"><b>English</b> · <a href="README.pt-BR.md">Português (Brasil)</a> · <a href="README.fr.md">Français</a> · <a href="README.de.md">Deutsch</a> · <a href="README.it.md">Italiano</a> · <a href="README.es.md">Español</a></p>
+
 <p align="center">
   <b>Digimon World 3, as it could have been.</b><br>
   A fan remaster that runs natively, with no emulator, on RK3326 handhelds and on PC.
