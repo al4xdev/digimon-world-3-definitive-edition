@@ -28,7 +28,8 @@ sys.path.insert(0, str(ROOT / "tools"))
 import gen_velvet_music as gvm  # noqa: E402  (the room's score and bank edits: one source for the game and this tool)
 
 HERE = Path(__file__).resolve().parent
-MIDI = Path("/home/alex/Downloads/Persona 5 - Aria of the Soul - Octet - Aragi Shota.mid")
+# The source MIDIs are not in the repository: each owner keeps them in ~/Downloads.
+MIDI = Path.home() / "Downloads" / "Persona 5 - Aria of the Soul - Octet - Aragi Shota.mid"
 BIN = ROOT / "build/port-sdl/dw2003"
 DISC = ROOT / "iso/dw2003.cue"
 SOCK = Path("/tmp/velvet-live.sock")
@@ -575,7 +576,7 @@ def render_wav(game, mem, proc, voice, start_frame):
     print(f"rendered {OPTS['wav']}: {meta}")
 
 
-ADVENTURE_MIDI = Path("/home/alex/Downloads/Digimon Adventure OP1 - Butterfly (Full) - Octet - Thymm Rayne.mid")
+ADVENTURE_MIDI = Path.home() / "Downloads" / "Digimon Adventure OP1 - Butterfly (Full) - Octet - Thymm Rayne.mid"
 # First-pass mix, 0-100, not an owner-signed balance. Drums sit under the melody.
 ADVENTURE_LEVELS = {
     "Trumpet": (90, 64),

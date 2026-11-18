@@ -19,11 +19,11 @@
   arch `["armhf","aarch64"]`), docs `docs/HANDHELD.md`, `docs/XF35H.md`. Probe with `Debug logs: heavy` and `logs/probe.txt`.
 - **Console deploy handoff (ssh to a handheld, procedure of 2026-11-12; it predates the multi-arch package: the binaries are now `dw2003.armhf` / `dw2003.aarch64` and `dw3-launcher.*`, see `docs/HANDHELD.md`):** the owner supplies `<USER>@<IP>`, the password or key and the PortMaster folder
   (usually `/roms/ports`, or `/roms2/ports`, `/storage/roms/ports`; find it with `ssh <console> 'ls -d /roms*/ports /storage/roms/ports 2>/dev/null'`); `PORTS` below.
-  Source is `/home/alex/git/my/dw3/portmaster/` (the device mirror `tools/build_arm.sh` writes the new build into): copy `dw3/dw2003` (the 32-bit ARM binary; check `file` says
+  Source is `../portmaster/` (a sibling of the checkout) (the device mirror `tools/build_arm.sh` writes the new build into): copy `dw3/dw2003` (the 32-bit ARM binary; check `file` says
   `ELF 32-bit LSB ... ARM` and the date is current, else run `tools/build_arm.sh`, Docker image `dw3-armhf-builder`), `dw3/mods/`, and only if changed `ledd.py`, `probe.sh`,
   `README.txt` and `Digimon World 3.sh`. **Never overwrite or delete:** `PORTS/dw3/game/` (the player's disc), `card1.mcd`, `card2.mcd`, `settings.json`, `pad.map`, `tui.state`, `logs/`,
   `log.txt`, `menu.log`; no `rsync --delete`, no `scp -r` of the whole folder. **Step 1, mandatory backup:** create `PORTS/dw3-backup-<date>` with `card1.mcd`, `card2.mcd`, `settings.json`,
-  `pad.map`, `tui.state`, `dw2003.old`, `mods.old`, the `.sh`; then bring a copy of the saves to `/home/alex/git/my/dw3/backups-console/` and check they exist and are not empty (`card1.mcd`
+  `pad.map`, `tui.state`, `dw2003.old`, `mods.old`, the `.sh`; then bring a copy of the saves to `../backups-console/` and check they exist and are not empty (`card1.mcd`
   should be 131072 bytes; if the player never saved, tell the owner and go on). **Step 2:** `scp` the binary and the mods, `chmod +x`, compare `sha1sum` local and remote; the mods `party_xp`, `xp_boost`
   and `evo_buff` no longer exist (rules of the game or removed): **move** the old folders into the backup, do not delete; the launcher also changed (no XP screen, no EVO BUFF); an old
   `settings.json` with those keys keeps working. **Step 3, old saves and MP (the owner's decision, never alone):** the game does not migrate old saves (they open with the old MP); to convert,
