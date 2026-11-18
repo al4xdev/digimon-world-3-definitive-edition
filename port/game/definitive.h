@@ -922,6 +922,12 @@ void def_record_set_chosen_charge(int charge);
 #define DEF_CHOSEN_BOOST_PCT 50
 #define DEF_BLAST_OVERHEAT_TURNS 3
 int def_record_blast_boost(void); /* the steps bought, 0..DEF_BLAST_QUEST_FORMS */
+/* The overheat's sealed own turns left, by Digimon (0..DEF_BLAST_OVERHEAT_TURNS), saved with the record: it follows the
+ * partner into the next battles, each of its own turns counts it down, an inn (def_blast_cool_party) or Gennai clears it. */
+int def_record_heat(int partner);
+void def_record_set_heat(int partner, int turns);
+void def_blast_heat_begin(void);
+void def_blast_cool_party(void);
 void def_record_set_blast_boost(int steps);
 int def_blast_boost_pct(void);    /* the Blast form's boost now, % */
 /* The Velvet Room's story hooks (.plan/tasks/velvet-historia.md), in the same second record: a bit per hook seen or done

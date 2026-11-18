@@ -1448,6 +1448,11 @@ Blast dark forms through the same path (`DEF_RECOLOR_DARK`: luminance 40%, sligh
 - The 5 dark forms per partner come from the game's `RecordsDigimon.blast_forms`. They advance in order with step levels
   {1, 15, 25, 35, 45} and repeat the last reached when the level is too low. `DW3_BLAST_STEP` forces a step in tests
   (`DW3_BLAST_FORM` forced a form; old). Forms are painted dark (see Recolour).
+- **Overheat** (Blast and Chosen alike): when the form ends the Digimon is back in Rookie and sealed from digivolving for 3 of its own turns.
+  The turns left are saved with the partner (high nibble of its `REC2_BLAST` byte) and follow it into the next battles, which it starts
+  sealed in Rookie; only an inn's rest (Gatomon) clears it, or Gennai for the Chosen Digimon. While it lasts the Digimon also starts the battle as its
+  Rookie (not its shown form) and the Tag menu offers it only as its Rookie (`def_blast_heated`).
+- **The 999 cap:** the Blast's boost stops at 999; only the Chosen boost (+50%) goes up to 9999.
 - **DV Plug** (item 76): fills the gauge and triggers at once, costs 10 TP (`DEF_BLAST_PLUG_TP`); after the quest it revives to
   Rookie at 1 HP / 1 MP.
 - **Temptation:** a full gauge with a knocked-out partner, or the acting Digimon at <= 25% HP, makes the Blast button pulse
@@ -1921,7 +1926,6 @@ Not started or only staged unless the entry says otherwise. Each entry says wher
   done); the Layer 6 technique candidates (Combat design record); the Super Hard rebalance by the owner.
 - **Onboarding hooks in the main story** (the Velvet Room "section 6": a forced Guardromon interaction after the second teleport point; steering the player through a wardrobe door when rare materials start to appear): out of scope, the owner is rewriting the main quest elsewhere and will make guide quests.
 - **Skin ideas:** a price (free or one crystal), a 3D preview; Digimon skins were dropped. **Door art:** hand-drawn door sprites beside wardrobes/cupboards (Velvet Room).
-- **Blast cap break:** the Chosen Evolution is meant to be the only thing able to exceed 999 in combat; not done.
 
 ## Pending work / open decisions
 

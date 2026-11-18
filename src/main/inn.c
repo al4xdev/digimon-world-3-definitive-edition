@@ -96,6 +96,9 @@ void inn_heal_party(void) {
             }
         }
     }
+#ifdef PC_PORT
+    def_blast_cool_party();
+#endif
 }
 
 /* The inn's dialogue, one step per frame (obj->base.step): fade the windows in, ask (cursor: 0 = yes,

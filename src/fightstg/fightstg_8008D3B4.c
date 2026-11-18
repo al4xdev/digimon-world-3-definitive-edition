@@ -5881,6 +5881,11 @@ void fightstg_switch_menu_update(FightstgSwitchMenu *obj, FightstgSwitchMenuData
         count = 1;
         obj->entries[0] = records_digimon[id].id;
         for (i = 0; i < 3; i++) {
+#ifdef PC_PORT
+            if (def_blast_heated(id)) { /* overheated from a Blast or Chosen: the Tag brings it in as its Rookie only */
+                break;
+            }
+#endif
             if (obj->forms[i] >= 3) {
                 obj->entries[count++] = obj->forms[i];
             }

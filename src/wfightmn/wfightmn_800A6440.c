@@ -358,6 +358,10 @@ void wfightmn_main_update(WfightmnMain *obj, WfightmnMainData *data) {
                 if (wfightmn_roll_first_strike() != 0) {
                     leader = records_digimon[id].id;
                     obj->base.timer = 1;
+#ifdef PC_PORT
+                } else if (def_blast_heated(id)) { /* still overheated: it starts as its Rookie until an inn or Gennai cools it */
+                    leader = records_digimon[id].id;
+#endif
                 } else if (gamestate_data.funcs.get_chosen_forms(id, forms) > 0 && gamestate_data.digimon[id].shown_form != 0) {
                     leader = gamestate_data.digimon[id].shown_form;
                 } else {

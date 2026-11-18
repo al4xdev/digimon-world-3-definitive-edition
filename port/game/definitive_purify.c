@@ -637,6 +637,9 @@ static void chosen_open(void) {
     int i;
 
     def_record_set_chosen_charge(1); /* talking to him restores the charge */
+    if (def_record_chosen() >= 0) {
+        def_record_set_heat(def_record_chosen(), 0); /* ...and cools the Chosen Digimon's overheat */
+    }
     pf_text(2, 3, def_str_PfChosenTitle, PF_PAL_DONE, 1);
     pf_text(2, 22, def_str_PfCharged, PF_PAL_TEXT, 2);
     for (i = 0; i < 3; i++) {

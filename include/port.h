@@ -352,6 +352,8 @@ void def_blast_boost_stats(int member, struct FightstgStats *out); /* the Blast/
 void def_blast_overheat(s32 slot);   /* a Blast/Chosen form ended (wfightmn_end_blast): the overheat's seal */
 s32 def_blast_end_form(s32 slot, s32 form); /* the form a Blast/Chosen ends in (wfightmn_blast_end): the Rookie */
 void def_blast_overheat_turn(int slot); /* the slot's own turn begins: the overheat counts down */
+int def_blast_heated(s32 id);        /* the Digimon `id` is still overheated: it fights, and tags in, as its Rookie */
+void def_blast_cool_party(void);     /* the inn's rest (Gatomon): the party's overheat is gone */
 void def_story_frame(void);          /* the Velvet Room's story hooks (definitive_story.c), each idle field frame */
 void def_blast_started(s32 id);      /* the Digimon `id` took its Blast form (wfightmn_blast) */
 int def_blast_dark(void);            /* the acting party member's model is to be painted dark (a Blast form) */

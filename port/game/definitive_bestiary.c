@@ -53,6 +53,7 @@ static unsigned int dri_best;
 #define REC2_BLAST_END (REC2_BLAST_QUEST + 9)
 typedef char rec2_blast_fits[DEF_BLAST_QUEST_FORMS <= 16 && REC2_BLAST_END <= DEF_RECORD2_SIZE ? 1 : -1];
 static unsigned char blast_next[DEF_BLAST_PARTNERS];
+static unsigned char blast_heat[DEF_BLAST_PARTNERS]; /* the overheat's turns left: the high nibble of blast_next's byte */
 static unsigned short blast_owed[DEF_BLAST_PARTNERS];
 static unsigned char blast_quest, chosen_partner, chosen_charge; /* chosen_partner: the partner + 1, 0 none */
 static unsigned short blast_purified;
@@ -99,6 +100,7 @@ static unsigned char buffer[DEF_BESTIARY_RECORD_SIZE];
 
 static void blast_reset2(void) {
     memset(blast_next, 0, sizeof(blast_next));
+    memset(blast_heat, 0, sizeof(blast_heat));
     memset(blast_owed, 0, sizeof(blast_owed));
     blast_quest = 0;
     chosen_partner = 0;
@@ -120,7 +122,7 @@ static int blast_any(void) {
     unsigned int i;
 
     for (i = 0; i < DEF_BLAST_PARTNERS; i++) {
-        if (blast_next[i] != 0 || blast_owed[i] != 0) {
+        if (blast_next[i] != 0 || blast_heat[i] != 0 || blast_owed[i] != 0) {
             return 1;
         }
     }
@@ -238,6 +240,7 @@ void def_bestiary_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, dri_unlocked);
     PORT_STATE_VAR(s, dri_best);
     PORT_STATE_VAR(s, blast_next);
+    PORT_STATE_VAR(s, blast_heat);
     PORT_STATE_VAR(s, blast_owed);
     PORT_STATE_VAR(s, blast_quest);
     PORT_STATE_VAR(s, chosen_partner);
@@ -365,7 +368,7 @@ void def_record2_write(unsigned char *out) {
         out[REC2_DRI + 2 + i] = (unsigned char)(dri_best >> (8 * i));
     }
     for (i = 0; i < DEF_BLAST_PARTNERS; i++) {
-        out[REC2_BLAST + i] = blast_next[i];
+        out[REC2_BLAST + i] = (unsigned char)(blast_next[i] | blast_heat[i] << 4);
         out[REC2_BLAST_OWED + 2 * i] = (unsigned char)blast_owed[i];
         out[REC2_BLAST_OWED + 2 * i + 1] = (unsigned char)(blast_owed[i] >> 8);
     }
@@ -408,7 +411,8 @@ void def_record2_read(const unsigned char *in) {
         dri_best |= (unsigned int)in[REC2_DRI + 2 + i] << (8 * i);
     }
     for (i = 0; i < DEF_BLAST_PARTNERS; i++) {
-        blast_next[i] = in[REC2_BLAST + i] < DEF_BLAST_STEPS ? in[REC2_BLAST + i] : 0;
+        blast_next[i] = (in[REC2_BLAST + i] & 15) < DEF_BLAST_STEPS ? in[REC2_BLAST + i] & 15 : 0;
+        blast_heat[i] = (in[REC2_BLAST + i] >> 4) <= DEF_BLAST_OVERHEAT_TURNS ? in[REC2_BLAST + i] >> 4 : 0;
         blast_owed[i] = (unsigned short)(in[REC2_BLAST_OWED + 2 * i] | in[REC2_BLAST_OWED + 2 * i + 1] << 8);
     }
     blast_quest = in[REC2_BLAST_QUEST] <= DEF_BLAST_QUEST_DONE ? in[REC2_BLAST_QUEST] : 0;
@@ -488,6 +492,16 @@ int def_record_chosen_charge(void) {
 
 void def_record_set_chosen_charge(int charge) {
     chosen_charge = (unsigned char)(charge != 0);
+}
+
+int def_record_heat(int partner) {
+    return partner >= 0 && partner < DEF_BLAST_PARTNERS ? blast_heat[partner] : 0;
+}
+
+void def_record_set_heat(int partner, int turns) {
+    if (partner >= 0 && partner < DEF_BLAST_PARTNERS) {
+        blast_heat[partner] = (unsigned char)(turns < 0 ? 0 : turns > DEF_BLAST_OVERHEAT_TURNS ? DEF_BLAST_OVERHEAT_TURNS : turns);
+    }
 }
 
 int def_record_blast_boost(void) {
