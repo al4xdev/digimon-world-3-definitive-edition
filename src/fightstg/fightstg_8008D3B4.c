@@ -249,6 +249,9 @@ typedef struct FightstgStatusData {
     /* 0x10 */ MessageWindow *skill_level;
     /* 0x14 */ MessageWindow *stat_windows[13]; /* the stats (fightstg_status_stat_windows) */
     /* 0x48 */ MessageWindow *tech_windows[6]; /* the techniques */
+#ifdef PC_PORT
+    MessageWindow *elem_icons[6]; /* definitive: each technique's element (NULL when !def_on()) */
+#endif
 } FightstgStatusData; /* size 0x60 */
 
 /* fightstg_member_menu_create's object: picks a party member (not the acting one). */
@@ -4614,6 +4617,14 @@ void fightstg_status_show_techs(FightstgStatus *obj, FightstgStatusData *data) {
     for (i = 0; i < 6; i++) {
         data->tech_windows[i] = message_create_window(0x1005, 1, 0x26, i * 14 + 0x51);
         id = obj->techniques[i];
+#ifdef PC_PORT
+        /* the element's picture after the name, where the technique menu puts it (FIGHTSTG_TECH_ELEM_X, this list's
+         * names start 4 pixels earlier) */
+        if (def_on()) {
+            data->elem_icons[i] = message_create_window(0x1005, 1, 0x8A, i * 14 + 0x51);
+            def_tech_icon(data->elem_icons[i], id & 0x1FFF, 0);
+        }
+#endif
         if (id != 0) {
             data->tech_windows[i]->set_text(data->tech_windows[i], cdload_module.files.get_file(records_language + 0xA2), id & 0x1FFF);
             if (id & 0x8000) {

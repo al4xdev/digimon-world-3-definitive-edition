@@ -13,6 +13,10 @@
  * (gamestate_data.funcs.get_chosen_forms) and, with list_all, the others it has (unk_44); the form under the cursor
  * shows its stat bonuses and its techniques. Created by the menu and two of the lab's screens. */
 
+#ifdef PC_PORT
+#define DEF_TECH_ICON_X 0x12A /* definitive: a technique's element picture, after its name (names start at 0xC2) */
+#endif
+
 /* Its data block (0x70 bytes). */
 typedef struct StgdglabFormsData {
     /* 0x00 */ MessageWindow *title;     /* title */
@@ -21,6 +25,9 @@ typedef struct StgdglabFormsData {
     /* 0x14 */ MessageWindow *skill_lv_label;
     /* 0x18 */ MessageWindow *techniques[6]; /* its techniques */
     /* 0x30 */ MessageWindow *stats[14];  /* its stats (with the form's bonuses), then the level */
+#ifdef PC_PORT
+    MessageWindow *elem_icons[6]; /* definitive: each technique's element; before the cursor (create_windows' scans) */
+#endif
     /* 0x68 */ MessageCursor *cursor;    /* cursor */
     /* 0x6C */ StgdglabBar *scroll_bar; /* scroll bar */
 } StgdglabFormsData; /* size 0x70 */
@@ -46,6 +53,13 @@ void stgdglab_forms_create_windows(StgdglabForms *obj, StgdglabFormsData *data) 
     for (i = 0; i < 6; i++) {
         data->techniques[i] = message_create_window(obj->layer_id, 1, 0xC2, i * 14 + 0x8B);
     }
+#ifdef PC_PORT
+    if (def_on()) {
+        for (i = 0; i < 6; i++) {
+            data->elem_icons[i] = message_create_window(obj->layer_id, 1, DEF_TECH_ICON_X, i * 14 + 0x8B);
+        }
+    }
+#endif
     windows = (MessageWindow **)obj->base.children;
     for (i = 0; i < obj->base.child_count - 2; i++, windows++) {
         if (*windows != NULL) {
@@ -131,6 +145,9 @@ void stgdglab_forms_show(StgdglabForms *obj, StgdglabFormsData *data, s32 show) 
                 } else {
                     data->techniques[i]->set_visible(data->techniques[i], 0);
                 }
+#ifdef PC_PORT
+                def_tech_icon(data->elem_icons[i], form.techniques[i], 0);
+#endif
             }
             for (i = 0; i < 14; i++) {
                 data->stats[i]->measure(data->stats[i], 1);

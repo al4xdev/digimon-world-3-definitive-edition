@@ -126,9 +126,13 @@ resto**:
   - **Solução:** Ajustar o destino do teleporte para utilizar as **coordenadas
     iniciais padrão** de caso cada mapa já registradas no projeto.
 
-- [ ] **não renderiza elemtno da tecnica em outros menus** - Em como troca de
+- [x] **não renderiza elemtno da tecnica em outros menus** - Em como troca de
       digimon, ou evolução ( rastrear mais menus talvez como status,
       digiblab,etc)**
+  - **Feito (2026-11-18):** o ícone do elemento aparece depois do nome da técnica em toda lista de técnicas de um
+    Digimon: a página de técnicas do status da batalha (Tag e digivolve), a página de digivolve do status de campo e as
+    três telas de técnicas do Digi-Lab (`def_tech_icon`, `port/game/definitive.c`). Técnica sem elemento não mostra nada.
+    Visto no jogo: status da batalha e status de campo; o Digi-Lab usa a mesma geometria e não foi aberto.
 
 ---
 

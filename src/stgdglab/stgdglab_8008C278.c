@@ -29,6 +29,10 @@ struct StgdglabTechs {
     /* 0xA8 */ s32 techniques; /* techniques */
 }; /* size 0xAC */
 
+#ifdef PC_PORT
+#define DEF_TECH_ICON_X 0xDA /* definitive: a technique's element picture, after its name (names start at 0x6B), before the marks */
+#endif
+
 /* Its data block (0x5C bytes). */
 typedef struct StgdglabTechsData {
     /* 0x00 */ MessageWindow *form_name; /* the form's name */
@@ -42,6 +46,9 @@ typedef struct StgdglabTechsData {
     /* 0x48 */ MessageWindow *description; /* the technique's description */
     /* 0x4C */ MessageWindow *mp_label;
     /* 0x50 */ MessageWindow *cost;      /* its cost */
+#ifdef PC_PORT
+    MessageWindow *elem_icons[6]; /* definitive: each technique's element; before the cursors (create_windows' scans) */
+#endif
     /* 0x54 */ MessageCursor *yes_no_cursor;
     /* 0x58 */ MessageCursor *cursor;    /* cursor */
 } StgdglabTechsData; /* size 0x5C */
@@ -67,6 +74,13 @@ void stgdglab_techs_create_windows(StgdglabTechs *obj, StgdglabTechsData *data) 
     data->description->set_page_lines(data->description, 2);
     data->mp_label = message_create_window(obj->layer_id, 1, 0x109, 0xD1);
     data->cost = message_create_window(obj->layer_id, 1, 0x12C, 0xD1);
+#ifdef PC_PORT
+    if (def_on()) {
+        for (i = 0; i < 6; i++) {
+            data->elem_icons[i] = message_create_window(obj->layer_id, 1, DEF_TECH_ICON_X, i * 17 + 0x58);
+        }
+    }
+#endif
     windows = (MessageWindow **)obj->base.children;
     for (i = 0; i < obj->base.child_count - 2; i++, windows++) {
         if (*windows != NULL) {
@@ -117,9 +131,16 @@ void stgdglab_techs_show(StgdglabTechs *obj, StgdglabTechsData *data, s32 show) 
                         data->techniques[i]->set_palette(data->techniques[i], 0);
                         data->set_marks[i]->set_palette(data->set_marks[i], 0);
                     }
+#ifdef PC_PORT
+                    /* the row's palette: set 4, plugged in 3, not usable (grey) 7 */
+                    def_tech_icon(data->elem_icons[i], tech, (tech & 0x4000) ? 4 : (tech & 0x8000) ? 3 : !(tech & 0x2000) ? 7 : 0);
+#endif
                 } else {
                     data->techniques[i]->set_visible(data->techniques[i], 0);
                     data->set_marks[i]->set_visible(data->set_marks[i], 0);
+#ifdef PC_PORT
+                    def_tech_icon(data->elem_icons[i], 0, 0);
+#endif
                 }
             }
             data->set_max->set_text(data->set_max, cdload_module.files.get_file(records_language + 0x39), 0x10);

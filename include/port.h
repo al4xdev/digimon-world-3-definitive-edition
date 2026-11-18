@@ -416,6 +416,8 @@ const unsigned char *def_family_icon(int f, int second);
 const unsigned char *def_family_name(int f);
 const unsigned char *def_inspect_family_state(const short *resists, int f, int *palette);
 int def_tech_element(int tech);
+struct MessageWindow;
+void def_tech_icon(struct MessageWindow *w, int tech, int palette);
 struct FightstgEnemyRecord;
 const unsigned char *def_bestiary_state(struct FightstgEnemyRecord *rec, int index, int e, int *palette);
 const unsigned char *def_bestiary_family_state(struct FightstgEnemyRecord *rec, int index, int f, int *palette);

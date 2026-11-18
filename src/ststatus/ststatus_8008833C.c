@@ -30,7 +30,14 @@ typedef struct StstatusFormsPageData {
     /* 0x84 */ MessageWindow *message; /* message, or technique */
     /* 0x88 */ MessageWindow *mp_label; /* "MP" */
     /* 0x8C */ MessageWindow *mp_cost; /* MP cost */
+#ifdef PC_PORT
+    MessageWindow *elem_icons[6]; /* definitive: each technique's element (NULL when !def_on()) */
+#endif
 } StstatusFormsPageData; /* size 0x90 */
+
+#ifdef PC_PORT
+#define DEF_TECH_ICON_X 0x12A /* a technique's element picture, after its name (names start at 0xC4) */
+#endif
 
 /* The forms page (ststatus_create_forms_page, size 0xFC): a member's forms, the stats and techniques of one. */
 typedef struct StstatusFormsPage {
@@ -86,6 +93,11 @@ void ststatus_forms_create_windows(StstatusFormsPage *obj, StstatusFormsPageData
     }
     for (i = 0; i < 6; i++) {
         data->techniques[i] = message_create_window(obj->layer_id, 1, 0xC4, i * 0xE + 0x88);
+#ifdef PC_PORT
+        if (def_on()) {
+            data->elem_icons[i] = message_create_window(obj->layer_id, 1, DEF_TECH_ICON_X, i * 0xE + 0x88);
+        }
+#endif
     }
     data->technique_cursor = message_create_cursor(obj->layer_id, obj->ot_depth - 1, 0xA9, 0x88);
     data->technique_cursor->show(data->technique_cursor, 0);
@@ -224,6 +236,9 @@ void ststatus_forms_show_stats(StstatusFormsPage *obj, StstatusFormsPageData *da
                 } else {
                     data->techniques[i]->set_visible(data->techniques[i], 0);
                 }
+#ifdef PC_PORT
+                def_tech_icon(data->elem_icons[i], tech, 0);
+#endif
             }
         } else {
             form = &records_digimon[digimon];
@@ -270,6 +285,9 @@ void ststatus_forms_show_stats(StstatusFormsPage *obj, StstatusFormsPageData *da
                 } else {
                     data->techniques[i]->set_visible(data->techniques[i], 0);
                 }
+#ifdef PC_PORT
+                def_tech_icon(data->elem_icons[i], form->techniques[i + 1], 0);
+#endif
             }
         }
         obj->stats_shown = 1;
@@ -282,6 +300,11 @@ void ststatus_forms_show_stats(StstatusFormsPage *obj, StstatusFormsPageData *da
         }
         for (i = 0; i < 6; i++) {
             data->techniques[i]->set_visible(data->techniques[i], 0);
+#ifdef PC_PORT
+            if (data->elem_icons[i] != NULL) {
+                data->elem_icons[i]->set_visible(data->elem_icons[i], 0);
+            }
+#endif
         }
         obj->stats_shown = 0;
     }

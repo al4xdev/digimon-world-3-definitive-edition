@@ -32,6 +32,10 @@ struct StgdglabFormset {
     /* 0xFC */ s32 menu_cursor; /* cursor of the second menu */
 }; /* size 0x100 */
 
+#ifdef PC_PORT
+#define DEF_TECH_ICON_X 0x12A /* definitive: a technique's element picture, after its name (names start at 0xC2) */
+#endif
+
 /* Its data block (0xA0 bytes). */
 typedef struct StgdglabFormsetData {
     /* 0x00 */ MessageWindow *form_windows[10]; /* the forms shown */
@@ -41,6 +45,9 @@ typedef struct StgdglabFormsetData {
     /* 0x48 */ MessageWindow *stats[14];  /* its stats, then the level */
     /* 0x80 */ MessageWindow *message;
     /* 0x84 */ MessageWindow *menu[4];    /* the second menu: the set forms, then "none" */
+#ifdef PC_PORT
+    MessageWindow *elem_icons[6]; /* definitive: each technique's element; before the cursors (create_windows' scans) */
+#endif
     /* 0x94 */ MessageCursor *menu_cursor; /* its cursor */
     /* 0x98 */ MessageCursor *forms_cursor; /* the forms' cursor */
     /* 0x9C */ s32 unk_9C;
@@ -68,6 +75,13 @@ void stgdglab_formset_create_windows(StgdglabFormset *obj, StgdglabFormsetData *
     for (i = 0; i < 7; i++) {
         data->stats[i + 6] = message_create_window(obj->layer_id, 1, 0xA7, i * 14 + 0x7F);
     }
+#ifdef PC_PORT
+    if (def_on()) {
+        for (i = 0; i < 6; i++) {
+            data->elem_icons[i] = message_create_window(obj->layer_id, 1, DEF_TECH_ICON_X, i * 14 + 0x8B);
+        }
+    }
+#endif
     windows = (MessageWindow **)obj->base.children;
     for (i = 0; i < obj->base.child_count - 3; i++, windows++) {
         if (*windows != NULL) {
@@ -158,6 +172,9 @@ void stgdglab_formset_show(StgdglabFormset *obj, StgdglabFormsetData *data, s32 
                 } else {
                     data->techniques[i]->set_visible(data->techniques[i], 0);
                 }
+#ifdef PC_PORT
+                def_tech_icon(data->elem_icons[i], form.techniques[i], 0);
+#endif
             }
             for (i = 0; i < 14; i++) {
                 data->stats[i]->measure(data->stats[i], 1);

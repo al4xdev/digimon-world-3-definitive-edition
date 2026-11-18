@@ -7,6 +7,7 @@
 #include "cdload.h"
 #include "common.h"
 #include "fightstg.h"
+#include "message.h"
 #include "sound.h"
 #include "gamestate.h"
 #include "records.h"
@@ -507,6 +508,21 @@ int def_tech_element(int tech) {
     int stat = tech >= 1 ? records_techniques[tech - 1].defense_stat : 0;
 
     return stat >= 2 && stat <= 8 ? stat - 2 : -1;
+}
+
+/* A technique's element picture in window `w` (hidden text when it has none), for the screens that list a form's
+ * techniques (Digi-Lab, the status pages, the battle's Tag and digivolve previews): the same picture the technique
+ * menu shows at the row's end. `tech` carries the record's flag bits; `palette` is the row's (the picture is coloured,
+ * but a greyed row greys it as the technique menu does). */
+void def_tech_icon(struct MessageWindow *w, int tech, int palette) {
+    static const unsigned char empty[1] = { 0 };
+    int e = def_tech_element(tech & 0x1FFF);
+
+    if (w == NULL) {
+        return;
+    }
+    w->set_text(w, (unsigned char *)(e >= 0 ? def_element_icon(e) : empty), -1);
+    w->set_palette(w, palette);
 }
 
 /* The label and the 14-pixel font's palette of a target_class (0: not learnt yet): the weakness is the line to find, so

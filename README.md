@@ -211,7 +211,7 @@ way round, an enemy's magic of power 100 (stat scale 16, so × 1) with Spirit 15
 - **Libra** reveals all of an enemy's elements at once.
 - The **Bestiary** (field menu) keeps what you learnt of every species, saved with your game, and lists its Hunt
   Materials: the common one with how many you hold, and its rare items as a collection (see [The hunt](#the-hunt)).
-- The technique menu shows each technique's element; it and the status screens keep the seven element pictures.
+- Every list of a Digimon's techniques shows each technique's element picture after its name: the battle's technique menu, the battle's Tag and digivolve status pages, the field status screen's digivolve page and the Digi-Lab's three technique screens (`def_tech_icon`). A technique with no element (a physical blow, a support) shows none. It and the status screens keep the seven element pictures.
 
 ![Bestiary, the weakness panel in battle and the technique menu's element](docs/images/definitive/definitive_ui.png)
 
@@ -1918,7 +1918,7 @@ Not started or only staged unless the entry says otherwise. Each entry says wher
 - **PortMaster submission:** the package is checked (`portmaster/make_release.sh`, `dist/dw3.zip`) but **never submitted**: it needs a Discord testing thread and tests on CFWs this machine is not; publishing is the owner's call (plan 1).
 - **Telemetry Harness and Plugin Gatekeeper (staging 16):** a separate PRD v0.1 draft, unrelated to the game; the whole PRD is condensed in History.
 - **Combat ideas never done:** Numemon resistant to every element except Physical (PRD 3 roadmap); **elemental field rebalancing** (the multipliers and effects of field techniques; the PRD 2 "out of scope" list also names a design for the WEAK/resist animation, which was
-  done); element icons in the other menus (Tag, digivolve, status, Digi-Lab) since the technique's element is only drawn in the technique menu and the Bestiary (the PRD asked to trace more menus); the Layer 6 technique candidates (Combat design record); the Super Hard rebalance by the owner.
+  done); the Layer 6 technique candidates (Combat design record); the Super Hard rebalance by the owner.
 - **Onboarding hooks in the main story** (the Velvet Room "section 6": a forced Guardromon interaction after the second teleport point; steering the player through a wardrobe door when rare materials start to appear): out of scope, the owner is rewriting the main quest elsewhere and will make guide quests.
 - **Skin ideas:** a price (free or one crystal), a 3D preview; Digimon skins were dropped. **Door art:** hand-drawn door sprites beside wardrobes/cupboards (Velvet Room).
 - **Blast cap break:** the Chosen Evolution is meant to be the only thing able to exceed 999 in combat; not done.
@@ -2068,7 +2068,7 @@ kill switch not reaching the data plane (`policy_version` per call, bound stated
 ### Other history worth keeping
 
 - **Worked in layers, one session each**, each with a short report to the owner; the older PRDs (`definitive-combat-prd.md`, `-progression-prd.md`, `-rebalance-prd.md`, `-hunt-economy-dri-prd.md`) were written "for a smaller model to execute", which is why each layer lists where to touch, what exists and how to test; numbers of lines in them drift, confirm with `grep`.
-- **PRD 3's own roadmap** (checked items): Hard Mode (done), WEAK/RESIST animations (done), Ice/Water and Thunder/Machine icon merge in battle HUD and Bestiary (done), OVERFINISH (done), teleport-out-of-map fix (done); open: elemental fields, Numemon, element icon in other menus; in-game guide and Asuka auctions (done as the Guide), the translation pipeline (PT-BR done), Girls Power (done; Plan A analyse C/Assembly to build missing frames, Plan B reuse her existing animations for kick/fishing: Plan A was effectively taken by repainting frames).
+- **PRD 3's own roadmap** (checked items): Hard Mode (done), WEAK/RESIST animations (done), Ice/Water and Thunder/Machine icon merge in battle HUD and Bestiary (done), OVERFINISH (done), teleport-out-of-map fix (done); element icon in the other menus (done: `def_tech_icon`; seen in game on the battle status page and the field status's digivolve page, the Digi-Lab's screens only by their shared layout); open: elemental fields, Numemon (the owner left both out of 1.0); in-game guide and Asuka auctions (done as the Guide), the translation pipeline (PT-BR done), Girls Power (done; Plan A analyse C/Assembly to build missing frames, Plan B reuse her existing animations for kick/fishing: Plan A was effectively taken by repainting frames).
 - **Handoff to console of the definitive build (2026-11-12) and the owner's Layer 10 note**: enemies kept the disc's resistance values until the owner approved the weakness table; since approved and applied (`definitive_enemies.c`).
 - **Plan 8's "owner does the final on-device test (RP5 / handheld)"**: battle HUD button feel, overlap, Run on R1, Tag on L1, greyed states while paralysed/confused/sealed were the things to check on device.
 
