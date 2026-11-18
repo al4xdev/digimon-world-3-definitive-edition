@@ -79,6 +79,17 @@ $Dr3Op3: ...I don't know anymore.
 $Dr3Re1: So be it. A miracle<1>does not fall from the<1>sky: it is forged.<2,2><3>You forged one in the<1>Time Room already.<1>Forge it once more.<2,2>
 $Dr3Re2: Stubborn... The same<1>stubbornness that led<1>you to my door.<2,2><3>It carried you through<1>the Time Room. Let it<1>carry you now.<2,2>
 $Dr3Re3: Not knowing is where<1>every choice begins.<1>Yet you still stand.<2,2><3>The Time Room knew you<1>before you knew<1>yourself. Trust that.<2,2>
+# The Oinkmon dream (definitive_story.c dreams[], question 3): Igor recalls Act I's answer, then asks.
+$Dr4Rc1: Do you remember? They<1>told you to hunt Lucky<1>Mouse, and you did.<2,2><3>Look where the mask<1>fell.<2,2>
+$Dr4Rc2: Do you remember? You<1>asked for proof once.<1>Here it is.<2,2><3>It is written on<1>every face but yours.<2,2>
+$Dr4Rc3: Do you remember? You<1>said nothing, and went<1>on.<2,2><3>The silence has grown<1>very loud.<2,2>
+$Dr4Ask: Those who walked with<1>you now root in the<1>dirt as Oinkmon.<2,2><3>Your friends. The<1>tamers who laughed in<1>the plazas. All of<2,2><3>them, without a name<1>or a voice.<2,2><3>You alone kept your<1>shape. Solitude is a<1>strange gift.<2,2><3>It shows what a person<1>leans on when no one<1>is watching.<2,2><3>Tell me, my guest.<1>Alone as you are now,<1>what carries you?<2,2>
+$Dr4Op1: Them. I'll bring them back
+$Dr4Op2: My partners. That's enough
+$Dr4Op3: Nothing. I just go on.
+$Dr4Re1: Then you walk for the<1>ones who cannot. A<1>heavy step, but sure.<2,2><3>Somewhere, a machine<1>still remembers their<1>true shapes. Find it.<2,2>
+$Dr4Re2: A bond needs no crowd.<1>Hold your partners<1>close.<2,2><3>They are holding you<1>just as tightly. Never<1>forget that.<2,2>
+$Dr4Re3: Going on with nothing<1>is its own strength.<1>A lonely one.<2,2><3>But no one who sits<1>in this room is truly<1>alone. Remember that.<2,2>
 $IgorBlank: <3>Your partners' paths<1>are still unwritten.<1>Come back later.<2,2>
 $BatonPass: Baton Pass
 STATUS 92: Fire Affinity increased by <5,1>.

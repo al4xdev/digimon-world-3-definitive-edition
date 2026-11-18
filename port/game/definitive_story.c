@@ -562,7 +562,9 @@ extern unsigned char def_str_DrIgor[], def_str_IgorPage[], def_str_Dr1Ask[], def
     def_str_Dr1Op3[], def_str_Dr1Re1[], def_str_Dr1Re2[], def_str_Dr1Re3[], def_str_Dr2Ask[], def_str_Dr2Op1[],
     def_str_Dr2Op2[], def_str_Dr2Op3[], def_str_Dr2Re1[], def_str_Dr2Re2[], def_str_Dr2Re3[], def_str_Dr3Rc1[],
     def_str_Dr3Rc2[], def_str_Dr3Rc3[], def_str_Dr3Ask[], def_str_Dr3Op1[], def_str_Dr3Op2[], def_str_Dr3Op3[],
-    def_str_Dr3Re1[], def_str_Dr3Re2[], def_str_Dr3Re3[];
+    def_str_Dr3Re1[], def_str_Dr3Re2[], def_str_Dr3Re3[], def_str_Dr4Rc1[], def_str_Dr4Rc2[], def_str_Dr4Rc3[],
+    def_str_Dr4Ask[], def_str_Dr4Op1[], def_str_Dr4Op2[], def_str_Dr4Op3[], def_str_Dr4Re1[], def_str_Dr4Re2[],
+    def_str_Dr4Re3[];
 
 static const Dream dreams[] = {
     /* Act I, the Game Master's lie: right after she blames Lucky Mouse (WSTAG305's event 351 sets 0x1C0E). Every
@@ -573,6 +575,13 @@ static const Dream dreams[] = {
     /* Act II, the burden: the first free moment on the Amaterasu Server (step 27, past the Bug Maze Pit). */
     { 1, 27, 27, 0, def_str_Dr2Ask, { def_str_Dr2Op1, def_str_Dr2Op2, def_str_Dr2Op3 },
       { def_str_Dr2Re1, def_str_Dr2Re2, def_str_Dr2Re3 }, -1, { NULL, NULL, NULL } },
+    /* The Oinkmon (owner, 2026-11-17): the Destromon stopped, yet Teddy and Kurt are still Oinkmon, as everyone on
+     * the server (WSTAG226's event 935, DMG200:41: "Wait here. I'll look into it."). It ends at step 0x26 and leaves
+     * the player free on map 0x270 (WSTAG201: nothing runs there); the step lasts until the Master Room's events (0x27),
+     * the restoration machine of Qing Long being within it (flag 0x1A0A). Igor recalls Act I's answer (the mask has
+     * fallen) and asks what carries the hero, alone now. Question 3. */
+    { 3, 0x26, 0x26, 0, def_str_Dr4Ask, { def_str_Dr4Op1, def_str_Dr4Op2, def_str_Dr4Op3 },
+      { def_str_Dr4Re1, def_str_Dr4Re2, def_str_Dr4Re3 }, 0, { def_str_Dr4Rc1, def_str_Dr4Rc2, def_str_Dr4Rc3 } },
     /* Act III, the abyss: Snatchmon fused with the Gunslinger (WSTAG820's event 1080 ends at step 0x2B). In the game
      * Galacticmon's battle starts as that event ends; the port holds it until this dream is over (galactic_hook). Igor
      * recalls Act II's answer before he asks; the Time Room was passed before the Warp Gate (definitive_time_room.c). */
@@ -1201,7 +1210,7 @@ int def_story_hold_galacticmon(void) {
 
 static void galactic_hook(void) {
     if (!st_galactic || gamestate_data.progress != ST_GALACTIC_STEP ||
-        gamestate_data.funcs.get_map() != ST_GALACTIC_MAP || def_record_story_answer(dreams[2].question) == 0 ||
+        gamestate_data.funcs.get_map() != ST_GALACTIC_MAP || def_record_story_answer(2) == 0 /* Act III answered */ ||
         player_ready() == NULL) {
         return;
     }
