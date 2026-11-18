@@ -404,3 +404,11 @@ Este fork acrescenta a Definitive Edition e o caminho para portáteis: o present
 código para Cortex-A35, o trabalho de vector span, o layout de linhas da VRAM, o medidor de frames e os extras para
 portáteis, o renderizador GLES, o trabalho de áudio e o pacote. O trabalho próprio do projeto está sob a
 [licença MIT](LICENSE); o jogo continua sendo propriedade da sua publisher.
+
+Obrigado ao juandav e ao [ReGame-Labs/dw3_decomp](https://github.com/ReGame-Labs/dw3_decomp), a outra decompilação de Digimon World 3, cujos nomes e formas
+de função ajudaram a fechar as últimas funções; cada ideia aproveitada está listada em
+[`docs/THIRD_PARTY.md`](docs/THIRD_PARTY.md).
+
+A Velvet Room é uma homenagem à série *Persona*, da Atlus, e as caçadas (Rare Targets, materiais, a forja) a
+*Monster Hunter*, da Capcom. *Digimon* pertence à Bandai / Bandai Namco, *Persona* à Atlus e *Monster Hunter* à
+Capcom; este projeto de fã não tem ligação com nenhuma delas nem o apoio delas.
