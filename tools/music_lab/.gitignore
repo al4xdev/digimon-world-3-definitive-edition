@@ -1,0 +1,8 @@
+# runtime state of a listening session (play.py/solo.py/piano.py/guitar.py write these next to themselves)
+*/game.log
+*/session.txt
+*/mute.mask
+*/*.index
+*/piano_options.json
+*/render/
+__pycache__/

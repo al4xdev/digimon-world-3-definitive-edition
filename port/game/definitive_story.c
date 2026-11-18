@@ -848,7 +848,7 @@ static const unsigned char *echo_find(int file, int index) {
                 port_log("story: echo 0x%X %d (question %d answered %d)", file, index, e->question,
                          def_record_story_answer(e->question));
             }
-            return e->bytes;
+            return def_is_ptbr() && e->pt_bytes != NULL ? e->pt_bytes : e->bytes;
         }
     }
     return NULL;
@@ -856,10 +856,10 @@ static const unsigned char *echo_find(int file, int index) {
 
 /* The Kaili mode's line for an entry in the language shown (en_kaili.txt / pt_kaili.txt, and every other line that
  * names Kail with the name swapped to Junior), NULL outside that mode. */
-static const DefStoryLine *kaili_find(int file, int index) {
+static const DefStoryLine *kaili_find(int file, int index, int pt) {
     static unsigned char seen[2][256]; /* one log line per entry, not per frame it is drawn */
     const DefStoryLine *l;
-    int pt = def_is_ptbr(), k;
+    int k;
 
     if (!port_girls_on()) {
         return NULL;
@@ -877,21 +877,26 @@ const unsigned char *def_story_line(int file, int index) {
     const DefStoryChoice *c;
     const DefStoryLine *l;
     const unsigned char *e;
-    int a;
+    int a, pt = def_is_ptbr();
 
     if (!story_layer_on()) {
         return NULL;
     }
-    if (def_is_ptbr()) { /* the rewrite and its choices are English until they are translated: only the Kaili names */
-        return (l = kaili_find(file, index)) != NULL ? l->bytes : NULL;
-    }
     if ((c = choice_find(file, index)) != NULL && (a = def_record_story_answer(c->question)) >= 1 && a <= c->count) {
-        return c->lines[a - 1]; /* the hero says what the player picked */
+        return pt && c->lines_pt[a - 1] != NULL ? c->lines_pt[a - 1] : c->lines[a - 1]; /* what the player picked */
     }
     if ((e = echo_find(file, index)) != NULL) {
         return e;
     }
-    if ((l = kaili_find(file, index)) != NULL) {
+    if (pt) { /* the Portuguese rewrite; an entry not translated yet falls through to the English one below */
+        if ((l = kaili_find(file, index, 1)) != NULL) {
+            return l->bytes;
+        }
+        if ((l = line_find(def_story_lines_pt, def_story_line_pt_count, file, index)) != NULL) {
+            return l->bytes;
+        }
+    }
+    if ((l = kaili_find(file, index, 0)) != NULL) {
         return l->bytes;
     }
     if ((l = line_find(def_story_lines, def_story_line_count, file, index)) != NULL) {
@@ -912,14 +917,14 @@ int def_story_event_dialog(s32 msg, s32 *actor) {
     }
     /* event_text is the event's file and table with the language added to the file (fieldstg_event_start) */
     file = (((text >> 16) & 0xFFFF) - records_language) | (((text & 0xFFFF) + 1) << 16);
-    if ((l = kaili_find(file, msg)) != NULL && l->hero) {
+    if (((l = kaili_find(file, msg, def_is_ptbr())) != NULL || (l = kaili_find(file, msg, 0)) != NULL) && l->hero) {
         FieldstgActor *hero = (FieldstgActor *)heap_objects.find(5, -1, 0);
 
         if (hero != NULL) {
             *actor = hero->base.key1;
         }
     }
-    if (def_is_ptbr() || (c = choice_find(file, msg)) == NULL || def_record_story_answer(c->question) != 0) {
+    if ((c = choice_find(file, msg)) == NULL || def_record_story_answer(c->question) != 0) {
         return 0;
     }
     if (choice.answered) {
@@ -929,7 +934,7 @@ int def_story_event_dialog(s32 msg, s32 *actor) {
         return 0; /* the balloon now says the line picked (def_story_line) */
     }
     if (!choice.open) {
-        choice_open(c->labels, c->count);
+        choice_open(def_is_ptbr() && c->labels_pt[0] != NULL ? c->labels_pt : c->labels, c->count);
     }
     return 1;
 }

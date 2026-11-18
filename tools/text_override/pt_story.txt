@@ -1,0 +1,1379 @@
+# Portuguese (PT-BR) story rewrite, translated from en_story.txt. Same format.
+DMG200:0 1: <7><9><7>Uau...<1>Então este é o mundo<1>do Digimon Online?<2,2>
+DMG200:0 2: <7>Atendente de Contas<7><8,1><5,1>, boas-vindas<1>ao Servidor Asuka.<2,2><3>Por favor, retire os<1>dados do seu Digimon<1>no saguão.<2,2>
+DMG200:0 3: <7><9><7>Meu Digimon...?<2,2><3>Claro. Vou agora<1>mesmo.<2,2>
+DMG200:3 1: <7>Tamer Service<7>Vou baixar agora<1>os dados do seu<1>Digimon do satélite.<2,2><3>Aguarde sobre a marca<1>online no chão.<2,2>
+DMG200:3 2: <7><9><7>Meu próprio Digimon...<1>Depois de tanto tempo.<1>Mal posso esperar.<2,2>
+DMG200:3 4: <7><9><7>Por que a demora,<1>vocês dois?<1>Que lerdeza.<2,2>
+DMG200:3 5: <7>Teddy<7>A gente? Que nada.<1>Foi você que saiu<1>correndo na frente.<2,2>
+DMG200:3 7: <7>Kail<7>Aqui dentro é Kail.<1>Não esqueça.<2,2>
+DMG200:3 8: <7><9><7>Kail? Esse é o seu<1>nome de conta?<2,2><3>Hm. Escolha estranha.<1>Parece nome de<1>garoto.<2,2>
+DMG200:3 9: <7>Kail<7>A escolha é minha.<1>Algum problema?<2,2>
+DMG200:3 10: <7>Teddy<7>Não consegui pensar<1>em nada, então<1>continuo Teddy.<2,2>
+DMG200:3 11: <7><9><7>Ali estão eles.<1>Meus Digimon.<2,2>
+DMG200:3 12: <7>Teddy<7>Hm. Será que alguém<1>desenhou estes?<2,2>
+DMG200:3 13: <7>Kail<7>...Eu também.<2,2>
+DMG200:3 18: <7><9><7>Certo, pessoal.<1>Conto com vocês.<2,2><3>Vamos lá.<2,2>
+DMG200:3 19: <7><9><7>Estou saindo.<2,2>
+DMG200:3 20: <7>Kail<7>...Certo. Daqui a<1>gente se separa.<2,2>
+DMG200:4 1: <7>Tamer Service<7>Vou baixar agora<1>os dados do seu<1>Digimon do satélite.<2,2><3>Aguarde sobre a marca<1>online no chão.<2,2>
+DMG200:4 2: <7><9><7>Meu próprio Digimon...<1>Depois de tanto tempo.<1>Mal posso esperar.<2,2>
+DMG200:4 4: <7><9><7>Por que a demora,<1>vocês dois?<1>Que lerdeza.<2,2>
+DMG200:4 5: <7>Teddy<7>A gente? Que nada.<1>Foi você que saiu<1>correndo na frente.<2,2>
+DMG200:4 7: <7>Kail<7>Aqui dentro é Kail.<1>Não esqueça.<2,2>
+DMG200:4 8: <7><9><7>Kail? Esse é o seu<1>nome de conta?<2,2><3>Hm. Escolha estranha.<1>Parece nome de<1>garoto.<2,2>
+DMG200:4 9: <7>Kail<7>A escolha é minha.<1>Algum problema?<2,2>
+DMG200:4 10: <7>Teddy<7>Não consegui pensar<1>em nada, então<1>continuo Teddy.<2,2>
+DMG200:4 11: <7><9><7>Ali estão eles.<1>Meus Digimon.<2,2>
+DMG200:4 12: <7>Teddy<7>Hm. Será que alguém<1>desenhou estes?<2,2>
+DMG200:4 13: <7>Kail<7>...Eu também.<2,2>
+DMG200:4 18: <7><9><7>Certo, pessoal.<1>Conto com vocês.<2,2><3>Vamos lá.<2,2>
+DMG200:4 19: <7><9><7>Estou saindo.<2,2>
+DMG200:4 20: <7>Kail<7>...Certo. Daqui a<1>gente se separa.<2,2>
+DMG200:5 1: <7>Tamer Service<7>Vou baixar agora<1>os dados do seu<1>Digimon do satélite.<2,2><3>Aguarde sobre a marca<1>online no chão.<2,2>
+DMG200:5 2: <7><9><7>Meu próprio Digimon...<1>Depois de tanto tempo.<1>Mal posso esperar.<2,2>
+DMG200:5 4: <7><9><7>Por que a demora,<1>vocês dois?<1>Que lerdeza.<2,2>
+DMG200:5 5: <7>Teddy<7>A gente? Que nada.<1>Foi você que saiu<1>correndo na frente.<2,2>
+DMG200:5 7: <7>Kail<7>Aqui dentro é Kail.<1>Não esqueça.<2,2>
+DMG200:5 8: <7><9><7>Kail? Esse é o seu<1>nome de conta?<2,2><3>Hm. Escolha estranha.<1>Parece nome de<1>garoto.<2,2>
+DMG200:5 9: <7>Kail<7>A escolha é minha.<1>Algum problema?<2,2>
+DMG200:5 10: <7>Teddy<7>Não consegui pensar<1>em nada, então<1>continuo Teddy.<2,2>
+DMG200:5 11: <7><9><7>Ali estão eles.<1>Meus Digimon.<2,2>
+DMG200:5 12: <7>Teddy<7>Hm. Será que alguém<1>desenhou estes?<2,2>
+DMG200:5 13: <7>Kail<7>...Eu também.<2,2>
+DMG200:5 18: <7><9><7>Certo, pessoal.<1>Conto com vocês.<2,2><3>Vamos lá.<2,2>
+DMG200:5 19: <7><9><7>Estou saindo.<2,2>
+DMG200:5 20: <7>Kail<7>...Certo. Daqui a<1>gente se separa.<2,2>
+DMG200:11 1: <7>Tamer Genji<7>Ho ho ho. Um rosto<1>que eu nunca vi.<2,2><3>É a sua primeira vez<1>por aqui, não é?<2,2>
+DMG200:11 2: <7><9><7>Sim! Acabei de<1>receber meu Digimon!<2,2>
+DMG200:11 3: <7>Tamer Genji<7>Então vamos batalhar.<2,2><3>Não se preocupe com<1>as regras.<2,2><3>Experiência é o que<1>importa.<2,2>
+DMG200:12 1: <7><9><7>Venci.<2,2>
+DMG200:12 2: <7>Tamer Genji<7>Nada mau para uma<1>primeira vez.<2,2><3>Você tem potencial<1>para conquistar o<1>título mundial um dia.<2,2>
+DMG200:12 3: <7><9><7>Título mundial. Sim.<1>Esse é o meu sonho.<2,2>
+DMG200:12 4: <7>Tamer Genji<7>Se quer chegar longe,<1>aprenda sobre os<1>Digimon primeiro.<2,2><3>Visite o Digi-Lab<1>antes de sair da<1>cidade.<2,2>
+DMG200:12 5: <7><9><7>O Digi-Lab. Entendi.<2,2><3>Agradeço.<2,2>
+DMG200:12 6: <7>Tamer Genji<7>E me diga, você tem<1>uma Folder Bag?<2,2>
+DMG200:12 7: <7><9><7>...Uma o quê?<2,2><3>O que é isso?<2,2>
+DMG200:12 8: <7>Tamer Genji<7>Entendo. Então vá ao<1>Yellow Cruiser.<2,2><3>Lá vão ensinar tudo<1>o que você precisa<1>saber sobre as<2,2><3>Batalhas de Cartas.<2,2><3>...Agora vá. Conto<1>com você, jovem.<1>Ho ho ho.<2,2>
+DMG200:21 1: <7>Jogador Misterioso<7>Ei! Você aí, jovem!<1>Espere.<2,2>
+DMG200:21 2: <7><9><7>Está falando comigo?<2,2>
+DMG200:21 3: <7>Jogador Misterioso<7>Com quem mais?<2,2><3>Você é <8,1><5,1>, né?<1>Quem derrotou o<1>Líder de Seiryu.<2,2>
+DMG200:21 4: <7><9><7>...Sim. E você<1>é...?<2,2>
+DMG200:21 5: <7>Keith<7>Meu nome é Keith.<1>Lembre dele, jovem.<2,2><3>Sou eu quem vai<1>vencer o torneio.<2,2>
+DMG200:21 6: <7><9><7>É? Vamos ver quem<1>vence.<2,2>
+DMG200:21 7: <7>Keith<7>Ha! Gostei disso.<2,2><3>Então quer batalhar<1>comigo?<2,2>
+DMG200:21 8: <7><9><7>Quando quiser.<2,2>
+DMG200:21 9: <7>Keith<7>Aviso justo.<2,2><3>Eu não pego leve.<2,2>
+DMG200:22 1: <7><9><7>Venci. Quem é o<1>campeão agora?<2,2>
+DMG200:22 2: <7>Keith<7>Ha! Eu aliviei pra<1>você, jovem.<2,2>
+DMG200:22 3: <7><9><7>Você disse que não<1>pegava leve.<2,2>
+DMG200:22 4: <7>Keith<7>Não sei do que você<1>está falando.<2,2><3>Cuidado. Da próxima<1>vez eu pego você.<2,2><3>Não se esqueça de<1>mim. Sayonara, otário!<2,2>
+DMG200:22 5: <7><9><7>Tanto faz.<2,2><3>O otário é você.<2,2>
+DMG200:23 1: <7><9><7>Etemon. Tenho uma<1>pergunta pra você.<2,2>
+DMG200:23 2: <7>Etemon<7>Claro, pergunte! Eu<1>conto tudo o que eu<1>souber!<2,2>
+DMG200:23 3: <7><9><7>Não é você quem tem<1>a máscara do Sepikmon?<2,2>
+DMG200:23 4: <7>Etemon<7>N-não sei do que<1>você está falando!<2,2>
+DMG200:23 5: <7><9><7>Ei, espere!<2,2><3>Etemon está<1>escondendo algo.<2,2>
+DMG200:24 1: <7>Phillip Maníaco<7>Finalmente, alguém que<1>parece saber de algo.<2,2><3>Estou parado aqui<1>há horas.<2,2>
+DMG200:24 2: <7>Fei Preguiçoso<7>E aí, quando a gente<1>pode sair? Alguém?<2,2>
+DMG200:24 3: <7>Tamer Service<7>Pedimos desculpas. Não<1>temos mais informações<1>no momento.<2,2>
+DMG200:24 4: <7>Kail<7>...Espera. O que foi<1>agora?<2,2>
+DMG200:24 5: <7>Alan Preguiçoso<7>É a Game Master. Deve<1>ser um comunicado.<2,2>
+DMG200:24 6: <7>Trabalhador Jeff<7>É ela? Uma mulher? Eu<1>sempre imaginei um<1>homem.<2,2>
+DMG200:24 7: <7>Srta. Misha<7>Ela parece tão calma.<1>Quero ser assim<1>um dia.<2,2>
+DMG200:24 8: <7>Game Master<7>Atenção, jogadores.<1>Pedimos desculpas<1>pelo transtorno.<2,2><3>A manutenção da Matrix<1>Chamber está demorando<1>mais que o previsto.<2,2><3>Fiquem onde estão.<2,2><3>Agradecemos a<1>paciência enquanto o<1>sistema é restaurado.<2,2>
+DMG200:24 9: <7>Alan Preguiçoso<7>Só isso? Nenhum prazo?<2,2>
+DMG200:24 10: <7>Trabalhador Jeff<7>Não tem o que fazer.<1>A gente espera.<2,2>
+DMG200:24 11: <7>Yuki Energético<7>Por mim tá ótimo! Mais<1>tempo pra jogar!<2,2>
+DMG200:24 12: <7>Kail<7>Ainda não consertaram.<2,2><3>Ou seja, sem como<1>voltar ao Mundo Real.<1>Ótimo.<2,2>
+DMG200:24 13: <7><9><7>Manutenção de novo?<1>Será que Lucky Mouse<1>está por trás disso?<2,2>
+DMG200:24 14: <7>Kail<7>Lucky Mouse?! ...Por<1>que você diria isso?<1>O que você sabe?<2,2>
+DMG200:24 15: <7><9><7>Não muito. Teddy só<1>disse que Lucky Mouse<1>tinha aparecido.<2,2>
+DMG200:24 16: <7>Kail<7>...Teddy está no<1>Centro Admin atrás de<1>alguma coisa?<2,2>
+DMG200:24 17: <7>Kail<7>...Ei, <8,1><5,1>.<1>Vamos achar o Teddy.<2,2><3>Preciso perguntar uma<1>coisa a ele. Não pode<1>esperar.<2,2>
+DMG200:24 18: <7><9><7>Certo. O Centro Admin.<1>Vamos nessa.<2,2>
+DMG200:25 1: <7>Guarda DO<7>Desculpe. Só pessoal<1>autorizado daqui em<1>diante.<2,2><3>Circulando, por favor.<2,2>
+DMG200:26 1: <7>Kail<7>...Irritante. A gente<1>não consegue entrar.<2,2>
+DMG200:26 2: <7><9><7>Tem que haver outro<1>jeito de entrar.<2,2>
+DMG200:26 3: <7>Kail<7>...Esperar aqui não<1>muda nada.<2,2><3>Vamos nos separar e<1>ver o que descobrimos.<1>Pergunte pela cidade.<2,2>
+DMG200:26 4: <7><9><7>Certo. Vou perguntar<1>por aí.<2,2><3>Não paro de pensar no<1>Teddy. Não gosto desse<1>silêncio todo.<2,2>
+DMG200:27 1: <7>Kail<7>Então como a gente<1>vai se passar por<1>Digimon?<2,2>
+DMG200:27 2: <7><9><7>Olha o que eu achei.<2,2>
+DMG200:27 3: <7>Kail<7>Perfeito. Essas servem<1>muito bem.<2,2><3>Vamos vestir fantasias<1>de Agumon e procurar<1>Teddy por dentro.<2,2>
+DMG200:28 1: <7><9><7>...E assim? Eu poderia<1>passar por Digimon.<2,2>
+DMG200:28 2: <7>Kail<7>Silêncio! Nem uma<1>palavra.<2,2><3>Se descobrirem que não<1>somos Digimon, acabou.<2,2>
+DMG200:28 3: <7><9><7>...Certo. Claro.<1>Entendido.<2,2>
+DMG200:28 4: <7>Kail<7>...Preciso investigar<1>uma coisa, então vou<1>na frente.<2,2><3><8,1><5,1>, continue<1>procurando Teddy.<2,2><3>Assim que eu terminar,<1>eu alcanço você.<2,2>
+DMG200:28 5: <7><9><7>Certo. Mas tome<1>cuidado.<2,2>
+DMG200:28 6: <7>Kail<7>Não se preocupe. Eu<1>não sou como você.<2,2>
+DMG200:28 7: <7><9><7>O que há com Kail?<1>Age de forma estranha<1>desde que chegamos...<2,2><3>Sem tempo. Teddy<1>primeiro.<2,2>
+DMG200:29 1: <7><9><7>...Ops. O Centro Admin<1>fica pra lá.<2,2>
+DMG200:30 1: <7><9><7>...Espera. Por aí<1>também não. É por ali.<2,2>
+DMG200:31 1: <7>Guarda DO<7>Pessoal autorizado<1>apenas além deste...<2,2><3>...Outro Digimon?!<1>De novo?!<2,2>
+DMG200:31 2: <7><9><7>Hã... sim. Sou um<1>Digimon que se perdeu.<2,2>
+DMG200:31 3: <7>Guarda DO<7>Primeiro aquele Agumon<1>rosa, agora você...<2,2><3>Pode passar. Só não<1>atrapalhe ninguém.<2,2>
+DMG200:32 1: <7><9><7>Vou encontrar Lucky<1>Mouse. E trazer o<1>Teddy de volta.<2,2>
+DMG200:32 2: <7>Kail<7>Desculpe. Lembrei de<1>uma coisa agora.<1>Preciso ir...<2,2>
+DMG200:32 3: <7><9><7>...Kail? O que será<1>que está havendo?<2,2><3>Bom. Tenho parceiros<1>com quem contar.<2,2><3>Certo, equipe. Vamos<1>pro Setor Oeste.<2,2>
+DMG200:33 1: <7>Teddy<7><8,1><5,1>!<1>Aqui!<2,2>
+DMG200:33 2: <7><9><7>Teddy. Você está bem?<1>Não machucaram você?<2,2>
+DMG200:33 3: <7>Teddy<7>Estou bem. Obrigado.<2,2><3><8,1><5,1>, a MAGAMI<1>faz parte da A.o.A.<2,2>
+DMG200:33 4: <7><9><7>Eu sei. Mas então<1>quem são aquelas<1>pessoas?<2,2>
+DMG200:33 5: <7>Dr. Kadomatsu<7>Não somos da A.o.A.<1>Por favor, acredite.<2,2>
+DMG200:33 6: <7>Operador DO<7>Nunca soubemos que a<1>MAGAMI e a A.o.A.<1>estavam ligadas.<2,2>
+DMG200:33 7: <7>Guarda DO<7>Os Líderes da Cidade e<1>a maioria da equipe<1>são pessoas como nós.<2,2><3>Nem todos da MAGAMI<1>pertencem à A.o.A.<2,2>
+DMG200:33 8: <7><9><7>Certo. Vou ajudar<1>todos vocês. Só<1>aguentem firme.<2,2><3>Eu cuido da Game<1>Master pessoalmente.<2,2>
+DMG200:33 9: <7>Operador DO<7>Cuidado. Dizem que a<1>Master Room é uma<1>armadilha.<2,2>
+DMG200:33 10: <7>Guarda DO<7>Também ouvi isso. Tem<1>uma porta secreta em<1>algum lugar.<2,2>
+DMG200:33 11: <7>Dr. Kadomatsu<7>Sim, eu também ouvi<1>falar.<2,2><3>O código é<1>"MONSTER"...<2,2><3>Mas o que significa,<1>não sei dizer.<2,2>
+DMG200:33 12: <7><9><7>Entendido. Agradeço.<2,2>
+DMG200:33 13: <7>Teddy<7>Boa sorte,<1><8,1><5,1>.<2,2><3>Não perca pra A.o.A.<1>...Por favor.<2,2>
+DMG200:33 14: <7><9><7>Fique tranquilo. Deixe<1>comigo.<2,2>
+DMG200:33 15: <7><9><7>...Ah. Teddy!<2,2>
+DMG200:34 1: <7><9><7>Então o Setor Norte é<1>o próximo. Vamos.<2,2>
+DMG200:34 2: <7>Teddy<7>...Espera. Como se vai<1>ao Setor Norte?<2,2><3>Não há estrada. E o<1>Submarimon não leva<1>ninguém até lá.<2,2>
+DMG200:34 3: <7><9><7>...Ah. É mesmo...?<2,2>
+DMG200:34 4: <7>Teddy<7>Ouvi os guardas<1>conversando na prisão.<2,2><3>Disseram que o Digmon<1>pode levar a gente ao<1>Setor Norte...<2,2>
+DMG200:34 5: <7><9><7>Bem, então isso deve<1>ser fácil.<2,2>
+DMG200:34 6: <7>Teddy<7>Mas pra chamar Digmon<1>precisa do Digi-Egg do<1>Conhecimento...<2,2><3>Acho que é um item<1>raro. Só existe no<1>Amaterasu Server...<2,2>
+DMG200:34 7: <7><9><7>Então vamos pro<1>Amaterasu e achamos<1>isso.<2,2>
+DMG200:34 8: <7>Teddy<7>Mas como chegamos ao<1>Amaterasu?<2,2><3>Deve estar infestado<1>de A.o.A...<2,2>
+DMG200:34 9: <7><9><7>...Hm. Tem razão...<2,2>
+DMG200:34 10: <7><9><7>Espera. Como a A.o.A<1>veio parar aqui, pra<1>começo de conversa?<2,2>
+DMG200:34 11: <7>Teddy<7>...Claro. Os soldados<1>na Byakko City!<2,2>
+DMG200:34 12: <7><9><7>Talvez eles saibam<1>de alguma coisa.<2,2>
+DMG200:34 13: <7>Teddy<7>Com certeza,<1><8,1><5,1>.<2,2>
+DMG200:34 14: <7><9><7>Então vou investigar<1>no Setor Oeste.<2,2>
+DMG200:34 15: <7>Teddy<7>Cuidado. Vou fuçar<1>este computador<1>enquanto isso.<2,2>
+DMG200:34 16: <7><9><7>Se achar algo, me<1>conte.<2,2>
+DMG200:34 17: <7>Teddy<7>Entendido. Deixa<1>comigo.<2,2>
+DMG200:35 1: <7>Knightmon<7>Vírus detectado. Vírus<1>detectado.<2,2><3>Apagando o vírus.<1>Fique parado.<2,2>
+DMG200:35 2: <7><9><7>Espera! Eu não sou<1>um vírus!<2,2>
+DMG200:35 3: <7>Knightmon<7>Vírus confirmado.<1>Vírus confirmado.<2,2><3>Apagando o vírus<1>agora.<2,2>
+DMG200:35 4: <7><9><7>Não adianta. Knightmon<1>foi reprogramado pela<1>A.o.A.<2,2><3>Preciso de outra via.<1>Vou ver as outras<1>cidades por enquanto.<2,2>
+DMG200:36 1: <7><9><7>Lisa... Você fala da<1>Game Master?<2,2>
+DMG200:36 2: <7>Lisa<7>Exatamente.<2,2><3>Ela é a única a quem<1>podemos recorrer.<2,2>
+DMG200:36 3: <7>Game Master<7>Conversar?<1>Recuso.<2,2><3>Não tenho intenção<1>nenhuma de ajudar<1>vocês.<2,2>
+DMG200:36 4: <7>Lisa<7>Ah, é? Que pena.<2,2><3>Eu estava pronta para<1>me render a você.<2,2>
+DMG200:36 5: <7><9><7>Lisa? O que você está<1>dizendo?<2,2>
+DMG200:36 6: <7>Lisa<7>Eles têm o<1>Juggernaut. Não há<1>nada a fazer.<2,2><3>E eu ainda não quero<1>morrer.<2,2>
+DMG200:36 7: <7><9><7>O quê? Chegamos até<1>aqui.<2,2><3>Eu não vou aceitar.<1>Não vou desistir.<2,2>
+DMG200:36 8: <7>Lisa<7><8,1><5,1>, você é pura<1>retidão.<2,2><3>Isso só vai fazer<1>você morrer.<2,2>
+DMG200:36 9: <7>Game Master<7>Você é mais esperta<1>do que parece.<2,2><3>Muito bem. Vou<1>reconsiderar.<2,2>
+DMG200:36 10: <7>Game Master<7>Sim. O Juggernaut<1>pertence à A.o.A.<2,2><3>Só o presidente em<1>Amaterasu City pode<1>detê-lo.<2,2>
+DMG200:36 11: <7>Lisa<7>...Entendi.<1>Ouviu isso,<1><8,1><5,1>?<2,2>
+DMG200:36 12: <7><9><7>Sim, senhora...<2,2><3>Então era isso que<1>você queria dizer.<2,2>
+DMG200:36 13: <7>Game Master<7>O que eu disse?<1>Era um segredo.<1>Que tolice a minha.<2,2>
+DMG200:36 14: <7>Lisa<7>Dizem que se engana o<1>aliado antes do<1>inimigo.<2,2><3>E aí? O que achou<1>da minha atuação?<2,2>
+DMG200:36 15: <7>Teddy<7>Ei. Parem de perder<1>tempo, vocês dois.<2,2>
+DMG200:36 16: <7>Teddy<7>O Vemmon foi<1>transferido para<1>o Juggernaut.<2,2>
+DMG200:36 17: <7>Lisa<7>Sério?!<2,2>
+DMG200:36 18: <7><9><7>...O que aconteceu?<2,2>
+DMG200:37 1: <7>Game Master<7>...Então o Destromon<1>deve estar nascendo<1>agora.<2,2>
+DMG200:37 2: <7><9><7>Destromon?<1>O que é isso?<2,2>
+DMG200:37 3: <7>Game Master<7>Um Digimon nascido da<1>fusão de Vemmon com<1>o Juggernaut.<2,2><3>Destromon é o Digimon<1>mais forte. Nenhuma<1>arma pode matá-lo.<2,2>
+DMG200:37 4: <7>Lisa<7>Não temos tempo a<1>perder.<2,2><3>Vamos convencer o<1>presidente da MAGAMI<1>a deter Destromon.<2,2>
+DMG200:37 5: <7><9><7>Sim, senhora.<2,2>
+DMG200:37 6: <7>Teddy<7>...S-sim.<2,2>
+DMG200:37 7: <7>Nick<7>Entendido.<2,2>
+DMG200:38 1: <7>Lisa<7>Knightmon não vai mais<1>resistir.<2,2><3>Primeiro, vamos<1>libertar o povo<1>desta cidade.<2,2>
+DMG200:38 2: <7>Líder Chuck<7>Todos!<1>Avançar!<1>Ataquem!<2,2>
+DMG200:38 3: <7>Wanda da Resistência<7>Estamos logo<1>atrás de você!<2,2>
+DMG200:38 4: <7>Dew da Resistência<7>Não vamos perder<1>para a A.o.A.<2,2>
+DMG200:38 5: <7>Meech da Resistência<7>Vamos retomar<1>Amaterasu City.<2,2>
+DMG200:38 6: <7>Teddy<7>Uau...<1>Nós vamos mesmo<1>vencer.<2,2>
+DMG200:38 7: <7><9><7>Sim. Lisa e os outros<1>também estão aqui.<2,2>
+DMG200:38 8: <7>Teddy<7>Mas o que está<1>acontecendo no Mundo<1>Real?<2,2><3>Espero que Destromon<1>ainda não tenha<1>começado a atacar.<2,2>
+DMG200:39 1: <7><9><7>Não se preocupe,<1>Teddy. É por isso que<1>todos lutamos.<2,2><3>Vamos derrotar<1>a A.o.A.<2,2>
+DMG200:39 2: <7>Teddy<7>É. Você tem razão.<1>Estamos quase lá.<1>Vamos.<2,2>
+DMG200:39 3: <7>Nick<7>Vocês dois ainda<1>estão aqui?<2,2>
+DMG200:39 4: <7><9><7>Nick.<2,2>
+DMG200:39 5: <7>Teddy<7>Nick, qual é a nossa<1>situação?<2,2>
+DMG200:39 6: <7>Nick<7>Ha ha. Melhor do que<1>bom.<2,2><3>A A.o.A. dentro da<1>cidade se rendeu<1>rápido.<2,2>
+DMG200:39 7: <7><9><7>Então a cidade...?<2,2>
+DMG200:39 8: <7>Nick<7>Já é nossa.<2,2><3>Só falta o Centro<1>Administrativo.<2,2>
+DMG200:39 9: <7><9><7>...O quê?<2,2><3>Então não sobrou<1>ninguém para eu<1>enfrentar?<2,2>
+DMG200:39 10: <7>Nick<7>Ha ha ha. Por isso<1>viemos procurar você.<2,2><3>Queremos sua ajuda<1>no ataque ao Centro.<2,2>
+DMG200:39 11: <7><9><7>Deixa comigo.<1>Eu não vou perder.<2,2>
+DMG200:39 12: <7><9><7>Teddy, vou na<1>frente.<2,2>
+DMG200:39 13: <7>Teddy<7>Cuidado.<1>Estarei logo atrás<1>de você.<2,2>
+DMG200:40 1: <7>Atacante<7>Ninguém passa aqui.<1>Ninguém se coloca no<1>caminho disto.<2,2><3>Nosso belo mundo<1>está para nascer.<1>Não vou lhe falhar.<2,2>
+DMG200:41 1: <7><9><7>O quê? Eles ainda não<1>voltaram ao normal.<2,2>
+DMG200:41 2: <7>Teddy<7><8,1><5,1>, a Câmara<1>também caiu.<2,2>
+DMG200:41 3: <7><9><7>...Kail!<2,2>
+DMG200:41 4: <7>Teddy<7>Kail!<2,2>
+DMG200:41 5: <7>Kail<7>Por que o Kurt não<1>volta ao normal?<2,2>
+DMG200:41 6: <7>Kurt<7>Oinc, oinc!<2,2>
+DMG200:41 7: <7>Kail<7>O Kurt... Todos vão<1>ficar assim para<1>sempre?<2,2>
+DMG200:41 8: <7>Teddy<7>N-não. Há um jeito<1>de fazê-los voltar.<1>Tem que haver.<2,2>
+DMG200:41 9: <7>Teddy<7>...Certo,<1><8,1><5,1>?<2,2>
+DMG200:41 10: <7><9><7>...Sim. Tenho<1>certeza.<2,2><3>Esperem aqui.<1>Vou investigar.<2,2>
+DMG200:41 11: <7>Kail<7>...Ei, <8,1><5,1>.<1>Teddy...<2,2>
+DMG200:41 12: <7>Kail<7>Vencemos a A.o.A.<2,2><3>...Certo?<2,2>
+DMG300:0 1: <7>Teddy<7><8,1><5,1>! Ei! Escuta,<1>isso é grande. Muito,<1>muito grande!<2,2>
+DMG300:0 2: <7><9><7>Calma. O que<1>aconteceu?<2,2>
+DMG300:0 3: <7>Teddy<7>O Lucky Mouse! Ele<1>apareceu!<2,2>
+DMG300:0 4: <7><9><7>O quê? Lucky Mouse?<2,2>
+DMG300:0 5: <7>Teddy<7>Você não conhece?<1>O gênio hacker!<2,2><3>Ele invade qualquer<1>programa que existe.<2,2>
+DMG300:0 6: <7><9><7>Ah. Certo.<2,2>
+DMG300:0 7: <7>Teddy<7>Sou muito fã, sabe.<1>Gente como ele<1>reescreve as regras.<2,2><3>Eu quero muito<1>conhecê-lo!<2,2>
+DMG300:0 8: ...Atenção, todos os jogadores do<1>Digimon Online.<2,2><3>Manutenção de emergência em<1>andamento.<2,2><3>Neste período, não será possível<1>voltar ao Mundo Real. Sem cobrança<1>de taxas.<2,2><3>...Repito. Até novo aviso,<1>todos jogam de graça.<2,2>
+DMG300:0 9: <7>Teddy<7>Você ouviu isso?!<2,2><3>Isso tem a cara do<1>Lucky Mouse!<2,2><3>Cara, não aguento.<1>Eu vou encontrá-lo!<2,2>
+DMG300:0 10: <7><9><7>Teddy, espera...<1>Teddy!<2,2>
+DMG300:0 11: <7><9><7>Foi embora.<1>...............<2,2><3>Quando uma ideia pega<1>Teddy, ele não para<1>quieto.<2,2><3>Espero que seja só<1>isso.<2,2>
+DMG300:1 1: <7>Homem<7>Nossa! Quem é você?!<2,2><3>Não chegue assim de<1>mansinho. Você me<1>assustou...<2,2>
+DMG300:1 2: <7><9><7>Ah... Desculpe,<1>senhor...<2,2>
+DMG300:1 3: <7>Homem<7>...Senhor? Eu não sou<1>velho!<2,2><3>Sou o Nick. Só tenho<1>21 anos!<2,2>
+DMG300:1 4: <7><9><7>Ah. Certo. Desculpa!<2,2>
+DMG300:1 5: <7>Nick<7>Todo mundo neste<1>servidor é grosseiro?<2,2><3>Primeiro o Etemon,<1>agora você...<2,2>
+DMG300:1 6: <7><9><7>...Etemon?<2,2><3>Aconteceu algo?<2,2>
+DMG300:1 7: <7>Nick<7>Achei um escudo<1>enorme e berrante.<2,2><3>Aí o Etemon apareceu<1>dizendo ser dele...<2,2><3>...e tomou de mim sem<1>nem agradecer.<2,2>
+DMG300:1 8: <7><9><7>Etemon... um escudo<1>berrante...<2,2><3>O que será isso?<2,2>
+DMG300:1 9: <7>Nick<7>Olha, estou ocupado.<2,2><3>Então, se você não<1>se importa...<2,2>
+DMG300:1 10: <7>Nick<7>Por que ninguém faz o<1>seu trabalho?<2,2><3>Queria que me<1>tomassem como exemplo.<2,2>
+DMG300:2 1: <7>Mat Travesso<7>Já disse, o Etemon que<1>você procura não<1>está aqui.<2,2>
+DMG300:2 2: <7><9><7>Claro que não.<2,2><3>Você é o Etemon.<2,2>
+DMG300:2 3: <7>Mat Travesso<7>...O quê?!<2,2>
+DMG300:2 4: <7><9><7>Conheço o seu jogo.<2,2><3>Vi você com o Traje<1>de Etemon lá atrás.<2,2>
+DMG300:2 5: <7>Mat Travesso<7>..........<2,2><3>Ah, você descobriu?<1>Que azar o meu.<2,2><3>Ei, guarde segredo,<1>está bem?<2,2><3>Tome. É pelo seu<1>silêncio.<2,2>
+DMG300:2 6: <7><9><7>Os Trajes de Agumon...<2,2><3>Bom. Podem ser úteis.<2,2>
+DMG300:2 7: <7>Mat Travesso<7>Isso fica entre mim e<1>você.<2,2><3>Combinado?<2,2>
+DMG300:3 1: <7>Kail<7>Aí está você,<1><8,1><5,1>. Demorou!<2,2>
+DMG300:3 2: <7><9><7>Kail? Você já<1>terminou?<2,2>
+DMG300:3 3: <7>Kail<7>Hã... sim. Terminei.<2,2><3>Alguma pista<1>do Teddy?<2,2>
+DMG300:3 4: <7><9><7>Não. Nenhum rastro.<2,2>
+DMG300:3 5: <7>Kail<7>...Aqui também.<1>Procurei em todo lado.<2,2><3>Ele disse que ia<1>pro Centro de<1>Administração...<2,2>
+DMG300:3 6: <7><9><7>Será que o Teddy já<1>entrou muito fundo...?<2,2>
+DMG300:3 7: <7>Kail<7>.....<2,2>
+DMG300:3 8: <7>Kail<7>...Você não sente?<1>Que ele está lá<1>dentro em algum lugar?<2,2>
+DMG300:3 9: <7><9><7>Hm... Só tem um jeito<1>de saber.<2,2>
+DMG300:3 10: <7>Kail<7>Nossa, valeu. Ajudou<1>muito.<2,2><3>Tá. Vamos entrar.<2,2>
+DMG300:4 2: <7>Datamon<7>Você cruzou os<1>Esgotos só para<1>me enfrentar?<2,2><3>Estou pronto a<1>qualquer momento.<1>Vamos lutar.<2,2>
+DMG300:4 3: <7><9><7>Vamos lutar.<2,2>
+DMG300:4 4: <7>Datamon<7>...Bip. Você não pode<1>me copiar.<2,2><3>Encontre sua própria<1>fala. Palavras suas,<1>ou será um espelho.<2,2>
+DMG300:4 5: <7><9><7>O quê? ...Certo. Então<1>vamos logo com isso.<2,2>
+DMG300:5 1: <7>Datamon<7>Você me derrotou. Não<1>é pouca coisa.<1>Pegue isto.<2,2><3>Luvas Oxidadas. Um<1>item ultrararo.<1>Guarde-as bem.<2,2>
+DMG300:5 2: <7><9><7>Hã? Ah. ...Valeu.<1>Vou ficar com elas.<2,2><3>Luvas Oxidadas.<1>Ótimo. Acho.<2,2>
+DMG300:5 3: <7>Datamon<7>No Mundo Digital,<1>armas e armaduras<1>antigas têm segredos.<2,2><3>Encontre Digimon com<1>Digievolução de<1>Armadura. São a chave.<2,2>
+DMG300:5 4: <7><9><7>Certo. Vou achar<1>esses Digimon de<1>Armadura.<2,2>
+DMG300:6 1: <7>Datamon<7>Você possui um<1>Staff Pass. Perdão,<1>eu não sabia.<2,2><3>Abrindo o portão.<1>Por favor, passe.<2,2>
+DMG300:6 2: <7><9><7>Valeu. Isso facilita<1>as coisas.<2,2>
+DMG300:7 1: <7>Soldado<7>Ninguém passa aqui.<1>Volte.<2,2><3>Você não pode me<1>derrotar.<2,2>
+DMG300:7 2: <7><9><7>É mesmo? Então<1>venha.<2,2><3>Todo mundo começa<1>certo de que vai<1>vencer.<2,2>
+DMG300:8 1: <7>???<7>GUBIIIII!<2,2><3>Reação de Digimon...<1>Reação de Digimon...<2,2>
+DMG300:8 2: <7><9><7>O que é isso? Nunca<1>vi esse Digimon<1>antes.<2,2>
+DMG300:8 3: <7>???<7>GUBI?<2,2>
+DMG300:8 4: <7><9><7>...Não parece<1>perigoso. Não como<1>um Digimon mau.<2,2>
+DMG300:8 5: <7><9><7>...Saia da frente.<1>Vou atrás de quem<1>está por trás disso.<2,2>
+DMG300:8 6: <7>???<7>...Mau? O que é<1>mau?<2,2>
+DMG300:8 7: <7><9><7>Bem... Resumindo...<2,2>
+DMG300:8 8: <7>???<7>Eu como Digimon. Aí<1>fico mais forte.<2,2><3>GUBIIIII!<2,2>
+DMG300:9 1: <7><9><7>...Foi por pouco.<1>O que era aquilo?<2,2>
+DMG300:9 2: <7>???<7>GUBIII!<2,2>
+DMG300:9 3: <7><9><7>Um Rookie, pelo<1>jeito...<2,2><3>Não some. Então<1>provavelmente não é<1>um dos da A.o.A.<2,2>
+DMG300:9 4: <7><9><7>Espere! Aonde você<1>vai?<2,2>
+DMG300:10 1: <7><9><7>Que... sala é essa?<2,2>
+DMG300:10 2: <7><9><7>Espere. Tem alguém<1>ali.<2,2>
+DMG300:10 3: <7><9><7>A Game Master. Não<1>vou deixar que ela<1>escape.<2,2>
+DMG300:10 4: <7>Guarda A<7>Você... É aquela<1>criança.<2,2>
+DMG300:10 5: <7>Guarda B<7>Você não passa<1>por nós.<2,2>
+DMG300:10 6: <7>Guarda C<7>Desista e venha<1>sem criar caso.<2,2>
+DMG300:11 1: Ha, ha, ha... Sucesso.<1>O experimento de fusão deu certo.<2,2>
+DMG300:11 2: <7>Game Master<7>Parabéns, senhor.<1>E agora... é a hora?<2,2>
+DMG300:11 3: Sim. Lucky Mouse alterou um pouco<1>nossos planos...<2,2><3>Mas não importa. A Operação Sigma<1>começa agora.<2,2>
+DMG300:11 4: <7>Game Master<7>Sim, senhor.<2,2>
+DMG300:11 5: Agora, Vemmon. Venha a mim.<2,2>
+DMG300:11 6: <7><9><7>Game Master! Com quem<1>está falando? Com o<1>líder da A.o.A?<2,2>
+DMG300:11 7: <7>Game Master<7>Ah. Foi você que<1>veio de...<2,2><3>Esta área é fechada<1>para jogadores. O que<1>você faz aqui?<2,2>
+DMG300:11 8: <7><9><7>Vim fazer você<1>pagar.<2,2><3>E é melhor falar logo<1>o que a A.o.A está<1>planejando.<2,2>
+DMG300:11 9: <7>Game Master<7>Acha que pode me<1>derrotar? Que<1>ingenuidade, criança.<2,2><3>Apareça, meu<1>precioso Digimon.<2,2>
+DMG300:11 10: <7><9><7>Os guardas caíram.<2,2><3>Agora é a sua vez,<1>Game Master.<2,2>
+DMG300:12 1: <7>Game Master<7>Não... não!<2,2><3>Meu Persiamon não<1>pode perder...<2,2>
+DMG300:12 2: <7>Lisa<7>Ai, ai. Parece que<1>chegamos um pouco<1>atrasados.<2,2><3>O show acabou.<2,2>
+DMG300:12 3: <7>Teddy<7><8,1><5,1>!<1>Você está bem!<1>Ainda bem!<2,2>
+DMG300:12 4: <7>Nick<7>Agora temos provas.<1>Renda-se,<1>Game Master.<2,2><3>Você está presa<1>pela Polícia<1>Internacional, S.A.P.<2,2>
+DMG300:12 5: <7><9><7>O quê? Lisa e Nick<1>são agentes<1>da S.A.P?<2,2>
+DMG300:12 6: <7>Nick<7>Correto. Keith<1>também.<2,2>
+DMG300:12 7: <7>Lisa<7>Desculpe termos<1>escondido isso.<1>Era parte do trabalho.<2,2><3>Mas graças a você,<1>o caso está quase<1>encerrado.<2,2>
+DMG300:12 8: <7>Lisa<7>Agora vamos interrogar<1>a Game Master e<1>trazer Kurt de volta.<2,2>
+DMG300:13 1: <7>Garoto<7>Quem...? Você é da<1>A.o.A?<2,2><3>Eu não me rendo.<2,2><3>Vou lutar com meu<1>Digimon se precisar...<2,2>
+DMG300:13 2: <7><9><7>Espere! Eu não sou da<1>A.o.A!<2,2><3>Sou <8,1><5,1>.<1>Vim do Asuka Server.<2,2>
+DMG300:13 3: <7>Garoto<7>...É mesmo? Desculpe.<1>Achei que você era<1>de um deles.<2,2><3>Sou Kenny. Mas como<1>você chegou a<1>Amaterasu?<2,2><3>Ninguém consegue<1>entrar lá.<2,2>
+DMG300:13 4: <7><9><7>Pelo Buraco de<1>Segurança que o<1>Bulbmon cavou.<2,2><3>Kenny, você sabe<1>onde está o Digi-Egg<1>do Conhecimento?<2,2>
+DMG300:13 5: <7>Kenny Corajoso<7>Não... Eu realmente<1>não sei. Desculpe.<2,2><3>E mesmo se eu<1>soubesse, procurar<1>é impossível.<2,2><3>A A.o.A dominou todo<1>este servidor.<2,2>
+DMG300:13 6: <7><9><7>Só dá para saber<1>tentando.<2,2><3>O que aconteceu com<1>os outros Tamers?<2,2>
+DMG300:13 7: <7>Kenny Corajoso<7>Eles nos capturaram.<1>Nos obrigaram a criar<1>Digimon de guerra.<2,2><3>Depois transformaram<1>todos em Oinkmon.<1>Todos eles.<2,2>
+DMG300:13 8: <7><9><7>Oinkmon de novo...<2,2><3>Não vou deixar que<1>escapem dessa.<2,2>
+DMG300:13 9: <7>Kenny Corajoso<7>É o que o resto<1>de nós pensa.<2,2><3>Quem não foi<1>capturado está...<2,2><3>...formando uma<1>resistência para<1>derrubar a A.o.A.<2,2><3>Quero me juntar<1>a eles. Estou<1>procurando por eles.<2,2>
+DMG300:13 10: <7><9><7>Uma resistência... Eu<1>queria ajudar, mas<1>agora não posso.<2,2><3>Preciso do Digi-Egg<1>do Conhecimento para<1>chegar ao Mundo Real.<2,2>
+DMG300:13 11: <7>Kenny Corajoso<7>...Entendo. Que pena.<2,2><3>Vou indo. Se cuide<1>por aí,<1><8,1><5,1>.<2,2>
+DMG300:13 12: <7><9><7>Você também. Se cuide.<2,2>
+DMG300:13 13: <7>Kenny Corajoso<7>...Ah, espere!<2,2><3>Você vai precisar<1>disto pra se mover<1>pelo Amaterasu Server.<2,2>
+DMG300:13 14: <7><9><7>Um Crony ID. Pode<1>ser útil.<2,2>
+DMG300:13 15: <7>Kenny Corajoso<7>Com isso, vão achar<1>que você é da A.o.A.<2,2><3>Só não faça nenhuma<1>bobagem e ninguém<1>vai te pegar.<2,2>
+DMG300:13 16: <7><9><7>Valeu. Fico te<1>devendo.<2,2>
+DMG300:13 17: <7>Kenny Corajoso<7>Estou indo. Cuidado,<1><8,1><5,1>.<2,2>
+DMG300:13 18: <7><9><7>Certo. Vamos acabar<1>com eles.<2,2>
+DMG300:13 19: <7><9><7>Agora. O Digi-Egg do<1>Conhecimento.<2,2>
+DMG300:14 1: <7><9><7>Tudo bem.<1>Rumo a Amaterasu City.<2,2>
+DMG300:14 2: <7>Teddy<7><8,1><5,1>!<1>Espere um segundo!<2,2>
+DMG300:14 3: <7><9><7>...Teddy!<1>Você veio até<1>aqui?<2,2>
+DMG300:14 4: <7>Teddy<7>Vim com a Lisa e<1>os outros.<2,2><3><8,1><5,1>, pode<1>esperar um momento<1>antes de entrar?<2,2><3>A Lisa está trazendo<1>toda a Resistência.<2,2>
+DMG300:14 5: <7><9><7>Então e a A.o.A?<2,2>
+DMG300:14 6: <7>Teddy<7>A Resistência os<1>derrotou.<2,2><3>Com as quatro cidades<1>nas nossas mãos, só<1>resta Amaterasu City.<2,2>
+DMG300:14 7: <7><9><7>Entendi.<1>Então agora...<2,2>
+DMG300:14 8: <7>Teddy<7>Sim. Esta é a<1>batalha final.<2,2><3>Vamos derrotar<1>a A.o.A.<2,2>
+DMG300:14 9: <7><9><7>Certo. Se lutarmos<1>juntos, a A.o.A não<1>é nada.<2,2>
+DMG300:15 1: <7><9><7>Estranho.<1>Não há ninguém aqui.<2,2>
+DMG300:15 2: <7><9><7>Entendi. É igual à<1>Sala do Game Master<1>de Asuka.<2,2><3>Uma porta secreta.<1>...Qual é o código?<2,2><3>Em Asuka era MONSTER.<1>Aqui talvez seja<1>DIGITAL...?<2,2>
+DMG300:15 3: <7><9><7>...!<1>Abriu por si só.<1>Por quê?<2,2><3>...Talvez queiram que<1>eu entre.<2,2><3>Tudo bem.<1>Vou entrar, seja<1>quem for.<2,2>
+DMG300:16 1: <7>Guarda Real<7>Estávamos esperando.<1>Você derrotou nossos<1>Chefes.<2,2>
+DMG300:16 2: <7><9><7>Venha. Eu aceito<1>o desafio.<2,2>
+DMG300:16 3: <7>Guarda Real<7>Somos mais fortes que<1>tudo que você já<1>enfrentou.<2,2>
+DMG300:16 4: <7>Guarda Real<7>Com o orgulho da<1>Guarda Real, eu vou<1>derrotar você.<2,2>
+DMG300:17 1: <7>???<7>...Inúteis, todos<1>eles.<2,2><3>Mesmo assim, sua<1>força me impressiona.<2,2>
+DMG300:17 2: <7><9><7>Você é o Presidente<1>da MAGAMI?<2,2>
+DMG300:17 3: <7>???<7>...Presidente?<1>Ah. Sim. Isso.<2,2><3>Mas poderia me chamar<1>de Chief Officer?<1>Soa mais legal.<2,2>
+DMG300:17 4: <7><9><7>Chega de jogos.<1>Desative o Destromon.<1>Agora.<2,2>
+DMG300:17 5: <7>Oficial-Chefe<7>Calma. Por que não<1>se junta a nós?<2,2><3>Diga sim e eu faço<1>de você meu número 2,<1>logo depois de mim.<2,2>
+DMG300:17 6: <7><9><7>Não. Você usa os<1>Digimon para o mal.<2,2><3>Mesmo que me deletem,<1>nunca serei um<1>de vocês.<2,2>
+DMG300:17 7: <7>Oficial-Chefe<7>Foi sua única chance.<1>Você é mesmo uma<1>criança teimosa.<2,2><3>Mas tanto faz.<1>Agora é tarde para<1>mudar de ideia.<2,2>
+DMG300:17 8: <7><9><7>Eles se chamavam de<1>Guarda Real...<2,2><3>Então quem está no<1>topo está logo à<1>frente.<2,2>
+DMG300:18 1: <7>Oficial-Chefe<7>...Espere. Eu me<1>entrego.<2,2><3>Você é mesmo forte.<2,2><3>Quem venceria: você<1>ou aquele que está<1>atrás de mim?<2,2>
+DMG300:18 2: <7><9><7>...O quê?<2,2>
+DMG300:18 3: <7>Nick<7>Presidente da MAGAMI,<1>você está preso.<2,2>
+DMG300:18 4: <7>Oficial-Chefe<7>Tudo bem. Cansei.<2,2><3>Da próxima vez vou<1>jogar por mim.<2,2>
+DMG300:18 5: <7>Lisa<7>Como é obediente.<2,2><3>Mas ainda falta<1>uma coisa...<2,2>
+DMG300:18 6: <7>Oficial-Chefe<7>O Destromon?<1>Dá para parar com<1>aquela máquina.<2,2>
+DMG300:18 7: <7>Lisa<7>Ótimo. Eu interrogo<1>o presidente.<2,2><3>Vá e pare<1>o Destromon.<2,2>
+DMG300:18 8: <7>Teddy<7>Sim, senhora.<2,2>
+DMG300:18 9: <7>Nick<7>E-entendido.<2,2>
+DMG300:18 10: <7><9><7>...Teddy, você sabe<1>como?<2,2>
+DMG300:18 11: <7>Teddy<7>Hehe. A maior parte.<2,2><3>O sistema é igual ao<1>computador do<1>Servidor Asuka.<2,2>
+DMG300:18 12: <7>Nick<7>Teddy, anda logo.<2,2><3>O Destromon vai<1>pousar numa cidade.<2,2>
+DMG300:18 13: <7>Teddy<7>Segura a onda.<2,2>
+DMG300:18 14: <7><9><7>Vamos. Por favor,<1>que dê tempo.<2,2>
+DMG300:18 15: <7><9><7>Ei, pessoal...<2,2>
+DMG300:18 16: <7>Nick<7>Teddy, menos papo,<1>mais trabalho.<2,2>
+DMG300:18 17: <7>Lisa<7>Entregue-se logo.<1>Prendemos a A.o.A<1>toda, menos você.<2,2>
+DMG300:18 18: <7>Teddy<7>Entendi.<2,2>
+DMG300:19 1: <7>Teddy<7>...Isso!<1>Conseguimos,<1><8,1><5,1>!<2,2>
+DMG300:19 2: <7><9><7>Conseguimos, Teddy.<2,2>
+DMG300:19 3: <7>Nick<7>Tudo correu bem,<1>vocês dois.<2,2><3>Preciso avisar os<1>outros.<2,2>
+DMG300:19 4: <7>Teddy<7>Cara, tô exausto...<2,2><3>Que dia.<2,2>
+DMG300:19 5: <7><9><7>...Sério? Uma parte<1>foi legal.<2,2>
+DMG300:19 6: <7>Teddy<7>Vamos para a Sala<1>de Login.<2,2><3>Aposto que todos e a<1>Câmara Matrix já<1>voltaram ao normal.<2,2>
+DMG300:19 7: <7><9><7>...Sim.<1>Vamos voltar para<1>o Mundo Real.<2,2>
+DMG300:19 8: <7>Teddy<7>O Destromon parou<1>e pifou.<2,2><3>Vencemos a A.o.A.<2,2>
+DMG300:20 1: <7><9><7>O Matrix System deve<1>estar por aqui.<2,2><3>Mas não sei como<1>fazê-lo funcionar.<2,2><3>O Game Master mandou<1>os Vemmon daqui...<2,2>
+DMG300:20 2: <7><9><7>...O quê?<2,2>
+DMG300:20 3: <7><9><7>Por que tem Vemmon<1>aqui?<2,2><3>...Será que...<2,2><3>Sem tempo. Preciso<1>ir atrás.<2,2>
+DMG300:21 1: <7><9><7>Certo. Vamos em<1>frente.<2,2>
+DMG300:22 1: <7>Kail<7><8,1><5,1>!<1>Graças a Deus.<1>Você está bem.<2,2>
+DMG300:22 2: <7><9><7>...Kail!<1>O que aconteceu?<2,2><3>Por que todos viraram<1>Oinkmon?<2,2>
+DMG300:22 3: <7>Kail<7>Foram os Vemmon.<1>Eles fizeram isso.<2,2>
+DMG300:22 4: <7><9><7>...O quê?<1>O que você disse?<2,2>
+DMG300:22 5: <7>Kail<7>Um enxame de Vemmon<1>de Amaterasu saiu do<1>Centro Administrativo.<2,2><3>Dispararam raios...<2,2><3>e todos viraram<1>Oinkmon.<2,2>
+DMG300:22 6: <7><9><7>Mas Vemmon não tem<1>esse tipo de poder...<2,2><3>A não ser que alguém<1>os tenha reprogramado.<2,2>
+DMG300:22 7: <7>Kail<7>Não sei...<2,2><3>Me escondi no porão<1>com os outros.<2,2><3>Só eu escapei da<1>transformação.<2,2><3>Teddy e Lisa...<1>Agora são Oinkmon.<2,2>
+DMG300:22 8: <7><9><7>O que está<1>acontecendo...<2,2><3>E para onde foram os<1>Vemmon?<2,2>
+DMG300:22 9: <7><9><7>...E para onde foram<1>os Vemmon?<2,2>
+DMG300:22 10: <7>Kail<7>Todos foram direto<1>para a Sala Mestra.<2,2>
+DMG300:22 11: <7><9><7>Então a Sala Mestra<1>guarda algum segredo.<2,2><3>Por isso eu vou.<2,2><3>Kail, procure um<1>lugar seguro para<1>se esconder.<2,2>
+DMG300:22 12: <7>Kail<7>O quê?<1>Mas... <8,1><5,1>...<2,2>
+DMG300:22 13: <7><9><7>Só eu posso lutar<1>contra eles neste<1>mundo.<2,2><3>Não se preocupe.<1>Deixe comigo.<2,2>
+DMG300:22 14: <7>Kail<7>...Tudo bem.<1>Eu acredito em você,<1><8,1><5,1>.<2,2><3>Mas é melhor voltar.<1>Isso não é um<1>pedido.<2,2>
+DMG300:22 15: <7><9><7>Certo. Então estou<1>indo.<2,2>
+DMG300:22 16: <7>Kail<7>Cuidado...<1><8,1><5,1>...<2,2>
+DMG300:22 17: <7>Kail<7>...Mas a A.o.A<1>ainda não acabou...<2,2>
+DMG300:22 18: <7><9><7>...Então todos os<1>outros...?<2,2>
+DMG300:22 19: <7>Kail<7>É... Teddy, Lisa<1>e os outros agora<1>são Oinkmon.<2,2>
+DMG300:22 20: <7><9><7>Ei. Kail?<2,2>
+DMG300:22 23: <7>Kail<7>Fico pensando no que<1>está acontecendo no<1>Mundo Real...<2,2><3>Tenho medo de saber.<2,2>
+DMG300:23 5: <7><9><7>T-Teddy?<2,2><3>Lisa. Nick. Keith.<1>Todos eles...<2,2>
+DMG300:23 7: <7><9><7>Teddy. Não consigo<1>entender uma palavra<1>do que você diz.<2,2><3>Espere aqui com Lisa<1>e os outros.<2,2><3>Vou achar um jeito<1>de consertar isso.<2,2>
+DMG300:23 8: <7><9><7>Estou indo. Esperem<1>por mim. Todos vocês.<2,2>
+DMG300:24 1: <7><9><7>...Não há ninguém<1>aqui.<2,2>
+DMG300:24 2: Eu sou Lord Megadeath,<1>destruidor do Mundo Real<1>e do Mundo Digital.<2,2><3>E aquele que será o deus<1>do novo mundo, quando<1>tudo mais se for...<2,2><3>Venha a mim agora,<1>o mais forte dos Tamers.<2,2><3>Aguardo você no<1>satélite militar,<1>Gunslinger.<2,2>
+DMG300:24 3: <7><9><7>...O quê?<1>Gunslinger?<2,2>
+DMG300:24 4: Sim. Vou mostrar a<1>gloriosa visão que<1>flutua no espaço...<2,2>
+DMG300:24 5: <7><9><7>...Não...<2,2>
+DMG300:25 1: Meu verdadeiro objetivo era a<1>Gunslinger. O Juggernaut foi<1>apenas uma isca.<2,2><3>A Operação Sigma da A.o.A<1>entra em sua fase final...<2,2>
+DMG300:25 2: <7><9><7>A fase final?<1>O que eles estão<1>fazendo?<2,2>
+DMG300:25 3: Do Canhão Ragnarok da<1>Gunslinger, lançaremos<1>a Onda de Digitalização...<2,2><3>...e transformaremos todo<1>ser vivo da Terra<1>em Oinkmon.<2,2>
+DMG300:25 4: <7><9><7>O quê?<1>Não. Não vou deixar<1>vocês fazerem isso.<2,2>
+DMG300:25 5: Então venha à Gunslinger<1>e me derrote.<2,2><3>Não há o que temer.<1>Atravesse o Warp Gate<1>e chegará à Gunslinger.<2,2><3>E lá teremos nossa<1>batalha final.<2,2><3>Com o destino de toda a<1>humanidade em jogo...<2,2>
+DMG300:25 6: <7><9><7>Certo, Lord<1>Megadeath. Estou<1>indo.<2,2><3>E vou derrotar você.<2,2>
+DMG305:0 1: <7>Kail<7>O Game Master.<1>Abaixe-se!<2,2>
+DMG305:0 2: <7>Game Master<7>Alguém pode explicar<1>o que vocês estão<1>fazendo?<2,2><3>Até lá, nossos planos<1>não podem avançar.<2,2>
+DMG305:0 3: <7>???<7>...Pedimos desculpas.<1>Vamos intensificar<1>a busca.<2,2>
+DMG305:0 4: <7>Guarda DO<7>Vamos encontrá-lo. É<1>só uma questão de<1>tempo.<2,2>
+DMG305:0 5: <7><9><7>Uma busca... planos...<1>Do que eles estão<1>falando?<2,2>
+DMG305:0 6: <7>Guarda DO<7>Ei! Por que há<1>Digimon aqui dentro?!<2,2>
+DMG305:0 7: <7>Guarda DO<7>Aquele parece<1>suspeito! Peguem!<2,2>
+DMG305:0 8: <7>Guarda DO<7>Vocês não vão<1>escapar!<2,2>
+DMG305:0 9: <7><9><7>...Eles nos viram.<2,2>
+DMG305:1 1: <7>Game Master<7>...E o que vocês dois<1>estão fazendo aqui<1>dentro?<2,2>
+DMG305:1 2: <7><9><7>Ah... nós... Estamos<1>procurando um amigo.<1>O Teddy.<2,2>
+DMG305:1 3: <7>Game Master<7>...Ah. Entendo.<1>Perdoem o susto.<2,2><3>Seu amigo também me<1>preocupa.<2,2><3>Temo que Lucky Mouse<1>o mantenha como<1>refém.<2,2>
+DMG305:1 4: <7><9><7>Lucky Mouse?!<2,2>
+DMG305:1 5: <7>Game Master<7>Um homem perigoso,<1>receio.<2,2><3>Ele pretende destruir<1>o Digimon Online.<2,2><3>Cada falha, cada<1>Câmara travada, cada<1>bloqueio: obra dele.<2,2><3>Trabalhamos para<1>desfazer o dano. Mas<1>não podemos sozinhos.<2,2>
+DMG305:1 6: <7><9><7>Mas todo mundo aqui<1>está se divertindo...<2,2><3>Por que alguém<1>iria querer estragar<1>isso?<2,2>
+DMG305:1 7: <7><9><7>Lucky Mouse... Não<1>consigo acreditar.<2,2>
+DMG305:1 8: <7>Kail<7>.........<2,2>
+DMG305:1 9: <7>Game Master<7>Toda a nossa equipe<1>está caçando Lucky<1>Mouse agora.<2,2><3>...Ah. Talvez vocês<1>possam nos ajudar?<2,2><3>Vocês sabem se virar.<1>É exatamente o que<1>precisamos.<2,2>
+DMG305:1 10: <7><9><7>Claro! Pode deixar<1>com a gente!<2,2>
+DMG305:1 11: <7>Game Master<7>Obrigado. Conto com<1>vocês.<2,2><3>Acreditamos que ele<1>fugiu para o Setor<1>Oeste.<2,2><3>Tomem cuidado. Ele<1>não é o que parece.<2,2>
+DMG305:2 1: <7><9><7>...Nada. Será que<1>apertei na ordem<1>errada?<2,2>
+DMG305:3 1: <7><9><7>Havia uma porta<1>secreta, afinal.<2,2><3>O Game Master deve<1>estar logo adiante.<2,2>
+DMG305:4 1: <7>Lisa<7>...Agora. Fale.<2,2><3>O que exatamente a<1>A.o.A planejava?<2,2>
+DMG305:4 2: <7>Game Master<7>...Heh. É tarde<1>demais.<2,2><3>Nosso plano não foi<1>detido. Ele apenas<1>começou.<2,2>
+DMG305:4 3: <7>Teddy<7>...Ah, não. A Rede<1>Óptica... está sendo<1>dominada!<2,2>
+DMG305:4 4: <7>Nick<7>O-o quê?!<2,2>
+DMG305:4 5: <7>Game Master<7>Heh... Exatamente<1>como eu disse.<2,2>
+DMG305:4 6: <7><9><7>Vemmon... Aquele<1>Digimon de novo.<2,2>
+DMG305:4 7: <7>Game Master<7>Pela Rede Óptica, ele<1>pode se fundir com<1>qualquer máquina.<2,2><3>Lucky Mouse roubou o<1>Digitama. Quase o<1>destruiu, mas...<2,2>
+DMG305:4 8: <7>Nick<7>O que fazemos? A<1>A.o.A está com a<1>vantagem.<2,2>
+DMG305:4 9: <7>Lisa<7>Primeiro, avisamos o<1>Mundo Real.<2,2>
+DMG305:4 10: <7><9><7>Como falamos com eles<1>daqui?<2,2>
+DMG305:4 11: <7>Lisa<7>Ouvi falar uma vez...<2,2><3>Existe uma câmara de<1>emergência em algum<1>lugar do Setor Norte.<2,2>
+DMG305:4 12: <7>Nick<7>Então, se a usarmos,<1>talvez possamos...<2,2>
+DMG305:4 13: <7>Lisa<7>Talvez. Acho que sim.<2,2>
+DMG305:4 14: <7>Game Master<7>Heh... Nunca vai<1>funcionar.<2,2>
+DMG305:4 15: <7>Lisa<7>Só saberemos se<1>tentarmos.<1>Não é, <8,1><5,1>?<2,2>
+DMG305:4 16: <7><9><7>Isso mesmo.<2,2><3>Não vamos deixar a<1>A.o.A rir por último.<2,2>
+DMG305:4 17: <7><9><7>Não vamos deixar a<1>A.o.A rir por último.<2,2>
+DMG305:4 18: <7>Lisa<7>Certo. Vamos todos<1>achar essa câmara.<2,2>
+DMG305:4 19: <7>Nick<7>Por aqui, por favor.<2,2>
+DMG305:4 20: <7>Teddy<7>Isso deixou de ser um<1>jogo faz tempo.<2,2>
+DMG305:4 21: <7><9><7>Não se preocupe. Tudo<1>vai dar certo.<2,2>
+DMG305:4 22: <7>Kail<7>...Espero que sim.<2,2>
+DMG305:4 25: <7>Game Master<7>Toda rede vai<1>pertencer à A.o.A.<2,2>
+DMG305:4 26: <7>Game Master<7>E Vemmon vai destruir<1>o mundo.<2,2>
+DMG305:4 27: <7>Game Master<7>E esse será o seu<1>fim.<2,2><3>A vitória... é nossa.<2,2>
+DMG305:4 28: <7>Lisa<7>E se cortarmos a Rede<1>Óptica, o plano deles<1>fracassa.<2,2>
+DMG305:4 29: <7>Lisa<7>Você vai esperar aqui.<1>Até lá.<2,2>
+DMG305:4 30: <7>Kail<7>Fico pensando no que<1>está acontecendo no<1>Mundo Real.<2,2>
+DMG305:5 1: <7><9><7>Lisa. A A.o.A tem o<1>Juggernaut. Eles o<1>lançaram.<2,2>
+DMG305:5 2: <7>Lisa<7>Sim. Parece que sim.<2,2><3>Teddy foi quem viu<1>primeiro e nos avisou.<2,2>
+DMG305:5 3: <7>Teddy<7>Com este computador,<1>dá pra acompanhar<1>cada jogada da A.o.A.<2,2>
+DMG305:5 4: <7>Keith<7>E agora? Ninguém<1>detém uma coisa como<1>o Juggernaut.<2,2>
+DMG305:5 5: <7><9><7>Deve existir um jeito<1>de detê-lo.<1>Qualquer coisa.<2,2>
+DMG305:5 6: <7>Lisa<7>...Deixe-me pensar.<2,2><3>Devemos ir perguntar<1>a ela.<2,2>
+DMG305:5 7: <7><9><7>...Ela?<2,2>
+DMG305:5 8: <7>Keith<7>...Ela quem?<2,2>
+DMG305:5 9: <7>Lisa<7>Vamos,<1><8,1><5,1>.<2,2>
+DMG305:5 10: <7>Lisa<7>Keith, Nick. Vocês<1>dois ficam aqui com<1>o Teddy.<2,2>
+DMG305:5 11: <7>Nick<7>É a arma mais forte<1>do mundo.<2,2><3>É exatamente por isso<1>que foi selada. Para<1>ninguém usá-la mal.<2,2>
+DMG305:5 12: <7>Nick<7>?!?<2,2>
+DMG305:6 1: <7>Lisa<7>A questão é como<1>entrar em Amaterasu<1>City.<2,2><3>É o quartel-general<1>da A.o.A. A segurança<1>será rígida.<2,2>
+DMG305:6 2: <7>Nick<7>Existe um Sistema de<1>Guarda Knightmon de<1>emergência.<2,2><3>A essa altura já deve<1>estar funcionando.<2,2>
+DMG305:6 3: <7><9><7>O líder da<1>Resistência disse<1>algo...<2,2><3>São precisos quatro<1>Code Passes para<1>deter o Knightmon.<2,2>
+DMG305:6 4: <7>Keith<7>Code Passes?<1>O que são?<2,2>
+DMG305:6 5: <7>Lisa<7>Conheço. São passes<1>de ID codificados<1>por cor.<2,2>
+DMG305:6 6: <7><9><7>Passes de ID por cor?<2,2><3>Como este ID Vermelho<1>e este ID Azul?<2,2>
+DMG305:6 7: <7>Lisa<7>Exatamente.<1>Onde conseguiram<1>isso?<2,2>
+DMG305:6 8: <7><9><7>Os Chefes de Cidade<1>da A.o.A que derrotei<1>tinham um cada.<2,2>
+DMG305:6 9: <7>Nick<7>Então pegue os outros<1>dois e poderemos<1>vencer o Knightmon.<2,2>
+DMG305:6 10: <7>Keith<7>Claro. Os outros<1>Chefes de Cidade<1>devem ter também.<2,2>
+DMG305:6 11: <7>Lisa<7>Isso já é um<1>começo.<2,2>
+DMG305:6 12: <7><9><7>Mas espere. Ainda<1>temos que lidar com<1>Bai Hu City...<2,2><3>A segurança lá é<1>muito rígida.<2,2>
+DMG305:6 13: <7>Lisa<7>É mesmo...<1>Hmm. O que fazer...<2,2>
+DMG305:6 14: <7>Lisa<7>Já sei. A Resistência<1>pode nos ajudar.<2,2><3>Eles estão na Mirage<1>Tower, não estão?<2,2>
+DMG305:6 15: <7><9><7>Sim. Estão.<2,2>
+DMG305:6 16: <7>Lisa<7>Bom. Eu mesma vou<1>pedir a eles.<2,2>
+DMG305:6 17: <7>Keith<7>Certo. Deixe com a<1>gente.<2,2>
+DMG305:6 18: <7>Nick<7>...Entendido.<2,2>
+DMG305:6 19: <7><9><7>Então vou voltar para<1>Bai Hu de novo.<2,2>
+DMG305:6 20: <7>Teddy<7>Boa sorte lá fora,<1><8,1><5,1>.<2,2>
+DMG305:6 21: <7><9><7>Eu me viro.<1>Deixe comigo.<2,2>
+DMG305:6 22: <7>Lisa<7>Keith. Venha comigo.<2,2>
+DMG305:6 23: <7>Lisa<7>Nick, você fica aqui.<2,2>
+DMG305:7 1: <7>Lisa<7>A questão é como<1>entrar em Amaterasu<1>City.<2,2><3>É o quartel-general<1>da A.o.A. A segurança<1>será rígida.<2,2>
+DMG305:7 2: <7>Nick<7>É verdade...<1>Se ao menos houvesse<1>alguém para ajudar.<2,2>
+DMG305:7 3: <7>Keith<7>Esqueça. Todo mundo<1>foi transformado em<1>Oinkmon.<2,2>
+DMG305:7 4: <7>Keith<7>Olhe em volta. Vamos,<1>quem sobrou?<2,2>
+DMG305:7 5: <7><9><7>Ajuda...<1>Alguém para ajudar...<2,2>
+DMG305:7 6: <7><9><7>Então vou voltar ao<1>Amaterasu Server e<1>procurar.<2,2>
+DMG305:7 7: <7>Lisa<7>Obrigada.<1>Conto com você.<2,2>
+DMG305:7 8: <7><9><7>Espere. Kenny disse<1>algo sobre...<2,2>
+DMG305:8 1: <7>Lisa<7>Já voltou,<1><8,1><5,1>?<1>Encontrou alguém?<2,2>
+DMG305:8 2: <7><9><7>Sim. Conheci o povo<1>da Resistência.<2,2>
+DMG305:8 3: <7>Lisa<7>Bom trabalho.<1>Você nunca falha,<1><8,1><5,1>.<2,2>
+DMG305:8 4: <7><9><7>Mas para entrar em<1>Amaterasu City...<2,2><3>Precisamos dos quatro<1>Code Passes para<1>deter o Knightmon.<2,2>
+DMG305:8 5: <7>Keith<7>Code Passes?<1>O que são?<2,2>
+DMG305:8 6: <7>Lisa<7>Conheço. São passes<1>de ID codificados<1>por cor.<2,2>
+DMG305:8 7: <7><9><7>Passes de ID por cor?<2,2><3>Como estes ID Vermelho<1>e ID Azul?<2,2>
+DMG305:8 8: <7>Lisa<7>Exatamente.<1>Onde conseguiram<1>isso?<2,2>
+DMG305:8 9: <7><9><7>Os Chefes de Cidade<1>da A.o.A que derrotei<1>tinham um cada.<2,2>
+DMG305:8 10: <7>Nick<7>Então pegue os outros<1>dois e poderemos<1>vencer o Knightmon.<2,2>
+DMG305:8 11: <7>Keith<7>Claro. Os outros<1>Chefes de Cidade<1>devem ter também.<2,2>
+DMG305:8 12: <7>Lisa<7>Isso já é um<1>começo.<2,2>
+DMG305:8 13: <7><9><7>Mas espere. Ainda<1>temos que lidar com<1>Bai Hu City...<2,2><3>A segurança lá é<1>muito rígida.<2,2>
+DMG305:8 14: <7>Lisa<7>É mesmo...<1>Hmm. O que fazer...<2,2>
+DMG305:8 15: <7>Lisa<7>Já sei. A Resistência<1>pode nos ajudar.<2,2><3>Eles estão na Mirage<1>Tower, não estão?<2,2>
+DMG305:8 16: <7><9><7>Sim. Estão.<2,2>
+DMG305:8 17: <7>Lisa<7>Bom. Eu mesma vou<1>pedir a eles.<2,2>
+DMG305:8 18: <7>Keith<7>Certo. Deixe com a<1>gente.<2,2>
+DMG305:8 19: <7>Nick<7>...Entendido.<2,2>
+DMG305:8 20: <7><9><7>Então vou voltar para<1>Bai Hu de novo.<2,2>
+DMG305:8 21: <7>Teddy<7>Boa sorte lá fora,<1><8,1><5,1>.<2,2>
+DMG305:8 22: <7><9><7>Eu me viro.<1>Deixe comigo.<2,2>
+DMG305:8 23: <7>Lisa<7>Keith. Venha comigo.<2,2>
+DMG305:8 24: <7>Lisa<7>Nick, você fica aqui.<2,2>
+DMG305:9 1: <7><9><7>O Game Master estava<1>mandando Vemmon pra<1>algum lugar.<2,2><3>Talvez haja uma pista.<1>Vamos mais fundo.<2,2>
+DMG305:9 2: <7><9><7>...O quê?<2,2>
+DMG305:9 3: <7><9><7>Oinkmon. Aqui, no<1>Asuka Server?<2,2>
+DMG400:0 1: <7><9><7>MasterTyranno.<2,2><3>Lute comigo.<2,2>
+DMG400:0 2: <7>MasterTyranno<7>Com prazer. Acabei<1>de comer, estou com<1>força total.<2,2>
+DMG400:0 3: <7><9><7>Bom. Então vai<1>significar algo.<2,2><3>Vou mostrar como sou<1>forte.<2,2>
+DMG400:0 4: <7>MasterTyranno<7>Confiante, jovem.<2,2><3>...Mas só confiança<1>não me vence.<2,2>
+DMG400:1 1: <7>MasterTyranno<7>Bem, jovem. Você é<1>bom.<2,2><3>Fique com isto por<1>me derrotar.<2,2>
+DMG400:1 2: <7><9><7>Peguei a Garra Velha.<2,2>
+DMG400:1 3: <7>MasterTyranno<7>Leve isso ao Líder<1>Seiryu.<2,2><3>Aí ele vai lutar<1>com você.<2,2>
+DMG400:1 4: <7><9><7>Valeu, MasterTyranno.<2,2>
+DMG400:1 5: <7>MasterTyranno<7>O Líder Seiryu é<1>forte.<2,2><3>Fique em guarda.<2,2>
+DMG400:2 1: <7><9><7>Líder Seiryu. Derrotei<1>MasterTyranno.<2,2><3>Quer lutar comigo<1>agora?<2,2>
+DMG400:2 2: <7>Líder Seiryu<7>Entendo. Você leva a<1>Garra Velha.<2,2><3>Muito bem. Faça o<1>seu movimento.<2,2>
+DMG400:3 1: <7>Líder Seiryu<7>Você é forte.<2,2><3>Qual é o seu nome?<2,2>
+DMG400:3 2: <7><9><7>Sou <8,1><5,1>.<2,2><3>Foi uma batalha<1>honrada.<2,2>
+DMG400:3 3: <7>Líder Seiryu<7>Então leve isto com<1>você, <8,1><5,1>.<2,2>
+DMG400:3 4: <7><9><7>O Distintivo Seiryu...<1>e um Ticket de Prata.<2,2>
+DMG400:3 5: <7>Líder Seiryu<7>Você vai precisar<1>deles nas batalhas<1>que virão.<2,2><3>São importantes,<1>não os perca.<2,2>
+DMG400:3 6: <7><9><7>Valeu, Líder<1>Seiryu.<2,2>
+DMG400:3 7: <7>Líder Seiryu<7>Desafie o Líder<1>Suzaku no Setor Sul<1>em seguida.<2,2><3>Ainda há um longo<1>caminho pela frente.<2,2><3>Mas você consegue.<1>Boa sorte.<2,2>
+DMG400:4 1: <7><9><7>Hã? O que está<1>acontecendo?<2,2>
+DMG400:4 2: Código Vermelho! Código Vermelho!<2,2><3>Vamos parar por um momento por<1>motivos de segurança.<2,2>
+DMG400:4 3: <7><9><7>O carro todo está<1>tremendo.<2,2><3>Um terremoto...!<2,2>
+DMG400:4 4: <7><9><7>O quê...?<2,2><3>Algo se move lá<1>embaixo.<2,2><3>Aquilo é um Digimon?!<2,2>
+DMG400:5 1: Agradecemos a espera.<2,2><3>Retomaremos agora a operação<1>da gôndola.<2,2>
+DMG400:5 2: <7><9><7>Ah... Ei, espere!<2,2><3>...Fugiu.<2,2><3>Sabia exatamente<1>para onde ia.<2,2>
+DMG400:6 1: <7><9><7>Setor Sul. Enfim<1>cheguei.<2,2><3>Mas que Digimon era<1>aquele?<2,2><3>E do que ele<1>fugia?<2,2>
+DMG400:7 1: <7><9><7>Que estranho.<1>Não há ninguém aqui.<2,2><3>Uma vila desse tamanho<1>nunca deveria ser tão<1>silenciosa.<2,2>
+DMG400:7 2: <7>Voz<7>...Uuuuuu!<2,2>
+DMG400:7 3: <7><9><7>Q-quê?!<2,2>
+DMG400:7 4: <7>Voz<7>...Uuuu!<2,2>
+DMG400:7 5: <7><9><7>Quem está aí?<2,2><3>...É um fantasma!<2,2>
+DMG400:8 1: <7>Zanbamon<7>Pare! Pare aí mesmo!<2,2><3>Não vou deixar você<1>passar por aqui.<2,2>
+DMG400:8 2: <7><9><7>Não pode ser sério.<2,2><3>Preciso chegar lá.<2,2>
+DMG400:8 3: <7>Zanbamon<7>Então me vença.<2,2><3>Como se pudesse. Eu<1>nunca perco! Ha ha ha<1>ha!<2,2>
+DMG400:8 4: <7><9><7>Nunca?<2,2><3>Sempre há uma primeira<1>vez.<2,2>
+DMG400:9 1: <7>Zanbamon<7>O quê, está fugindo<1>no meio da batalha?<2,2><3>Patético. Você não é<1>páreo para mim.<2,2>
+DMG400:9 2: <7><9><7>Tem algo errado<1>aqui.<2,2><3>Mas veja. Vou vencer.<1>Eu volto.<2,2>
+DMG400:9 3: <7>Zanbamon<7>Você só sabe falar,<1>jovem.<2,2><3>Ha ha ha ha!<2,2>
+DMG400:10 1: <7>Voz<7>Uuuu...<2,2><3>...uuuu!<2,2>
+DMG400:10 2: <7><9><7>Você deve ser<1>Sepikmon.<2,2>
+DMG400:10 3: <7>Voz<7>Uuu... ...cof!<1>Cof!<2,2><3>...Sim. O que você<1>quer?<2,2>
+DMG400:10 4: <7><9><7>Diga como derrotar<1>Zanbamon.<2,2>
+DMG400:10 5: <7>Sepikmon<7>Posso. Mas primeiro,<1>tenho um pedido.<2,2>
+DMG400:10 6: <7>Sepikmon<7>Perdi minha preciosa<1>máscara por aí.<2,2><3>Sem ela, ninguém<1>pode me ver.<2,2><3>Encontre-a e eu direi<1>o que você quer saber.<2,2>
+DMG400:10 7: <7>Sepikmon<7>Eu ainda a tinha<1>quando estava com<1>Baronmon...<2,2><3>...então devo tê-la<1>deixado cair depois.<2,2><3>Obrigado. De verdade.<2,2>
+DMG400:10 8: <7>Voz<7>...Sim? O que você<1>quer?<2,2>
+DMG400:10 9: <7><9><7>Tudo bem. Vou achar<1>sua máscara.<2,2>
+DMG400:11 1: <7><9><7>Ninguém aqui...<2,2><3>Ninguém que eu veja,<1>pelo menos.<2,2>
+DMG400:11 2: <7>Voz<7>Uuu-uuu-uu...<2,2>
+DMG400:11 3: <7><9><7>Aah! Um monstro!<2,2>
+DMG400:12 1: <7>Sepikmon<7>Depressa, ache minha<1>máscara. Por favor.<2,2><3>Eu ainda a tinha<1>quando estava com<1>Baronmon...<2,2>
+DMG400:13 1: <7>Sepikmon<7>Todos dizem que fui eu<1>que aprontei na<1>Asuka City!<2,2><3>Mas não fui eu.<2,2><3>Quem está com a minha<1>máscara é quem faz<1>isso.<2,2><3>Pegue essa pessoa e<1>traga minha máscara de<1>volta. Por favor.<2,2>
+DMG400:14 1: <7><9><7>Sepikmon, estou com a<1>sua Máscara Sepik.<2,2>
+DMG400:14 2: <7>Sepikmon<7>UAU! Obrigado!<2,2>
+DMG400:14 3: <7>Sepikmon<7>......<2,2><3>......<2,2>
+DMG400:14 4: <7><9><7>O que foi?<2,2><3>Coloque e apareça.<2,2>
+DMG400:14 5: <7>Sepikmon<7>Hã... bem... poderia<1>olhar pro outro lado?<2,2>
+DMG400:14 6: <7><9><7>Ah... tudo bem.<2,2>
+DMG400:14 7: <7>Sepikmon<7>Ahh. Assim é melhor.<2,2><3>Agora sim.<2,2><3>Me sinto eu mesmo<1>de novo.<2,2>
+DMG400:14 8: <7>Sepikmon<7>Por favor, pegue isto.<2,2>
+DMG400:14 9: <7><9><7>Uma Erva Fedida?<2,2><3>Pra que serve?<2,2>
+DMG400:14 10: <7>Sepikmon<7>Zanbamon odeia o<1>cheiro de Erva Fedida.<2,2><3>Ele vai fugir, tenho<1>certeza.<2,2>
+DMG400:14 11: <7><9><7>Sério? Valeu.<2,2><3>Você me salvou.<2,2>
+DMG400:14 12: <7>Sepikmon<7>E você me salvou.<2,2><3>Boa sorte.<2,2>
+DMG400:14 13: <7>Sepikmon<7>Aquele saco de papel<1>nunca ia dar certo.<2,2>
+DMG400:15 1: <7><9><7>Zanbamon.<2,2><3>Desta vez eu passo.<2,2>
+DMG400:15 2: <7>Zanbamon<7>Ha ha ha ha! Você não<1>desiste, hein?<2,2><3>Por mais que tente,<1>não pode vencer.<2,2>
+DMG400:15 3: <7><9><7>Veremos.<2,2><3>Olhe o que eu tenho.<2,2>
+DMG400:15 4: <7>Zanbamon<7>Uhhh! Isso... isso é<1>uma Erva Fedida?!<2,2>
+DMG400:15 5: <7><9><7>Isso mesmo.<2,2><3>Agora eu passo.<2,2>
+DMG400:15 6: <7>Zanbamon<7>N-não aguento!<2,2><3>Tudo bem. Eu recuo.<1>Desta vez.<2,2><3>...Mas não vou<1>esquecer isso, jovem!<2,2>
+DMG400:29 1: <7><9><7>...Olá? Quem está<1>no comando aqui?<2,2><3>Onde está todo mundo?<2,2>
+DMG400:29 2: Bip Bip...<2,2><3>ENERGIA LIGADA.<2,2><3>SISTEMA REINICIANDO.<2,2>
+DMG400:29 3: <7><9><7>Uau...! O quê?!<2,2>
+DMG400:29 4: SOU O SISTEMA OPERACIONAL DA<1>GÔNDOLA DE DEEPER CREVICE.<2,2><3>PARA INICIAR A GÔNDOLA DO SETOR<1>SUL, É NECESSÁRIO REGISTRAR A<1>CONTA COM UM CARTÃO AZUL.<2,2><3>UM DIGIMON NASCIDO DE UM CARTÃO<1>AZUL O POSSUI. OBTENHA-O COM<1>ESSE DIGIMON.<2,2>
+DMG400:29 5: <7><9><7>Digimon nascido de um<1>Cartão Azul...<2,2><3>...hmm. Acho que é o<1>Guilmon.<2,2><3>Vou perguntar ao<1>Guilmon na cidade.<2,2>
+DMG400:30 1: Bip. Bip.<2,2><3>AGUARDE. CONFIRMANDO DADOS.<2,2><3>......<2,2><3>CARTÃO AZUL NÃO CONFIRMADO.<2,2><3>ENCERRANDO REGISTRO DA CONTA...<2,2>
+DMG400:30 2: <7><9><7>O quê? Por que não<1>consigo registrar?<2,2><3>Tenho o Cartão Azul.<2,2>
+DMG400:30 3: <7><9><7>Espere. Este não é um<1>Cartão Azul.<2,2><3>O A é um 4. É um<1>Cartão 4zul.<2,2><3>É falso. Alguém me<1>enganou.<2,2>
+DMG400:31 1: Bip Bip...<2,2><3>AGUARDE. CONFIRMANDO DADOS.<2,2>
+DMG400:31 2: <7><9><7>Funcionou.<2,2><3>O Setor Sul abriu.<2,2>
+DMG400:31 3: OBRIGADO PELA ESPERA. VOCÊ É <8,1><5,1>.<2,2><3>O SISTEMA VAI INICIAR. SIGA PARA<1>A GÔNDOLA.<2,2>
+DMG400:39 1: <7><9><7>Certo. O Chip TNT<1>vai bem ali.<2,2>
+DMG400:39 2: <7><9><7>Um buraco na parede!<2,2><3>Agora podemos entrar.<2,2>
+DMG400:40 1: <7><9><7>....Espere. Isso é...!<2,2>
+DMG400:40 2: <7><9><7>O Digi-Egg da<1>Sinceridade!<2,2>
+DMG400:40 3: <7><9><7>Agora posso chamar o<1>Submarimon e cruzar<1>o oceano.<2,2>
+DMG400:41 1: <7>Chefe Qing Long<7>Camarada. Bem-vindo.<2,2>
+DMG400:41 2: <7><9><7>Qing Long Chief. Onde<1>está o Digi-Egg do<1>Conhecimento?<2,2>
+DMG400:41 3: <7>Chefe Qing Long<7>Isso eu também<1>não sei. Por que<1>pergunta?<2,2><3>Você não é um de nós.<2,2>
+DMG400:41 4: <7><9><7>E se eu não for? O que<1>você vai fazer?<2,2>
+DMG400:41 5: <7>Chefe Qing Long<7>Vou capturar você,<1>como todos os outros.<2,2>
+DMG400:42 1: <7><9><7>O Chefe de Qing<1>Long foi derrotado.<2,2>
+DMG400:42 2: <7><9><7>...O que é aquilo<1>no chão?<2,2>
+DMG400:42 3: <7><9><7>Mas nem sinal do<1>Digi-Egg do<1>Conhecimento...<2,2><3>Me pergunto o que<1>acontece no Mundo<1>Real...<2,2>
+DMG400:42 4: <7><9><7>...O que é isto? Um<1>Blue ID Pass?<2,2><3>Pode ser útil.<1>Vou levar.<2,2>
+DMG400:43 1: <7><9><7>Não sei o que a<1>A.o.A planeja, mas...<2,2><3>Seja o que for, não<1>vou deixar que eles<1>levem a melhor.<2,2>
+DMG400:44 1: <7>Soldado<7>...Esse é o Blue ID<1>Pass!<2,2><3>P-perdão. Não sabia<1>que você era o Chefe<1>de Qing Long.<2,2>
+DMG400:44 2: <7><9><7>...O quê? Ah... sim.<1>Sim, claro.<2,2><3>O uniforme chama<1>muita atenção. Estou<1>numa ronda à paisana.<2,2><3>Vamos manter isso<1>entre nós dois.<1>Entendido?<2,2>
+DMG400:44 3: <7>Soldado <7>Notável, Chefe.<1>Sempre trabalhando,<1>mesmo à paisana.<2,2>
+DMG400:44 4: <7><9><7>...Foi por pouco.<2,2><3>Mas agora posso<1>entrar em Zhu Que<1>City.<2,2>
+DMG400:44 5: <7>Soldado<7>Claro. Por favor,<1>pode entrar.<2,2>
+DMG500:0 1: <7>Mulher<7>Ei, você...<2,2><3>Você aí!<2,2>
+DMG500:0 2: <7><9><7>Hã... eu?<2,2>
+DMG500:0 3: <7>Mulher<7>Oi! Eu sou a Lisa.<1>Prazer em conhecer!<2,2><3>Qual é o seu nome?<2,2>
+DMG500:0 4: <7><9><7>Ah... hã. Meu nome<1>é <8,1><5,1>...<2,2>
+DMG500:0 5: <7>Lisa<7><8,1><5,1>. Vou lembrar.<2,2><3>Aliás, <8,2><5,2>, você<1>viu um Digimon verde<1>fofinho?<2,2>
+DMG500:0 6: <7><9><7>Verde...<2,2><3>Será que é o Monmon?<1>Ou o Terriermon?<2,2>
+DMG500:0 7: <7>Lisa<7>Bem... hmm, não sei.<2,2><3>O que você acha que<1>é, <8,1><5,1>?<2,2>
+DMG500:0 8: <7><9><7>...bem... hã...<2,2><3>???<2,2>
+DMG500:0 9: <7>Lisa<7>...Já sei! É o<1>Ogremon! Só pode ser!<2,2><3>Então é melhor eu ir<1>procurar o Ogremon.<1>Agora mesmo!<2,2>
+DMG500:0 10: <7><9><7>O que deu nela...?<2,2><3>Será que ela<1>está bem?<2,2>
+DMG500:0 11: <7>Lisa<7>Foi bom conversar com<1>você, <8,1><5,1>.<2,2>
+DMG500:1 1: <7>Líder Suzaku<7>Então, tudo pronto pra<1>entrar na minha arena?<2,2>
+DMG500:1 2: <7><9><7>Claro.<2,2>
+DMG500:1 3: <7>Líder Suzaku<7>Ora, quanta confiança!<2,2><3>Mas não me subestime<1>só porque sou garota.<2,2><3>Muitos fizeram isso.<1>Poucos ficaram de pé.<2,2>
+DMG500:2 1: <7>Líder Suzaku<7>Meu parceiro caiu.<1>Hm.<2,2><3>Bem. Acontece. Mas<1>quem me venceu? Qual é<1>o seu nome?<2,2>
+DMG500:2 2: <7><9><7>Meu nome é <8,1><5,1>.<2,2>
+DMG500:2 3: <7>Líder Suzaku<7>Um nome que vale<1>lembrar.<2,2><3>Tome. Você mereceu.<2,2>
+DMG500:2 4: <7><9><7>A Insígnia Suzaku.<2,2><3>Falta só uma: a<1>Insígnia Byakko.<2,2>
+DMG500:2 5: <7>Líder Suzaku<7>O Setor Oeste fica<1>além do oceano.<1>Poucos chegam lá.<2,2><3>Só há um jeito:<1>chamar Submarimon.<2,2><3>E Submarimon só<1>atende ao Digi-Egg da<1>Sinceridade.<2,2><3>Pergunte por aí neste<1>setor. Alguém sabe<1>onde está.<2,2><3>É tudo que posso<1>oferecer. Boa sorte.<1>Você vai precisar.<2,2>
+DMG500:3 1: <7>Kail<7>...Ei, <8,1><5,1>.<1>Chegou na hora.<2,2><3>Estamos aqui fora há<1>um tempão. Não é hora<1>de voltar?<2,2>
+DMG500:3 2: <7><9><7>Dois Líderes caíram.<1>Já é alguma coisa.<2,2><3>Mas Teddy... Temos<1>que achar Teddy.<2,2>
+DMG500:3 3: <7>Kail<7>Teddy está bem. Está<1>em Asuka City, no<1>Centro Administrativo.<2,2><3>Quando o vi pela<1>última vez, ele disse<1>que ia pra lá.<2,2>
+DMG500:3 4: <7><9><7>Centro Administrativo.<1>Então, de volta a<1>Asuka City. Rápido.<2,2>
+DMG500:4 1: <7>Numemon<7>...Você vai pra<1>Byakko City?<2,2>
+DMG500:4 2: <7><9><7>É o plano.<2,2>
+DMG500:4 3: <7>Numemon<7>É melhor não.<2,2>
+DMG500:4 4: <7><9><7>...Por que não?<2,2>
+DMG500:4 5: <7>Numemon<7>Dê meia-volta. Aqui<1>e agora.<2,2><3>...Por favor.<1>Está bem?<2,2>
+DMG500:4 6: <7><9><7>Ei, espere!<2,2>
+DMG500:4 7: <7><9><7>Sumiu...<2,2><3>...O que será que tem<1>em Byakko City?<2,2>
+DMG500:5 1: <7>Numemon<7>Aqui devemos estar<1>seguros.<2,2>
+DMG500:5 2: <7><9><7>Valeu.<2,2><3>Mas o que há com as<1>pessoas de Byakko<1>City?<2,2><3>O Líder deles sorriu<1>pra mim e depois me<1>jogou num porão.<2,2>
+DMG500:5 3: <7>Numemon<7>O Líder. Os cidadãos.<1>Todos são falsos.<2,2>
+DMG500:5 4: <7><9><7>O quê?! Então quem<1>eram eles?<2,2>
+DMG500:5 5: <7>Numemon<7>Isso não é da sua<1>conta.<2,2><3>Se quer o verdadeiro<1>Líder, vá ao Deserto<1>de Mobius.<2,2><3>Ele está na Mirage<1>Tower, depois das<1>areias.<2,2>
+DMG500:5 6: <7><9><7>Ei, espere! O que<1>está acontecendo?<2,2>
+DMG500:5 7: <7>Numemon<7>Não posso dizer mais.<1>Queria poder.<2,2><3>Fique longe de Byakko<1>City. Me prometa.<2,2>
+DMG500:5 8: <7><9><7>...Tudo bem. Até mais.<2,2>
+DMG500:5 9: <7><9><7>Então achamos o<1>verdadeiro Líder e<1>ouvimos dele mesmo.<2,2>
+DMG500:6 1: <7><9><7>Numemon!<2,2>
+DMG500:6 2: <7>Numemon<7>...Você. Por que<1>voltou?<2,2>
+DMG500:6 3: <7><9><7>Preciso te perguntar<1>uma coisa. Então...<2,2>
+DMG500:6 4: <7>Numemon<7>Não há nada a<1>dizer.<2,2>
+DMG500:6 5: <7><9><7>Ei, espere!<2,2>
+DMG500:7 1: <7><9><7>Que estranho.<2,2><3>Numemon não<1>está aqui.<2,2>
+DMG500:22 1: <7><9><7>Aquele quarto ali.<1>Deve ser o dele.<2,2>
+DMG500:23 1: <7><9><7>Te achei.<2,2><3>Desta vez não vou<1>deixar você escapar.<2,2>
+DMG500:23 2: <7>Numemon<7>Desista logo.<2,2>
+DMG500:24 1: <7><9><7>Lá está ele!<2,2>
+DMG500:25 1: <7><9><7>...Rápido. Pra um<1>Numemon, ele é rápido.<2,2>
+DMG500:26 1: <7><9><7>Ele subiu a escada.<2,2><3>Já cheguei até aqui.<1>Não vou parar agora.<2,2>
+DMG500:27 1: <7><9><7>Ele entrou.<2,2><3>Tudo bem. Vou<1>continuar atrás dele.<2,2>
+DMG500:28 1: <7><9><7>Aquele é o Nick... e<1>o Keith.<2,2>
+DMG500:28 2: <7>Nick<7>Dá pra você fazer seu<1>trabalho pelo menos<1>uma vez?!<2,2><3>Você joga esse jogo<1>desde o dia em que<1>chegamos!<2,2>
+DMG500:28 5: <7>Keith<7>Ha ha! É verdade! Mas<1>é um plano válido.<2,2><3>Provavelmente vão<1>tentar contatar<1>jogadores fortes.<2,2>
+DMG500:28 6: <7>Nick<7>Você não engana<1>ninguém.<2,2><3>De agora em diante,<1>seguimos o plano.<2,2>
+DMG500:28 7: <7>Keith<7>Nem pensar. Eu gosto<1>do que estou fazendo.<2,2><3>É a minha livre<1>vontade. Liberdade!<2,2>
+DMG500:28 8: <7>Nick<7>Keith!<2,2>
+DMG500:28 9: <7><9><7>Com licença...<2,2>
+DMG500:28 10: <7>Nick<7>Ah, você é quem veio<1>de...<2,2>
+DMG500:28 11: <7>Keith<7>Ei, você. Quer briga?<2,2>
+DMG500:28 12: <7><9><7>Não. Lisa me pediu...<2,2><3>...pra trazer Keith e<1>Nick.<2,2>
+DMG500:28 13: <7>Keith<7>...Ah, é? Ela pediu,<1>foi?<2,2>
+DMG500:28 14: <7>Nick<7>Melhor irmos. Ela vai<1>ficar furiosa se<1>nos atrasarmos.<2,2>
+DMG500:28 15: <7><9><7>Ah... espere!<2,2>
+DMG500:28 16: <7>Keith<7>Não dá tempo de<1>esperar. Leve a gente.<1>Já!<2,2>
+DMG500:28 17: <7>Nick<7>Sim. Leve-nos até ela<1>agora mesmo.<2,2>
+DMG500:28 18: <7><9><7>...Hã? Certo. Por<1>aqui.<2,2>
+DMG500:29 1: <7>Líder Suzaku<7>Não, não. Você não<1>pode ir adiante.<2,2><3>...Olhe só aquilo.<2,2>
+DMG500:29 2: <7><9><7>O que é aquilo?<2,2>
+DMG500:29 3: <7>Líder Suzaku<7>...Uma brecha de<1>segurança. Um rasgo<1>na própria rede.<2,2><3>Deve ser isso que<1>causou o terremoto.<2,2>
+DMG500:29 4: <7><9><7>Esse som... Também<1>estava na gôndola.<2,2><3>...Entendi. É o<1>Bulbmon.<2,2>
+DMG500:29 5: <7>Líder Suzaku<7>Eu disse que você não<1>pode ir.<2,2><3>Você não sabe o que<1>o espera. É perigoso<1>demais.<2,2><3>Como Líder do Setor<1>Sul, não vou deixar<1>ninguém se machucar.<2,2>
+DMG500:29 6: <7><9><7>Preciso atravessar<1>para o outro lado. Já<1>ouviu falar da A.o.A?<2,2><3>Alguém tem que ir<1>agora, ou algo pior<1>vai acontecer.<2,2>
+DMG500:29 7: <7>Líder Suzaku<7>...Se você coloca<1>dessa forma...<2,2>
+DMG500:29 8: <7>Líder Suzaku<7>...Muito bem.<2,2><3>Mas se ficar perigoso<1>demais, volte. Prometa<1>para mim.<2,2>
+DMG500:29 9: <7><9><7>Quatro Emblemas de<1>Líder? Entendi.<2,2><3>Agradeço, Líder<1>Suzaku.<2,2>
+DMG500:29 10: <7><9><7>Se eu passar por esse<1>buraco... talvez leve<1>a Amaterasu.<2,2>
+DMG500:29 11: <7><9><7>Líder Suzaku, uma<1>pergunta.<2,2><3>Sabe onde fica a<1>Câmara de emergência<1>no Setor Norte?<2,2>
+DMG500:29 12: <7>Líder Suzaku<7>Você quer dizer a<1>Câmara Matrix de<1>emergência?<2,2><3>Fica no subsolo da<1>Mina Kulon.<2,2><3>Mas você precisa dos<1>quatro Emblemas de<1>Líder para usá-la.<2,2>
+DMG500:30 1: <7><9><7>O Chefe Zhu Que<1>foi derrotado.<2,2>
+DMG500:30 2: <7><9><7>...Tem algo no chão<1>de novo.<2,2>
+DMG500:30 3: <7><9><7>O Passe de ID<1>Vermelho.<2,2><3>...Mas cadê o Digiovo<1>do Conhecimento?<2,2><3>Preciso achá-lo<1>rápido. O Juggernaut<1>não vai esperar.<2,2>
+DMG500:31 1: <7><9><7>Bulbmon foi<1>derrotado.<2,2>
+DMG500:31 2: <7><9><7>...Espere. O buraco<1>continua sem fim.<2,2><3>Talvez leve ao<1>Servidor Amaterasu...<2,2><3>Só há um jeito de<1>descobrir.<2,2>
+DMG500:32 1: <7><9><7>Em algum lugar...<1>onde?<2,2>
+DMG500:32 2: <7>Patamon<7>Hã... Eu não sei.<2,2><3>Mas ouvi um som<1>estranho vindo da<1>selva...<2,2>
+DMG500:32 3: <7><9><7>...Um som estranho?<2,2>
+DMG500:32 4: <7>Patamon<7>Sim. Como uma máquina<1>ou um Digimon.<1>Algo errado.<2,2><3>A Líder ouviu e saiu<1>correndo...<2,2><3>Não tenho certeza,<1>mas acho que ela foi<1>para a selva.<2,2>
+DMG500:32 5: <7><9><7>...Entendi. Agradeço.<2,2>
+DMG500:33 1: <7><9><7>Outro terremoto?!<2,2>
+DMG500:33 2: <7><9><7>Eu tinha razão. É o<1>Bulbmon.<2,2>
+DMG500:33 3: <7><9><7>Os tremores vêm dos<1>buracos que ele cava.<2,2><3>Dessa vez, não.<1>Vou detê-lo.<2,2>
+DMG500:34 1: <7>Chefe Zhu Que<7>Só membros da A.o.A<1>podem entrar.<2,2>
+DMG500:34 2: <7><9><7>Chefe Zhu Que. Onde<1>está o Digiovo do<1>Conhecimento?<2,2>
+DMG500:34 3: <7>Chefe Zhu Que<7>Ha ha ha... Então<1>você é o responsável<1>pelo Servidor Asuka!<2,2><3>Mas o que quer que<1>tente, é tarde demais.<2,2>
+DMG500:34 4: <7><9><7>O quê? Como assim?<2,2>
+DMG500:34 5: <7>Chefe Zhu Que<7>Ha ha ha... Por que<1>não? Eu conto.<2,2><3>Tomamos a Base<1>submarina Magasta.<2,2>
+DMG500:34 6: <7>Chefe Zhu Que<7>E agora estamos...<2,2><3>lançando a fortaleza<1>móvel Juggernaut.<2,2><3>Em breve o mundo se<1>curvará à A.o.A.<2,2>
+DMG500:34 7: <7><9><7>Não enquanto eu<1>estiver aqui.<2,2><3>Vou impedir o<1>lançamento do<1>Juggernaut.<2,2>
+DMG500:34 8: <7>Chefe Zhu Que<7>Ha ha... Tente, então.<2,2><3>Se conseguir passar<1>por mim primeiro.<2,2>
+DMG500:35 1: <7><9><7>...O que é isso?<2,2>
+DMG500:35 2: <7><9><7>O Digiovo do<1>Conhecimento.<1>Finalmente.<2,2>
+DMG500:35 3: <7><9><7>Agora posso chamar o<1>Digmon.<2,2><3>De volta ao Servidor<1>Asuka, depois ao Setor<1>Norte.<2,2>
+DMG600:0 1: <7>Líder Byakko<7>Saudações, desafiante.<1>Vamos começar.<2,2>
+DMG600:0 2: <7><9><7>Ah, espere um<1>momento...<2,2><3>Tenho uma pergunta<1>antes.<2,2>
+DMG600:0 3: <7>Líder Byakko<7>Primeiro, lutamos.<2,2><3>Vença, e direi tudo<1>o que sei.<2,2>
+DMG600:0 4: <7><9><7>Certo. Não pretendo<1>perder.<2,2>
+DMG600:1 1: <7>Líder Byakko<7>Ha ha ha... Muito<1>forte. Gostei de você.<2,2>
+DMG600:1 2: <7><9><7>Bom. Então...<2,2><3>O que pode me dizer<1>sobre esse Lucky<1>Mouse?<2,2>
+DMG600:1 3: <7>Líder Byakko<7>Um momento. O Emblema<1>Byakko está naquela<1>sala.<2,2><3>Ouço você quando<1>o tiver trazido.<2,2>
+DMG600:1 4: <7><9><7>Certo. Espere aqui.<1>Já volto.<2,2>
+DMG600:2 1: <7><9><7>Estranho. Não há<1>emblema aqui dentro.<2,2>
+DMG600:2 2: <7><9><7>O quê...?<2,2>
+DMG600:2 3: <7><9><7>O que está<1>acontecendo?!<2,2>
+DMG600:2 4: <7><9><7>Uaaah!<2,2>
+DMG600:3 1: <7><9><7>Ugh... uuh... Onde<1>estou?<2,2>
+DMG600:3 2: <7><9><7>...O subsolo. Eu caí.<2,2><3>Certo. Pense. Tem que<1>haver uma saída.<2,2>
+DMG600:4 1: <7><9><7>Algo está bloqueando<1>o buraco. Uma pedra<1>grande?<2,2>
+DMG600:4 2: <7>???<7>Não sou pedra.<2,2>
+DMG600:4 3: <7><9><7>O quê...? Quem...?!<2,2>
+DMG600:4 4: <7>Numemon<7>Eu avisei. A Cidade<1>Byakko é perigosa.<2,2>
+DMG600:4 5: <7><9><7>Você é... aquele<1>Numemon?!<2,2>
+DMG600:4 6: <7>Numemon<7>Isso mesmo. Agora<1>venha. Eu tiro você<1>daqui.<2,2>
+DMG600:5 1: <7>Lisa<7>Uau! <8,1><5,1>, você<1>é demais!<2,2><3>Estou impressionada.<2,2>
+DMG600:5 2: <7><9><7>Hã? Ah. Hum, valeu...<2,2>
+DMG600:5 3: <7><9><7>Enfim... O que você<1>faz aqui, Lisa?<2,2>
+DMG600:5 4: <7>Lisa<7>Essa é a minha fala.<2,2><3>O que você faz aqui?<2,2>
+DMG600:5 5: <7><9><7>...Eu? Hum... Eu...<2,2>
+DMG600:5 6: Imagino que vocês dois vieram aqui<1>para falar comigo.<2,2>
+DMG600:5 7: <7>Lisa<7>Aaaah! Nu... Nu...<1>Numemon!<2,2>
+DMG600:5 8: <7>Numemon<7>Calma, Lisa. Sou eu.<2,2>
+DMG600:5 9: <7><9><7>O quê?! O Numemon é...<1>uma pessoa?<2,2>
+DMG600:5 10: <7>Lisa<7>Ah. Claro.<2,2><3>Não me assuste assim,<1>Lucky Mouse!<2,2>
+DMG600:5 11: <7><9><7>O quê? Ele é Lucky<1>Mouse?<2,2><3>Então aquele Numemon<1>é...?!<2,2>
+DMG600:5 12: <7>Lucky Mouse<7>Hum. Lisa, eu<1>entendo. Mas eu disse<1>para você não vir.<2,2><3>Enfim, aqui não é<1>seguro. Venha ao meu<1>esconderijo, por ora.<2,2>
+DMG600:12 1: <7>Civil Byakko?<7>Ah, você veio para o<1>desafio, certo?<2,2><3>Por favor, entre. O<1>Líder Byakko espera<1>por você.<2,2>
+DMG600:13 1: <7>Civil Byakko?<7>He he he... Todos nós<1>esperávamos por você.<2,2><3>Apresse-se. Nosso<1>líder não gosta de<1>esperar.<2,2>
+DMG600:14 1: <7><9><7>Aqueles são...?<2,2>
+DMG600:14 2: <7>Cidadão Byakko?<7>Hã? Você viu aquilo?<1>Algo se mexeu...<2,2>
+DMG600:14 3: <7>Cidadão Byakko?<7>Você vê algo daí?<2,2>
+DMG600:14 4: <7>Cidadão Byakko?<7>Nada no oeste.<2,2>
+DMG600:14 5: <7>Cidadão Byakko?<7>Nada no sul.<2,2>
+DMG600:14 6: <7>Cidadão Byakko?<7>Nada de errado aqui<1>também.<2,2>
+DMG600:14 7: <7>Cidadão Byakko?<7>Então eu estava<1>imaginando coisas.<2,2>
+DMG600:14 8: <7><9><7>...Estão de vigia.<1>Todos sorrindo, e de<1>vigia.<2,2><3>Não vou entrar na<1>Cidade Byakko por<1>um tempo...<2,2>
+DMG600:15 1: <7><9><7>Então este é o<1>esconderijo de<1>Lucky Mouse...<2,2>
+DMG600:15 2: <7><9><7>Cadê o Teddy? Onde<1>ele está?!<2,2>
+DMG600:15 3: <7>Lucky Mouse<7>Teddy? O garoto que<1>achou meu código de<1>conta e me contatou?<2,2><3>Eu não o levei.<1>Foi a A.o.A.<2,2>
+DMG600:15 4: <7><9><7>O quê? Como assim?<2,2><3>A Game Master de<1>Asuka disse que você<1>estava com ele...<2,2>
+DMG600:15 5: <7>Lucky Mouse<7>...Ela é uma das<1>principais agentes<1>da A.o.A.<2,2><3>E não é a única.<1>A própria MAGAMI<1>é a A.o.A.<2,2><3>Há muitos deles aqui<1>dentro do<1>Asuka Server.<2,2>
+DMG600:15 6: <7><9><7>Então a Game Master<1>mentiu pra mim?!<2,2><3>Eu acreditei nela.<2,2><3>Preciso resgatar<1>o Teddy!<2,2>
+DMG600:15 7: <7>Lisa<7>Então o que a A.o.A<1>está querendo?<2,2>
+DMG600:15 8: <7>Lucky Mouse<7>Digimon Online. Eles<1>pretendem tomá-lo.<2,2><3>Assim eles chegam<1>até a rede, no mundo<1>inteiro.<2,2><3>Pensem no que a<1>MAGAMI construiu: um<1>mundo onde jogadores<2,2><3>deixam pedaços de si:<1>hábitos, rostos.<2,2><3>Um jogo é uma porta<1>deixada aberta.<2,2>
+DMG600:15 9: <7>Lisa<7>...Isso é péssimo.<2,2><3>Todo computador do<1>mundo ficaria sob o<1>controle deles.<2,2>
+DMG600:15 10: <7>Lucky Mouse<7>Para impedir isso, eu<1>fiz o programa<1>falhar de propósito.<2,2><3>Por um tempo, ninguém<1>deveria conseguir<1>entrar neste servidor.<2,2><3>Foi fácil demais.<1>O sistema me deixou<1>passar, como se<2,2><3>quisesse a porta<1>fechada. Ainda<1>não sei por quê.<2,2>
+DMG600:15 11: <7>Lisa<7>Entendi. Por isso<1>ninguém voltava ao<1>Mundo Real.<2,2><3>Você fechou a porta<1>de propósito.<2,2>
+DMG600:15 12: Ha ha ha ha ha! Você foi um belo<1>incômodo!<2,2><3>Mas, graças a essa criança, nossos<1>planos voltaram ao cronograma.<2,2>
+DMG600:15 13: <7>Lucky Mouse<7>...Kail?!<2,2>
+DMG600:15 14: <7><9><7>...Kail!<2,2>
+DMG600:15 15: <7>Kail<7><8,1><5,1>! ...Kurt!<2,2>
+DMG600:15 16: <7><9><7>O quê?! Então o irmão<1>mais velho de<1>Kail é...!<2,2>
+DMG600:15 17: <7>Lucky Mouse<7>...Sim. Meu nome real<1>é Kurt. Sou o irmão<1>mais velho de Kail.<2,2><3>Mas como a A.o.A<1>achou este lugar?<2,2><3>E por que Kail<1>está aqui...?<2,2>
+DMG600:15 18: <7>General<7>Seguimos essa criança<1>desde Asuka City.<2,2><3>Kail também seguia a<1>criança, e acabou<1>caindo na nossa rede.<2,2>
+DMG600:15 19: <7>Lucky Mouse<7>Solte Kail. Agora.<2,2>
+DMG600:15 20: <7>General<7>Ha ha ha ha! Calma lá.<1>Não é tão simples.<2,2><3>Devolva o que roubou<1>e eu solto Kail.<2,2>
+DMG600:15 21: <7>Lucky Mouse<7>...Tudo bem. Aqui.<1>Pegue.<2,2>
+DMG600:15 22: <7>General<7>Ha ha ha ha! Até que<1>enfim!<2,2><3>Ótimo. Vou levar<1>isto de volta.<2,2>
+DMG600:15 23: <7>Atacante<7>Promessa é promessa.<1>Vá. Leve Kail.<2,2>
+DMG600:15 24: <7>Kail<7>Kurt...! <8,1><5,1>!<2,2>
+DMG600:15 25: <7>Atacante<7>Aproveitem o momento.<1>Será breve.<2,2><3>Porque aqui termina<1>para todos vocês.<2,2>
+DMG600:15 26: <7>Lucky Mouse<7>Todos no chão!<1>Cuidado!<2,2>
+DMG600:15 27: <7>Lucky Mouse<7>Aaaaaah!<2,2>
+DMG600:15 28: <7>Kail<7>Kurt!<2,2>
+DMG600:15 29: <7><9><7>Não... Ele virou um<1>Digimon!<2,2>
+DMG600:15 30: <7>Atacante<7>Todos vocês vão virar<1>Oinkmon e serão<1>enjaulados.<2,2><3>Agora. Quem é o<1>próximo?<2,2>
+DMG600:15 31: <7>Atacante<7>!?!?!?! Estou sem<1>energia?!<2,2><3>Tudo bem. Venha, meu<1>Digimon!<2,2>
+DMG600:15 32: <7><9><7>Quer uma batalha?<1>Vai ter que passar<1>por mim.<2,2>
+DMG600:15 33: <7>Lucky Mouse<7>...Eu já fui um dos<1>funcionários do<1>Digimon Online.<2,2><3>Quando entendi o que<1>estava acontecendo...<2,2><3>...já era tarde<1>demais.<2,2>
+DMG600:16 1: <7>Atacante<7>Não... nããão... meu<1>Digimon...<2,2><3>Você vai pagar por<1>isso!<2,2>
+DMG600:16 2: <7>Lisa<7>Obrigada, <8,1><5,1>.<1>Você me salvou<1>de novo.<2,2>
+DMG600:16 3: <7>Kail<7>Kurt...!<2,2><3>Achei que finalmente<1>o tinha encontrado...<2,2><3>...e agora isso.<2,2>
+DMG600:16 4: <7>Kurt<7>Oink, oink!<2,2>
+DMG600:16 5: <7><9><7>...Certo. Já decidi:<1>vou para Asuka City.<2,2><3>Vou resgatar o Teddy,<1>e a Game Master vai<1>responder por isso.<2,2>
+DMG600:16 6: <7>Kail<7>Sim. Vamos derrubar<1>a A.o.A.<2,2><3>E trazer Kurt de<1>volta ao normal.<2,2>
+DMG600:16 7: <7>Lisa<7>Também peço isso a<1>você.<2,2><3>Mas não quero que<1>as pessoas entrem em<1>pânico...<2,2><3>Então você pode<1>guardar segredo sobre<1>a A.o.A?<2,2>
+DMG600:16 8: <7><9><7>Entendi.<2,2>
+DMG600:16 9: <7><9><7>Certo, Kail. Estou<1>indo.<2,2>
+DMG600:16 10: <7>Kail<7>Escute. Se perder,<1>nunca vou perdoar<1>você. Entendeu?<2,2>
+DMG600:16 11: <7>Lisa<7>Boa sorte. Estamos<1>todos com você.<2,2>
+DMG600:19 1: <7><9><7>Com licença. Sabe<1>onde está Numemon?<2,2>
+DMG600:19 2: <7>HiAndromon<7>Numemon? O que você<1>quer com ele?<2,2>
+DMG600:19 3: <7><9><7>Preciso perguntar uma<1>coisa a ele.<1>Por favor, diga.<2,2>
+DMG600:19 4: <7>HiAndromon<7>Sei onde ele está.<1>Não direi tão<1>facilmente.<2,2><3>Além deste ponto,<1>só os fortes podem<1>entrar.<2,2><3>Se ainda quiser<1>vê-lo, derrote-me<1>primeiro.<2,2>
+DMG600:20 1: <7>HiAndromon<7>...Respeito sua<1>grande força. Pode<1>passar.<2,2><3>Numemon está nos<1>Esgotos, depois da<1>Escada Secreta.<2,2><3>Destranquei a porta<1>da Escada Secreta.<2,2><3>Vá em frente. Mas<1>antes, leve este<1>Rifle Enferrujado.<2,2>
+DMG600:20 2: <7><9><7>O Rifle<1>Enferrujado...<2,2><3>Valeu, HiAndromon.<1>Já estamos indo.<2,2>
+DMG600:20 3: <7>HiAndromon<7>Os inimigos são mais<1>fortes daqui em<1>diante. Cuidado.<2,2>
+DMG600:21 1: <7><9><7>Que estranho. Numemon<1>não está por aqui.<2,2>
+DMG600:21 2: Aaaaaaaah!<2,2><3>Alguém me ajude!<2,2>
+DMG600:21 3: <7><9><7>O que foi isso?<2,2>
+DMG600:21 4: <7>WaruMonzaemon<7>Você é tããão fofa!<1>Case comigo!<2,2>
+DMG600:21 5: <7>Lisa<7>Não! Eu não gosto<1>de esquisitões!<2,2>
+DMG600:21 6: <7><9><7>Essa voz... Lisa!?<2,2>
+DMG600:21 7: <7>Lisa<7>...Ei, você é<1><8,1><5,1>, né?!<2,2><3>Por favor! Ajude esta<1>pobre donzela em<1>apuros!<2,2>
+DMG600:21 8: <7><9><7>Certo. Aguente firme.<2,2>
+DMG600:21 9: <7><9><7>WaruMonzaemon! Vá<1>mexer com alguém do<1>seu tamanho.<2,2>
+DMG600:21 10: <7>WaruMonzaemon<7>......Quem é você?<2,2><3>Saia da minha frente.<2,2>
+DMG600:22 1: <7>Kail<7>...Ei, <8,1><5,1>.<1>O que houve?<2,2>
+DMG600:22 2: <7><9><7>Não consigo entrar na<1>Asuka City.<2,2><3>Se eu tivesse um Staff<1>Pass, talvez...<2,2>
+DMG600:22 3: <7>Kail<7>Um Staff Pass?<2,2>
+DMG600:22 4: <7>Kurt<7>Oink! Oink!<2,2>
+DMG600:22 5: <7>Kail<7>O que você quer<1>dizer, Kurt?<2,2>
+DMG600:22 6: <7><9><7>Talvez Kurt tenha um.<2,2>
+DMG600:22 7: <7>Kail<7>Deve ser isso! Kurt<1>trabalhava aqui.<2,2>
+DMG600:22 8: <7><9><7>Lisa? O que você<1>está fazendo?<2,2>
+DMG600:22 9: <7>Lisa<7>Como pode ver, esta<1>sala está uma bagunça.<2,2><3>Por isso estou<1>arrumando tudo<1>com Kail.<2,2>
+DMG600:22 10: <7>Kail<7>Ei, Lisa. Você achou<1>algum Staff Pass?<2,2>
+DMG600:22 11: <7>Lisa<7>Ainda não, desculpe.<2,2><3>A culpa é de Kurt,<1>que deixou este lugar<1>um chiqueiro.<2,2>
+DMG600:22 12: <7>Kurt<7>Oink, oink!<2,2>
+DMG600:22 13: <7>Kail<7>O que fazemos? Tenho<1>certeza de que está<1>aqui.<2,2>
+DMG600:22 14: <7>Lisa<7>Já sei! Pode chamar<1>meus amigos?<2,2><3>Com a ajuda deles,<1>terminamos rapidinho.<2,2>
+DMG600:22 15: <7><9><7>Seus amigos?<2,2>
+DMG600:22 16: <7>Lisa<7>Sim. Eles se chamam<1>Keith e Nick.<2,2>
+DMG600:22 17: <7><9><7>...O quê?! Keith e<1>Nick?!<2,2>
+DMG600:22 18: <7>Lisa<7>Ah, você os conhece,<1><8,1><5,1>?<2,2><3>Então não vai demorar.<2,2><3>Pelo que sei, estavam<1>no Setor Sul.<2,2>
+DMG600:22 19: <7><9><7>Ah... certo. Já vou.<2,2>
+DMG600:22 20: <7>Lisa<7><8,1><5,1>? Algo<1>aconteceu?<2,2>
+DMG600:23 1: <7>Lisa<7>Muito bem. Nick, o<1>terminal. Ache uma<1>senha de acesso.<2,2>
+DMG600:23 2: <7>Lisa<7>Keith, os documentos.<1>Organize tudo, e<1>rápido.<2,2>
+DMG600:23 3: <7>Keith<7>Sim, senhora. Agora<1>mesmo.<2,2>
+DMG600:23 4: <7>Nick<7>Entendido.<2,2>
+DMG600:23 5: <7>Lisa<7>Viu? Dê uma ordem<1>clara e tudo se<1>resolve num instante.<2,2>
+DMG600:23 6: <7>Kail<7>Hã... Lisa. Quem são<1>esses dois?<2,2>
+DMG600:23 7: <7>Lisa<7>Ah, eles? São só<1>amigos meus. Amigos<1>muito bons.<2,2>
+DMG600:23 8: <7>Kail<7>Ah. Entendo...<2,2>
+DMG600:23 9: <7>Kail<7>Só amigos. Tem<1>certeza?<2,2>
+DMG600:23 10: <7><9><7>Não olhe pra mim. Eu<1>também não sei.<2,2>
+DMG600:24 1: <7>Keith<7>Essa foi a última.<1>Terminamos.<2,2>
+DMG600:24 2: <7>Nick<7>Lisa. A sala está em<1>ordem. Terminamos.<2,2>
+DMG600:24 3: <7>Lisa<7>Muito bem, vocês dois.<1>Até que enfim.<2,2>
+DMG600:24 4: <7>Keith<7>Staff Pass...? Certo.<1>Procurando.<2,2>
+DMG600:24 5: <7>Lisa<7>Vocês são inúteis.<1>Completamente inúteis.<2,2>
+DMG600:24 6: <7>Keith<7>Desculpe, senhora.<1>Vamos achar.<2,2>
+DMG600:24 7: <7>Nick<7>Desculpe! Dessa vez<1>eu acho. Prometo.<2,2>
+DMG600:24 8: <7>Lisa<7>Desculpe o incômodo.<1>Pode esperar mais um<1>pouco?<2,2>
+DMG600:24 9: <7>Nick<7>...Espere. Achei!<2,2>
+DMG600:24 10: <7>Nick<7>Lisa é... muito<1>exigente. Você se<1>acostuma.<2,2>
+DMG600:24 11: <7>Nick<7>Isso fica fora do<1>registro, entendeu?<1>Aqui está.<2,2>
+DMG600:24 12: <7><9><7>Um Staff Pass. Agora<1>a Asuka City tem uma<1>entrada.<2,2>
+DMG600:24 13: <7>Lisa<7>Achou? Muito bem,<1>Nick. Finalmente.<2,2>
+DMG600:24 14: <7>Nick<7>Obrigado, senhora.<2,2>
+DMG600:24 15: <7><9><7>Kail, Lisa. Já vou.<1>Cuidem de Kurt.<2,2>
+DMG600:24 16: <7>Lisa<7>Boa sorte. Contamos<1>com você.<2,2>
+DMG600:24 17: <7>Kail<7>Se cuida, tá?<1>...Falo sério.<2,2>
+DMG600:24 18: <7>Nick<7>O Staff Pass...?<2,2>
+DMG600:24 19: <7>Lisa<7>Então. Já acharam o<1>Staff Pass?<2,2>
+DMG600:24 20: <7>Lisa<7>E o que, exatamente,<1>vocês dois estão<1>fazendo?<2,2>
+DMG600:25 1: <7><9><7>Você é o Chefe de<1>Bai Hu?<2,2>
+DMG600:25 2: <7>Chefe Bai Hu<7>Correto. Qual é o<1>seu assunto?<2,2>
+DMG600:25 3: <7><9><7>O White ID Pass.<1>Entregue.<2,2>
+DMG600:25 4: <7>Chefe Bai Hu<7>Entendo.<1>Heh heh heh...<2,2><3>Não importa o que<1>faça, a vitória será<1>nossa.<2,2><3>Deixe-me lhe dar<1>uma lição.<2,2>
+DMG600:26 1: <7><9><7>Bem feito.<1>Não mexa comigo.<2,2><3>Hã?<1>Isso é...?<2,2>
+DMG600:26 2: <7><9><7>Peguei o White ID<1>Pass.<2,2><3>Falta só um.<1>Vamos rápido.<2,2>
+DMG600:27 1: <7>General<7>Você é a criança que<1>pegamos da última vez.<2,2><3>O que quer? Veio ser<1>capturado de novo?<2,2>
+DMG600:27 2: <7><9><7>Não. Vim perguntar<1>como a A.o.A chegou a<1>este servidor.<2,2>
+DMG600:27 3: <7>General<7>Heh heh heh... Quer<1>saber? Muito bem.<2,2><3>A A.o.A criou um<1>Digimon para<1>transporte...<2,2><3>Viemos de Amaterasu<1>através do Bulbmon.<2,2>
+DMG600:27 4: <7><9><7>...Bulbmon?!<2,2>
+DMG600:27 5: <7>General<7>Sim. Um grande<1>Digimon que se move<1>entre servidores.<2,2><3>Infelizmente, agiu de<1>forma estranha quando<1>chegamos aqui.<2,2>
+DMG600:27 6: <7><9><7>Estranha? O que você<1>quer dizer?<2,2>
+DMG600:27 7: <7>General<7>Lucky Mouse ergiu um<1>Campo Protetor.<2,2><3>Ele desmontou nosso<1>Bulbmon e nos jogou<1>para fora.<2,2><3>Por isso atacamos<1>Byakko City tão<1>depressa.<2,2>
+DMG600:27 8: <7><9><7>Espere. E onde o<1>Bulbmon está agora...?<2,2>
+DMG600:27 9: <7>General<7>Não faço ideia.<2,2><3>Provavelmente abrindo<1>mais buracos<1>dimensionais por aí.<2,2>
+DMG600:27 10: <7><9><7>Então preciso achar<1>o Bulbmon...<2,2><3>Espere. Já vi o<1>Bulbmon antes. Em<1>algum lugar...<2,2>
+DMG600:28 1: <7>Líder Chuck<7>Kenny me contou o<1>que você procura.<2,2><3>Desejo boa sorte<1>contra a A.o.A.<2,2>
+DMG600:28 2: <7><9><7>Igualmente. Boa sorte.<2,2>
+DMG600:28 3: <7>Líder Chuck<7>Eu queria lutar<1>ao seu lado, mas...<2,2><3>Só nos resta manter<1>este forte.<2,2>
+DMG600:28 4: <7><9><7>Eu me viro. Não se<1>preocupe comigo.<2,2>
+DMG600:28 5: <7>Líder Chuck<7>Sinto muito que<1>tenha vindo tão longe<1>por tão pouco.<2,2><3>Se retomarmos<1>Amaterasu City,<1>podemos ajudar.<2,2><3>Mas nunca pensei que<1>reprogramariam o<1>Knightmon.<2,2>
+DMG600:28 6: <7><9><7>Knightmon. Existe<1>algum jeito de<1>vencer?<2,2>
+DMG600:28 7: <7>Líder Chuck<7>Uma vez em ação,<1>só uma coisa detém o<1>Knightmon...<2,2><3>Os quatro Code Passes<1>dos Líderes das<1>Cidades.<2,2><3>Mas os Líderes estão<1>todos presos, então<1>não há como...<2,2><3>Os Chefes das Cidades<1>da A.o.A devem tê-los<1>levado...<2,2>
+DMG600:28 8: <7><9><7>...Entendo. A A.o.A.<2,2><3>Usar Digimon assim...<1>Não vou perdoar isso.<2,2>
+DMG600:28 9: <7>Líder Chuck<7>É claro que não<1>desistimos.<2,2><3>Se surgir uma chance,<1>faremos nossa<1>resistência. Aguarde.<2,2><3>Bem. Boa sorte.<2,2>
+DMG600:28 10: <7><9><7>Sim, senhor.<2,2>
+DMG600:29 1: <7>Tamer Heinrich<7>Alto. Diga a senha,<1>ou não passa.<2,2>
+DMG600:29 2: <7><9><7>Senha? Hã...<2,2>
+DMG600:29 3: <7>???<7>Espere. Esse é o<1><8,1><5,1>!<2,2>
+DMG600:29 4: <7>Kenny<7><8,1><5,1>, sou eu,<1>o Kenny.<2,2>
+DMG600:29 5: <7><9><7>Kenny! Você conseguiu?<2,2>
+DMG600:29 6: <7>Kenny<7>Sim. Encontrei a<1>Resistência e eles me<1>acolheram.<2,2><3>Esta é a base deles<1>agora. Nossa base.<2,2>
+DMG600:29 7: <7><9><7>Que boa notícia,<1>Kenny. De verdade.<2,2>
+DMG600:29 8: <7>Kenny<7>Venha conhecer nosso<1>líder.<2,2><3>Ele pode saber algo<1>que ajude você.<1>Venha, por aqui.<2,2>
+DMG600:29 9: <7><9><7>Valeu, Kenny.<2,2>
+DMG700:0 1: <7>Junior<7>Eles estão atrasados.<1>Vinte minutos, e<1>nem uma palavra.<2,2><3>O que Teddy e Ivy<1>estão fazendo?<2,2><3>Cada minuto aqui é um<1>minuto perdido.<2,2><3>Não vamos ter tempo de<1>jogar Digimon Online.<2,2>
+DMG700:0 2: <7>Junior<7>Eu não queria Ivy<1>junto.<2,2><3>Teddy, com sua boca<1>grande, abriu o jogo.<2,2><3>Deviam ter pegado um<1>Login Pass antes.<2,2><3>Agora vamos esperar na<1>fila como todo mundo.<1>Ninguém me escuta.<2,2>
+DMG700:0 3: ...Notícia de última hora.<2,2><3>A Polícia Internacional e a S.A.P<1>localizaram a sede europeia do<1>grupo criminoso chamado A.o.A.<2,2><3>Com o exército, invadiram o<1>complexo à meia-noite passada...<2,2><3>...e prenderam os líderes que<1>estavam lá dentro.<2,2><3>Segundo as autoridades, as prisões<1>ligam a recente onda de terrorismo<1>na internet à A.o.A.<2,2><3>O alcance total do grupo, admitem,<1>ainda é desconhecido.<2,2>
+DMG700:0 4: <7>Junior<7>A.o.A... O grupo que<1>fez coisas terríveis<1>com Digimon.<2,2><3>Não consigo entender.<1>Um Digimon é um<1>parceiro.<2,2><3>Como alguém faz um<1>parceiro causar dano?<2,2>
+DMG700:0 5: <7>Ivy<7>Junior. Com quem você<1>está falando?<2,2><3>...Isso é sinistro.<2,2>
+DMG700:0 6: <7>Teddy<7>Valeu por esperar,<1>Junior. Foi mal pelo<1>atraso.<2,2><3>Me perdi nos detalhes<1>do Matrix System.<1>Nem pergunte.<2,2>
+DMG700:0 7: <7><9><7>Já era hora, Teddy.<1>Vinte minutos.<2,2>
+DMG700:0 8: <7>Junior<7>E por que Ivy está<1>aqui, afinal?<2,2><3>Você sempre diz que<1>Digimon é coisa de<1>criança.<2,2>
+DMG700:0 9: <7>Ivy<7>Talvez eu me interesse<1>por Digimon Online. É<1>crime?<2,2><3>...E nunca disse que<1>odiava Digimon.<2,2><3>Disse que eram coisa<1>de criança. Há uma<1>diferença.<2,2>
+DMG700:0 10: <7>Teddy<7>Vamos, Junior. Ivy.<1>Para o Centro Online.<2,2><3>Segurem os cavalos...<1>não, esperem. Não.<1>Já atrasamos demais.<2,2>
+DMG900:4 1: <7><9><7>Então esta é a Arena.<2,2><3>Quem será meu<1>oponente?<2,2><3>Estou a postos.<2,2>
+DMG900:4 2: <7>Kurt<7>Ei, <8,1><5,1>!<2,2><3>Eu sabia que você<1>chegaria até aqui.<2,2>
+DMG900:4 3: <7><9><7>Hã? Kurt?<2,2><3>Não me diga que você<1>é o Tamer mais forte.<2,2>
+DMG900:4 4: <7>Kurt<7>É isso mesmo.<2,2><3>Fico feliz que seja<1>você na minha frente.<2,2><3>Há tempos eu queria<1>lutar com você<1>com tudo.<2,2>
+DMG900:4 5: <7><9><7>Eu senti o mesmo.<2,2><3>Não existe oponente<1>mais digno que você.<2,2>
+DMG900:4 6: <7>Kurt<7>Ha ha. Vou me divertir<1>com isso.<2,2><3>Vamos começar.<1>Sem se segurar.<2,2>
+DMG900:5 1: <7><9><7>Consegui.<1>Venci o Kurt.<2,2>
+DMG900:5 2: <7>Kurt<7>Parabéns, <8,1><5,1>.<1>Você me venceu em<1>luta justa.<2,2><3>Você é o novo<1>Tamer mais forte.<2,2>
+DMG900:5 3: <7><9><7>Valeu.<2,2>
+DMG900:5 4: <7>Kurt<7>Logo, Digimon Online<1>será restaurado.<2,2><3>Como primeiro World<1>Champ, você terá que<1>enfrentar todos.<2,2><3>Desafiantes vindos<1>do mundo inteiro.<2,2>
+DMG900:5 5: <7><9><7>Eu? O primeiro World<1>Champ?<2,2><3>...Bem.<1>Vou dar o meu melhor.<2,2>
+DMG900:5 6: <7>Kurt<7>Conto com você.<1>Mas ainda há algum<1>tempo.<2,2><3>Até lá, lute mais.<1>Fique ainda mais<1>forte.<2,2>
+DMG900:5 7: <7><9><7>Pode deixar.<2,2><3>Vou ser o World Champ<1>mais forte que já<1>existiu.<2,2>
+DMG900:10 1: <7>Tamer Haruka<7>Pois bem.<1>Tenha coragem na<1>sua jornada.<2,2><3>E agradeça a minha<1>generosidade.<2,2>
+DMG900:11 1: <7>Tamer Poemy<7>Vá, grande Herói.<1>Busque seu destino.<2,2><3>Estarei sempre com<1>você em espírito.<2,2>
+DMG900:12 1: <7>Tamer Pierre<7>Tenha coragem na<1>jornada.<2,2><3>Aguardo ansioso a sua<1>batalha com o Rei.<2,2><3>Au Revoir!<2,2>
+DMG900:13 1: <7>Tamer Bomujii<7>Então, você parte.<1>Domine o caminho<1>das cartas.<2,2>
+DMG900:14 1: <7>Tamer Alice<7>Bem... vá...<1>então. O...<1>Rei... aguarda.<2,2>
+TALK00 11: <7>Jack Maníaco<7>Dê uma arma ao seu<1>Digimon e o ataque<1>dele aumenta.<2,2><3>Nem todo Digimon<1>carrega o mesmo tipo<1>de arma.<2,2>
+TALK00 13: <7>Alan Preguiçoso<7>Aquilo acima da sua<1>cabeça é um satélite.<1>Guarda seus dados.<2,2><3>Eu também tenho um.<1>Só que ninguém vê<1>o próprio.<2,2>
+TALK00 14: <7>Yuki Energético<7>Venho aqui todo dia<1>e nunca enjoo.<1>Isso vicia.<2,2>
+TALK00 15: <7>Masato<7>Seu primeiro objetivo<1>é Seiryu City.<1>Vença o Líder dela.<2,2><3>A cidade fica logo a<1>leste daqui.<2,2>
+TALK00 16: <7>Takashi Gamer<7>O Digimon Lab, aí na<1>frente, é onde se<1>estuda os Digimon.<2,2><3>Vale a visita.<2,2>
+TALK00 17: <7>Shiro Novato<7>A Matrix Chamber é<1>uma máquina e tanto.<2,2><3>Ainda não acredito<1>que estamos na rede.<2,2>
+TALK00 18: <7>Masahiro<7>Dizem que os chefões<1>da A.o.A foram<1>pegos.<2,2><3>Queria saber o que<1>eles pretendiam.<2,2>
+TALK00 19: <7>Mika<7>Patamon, por que você<1>não digievolui para<1>Angemon?<2,2>
+TALK00 20: <7>Patamon<7>Não podemos. Só em<1>batalha. Desculpe.<2,2>
+TALK00 21: <7>Agumon<7>Lutar não basta para<1>treinar um Digimon.<2,2><3>O Ginásio aqui perto<1>cuida do resto.<2,2>
+TALK00 22: <7>Jake<7>Só uma vez, queria<1>ser um Digimon.<1>Hyo hyo hyo.<2,2>
+TALK00 23: <7>Vovó Beth<7>Viemos aqui para virar<1>Digimon.<2,2><3>Existe um jeito de<1>fazer isso neste<1>mundo. Você sabe?<2,2>
+TALK00 24: <7>Guilmon<7>O dano de uma batalha<1>continua depois que<1>ela termina.<2,2><3>Use uma cápsula ou<1>durma numa Pousada<1>e nos recuperamos.<2,2>
+TALK00 48: <7>Ken Viciado em Cartas<7>Regras básicas de<1>cartas? Você quer<1>mesmo saber?<2,2>
+TALK00 49: <7>Luke Colecionador<7>As cartas têm regras.<1>Posso ensinar você.<2,2>
+TALK00 50: <7>Ponchomon<7>Hola, amigo.<1>A casa é sua.<2,2><3>Este é El Dorado,<1>o paraíso dos<1>maníacos por itens.<2,2>
+TALK00 56: <7>Renamon<7>Como entrar no Centro<1>de Administração?<2,2><3>Sinto muito. Não<1>posso dizer.<2,2>
+TALK00 57: <7>Renamon<7>Seus parceiros se<1>foram? Os meus também.<2,2><3>Estar sozinha não é<1>tão ruim quanto<1>parece.<2,2>
+TALK00 58: <7>Renamon<7>Digimon existem para<1>lutar.<2,2><3>Quero um bom Tamer<1>como parceiro. Aí<1>eu lutaria.<2,2>
+TALK00 59: <7>Renamon<7>Em algum lugar existe<1>um Digimon invencível.<2,2><3>Só uma vez, queria<1>enfrentá-lo.<2,2>
+TALK00 60: <7>Renamon<7>Eu não pude fazer<1>nada.<2,2><3>Com um parceiro,<1>teria sido<1>diferente.<2,2>
+TALK00 61: <7>Agumon<7>Lutar não é tudo para<1>treinar um Digimon.<2,2><3>O Ginásio aqui perto<1>cuida do resto.<2,2>
+TALK00 62: <7>Renamon<7>Você ficou forte. E se<1>dá bem com seu<1>parceiro.<2,2><3>Tenho inveja disso.<2,2>
+TALK00 63: <7>Renamon<7>Nada mal.<2,2><3>Quando eu for forte<1>o bastante, quero<1>lutar com você.<2,2>
+TALK00 64: <7>Renamon<7>O-o que é isso?<1>Humanos virando<1>Digimon?<2,2><3>Nunca ouvi falar de<1>uma coisa dessas.<2,2>
+TALK00 77: <7>Kail<7><8,1><5,1>, achou<1>algo? Eu não.<2,2><3>Vamos continuar<1>juntando informações.<2,2>
+TALK00 78: <7>Kail<7><8,1><5,1>, achou<1>algo?<2,2><3>...O quê? O Centro<1>aceita Digimon<1>perdidos?<2,2><3>Tem um casal de<1>idosos que querem<1>virar Digimon.<2,2><3>Vamos falar com eles.<1>Podem saber de algo.<2,2>
+TALK00 79: <7>Kail<7>...O quê? Um homem no<1>lugar do Etemon?<2,2><3>Olhe melhor. É o<1>Etemon. Com uma<1>Fantasia de Etemon.<2,2><3>Pergunte a ele. Ele<1>explica tudo sobre<1>as Fantasias.<2,2><3>Boa sorte. Vou esperar<1>no Caminho<1>Subterrâneo.<2,2>
+TALK00 81: <7>Etemon<7>Ouvi dizer que o<1>Sepikmon fugiu para o<1>Lago Divermon.<2,2><3>Esse aí dá problema.<2,2><3>Me envergonha que a<1>gente seja do mesmo<1>tipo.<2,2>
+TALK00 104: <7>Tamer Genji<7>Ho ho ho. Ei, você.<1>Está indo bem.<2,2>
+TALK00 186: <7>Etemon<7>Hê hê. Estou de bom<1>humor hoje.<2,2>
+TALK00 239: <7>Mary Fã de Digimon<7>Quero digievoluir meu<1>Digimon para<1>Gallantmon.<2,2>
+TALK00 240: <7>Phillip Maníaco<7>Batalhas de Digimon<1>não são tudo.<2,2><3>Dá para duelar com<1>cartas também.<2,2><3>Para ser World Champ,<1>precisa dos dois.<2,2>
+TALK00 327: <7>Takashi Gamer<7>As moças do Digimon<1>Lab são lindíssimas.<2,2><3>Sou o maior fã delas.<2,2>
+TALK00 328: <7>Yuki Energético<7>Venho aqui todo dia<1>e nunca me canso.<2,2>
+TALK00 329: <7>Shiro Novato<7>Ai. Belisquei meu<1>rosto e doeu.<2,2><3>Então não é sonho.<2,2>
+TALK00 330: <7>Mary Fã de Digimon<7>Em que meu Digimon<1>deve evoluir?<2,2><3>Gallantmon ou<1>Beelzemon?<2,2>
+TALK00 331: <7>Alan Preguiçoso<7>Todo Digimon tem seu<1>próprio atributo.<2,2><3>Um bom Tamer aprende<1>todos eles.<2,2>
+TALK00 332: <7>Phillip Maníaco<7>Batalhas de Digimon<1>não são tudo.<2,2><3>Dá para duelar com<1>cartas também.<2,2><3>Para ser World Champ,<1>precisa dos dois.<2,2>
+TALK00 398: <7>Takashi Gamer<7>As moças do Digimon<1>Lab são lindíssimas.<2,2><3>Meu coração não<1>sossega.<2,2>
+TALK00 409: <7>Yuki Energético<7>Sabia? Digimon que<1>não vieram no seu<1>Starter Pack<2,2><3>também podem ser<1>parceiros.<2,2>
+TALK00 420: <7>Shiro Novato<7>Manutenção? O que<1>quebrou?<2,2><3>E se não tiver<1>conserto, como a gente<1>volta pra casa?<2,2>
+TALK00 421: <7>Shiro Novato<7>Entrar no Centro de<1>Administração?<2,2><3>Sou novo aqui. Não<1>saberia dizer.<2,2>
+TALK00 422: <7>Shiro Novato<7>Socorro! Vai me<1>comer!<2,2>
+TALK00 423: <7>Shiro Novato<7>Quando a gente vai<1>pra casa?<2,2><3>Minha mãe vai ficar<1>furiosa.<2,2>
+TALK00 424: <7>Shiro Novato<7>Agora minha mãe vai<1>ficar furiosa. Eu sei.<2,2>
+TALK00 425: <7>Shiro Novato<7>Achei que ia ser<1>deletado.<2,2><3>Ainda estou tremendo.<2,2>
+TALK00 426: <7>Shiro Novato<7>Quem derrotou o Game<1>Master é de outro<1>nível.<2,2><3>Quero ser forte<1>assim um dia.<2,2>
+TALK00 427: <7>Shiro Novato<7>Entrei sem avisar<1>meus pais.<2,2><3>Meu pai também deve<1>estar furioso.<2,2>
+TALK00 428: <7>Shiro Novato<7>A A.o.A acabou.<1>Podemos voltar ao<1>Mundo Real.<2,2><3>Acabou de verdade.<2,2>
+TALK00 431: <7>Mary Fã de Digimon<7>Sukamon ou Vegiemon,<1>qual dos dois?<2,2><3>Gosto dos dois. Quem<1>não gosta não é fã<1>de verdade.<2,2>
+TALK00 442: <7>Alan Preguiçoso<7>Manutenção de<1>emergência não é<1>novidade.<2,2><3>Enquanto isso jogamos<1>de graça. Não posso<1>reclamar.<2,2>
+TALK00 443: <7>Alan Preguiçoso<7>Tamers comuns não<1>entram no Centro de<1>Administração.<2,2><3>Digimon perdidos às<1>vezes entram<1>direto.<2,2>
+TALK00 444: <7>Alan Preguiçoso<7>Outro Digimon<1>perdido. Tem aparecido<1>muito ultimamente.<2,2>
+TALK00 445: <7>Alan Preguiçoso<7>A manutenção está<1>demorando demais.<2,2><3>Isso está me<1>deixando tenso.<2,2>
+TALK00 446: <7>Alan Preguiçoso<7>Dizem que viram o<1>Lucky Mouse por aí.<2,2><3>Talvez seja ele o<1>culpado pela pane.<2,2>
+TALK00 447: <7>Alan Preguiçoso<7>Isso é grave. Tem<1>soldados da A.o.A lá<1>dentro.<2,2><3>No Centro de<1>Administração.<2,2>
+TALK00 448: <7>Alan Preguiçoso<7>Então a A.o.A causou<1>a pane.<2,2><3>E toda aquela história<1>de Lucky Mouse?<2,2>
+TALK00 449: <7>Alan Preguiçoso<7>A A.o.A tomou<1>Amaterasu.<2,2><3>Espero que os Tamers<1>de lá estejam bem.<2,2>
+TALK00 450: <7>Alan Preguiçoso<7>Todos os membros da<1>A.o.A foram presos.<2,2><3>Chega de<1>ciberterroristas.<2,2>
+TALK00 453: <7>Phillip Maníaco<7>Meu objetivo é o<1>servidor Amaterasu.<2,2><3>A Batalha pelo World<1>Champ será lá.<2,2>
+TALK00 465: <7>Srta. Misha<7>Um jeito de entrar no<1>Centro? Não dá para<1>entrar. Não sabia?<2,2>
+TALK00 466: <7>Srta. Misha<7>Um Agumonzinho. Venha<1>para casa comigo.<2,2><3>Eu ficaria com você<1>de bichinho no Mundo<1>Real.<2,2>
+TALK00 467: <7>Srta. Misha<7>A Game Master é<1>elegante. Sou fã dela.<2,2>
+TALK00 468: <7>Srta. Misha<7>Vou largar meu emprego<1>e trabalhar na MAGAMI.<2,2><3>Quero ajudar a<1>Game Master.<2,2>
+TALK00 469: <7>Srta. Misha<7>A.o.A! É a A.o.A!<1>Temos que fugir!<2,2>
+TALK00 470: <7>Srta. Misha<7>A Game Master estava<1>com a A.o.A?<2,2><3>Estou em choque. Não<1>sei mais em quem<1>confiar.<2,2>
+TALK00 471: <7>Srta. Misha<7>Ainda há muitos da<1>A.o.A em Amaterasu.<2,2><3>Isso tira todo o<1>prazer de jogar.<2,2>
+TALK00 472: <7>Srta. Misha<7>Soube? A MAGAMI está<1>contratando.<2,2><3>Vou me candidatar.<2,2>
+TALK00 476: <7>Programador Tony<7>Eu também quero achar<1>um jeito de entrar no<1>Centro.<2,2><3>Adoraria ver o<1>sistema.<2,2>
+TALK00 477: <7>Programador Tony<7>Você me assustou. Um<1>Digimon perdido.<2,2><3>Ei, quer ser meu<1>parceiro?<2,2>
+TALK00 478: <7>Programador Tony<7>A manutenção está<1>demorando demais.<2,2><3>Tem algo cheirando<1>mal.<2,2>
+TALK00 479: <7>Programador Tony<7>Eu sabia. Tem algo<1>podre.<2,2><3>Talvez alienígenas<1>estejam por trás.<2,2>
+TALK00 480: <7>Programador Tony<7>Pronto, a A.o.A estava<1>por trás.<2,2><3>Eu sentia isso.<2,2>
+TALK00 481: <7>Programador Tony<7>Ainda me pergunto o<1>que a A.o.A estava<1>planejando.<2,2><3>Acho que isso não<1>acabou.<2,2>
+TALK00 482: <7>Programador Tony<7>A A.o.A quer controlar<1>o Mundo Real.<2,2><3>Será que estão<1>recrutando?<2,2>
+TALK00 483: <7>Programador Tony<7>A A.o.A se foi, e o ar<1>está mais leve.<2,2><3>Bom para o mundo. Não<1>vai durar para sempre.<2,2>
+TALK00 602: <7>Agumon<7>Só Digimon em batalha<1>ganham EXP.<2,2><3>Alterne o máximo de<1>Digimon que puder.<2,2>
+TALK00 603: <7>Agumon<7>Quer entrar no Centro<1>de Administração?<2,2><3>Nós, Digimon, podemos.<1>Humanos não.<2,2>
+TALK00 604: <7>Agumon<7>Indo para o Ginásio?<2,2><3>Digimon que não treina<1>não fica forte.<2,2>
+TALK00 605: <7>Agumon<7>Indo para o Ginásio?<2,2><3>Digimon que não treina<1>não fica forte.<2,2>
+TALK00 606: <7>Agumon<7>A A.o.A se escondeu<1>dentro do Centro.<2,2><3>Nós seguramos este<1>lugar.<2,2>
+TALK00 607: <7>Agumon<7>Eu odeio a A.o.A.<2,2><3>Se voltarem, estarei<1>esperando.<2,2>
+TALK00 608: <7>Agumon<7>Em algum lugar deste<1>servidor existe um<1>Ginásio Lendário.<2,2><3>Um Digimon poderia<1>ficar forte lá.<2,2>
+TALK00 609: <7>Agumon<7>Você derrotou a<1>A.o.A.<2,2><3>Falo por todos os<1>Digimon daqui:<1>obrigado.<2,2>
+TALK00 610: <7>Agumon<7>Eu sei. A A.o.A fez<1>isso.<2,2><3>Por favor, faça todos<1>voltarem ao normal.<2,2>
+TALK00 612: <7>Patamon<7>Fico feliz de poder<1>brincar com todos.<2,2>
+TALK00 613: <7>Patamon<7>Estou um pouco<1>envergonhado.<2,2>
+TALK00 614: <7>Patamon<7>Não. Eu só perguntei<1>se você queria<1>voltar pra casa.<2,2>
+TALK00 615: <7>Patamon<7>Não. Eu só perguntei<1>se você queria<1>voltar pra casa.<2,2>
+TALK00 616: <7>Patamon<7>A Mika está bem. Estou<1>com ela.<2,2>
+TALK00 617: <7>Patamon<7>Fiz só o que um<1>parceiro deve fazer.<2,2>
+TALK00 618: <7>Patamon<7>Será que os pais da<1>Mika estão<1>preocupados?<2,2>
+TALK00 619: <7>Patamon<7>Soube que você<1>derrotou a A.o.A.<1>Estou impressionado.<2,2>
+TALK00 620: <7>Patamon<7>O que aconteceu com<1>a Mika?<2,2>
+TALK00 622: <7>Mika<7>Hoje é um bom dia.<1>Posso continuar<1>brincando.<2,2>
+TALK00 623: <7>Mika<7>Não me importo de não<1>voltar pra casa.<2,2><3>O Patamon está aqui<1>comigo.<2,2>
+TALK00 624: <7>Mika<7>O Patamon diz que não<1>quer brincar comigo.<2,2>
+TALK00 625: <7>Mika<7>O Patamon diz que não<1>quer brincar comigo.<2,2>
+TALK00 626: <7>Mika<7>Tem gente estranha no<1>Centro.<2,2><3>Será que são<1>perigosos?<2,2>
+TALK00 627: <7>Mika<7>Não tive medo quando<1>os homens estranhos<1>chegaram.<2,2><3>O Patamon me<1>protegeu.<2,2>
+TALK00 628: <7>Mika<7>Quando a gente volta<1>pro Mundo Real?<2,2><3>Estou ficando<1>cansada.<2,2>
+TALK00 629: <7>Mika<7>Soube? Logo podemos<1>voltar.<2,2><3>Eu estava ficando<1>com fome.<2,2>
+TALK00 633: <7>Masahiro<7>Por que não podemos<1>voltar ao Mundo Real?<2,2><3>Espero que não haja<1>nada de errado.<2,2>
+TALK00 634: <7>Masahiro<7>As palavras da Game<1>Master ajudaram.<2,2><3>Eu devia estar me<1>preocupando demais.<2,2>
+TALK00 635: <7>Masahiro<7>Não deveria haver<1>nada de errado.<2,2><3>Mas tenho um mau<1>pressentimento.<2,2>
+TALK00 636: <7>Masahiro<7>Não deveria haver<1>nada de errado.<2,2><3>Mas tenho um mau<1>pressentimento.<2,2>
+TALK00 637: <7>Masahiro<7>A A.o.A tomou o<1>Centro de<1>Administração.<2,2><3>Isso é intolerável.<2,2>
+TALK00 638: <7>Masahiro<7>Eu sabia. A A.o.A<1>estava por trás da<1>MAGAMI.<2,2>
+TALK00 639: <7>Masahiro<7>É culpa deles não<1>podermos voltar.<2,2><3>Queria que alguém<1>fizesse a A.o.A pagar.<2,2>
+TALK00 640: <7>Masahiro<7>Soube? A A.o.A<1>acabou.<2,2><3>Podemos voltar ao<1>Mundo Real.<2,2>
+TALK00 642: <7>Jake<7>Virar Digimon é o<1>meu sonho.<2,2><3>Será que alguém pode<1>realizá-lo?<2,2>
+TALK00 643: <7>Jake<7>Virar Digimon é o<1>meu sonho.<2,2><3>Será que alguém pode<1>realizá-lo?<2,2>
+TALK00 644: <7>Jake<7>Levaram minha Fantasia<1>de Agumon.<2,2>
+TALK00 645: <7>Jake<7>Beth e eu não temos<1>arrependimentos.<2,2><3>Exceto por termos<1>virado Digimon.<2,2>
+TALK00 646: <7>Jake <7>A L.o.L e a<1>A.o.A...<2,2><3>Alguém devia impedir<1>que causem toda essa<1>confusão.<2,2>
+TALK00 647: <7>Jake<7>Usar o Mundo Digital<1>para os próprios<1>fins.<2,2><3>Como ser humano, sinto<1>vergonha.<2,2>
+TALK00 648: <7>Jake<7>Você não pode virar<1>Digimon.<2,2><3>Mas pode ser um no<1>coração.<2,2>
+TALK00 649: <7>Jake<7>Beth e eu decidimos.<1>Adoramos este lugar.<2,2><3>Viremos todo dia.<2,2>
+TALK00 653: <7>Vovó Beth<7>Viemos aqui para virar<1>Digimon.<2,2><3>Existe um jeito de<1>fazer isso neste<1>mundo. Você sabe?<2,2>
+TALK00 654: <7>Vovó Beth<7>Estavam gritando agora<1>há pouco.<2,2>
+TALK00 655: <7>Vovó Beth<7>Aquele falso Agumon<1>entrou no Centro de<1>Administração.<2,2><3>Nós também levamos<1>bronca.<2,2>
+TALK00 656: <7>Vovó Beth<7>Não podemos voltar por<1>um tempo.<2,2><3>Às vezes é bom<1>esquecer a realidade.<2,2>
+TALK00 657: <7>Vovó Beth<7>Aqui está barulhento<1>demais.<2,2>
+TALK00 658: <7>Vovó Beth<7>O mal não dura.<2,2><3>No fim, ele sempre<1>é punido.<2,2>
+TALK00 659: <7>Vovó Beth<7>Eu queria ficar aqui<1>para sempre.<2,2><3>É isso que nós<1>realmente queremos.<2,2>
+TALK00 660: <7>Vovó Beth<7>Estamos felizes só de<1>estar aqui.<2,2><3>Temos um ao outro.<2,2>
+TALK00 665: <7>Masato<7>Manutenção? Tenho um<1>encontro.<2,2>
+TALK00 666: <7>Masato<7>Ninguém liga. Estamos<1>presos neste mundo.<2,2>
+TALK00 667: <7>Masato<7>Quando podemos voltar?<2,2><3>A Tomomi me deixa se<1>eu me atrasar.<2,2>
+TALK00 668: <7>Masato<7>Quando podemos voltar?<2,2><3>A Tomomi me deixa se<1>eu me atrasar.<2,2>
+TALK00 669: <7>Masato<7>Eu... Eu vi eles.<1>São a A.o.A.<2,2>
+TALK00 670: <7>Masato<7>É tudo culpa da<1>A.o.A.<2,2><3>A Tomomi vai<1>entender. Espero.<2,2>
+TALK00 671: <7>Masato<7>É isso. A Tomomi está<1>brava comigo.<2,2>
+TALK00 672: <7>Masato<7>Diga a ela que lutou<1>comigo!<2,2><3>Aí a Tomomi vai ficar<1>impressionada.<2,2>
+TALK00 675: <7>Teddy<7>Até mais!<2,2>
+TALK00 676: <7>Kail<7>Vou dar uma olhada em<1>Asuka City por ora.<2,2><3>Vá na frente.<2,2>
+TALK00 711: <7>Jack Maníaco<7>Perdi o Guilmon. Pelo<1>menos jogo de graça<1>agora.<2,2>
+TALK00 712: <7>Jack Maníaco<7>Nem tente o Center.<1>Não dá pra entrar.<2,2><3>Aliás, cadê o<1>Guilmon?<2,2>
+TALK00 713: <7>Jack Maníaco<7>Guilmon, volta aqui.<2,2>
+TALK00 714: <7>Jack Maníaco<7>Guilmon, volta aqui.<2,2>
+TALK00 715: <7>Jack Maníaco<7>O A.o.A atacou? Quem<1>diria.<2,2><3>Espero que não tenham<1>pegado o Guilmon.<2,2>
+TALK00 716: <7>Jack Maníaco<7>O Guilmon continua<1>sumido. Pra onde ele<1>foi?<2,2>
+TALK00 717: <7>Jack Maníaco<7>Nunca mais vou ver<1>o Guilmon.<2,2>
+TALK00 718: <7>Jack Maníaco<7>Achei o Guilmon.<1>Não vamos mais nos<1>separar.<2,2>
+TALK00 721: <7>Guilmon<7>Você conhece o Jack?<1>Estou esperando ele<1>aqui.<2,2>
+TALK00 722: <7>Guilmon<7>Não sei como entrar<1>no Center.<2,2><3>Cadê o Jack?<2,2>
+TALK00 723: <7>Guilmon<7>Estou com fome.<2,2>
+TALK00 724: <7>Guilmon<7>Estou com fome.<2,2>
+TALK00 725: <7>Guilmon<7>O A.o.A me assustou.<2,2><3>Será que pegaram o<1>Jack?<2,2>
+TALK00 726: <7>Guilmon<7>Ainda não achei o<1>Jack.<2,2><3>Será que ele foi<1>pego?<2,2>
+TALK00 727: <7>Guilmon<7>Guilmon espera. Jack<1>vai voltar.<2,2>
+TALK00 728: <7>Guilmon<7>Achei o Jack. Ele vai<1>comprar petiscos pro<1>Guilmon.<2,2>
+TALK00 729: <7>Guilmon<7>Qual é o Jack? Cadê<1>você, Jack?<2,2>
+TALK00 1063: <7>Jake<7>Olhem pra nós. Somos<1>Digimon.<2,2><3>Meu sonho virou<1>realidade.<2,2>
+TALK00 1064: <7>Vovó Beth<7>Esta Agumon Suit é<1>maravilhosa. Gostou?<2,2><3>Foi o Etemon que<1>nos deu.<2,2>
+TALK00 1118: <7>Programador Eddy<7>Cada Digimon tem<1>armas diferentes.<2,2><3>Você precisa conhecer<1>as características de<1>cada um.<2,2>
+TALK00 1119: <7>Programador Eddy<7>Cada Digimon tem<1>armas diferentes.<2,2><3>Você precisa conhecer<1>as características de<1>cada um.<2,2>
+TALK00 1120: <7>Programador Eddy<7>Nem toda arma é<1>vendida nas lojas.<2,2><3>Juntar todas é muito<1>difícil.<2,2>
+TALK00 1121: <7>Programador Eddy<7>Nem toda arma é<1>vendida nas lojas.<2,2><3>Juntar todas é muito<1>difícil.<2,2>
+TALK00 1122: <7>Programador Eddy<7>Nem toda arma é<1>vendida nas lojas.<2,2><3>Juntar todas é muito<1>difícil.<2,2>
+TALK00 1123: <7>Programador Eddy<7>Cada Digimon tem seus<1>próprios conjuntos<1>de equipamento.<2,2><3>Meu sonho é juntar<1>todos os conjuntos.<2,2>
+TALK00 1124: <7>Programador Eddy<7>Cada Digimon tem seus<1>próprios conjuntos<1>de equipamento.<2,2><3>Meu sonho é juntar<1>todos os conjuntos.<2,2>
+TALK00 1125: <7>Programador Eddy<7>Você conhece o Kulon<1>Smith?<2,2><3>Vá até lá e consiga<1>uma arma muito<1>poderosa.<2,2>
+TALK00 1127: <7>Programador Eddy<7>Dizem que o A.o.A foi<1>derrotado.<2,2><3>O que será dos itens<1>que eles tinham?<2,2>
+TALK00 1129: <7>Kimmy Boa Moça<7>Você também tem um ID<1>do El Dorado?<2,2><3>Então somos parecidas.<2,2>
+TALK00 1130: <7>Kimmy Boa Moça<7>Daqui dá pra chegar<1>à Cargo Tower.<2,2><3>Também dá pra entrar<1>no leilão.<2,2>
+TALK00 1131: <7>Kimmy Boa Moça<7>Itens de leilão são<1>difíceis de achar em<1>outro lugar.<2,2><3>Se quiser um, dê um<1>lance. Custe o que<1>custar.<2,2>
+TALK00 1132: <7>Kimmy Boa Moça<7>Itens de leilão são<1>difíceis de achar em<1>outro lugar.<2,2><3>Se quiser um, dê um<1>lance. Custe o que<1>custar.<2,2>
+TALK00 1133: <7>Kimmy Boa Moça<7>Itens de leilão são<1>difíceis de achar em<1>outro lugar.<2,2><3>Se quiser um, dê um<1>lance. Custe o que<1>custar.<2,2>
+TALK00 1134: <7>Kimmy Boa Moça<7>Você vai saber que o<1>leilão começou quando<1>vir certa pessoa.<2,2><3>Não preciso dizer<1>quem, preciso?<2,2>
+TALK00 1135: <7>Kimmy Boa Moça<7>Você vai saber que o<1>leilão começou quando<1>vir certa pessoa.<2,2><3>Não preciso dizer<1>quem, preciso?<2,2>
+TALK00 1136: <7>Kimmy Boa Moça<7>Alguns itens são de<1>outros servidores.<2,2><3>Espero poder ir até<1>eles logo.<2,2>
+TALK00 1137: <7>Kimmy Boa Moça<7>O A.o.A sumiu mesmo?<2,2><3>Que bom. Eu tinha<1>muito medo de sair.<2,2>
+TALK00 1140: <7>Hiroshi Gamer<7>Os jogos da MAGAMI<1>eram fracos.<2,2><3>Esse Digimon Online<1>me surpreendeu.<2,2>
+TALK00 1141: <7>Hiroshi Gamer<7>Os jogos da MAGAMI<1>eram fracos.<2,2><3>Esse Digimon Online<1>me surpreendeu.<2,2>
+TALK00 1142: <7>Hiroshi Gamer<7>A MAGAMI melhorou<1>muito com o novo<1>presidente.<2,2><3>Ninguém sabe muito<1>sobre ele. Ele não<1>vê ninguém.<2,2><3>Tudo isso é um<1>mistério.<2,2>
+TALK00 1143: <7>Hiroshi Gamer<7>A MAGAMI melhorou<1>muito com o novo<1>presidente.<2,2><3>Ninguém sabe muito<1>sobre ele. Ele não<1>vê ninguém.<2,2><3>Tudo isso é um<1>mistério.<2,2>
+TALK00 1144: <7>Hiroshi Gamer<7>A MAGAMI melhorou<1>muito com o novo<1>presidente.<2,2><3>Ninguém sabe muito<1>sobre ele. Ele não<1>vê ninguém.<2,2><3>Tudo isso é um<1>mistério.<2,2>
+TALK00 1145: <7>Hiroshi Gamer<7>A MAGAMI gastou uma<1>fortuna no Digimon<1>Online.<2,2><3>Ninguém sabe de onde<1>veio o dinheiro.<2,2>
+TALK00 1146: <7>Hiroshi Gamer<7>O Game Master estava<1>com o A.o.A.<2,2><3>A MAGAMI era o A.o.A.<1>Isso é enorme.<2,2>
+TALK00 1147: <7>Hiroshi Gamer<7>Isso só vai ficando<1>maior.<2,2><3>O que aconteceu com<1>o presidente da<1>MAGAMI?<2,2>
+TALK00 1148: <7>Hiroshi Gamer<7>O presidente da<1>MAGAMI também estava<1>com o A.o.A.<2,2><3>Senti cheiro de coisa<1>podre desde o início.<2,2>
+TALK00 1160: <7>Kail<7>...Por que voltou?<2,2><3>Vá perguntar sobre as<1>Digimon suits.<2,2>
+TALK00 1163: <7>Kail<7>Por favor, <8,1><5,1>.<1>Não só pelo Kurt, mas<1>por todos.<2,2><3>E pela paz do Mundo<1>Real, pare o A.o.A.<2,2>
+TALK00 1186: <7>Divermon<7>Todos viraram<1>Oinkmon.<2,2><3>Por um tempo, sem<1>batalhas de cartas<1>acirradas.<2,2>
+TALK00 1187: <7>Mika<7>O Sepikmon pegou meu<1>doce.<2,2><3>Eu estava quase<1>comendo.<2,2>
+TALK00 1188: <7>Patamon<7>O Sepikmon é horrível.<1>A Mika ia comer um<1>petisco.<2,2><3>Ele tomou o petisco<1>dela.<2,2>
+TALK00 1189: <7>Masato<7>A Asuka City está em<1>polvorosa por causa<1>do Sepikmon.<2,2><3>Ele largou cascas de<1>banana por todo lado.<1>Vivemos caindo.<2,2>
+TALK00 1190: <7>Guilmon<7>O Jack voltou mesmo<1>pro Mundo Real?<2,2><3>Foi o que o Sepikmon<1>me disse.<2,2>
+TALK00 1191: <7>Jack Maníaco<7>O Sepikmon chegou e<1>levou minhas cartas.<2,2><3>Qual é o problema<1>desse palhaço?<2,2>
+TALK00 1192: <7>Masahiro<7>Achei que o Sepikmon<1>fosse gente boa.<2,2><3>Qual é o problema<1>dele?<2,2>
+TALK01 6: <7>Líder Seiryu<7>A Câmara de emergência<1>do Setor Norte fica<1>no subsolo da Mina<2,2><3>Kulon.<2,2><3>Você precisa dos<1>quatro emblemas de<1>Líder pra usá-la.<2,2>
+TALK01 7: <7>Líder Byakko<7>A Câmara de emergência<1>do Setor Norte fica<1>no subsolo da Mina<2,2><3>Kulon.<2,2><3>Você precisa dos<1>quatro emblemas de<1>Líder pra usá-la.<2,2>
+TALK01 8: <7>Líder Genbu<7>A Câmara de emergência<1>para o Mundo Real fica<1>no fundo da masmorra<2,2><3>da Mina Kulon, neste<1>Setor.<2,2><3>Você precisa dos<1>quatro emblemas de<1>Líder pra usá-la.<2,2>
+TALK01 10: <7>Maria Chorona<7>Perdi a Elle. O que<1>eu faço?<2,2>
+TALK01 11: <7>Sarah<7>O Líder de Seiryu é<1>tão elegante.<2,2><3>Passaria o dia todo<1>olhando pra ele.<2,2>
+TALK01 12: <7>Agumon<7>O treino de hoje<1>acabou. Estou exausto.<2,2>
+TALK01 13: <7>Guilmon<7>Que cheiro bom.<2,2><3>O jantar de hoje é<1>pizza.<2,2>
+TALK01 14: <7>Agumon<7>Você procura Keith e<1>Nick?<2,2><3>Nick esteve aqui e<1>foi embora.<2,2><3>Setor Sul ou Setor<1>Oeste, um dos dois.<2,2>
+TALK01 15: <7>Agumon<7>Bem-vindo a Seiryu, a<1>cidade do vento.<2,2><3>Fique à vontade.<2,2>
+TALK01 16: <7>Maria Chorona<7>Não acho a Elle.<2,2><3>Combinamos de nos<1>encontrar na Gale<1>Tower.<2,2>
+TALK01 17: <7>Sarah<7>O Líder de Seiryu<1>parece um retriever.<2,2><3>Um nobre.<2,2>
+TALK01 18: <7>Líder Seiryu<7><8,1><5,1>. Como você está<1>aguentando?<2,2><3>O Líder de Suzaku é<1>mais forte do que eu.<1>Fique em guarda.<2,2>
+TALK01 19: <7>Guilmon<7>O vento daqui é bom.<1>Eu gosto.<2,2>
+TALK01 20: <7>Agumon<7>Um caminho até o<1>Centro de<1>Administração?<2,2><3>Não sabia que humanos<1>não podem entrar.<2,2>
+TALK01 21: <7>Maria Chorona<7>Não acho a Elle.<2,2><3>Combinamos de nos<1>encontrar na Gale<1>Tower.<2,2>
+TALK01 22: <7>Sarah<7>Um caminho até o<1>Centro de Admin.?<2,2><3>Normalmente ninguém<1>entra? Eu não sabia.<2,2>
+TALK01 23: <7>Líder Seiryu<7>Um caminho até o<1>Centro de<1>Administração?<2,2><3>Nunca ouvi falar de<1>nenhum. Pergunte a<1>outra pessoa.<2,2>
+TALK01 24: <7>Guilmon<7>Digimon entram fácil<1>no Centro de<1>Administração.<2,2><3>Humanos, não sei<1>dizer.<2,2>
+TALK01 25: <7>Agumon<7>Um, dois. Um, dois.<2,2><3>Vou ficar mais forte<1>pelo Líder.<2,2>
+TALK01 26: <7>Maria Chorona<7>Será que a Elle foi<1>embora sem mim?<2,2><3>Sou lenta. Choro por<1>qualquer coisa.<2,2>
+TALK01 27: <7>Sarah<7>MetalGarurumon é um<1>cão, de certo modo.<2,2><3>Eu adoraria ter um.<2,2>
+TALK01 28: <7>Líder Seiryu<7>Seu Digimon cresceu<1>bem.<2,2><3>Boa sorte no caminho<1>até Server Champ.<2,2>
+TALK01 29: <7>Guilmon<7>Agumon leva tudo a<1>sério demais.<2,2><3>Eu prefiro me<1>divertir.<2,2>
+TALK01 30: <7>Agumon<7>Um, dois. Um, dois.<2,2><3>Vou ficar mais forte<1>pelo Líder.<2,2>
+TALK01 31: <7>Maria Chorona<7>Será que a Elle foi<1>embora sem mim?<2,2><3>Sou lenta. Choro por<1>qualquer coisa.<2,2>
+TALK01 32: <7>Sarah<7>MetalGarurumon é um<1>cão, de certo modo.<2,2><3>Eu adoraria ter um.<2,2>
+TALK01 33: <7>Líder Seiryu<7>Algo vem me<1>incomodando.<2,2><3>Provavelmente não é<1>nada. Provavelmente.<2,2>
+TALK01 34: <7>Guilmon<7>Agumon leva tudo a<1>sério demais.<2,2><3>Eu prefiro me<1>divertir.<2,2>
+TALK01 35: <7>Agumon<7>Ninguém consegue<1>entrar em Asuka City.<2,2><3>Espero que os outros<1>Agumon estejam bem.<2,2>
+TALK01 36: <7>Maria Chorona<7>E se a Elle nunca<1>vier?<2,2><3>Não posso voltar pra<1>Asuka City sozinha.<2,2>
+TALK01 37: <7>Sarah<7>Preciso alimentar a<1>minha cadela, Doria.<2,2><3>E não posso ir pra<1>casa. O que eu faço?<2,2>
+TALK01 38: <7>Líder Seiryu<7>Tem algo errado em<1>Asuka City.<2,2><3>Não gosto do rumo<1>que isso está tomando.<2,2>
+TALK01 39: <7>Guilmon<7>Acabei de comer pizza.<2,2><3>Estava muito boa.<2,2>
+TALK01 40: <7>Agumon<7>Vou manter minha<1>posição.<2,2><3>Não fujo de nada.<2,2>
+TALK01 41: <7>Maria Chorona<7>Será que aconteceu<1>algo com a Elle?<2,2><3>E aí, o que eu faço?<2,2>
+TALK01 42: <7>Sarah<7>A Doria deve estar<1>com fome. O que eu<1>faço?<2,2>
+TALK01 43: <7>Líder Seiryu<7>A A.o.A estava dentro<1>deste servidor.<2,2><3>Não se preocupe. Eu<1>vou proteger esta<1>cidade.<2,2>
+TALK01 44: <7>Guilmon<7>Eu vigio daqui de<1>cima.<2,2><3>Se o inimigo vier,<1>eu o vejo primeiro.<2,2>
+TALK01 45: <7>Agumon<7>A A.o.A não é nada.<2,2><3>Se eles vierem, eu<1>cuido deles.<2,2>
+TALK01 46: <7>Maria Chorona<7>Elle, onde você está?<2,2>
+TALK01 47: <7>Sarah<7>É verdade que a A.o.A<1>transforma pessoas<1>em porcos?<2,2><3>Cachorro eu até<1>aguentaria. Porco não.<2,2>
+TALK01 48: <7>Líder Seiryu<7><8,1><5,1>, sinto muito. Não<1>posso ajudar.<2,2><3>Proteger esta cidade<1>é tudo o que posso<1>fazer.<2,2>
+TALK01 49: <7>Guilmon<7>O vento está bom.<2,2><3>Espero que nada<1>aconteça.<2,2>
+TALK01 50: <7>Agumon<7>Você derrotou a<1>A.o.A.<2,2><3>Como ficou tão forte?<2,2>
+TALK01 51: <7>Maria Chorona<7>A Elle estava na<1>Zephyr Tower o tempo<1>todo.<2,2><3>Que alívio. Nunca<1>mais quero ficar<1>sozinha.<2,2>
+TALK01 52: <7>Sarah<7>Ótimo. Agora podemos<1>voltar ao Mundo Real.<2,2><3>Mal posso esperar<1>pra ver a Doria.<2,2>
+TALK01 53: <7>Líder Seiryu<7>O mundo foi salvo<1>graças a você, <8,1><5,1>.<2,2><3>Sou profundamente<1>grato pelo que fez.<2,2>
+TALK01 54: <7>Guilmon<7>Estamos fazendo uma<1>festa agora.<2,2><3>Quero muito bolo.<2,2>
+TALK01 55: <7>Agumon<7>O que eu faço? Todo<1>mundo virou Digimon<1>estranho.<2,2>
+TALK01 59: <7>Guilmon<7>O que aconteceu com<1>todo mundo?<2,2><3>Por favor, ajude<1>todos eles.<2,2>
+TALK01 60: <7>Kyle Fortão<7>Um homem de preto e<1>outro sarcástico?<2,2><3>Sim, vi os dois<1>nesta cidade.<2,2><3>Não sei pra onde<1>foram.<2,2>
+TALK01 61: <7>Patamon<7>Você procura Keith e<1>Nick?<2,2><3>Keith estava aqui.<2,2><3>Hm. Aonde ele foi?<2,2>
+TALK01 65: <7>Elle Encantadora<7>Cadê a Maria?<2,2><3>Fico preocupada. Ela<1>chora com facilidade.<2,2>
+TALK01 66: <7>Elle Encantadora<7>Cadê a Maria?<2,2><3>Eu disse que estaria<1>na Zephyr Tower.<2,2>
+TALK01 67: <7>Elle Encantadora<7>Cadê a Maria?<2,2><3>Eu disse que estaria<1>na Zephyr Tower.<2,2>
+TALK01 68: <7>Elle Encantadora<7>Talvez a Maria tenha<1>ido pra casa sem mim.<2,2><3>Não. A manutenção<1>está ligada. Ela não<1>poderia.<2,2>
+TALK01 69: <7>Elle Encantadora<7>Talvez a Maria tenha<1>ido pra casa sem mim.<2,2><3>Não. A manutenção<1>está ligada. Ela não<1>poderia.<2,2>
+TALK01 70: <7>Elle Encantadora<7>Asuka City está em<1>apuros.<2,2><3>E se a Maria estiver<1>lá dentro?<2,2>
+TALK01 71: <7>Elle Encantadora<7>Cadê a Maria?<2,2><3>Não faço ideia de<1>onde ela está.<2,2>
+TALK01 72: <7>Elle Encantadora<7>Ouvi dizer que a A.o.A<1>está sequestrando<1>todo mundo.<2,2><3>A Maria deve ter<1>sido levada também.<2,2>
+TALK01 73: <7>Elle Encantadora<7>A Maria está bem.<1>Graças a Deus.<2,2><3>Agora podemos voltar<1>ao Mundo Real.<2,2>
+TALK01 77: <7>Gerente Sasaki<7>Somos da empresa<1>rival da MAGAMI.<2,2><3>Fale baixo. Estamos<1>aqui pra espionar o<1>Digimon Online.<2,2>
+TALK01 78: <7>Sra. Olivia<7>Por que isso é tão<1>divertido?<2,2><3>É tão divertido que<1>me dá raiva.<2,2>
+TALK01 80: <7>Tom Repetitivo<7>Para chegar ao Setor<1>Oeste, é preciso<1>cruzar o oceano.<2,2><3>Como, eu não sei<1>dizer.<2,2>
+TALK01 81: <7>Gerente Sasaki<7>A Sra. Olivia está<1>fervendo, pelo jeito.<2,2><3>A MAGAMI tem muito<1>mais a oferecer do<1>que nós.<2,2>
+TALK01 82: <7>Sra. Olivia<7>Eles precisam de<1>manutenção?<2,2><3>Então a tecnologia<1>deles não é tão boa.<2,2>
+TALK01 83: <7>Tom Repetitivo<7>Um caminho até o<1>Centro de<1>Administração?<2,2><3>Esqueça. A segurança<1>de lá é impenetrável.<2,2>
+TALK01 84: <7>Gerente Sasaki<7>A Sra. Olivia inveja<1>a Game Master.<2,2><3>Acho que é por ela<1>ser mulher.<2,2>
+TALK01 85: <7>Sra. Olivia<7>Quem liga pra Game<1>Master?<2,2><3>Aparência não basta<1>pra fazer um trabalho<1>direito.<2,2>
+TALK01 87: <7>Gerente Sasaki<7>A Sra. Olivia inveja<1>a Game Master.<2,2><3>Acho que é por ela<1>ser mulher.<2,2>
+TALK01 88: <7>Sra. Olivia<7>Quem liga pra Game<1>Master?<2,2><3>Aparência não basta<1>pra fazer um trabalho<1>direito.<2,2>
+TALK01 89: <7>Tom Repetitivo<7>Dizem que Lucky Mouse<1>apareceu.<2,2><3>Por que agora?<1>Estranho.<2,2>
+TALK01 90: <7>Gerente Sasaki<7>A Sra. Olivia começou<1>a descontar em todo<1>mundo.<2,2><3>Bom, não dá pra levar<1>isso a sério se quiser<1>trabalhar.<2,2>
+TALK01 91: <7>Sra. Olivia<7>Sasaki! Melhore.<2,2><3>Estamos perdendo pra<1>MAGAMI. Você entende<1>isso?<2,2>
+TALK01 92: <7>Tom Repetitivo<7>Aqueles dois ali não<1>param de cochichar.<2,2><3>Suspeito. Podem ser<1>espiões.<2,2>
+TALK01 93: <7>Gerente Sasaki<7>Claro que também<1>queremos um bom<1>produto.<2,2><3>Se fosse tão fácil,<1>não teríamos esses<1>problemas.<2,2>
+TALK01 94: <7>Sra. Olivia<7>Certo, Sasaki.<2,2><3>Vamos criar algo<1>maior que o Digimon<1>Online.<2,2>
+TALK01 95: <7>Tom Repetitivo<7>Há membros da A.o.A<1>lá dentro.<2,2><3>Esses dois devem ser<1>da A.o.A também.<2,2>
+TALK01 96: <7>Gerente Sasaki<7>Fico feliz que a<1>empresa rival tenha<1>sumido, mas...<2,2><3>Será que tudo isso<1>vai acabar bem?<2,2>
+TALK01 97: <7>Sra. Olivia<7>Então a A.o.A estava<1>por trás deles.<2,2><3>É o fim da MAGAMI.<2,2>
+TALK01 98: <7>Tom Repetitivo<7>Estou de olho nesses<1>dois.<2,2><3>Se forem da A.o.A,<1>eu cuido deles.<2,2>
+TALK01 99: <7>Gerente Sasaki<7>Eu também quero ir<1>pra casa.<2,2><3>Será que isso conta<1>como hora extra?<2,2>
+TALK01 100: <7>Sra. Olivia<7>Por que não podemos<1>voltar ao Mundo Real?<2,2><3>Era a nossa chance de<1>passar a MAGAMI.<2,2>
+TALK01 101: <7>Tom Repetitivo<7>Ah, eles são da<1>empresa rival.<2,2><3>O jogo deles é<1>sem graça mesmo.<2,2>
+TALK01 102: <7>Gerente Sasaki<7>Que alívio.<2,2><3>Podemos voltar ao<1>Mundo Real.<2,2>
+TALK01 103: <7>Sra. Olivia<7>Acabei de ter uma<1>ideia.<2,2><3>Cookiemon Online.<1>Vai ser um sucesso.<2,2>
+TALK01 110: <7>Airdramon<7>Zzzz... Zzzz...<2,2>
+TALK01 111: <7>Professora Ayumi<7>Crianças não deviam<1>jogar.<2,2><3>...Brincadeira. Mas<1>não joguem demais.<2,2>
+TALK01 112: <7>Lena<7>Ficou sabendo? Lucky<1>Mouse voltou.<2,2><3>Fazia muito tempo.<1>Por que agora?<2,2>
+TALK01 113: <7>Kyle Fortão<7>Se você está aqui,<1>derrotou Zanbamon.<2,2><3>É melhor do que<1>parece.<2,2>
+TALK01 114: <7>Lena<7>Não podemos voltar<1>ao Mundo Real.<2,2><3>Será que Lucky Mouse<1>causou isso?<2,2>
+TALK01 115: <7>Kyle Fortão<7>Um caminho até o<1>Centro de<1>Administração?<2,2><3>Vá de cabeça. É o<1>único jeito.<2,2>
+TALK01 116: <7>Kyle Fortão<7>Quais Digimon são<1>fortes?<2,2><3>Quero montar o time<1>mais forte.<2,2>
+TALK01 117: <7>Lena<7>Onde está Lucky Mouse?<2,2><3>Ele deve estar em<1>algum lugar deste<1>Asuka Server.<2,2>
+TALK01 118: <7>Lena<7>Onde está Lucky Mouse?<2,2><3>Ele deve estar em<1>algum lugar deste<1>Asuka Server.<2,2>
+TALK01 119: <7>Kyle Fortão<7>Quais Digimon são<1>fortes?<2,2><3>Quero montar o time<1>mais forte.<2,2>
+TALK01 120: <7>Lena<7>Lucky Mouse é um bom<1>hacker.<2,2><3>Ele jamais causaria<1>problemas.<2,2>
+TALK01 121: <7>Kyle Fortão<7>Imperialdramon Fighter<1>Mode é forte, eu<1>diria.<2,2><3>Mas Marsmon também.<2,2>
+TALK01 122: <7>Lena<7>O tamer que venceu a<1>Game Master só pode<1>ser Lucky Mouse.<2,2><3>Ele está do nosso<1>lado.<2,2>
+TALK01 123: <7>Kyle Fortão<7>O Digimon da Game<1>Master era Persiamon.<2,2><3>O tamer que a<1>venceu é bom.<2,2>
+TALK01 124: <7>Lena<7>O que foi isso? Um<1>terremoto?<2,2><3>Foi de seis ou mais<1>na escala Richter.<2,2>
+TALK01 125: <7>Kyle Fortão<7>Foi um terremoto<1>enorme.<2,2><3>Odeio terremotos.<1>Achei que ia morrer.<2,2>
+TALK01 126: <7>Lena<7>Tenho certeza de que<1>Lucky Mouse está<1>lutando agora.<2,2><3>Ele vai vencer. Eu<1>sei que vai.<2,2>
+TALK01 127: <7>Kyle Fortão<7>Eu queria ir além, mas<1>a professora Ayumi<1>não deixou.<2,2><3>Fazer o quê.<2,2>
+TALK01 128: <7>Lena<7>Um jovem tamer<1>derrotou os oficiais<1>superiores.<2,2><3>Pena que não foi<1>Lucky Mouse.<2,2>
+TALK01 129: <7>Kyle Fortão<7>Você é o tamer que<1>derrotou a A.o.A?<2,2><3>Não sou digno. Não<1>sou digno.<2,2>
+TALK01 134: <7>Professora Ayumi<7>Por que você precisa<1>entrar no Centro de<1>Administração?<2,2><3>É bom não estar<1>tramando nada ruim.<2,2>
+TALK01 135: <7>Professora Ayumi<7>Também coordeno o<1>clube de jogos da<1>escola.<2,2><3>Mas joguei poucos<1>jogos.<2,2>
+TALK01 136: <7>Professora Ayumi<7>Também coordeno o<1>clube de jogos da<1>escola.<2,2><3>Mas joguei poucos<1>jogos.<2,2>
+TALK01 137: <7>Professora Ayumi<7>No Mundo Real já é<1>tarde.<2,2><3>E ainda não podemos<1>voltar.<2,2>
+TALK01 138: <7>Professora Ayumi<7>O que eu faço?<2,2><3>Preciso levar meus<1>alunos pra casa.<2,2>
+TALK01 139: <7>Professora Ayumi<7>Um terremoto?<2,2><3>Espero que meus<1>alunos estejam bem.<2,2>
+TALK01 140: <7>Professora Ayumi<7>Eu não sabia que seria<1>tão perigoso.<2,2><3>Deviam proibir o<1>Digimon Online.<2,2>
+TALK01 141: <7>Professora Ayumi<7>O Digimon Online é<1>bom quando jogado do<1>jeito certo.<2,2><3>Vou vir mais vezes,<1>com meus alunos.<2,2>
+TALK01 144: <7>Renamon<7>Não posso deixar você<1>passar.<2,2><3>Não até saber que é<1>digno desta passagem.<2,2>
+TALK01 145: <7>Patamon<7>La la la la la.<2,2><3>As Floramon dançam<1>lindamente.<2,2><3>Elas querem virar as<1>Rainhas da Dança do<1>servidor.<2,2>
+TALK01 146: <7>Líder Suzaku<7>Sou a Líder de Suzaku.<1>Seja bem-vindo.<2,2>
+TALK01 147: <7>Renamon<7>Só tamers fortes<1>passam por aqui.<2,2><3>Tenha orgulho de si.<2,2>
+TALK01 148: <7>Patamon<7>A Líder é demais,<1>não é?<2,2><3>Entrei pro fã-clube.<2,2>
+TALK01 149: <7>Líder Suzaku<7>Um caminho até o<1>Centro de<1>Administração?<2,2><3>Você pede o<1>impossível. Isso não<1>existe.<2,2>
+TALK01 150: <7>Renamon<7>Quer ir mais fundo?<2,2><3>Muito bem. Tenha<1>cuidado.<2,2>
+TALK01 151: <7>Patamon<7>A Líder é demais,<1>não é?<2,2><3>Entrei pro fã-clube.<2,2>
+TALK01 152: <7>Líder Suzaku<7>Lucky Mouse está neste<1>servidor?<2,2><3>Queria ver como ele é.<2,2>
+TALK01 153: <7>Renamon<7>Quer ir mais fundo?<2,2><3>Muito bem. Tenha<1>cuidado.<2,2>
+TALK01 154: <7>Patamon<7>Une, deux, trois. Une,<1>deux, trois.<2,2><3>A Floramon está me<1>ensinando a dançar.<2,2>
+TALK01 155: <7>Líder Suzaku<7>Lucky Mouse está neste<1>servidor?<2,2><3>Queria ver como ele é.<2,2>
+TALK01 156: <7>Renamon<7>Pode entrar, mas tome<1>cuidado.<2,2><3>Uns homens estranhos<1>entraram agora há<1>pouco.<2,2>
+TALK01 157: <7>Patamon<7>A Líder é confiável.<2,2><3>Aconteça o que<1>acontecer, não temos<1>nada a temer.<2,2>
+TALK01 158: <7>Líder Suzaku<7>Você ouviu?<1>Algo está acontecendo<1>em Asuka City.<2,2><3>Aqui é seguro. Não<1>se preocupe.<2,2>
+TALK01 159: <7>Renamon<7>Quem venceu a Game<1>Master deve ser um bom<1>tamer.<2,2><3>Quero ver o quão<1>forte você vai ficar.<2,2>
+TALK01 160: <7>Patamon<7>A Game Master estava<1>com a A.o.A.<2,2><3>Eu sabia que tinha<1>algo errado com ela.<2,2>
+TALK01 161: <7>Líder Suzaku<7>Hm. A A.o.A entrou<1>no servidor.<2,2><3>Agora ninguém consegue<1>curtir o jogo.<2,2>
+TALK01 162: <7>Renamon<7>A Líder foi ver os<1>danos do terremoto.<2,2><3>O senso de<1>responsabilidade dela<1>nunca descansa.<2,2>
+TALK01 163: <7>Patamon<7>Você procura a Líder?<2,2><3>Ela não está. Saiu<1>depois do terremoto.<2,2>
+TALK01 165: <7>Renamon<7>Agora que você está<1>forte, não tenho mais<1>nada a dizer.<2,2><3>Será um prazer deixar<1>você passar.<2,2>
+TALK01 166: <7>Patamon<7>A Líder ainda não<1>voltou.<2,2><3>Onde será que ela<1>está?<2,2>
+TALK01 168: <7>Renamon<7>Você está ficando bom.<2,2><3>Espero ansiosa pelo<1>próximo Torneio do<1>Servidor.<2,2>
+TALK01 169: <7>Patamon<7>A dança das Floramon<1>é perfeita.<2,2><3>Elas vão ganhar o<1>concurso.<2,2>
+TALK01 170: <7>Líder Suzaku<7>Você derrotou a<1>A.o.A.<2,2><3>Quando isso acabar,<1>quero ver você de<1>novo. Com calma.<2,2>
+TALK01 171: <7>Renamon<7>Você é nossa única<1>esperança.<2,2><3>Todos contamos com<1>você.<2,2>
+TALK01 172: <7>Patamon<7>Por que todo mundo<1>virou Digimon?<2,2><3>E o concurso das<1>Floramon vai ser<1>cancelado.<2,2>
+TALK01 183: <7>Civil Byakko 08<7>Há mais jogadores<1>nesta cidade.<2,2><3>Você só não consegue<1>vê-los. É só a sua<1>imaginação.<2,2>
+TALK01 186: <7>Líder Byakko<7>Então é você. Nós<1>lutamos e tomamos a<1>cidade de volta.<2,2><3>Procura um caminho<1>até Amaterasu? Eu não<1>conheço.<2,2><3>Tente a caverna<1>subterrânea.<2,2><3>Prendemos lá embaixo<1>todo mundo da A.o.A.<2,2>
+TALK01 187: <7>Operador Remy<7>Você derrotou o Game<1>Master de Asuka.<2,2><3>Graças a você, o plano<1>do Líder funcionou.<2,2>
+TALK01 188: <7>Guarda Max<7>Quando o Game Master<1>de Asuka caiu, eles<1>desmoronaram.<2,2><3>Retomamos a cidade<1>sem muitos danos.<2,2>
+TALK01 189: <7>Aluno Tony<7>Eu quase ajudei<1>essa gente.<2,2><3>Eles sequestraram<1>bons tamers.<2,2><3>Queriam treinar<1>Digimon para a guerra.<2,2>
+TALK01 190: <7>Aiko Representante<7>O Líder é um bom<1>homem.<2,2><3>Graças a ele, a cidade<1>voltou para nós.<2,2>
+TALK01 191: <7>Líder Byakko<7>Esta cidade é minha<1>responsabilidade, e eu<1>a protejo.<2,2><3>Então não se preocupe.<1>Descanse.<2,2>
+TALK01 192: <7>Operador Remy<7>O Max é forte e<1>responsável.<2,2><3>Na verdade, nós<1>estamos juntos.<2,2>
+TALK01 193: <7>Guarda Max<7>Sou um guarda.<2,2><3>Vou proteger todos,<1>e a Remy, com a<1>minha vida.<2,2>
+TALK01 194: <7>Aluno Tony<7>O Amaterasu Server foi<1>tomado pela A.o.A?<2,2><3>Espero que meu amigo<1>Tatsuya esteja bem.<2,2>
+TALK01 195: <7>Aiko Representante<7>Recuperamos a cidade,<1>mas ainda estou<1>inquieta.<2,2><3>Ainda não sei o que<1>a A.o.A queria.<2,2>
+TALK01 196: <7>Líder Byakko<7>Graças a você, a<1>A.o.A acabou.<2,2><3>Quando o Matrix System<1>for restaurado, tudo<1>ficará bem.<2,2>
+TALK01 197: <7>Operador Remy<7>Então a batalha<1>acabou.<2,2><3>Que bom. Não quero o<1>Max ferido.<2,2>
+TALK01 198: <7>Guarda Max<7>Você fez um ótimo<1>trabalho.<2,2><3>Todos vão admirar<1>você.<2,2>
+TALK01 199: <7>Aluno Tony<7>Finalmente posso<1>aproveitar o momento.<2,2>
+TALK01 200: <7>Aiko Representante<7>A A.o.A foi derrotada.<2,2><3>Não precisamos mais<1>nos preocupar.<2,2>
+TALK01 247: <7>Guarda DO<7>Boas-vindas a Genbu<1>City, a cidade<1>fortaleza.<2,2><3>Nem a A.o.A está<1>aqui. Pode relaxar.<2,2>
+TALK01 248: <7>Guarda DO<7>Já soube. Corra até a<1>Kulon Mine.<2,2><3>Vá até a Chamber<1>Room.<2,2>
+TALK01 249: <7>Guarda DO<7>O que está acontecendo<1>no Amaterasu Server?<2,2><3>Me preocupo com meu<1>amigo Chuck.<2,2>
+TALK01 250: <7>Guarda DO<7>O Chuck está bem. Que<1>alívio.<2,2><3>Mas nunca imaginei que<1>ele liderava a<1>Resistência.<2,2>
+TALK01 253: <7>Guarda DO<7>Reforçamos a segurança<1>por causa de Byakko e<1>Asuka.<2,2><3>Por isso a A.o.A não<1>veio aqui.<2,2>
+TALK01 254: <7>Guarda DO<7>Estou torcendo por<1>você.<2,2><3>Não vou deixar a A.o.A<1>fazer o que quiser.<2,2>
+TALK01 255: <7>Guarda DO<7>Estou torcendo por<1>você.<2,2><3>Não vou deixar a A.o.A<1>fazer o que quiser.<2,2>
+TALK01 256: <7>Guarda DO<7>Vocês são heróis no<1>Mundo Real também.<2,2><3>Queria estar no lugar<1>de vocês.<2,2>
+TALK01 259: <7>Guarda DO<7>O Líder de Genbu é<1>sempre forte e<1>confiável.<2,2><3>Todos nós o amamos.<2,2>
+TALK01 260: <7>Guarda DO<7>Você derrotou o<1>Líder?<2,2><3>Então todas as nossas<1>esperanças estão em<1>você.<2,2>
+TALK01 261: <7>Guarda DO<7>Nunca achei que iam<1>tomar o Juggernaut.<2,2><3>Agora não há nada que<1>possamos fazer.<2,2>
+TALK01 262: <7>Guarda DO<7>O Líder de Genbu<1>costumava dizer:<2,2><3>nós, adultos, não<1>protegemos o mundo.<2,2><3>Crianças corajosas<1>como vocês, sim.<2,2>
+TALK01 265: <7>Vovô Tor<7>Para chegar aqui, você<1>precisa do Digi-Egg do<1>Conhecimento.<2,2><3>Você é excepcional.<2,2>
+TALK01 266: <7>Vovô Tor<7>Se eu fosse mais novo,<1>daria uma lição<1>neles.<2,2><3>Tenho inveja de você.<2,2>
+TALK01 267: <7>Vovô Tor<7>Se for lutar, fique<1>mais forte.<2,2><3>É tudo o que posso<1>dizer.<2,2>
+TALK01 268: <7>Vovô Tor<7>Sou um autor famoso,<1>sabia?<2,2><3>Deixe que eu escreva<1>um romance sobre<1>você.<2,2><3>Vai ser um<1>best-seller.<2,2>
+TALK01 271: <7>Airdramon<7>Zzzzz... Zzzzz...<2,2>
+TALK01 272: <7>Airdramon<7>Sinto muito. Não há<1>nada que eu possa<1>fazer.<2,2><3>Desculpe não poder<1>ajudar você.<2,2>
+TALK01 276: <7>DRI Jimmy<7>O WarGrowlmon também<1>não está aqui.<2,2><3>Ah, sou o Jimmy. Eu<1>pesquiso no DRI.<2,2>
+TALK01 277: <7>DRI Jimmy<7>Se tiver tempo, me<1>ajude. É fácil.<2,2><3>Traga um Guilmon DDNA<1>do WarGrowlmon.<2,2><3>O WarGrowlmon vive na<1>Ether Jungle, no<1>Setor Sul.<2,2><3>Se fizer isso, eu<1>adiciono o Guilmon<1>como seu parceiro.<2,2>
+TALK01 278: <7>DRI Jimmy<7>Esse é o Guilmon<1>DDNA. Valeu.<2,2><3>Aqui, como prometido,<1>o Guilmon é seu<1>parceiro.<2,2><3>Vá ver o Dr. Kadomatsu<1>ou o Piximon.<2,2><3>O Guilmon deve estar<1>em Trocar Digimon<1>agora.<2,2>
+TALK01 281: <7>DRI Jimmy<7>Agora tenho que achar<1>o que o Guilmon odeia.<2,2><3>O Dr. Kadomatsu faz<1>a gente trabalhar<1>como cães.<2,2>
+TALK01 282: <7>DRI Jimmy<7>O seu Guilmon está<1>com ótima aparência.<2,2><3>Treine-o e ele ficará<1>mais forte.<2,2>
+TALK01 283: <7>DRI Jimmy<7>O Dr. Kadomatsu é<1>rígido. É puxado.<2,2><3>Não tenho nem tempo<1>de brincar.<2,2>
+TALK01 284: <7>DRI Jimmy<7>Desculpe, estou com<1>pressa.<2,2><3>Falamos depois.<2,2>
+TALK01 285: <7>Líder Suzaku<7>O Setor Oeste fica do<1>outro lado do mar.<2,2><3>O Submarimon pode<1>levar você até lá.<2,2><3>Pergunte por este<1>setor como chamá-lo.<2,2>
+TALK01 286: <7>Renamon<7>Você derrotou o Líder<1>de Suzaku.<2,2><3>Vá em frente, tamer<1>forte.<2,2>
+TALK01 287: <7>Patamon<7>Você venceu o nosso<1>Líder?<2,2><3>Você é algum tipo de<1>gênio?<2,2>
+TALK01 288: <7>Lena<7>Você venceu o Líder de<1>Suzaku?<2,2><3>Você manda bem. Não<1>sou páreo para você.<2,2>
+TALK01 294: <7>Tom Repetitivo<7>O líder daqui é um<1>grande tamer.<2,2><3>Ele nunca para de<1>treinar.<2,2>
+TALK01 295: <7>Líder Seiryu<7>Ei. Você...<2,2>
+TALK01 296: <7>Guilmon Astuto<7>Hm? O Blue Card?<2,2><3>Eu tenho. Quer ele?<2,2><3>Então eu dou para<1>você.<2,2>
+TALK01 297: <7>Cidadão Byakko?<7>Desculpe. Você não<1>pode passar.<2,2><3>Capturamos você.<2,2><3>Ha ha ha.<2,2>
+TALK01 299: <7>Soldado<7>O Bulbmon é um<1>Digimon de Transporte<1>criado pela A.o.A.<2,2><3>Ele abre buracos na<1>rede e se move livre<1>entre servidores.<2,2><3>A viagem não é<1>agradável.<2,2>
+TALK01 300: <7>Soldado<7>O Bulbmon ficou<1>estranho ao bater num<1>Campo Protetor.<2,2><3>Depois ele nos jogou<1>para fora e seguiu<1>para o Setor Sul.<2,2><3>Não sei o que<1>aconteceu com ele.<2,2>
+TALK01 301: <7>General<7>Não acredito que fomos<1>pegos.<2,2><3>A culpa é do Bulbmon.<1>Ele deu defeito.<2,2>
+TALK01 302: <7>Soldado<7>Ainda não perdemos.<2,2><3>Não subestime a<1>A.o.A.<2,2>
+TALK01 303: <7>Soldado<7>Há uma brecha aqui.<2,2><3>Por que não vi isso<1>antes? Que idiota.<2,2>
+TALK01 304: <7>General<7>A A.o.A é eterna.<2,2><3>Não vamos perder para<1>você.<2,2>
+TALK01 305: <7>Soldado<7>O Chief Officer foi<1>derrotado?<2,2><3>Não minta para mim.<1>Isso não pode<1>acontecer.<2,2>
+TALK01 306: <7>Soldado<7>O Chief Officer foi<1>derrotado?<2,2><3>Ótimo. Agora posso<1>sair da A.o.A.<2,2>
+TALK01 307: <7>General<7>O quê? O Chief Officer<1>foi derrotado?<2,2><3>Bem. Que bom para<1>você.<2,2>
+TALK01 314: <7>Guarda DO<7>Os membros da A.o.A<1>estão aqui dentro.<2,2><3>Eles não têm Digimon.<1>Mesmo assim, cuidado.<2,2>
+TALK01 315: <7>Guarda DO<7>Não vamos deixar que<1>escapem.<2,2><3>Se algo acontecer,<1>grite.<2,2>
+TALK01 316: <7>Guarda DO<7>É bom que a A.o.A<1>tenha sido derrotada.<2,2><3>Só que eles não<1>admitem.<2,2>
+TALK01 317: <7>Guarda DO<7>A A.o.A perdeu, mas a<1>atitude deles me<1>preocupa.<2,2>
+TALK01 327: <7>Maya<7>Que bom que a Byakko<1>City voltou.<2,2><3>Não quero correr pelo<1>deserto de novo.<2,2>
+TALK01 328: <7>Maya<7>Eu adoraria ver o<1>Asuka Server do alto.<2,2><3>Deve ser lindo.<2,2>
+TALK01 329: <7>Maya<7>É verdade que a A.o.A<1>foi capturada?<2,2><3>Que bom. Agora sinto<1>segurança.<2,2>
+TALK01 332: <7>Vovó Plum<7>Quando teremos paz de<1>verdade aqui?<2,2>
+TALK01 333: <7>Vovó Plum<7>Tenho medo do dia em<1>que a A.o.A voltar.<2,2><3>Não consigo dormir<1>à noite.<2,2>
+TALK01 334: <7>Vovó Plum<7>Obrigada, meu bem.<2,2><3>Agora posso dormir<1>à noite.<2,2>
+TALK01 337: <7>Ryan Energético<7>Vamos, A.o.A. Mostrem<1>o que sabem.<2,2><3>Vou defender a paz<1>da Byakko City.<2,2>
+TALK01 338: <7>Ryan Energético<7>Decidi. Vou trabalhar<1>para a S.A.P.<2,2><3>E defender a paz<1>na rede.<2,2>
+TALK01 341: <7>Ryan Energético<7>Se a A.o.A vier de<1>novo, eu também luto.<2,2><3>De agora em diante,<1>treino meu Digimon.<2,2>
+TALK01 342: <7>Cidadão Byakko<7>He he. O Líder de<1>Byakko está esperando<1>por você.<2,2>
+TALK01 343: <7>Cidadão Byakko<7>He he. Chegou mais<1>um forte.<2,2>
+TALK01 344: <7>Cidadão Byakko<7>Ei, você. Vai desafiar<1>o Líder?<2,2><3>Aposto 100 BIT em<1>você.<2,2>
+TALK01 345: <7>Cidadão Byakko<7>Vá ver o Líder.<2,2><3>Ele está esperando<1>por você.<2,2>
+TALK01 346: <7>Cidadão Byakko<7>Só um novato.<2,2><3>Isso não é desafio.<2,2>
+TALK01 347: <7>Cidadão Byakko<7>Desculpe. Você não<1>pode passar daqui.<2,2><3>Vá ver o Líder.<2,2>
+TALK01 348: <7>Cidadão Byakko?<7>Desça e fique em<1>silêncio com todos os<1>outros.<2,2><3>O quê? Ninguém lá?<1>Não minta para mim.<2,2><3>Ninguém escapa desta<1>caverna subterrânea.<2,2>
+TALK01 349: <7>Sra. Olivia<7>Isso é divertido por<1>causa dos Digimon.<2,2><3>Sem eles, é só mais um<1>jogo online.<2,2>
+TALK01 350: <7>Líder Genbu<7>Você precisa deter os<1>planos da A.o.A.<2,2><3>Eu acredito em você.<1>Sei que consegue.<2,2>
+TALK01 351: <7>Líder Genbu<7>Você lutou bem e<1>acreditou em si.<2,2><3>Isso não basta.<2,2><3>Precisa chegar ao topo<1>de todos os tamers.<2,2>
+TALK01 354: <7>Renamon<7>Não confie demais<1>em si.<2,2><3>Um bom tamer sempre<1>luta com tudo o que<1>tem.<2,2>
+TALK01 355: <7>Renamon<7>Um Digimon e um tamer<1>salvaram o mundo.<2,2><3>Não há notícia<1>melhor.<2,2>
+TALK01 356: <7>Renamon<7>O Chief Officer da<1>A.o.A foi capturado.<2,2><3>Ou seja, um inimigo<1>mais forte ainda está<1>por aí.<2,2>
+TALK01 358: <7>Guilmon<7>O Líder de Genbu é<1>quem está acima<1>deste lugar.<2,2><3>Ele é o melhor de<1>todos os Líderes de<1>Cidade.<2,2>
+TALK01 359: <7>Guilmon<7>Sei que você derrotou<1>a A.o.A.<2,2><3>Você pode ser o tamer<1>mais forte de todos.<2,2>
+TALK01 360: <7>Guilmon<7>O Líder virou um<1>Digimon estranho.<2,2><3>Por quê? Por que ele<1>fez isso?<2,2>
+TALK01 362: <7>Guilmon<7>8lue Card? ...?<2,2><3>Ah. É uma falsificação<1>que o Trickster<1>Guilmon fez.<2,2><3>Ele acabou de sair<1>correndo daqui.<1>Deve estar escondido.<2,2><3>Pergunte ao meu amigo.<1>Ele pode saber.<2,2>
+TALK01 363: <7>Guilmon<7>Hum. Ele gosta do<1>subsolo.<2,2><3>Deve estar escondido<1>num porão com<1>fantasmas.<2,2>
+TALK01 364: <7>Guilmon Astuto<7>Por que não vai<1>registrar sua conta?<2,2><3>...He he.<2,2>
+TALK01 365: <7>Guilmon<7>Você pegou o<1>Blue Card. Que bom.<2,2>
+TALK01 366: <7>Keith<7>Olha só. Byakko City<1>é nossa de novo.<2,2><3>A Lisa teve o plano.<1>Eu tive a habilidade.<2,2><3>O resto foi só<1>formalidade.<2,2>
+TALK01 367: <7>Nick<7>Ah, é você. O que<1>quer?<2,2><3>Estou ocupado.<1>Me deixe em paz.<2,2>
+TALK01 368: <7>Nick<7><8,1><5,1>. Veio por<1>causa do terremoto<1>também?<2,2><3>Parece que não houve<1>grandes danos.<2,2><3>Mas um terremoto no<1>Mundo Digital? Que<1>estranho.<2,2>
+TALK01 369: <7>General<7>Hm? Quem é você?<2,2>
+TALK01 370: <7>Soldado<7>A A.o.A é para<1>sempre.<2,2><3>Não pense que<1>ganhou.<2,2><3>Vamos vencer no fim.<1>Eu espero.<2,2>
+TALK01 371: <7>Soldado<7>Havia um buraco aqui?<2,2><3>Ah, não.<2,2>
+TALK01 373: <7>Agumon<7>O Baronmon? Ele não<1>está aqui.<2,2><3>Ele gosta de florestas<1>e ruínas. Tente lá.<2,2>
+TALK01 374: <7>Tom Repetitivo<7>Pegue a gôndola na<1>East Station para ir<1>ao Setor Sul.<2,2><3>É rápida. Um pouco<1>assustadora.<2,2>

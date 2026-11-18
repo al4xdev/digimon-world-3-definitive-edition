@@ -34,6 +34,10 @@ SRC_CHOICES = ROOT / "tools/text_override/en_choices.txt"
 SRC_ECHOES = ROOT / "tools/text_override/en_echoes.txt"
 # Girls Power's Kaili mode in Portuguese: only the lines the name swap below cannot fix (the brother's).
 SRC_KAILI_PT = ROOT / "tools/text_override/pt_kaili.txt"
+# The story rewrite in Portuguese (translated from the English files, never from the older pt.txt lines): same formats.
+SRC_STORY_PT = ROOT / "tools/text_override/pt_story.txt"
+SRC_CHOICES_PT = ROOT / "tools/text_override/pt_choices.txt"
+SRC_ECHOES_PT = ROOT / "tools/text_override/pt_echoes.txt"
 OUT_STORY = ROOT / "port/game/definitive_story_text.c"
 ALIAS = {
     "-": "−", "–": "−", "—": "―",
@@ -151,10 +155,10 @@ def roundtrip(tables, inv):
 # in the Digital World) and the friend is the boy, Junior, in both worlds (his account name stands in for Kail). So
 # every text with no line of its own in en_kaili.txt / pt_kaili.txt names Junior as Ivy, and Ivy or Kail as Junior;
 # Smith Junior, the Black Market's boy, keeps his name. A line that no longer fits its box is rewrapped within its page.
-# Portuguese swaps only Kail for now: its Real World lines need their articles and endings turned too ("a Ivy",
-# "sozinho"), which waits for the translation of the rewrite (.plan/tasks/velvet-sonhos.md).
+# Portuguese swaps the same names: its rewrite is written without gendered words next to them and without articles before
+# them (tools/check_pt_text.py warns), and a line that still needs its own Girls Power wording has one in pt_kaili.txt.
 NAMES = re.compile(r"(?<!Smith )(?<![A-Za-z])(Junior|Ivy|Kail)(?![a-z])")
-NAMES_PT = re.compile(r"(?<![A-Za-z])(Kail)(?![a-z])")
+NAMES_PT = NAMES
 NAME_AS = {"Junior": "Ivy", "Ivy": "Junior", "Kail": "Junior"}
 
 
@@ -433,6 +437,13 @@ def render_story(tables, inv, en_rows, pt_rows):
     lines += ["", "const DefStoryLine def_story_lines[] = {"]
     lines += [f"    {{ 0x{fid:X}, {idx}, 0, st_line_{k} }}, /* {name} {idx} */" for k, (fid, idx, name, _) in enumerate(story)]
     lines += ["    { 0, 0, 0, 0 },", "};", f"const int def_story_line_count = {len(story)};", ""]
+    story_pt_rows = [(n, i, t) for n, i, t in load_source(SRC_STORY_PT) if not n.startswith("$")]
+    story_pt = sorted(((jpn_id(n), i, n, t) for n, i, t in story_pt_rows), key=lambda r: (r[0], r[1]))
+    for k, (fid, idx, name, text) in enumerate(story_pt):
+        lines.append(arr(f"st_pt_line_{k}", encode(text, inv, SRC_STORY_PT.name) + b"\0"))
+    lines += ["", "const DefStoryLine def_story_lines_pt[] = {"]
+    lines += [f"    {{ 0x{fid:X}, {idx}, 0, st_pt_line_{k} }}, /* {name} {idx} */" for k, (fid, idx, name, _) in enumerate(story_pt)]
+    lines += ["    { 0, 0, 0, 0 },", "};", f"const int def_story_line_pt_count = {len(story_pt)};", ""]
 
     def kaili_rows(hand, base, src_name, hero_keys=frozenset(), names=NAMES):
         """The hand-written lines of `hand`, then every text of `base` ({(FILE, index): text}) that names Junior, Ivy or
@@ -476,6 +487,7 @@ def render_story(tables, inv, en_rows, pt_rows):
     # hero go to her too
     hero_keys = frozenset((n, i) for _, i, n, _, hero in kaili if hero)
     pt_base = {(n, i): t for n, i, t in pt_rows if not n.startswith("$")}
+    pt_base.update({(n, i): t for n, i, t in story_pt_rows})  # the rewrite's Portuguese wins over the disc-derived lines
     table("def_kaili_lines_pt", "def_kaili_line_pt_count", kaili_rows(SRC_KAILI_PT, pt_base, SRC_KAILI_PT.name,
                                                                       hero_keys, NAMES_PT), "st_kaili_pt", SRC_KAILI_PT.name)
 
@@ -488,23 +500,60 @@ def render_story(tables, inv, en_rows, pt_rows):
             sys.exit(f"{SRC_CHOICES.name}: Q{q} {name} {idx} has a line of its own in {SRC_KAILI.name}")
         if any(NAMES.search(text) for _, _, text in opts):
             sys.exit(f"{SRC_CHOICES.name}: Q{q} {name} {idx} names Junior, Ivy or Kail (the Kaili mode cannot swap it)")
+    loaded_pt = load_choices(SRC_CHOICES_PT)
+    for (name, idx), (q, opts) in loaded_pt.items():
+        if (name, idx) not in loaded or loaded[(name, idx)][0] != q:
+            sys.exit(f"{SRC_CHOICES_PT.name}: Q{q} {name} {idx} is not a choice of {SRC_CHOICES.name}")
+        if any(NAMES.search(text) for _, _, text in opts):
+            sys.exit(f"{SRC_CHOICES_PT.name}: Q{q} {name} {idx} names Junior, Ivy or Kail (the Kaili mode cannot swap it)")
     choices = sorted(((jpn_id(name), idx, name, q, sorted(opts)) for (name, idx), (q, opts) in loaded.items()),
                      key=lambda r: (r[0], r[1]))
+    pt_opts = {}  # c -> {k: (label, text)} of the Portuguese choice (all of its options, or none)
     for c, (fid, idx, name, q, opts) in enumerate(choices):
         for k, label, text in opts:
             lines.append(arr(f"st_choice_{c}_label_{k}", encode(label, inv, SRC_CHOICES.name)
                              .replace(b"\xe6", b"\x01\x09") + b"\0"))
             lines.append(arr(f"st_choice_{c}_line_{k}", encode(text, inv, SRC_CHOICES.name) + b"\0"))
+        pq = loaded_pt.get((name, idx))
+        if pq is not None and sorted(k for k, _, _ in pq[1]) == [k for k, _, _ in opts]:
+            for k, label, text in pq[1]:
+                lines.append(arr(f"st_choice_{c}_plabel_{k}", encode(label, inv, SRC_CHOICES_PT.name)
+                                 .replace(b"\xe6", b"\x01\x09") + b"\0"))
+                lines.append(arr(f"st_choice_{c}_pline_{k}", encode(text, inv, SRC_CHOICES_PT.name) + b"\0"))
+            pt_opts[c] = True
     lines += ["", "const DefStoryChoice def_story_choices[] = {"]
     for c, (fid, idx, name, q, opts) in enumerate(choices):
         labels = ", ".join(f"st_choice_{c}_label_{k}" for k, _, _ in opts) + ", 0" * (3 - len(opts))
         texts = ", ".join(f"st_choice_{c}_line_{k}" for k, _, _ in opts) + ", 0" * (3 - len(opts))
-        lines.append(f"    {{ 0x{fid:X}, {idx}, {q}, {len(opts)}, {{ {labels} }}, {{ {texts} }} }}, /* {name} {idx} */")
-    lines += ["    { 0, 0, 0, 0, { 0, 0, 0 }, { 0, 0, 0 } },", "};",
+        if c in pt_opts:
+            plabels = ", ".join(f"st_choice_{c}_plabel_{k}" for k, _, _ in opts) + ", 0" * (3 - len(opts))
+            ptexts = ", ".join(f"st_choice_{c}_pline_{k}" for k, _, _ in opts) + ", 0" * (3 - len(opts))
+        else:
+            plabels = ptexts = "0, 0, 0"
+        lines.append(f"    {{ 0x{fid:X}, {idx}, {q}, {len(opts)}, {{ {labels} }}, {{ {texts} }}, {{ {plabels} }}, "
+                     f"{{ {ptexts} }} }}, /* {name} {idx} */")
+    lines += ["    { 0, 0, 0, 0, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } },", "};",
               f"const int def_story_choice_count = {len(choices)};", ""]
 
     # the echoes: mode 0 both heroes, 1 without Girls Power, 2 with it (its own line, or the names swapped)
     echoes, hand_k = [], {(n, i, q, mask) for n, i, q, mask, k, _ in load_echoes(loaded) if k}
+    # Portuguese: the same keys, `kaili` marking Girls Power's own line; a missing one shows the English
+    echo_pt = {(n, i, q, mask, k): t for n, i, q, mask, k, t in load_echoes(loaded, SRC_ECHOES_PT)}
+
+    def pt_swapped(n, i, q, mask, mode):
+        """The Portuguese text of an echo record in `mode` (2: Girls Power's own, else the names swapped), or None."""
+        if mode != 2:
+            return echo_pt.get((n, i, q, mask, False))
+        if (n, i, q, mask, True) in echo_pt:
+            return echo_pt[(n, i, q, mask, True)]
+        plain = echo_pt.get((n, i, q, mask, False))
+        if plain is None:
+            return None
+        sw = kaili_swap(plain, 22 if plain.startswith("<7>") else 38)
+        if sw is None:
+            sys.exit(f"{SRC_ECHOES_PT.name}: {n} {i} does not fit its box with the names swapped: give it a kaili line")
+        return re.sub(r"^<7>.*?<7>", "<7><9><7>", sw) if (n, i) in hero_keys else sw
+
     for order, (n, i, q, mask, k, text) in enumerate(load_echoes(loaded)):
         if k:
             echoes.append((n, i, q, mask, 2, text, order))
@@ -523,12 +572,18 @@ def render_story(tables, inv, en_rows, pt_rows):
         else:
             echoes.append((n, i, q, mask, 0, text, order))
     echoes.sort(key=lambda r: (jpn_id(r[0]), r[1], r[6]))
+    pt_texts = []
     for k, (n, i, q, mask, mode, text, _) in enumerate(echoes):
         lines.append(arr(f"st_echo_{k}", encode(text, inv, SRC_ECHOES.name) + b"\0"))
+        ptext = pt_swapped(n, i, q, mask, mode)
+        pt_texts.append(ptext)
+        if ptext is not None:
+            lines.append(arr(f"st_echo_pt_{k}", encode(ptext, inv, SRC_ECHOES_PT.name) + b"\0"))
     lines += ["", "const DefStoryEcho def_story_echoes[] = {"]
-    lines += [f"    {{ 0x{jpn_id(n):X}, {i}, {q}, 0x{mask:X}, {mode}, st_echo_{k} }}, /* {n} {i} */"
+    lines += [f"    {{ 0x{jpn_id(n):X}, {i}, {q}, 0x{mask:X}, {mode}, st_echo_{k}, "
+              f"{f'st_echo_pt_{k}' if pt_texts[k] is not None else '0'} }}, /* {n} {i} */"
               for k, (n, i, q, mask, mode, _, _) in enumerate(echoes)]
-    lines += ["    { 0, 0, 0, 0, 0, 0 },", "};", f"const int def_story_echo_count = {len(echoes)};", ""]
+    lines += ["    { 0, 0, 0, 0, 0, 0, 0 },", "};", f"const int def_story_echo_count = {len(echoes)};", ""]
     return "\n".join(lines)
 
 

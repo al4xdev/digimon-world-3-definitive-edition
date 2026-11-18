@@ -158,9 +158,11 @@ typedef struct DefStoryChoice {
     int count;
     const unsigned char *labels[3];
     const unsigned char *lines[3];
+    const unsigned char *labels_pt[3]; /* the Portuguese choice (pt_choices.txt): all three NULL while untranslated */
+    const unsigned char *lines_pt[3];
 } DefStoryChoice;
-extern const DefStoryLine def_story_lines[], def_kaili_lines[], def_kaili_lines_pt[];
-extern const int def_story_line_count, def_kaili_line_count, def_kaili_line_pt_count;
+extern const DefStoryLine def_story_lines[], def_story_lines_pt[], def_kaili_lines[], def_kaili_lines_pt[];
+extern const int def_story_line_count, def_story_line_pt_count, def_kaili_line_count, def_kaili_line_pt_count;
 extern const DefStoryChoice def_story_choices[];
 extern const int def_story_choice_count;
 /* A line that remembers an earlier answer (en_echoes.txt): said in place of the entry's line while story answer
@@ -173,6 +175,7 @@ typedef struct DefStoryEcho {
     int answers;
     int mode;
     const unsigned char *bytes;
+    const unsigned char *pt_bytes; /* pt_echoes.txt's line, NULL while untranslated (the English then stands) */
 } DefStoryEcho;
 extern const DefStoryEcho def_story_echoes[];
 extern const int def_story_echo_count;

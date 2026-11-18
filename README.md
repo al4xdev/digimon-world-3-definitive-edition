@@ -37,7 +37,7 @@ which are the upstream project's work; this fork adds the handheld path and the 
 - [Reference](#reference)
   - [How the definitive layers work](#how-the-definitive-layers-work-read-this-first) · [Buff and debuff tiers](#buff-and-debuff-tiers-no-stacking) · [Status, Poison and revive](#status-poison-and-revive-rework) · [Super Hard Mode](#super-hard-mode-the-demon-bell)
   - [Hunt constants, prices, forge, Black Market, DRI, Guide](#the-hunt-constants-and-hooks)
-  - [The Velvet Room](#the-velvet-room) · [Super Rare hunts](#super-rare-hunts) · [Recolour](#recolour-palette-swap-of-rare-foes) · [Hero skins](#hero-skins)
+  - [The Velvet Room](#the-velvet-room) · [The story layer](#the-story-layer-velvet-room-in-the-main-story) · [Super Rare hunts](#super-rare-hunts) · [Recolour](#recolour-palette-swap-of-rare-foes) · [Hero skins](#hero-skins)
   - [Blast, Purify and Chosen Evolution](#blast-purify-and-chosen-evolution) · [Girls Power](#girls-power-playable-kaili) · [Battle HUD](#battle-hud-and-launcher-options)
   - [Texts and translation](#texts-and-translation-en--pt-br) · [Save format](#save-format-memory-card-records)
   - [Building and running](#building-and-running-the-port) · [Mods](#mods-portmods) · [Tools](#tools-tools) · [Tests](#tests) · [Debugging and the MCP](#debugging-and-the-mcp)
@@ -199,7 +199,8 @@ way round, an enemy's magic of power 100 (stat scale 16, so × 1) with Spirit 15
 - **Resist Down** lowers the enemy's resistance to your strongest family (the one with your highest affinity, a pair
   counting both its elements) by 80, and **Mega Break** your two strongest families by 100 each, for three of the
   enemy's turns. On a neutral family that opens a weakness that was not there; a resisted one (300) only drops to
-  neutral. In an enemy's hands the four remade techniques lower your affinities the same way.
+  neutral. In an enemy's hands 202, 203 and 207 all act as Resist Down (80, your best family) and 208 as Mega Break
+  (100, your two best), for 3 turns; Libra and Relay mean nothing to an enemy (owner's choice; `def_tech_effect`).
 - The HUD shows every active buff and debuff as an up or down arrow beside the Digimon, on both sides; a lowered
   elemental resistance shows as a down arrow in the element's colour, one per family.
 
@@ -207,7 +208,8 @@ way round, an enemy's magic of power 100 (stat scale 16, so × 1) with Spirit 15
 
 - **Inspect** (a seventh button on the battle HUD, L2 by default) and **Start** show the enemy's five element families,
   but only what you have found out: hitting a weakness or a resistance with an elemental technique teaches both
-  elements of its family, everything else shows `???`.
+  elements of its family, everything else shows `???`. In Inspect a family you know shows its current state (weak,
+  neutral or resisted, with a Resist Down or Mega Break already counted), not the state it had when you learnt it.
 - **Libra** reveals all of an enemy's elements at once.
 - The **Bestiary** (field menu) keeps what you learnt of every species, saved with your game, and lists its Hunt
   Materials: the common one with how many you hold, and its rare items as a collection (see [The hunt](#the-hunt)).
@@ -270,7 +272,8 @@ for the last gym; the results screen tells you when a level-up lost TP to the ca
 
 - **Requirements on screen**: the Digi-Lab shows what each next form needs and how far you are, for example
   "Greymon Lv 5 (3/5)" or "Strength 180 (142/180)". No guide needed.
-- **Short animations**: a form's digivolution plays in full the first time, then a short version; hold a button to skip.
+- **Short animations**: a form's digivolution plays in full the first time, then a short version; hold Circle or Cross
+  to skip it, even the first time.
 
 ### Hard Mode
 
@@ -417,11 +420,11 @@ handing in its materials.
 
 | Line | Stages and levels | Unlock | Rewards |
 |---|---|---|---|
-| Terriermon (Guardromon) | Guardromon 24, Andromon 27, BK MegaGargomon 30 | Core Fragment ×15, Bulbmon Core I | Metal Power 1, 2, S |
-| Veemon | Devidramon 32, Paildramon 35, BK Imperialdramon 38 | Core Crystal ×20, Datamon Core I | Bolt Power 1, 2, S |
-| Patamon | Airdramon 40, MagnaAngemon 43, BK Seraphimon 46 | Tera Prism ×25, Bulbmon Core VII, Zanbamon Core VI | Wind Power 1, 2, S |
-| Agumon | Tyrannomon 48, MetalGreymon 51, BK WarGreymon 54 | Gold Digizoid ×35, BK WarGreymon Core I, BK Imperialdramon Core XIII | Fire Power 1, 2, S |
-| Guilmon | Flarerizamon 56, WarGrowlmon 59, BK WarGrowlmon 62 | Obsidian Digizoid ×40, WarGrowlmon Core I, MetalSeadramon Core I | Dark Power 1, 2, S |
+| Terriermon (Guardromon) | Guardromon 24, Andromon 27, BK MegaGargomon 30 | Code Chip ×15, Guardromon Core | Metal Power 1, 2, S |
+| Veemon | Devidramon 32, Paildramon 35, BK Imperialdramon 38 | Core Crystal ×20, Paildramon Core | Bolt Power 1, 2, S |
+| Patamon | Airdramon 40, MagnaAngemon 43, BK Seraphimon 46 | Tera Prism ×25, MagnaAngemon Core, Raremon Core | Wind Power 1, 2, S |
+| Agumon | Tyrannomon 48, MetalGreymon 51, BK WarGreymon 54 | Gold Digizoid ×35, MetalGreymon Core, BK WarGreymon Core | Fire Power 1, 2, S |
+| Guilmon | Flarerizamon 56, WarGrowlmon 59, BK WarGrowlmon 62 | Obsidian Digizoid ×40, BK WarGrowlmon Core, WarGrowlmon Core | Dark Power 1, 2, S |
 
 Every stage you fell reaches a tier of the line's Power accessory (one stage: 1, two: 2, all three: S), even if you
 lose afterwards. Each tier is given once, the first time you reach it, so a first full clear gives all three; the list
@@ -450,7 +453,7 @@ keeps your best stage. A replay pays the battle's experience and Bits, but no ac
   live remapped navigation, built-in D-Pad `.cue`/`.bin` browser (outside PortMaster), and the **Trio Runner** Chrome-Dino-style
   loading minigame (Kumamon, Guilmon and Agumon) while the disc verifies.
 - **The Blast Gauge is saved** (eight s16 values in the slot's tail) and is now the game's Blast button; see
-  [Blast, Purify and Chosen Evolution](#blast-purify-and-chosen-evolution) (in progress).
+  [Blast, Purify and Chosen Evolution](#blast-purify-and-chosen-evolution).
 - **Battle text that does not stop the fight**: message boxes skip by default (`BATTLE TEXT: SKIP`) without waiting for a button.
 - **Overlevel Rush**: when your strongest Digimon is 8 or more levels above every enemy of a random battle, the game
   offers to skip it, at the top of the screen while you keep walking (confirm takes it, back or five seconds fights).
@@ -482,6 +485,9 @@ remembering it. Where a point could not be verified while writing, it says so ("
   `definitive_economy.c`, `definitive_prices.c`, `definitive_recipes.c`, `definitive_velvet.c`, `definitive_purify.c`,
   `definitive_recolor.c`, `definitive_skins.c`, `definitive_travel.c`, `definitive_evohint.c`, `definitive_callout.c`,
   `definitive_text.c` / `definitive_text_pt.inc`, `girls_power.c`, `game_mods.c`.
+- Rules every layer keeps: an old save opens and plays; the player's MP stays limited (Relay and technique costs are
+  real); a boss is immune to status (poison, sleep and the like) but not to stat debuffs nor to elemental damage. New
+  code never assumes three party members: ask `gamestate_data.funcs.get_party_member` (Hard Mode runs with two).
 
 ### The combat layers, with the owner's decisions
 
@@ -508,6 +514,15 @@ resistance is 100. Relay costs 50 MP. Resist Down is a delta of 80 and Mega Brea
 is free (`DEF_BATON_PASS_MP` 0) and offered only while the enemy is staggered. **Overlevel gap 8** (`DEF_OVERLEVEL_GAP`,
 it was 15). The Rush question lasts 300 ticks, the Rush panel 175 ticks and 10 rows.
 
+Their names: multipliers and affinities are fixed point in thousandths (`DEF_MULT_ONE` 1000): `DEF_MULT_WEAK` 500,
+`DEF_MULT_STAGGER` 200, `DEF_MULT_RESISTED` 500, `DEF_AFF_SINGLE_MAX` 300 (Fire, Wind; resist 999), `DEF_AFF_PAIR_MAX`
+600 (Water+Ice, Thunder+Machine; the pair's sum 1998), `DEF_AFF_DARK_MAX` 600. `DEF_PLAYER_REF_RESIST` 100 is what an
+enemy's element is measured against when it hits the player. Resist Down / Mega Break: `DEF_BREAK_SLOW_DELTA` 80,
+`DEF_BREAK_MEGA_DELTA` 100, `DEF_BREAK_TURNS` 3; on a boss the original made immune, a stat debuff is scaled by
+`DEF_BOSS_DEBUFF_PCT` (100). `DEF_RELAY_MP` 50. TP: `DEF_TP_GAIN_LV_2_20` 7, `DEF_TP_GAIN_LV_21_40` 9,
+`DEF_TP_GAIN_LV_41_50` 30, `DEF_TP_GAIN_LV_51_UP` 0, `DEF_TP_CAP` 99. Short digivolution: hold Circle or Cross
+`DEF_EVO_SKIP_HOLD_FRAMES` (4) frames (the PRD's switch `DEF_EVO_ANIM_SKIP` never existed in code).
+
 ### Combat design record (details from the PRDs that the sections above summarise)
 
 Working rules of the PRDs (kept because they explain why the code looks as it does):
@@ -527,6 +542,16 @@ Working rules of the PRDs (kept because they explain why the code looks as it do
   constants of `definitive.h`. The owner's guidance for it: if a boss falls in 2-3 turns, **raise boss HP first** (a
   constant multiplier on `RecordsEnemy.hp` of boss fights) and only then touch magic; only if the magic team still loses
   badly to the physical one revisit the `[power/2, 2 x power]` clamp of `get_special_damage`.
+- **The battle log (`DW3_BATTLE_LOG=<file>`, layer 0's measuring tool).** One plain-text line per event (`definitive.c`
+  `LOG`): `battle` (id, kind, type) with a line per party member and per enemy (digimon, level, HP, MP, scale); `turn`
+  (side, number, member); `action` (side, kind, technique, class, element, power, MP); `damage` (value, the target's HP
+  before and after) with a `mult` line (the multiplier and its terms: weak, open, resisted, affinity); `end battle`
+  (result, party turns, enemy turns); plus the definitive events: `hit target N weak W stagger S -> S' extra_pending E`,
+  `extra action granted`, `baton pass`, `relay swap`, `stagger closed by the enemy's turn`, `libra`, `resist down`,
+  `overfinish damage`, `twice E Pe P` (the "Enemy x2" test), `blast gauge`, `mod` lines. The battle code calls
+  `def_log_begin`, `def_log_turn`, `def_log_action` (`fightstg_80086A00.c`, `wfightmn_800A6440.c`) and `def_log_end`.
+  The PRD's acceptance checks of layers 2-4 (chain, window, close, free swap) were read from this log. The first plan
+  of measuring 4-6 bosses with a physical and a magic team (`baseline.md`) was dropped.
 - **Layer 2 (HUD, Inspect, sound, "Enemy x2").** The HUD became mandatory (the list menu is unreachable). Three distinct
   sounds (weak, neutral, resisted) are picked from effects the battle already loads. The "Enemy x2" indicator shows when
   `E + Pe < P`, where E is the enemy's remaining turn delay in the queue, Pe = `get_delay(0x10, 0)` and P the player's
@@ -549,6 +574,14 @@ Working rules of the PRDs (kept because they explain why the code looks as it do
   - `def_weakness_mask` marks the whole family when one of its values is at `DEF_WEAK_MAX` (80) or less, with **no median
     and no cap**: a Break that creates a third weakness hides no natural one. (The first design used a median and
     `DEF_WEAK_GAP` / `DEF_WEAK_COUNT`; they are gone.)
+  - where the table enters: `fightstg_enemy_get_record` (`fightstg_8008D3B4.c`, found by `fightstg_enemy_find_record` in
+    file 0x1CF) calls `def_enemy_override` on the record in memory, so the disc's SDIGIEDT is never edited; the field's
+    own SDIGIEDT reads call it too (`definitive.c`), and a purification's dark form (no disc record) comes from
+    `def_purify_record`. A row of `def_enemy_rows[]` is `{species id, 7 resists, dark}`; `dark` is the Dark mark, kept
+    in the port's table because the disc record has no such field (`dark_mark`), and `def_weakness_mask(resists, dark)`
+    adds Dark as an extra weakness outside any count. Stagger and chain state is a `DefChain` in `definitive_mask.c`
+    (`staggered[3]`, `extra_pending`, `next_extra` / `cur_extra`, `window_used`, `swap_used`, `relay`); a Baton Pass or
+    a Relay swap sets `extra_pending`, so the free swap keeps the turn.
 - **Layer 4 (stagger).** One flag per enemy (`def_staggered[3]`), unrelated to HP. It opens when the player hits a weakness
   with an elemental technique (`defense_stat >= 2`); a physical blow with no element and a crest's element (`attack_element`)
   never open it. It closes when the staggered enemy takes the next player blow (which still gets the bonus) or acts. A
@@ -556,13 +589,20 @@ Working rules of the PRDs (kept because they explain why the code looks as it do
   step 2), before the blow resolves, so on a hit set `extra_pending` and when the action ends find the player's turn in the
   queue (`fightstg_events.find(2)`) and zero its delay (check the tie rule of `fightstg_events_take_next`). With 2 actions
   from speed and 2 weaknesses the chain is up to 6 actions: that is design, not a bug. The chain is the player's only; the
-  PRD flagged "does the enemy get an extra action" as to confirm with the owner (unverified in code: nothing in
-  `definitive.c` gives enemies an extra action). The staggered pose comes from the flag on the enemy side (never from HP;
+  PRD flagged "does the enemy get an extra action" as to confirm with the owner; the code answers no (checked 2026-11-18:
+  `def_action_resolved` returns at `side != 0`, `def_chain_enemy_acts` only closes the stagger, and `extra_pending` is set
+  only by the player's hits and free swaps in `definitive_mask.c`). The staggered pose comes from the flag on the enemy side (never from HP;
   the low-HP pose is removed on the player side), and the final boss shows its tired pose when `final_phase || staggered`.
   The Tag button shows a different icon while a free swap is available. A save state in the middle of a chain restores equal.
 - **Layer 5 acceptance cases** used by the host test: neutral 1.0; weakness 1.5; weakness + stagger with full Fire affinity
   1.0 + 0.5 + 0.2 + 0.3 + 0.3 = 2.3; the Water + Ice pair with 999 + 0 gives 0.3 of affinity. The magic clamp
   `[power/2, 2 x power]` was deliberately not changed. Status rolls still read the player's resists as before.
+- **Layer 5 hook points.** With `def_on` the multiplier replaces the element step of `fightstg_rules_scale_damage`
+  (physical, `def_scale_physical`) and the resist bands of `fightstg_rules_get_special_damage` (magic, `def_scale_magic`)
+  when the player attacks. When an enemy's element hits the player the old scale stays, with the player counted at
+  `DEF_PLAYER_REF_RESIST` (100): physical `value + value * power * 2 / 100`, magic unchanged (the old bands at resist 100
+  are 100%). Layer 7's Defense against magic is `def_magic_defense` in the same function. The staggered pose is set
+  through `wfightmn_update_idle_anim`; the Baton Pass is a row of the swap menu (`fightstg_switch_menu_update`).
 - **Layer 6 (techniques).** `records_techniques[]` is global: re-aiming a technique changes every form and enemy that uses
   it, so list who uses an ID first (`.dumps/tasks/persona/techs.txt`, regenerate with `tools/venv/bin/python
   .dumps/tasks/persona/dump.py`). Remade: 202 Speed Up -> Libra, 203 Mega Boost -> Relay (50 MP), 207 Slow Down -> elemental
@@ -580,7 +620,10 @@ Working rules of the PRDs (kept because they explain why the code looks as it do
 - **Layer 9 (bestiary save), original reasoning:** the card file has 4 blocks and the game used up to 0x7800, the last 0x800
   were never written, so one 0x100 record per slot went there; absent, unknown version or bad checksum reads as all zero.
   The slot tail is not usable: 0x26C4..0x26EB is the `global_save`, 0x26EC..0x26EF the MP converter marker. Start (bit 0x8,
-  free in battle) opens the battle memory; Inspect respects the same table.
+  free in battle) opens the battle memory; Inspect respects the same table. Wiring: part 5 of `memcard.c`
+  (`DEF_BESTIARY_PART`), read by STGMCARD step 0x48 (`def_bestiary_record_read`; any failure reads as an empty table,
+  never an error screen) and written by step 0x36 after the slot (`def_bestiary_record_write`); the record is "BEST",
+  version, XOR checksum and the 193-byte table (bits 0..6 = element learnt).
 - **Boss immunity (PRD 2 layer A).** `records_state.blocked[12]` per fight: indexes 0-4 and 7 are status and still count;
   8, 9, 10 are Strength, Defense and Speed reductions, which the definitive edition ignores (the effect enters, scaled by
   `DEF_BOSS_DEBUFF_PCT / 100`, see `def_stat_blocked`); do not touch 5, 6 and 11 (11 is "no escape"). The hunt's boss-fight
@@ -599,8 +642,9 @@ Working rules of the PRDs (kept because they explain why the code looks as it do
   Resistance trainings (types 8..14) have a second stat (`entry->stat_2`); when it is 1..5 each round had a 50% chance of
   taking points from it (`stgtrain_session_lower_stat`, `stgtrain_stat_losses` = {1, 2+r3, 4+r3},
   `src/stgtrain/stgtrain_800861BC.c`). `DEF_TRAIN_NO_STAT_LOSS` zeroes the loss and hides the line; `stat_2` 15/16 raise max
-  HP/MP and stay. The original draws one random number for the loss, and whether the port keeps that draw affects test
-  replays (unverified which was chosen).
+  HP/MP and stay. The original draws one random number for the loss (plus one for the amount); with the switch on,
+  `stgtrain_session_lower_stat` returns before any `pad_random.next()`, so a definitive session simply draws fewer
+  numbers, and a scripted replay (`def_on()` off) draws as before.
 - **TP retroactive for old saves** (`tools/convert_save_mp.py`, `retroactive_tp`): old TP = (new total up to the current
   level, capped at level 50) - (5 x levels gained up to 50), never negative, respecting the 99 cap; what does not fit is
   lost and `--dry-run` says so. Marker at slot + 0x26EC: `MPV1` is MP only, `DFV2` is MP and TP; the converter is idempotent
@@ -613,6 +657,8 @@ Working rules of the PRDs (kept because they explain why the code looks as it do
   (`stat` 1-6 the six stats, 7 the Digimon's level, 8-14 resistances; `min`), checked in `stfgtrep_learn_technique`. The
   Digi-Lab panel is read only, shows one step ahead (`DEF_EVO_HINT_DEPTH` 1; 0 off, 99 all), and the form is still learned
   at the next level-up as in the original; the numbers were checked against `stfgtrep_learn_lists` for Kotemon and Kumamon.
+  The panel lists the forms in reach with their requirements met / total ("Ready" in green when all are met), and for
+  the chosen form one block per requirement with its current value against the goal, green when met (`EH_PAL_MET`).
 - **Second pass on techniques (PRD 2 layer H, now `def_mod_tech_spec`).** The player had only 13 buff/debuff techniques in 55
   forms and no attack reduction (technique 204 existed only for enemies); the table "form, technique, current effect,
   proposed effect, MP" went to `.dumps/tasks/persona/tecnicas-v2.md` for the owner, with the goals one identity per form, at
@@ -675,7 +721,21 @@ training gives about 4.1 points per TP).
 | Life Disk (item 70) | 85% | 60% | 4000 | 2500 buy, 1250 sell |
 | Max Charge (item 46) | 100% | 100% | 9999 | 3000 sell |
 
-The chance scales down by rated max HP / the target's max HP when its max HP is above the rating (never under 20%).
+The chance scales down by rated max HP / the target's max HP when its max HP is above the rating (never under 20%,
+`DEF_REVIVE_MIN_CHANCE`; `def_revive_chance`). By the fallen ally's max HP (computed from that rule, not measured):
+
+| Max HP | Revive Disk | Life Disk |
+|---|---|---|
+| 300 | 60%, 90 HP | 85%, 180 HP |
+| 800 | 60%, 240 | 85%, 480 |
+| 1500 | 60%, 450 | 85%, 900 |
+| 2000 | 45%, 600 | 85%, 1200 |
+| 3000 | 30%, 900 | 85%, 1800 |
+| 4000 | 22%, 1200 | 85%, 2400 |
+| 6000 | 20% (floor), 1800 | 56%, 3600 |
+
+Max Charge is 100% at any max HP. On a 3000 max HP ally a success costs about 1330 Bits in Revive Disks (3.3 of them)
+or 2940 in Life Disks (1.2).
 
 ### Balance measurements behind the status rework (`status-balance-report.md`, simulated from the disc tables and the port's formulas)
 
@@ -703,12 +763,30 @@ Poison reads Wisdom + Spirit + Wind affinity.
   best technique (127): casual 19% normal / 47% staggered, focused 39% / 77%, pure 62% / 78%; with the 72 technique casual 1% /
   8%. Sleep best (127): casual 20% / 48%, focused 40% / 78%, pure 63% / 78%. Confusion best (127): 19% / 47%, 39% / 77%,
   62% / 78%. Worst boss with the best technique: casual 1%, focused 5% poison (26% staggered), pure 28% (61% staggered).
+- **The report's full cells** (chance %, normal / staggered, medians over bosses of level >= 30; base chances: Poison
+  [72, 80, 96, 112, 127], Confusion [80, 127], Sleep [80, 96, 127]):
+
+  | Profile | Poison 72 / 96 / 127 | Confusion 80 / 127 | Sleep 80 / 96 / 127 | Worst boss, best tech (P / C / S) |
+  |---|---|---|---|---|
+  | casual, normal | 1 / 4 / 19 | 1 / 19 | 1 / 5 / 20 | 1 / 1 / 1 |
+  | casual, staggered | 8 / 24 / 47 | 14 / 47 | 15 / 26 / 48 | 1 / 1 / 1 |
+  | focused, normal | 13 / 24 / 39 | 17 / 39 | 18 / 26 / 40 | 5 / 1 / 1 |
+  | focused, staggered | 38 / 55 / 77 | 45 / 77 | 45 / 57 / 78 | 26 / 19 / 19 |
+  | pure, normal | 37 / 48 / 62 | 41 / 62 | 41 / 49 / 63 | 28 / 23 / 23 |
+  | pure, staggered | 73 / 78 / 78 | 78 / 78 | 78 / 78 / 78 | 61 / 54 / 54 |
+
+  Training per session (ids 1-5): trainer level 0 / 1 / 2 costs 1 / 5 / 10 TP and gives 4.1 / 20.4 / 40.9 points at a
+  76% round chance, 4.3 / 21.7 / 43.3 at 79%, 4.6 / 23.0 / 45.9 at 82%; the 5-round trainings from id 13 pay more at
+  the same cost and were left out, so these numbers are the safe side. The boss with the lowest HP of the set (912) dies
+  to 10 poison ticks at every profile. Generator: `.dumps/tasks/status_balance_sim.py` (local, gitignored), from the
+  disc tables and the port's formulas (`def_poison_dot_calc`, `def_poison_cap`, `def_revive_hp`,
+  `fightstg_rules_get_heal`); it assumed the original +5 TP per level.
 - **Would it be annoying?** Sleep and Confusion last at most 2 boss turns (`DEF_STATUS_BOSS_TURNS`) and end on any direct hit
   (`def_wake_on_hit`), so control is for healing and setup, not the damage turn. A sleeping boss regains 6% max HP a turn
   (12% over 2 turns). Expected attempts for the best Sleep: casual 5.1 normal / 2.1 staggered, focused 2.5 / 1.3, pure 1.6 / 1.3.
 - **Revive for a pure healer:** the report's table used rated HP 400 (Revive Disk) and 1500 (Life Disk); **the code now rates
-  them at 1500 and 4000** (`DEF_REVIVE_T1_RATED_HP`, `DEF_REVIVE_T2_RATED_HP`), so the table above is the current one and the
-  report's numbers are older. Expected cost per success on a 3000 max HP ally in the report: Revive Disk 20% (about 5 items,
+  them at 1500 and 4000** (`DEF_REVIVE_T1_RATED_HP`, `DEF_REVIVE_T2_RATED_HP`), so the tables under "Revive items" above are
+  the current ones and the report's numbers are older. Expected cost per success on a 3000 max HP ally in the report: Revive Disk 20% (about 5 items,
   2000 Bits), Life Disk 42% (about 5952 Bits). Heal = power x 64 + Wisdom x power / 8 (`fightstg_rules_get_heal`, cap 9999),
   so Wisdom is the healer's stat too: technique 0xB8 (power 8, 16 MP) heals 762 / 1112 / 1511 at Wisdom 250 / 600 / 999; 0xB9
   (32, 74 MP) 3048 / 4448 / 6044; 0xBA (127, 120 MP) 9999 at any of them; 0xBB (32, 188 MP) like 0xB9; 0xBC (64, 240 MP) 6096 /
@@ -720,6 +798,12 @@ Poison reads Wisdom + Spirit + Wind affinity.
   hands it over and takes it back ("Take the Demon Bell. Foes grow stronger and faster... but they pay more Bits and more
   materials.").
 - While held: enemy HP x1.5 and Speed x1.5 (Speed may pass 999 and give "Enemy x2"), **Bits x2 and Hunt Materials x2**.
+- Hooks: `def_super_on` (`port/game/definitive_super.c`; the mode is the item in the bag, which the card already saves, so
+  there is no flag of ours); HP in `wfightmn_init_members` (`def_super_hp`); Speed in `fightstg_rules_get_enemy_stats`
+  (`def_super_speed`); Bits in `stfgtrep_main_run` and the Rush's `def_rush_apply_quiet` (`def_super_reward`, both paths);
+  Hunt Materials in `common_drops` (`definitive_hunt.c`); numbers `DEF_SUPER_HP_PCT` 150, `DEF_SUPER_SPEED_PCT` 150,
+  `DEF_SUPER_REWARD_PCT` 200 (`definitive.h`). Guilmon's talk toggles the item (`def_super_toggle`); `TALK05` 77 handed, 78
+  taken back. Off in a replay script.
 - The balance of these numbers is the owner's, and **a real fight with the Bell is untested** (only the host tests).
 - Hard Mode (two Digimon) is the New Game choice described above and is separate from this.
 
@@ -734,7 +818,8 @@ Poison reads Wisdom + Spirit + Wind affinity.
 - XP: party share 100%, form XP x14 (cap skipped), every chosen form earns XP, card boosters x15.
 - Rare Booster: 1 pack, items 0x186..0x18A; 01 below level 25, then one more per 15 levels (05 from 70).
 - Short digivolution animation: a "seen" bitset in RAM; hold Circle or Cross for `DEF_EVO_SKIP_HOLD_FRAMES` (4) frames to
-  skip (`tests/port/definitive_evo_anim.py`).
+  skip (`tests/port/definitive_evo_anim.py`); the hold works even on a form's first digivolution (`def_evo_skip_update`
+  in `fightstg_80086A00.c` checks no "seen" bit); the seen set is RAM only.
 - Digi-Lab "Next Forms" panel (`DEF_EVO_HINT_DEPTH` 1), opened with Square (`definitive_evohint.c`).
 
 ## The hunt: constants and hooks
@@ -751,6 +836,30 @@ Poison reads Wisdom + Spirit + Wind affinity.
   proposal to `.dumps/tasks/hunt/alvos.md`; `tools/gen_recipes.py --check` for the forge). It reads the story's per-route
   encounter lists too (35 stages used to be missed).
 - Tests: `tests/port/definitive_hunt.py` (+ driver), the market, economy and DRI tests below.
+- The Rare Target's battle (`def_hunt_scale`): the target's slot of the drawn battle is moved to the first position and
+  the three members are zeroed around it (one Digimon, owner 2026-11-17); its HP follows the level up or down (a strong
+  Digimon is lowered in a weak place) times `DEF_HUNT_RARE_HP_MULT`, capped at `DEF_HUNT_HP_MAX`; `stat_scale` is left
+  as it is.
+- Economy constants (`definitive.h`): `DEF_HUNT_MATERIALS` 16 and `DEF_HUNT_MATERIAL_CAP` 99 (one u8 each,
+  `REC_EXTRA + 10..25`), `DEF_HUNT_RARES` 128 slots and `DEF_HUNT_RARE_CAP` 99 (record 2), `DEF_REPLICAS` 16 (bits at
+  `REC_EXTRA + 26..27`), `DEF_DRI_CHALLENGES` 16 (an unlocked bit and a 2-bit best stage each, record 2); prices
+  `DEF_PRICE_KNEE` 10000, `DEF_PRICE_DRAIN_PCT` 150, `DEF_SELL_BASE` 5000, `DEF_SELL_ABOVE_PCT` 8; forge
+  `DEF_RECIPE_REACH` 4 exits, `DEF_RECIPE_OVER` 6 levels, `DEF_RECIPE_RARE_FROM` 9500, `DEF_RECIPE_TWO_RARES` 50000;
+  Rush panel `DEF_RUSH_FLOAT_FRAMES` 175 ticks.
+- What the hunt driver (`definitive_hunt_driver.c`) checks: the chance curve (0 up to the minimum, even steps, certain
+  from `DEF_HUNT_CHAIN_SURE`); won encounters count and no draw happens under the minimum; a lost or fled one neither
+  counts nor resets; a Rush-skipped one counts and leaves materials, a scripted battle does not; another map of the
+  same region keeps the chain, another region or the teleport resets it; the swap, the target alone at its level and
+  HP, the flee rule (always outside a Super Rare hunt, `DEF_SUPER_RARE_FLEE_PCT` inside its territory, from
+  `DEF_SUPER_RARE_CHAIN_MIN` wins), the numeral in its name; rewards (the region's rare, the replaced encounter's XP,
+  the Booster by level as one pack, the line shown once, cleared at the screen's end); commons (one draw per enemy,
+  nothing on a miss, defeat or script); the caps; record 1 with only the hunt state or only materials written and read
+  back (a count past the cap reads as the cap), a new game writes all zeros, an older record reads zero; record 2
+  (counts and "ever held", damaged or missing reads empty); nothing changes or draws in a replay script.
+  `gen_hunt_targets.py` asserts the 13 Super Rares distinct and the 193-species commons table.
+- In-game recipe for the chain (from PRD 4): load the map 0x21D field state (see "Making a battle state for tests"
+  below), `mem_write` the chain near the threshold and `gamestate_data+0x30` (`encounter_timer`) = 1, walk, then check the
+  Rare Target, the RARE! callout, that no Rush question appears and that fleeing succeeds.
 
 ### Prices, forge and variants: how they are built
 
@@ -773,6 +882,65 @@ Poison reads Wisdom + Spirit + Wind affinity.
   and `def_accessory_penalty` adds it where the game adds the accessory's bonus (`gamestate_get_stats`, the shop's
   `stitshop_info_get_stats`), only with `def_on`. Only two items were strictly dominated (Long Sword and Kulon Sword).
   Generator: `tools/gen_equipment.py --check`.
+- Forge, the result of the 2026-11-17 spread (commit `89c46af`; constants `MIN_POOL, REACH_MAX, WINDOW, SPREAD, SECOND =
+  3, 7, 8, 2, 2` in `tools/gen_recipes.py`): asks per common over the 317 recipes: Bit Shard 8, Byte Shard 22, Data Chip
+  32, Code Chip 44, Core Fragment 20, Core Crystal 20, Mega Crystal 9, Giga Crystal 21, Tera Prism 20, Peta Prism 7,
+  Chrome Digizoid 11, Blue 32, Red 37, Gold 23, Black 7, Obsidian 4. The shops that changed most: 13 (it asked Peta
+  Prism for every item; now Peta 7, Chrome 6, Blue 5), 28 (Gold 7, Black 7, Obsidian 4), 20 (Code Chip, Core Fragment,
+  Mega, Giga, Tera), 3 (Core Crystal 8, Mega 5). Why: Mega Crystal was always outbid by the Shards and Chips of the
+  shops that had it in reach, and Obsidian drops only beyond `DEF_RECIPE_REACH` of every shop. The rares stay dealt from
+  the reach-4 regions. A safety net (a common no recipe asks goes to the shop of its server whose dearest item's level
+  is nearest the common's mid level) is not triggered today. Shop 23 (the Gems list's second-server shop, map 0x2AB) is
+  outside the level-gap check: its cheap rings and gems (300-1500 Bits) ask Giga Crystal and Tera Prism because no
+  region near it is low; accepted since the player reaches it late. Old saves are unaffected (the recipes are a code
+  table). Seen in game 2026-11-17: shop 13's Shine Blade asks Chrome Digizoid, shop 28's Tenjinmaru Obsidian Digizoid,
+  shop 15's Suijin Cannon Chrome Digizoid. The checks (`gen_recipes.py --check`, `tests/port/definitive_economy.py`):
+  every common asked, no shop on one common, no level gap over 25 outside shop 23; the buffs, market and savestate
+  tests run too (the recipe table feeds the savestate). Local prototype scripts in `.dumps/tasks/forge/`.
+- The 27 base variants, by shop tier (from `tools/gen_equipment.py`'s proposal; original price in brackets):
+
+  | Tier | Shops (maps) | Speed | Elemental (head) | Tank |
+  |---|---|---|---|---|
+  | 1 | 0 (0x20D) | Breeze Spear (150) | Ember Band, Fire (40) | Padded Coat (70) |
+  | 2 | 5 (0x22F) | Swift Pike (400) | Frost Visor, Water+Ice (100) | Quilted Suit (160) |
+  | 3 | 7 (0x23E) | Quick Sword (1000) | Gust Helmet, Wind (550) | Heavy Shield (550) |
+  | 4 | 10, 11 (0x25B, 0x25D) | Gale Saber (2500) | Volt Crown, Thunder+Machine (1100) | Bulwark Suit (1300) |
+  | 5 | 3, 20 (0x20E, 0x29D) | Zephyr Sword (5000) | Tide Cap, Water+Ice (900) | Rampart Mail (3800) |
+  | 6 | 13, 22 (0x26F, 0x2AB) | Rapid Edge (9500) | Circuit Helm, Thunder+Machine (4200) | Tower Shield (4200) |
+  | 7 | 25 (0x2C4) | Hayatemaru (15000) | Shade Goggles, Dark (2800) | Fortress Vest (8500) |
+  | 8 | 26, 28 (0x2C6, 0x2D6) | Sonic Blade (22000) | Blaze Crown, Fire (6800) | Aegis Wall (7500) |
+  | 9 | 15 (0x27C) | Flash Sword (30000) | Tempest Crown, Wind (9000) | Titan Shield (11000) |
+
+  Shops 1, 8, 23 (the Gems list) and 16 (the Rings list) sell only accessories, so they carry only Trade-off pieces;
+  shop 18 (per-Digimon sets) is left out by design.
+- Elemental weapons (`ELEMENT_WEAPONS`, commit `11d9e54`; `ELEMENT_WEAPON_COST` 25% of power, half the heads' 50,
+  because a weapon's power is the whole damage and at 50 the resists hit their cap from the middle tiers): tier 1 Dagger
+  -> Ember Dagger (Fire, everyone), 2 Shishioumaru -> Mizuchimaru (Water+Ice, everyone), 3 Fairy Tale -> Sylph Tale
+  (Wind; Renamon, Patamon), 4 Wolf Fang -> Volt Fang (Thunder+Machine; Agumon, Veemon, Guilmon), 5 Shotgun -> Shade
+  Gun (Dark; Monmon), 6 Tiger Glove -> Blaze Glove (Fire; Kumamon), 7 Scissor Horn -> Tidal Horn (Water+Ice; Agumon,
+  Veemon, Guilmon), 8 Royal Spear -> Storm Spear (Wind; Guilmon, Renamon, Patamon), 9 Raijin Fist (Thunder+Machine;
+  Kumamon) and Suijin Cannon (Water+Ice; Monmon) keep their names with new descriptions. Candidates were plain items
+  with no bonus, no ID effect, no strong type, not in a set and not yet a variant. Stacking with an Elemental head is
+  allowed: `def_affinity` caps each resist at 999 before it becomes affinity (`DEF_AFF_*_MAX`), so stacking only reaches
+  the ceiling sooner. Not made: two-handed "berserk" weapons (two-handers already trade Boost for power) and Wisdom
+  rods (rods already carry Spirit).
+- Trade-off pieces (`TRADES`, commit `188618a`): Power Gem -> Fury Gem (292) and Wisdom Gem -> Sage Gem (298) in the
+  Gems list; Guard Ring -> Fury Ring (295) and Spirit Ring -> Sage Ring (297) in the Rings list. Left out on purpose: the
+  status rings (Antidote, Revive, Awake, Sober, Prayer) and the elemental rings (plain resists). Boost is the Sage
+  pieces' price because Wisdom drives the support buffs. FIGHTSTG's own read of an accessory's bonus
+  (`fightstg_rules_get_tech_cost`: the MP Proxy and MP Mega Proxy cut a technique's MP) is not a stat, so it needs no
+  penalty hook. Without the penalty a bigger single stat would be a straight
+  upgrade, which `gen_equipment.py --check` refuses. Seen in game at shops 1 and 16: the preview shows Power up in blue
+  and Guard or Boost down in red.
+- Owner decisions on the forge screen (2026-11-17): the shop's description page lost the slot text ("Right Hand" /
+  "Both Hands") to the recipe line, and stays so (the icon shows the kind, the Triangle page who can wear it). The
+  Portuguese names and texts of the Elemental weapons and of items 292/295/297/298 are the owner's to translate:
+  `pt.txt` still has the plain pieces' lines.
+- `tests/port/definitive_economy.py` (driver): an item the price table has (past the u16), one it does not, no item, a
+  replica's resale 0; recipes with no shop open, another shop's recipe for the same item, an item without a recipe, a
+  shortfall (orange label), buying several units, the scarcer of two materials deciding, payment; in a replay script
+  the game's prices and no recipe. `gen_item_prices.py --check` requires the table to be the rule's and a dearer item
+  never to resell for less. In game, Asuka's shop (`shop_open` is a checkpoint of `first_battle_save`) shows the prices.
 
 ### The Black Market, in detail
 
@@ -788,7 +956,7 @@ Poison reads Wisdom + Spirit + Wind affinity.
 - Pitfall: a **colon renders as "0"** in the 14px font (30 other port strings are affected; the 11px font has no
   `/ : , '` or accents either).
 - UX pass in detail (owner's request 2026-11-16: "a UI/UX on the black market screen, as game design, to tell the player what the item does, and fix legibility"; code
-  `definitive_market_screen.c`, the rules of `definitive_market.c` unchanged; done and tested 2026-11-17, not committed at the time; built in `build/port-ux` not to fight another session
+  `definitive_market_screen.c`, the rules of `definitive_market.c` unchanged; done and tested 2026-11-17, committed in `def4d30`; built in `build/port-ux` not to fight another session
   over `build/port`). What was bad: the small orange font has no `/`, `,`, `:` or accents ("30/99" came out "30099", a cost "Datamon II0 BK..."); normal and highlight colour were the same orange; an unaffordable
   price was blue with no explanation; choosing a material showed one at a time and Bits only appeared in a replica's detail; nothing explained what a Core is, what a replica does or who can equip it. Now: the dialogue font
   (font 1) everywhere; colours with a fixed meaning (white text, orange = cursor row or what is missing, green = success or already the player's, grey = what does not apply now and explanations); list with a header ("Your Rare
@@ -819,7 +987,52 @@ Poison reads Wisdom + Spirit + Wind affinity.
 - Save: unlocked bits (2 bytes, low first) and best stage per challenge (2 bits each, 4 bytes) in record 2 at
   `REC2_DRI` (right after the rare items' "ever held" bits; `port/game/definitive_bestiary.c`, checked 2026-11-17). An
   older PRD placed them in record 1's `REC_EXTRA` area; the code does not.
-- Not tested in game: a real DRI agent talk, and the debrief reward line overflows its box (small known bug).
+- The agents (`AGENTS` in `tools/gen_dri_challenges.py`, `def_dri_agents` in `definitive_dri_table.c`; DDNA item and
+  quest flag read from each agent's stage file, the DDNA boss's from the stage file that places him):
+
+  | Agent | Map / actor | Rookie | DDNA item | DDNA from (boss, place, stage file) | Quest flag | Old level window (party level sum) |
+  |---|---|---|---|---|---|---|
+  | Kazuki | 0x21D / 43 | Patamon | 39 | MagnaAngemon, South Badland, West Sector (`wstag550`) | 0x602 | 45-74 |
+  | Michael | 0x21D / 44 | Renamon | 38 | Taomon, North Badland W, West Sector (`wstag565`) | 0x603 | 45-74 |
+  | Bob | 0x226 / 43 | Veemon | 35 | Paildramon, Bulk Bridge, South Sector (`wstag450`) | 0x607 | under 30 |
+  | Johann | 0x22B / 43 | Agumon | 6 | MetalGreymon, Bulk Swamp, South Sector (`wstag445`) | 0x600 | 30-59 |
+  | Jimmy | 0x22E / 43 | Guilmon | 34 | WarGrowlmon, Ether Jungle, South Sector (`wstag490`) | 0x601 | 30-59 |
+  | Ken | 0x258 / 43 | Kotemon | 19 | Kyukimon, Suzaku UG Lake, South Sector (`wstag525`) | 0x604 | 60-89 |
+  | Yuji | 0x258 / 44 | Kumamon | 395 | GrapLeomon, Ether Jungle, South Sector (`wstag490`) | 0x605 | 60-89 |
+  | Yang | 0x258 / 163 | Monmon | 360 | Armormon, Duel Island, East Sector (`wstag385`) | 0x606 | 60-89 |
+
+  The agents' stage files are `wstag330` (0x21D), `wstag375` (0x226), `wstag405` (0x22B), `wstag420` (0x22E) and
+  `wstag635` (0x258); the level window no longer applies (2026-11-17). Places are named as each map's own title shows
+  them (Suzaku UG Lake is the underground lake, not the city). `def_dri_agent` still accepts a map of -1 as "any map",
+  but no row uses it.
+- How the game's agent talk is built: every agent is a placed actor in its `src/wstag/wstagNNN.c`; several
+  `FieldstgPlacedActor` variants share his spot, chosen by `flags_required` (one without the DDNA held, one with it),
+  and each variant's `FieldstgTalk` list says the first entry whose flags pass: the first meeting (flag `0x1A1F` = 0 on
+  0x21D), the Rookie already joined, the party level sum under the lower bound ("too busy"), inside the window (the
+  quest line, which sets the quest flag) or at the upper bound ("you don't need it"). The DDNA boss is placed only
+  with the quest flag set; the DDNA-held variant says the hand-in line and JOINs the Rookie. Flag decoding
+  (`gamestate_get_flag`): `0x70xx` is a `gamestate_conditions` entry, whose type `0x10 + n` is `cond_digimon(n, arg)`:
+  1 Rookie joined, 3 Rookie joins (the hand-in), 5 party level sum at least `arg * 15 + 30` (condition IDs 0x25-0x29 =
+  sums 30, 45, 60, 75, 90, used only by the five agents' stage files), 6 Rookie not joined; `0x80xx` is an item held.
+  `dri_quest_open` writes absolute values into the talk lists and runs only with `def_on`, so replay scripts keep the
+  disc's data.
+- Hint lines: with the window gone an agent whose Rookie has not joined gives his quest line on every talk, so each
+  hint is one extra page before the offer, naming the place. Bob (`TALK06 676`) and Johann (`TALK06 691`, whose disc
+  line said he had no idea where MetalGreymon was) are in `en.txt` (commit `11d9e54`); the other six are pages in
+  `en_story.txt`, which wins over `en.txt` (commit `c5e58e4`): Kazuki `TALK02 633`, Michael `TALK02 647`, Jimmy
+  `TALK01 277`, Ken `TALK02 831`, Yuji `TALK02 839`, Yang `TALK02 847`. `pt.txt` still has the disc's lines without the
+  hints (the Portuguese is the owner's). The quest opening and the Rookie rule are commit `bb15d51`. A starter's agent
+  counts as done from the start: his own line plays, then the list. `def_dri_debug` (tests: start a challenge or open
+  the list from the idle field) is unchanged.
+- Host test (`definitive_dri_driver.c`): the tier per stage; the table's bounds; an agent on his map, a map-any row, and
+  nobody else (an actor of an agent's sprite on another map); the wait (nothing while the talk runs, the list once, an
+  idle gap inside the talk, a battle or another map drops it, a talk that never ends gives up); the Tamers' lines;
+  unlock (locked with nothing, the common alone is not enough, exact payment, never paid again, a rare short shows
+  orange, a rares-only challenge); rewards (each tier once, the best stage only rises, capped at 3); record 2 (DRI state
+  alone writes it at bytes 152..157, read back, a damaged record reads nothing unlocked, a rares-only record, record 1's
+  read resets them before record 2 brings them back, out-of-range challenges); nothing in a replay script.
+- Seen in game (2026-11-17): Johann's quest line at map 0x22B with a party level sum of 87 (over his old bound), the
+  hand-in talk without the list and the next talk with it. Known small bug: the debrief reward line overflows its box.
 
 ### Guide, Guardromon network, Rush
 
@@ -895,7 +1108,13 @@ text enters through `tools/text_override/en.txt`.
   (`gamestate_data+0x30` = `encounter_timer`, 1 forces an encounter when walking) and `screenshot`. Confirm is `CIRCLE`,
   cancel `CROSS`, the field menu opens with `START`. In-game lab scripts (outside the repo, in `.dumps/tasks/ingame/`):
   `dri_talk_ingame.py`, `guide_ingame.py`, `market_ingame.py`, `dri_ingame.py`, `equip_ingame.py`, `rush_float_ingame.py`;
-  they need `tools/venv/bin/python` and the lab's disc.
+  they need `tools/venv/bin/python` and the lab's disc. Only `dri_talk_ingame.py` and `guide_ingame.py` (plus
+  `capture_definitive_ui.py`, `probe_guide_and_dri.py`, `test_kazuki.py`, `verify_three.py`) are in that folder on this
+  machine (checked 2026-11-18); the others stayed in the lab. What they did, per PRD 4: `market_ingame.py` opens the Black Market from the map
+  0x21D field state, swaps, buys, is refused, closes and runs the sweep; `equip_ingame.py` fights four battles with the same draws
+  (own gear, then a variant of each archetype on the leader) and compares the stats, the battle stat block, the `twice` line and
+  how many player turns come before the enemy's first; `dri_ingame.py` covers list, unlock, start from the list, defeat after one
+  stage, victory and repeat; `dri_talk_ingame.py` the wait after an agent's talk.
 
 **Layer A (chain and Rare Target), rules and reasons.** The region is the world area **plus server** (all 8 bits of
 `ststatus_map_areas`), not the `area` of `encounters[area]`. Use `pad_random` only after deciding the feature is on, so
@@ -1009,8 +1228,9 @@ price, that no event cites (item flag 0x80..0x8E in a flag list or in `set_flag`
 blacksmith quest's weapons are out), the 16 with the highest sale value, ties by ID: the seven Power S, Machinegun, Magician Rod, Ghost
 Fang, Pulse Guard, Drill Horn, Chain Saw, Naginata, Recover Crest, MP Mega Proxy. Price `DEF_BM_REPLICA_BITS` (20) x the sell price
 (40000, 30000, 25000, 20000) and `DEF_BM_REPLICA_RARES` (2) rares of **distinct** bosses (the species leading the Rare Target:
-"Datamon IV" and "Datamon VII" are the same boss); the screen picks the two most plentiful (tie: the weaker target) and shows them
-("Cost: Datamon IV, Bulbmon III"); purchase takes two confirmations, the second warning that the replica resells for 0; you may buy
+"Datamon IV" and "Datamon VII" are the same boss); the screen picked the two most plentiful (tie: the weaker target) and showed them
+("Cost: Datamon IV, Bulbmon III"), a rule since replaced by a fixed pair per replica (`DefReplica.cores`, see "The Black Market, in
+detail"); purchase takes two confirmations, the second warning that the replica resells for 0; you may buy
 again (one per Digimon). Resale 0 (the PRD's simplification, accepted): one bit per replica in record 1 `REC_EXTRA + 26..27`
 (`def_record_replica`); with the bit on, `def_item_sell` pays 0 for that ID even with an original beside it, and since the shop's
 sell list skips what is worth 0 the replica is not even offered. The bit clears when the player has none of that ID left, in the bag or
@@ -1052,9 +1272,10 @@ follows the Guardromon-network style: title, list (best stage "2 of 3" or "--", 
 locked, green when complete), challenge panel (rewards by item name, levels, the cost "Unlock Code Chip 12 of 15" / "Bulbmon I 0 of 1",
 orange while short) and keys; confirm picks, a second press unlocks (pays) or starts. Fixed in the lab: the 11 px font has no `/`, `:`
 or `,` (they print as `0`), so separators are " - " and counts "12 of 15". DRI Agents: the actor ids are shared sprite types (21 is the
-Guardromon of the 25 inns, 33 is in 58 maps), so `AGENTS` in `tools/gen_dri_challenges.py` (map, actor id; map -1 = any) was filled
+Guardromon of the 25 inns, 33 is in 58 maps), so `AGENTS` in `tools/gen_dri_challenges.py` (map, actor id) was filled
 with `tools/find_dri_agents.py`, which decodes each `wstag*.c` actor's lines; the owner's amendment (2026-11-13) removed the story's pig
-forms (actors 157-161, "Oink...": a quest state, not agents) and kept actors 43, 44, 163 in every map they appear in: Kazuki/Patamon
+forms (actors 157-161, "Oink...": a quest state, not agents), and the table is now the eight explicit (map, actor) pairs (an actor of
+the same sprite on another map is an ordinary NPC; the "map -1 = any" rows of the first version are gone): Kazuki/Patamon
 (43, `0x21D`) and Michael/Renamon (44, `0x21D`), Bob/Veemon (43, `0x226`), Johann/Agumon (43, `0x22B`), Jimmy/Guilmon (43, `0x22E`), Ken/
 Kotemon (43, `0x258`), Yuji/Kumamon (44, `0x258`), Yang/Monmon (163, `0x258`), the DDNA researchers, one quest per agent in the whole
 game. The agent's own talk is **never replaced**: `def_dri_talk` only arms a wait and returns 0, so talk and DDNA quest run as in
@@ -1066,8 +1287,9 @@ Miracles" (Veemon), "The Dreamer Tamer" (Guilmon), "The Calm Tamer" (Terriermon)
 texts `$DriRival<n>*` in the order of `LINES` of `gen_dri_challenges.py`, which checks they exist; the 11 px font has no comma, colon,
 slash or apostrophe, so the lines avoid them. Fixed together: closing the summary with CIRCLE returned the field in the same frame and
 the player control saw the same press and examined what was in front (stuck, `actor_busy`); the DRI screens now return the field only when
-their buttons are released (`dri_release`). Rules are per (map, sprite) and the same sprite may be another NPC in the same map: worth checking that an ordinary NPC
-with sprite 43/44 does not open the DRI (unverified).
+their buttons are released (`dri_release`). Rules are per (map, sprite) and the same sprite may be another NPC in the same map; since
+2026-11-17 the list is also armed only when `dri_rookie` finds a Rookie in the actor's own talk conditions, so such an NPC should not open
+it (not checked in game).
 
 **Layer I (floating Rush panel), why and how.** The results screen is a stage of its own (`STFGTREP` loads its files, objects and layers
 and runs as map `0x1400`); drawing it over the field would mean loading that stage inside FIELDSTG with a shared heap and ordering table,
@@ -1078,7 +1300,11 @@ before (including the Cardmon prize), everything is restored, `event_running` an
 `def_rush_apply_quiet` and `def_rush_panel_open`. `def_rush_apply_quiet` (in STFGTREP, under `PC_PORT`) makes the same calls in the same
 order as the screen (split XP, item 0x141, share to the party, `DEF_XP_ALL_FORMS`, techniques, `add_exp`/`raise_stats`/TP per band/lost-TP
 note, new forms, Bits with 0x142 and OVERFINISH, item with Boosters, material lines, `def_hunt_reward_done`). Panel (`definitive_rush.c` pure,
-`definitive_rush_panel.c`): 11 px font on layer 0x1004, above the player and pinned to the screen: `+N EXP` and `LV UP!` per member, `NEW
+`definitive_rush_panel.c`): 11 px font on layer 0x1004, above the player and pinned to the screen at the time (now the code puts it at
+the top of the screen, centred, sliding in from above, because the camera keeps the player in the middle and a panel there would cover
+the one walking under it; headings in the polygon letters of `def_poly_text`, the rest in the game's 14 px dialogue font, `RP_FONT` 1,
+a window per text, the dark panel added last so it draws below; `event_running` is never set, which is what keeps the player free):
+`+N EXP` and `LV UP!` per member, `NEW
 TECH!`, `TP FULL!`, Bits, item (`???` until the names file arrives), materials; 120 ticks at the time (now 175 and 10 rows); it closes when the
 field holds the player; a second Rush closes it on start and opens its own. Decisions: the panel is enough for a new technique or form (no
 full screen); the screen's "more than 3 forms" hint does not appear; the level-up stat gain comes from the same draw as the screen but at a
@@ -1102,23 +1328,59 @@ agent talk, the Guide's arrival notice (the log says `notice 1 (4) at progress 4
 
 ## The Velvet Room
 
-**Status: working, with open items (below).** `port/game/definitive_velvet.c`. It runs the bar map 0x20F (WSTAG255) as a
-room, entered by a **blue door in each inn** (13 door positions, e.g. map 0x20A at (339,192), 0x223 at (205,269), 0x230 at
-(516,380), 0x238 at (300,440), 0x23F at (580,392), 0x247 at (540,304), 0x249 at (403,187), 0x25B at (355,313), 0x25D at
-(1074,604), 0x263 at (383,235), 0x269 at (553,262), 0x26D at (396,520), 0x26F at (1156,833), plus the second-server
-copies; the table is `vl_doors` with a comment per wall). Depth 3, `VL_RADIUS` 12.
+**Status: working and committed (`d927826` .. `46424ef`), with open items (below).** `port/game/definitive_velvet.c`. It runs
+the bar map 0x20F (WSTAG255) as a room. **Ways in (rewritten 2026-11-18, `46424ef`; the owner vetoed drawn doors): no door
+sprite.** Each inn has a spot (`doors[]`, one per inn map, the second half's copies sharing the first half's layouts) in front
+of a piece of its own scenery that a faint blue light marks (`looks[]`). Standing within `VL_RADIUS` (12 px) of the spot shows
+the map exits' own prompt (the balloon with the up arrow: `fieldstg_icon_create` type 10, id 6) and only **CIRCLE** enters,
+as a map exit is taken; stepping off closes the icon, and a way that opened under the player (Repeating Tom's news, see the
+story layer) prompts only once they stepped off and back on (`vl_armed`). The prompt belongs to no game object, so
+`vl_icons_run` runs it every idle frame and `dw3_velvet_field_loaded` drops it at each stage setup. `vl_from` remembers the
+inn. The ways stay closed until the story opens the room (`def_story_velvet_level() > 0`, see
+[The story layer](#the-story-layer-velvet-room-in-the-main-story)). Spots (map x,y: the light): 0x20A 339,192 the wall
+niche's dark pane lit from inside; 0x223 205,269 the lantern on the deck's logs burns blue; 0x230 210,300 light under the
+painted stage's lip; 0x238 504,296 light through the red double door's crack; 0x23F 628,392 light under the bedside chest's
+lid; 0x247 540,304 light from the gap under the metal ramp's foot, on the sand; 0x249 403,187 the fallen pipe's open end;
+0x25B 355,313 the floating platform's two pins run blue; 0x25D 1074,604 a mortar joint of the brick wall; 0x263 383,235
+light from behind the cabin's barrels, on their rim and the post; 0x269 553,262 a slit vent in the machine's dark base;
+0x26D 156,500 the last capsule lit inside its hood; 0x26F 1120,830 the alcove capsule by the hatch. The second half (0x279,
+0x292, 0x29E, 0x2A5, 0x2AC, 0x2B1, 0x2B3, 0x2C4, 0x2C6, 0x2CB, 0x2D1, 0x2D6; 0x26D has no copy) uses the same spots and
+lights over the digital-world palette: 25 maps, plus the Time Room's door on map 0x288 (160,440, a circuit trace of the
+floor carries the light; `def_time_door`).
 
+- **The lights** (`VelvetHint`, up to `VL_HINTS` 4 per map): `VL_HINT_GLOW` (a Gouraud fan ellipse, blue at its heart,
+  nothing at its rim), `VL_HINT_SEAM` (a 1 px crack with a halo, fading in over its first quarter and out over its last),
+  `VL_HINT_PIXELS` (lights the scenery's own pixels: `vl_runs`, rows read off a screenshot taken without the lights). Each
+  has `power`, `front` (drawn over the foreground tiles, depth 2, instead of on the floor and walls, depth 5) and `dim`
+  (first subtracts red/green, abr 2, because blue added to a light surface only whitens it). The lights are added (abr 1)
+  through `DR_TPAGE` steps without dithering (dithered, a faint light is a checkerboard); one breathing pulse, a triangle of
+  `VL_PULSE` 120 frames from `VL_PULSE_LOW` 150/256 to full. `DW3_VELVET_NOHINT=1` leaves the lights out (the bare
+  screenshot the tuning compares against). The table and `vl_runs` were written by a tuning script from screenshots
+  (`.dumps/tasks/velvet/looks/looks.py`, `runs/*.json` from `mask.py`; scratch). Each light was judged from the image alone
+  by Sonnet agents (before/after, whole screen and zoom, up to 5 rounds); for 0x238, 0x25B, 0x25D, 0x263, 0x269 and 0x26F the
+  judges stayed divided (too weak against too strong), so the middle was kept and the owner decides in game.
 - Music: the pair `music` 0x3B with `sound` 0x60EC0000 (**set `sound`, not only `music`**), unless the room's own
   arrangement was generated: then bank 72 and key `0x61200000` (`dw3_velvet_music`, see "The room's own music" below).
-  Map title "VELVET / SERVER". Exit is the front door at (205,348); the top door is closed.
-- Actors (`FieldstgPlacedActor` + `FieldstgTalk`):
-  - **Oikawa**, the Black Market trader (hand-drawn, actor 42 at (275,255), dir 1, `no_turn`); TALK05 8/9/12/13.
-  - **The mentor** (the Gennai old man, actor 0x39 on the organ stage at (318,165), dir 1); TALK05 81/82.
+  Map title "VELVET / SERVER" (`$VelvetTitle`/`$VelvetTitle2`; "TIME / ROOM" while the Time Room runs). The player comes in
+  at (215,335) facing in; the exit is the front door, back to the Guardromon of the inn the way was taken in
+  (`dw3_travel_node`). The upper door (the bar's map event type 1 to 0x20A) is closed, except in the Time Room before its
+  gate is passed, when it leads to the trials (`def_time_side_door_open`).
+- Actors (`FieldstgPlacedActor` + `FieldstgTalk`; who is present depends on the room's story level, `vl_guests[]`):
+  - **Igor**, the host (actor 109, the game's suited man `P055GMGD` with a hand-drawn head, VRAM place 8, at (268,318) on the
+    lower floor, dir 7 towards the door, `no_turn`); TALK05 18/19/20. See the story layer.
+  - **Oikawa**, the Black Market trader (hand-drawn, actor 42 at (275,255), dir 1, `no_turn`); TALK05 8/9/12/13, and 99 the
+    first time after the Bug Maze Pit.
+  - **The mentor**, Gennai (the old man, actor 0x39, at (352,194) dir 1, in front of the upper door, the Time Room's way;
+    owner 2026-11-18, `f8f0982`; before that on the organ stage at (318,165)); TALK05 81/82.
   - **Etemon** (actor 0x61 at (352,284), dir 5, facing the piano).
-  - **The pig** (actor 318 at (245,292)); TALK05 79. It is the only truly unseen art of the 54 never-used actor IDs
-    (P182BOMP, ID 318).
-  - **Guilmon** (actor 0x172) with the Demon Bell; TALK05 77/78.
-  - **Sepikmon** (actor 61 at (176,306), dir 7), the hunts' master; TALK05 14/15. Position kept there (owner, 2026-11-17).
+  - **The pig** (actor 318 at (226,296), dir 0, on the floor by the carpet's edge, left of the counter's front; before
+    2026-11-18 at (245,292)); TALK05 79. It is the only truly unseen art of the 54 never-used actor IDs (P182BOMP, ID 318).
+  - **Guilmon** (actor 0x172, upstairs by the stairs' head at (126,200), dir 0) with the Demon Bell; TALK05 77/78.
+  - **Sepikmon** (actor 61, VRAM place 11, at (86,214), dir 7 towards the stairs' head: upstairs in the corner left of the
+    Demon Bell's keeper; owner 2026-11-18, `e854782`/`f8f0982`; before that (176,306)), the hunts' master; TALK05 14/15
+    (16/17 in the story's Seiryu hook).
+  - VRAM places: of the bar's patron places the room leaves free, 8, 9 and 10 draw a figure; 7, 12 and 13 show garbage for
+    any figure (tried 2026-11-17).
 - `dw3_velvet_text_own()` serves the English text in every language for the port-owned TALK05 entries.
 - State is RAM only (`vl_room`, `vl_from`, `vl_shop_*`): a slot saved inside the room loads as the normal bar. Savestate
   hooks: `dw3_velvet_savestate`, `def_bm_savestate`, `def_travel_savestate`, `def_evohint_savestate`,
@@ -1127,9 +1389,9 @@ copies; the table is `vl_doors` with a comment per wall). Depth 3, `VL_RADIUS` 1
 - Debug env: `DW3_FEAT_VELVET`.
 - **Pitfalls:** a `POLY_F4` with semi-transparency dirties the void; the layer draws what was added last, first; the
   wstag handlers table is shifted by +1.
-- **Pending:** door sprites are to be hand-drawn and moved beside the wardrobes; the owner's approval of the 13 door
-  positions; FR/IT/DE/ES translations of port texts; a save inside the room;
-  the owner will arrange the room (Sepikmon's spot is next to the entrance).
+- **Pending:** the owner's look in game at the lights (the six "divided" ones above); FR/IT/DE/ES translations of port
+  texts; a save inside the room. The doors' sprites were dropped (the owner vetoed drawn doors, 2026-11-18) and the room
+  was arranged on 2026-11-18 (positions above).
 
 ### Velvet Room: details, decisions and history
 
@@ -1147,9 +1409,13 @@ resembling the character and a hat seller were rejected for clashing with the ga
 game, swappable for a better one in a good corner; drawing a new NPC comes later, the focus is the mechanics. The owner's answer on the doors
 (2026-11-16): redraw them: a better hand-drawn door sprite in the game's style (nothing cut from the disc) and place each beside the wardrobes
 and cupboards of the maps, as in the original text of "section 6" below, instead of the inn Guardromon; "any point of the map is allowed".
+(11) 2026-11-17: the room grows with the story (guests arrive by story step; see the story layer). (12) 2026-11-18: **no drawn
+door at all** (vetoed): each way in is a spot before the inn's own scenery with a faint blue light, entered with CIRCLE like a
+map exit; this supersedes (4) and the 2026-11-16 answer on the doors. The room's arrangement (Sepikmon, Gennai, the pig) was
+redone the same day. (6) is superseded by the owner's own arrangement (below), and (5) by the Time Room (the upper door).
 
-**How it works.** The entrance is a blue door (an upright rectangle against a wall) in the inn a few steps from the Guardromon; stepping on its
-foot (radius 12 px) calls `fieldstg_goto_map(0x20F, entry, 215, 335, dir 1)` with the warp sound; `vl_from` remembers the inn. In room mode (`vl_room`,
+**How it works.** The way in is a spot of the inn (see the lights above; until 2026-11-18 it was a drawn blue door); standing on it (radius
+12 px) shows the prompt, and CIRCLE (`dw3_velvet_frame`) calls `fieldstg_goto_map(0x20F, -1, 215, 335, dir 1)` with the warp sound (0x40004); `vl_from` remembers the inn. In room mode (`vl_room`,
 RAM) `wstag255_setup` ends by calling `dw3_velvet_stage_setup`, which swaps `fieldstg_stage.actors` for the NPCs, the music, and paints the void.
 **The room's own music** (commit `8042491`, 2026-11-17; the owner listened and accepted it, smoothing included):
 an octet arrangement played by the game's own sequencer (LIBSND, `SsSeqCalledTbyT` every vsync), not a WAV.
@@ -1167,8 +1433,67 @@ spare slot (tone volume 96, centre 66). Smoothing (why it sounded coarse: attack
 ~37-62 ms and releases ~186-372 ms on the sustained parts (piano untouched), reverb type 3 depth 64 raised by the score
 and dropped when its music stops; horn and piano get the reverb flag. Knobs at the top of the generator (`ATTACK_MS`,
 `RELEASE_MS`, `REVERB_DEPTH`, `REVERB_PARTS`, `LOOP_GAP_TICKS`); `--smooth off` gives the unsmoothed mix; audition
-tools in `.dumps/velvet-live/` (`play.py --smooth on|off`, `--reverb N`). Test: `tests/port/definitive_velvet_music.py`
-(skips without the MIDI). Another tune has its own handoff (`.dumps/handoff_adventure_music.md`), left for later.
+tools in `tools/music_lab/velvet/` (`play.py --smooth on|off`, `--reverb N`; below). Test: `tests/port/definitive_velvet_music.py`
+(skips without the MIDI). A second tune (Adventure) is described below; it is not in the game.
+
+**The room's music: the handoff's details (kept from the deleted `handoff_velvet_music.md`).** Score: the owner's local MIDI
+`~/Downloads/Persona 5 - Aria of the Soul - Octet - Aragi Shota.mid` (`MIDI_DEFAULT` in the generator; format 1, 480 ticks
+per quarter, eight named tracks; the owner supplied it and accepted the fan-project risk; read at build time, never committed
+nor shipped). The SEP is written for the port's LIBSND (`psxstack/psyq/libsnd_seq.c`, `docs/FORMATS.md` "SEP"): `pQES`,
+version 0, 16 sequences when `SsSepOpen` is called with 16 (sequence 0 the piece, the other 15 an empty end-of-track);
+note-off is a note-on with velocity 0 (`9n`): `8n` is **skipped and its data bytes are not consumed**; tempo is
+`FF 51 tt tt tt` with **no length byte**; the end is `FF 2F 00`; after a meta event the running status is `FF`, so the next
+event needs its own status byte. Tempo 600000 (100 bpm), then 659340 (~91 bpm) from tick 19200 (the MIDI's values; the
+generator reads them from the file). Parts (channel, first note, note range): flute 0, tick 19200, 64-81; oboe 1, tick 28800
+(~36 s: the silence before is the score, not a mute), 49-74; piano 2, tick 0, 49-83; violin 3, tick 720; viola 4, tick 0;
+horn 5, tick 19200; cello 6, tick 0; double bass 7, tick 3840. 24 voices: the octet steals voices (accepted). Mix (`PARTS`:
+level / CC7 = round(level x 127 / 100) / pan): flute 100/127/32, oboe 76/97/96, piano 30/38/64, violin 66/84/40, viola
+66/84/88, horn 71/90/48, cello 71/90/80, bass 82/104/64 (the pans are the staging that was playing; the owner did not ask to
+change them; the levels are also in `tools/music_lab/velvet/volumes.json`). An extra bank's header buffer is `0xA000`
+(`sound_buffer_1`/`_2` in `src/main/sound.c`). Instruments: the flute (program 8) is not retuned (the oboe's waveform, BGM031
+vag 9, whose centre 84 sits on the flute's register: leave it); the oboe is program 5 with centre 62; the piano is program 10:
+BGM031's own vag 14 is a noise burst, the owner rejected it, then a darker pluck, and picked **option 19 of 51**, BOSS01's
+vag 9 (program 3 of that bank, 5376 bytes, ~213 ms), copied over the spare slot of BGM031's vag 14 (5824 bytes at SPU
+`vag_end[13]*8`), tone volume 96, centre 66, shift 0; the tone volume (96) and the channel level (30) are different knobs:
+keep both. **What not to repeat:** writing the score over the VAB header (on the listen the header lived in `sound_buffer_1`,
+the score went in `sound_buffer_2`); seeking by poking `SndSeq.pos` (a bad landing ran the parser off the stream, a zero
+tempo divided by zero and the score table was garbage); trusting `nm` of a binary another build replaced for `snd`'s address
+in a running process (`play.py` writes the live one to `session.txt` next to itself).
+
+**Audition tools (`tools/music_lab/`, moved from `.dumps/velvet-live/` and `.dumps/adventure-music/`).** None patches the
+disc or the source; they start their own windowed port (`build/port-sdl/dw2003 --window`) on a private debug socket and
+point the playing title sequence at the score (stay on the title screen: starting a game reloads the bank). Runtime files
+next to them (`game.log`, `session.txt`, `mute.mask`, `*.index`, `piano_options.json`, `render/`) are gitignored
+(`tools/music_lab/.gitignore`). `tools/venv/bin/python tools/music_lab/velvet/play.py` installs the room's tune from
+`gen_velvet_music` (`--smooth on|off`, `--reverb N`; offline, for numbers only: `--wav render/x.wav --seconds 50`, `--probe`
+one 1 s note per part; `analyze.py` and `analyze_probe.py` compare two renders, run with `uv run --with numpy python ...`);
+`... play.py adventure` plays the Adventure score instead (socket `/tmp/adventure-music.sock`, without the Velvet retune).
+`velvet/solo.py` (`next`, `mute N`, `solo N`, `rem N...`, `add N`, `vol`, `vol N 0-100`, `reset`; parts 1..8 in play.py's
+order; a level is written into the score so a loop keeps it); `velvet/piano.py` (`next`, `prev`, `N`, `list`, `test`:
+auditions one of 51 deduplicated game samples, 80-250 ms, in the spare slot at centre 66 and solos the piano; `test` puts
+it back in the full piece); `adventure/guitar.py` (`next`, `prev`, `N`, `test`, `list`: the same 51 samples on the Adventure
+window's program 5, centre 64; `next`/`test` rewind to the score start, `SndSeq.start`, which must still be `FF 51`).
+`velvet/offsets.c` prints LIBSND's sequencer layout on the host and `offsets.json` holds the offsets the tools poke.
+
+**Adventure music (a second tune; first pass, not signed off, not tied to any cue).** Same method as the room's, through the
+game's sequencer, no WAV, no source change: `play.py adventure`. Score: the owner's local
+`~/Downloads/Digimon Adventure OP1 - Butterfly (Full) - Octet - Thymm Rayne.mid` (not in the repo, never committed): format 1,
+480 ticks per quarter, one tempo 363636 (~165 bpm) at tick 0, about 335650 ticks (~4.2 minutes), 7812 note events; the built
+SEP is 32009 bytes and fits `sound_buffer_2` (40960). Each named track gets its own channel (the file's shared channels do not
+matter). Nothing plays at tick 0: the guitar comes in at tick 1920 (~1.4 s), so a check of the first 40 vsyncs hears
+silence. Parts (`ADVENTURE_LEVELS` in `play.py`; channel, BGM031 program, first note, level, CC7, pan): Trumpet 0, 8, 74640,
+90, 114, 64; ElectricGuitarOverdriven 1, 5 (sample swapped), 1920, 80, 102, 40; Cymbal 2, 10, 1950, 45, 57, 100; Doublebass 3,
+4, 24960, 85, 108, 64; BassDrum 4, 6, 1728, 60, 76, 64; Harp 5, 1, 24960, 70, 89, 32; Saxophone 6, 2, 7680, 90, 114, 96;
+SnareDrum 7, 3, 1950, 50, 64, 80. The programs are the loaded title bank's, longest usable sample first (8, 5, 10, 4, 6, 1,
+2, 3); program 10 is BGM031's noise burst and landed on the cymbal; kick, snare and cymbal are tonal samples played at drum
+notes, not a drum kit (replacing them is the same spare-slot copy, not done). The levels are a starting balance so the drums
+do not bury the melody; the owner has not tuned them by ear. Guitar: program 5 of BGM031 is the flute-like waveform, so the
+owner picked **option 29 of 51** in `guitar.py`: BOSS02's vag 8 (program 3 of that bank, 3872 bytes, ~154 ms) copied into the
+spare slot (BGM031 vag 14, the slot the Velvet piano uses, 5824 bytes at `vag_end[13]*8`), program 5's tone pointed at it,
+tone volume 96, centre 64, shift 0; channel level stays 80 (CC7 102), pan 40; only program 5's tone record changes (on the
+Velvet piece program 8 shares a waveform with program 5's original vag: do not retarget the flute). The bank on that boot was
+BGM031 as for the Velvet listen; `ENV019` is too small; if the tune is ever given to the room or another cue, both
+`fieldstg_stage.music` and `fieldstg_stage.sound` must change. Same "what not to repeat" rules as above.
 
 **Music pitfall (already made once):** the field plays `fieldstg_stage.sound` (the track) *after* loading the bank of `fieldstg_stage.music`;
 changing only `music` changes the bank and the same tune keeps playing. The room uses the pair of map `0x25F`: `music = 0x3B`, `sound = 0x60EC0000`
@@ -1176,7 +1501,11 @@ changing only `music` changes the bank and the same tune keeps playing. The room
 `dw3_velvet_leave`, `fieldstg_map_events_check` -> `dw3_velvet_event_closed(type, param)` (it takes `type, param`, not the `FieldstgMapEvent`, because
 `include/port.h` is included by `common.h` without game types), `wstag255_setup`, `dw3_travel_node` (the Guardromon node getter),
 `fieldstg_map_title_create_windows` -> `dw3_velvet_title_window`. Outside the room map `0x20F` is still the game's bar: entering by the normal doors
-changes nothing; the bar's other door (the right one, to inn `0x20A`) is **closed** while the room runs.
+changes nothing; the bar's other door (the right one, to inn `0x20A`) is **closed** while the room runs, except in the Time Room before
+its gate is passed, when it starts the trials (`def_time_side_door_open`). `dw3_velvet_event_closed` also holds shut the Warp Gate on map 0x288
+(`def_time_warp_closed`), event 1080's trigger on map 0x2DF (`def_story_event_closed`) and a trial area's own events. Idle-step order
+(`src/fieldstg/fieldstg_80087DB0.c`): `def_story_frame`, then `dw3_velvet_frame` (the prompt and CIRCLE), then `dw3_velvet_draw` (the
+room's blue, the Time Room's frame, the call-overs, or the inn's light).
 
 **Oikawa (the trader).** Behind the counter at (275,255), **dir 1** (front-left, the direction the counter runs, the owner's choice), `no_turn = 1`; still
 **actor 42** (it gives the speech box and opens the market screen). `fieldstg_actor_draw` calls `dw3_velvet_actor_art`, which draws the hand-made art **in
@@ -1194,9 +1523,11 @@ does not reload the state between points, the previous balloon stays open and th
 the pig answer. His lines (EN + PT-BR, `TALK05` entries 8, 9, 12, 13): the two greetings **alternate on each visit**; the "bought something" (12) and "left without
 buying" (13) lines appear on the **next visit** (the market screen has nowhere to show text after itself) and **once per sequence**, then the greeting alternates
 again. Flow: talk -> Oikawa's line in the game dialogue -> the Black Market screen opens -> leave -> the next visit comments how the previous ended. State is RAM
-(`vl_shop_*`).
+(`vl_shop_*`). The same hand-drawn art is drawn over the Time Room's first challenger and the hooded man of the Bug Maze Pit
+(`vl_dealer`, `def_story_oikawa_figure`). Since the story layer he is behind the counter only from the room's level 5 (the Oikawa
+beaten), and his first line there is `TALK05` 99 (`VL_SHOP_OIKAWA`).
 
-**The other figures.** Mentor = actor `0x39` (`P074JIJI`, the body of the "Grandpa ..." and the Tamer Genji: bald, white beard, 24x32, 5 directions; fits VRAM
+**The other figures.** (Positions below are the 2026-11-17 ones; the 2026-11-18 arrangement is in the Actors list above.) Mentor = actor `0x39` (`P074JIJI`, the body of the "Grandpa ..." and the Tamer Genji: bald, white beard, 24x32, 5 directions; fits VRAM
 slot 5) on the stage between the organ pipes at (318,165) dir 1 (2026-11-17; before that the Kotemon `0x178`, and `376`'s Kotemon `P189PKEL.BIN`/`0x19`, 32x32,
 1 animation, in a previous try). The stage is a dead end joined to the upper floor by a strip (y 160..176): it blocks no way, the entry camera already shows
 its red lights, and he can be talked to from any side. Alternatives seen: Piximon (the Adventure trainer, 48x40: does not fit the slot), Wizardmon (32x40), Master
@@ -1210,7 +1541,8 @@ and `dw3_velvet_text_own()` (list in `definitive_velvet.c`) marks the entries th
 (proved with `records_language = 3`, French: the balloon shows the English line instead of "a"). Translating those lines to FR/IT/DE/ES is the general
 translation task; PT-BR has its own. The mentor's content was a placeholder until the Blast task wrote the real one (now the Gennai quest).
 
-**Doors (the 13 positions, done properly).** The first attempt was an algorithm plus a contact sheet (the owner caught a door in front of a Digimon and in the middle
+**Doors (the 13 positions, done properly). History: superseded on 2026-11-18** by the lights on the scenery (no door sprite; the spots moved, see
+the lead of this section); kept for the method. The first attempt was an algorithm plus a contact sheet (the owner caught a door in front of a Digimon and in the middle
 of the scenery); the second was by eye over 13 small screens and misjudged what was behind several. Now each was checked in its own map at 2x with the actors where the game
 puts them (the search excludes 56 px around every actor). The door is a **door-shaped portal**: a dark frame (two jambs, a lintel and a sill) with light in 6
 bands (dim at the lintel, bright at the floor), so it stands anywhere and does not look like a plaque; depth **3** (the layer draws back to front): in front of floor and
@@ -1245,6 +1577,10 @@ checkout's `psxstack/runtime/script.c` does not implement, "unknown step type", 
 `.dumps/tasks/velvet/`: `cycle.sh COMMAND...` (rebuild, regenerate `field.state`, run), `shot.py MAP X Y DIR out [--poke sym=value] [--player X:Y:DIR]`, `doors_try.py`, `walk.py`, `montage.py`,
 `trigger.py`, `e2e.py`, `attr.py` (collision map as text; `--around X Y`), `vrun.py` (runs the scratch tools against another binary, `DW3_BIN=...`); a private build `build/port-velvet/dw2003`
 was used so as not to fight other sessions over `build/port` (a worktree via `wtsync.sh` while the Black Market was under construction).
+The 2026-11-18 prompt (scratch `.dumps/tasks/story/time/prompt.py`): no icon off the spot; on the spot the icon and **no entry in 180 frames without
+CIRCLE**; stepping off closes it, coming back reopens it; CIRCLE enters (map 0x20F); passed on 0x23F, 0x25D (x > 960) and 0x288 (opens the Time Room).
+`def_story_savestate` and `def_time_savestate` are registered in `def_savestate` too (the story's talk, dream, choice panel and Oikawa state; the Time
+Room's run).
 
 **Code map.** Stage `0x20F`: `src/wstag/wstag255.c` (setup, `actors[]`, `sprites[]`, `map_events[]`); stage code per map `fieldstg_stages[240]` (`{id, file, entry}`); talk `fieldstg_actor_talk_to` (`def_bm_talk` /
 `def_dri_talk` before the redirect); traders `traders[]` / `def_bm_talk` in `definitive_market_screen.c`; door/exit between maps `FieldstgMapEvent` (flags, type 1 = move, x, y, dir, route, room,
@@ -1258,19 +1594,221 @@ the main quest in another session and will create guide quests later):** small m
 teleport point (teaches the fast-travel network in practice), and steer the player through one of the wardrobe doors for the first time when rare Hunt Materials start to appear. This is the open
 "onboarding hooks" item.
 
-**Pending / questions to the owner (2026-11-17):** test in game (enter an inn, find the blue door, enter, talk to every figure, leave by the front); approve each of the 13 door positions or say
-"in that inn move it up/down/against the wall"; approve or replace the mentor (now the old man `0x39`, line still provisional); the room's music (now `0x3B`); FR/IT/DE/ES lines (the port override
+**Pending / questions to the owner (2026-11-17, updated 2026-11-18):** test in game (enter an inn, find the light, take it with CIRCLE, talk to every figure, leave by the front); look at each
+inn's light (the six "divided" ones first) or say "in that inn move it / make it stronger or weaker"; approve or replace the mentor's figure (the old man `0x39` until one is drawn); the room's music
+is done (the owner's arrangement, above); the door sprites and the 13 door positions were dropped with the doors; FR/IT/DE/ES lines (the port override
 covers English and PT-BR only, `dw3_velvet_text_own()` serves English elsewhere); **saving on the memory card inside the room**: the save falls on the generic `0xC00` and loading opens `0x20F` as the
 normal bar (`vl_room` is RAM, not on the card; the port's savestate carries it since 2026-11-16): acceptable? if not, it is the next decision. The owner's rules (summary): pt-BR with the owner,
 no commit without being asked, no AI attribution in repo files, scratch in `.dumps/`, plans in `.plan/tasks/`, move files to `/tmp` instead of `rm`, "no 'I don't know, wait': measure and go; ask only
 what is the owner's decision".
 
+## The story layer (Velvet Room in the main story)
+
+**Status: implemented and committed (`c5e58e4` dreams, choices and echoes; `9dba2cf` the Time Room gate, the Oikawa's arc and
+Act III; `91f12d2` the Oinkmon dream); only partly seen in a real game (see Pending).** `port/game/definitive_story.c`
+(the hooks, Igor, the dreams, the rewrite's lookup), `definitive_time_room.c` and its generated `definitive_time_room_table.c`
+(`tools/gen_time_room.py`), `definitive_velvet_igor.c/.h` (Igor's head), generated `definitive_story_text.c`
+(`tools/gen_text_override.py` from `tools/text_override/en_story.txt`, `en_kaili.txt`, `pt_kaili.txt`, `en_choices.txt`,
+`en_echoes.txt`). Everything is keyed on the story step `gamestate_data.progress` and is off in a replay script (`def_on`).
+A story talk is the game's own talk balloon on the player (or on a given actor) with no actor talked to: the hook asks for
+an entry of the stage's talk file whose disc text is the unused letter "a", and the port's override fills it; the field is
+held (`event_running`) until the last balloon closes and the confirm button is let go. Plans of origin:
+`velvet-historia.md` (the arcs) and `velvet-sonhos.md` (dreams, rewrite).
+
+**The room grows with the story** (`def_story_velvet_level`; a save from before the port's story is placed by its step alone):
+
+| Level | When | Who comes in (`vl_guests[]`) |
+|---|---|---|
+| 0 | until Repeating Tom's news at step 4 | nobody: every inn's way in is closed |
+| 1 | Tom's news (`DEF_STORY_SEIRYU_CALL`), or any step past 4 | the Sepikmon |
+| 2 | step 10, "The Suzaku Badge" | Gennai (the old man, the Blast quest) and Igor |
+| 3 | step 16, "The real Leader" | Guilmon, the Demon Bell's keeper |
+| 4 | step 22, "Free Asuka City" | Etemon and the pig |
+| 5 (`DEF_VELVET_LEVEL_MAX`) | the Oikawa beaten (`DEF_STORY_OIKAWA_BEATEN`), or a save past step 27 | Oikawa behind the counter: the Black Market |
+
+Steps 10/16/22 were picked to spread the guests over the campaign (`steps[]` in `def_story_velvet_level`); owner order of
+2026-11-17: Gennai comes with Igor at step 10 ("the start drags"), Guilmon at 16. The first visit after the level rose,
+the guest of the highest level that greets calls the player over (`vl_newcomer`; codes `DW3_VELVET_PULL_SEPIK`, `_MENTOR`,
+`_IGOR`, `_ETEMON`, `_MERCHANT`, plus `_TRIAL` for the Time Room in `include/port.h`); the Bell's keeper and the pig never call,
+so at level 3 it is still Gennai. The level last greeted is saved in bits 12..14 of the story flags (`def_record_velvet_seen`).
+The room is entered by portal (`dw3_velvet_pull_by`) for the scenes; `dw3_velvet_cut(who)` re-enters the map in place "as its
+level has it" (a screen cut). `dw3_velvet_pull` (the old Seiryu pull, the Sepikmon's) is still defined but has no caller.
+
+**Step 0, "Digimon Online": the opening cut in two.** At New Game the scene (WSTAG785, map 0x2D8, event 1; text of event text
+file 0x14A, table 1) is cut where Junior cannot pick a starter pack, after event text 12 (Ivy's "choose, and let's go"):
+`opening_cut` rebuilds the overlay's script at runtime into two buffers (`st_first`, `st_second`, 1400 words each; cut again
+after every load). The first half ends with the port's event command **`0x7F00 1`** (`ST_CMD_DREAM`, handled in
+`fieldstg_event.c` case 0x7F): Junior is pulled into the room alone with Igor, who gives him the key (`TALK05` 18,
+`DEF_STORY_IGOR`); the room sends him back to the spot he stood on (`st_junior`) and the stage replays the scene from the
+cut: actors put back (PLACE, idle facing) and the camera snapped, then Ivy and Teddy ask why he froze (event texts 1..4
+replaced by `$OpenIvy1`, `$OpenTeddy`, `$OpenJunior`, `$OpenIvy2`; the Kaili mode swaps the names), then the game's own scene
+from text 13 ("You still haven't made up your mind?"). If the script is not the expected one the cut is skipped (logged).
+
+**Step 4, "The Seiryu Badge": Repeating Tom** (replaces the first tutorial's direct pull at Seiryu City). The Guide's row asks
+the player to ask around Seiryu City for the Leader (`DEF_STORY_COND_SEIRYU_ASK`, map 0x230). Talked to on the stairs of the
+city's inn, Repeating Tom's own line (`TALK01` 0xCC entry 79, "Seiryu Leader is training at the Protocol Ruins") is said as
+`$TomNews` (the Leader is gone), then the player's feeling (`TALK01` 178) with the portal sound, and `DEF_STORY_SEIRYU_CALL`
+raises the room to level 1: every inn's way in opens, Seiryu's inn's at (210,300). Through any of them Igor alone shows the
+room again (`TALK05` 20, `DEF_STORY_SEIRYU_ROOM`), the screen cuts (`dw3_velvet_cut`) and the Sepikmon calls the player
+over (`TALK05` 17, his first words while the Leader is missing) with the Ogremon tutorial hunt (Super Rare hunts). Until the
+hunt is reported Tom says `$TomGone` and the Guide's main quest is the missing Leader (`DEF_STORY_COND_SEIRYU`); reporting
+the won hunt (`def_super_done() > 0`) gives `TALK05` 16 (his trackers saw the Leader at the Protocol Ruins), sets
+`DEF_STORY_SEIRYU_DONE`, and the story goes on as the game's. `DEF_SUPER_FLAG_MET` still marks the Sepikmon's first meeting.
+
+**Igor** (`VL_IGOR` 109, the game's man in a black suit `P055GMGD`, file 0x356, 24 px frames; actor 53 `P068SARM` is the
+game's other suit). **His head** is hand-drawn for this port (`definitive_velvet_igor.c/.h`, 92 runs of one palette colour,
+one quad each, from `.dumps/tasks/velvet/art/v2/igor.txt` via `igor.py header`): over frames 9, 10 and 11 of his down-left idle
+(11 is 9 a row lower; 10 keeps 9's place), mirrored when he faces right; any other frame keeps the game's head; body, idle
+and shadow stay the game's. `dw3_velvet_actor_art` calls `dw3_velvet_igor_head` before FIELDSTG adds the figure, so the quads
+draw over it in the same ordering-table entry; he keeps his facing (`no_turn`). In his scenes (the dreams, Seiryu's showing:
+`vl_scene`, `vl_dream_actors`) he is alone, facing down-left (dir 1), and the player comes in two steps in front of him at
+(246,340) dir 5. **His line** is the story's (`def_story_igor_line`, closed by `def_story_igor_done`): the key at the opening
+(`TALK05` 18), the showing at Seiryu (20), otherwise **his reading of the party's DNA forms** (`TALK05` 19, built into
+`st_igor_text`, 1024 bytes, by `igor_read`): a greeting (`$IgorMeet` to a guest who found the room without the opening's
+dream, i.e. a save from before the story layer, else `$IgorBack`), then for each party member with one, a page "<partner>
+could become <form>, born of two forms:" with the two forms, the level each needs and how many are done (`$IgorBoth`,
+`$IgorOne`, `$IgorNone`), and a farewell (`$IgorBye`, or `$IgorBlank` when nobody has a DNA form). `dna_pick` takes, from the
+partner's learn list (`stfgtrep_learn_lists`, as the Digi-Lab's Next Forms panel reads it), a form not owned yet that needs
+two other forms, with the most of its two bonds done, then the highest levels. Nothing is built until the Digimon names are
+loaded (the room queues file `records_language + 0x4E` at setup); the disc's line shows then.
+
+**Igor's dreams** (`dreams[]`): at a story moment Igor pulls the player into the room alone (`dw3_velvet_pull_by(map,
+DW3_VELVET_PULL_IGOR)`: the portal sound, the room with only him), speaks, asks with the **answers' panel** (up to three rows
+at the screen's foot over the room's blue; up/down move with sound 0x8004513E, CIRCLE takes with 0x8004503C; it arms only once
+the button that closed the last balloon is let go), answers the choice, and sends the player back to the exact spot
+(`dream_leave`). The answer is saved and changes no event; later dreams recall earlier answers. A row: answer slot, first and
+last step, a game flag that must be set (or 0), Igor's ask, 3 options, 3 replies, the slot of an earlier answer to recall
+and its 3 recall pages. A new dream is a row plus its `$Dr*` lines in `tools/text_override/en.txt`. Rows, in table order:
+
+| `DW3_DREAM` | Slot | Step | Trigger | Theme (owner's text) |
+|---|---|---|---|---|
+| 1 | 0 | 12..18 | game flag 0x1C0E (set by WSTAG305's event 351, the Game Master blames Lucky Mouse, DMG305:1) | Act I, the Game Master's lie: the eyes see the shadow on the wall, not every mask is the culprit's; every answer goes on hunting Lucky Mouse (at 19 his side is heard) |
+| 2 | 1 | 27 | the first free frame once the Oikawa no longer bars the Bug Maze (maps 0x244..0x246, `oikawa_ahead`) | Act II, the burden: past this threshold there is no easy way back; do you carry it by your own will? |
+| 3 | 3 | 0x26 | WSTAG226's event 935 (DMG200:41 "Wait here. I'll look into it.") ends at 0x26 leaving the player free on map 0x270; the step lasts until the Master Room's events (0x27), Qing Long's restoration machine (flag 0x1A0A) inside it | the Oinkmon: the Destromon stopped, yet Teddy and Kurt are still Oinkmon; recalls the Act I answer and asks what carries the hero, alone now (`$Dr4*`) |
+| 4 | 2 | 0x2B | the end of WSTAG820's event 1080 on map 0x2DF (Snatchmon fuses with the Gunslinger, DMG800:17) | Act III, the abyss: accept defeat, or forge a miracle at the edge of the abyss (the canonical defeat becomes the Chosen's awakening); recalls the Act II answer |
+
+Strings: `$DrIgor` (the plate) and 34 `$Dr1*`..`$Dr4*` keys (`Dr1` Act I, `Dr2` Act II, `Dr3` Act III, `Dr4` the Oinkmon; `Ask`,
+`Op1..3`, `Re1..3`, `Rc1..3` for the recalls). `DW3_DREAM=<n>` (1..4, the table's order above) dreams row n at the next free
+field frame whatever the step and answers (a test shortcut). **Act III and Galacticmon:** in the game event 1080 ends
+(`wstag820_event_1080_end`) by setting flag 0x7401, whose type starts the stage's listed battle 1 (Galacticmon) at once, so no
+free frame was left and the dream never came. `def_story_hold_galacticmon` (called there under `PC_PORT`) lets the event end
+without it; `galactic_hook` sets 0x7401 itself on the first free frame back on map 0x2DF once answer 2 is given; the event's
+own trigger (map event type 8, param 0x438) stays shut afterwards (`def_story_event_closed`), since nothing in the game marks
+it done (its flag 0x40A5 is set by no one).
+
+**The hero's choices and the echoes.** The scenes' choices (`en_choices.txt`, `Q<n> FILE:sub index@<k>: label | full balloon
+text`): before entry `index` the event's dialog holds (`def_story_event_dialog`, asked by `fieldstg_event.c` before each event
+dialog) while the same panel shows up to 3 labels (at most 26 letters); the balloon then says the line picked
+(`def_story_line`) and the scene goes on as the game's. An echo (`en_echoes.txt`, `Q<n>=<k>[,<k>...] [kaili] FILE[:sub] index:
+text`) is said in place of an entry while answer n is one of the options listed (`kaili`: only in Girls Power's mode, a plain
+echo in both); an entry's echoes are tried in file order, the first that holds wins; an echo keeps the entry's speaker, and a
+choice entry cannot have one. `def_story_line(file, index)` answers in this order: the hero's choice, an echo, the Kaili
+line, the rewritten line, then the disc's. Counts today: 111 scene questions (numbered between Q8 and Q150, never
+renumbered) with 336 options; 600 echoes (30 of them Kaili-only).
+
+**Story answers in the save** (`def_record_story_answer` / `_set_`, `definitive_bestiary.c`): `DEF_STORY_ANSWERS` = 160 answers
+at 2 bits each (`DEF_STORY_ANSWER_BYTES` = 40 bytes at `REC2_ANSWERS`, right after the Blast data in card record 2; answer q
+is byte q >> 2, bits (q & 3) x 2; 0 not answered, 1..3 the option); slots 0..7 are Igor's dreams, 8..159 the scenes' choices
+(Q8..Q39 existed first, at one byte each, until the bytes ran out). A compile-time check keeps them clear of the skin byte;
+an older record reads 0. See [Save format](#save-format-memory-card-records).
+
+**The story rewrite (English only).** `en_story.txt` (2724 entries, `FILE:sub index: text` for an event scene's table,
+`FILE index: text` for a talk file): childish or simple dialogue made more serious without changing order or quests, and
+gender-neutral wherever the hero is concerned. `en_kaili.txt` (111 entries): Girls Power's mode, the lines the automatic
+name swap gets wrong; a text starting `>hero ` is said by the hero (the balloon moves to the player). `pt_kaili.txt` (3
+entries): the brother's lines in Portuguese. Portuguese shows the disc's/`pt.txt` text with only the Kaili names (the rewrite
+and its choices are English); FR/IT/DE/ES show the disc's. `DW3_STORY=0` turns the layer off (the game's own text, to
+compare). Logs: `story: echo ...`, `story: kaili line ...`, `story: ... choice N answered M`. Checker
+`tools/check_story_text.py [FILE]` (every source by default; exit 1 on an error): the same speaker plate and control codes as
+the disc's line, 22 letters a line in balloons (38 in unplated narration), 3 lines a page, the page structure (each page ends
+with `<2,2>`, every later page starts with `<3>`), and no gendered word about the hero. Girls Power's swap
+(`tools/gen_text_override.py`, `NAMES`): every line without its own entry names Junior as Ivy, and Ivy or Kail as Junior
+(Smith Junior keeps his name), rewrapped within its page; written by hand in `en_kaili.txt`: the brother's lines, the "he/him"
+ones (DMG700:0 2, DMG200:32 3, DMG600:15 18/20/23) and the account-name joke (DMG200:3/4/5 7-8); `$OpenIvy1K`/`$OpenJuniorK`
+were removed (the swap makes the `$Open*` lines). Portuguese swaps only Kail for Junior: its Real World lines need their
+articles and endings turned too ("a Ivy" -> "o Junior", "sozinho" -> "sozinha", the captured Kail as "ele"), which waits for
+the rewrite's translation. How the rewrite was made (scratch in `.dumps/tasks/story/rewrite/`): a Sonnet "bible" per chapter
+(`bible_events.md`, `bible_talk.md`), a rewrite per chapter with verification, then an adversarial review (`review.md`)
+applied straight into `en_*.txt` by `apply_review.py` (its `merge.py` rewrites `en_*.txt` from `out/`: never rerun it alone).
+
+**The Oikawa's arc (step 26 -> 27, `oikawa_hook`).** After Bulbmon, event 711 sets step 27 and leaves the player in the Bug
+Maze Pit's hall (map 0x245, WSTAG540) at (1800,524). While he is unbeaten the hooded dealer is added to that map's figures
+(`def_story_stage_setup`): actor 42 with the Black Market trader's hand-drawn art over it, in VRAM place 6 (the map's third
+figure, actor 78, is left out while he waits), at (1778,502) dir 7, two steps up-left. He calls the player over once per
+visit (the player turns to him) and, after his line (`TALK06` 0xEF entry 5, or 6 after a lost try), fights:
+**Arukenimon Lv28, Mummymon Lv30, VenomMyotismon Lv32** (`def_oikawa_fight`, boss battle template 7, Bulbmon's scenery and
+music: stage 10, `0x60880000`; no escape). The plan's Dinohyumon and MaloMyotismon are not on the disc: Mummymon and
+VenomMyotismon stand in. A defeat is no game over (`def_story_defeat` from WFIGHTMN: the party back as it went in, he
+calls again); beaten, he says `TALK06` 7 (his name is Oikawa) and is gone, the room reaches level 5, and the Guide sends the
+player to the Velvet Room (`DEF_STORY_COND_MARKET`) until he first opens the market behind the counter (`TALK05` 99,
+`def_story_market_opened`, `DEF_STORY_MARKET_OPEN`). The Velvet Room's Black Market is closed before that (he is not in the
+room); the houses' traders of maps 0x20C/0x27B are unchanged.
+
+**The Time Room (step 40, the gatekeeper before the point of no return).** In the Master Room of Asuka (map 0x288, WSTAG311,
+talk file `TALK03` 0xDA) Megadeath's voice opens the Warp Gate to the Gunslinger (a map event of type 14 to map 0x2DD), and
+nothing there leads back. While the step is 0x28..0x2A and `DEF_STORY_GATE_PASSED` is unset, the port holds the gate shut
+(`def_time_warp_closed`); stepping onto it, Igor's voice stops the player, once per step onto it (`TALK03` 311 while the
+Blast quest is not done: finish Gennai's road or prove your own strength; 312 with it; `DEF_STORY_GATE_WARNED`), and the
+Velvet Room's way in stands in the nook left of the gate's platform at (160,440); the room's front door brings the player
+back beside it at (184,448). Through it the room is the Time Room (`def_time_on`, title "TIME / ROOM"): Igor and the three
+challengers (Gennai or, while the quest is still DECEIVED, Myotismon in his shape; the Sepikmon; Oikawa), time stands still.
+**No prize** (owner): it is mandatory and measures the player's level instead of throwing them into a no-return zone. Igor
+opens by recalling the Act II answer (`TALK05` 47..49 by that answer, 50 if never asked; 51 talked to again, 52 after a
+lost or abandoned run, 53 all won); the guests 54 (Gennai), 55 (Myotismon), 56 (Sepikmon), 57 (Oikawa). The upper door
+(open only here) starts a run of three trial areas, each with the room's music, no random battles, the area's own events
+shut and its exits leading back to the room, and the challenger at his spot in VRAM place 4, the player arriving two steps in
+front of him:
+
+| Round | Area | Challenger (actor, spot) | Team (`def_time_trials`, battle template) |
+|---|---|---|---|
+| 1 | Asuka Bridge, mid-span (0x202, WSTAG205) | Oikawa (42, 440,392) | Mummymon Lv56, Arukenimon Lv58, VenomMyotismon Lv60 (301) |
+| 2 | Genbu City's west square (0x26F, WSTAG760) | the Sepikmon (61, 300,480) | Gryphonmon Lv60, SkullMammothmon Lv62, Kimeramon Lv64 (303) |
+| 3 | the middle of the Mobius Desert (0x258, WSTAG635) | the old man (57 = 0x39, 570,470) | Gennai: Valkyrimon Lv63, Knightmon Lv65, Zanbamon Lv67; Myotismon (quest DECEIVED): Puppetmon Lv63, Machinedramon Lv65, Piedmon Lv67 (303) |
+
+A trial is one battle of the three brought in one after the other (a boss battle's own entrance, as the DRI Gauntlet's),
+Megadeath's scenery and music (stage 17, `0x608C0000`), no escape; his line before it is `TALK05` 58..61 and after a win
+62..65 (by row). A won trial skips the results screen (`def_time_won`: no XP, no Bits) and the next area follows; a lost one
+is no game over (`def_time_defeat`, the party as it went in) and, like walking out of an area, sends the player back to the
+room with the run reset (`story_gate` 0). The third win sets `DEF_STORY_GATE_PASSED` and the gate opens. The run is RAM (a
+save state carries it); the save keeps the gate bits and `story_gate` (0..3 trials won in the current run). `tools/gen_time_room.py
+[--apply]` builds the table: each species' stats at its level from its own rows in the game's battles
+(`gen_dri_challenges.stage_of`) and, as the template, an existing boss battle near the trial's top level (not one of the
+special ones, none with the final bosses); the levels climb towards Galacticmon's. Spots were measured on the attribute map:
+`DW3_TIME_TEST="map:x:y:step"` (hex or decimal) warps to the map at the first idle frame, then sets the step and reloads it
+(0x2B also holds Galacticmon, as event 1080's end); it logs the player's position every 30 frames and the landed map's size,
+and with `DW3_TIME_SURVEY` also each map event's cells (attribute layer 7) and a free-ground grid. **A set battle** (a trial,
+the Oikawa's) goes through `def_time_set_battle`, which sets the scenery and music itself: `fieldstg_start_battle` leaves
+them as the last battle had them, garbage right after a load, which crashed FIGHTSTG (`stage < 0` keeps them for a caller
+that set them).
+
+**The Guide's story conditions** (`definitive_quest.c`): a quest row whose flag is `STORY(cond)` (`DEF_STORY_FLAG` 0xF000 |
+cond) asks `def_story_cond` instead of a game flag: `DEF_STORY_COND_SEIRYU_ASK` (step 4, map 0x230, "The Seiryu Leader": ask
+Repeating Tom), `_SEIRYU` (step 4, map 0x230, "The missing Leader"), `_OIKAWA` (step 27, map 0x245, "The hooded man" bars the
+way), `_MARKET` (steps 27..45, map 0x20F, mission "The Black Market"). `tests/port/definitive_quest.py` accepts the
+`STORY(...)` rows (its driver stubs `def_story_cond` to 0).
+
+**Saved state** (card record 2, after the Blast bytes): `story_flags` (u16: bit 0 `DEF_STORY_IGOR`, 1 `_SEIRYU_CALL`, 2
+`_SEIRYU_DONE`, 3 `_OIKAWA_BEATEN`, 4 `_MARKET_OPEN`, 5 `_GATE_WARNED`, 6 `_GATE_PASSED`, 7 `_SEIRYU_ROOM`; bits 12..14 the
+room's level last greeted), `story_gate`, then the 40 answer bytes. The port-owned talk entries (served in every language,
+English until translated: `def_story_text_own`, `def_time_text_own`, `dw3_velvet_text_own`): `TALK01` 178; `TALK05` 16..20,
+47..65, 99; `TALK06` 5..7; `TALK03` 311/312; Tom's `TALK01` 79 and the opening's event texts 1..4 are replaced only while
+their hook holds (`def_story_text`).
+
+**Hook points in the game's code** (all under `PC_PORT`): `src/fieldstg/fieldstg_event.c` (`def_story_event_dialog` before an
+event dialog, `def_story_event_command` for command 0x7F, `def_story_event_script` when an event starts);
+`src/fieldstg/fieldstg_80087DB0.c` (stage setup: `dw3_velvet_field_loaded`, `def_time_stage_setup`, `def_story_stage_setup`;
+idle step: `def_story_frame`, `dw3_velvet_frame`, `dw3_velvet_draw`); `src/fieldstg/fieldstg_80085590.c`
+(`dw3_velvet_title_window`: VELVET / SERVER or TIME / ROOM); `src/wstag/wstag820.c` (`def_story_hold_galacticmon`);
+`src/wfightmn/wfightmn_800A6440.c` (`def_time_won` skips the results; `def_time_defeat`, `def_story_defeat`: no game over);
+`port/game/definitive.c` (`def_time_battle_begin/_end`, `def_story_battle_begin/_end` with the other battle hooks;
+`def_story_savestate`, `def_time_savestate` in `def_savestate`); declarations in `include/port.h` and `definitive.h`.
+
 ## Super Rare hunts
 
-**Status: in progress. Built and played in game (tutorial end to end); not committed yet** (the commit waits for the Blast
-session, since `definitive.c/.h`, `definitive_bestiary.c`, `include/port.h` and the texts are shared, and
-`definitive_recolor.c` calls `def_blast_dark` and `def_purify_fighting`). Old saves do not matter ("nobody is playing yet,
-it is all debug").
+**Status: done, tested in game (tutorial end to end, 2026-11-17) and committed** (with the Blast work in `8c0971b`, since
+`definitive.c/.h`, `definitive_bestiary.c`, `include/port.h` and the texts are shared and `definitive_recolor.c` calls
+`def_blast_dark` and `def_purify_fighting`; the skins page in `eb2fa36`). Old saves did not matter while it was built
+("nobody is playing yet, it is all debug").
 
 ### The owner's decisions
 
@@ -1291,7 +1829,8 @@ it is all debug").
 - Colour: a real palette swap on Super Rares **and** regional Rares.
 - **Tutorial** (asked later): a level-3 hunt the Sepikmon gives in the Velvet Room. The game intercepts the first arrival
   at **Seiryu City** (the first city after Asuka) and pulls the player into the Velvet Room for the first time. Target:
-  **Ogremon in Central Park**, near Asuka.
+  **Ogremon in Central Park**, near Asuka. (Since the story layer, 2026-11-17, the first visit comes through Repeating
+  Tom's news at step 4 instead: see [The story layer](#the-story-layer-velvet-room-in-the-main-story).)
 - **Compass around the territory** (asked later): it also shows on maps up to 3 exits outside the territory, to lead the
   player there (in the tutorial the territory is only Central Park). One rule for all hunts.
 
@@ -1325,8 +1864,11 @@ it is all debug").
 
 ### Screen, compass, call (`definitive_superhunt_screen.c`, `def_superhunt_frame` in the field's idle step)
 
-- **Seiryu City call:** area 0x0E, story step >= 4, once (`DEF_SUPER_FLAG_MET` = 1), through `dw3_velvet_pull`. The Sepikmon
-  speaks first.
+- **Seiryu City call:** now the story layer's step-4 hook (Repeating Tom's news on the inn's stairs opens the ways in; Igor
+  shows the room, the screen cuts, the Sepikmon calls the player over with `TALK05` 17; see
+  [The story layer](#the-story-layer-velvet-room-in-the-main-story)). The old direct pull (area 0x0E, story step >= 4, once,
+  through `dw3_velvet_pull`) is gone: `dw3_velvet_pull` has no caller. `DEF_SUPER_FLAG_MET` (1) still marks the Sepikmon's
+  first meeting.
 - **The board:** 13 hunts with level, state (NEW/ACTIVE/DONE/--), where (sector and server, or "Central Park near Asuka
   City"), HP left, crystals and price. Confirm starts; confirming twice cancels the active one; Square sells a crystal;
   Circle/Triangle exits. On the first opening the tutorial starts by itself (`DEF_SUPER_FLAG_TUTORIAL` = 2).
@@ -1348,6 +1890,11 @@ it is all debug").
   encounter (the Rush question; Confirm fights).
 - Link failures on `__start_dw2003_data_wstagNNN` come from objects cut by two builds at once: move the `wstagNNN` `.o`
   files aside and rebuild.
+- To play in Portuguese through the MCP: write a settings file with `{"schema": 1, "video": {"window": false}, "mods":
+  {"preset_language": {"enabled": true, "language": "portuguese"}}}`, pass its path as `game_start`'s `config`, then
+  `state_load` an English state. To see the Super Rare colour without hunting: with a hunt active, `mem_write` `run+6`
+  (`run.battle`) = 1 before an ordinary battle, so `def_super_battle_ready` holds for it (shot
+  `.dumps/tasks/hunt/play/super_recolor.png`).
 - Seen in game: a Super Rare in Phoenix Bay (fires on the point, comes alone, flees at 25%, changes map, keeps HP, returns
   buffed, win gives the crystal); the whole tutorial (Seiryu call, Sepikmon, board, compass COLD..BURNING in Central Park,
   Ogremon, reward panel, crystal in MATERIALS); the regional colour (RedVegiemon).
@@ -1378,15 +1925,20 @@ Blast dark forms through the same path (`DEF_RECOLOR_DARK`: luminance 40%, sligh
   `fightstg_model_mesh_set_texture`) is read from VRAM (`psyq_gpu_vram`), rotated and written back once
   (`def_recolor_mesh_clut`).
 - Each model has its own VRAM page (`fightstg_slots_vram`), so the party does not change even when it is the same species.
+- Owner answer (2026-11-17, PRD 4 open decision 1): a boss may be the Rare Target of several regions, with a different
+  colour in each. Today the 71 targets are 71 distinct species, so nothing repeats; if one ever does, `rc_degrees` must
+  turn the hue per region (for example the target's index times a step, skipping the Super Rare's 200 degrees) instead
+  of the fixed 120 degrees every regional Rare uses now.
 
 ## Hero skins
 
-**Status: base done and tested; the NPC and the choice screen are missing (in progress).**
+**Status: done, tested in game (2026-11-17) and committed (`8c0971b`, the choice page in `eb2fa36`); the choice screen
+is a page of the Sepikmon's board, there is no NPC of its own.**
 `port/game/definitive_skins.c` with the hook `port_girls_reskin` in `girls_power.c`.
 
 - Owner decisions: skins are **for the hero only** (Kail, or Junior without Girls Power); the player's Digimon keep their
-  own colours (painting the team was dropped). Only rare enemies change colour. The NPC will live in the **existing Velvet
-  Room** (no new room); its spot is for the owner to decide when the room is arranged. **Each hunt won unlocks one skin**
+  own colours (painting the team was dropped). Only rare enemies change colour. The first plan was an NPC in the
+  **existing Velvet Room**; it became the Sepikmon board's "Hero Skins" page (see Pending (1) below). **Each hunt won unlocks one skin**
   (a reward that does not touch Bits or XP).
 - 13 recipes, one per hunt (`DEF_SKIN_COUNT` = `DEF_SUPER_COUNT`): skin n opens when `def_super_done() >= n`, so the Ogremon
   tutorial gives the first. Skin 0 is the hero's own colours, always open. Each recipe has two parts, **hair** (the cap on
@@ -1435,7 +1987,8 @@ Blast dark forms through the same path (`DEF_RECOLOR_DARK`: luminance 40%, sligh
 
 ## Blast, Purify and Chosen Evolution
 
-**Status: in progress.** `definitive.c`, `definitive_purify.c`. The Blast Gauge was redesigned.
+**Status: done and committed** (`8c0971b`; the overheat that follows the partner in `ee6fd02`). `definitive.c`,
+`definitive_purify.c`. The Blast Gauge was redesigned. Not yet seen in a real game: a full-gauge battle (see Pending).
 
 ### The gauge
 
@@ -1452,9 +2005,18 @@ Blast dark forms through the same path (`DEF_RECOLOR_DARK`: luminance 40%, sligh
   The turns left are saved with the partner (high nibble of its `REC2_BLAST` byte) and follow it into the next battles, which it starts
   sealed in Rookie; only an inn's rest (Gatomon) clears it, or Gennai for the Chosen Digimon. While it lasts the Digimon also starts the battle as its
   Rookie (not its shown form) and the Tag menu offers it only as its Rookie (`def_blast_heated`).
-- **The 999 cap:** the Blast's boost stops at 999; only the Chosen boost (+50%) goes up to 9999.
+- **Boost** (`def_blast_boost_pct`, applied to the five stats by `def_blast_boost_stats` in `fightstg_rules_get_stats`'s party
+  side): while the quest is DECEIVED the false Gennai (Myotismon) sells the Blast a stat boost in his panel: one step goes on
+  sale with each partner+form recorded (up to the quest's ten), the k-th for k x `DEF_BLAST_BOOST_BITS` (1000) Bits, each
+  +`DEF_BLAST_BOOST_STEP` (3)% to the Blast form's stats, so +30% at ten (texts `$PfBoostOffer`, `$PfBoost*`). The steps bought
+  are saved (`blast_boost`, record 2). The Chosen Evolution has `DEF_CHOSEN_BOOST_PCT` (50)% from the start.
+- **The 999 cap** (done): the Blast's boost stops at 999 (a stat already past it keeps its value); only the Chosen boost
+  (+50%) goes up to 9999 (`def_blast_boost_stats`, the bound keeps the damage formulas in range). Not yet seen in a real fight.
 - **DV Plug** (item 76): fills the gauge and triggers at once, costs 10 TP (`DEF_BLAST_PLUG_TP`); after the quest it revives to
-  Rookie at 1 HP / 1 MP.
+  Rookie at 1 HP / 1 MP: it goes through the game's revive path (item 0x46, `fightstg_8008D3B4.c`), which revives every fallen
+  partner, each as its Rookie with the Blast flag off (`def_blast_plug_revive`; a partner still overheated stays sealed); its
+  description is then `$PlugRevive` instead of `ITMINF` 76 ("Revive: Rookie form, 1 HP and 1 MP" / "Revive em Rookie com 1 HP
+  e 1 MP"). Before the quest it is still the curse.
 - **Temptation:** a full gauge with a knocked-out partner, or the acting Digimon at <= 25% HP, makes the Blast button pulse
   red (8 ticks on, 8 off) with "Blast calls...".
 - Save: eight s16 gauges at slot+0x26F0.
@@ -1476,8 +2038,8 @@ Seraphimon. "Chosen needs Rookie" shows in the menu. Test: `tests/port/definitiv
 
 ### Pending
 
-Breaking the 999 stat cap; the main-story onboarding hooks (out of scope, the owner is changing the main quest on their own);
-`PF_SND_CURSE` is a provisional sound; a real playtest of a full-gauge battle (a normal battle with WEAK/stagger filling the
+The main-story onboarding hooks (out of scope, the owner is changing the main quest on their own);
+`PF_SND_CURSE` is a provisional sound; the Chosen's break of the 999 cap is done but never seen in a real fight; a real playtest of a full-gauge battle (a normal battle with WEAK/stagger filling the
 gauge to 1000 was never seen in a real game; the rule is in the `DW3_BATTLE_LOG` lines "blast gauge hit").
 
 ### Blast: how it was designed (the owner's text and the decisions)
@@ -1495,7 +2057,7 @@ gauge to 1000 was never seen in a real game; the rule is in the `DW3_BATTLE_LOG`
   between waves (like the DRI Gauntlet), all the forms they forced; winning returns the TP sacrificed. Phase 3, total mastery: summon and purify every form on the
   Blast list; reward: permanent stat buffs, and the Blast Gauge is purified into the definitive evolution (DigiChosen / Gennai concept): no after-battle debuffs;
   **Rookie rule** (start in the base form, accepting less speed and stats, then warp-digivolve straight to the canonical/chosen Mega); and it is the only mechanic
-  able to exceed the 999 stat cap in combat, in a controlled way (still open: see Pending).
+  able to exceed the 999 stat cap in combat, in a controlled way (done: the Chosen's boost goes up to 9999, see The gauge).
 - **The first implementation (2026-11-17 morning)**, later replaced: a pool of 10 forms by level band (<4 Devimon; <19 Devimon/SkullGreymon/Digitamamon; <39
   SkullGreymon/Myotismon/Cannondramon; <70 Myotismon/BK WarGreymon/GranKuwagamon; 70+ BK WarGreymon/MaloMyotismon/Beelzemon/Diaboromon; the partner took
   `pool[partner % size]`; `DW3_BLAST_FORM=line` forced one), a fixed list of 10 forms, a fee per form and a group mirror. The owner's redesign (afternoon, answer
@@ -1542,8 +2104,12 @@ Ivy and Kail become Junior; Smith Junior keeps his name). Portuguese swaps only 
   0x771 through `port_girls_tim`. `port_girls_refresh` drops the cache.
 - Method: head match against idle heads including mirrored; a whole-frame swap for animations 1, 4, 7, 9, 12 and 51; the run
   bust from her walk frame; hand-drawn retouches in `girls_power_art.h` (174 frames, all drawn).
-- Tools: `tools/girls_power_preview.py` and `tools/girls_power_draw.py` (subcommands `anims`, `text`, `refs`, `show`, `moves`,
+- Tools: `tools/girls_power_preview.py` (`OUT_DIR [SCALE]` writes before/after sheets; `zoom OUT.png FILE_ID FRAME,FRAME,...
+  [SCALE]` shows per frame the disc original, the automatic repaint, the retouched result and the other's frame it was
+  made from, and prints the automatic frame's rows to start a retouch from) and `tools/girls_power_draw.py` (subcommands `anims`, `text`, `refs`, `show`, `moves`,
   `edit`, `base`, `build`, `check`). Debug: `DW3_GIRLS_DUMP`, `DW3_GIRLS_NUMBERS`. Test: `tests/port/girls_power.py`.
+  `girls_power_art.h` holds `GP_PASTE` (a piece of a disc frame read at run time; how 1 mirrored, 2 through the colour
+  table) and `GP_ART` rows (`.` keeps the pixel, `0` empties it, `1`-`9`/`A`-`F` paint it); no disc pixel is stored there.
 - Pending: the owner's full playtest; weak spots (a one-pixel rod, a 24-wide pigtail clipping, lying frames).
 
 ### Girls Power: how it was built, decisions, and the hand-drawing workflow
@@ -1589,6 +2155,14 @@ in that list (they already use real sprites). **All 174 are drawn**; what is lef
 `P011MINO` `190` (her file becomes Junior in **his** palette) 19 (2026-11-15). Redrawn after the owner's review of 2026-11-16 (sets `ladder`, `fish_profile`, `fish_34front`, `fish_34back`): `3CC` 2-10, 14, 15 whole (one bent arm from her shoulder, legs alternating
 as his; 0, 1, 11-13 as first done); `3CA` 27-33 (her 3/4 front head, bowed, instead of a profile head pushed 5 px ahead of her shoulders), 37-39 (striking arm bent, far foot forward), 41-48 and 14-19 (head back over her shoulders, down instead of forward);
 front 55-68 and back 0-13 looked at, not changed. **A head that leans is never slid ahead of the shoulders: it goes down, or it is another head (turned), as his.**
+
+**Where each drawn frame is** (from the frame comments in `girls_power_art.h`): kick `3CB` (`P002PLYK`): back 0-4, 3/4 back 5-9, profile
+10-14, 3/4 front 15-19, front 20-24. Fishing `3CA` (`P002PLYF`): back 0-13, 3/4 back 14-26 and 69, profile 27-40, 3/4 front 41-54, front
+55-68. `3C9` (`P002PLYD`) 0-6: the actions, all 3/4 from the front. `3CC` (`P002PLYL`) 0-15: the ladder (up over the edge, at its foot,
+climbing 3/4 from behind, the top, jumping down and landing, holding on). `186` (`P001PLAY`): the run 30-69 and the scene gestures listed
+above. `190` (`P011MINO`, Junior in his palette): 28, 29, 36-52. `187` (`P002PLAY`): the run 30-69. The run frames of `186` and
+`187` (80) are on top of the 174: the first hand retouches of `187` came with the run bust (`5214165`), the rest were drawn later
+(`685214b`, `86c6d0c`, `9f21e31`).
 
 Tools (`FILE` is hex, `FRAME` decimal sub-file number): `tools/girls_power_draw.py edit FILE FRAME` (creates `.dumps/tasks/girls-power/draw/<FILE>_<FRAME>.txt` from the header; no-op if it exists), `base FILE FRAME` (rewrites the drawing as automatic frame + its `paste`
 lines; hand pixels are lost: use right after changing pastes), `show FILE FRAME [FILE:FRAME ...]` (run with `uv run --no-project --with pillow`; writes a PNG with disc / auto / drawing on a 4-px grid, the references (hers in `190` by default), all 3x including the
@@ -1689,6 +2263,9 @@ raised from 8 to 12 for the `inspect` option. Details: [`docs/LAUNCHER.md`](docs
   other languages (FR/IT/DE/ES) show the disc's text for the original entries and English for port-owned ones (the
   entries in `dw3_velvet_text_own`). The EU disc already has the original campaign in FR/DE/IT/ES; only the definitive
   delta (the guide, bestiary, hunt, forge, Black Market, DRI, `SKLINF`, Velvet Room, Super Rare screens) is missing there.
+- **The story rewrite** (`en_story.txt`, `en_kaili.txt`, `pt_kaili.txt`, `en_choices.txt`, `en_echoes.txt`, generated into
+  `port/game/definitive_story_text.c`, checked by `tools/check_story_text.py`) is English only; formats, counts and the
+  lookup order are in [The story layer](#the-story-layer-velvet-room-in-the-main-story).
 - PT pipeline: `tools/translate_ptbr.py` talks to a local Gemma server (no sampling parameters sent; `--benchmark` compares
   reasoning low vs medium on 20 real strings; `--tier p0|all`; `--export`). Glossary: keep in English `WEAK`, `RESIST`,
   `OVERFINISH`, `Baton Pass`, `Relay`, `Libra`, `Digimon`, `Digi-Lab`, `Load Tech`, `Blast Gauge`, `Bits`, `TP`, `MP`, `HP`
@@ -1718,11 +2295,13 @@ The card file is 0x8000 bytes.
 | What | Where | Notes |
 |---|---|---|
 | Record 1 (BEST) | 0x7800 + slot*0x100, part 5, "BEST", version 1 | XOR checksum over the 193-byte species table; `REC_EXTRA` at 0xD0, 48 bytes, marker "X1" |
-| Record 2 (HUNT) | 0x7B00, part 6, "HUNT" | rare items, DRI, Blast data, skin, Super Rare state |
+| Record 2 (HUNT) | 0x7B00, part 6, "HUNT" | rare items, DRI, Blast data, Blast boost, story flags and answers, skin, Super Rare state |
 | Record 3 (BLST) | 0x7E00 + slot*0x80, part 7, "BLST" | up to 10 partner+form entries of 11 bytes: partner, step, 5 stats, hp, best-stat index, best value |
 | Slot tail | Blast gauges (8 x s16) at slot+0x26F0; MP/TP converter marker at 0x26EC | "MPV1" is MP only, "DFV2" is MP and TP |
 
-STGMCARD steps: 0x49 read and 0x37 write for record 2; 0x4A read and 0x38 write for record 3.
+STGMCARD steps: 0x48 read and 0x36 write for record 1; 0x49 read and 0x37 write for record 2; 0x4A read and 0x38 write
+for record 3. The slot size is 0x2700 (`memcard_init`, `src/main/memcard.c`), so three slots fit in 0x7800 and the card's
+last 0x800 bytes hold eight 0x100 records the game never writes.
 
 `REC_EXTRA` (record 1, offsets): 0-1 "X1"; 2 flags (`DEF_SAVE_HARD` 1, `DEF_SAVE_KAILI` 2); 4-7 Guardromon network mask; 8
 region_area; 9 region_chain; 10-25 sixteen common materials (u8, cap 99); 26-27 replica bits (16); 28-29 and 30-33 DRI
@@ -1730,10 +2309,21 @@ unlocked/best stage per one PRD (see the DRI note above).
 
 Record 2: 128 rare-item slots (cap 99) plus "ever held" bits; DRI bytes 152-153 unlocked and 154-157 best stage (2 bits
 each); the Blast data (next step per partner `REC2_BLAST`, owed TP, quest stage, purified bits, the chosen partner and
-charge); the skin byte (`REC2_SKIN`); and the last 24 bytes, `DEF_SUPER_RECORD`.
+charge); then, still in the Blast block (`REC2_BLAST_QUEST` + 5..8), `blast_boost` (the boost steps bought), `story_flags`
+(u16: the story hooks' bits 0..7, `DEF_STORY_*`, and the Velvet Room's level last greeted in bits 12..14) and `story_gate`
+(the Time Room's trials won in the run); at `REC2_ANSWERS` (= `REC2_BLAST_END`) the 40 bytes of story answers
+(`DEF_STORY_ANSWERS` 160 x 2 bits, low bits first; see [The story layer](#the-story-layer-velvet-room-in-the-main-story)); the
+skin byte (`REC2_SKIN`); and the last 24 bytes, `DEF_SUPER_RECORD`. Compile-time checks keep the Blast block before the Super
+Rare bytes and the answers before the skin byte; an older record reads all of these as 0.
 
 Rules for any new saved state: write only when something is non-zero; zero it in `def_bestiary_reset`; register it in
-`def_bestiary_savestate` (`PORT_STATE_VAR`); validate on read (the extras have no checksum). Converter:
+`def_bestiary_savestate` (`PORT_STATE_VAR`); validate on read (the extras have no checksum). In detail (PRD 4's
+checklist): `def_bestiary_record_write` writes record 1, and its "X1" part, only when the table or `extra_any()` has
+something, so a new `REC_EXTRA` field must enter `extra_any()`, or a save holding only that state loses it; the record is
+zeroed before writing and read only when "X1" is present, so an old save reads zero for every new field and a save with
+nothing gained stays byte for byte the same; `out[5]` (the XOR checksum) covers only the species table, so clamp on
+read (a material count past `DEF_HUNT_MATERIAL_CAP` reads as the cap); never grow `REC_EXTRA`: add a record per slot
+instead (record 2 "HUNT" and record 3 "BLST" did exactly that). Converter:
 `tools/convert_save_mp.py card1.mcd` (`--dry-run`; writes "DFV2"). Tests: `tests/saves`, `tests/port/definitive_bestiary.py`.
 
 ## Building and running (the port)
@@ -1829,17 +2419,17 @@ Savestates are valid only for the binary that saved them.
 - **Android** (`android/`, `tools/build_android.sh`): `arm64-v8a`, SDL3 GPU, a touch pad (`android/touch_pad.c`), SAF disc
   picker, `FLOATING PAD` toggle. The original design (a Kotlin overlay, Fase 0 audit of `psxstack` for the NDK) is in the
   backlog list below.
-- **Handhelds / PortMaster:** entry `handheld/Digimon World 3.sh` (+ `dw3-menu.py` legacy), `portmaster/` (`port.json`
+- **Handhelds / PortMaster:** entry `handheld/Digimon World 3.sh` (the old `dw3-menu.py` menu was removed in `cbf34ce`; the C launcher `dw3-launcher` replaced it), `portmaster/` (`port.json`
   arch `["armhf","aarch64"]`), docs `docs/HANDHELD.md`, `docs/XF35H.md`. Probe with `Debug logs: heavy` and `logs/probe.txt`.
 - **Console deploy handoff (ssh to a handheld, procedure of 2026-11-12; it predates the multi-arch package: the binaries are now `dw2003.armhf` / `dw2003.aarch64` and `dw3-launcher.*`, see `docs/HANDHELD.md`):** the owner supplies `<USER>@<IP>`, the password or key and the PortMaster folder
   (usually `/roms/ports`, or `/roms2/ports`, `/storage/roms/ports`; find it with `ssh <console> 'ls -d /roms*/ports /storage/roms/ports 2>/dev/null'`); `PORTS` below.
   Source is `/home/alex/git/my/dw3/portmaster/` (the device mirror `tools/build_arm.sh` writes the new build into): copy `dw3/dw2003` (the 32-bit ARM binary; check `file` says
-  `ELF 32-bit LSB ... ARM` and the date is current, else run `tools/build_arm.sh`, Docker image `dw3-armhf-builder`), `dw3/mods/`, and only if changed `dw3-menu.py`, `ledd.py`, `probe.sh`,
+  `ELF 32-bit LSB ... ARM` and the date is current, else run `tools/build_arm.sh`, Docker image `dw3-armhf-builder`), `dw3/mods/`, and only if changed `ledd.py`, `probe.sh`,
   `README.txt` and `Digimon World 3.sh`. **Never overwrite or delete:** `PORTS/dw3/game/` (the player's disc), `card1.mcd`, `card2.mcd`, `settings.json`, `pad.map`, `tui.state`, `logs/`,
   `log.txt`, `menu.log`; no `rsync --delete`, no `scp -r` of the whole folder. **Step 1, mandatory backup:** create `PORTS/dw3-backup-<date>` with `card1.mcd`, `card2.mcd`, `settings.json`,
   `pad.map`, `tui.state`, `dw2003.old`, `mods.old`, the `.sh`; then bring a copy of the saves to `/home/alex/git/my/dw3/backups-console/` and check they exist and are not empty (`card1.mcd`
   should be 131072 bytes; if the player never saved, tell the owner and go on). **Step 2:** `scp` the binary and the mods, `chmod +x`, compare `sha1sum` local and remote; the mods `party_xp`, `xp_boost`
-  and `evo_buff` no longer exist (rules of the game or removed): **move** the old folders into the backup, do not delete; `dw3-menu.py` also changed (no XP screen, no EVO BUFF), copy it; an old
+  and `evo_buff` no longer exist (rules of the game or removed): **move** the old folders into the backup, do not delete; the launcher also changed (no XP screen, no EVO BUFF); an old
   `settings.json` with those keys keeps working. **Step 3, old saves and MP (the owner's decision, never alone):** the game does not migrate old saves (they open with the old MP); to convert,
   run `tools/convert_save_mp.py --dry-run` then the real one **always on the local copy** in `backups-console/`, only if the owner says so, and only then `scp` the card back after the step-1
   backup. The card gained a bestiary record at the file's tail (last 0x800 bytes, never used by the game): an old save opens with everything "???". **Step 4, verify:** `ls -la PORTS/dw3/`, ask the owner to
@@ -1922,37 +2512,49 @@ Not started or only staged unless the entry says otherwise. Each entry says wher
 - **FR/DE/ES/IT delta of the Definitive text (staging 15):** about 250 lines of `en.txt` plus the `def_str_*` strings; needs per-language override files and the tool options that do not exist yet (Texts above).
 - **PortMaster submission:** the package is checked (`portmaster/make_release.sh`, `dist/dw3.zip`) but **never submitted**: it needs a Discord testing thread and tests on CFWs this machine is not; publishing is the owner's call (plan 1).
 - **Telemetry Harness and Plugin Gatekeeper (staging 16):** a separate PRD v0.1 draft, unrelated to the game; the whole PRD is condensed in History.
-- **Combat ideas never done:** Numemon resistant to every element except Physical (PRD 3 roadmap); **elemental field rebalancing** (the multipliers and effects of field techniques; the PRD 2 "out of scope" list also names a design for the WEAK/resist animation, which was
-  done); the Layer 6 technique candidates (Combat design record); the Super Hard rebalance by the owner.
+- **Combat ideas never done:** the Layer 6 technique candidates (Combat design record); the Super Hard rebalance by the owner.
 - **Onboarding hooks in the main story** (the Velvet Room "section 6": a forced Guardromon interaction after the second teleport point; steering the player through a wardrobe door when rare materials start to appear): out of scope, the owner is rewriting the main quest elsewhere and will make guide quests.
-- **Skin ideas:** a price (free or one crystal), a 3D preview; Digimon skins were dropped. **Door art:** hand-drawn door sprites beside wardrobes/cupboards (Velvet Room).
+- **Skin ideas:** a price (free or one crystal), a 3D preview; Digimon skins were dropped. (The Velvet Room's hand-drawn door sprites were dropped: the owner vetoed drawn doors on 2026-11-18; the ways in are lights on each inn's scenery.)
+- **Velvet Room / story ideas:** Igor's own figure (his head is drawn; the body is still the game's actor 109, "until his own art is drawn" in `definitive_velvet.c`); a drawn figure for the mentor (the old man `0x39` "until one is drawn"); the Adventure tune (`tools/music_lab/`, a first pass) is not tied to any cue.
 
 ## Pending work / open decisions
 
 Every item the owner wanted or planned that is not done yet, with its source plan (the plan files may be deleted; the names are kept for reference). Nothing here is in the game unless it says "partly".
 
 **Hunt, Super Rare, skins**
-- **Commit** the Super Rare front (`super-rare-hunts.md`): it waits for the Blast session to commit its part (shared files `definitive.c/.h`, `definitive_bestiary.c`, `include/port.h`, texts; `definitive_recolor.c` calls `def_blast_dark`,
-  `def_purify_fighting`); then commit what is left in one commit that compiles by itself. (Skins ride in the same commit, `skins-npc.md`.) Per the git status at the time of writing, `definitive_superhunt*.c`, `definitive_skins.c`, `definitive_map_graph.c`, `definitive_purify.c`,
-  `definitive_recolor.c` are still untracked.
+- **Commit**: done. The Super Rare front, the skins, the recolour, the purify and the map graph are in `8c0971b`; the
+  regional forge, the replica Cores and the skins page in `eb2fa36` and `89c46af`; the Black Market UI pass in `def4d30`;
+  the Elemental weapons and Trade-off pieces in `11d9e54` and `188618a` (git checked 2026-11-18: nothing of these is
+  untracked).
+- **A boss repeated across regions** (the owner's 2026-11-17 answer): if the target table ever gives two regions the same
+  species, the recolour must turn the hue per region (see Recolour); not needed with today's 71 distinct species.
 - **Check in game**: done 2026-11-17 (Super Rare colour, compass outside the territory, MATERIALS cut names EN/PT, PT texts); the 50% flee is host-tested only.
-- **Sepikmon's position** in the room (176,306): the owner decided on 2026-11-17 to keep it there.
+- **Sepikmon's position** in the room: done; moved on 2026-11-18 (owner) upstairs to (86,214), dir 7, left of the Demon Bell's keeper (it was (176,306)).
 - **Skins choice screen** (`skins-npc.md`): done 2026-11-17 as the Sepikmon board's R1 page (no NPC of its own); the reward panel's "New skin: <name>" line is done (2026-11-17, seen on screen); tested with Kail (2026-11-17); skins on portraits, menus and the name/card screen dropped by the owner.
 
 **Velvet Room** (`velvet-room-plan.md`)
-- Hand-drawn door sprite and moving the 13 door positions beside the wardrobes (the owner's answer of 2026-11-16); the owner's approval of the 13 positions as they are; the mentor's approval or replacement (old man `0x39`, line provisional); the room's music (now `0x3B`, the owner composes);
-  FR/IT/DE/ES lines for `TALK05` 8, 9, 12, 13, 14, 15, 77, 78, 79, 81, 82 and the other port-owned texts; **a memory-card save inside the room** loads as the normal bar (`vl_room` is RAM): acceptable or not is an open question; the owner arranges the room (Sepikmon etc.);
-  testing in game of the whole entry-talk-exit flow by the owner.
+- Done since the plan: the door sprite was dropped (the owner vetoed drawn doors, 2026-11-18: the ways in are lights on each inn's scenery, entered with CIRCLE); the room's music is the owner's arrangement (bank 72, `8042491`); the room was arranged on 2026-11-18 (Sepikmon, Gennai, the pig).
+- Open: the owner's look in game at each inn's light, first the six the judges left "divided" (0x238, 0x25B, 0x25D, 0x263, 0x269, 0x26F; the middle was kept); the mentor's approval or replacement (old man `0x39`, line provisional);
+  FR/IT/DE/ES lines for `TALK05` 8, 9, 12, 13, 14, 15, 16..20, 47..65, 77, 78, 79, 81, 82, 99, `TALK06` 5..7, `TALK03` 311/312, `TALK01` 178 and the other port-owned texts (the story rewrite itself is English only); **a memory-card save inside the room** loads as the normal bar (`vl_room` is RAM; the Time Room's run is RAM too): acceptable or not is an open question;
+  testing in game of the whole entry-talk-exit flow by the owner (the CIRCLE prompt was checked by script on 0x23F, 0x25D and 0x288).
+- Texts that still speak of a "blue door" while the way in is now a light at Seiryu's inn's stage (210,300), not on the stairs: `$TomGone` ("that blue door on the stairs"), the Guide's `$Q4sT` ("a blue door opened on the stairs") and `$M4T` ("by an inn's blue door").
+- **Not tested in a real game (story layer; the owner's tests are one English run):** the opening's cut and Tom's hook were tested by scripts (`.dumps/tasks/story/opening/`, `tom/tom_test.py`), not yet in that run; the Oikawa's arc (the hooded figure's sprite in VRAM place 6 of map 0x245 while actor 78 is left out, his spot (1778,502), the fight, a defeat and the market's opening); the Time Room (the way in at (160,440), the warnings, the trial areas' positions and sprites on 0x202, 0x26F and 0x258, the Myotismon/Gennai switch, a lost run's reset); Igor's dreams by their real triggers (Act I's flag 0x1C0E, Act II after the Bug Maze, the Oinkmon at step 0x26, Act III and the held Galacticmon battle; all were seen only through `DW3_DREAM` or `DW3_TIME_TEST`); the scenes' choices and echoes in a full English run.
 
-**Blast / Purify / Chosen** (`velvet-room-plan.md`): breaking the 999 stat cap with the Chosen Evolution; a real playtest of a full-gauge battle (gauge to 1000 by WEAK/stagger in a real fight was never seen); a final sound for the black screen (`PF_SND_CURSE` is provisional); the main-story onboarding
+**Blast / Purify / Chosen** (`velvet-room-plan.md`): the Chosen's break of the 999 stat cap is done (up to 9999) but never seen in a real fight; a real playtest of a full-gauge battle (gauge to 1000 by WEAK/stagger in a real fight was never seen); a final sound for the black screen (`PF_SND_CURSE` is provisional); the main-story onboarding
 (out of scope).
 **Super Hard** (`velvet-room-plan.md`): a real fight with the Bell was never run; balance of the x1.5 HP / x1.5 Speed / x2 Bits / x2 materials is the owner's.
-**Combat balance** (`definitive-combat-prd.md`): layer 10 is the owner's, by playing; the guidance is in the Combat design record (boss HP first, then the magic clamp). Open design questions never answered: does the enemy get an extra action (unverified in code), the Layer 6 technique candidates, the OVERFINISH 10% (may be lowered).
+**Combat balance** (`definitive-combat-prd.md`): layer 10 is the owner's, by playing; the guidance is in the Combat design record (boss HP first, then the magic clamp). Open design questions never answered: the Layer 6 technique candidates, the OVERFINISH 10% (may be lowered). (The PRD's "does the enemy get an extra action" is answered by the code: no, the chain is the player's only.)
 **Girls Power** (`girls-power-kaili-prd.md`, `girls-power-pixel-art.md`): the owner's full start-to-end playtest and redoing frames they point at (kick, fishing, ladder, lying poses, deck and Digimon name screens, anywhere else Junior might appear); weak spots listed in the Girls Power section.
-**Black Market / texts** (`black-market-ux.md`): PT names "Crest de Recuper" (ITMNAM 320, cut), "Pulse Guard", "Shard de Bits/Bytes"; the colon-as-"0" glyph defect of the 14 px font hits about 30 other port strings (a pass or a font glyph fix); the 11 px font lacks `/ : , '` and accents. The small font's green palette (4, "the bestiary's green") draws an `O` oddly (the Sepikmon board's DONE reads like "D3NE"); the owner likes the look (2026-11-17): kept, not a defect.
+**Black Market / texts** (`black-market-ux.md`): PT names "Crest de Recuper" (ITMNAM 320, cut), "Pulse Guard", "Shard de Bits/Bytes"; the colon-as-"0" glyph defect of the 14 px font hits about 30 other port strings (a pass or a font glyph fix); the 11 px font lacks `/ : , '` and accents. The small font's green palette (4, "the bestiary's green") draws an `O` oddly (the Sepikmon board's DONE reads like "D3NE"); the owner likes the look (2026-11-17): kept, not a defect. Owner confirmations PRD 4 left open ("applied, the owner may change"): the trader (actor 42 on maps 0x20C / 0x27B, now also the Velvet Room), the 12-commons-per-rare rate, and the replica list and prices. Known limit: the replica bit clears only on the per-frame sweep (`def_bm_sweep`), so between a sale or discard and the sweep the shop pays 0 only for an ID no shop sells. The Portuguese of the forge's renamed pieces (Elemental weapons, Trade-off items 292/295/297/298) and of the eight DRI hint pages is the owner's: `pt.txt` still has the plain lines.
 **Translation** (`staging/15`): FR/IT/DE/ES delta; `ã`/`õ` glyph injection check; the `--lang` and `--only-definitive-delta` tool options.
 **Not tested in a real game** (`handoff-definitive-pendencias.md`, `definitive-hunt-economy-dri-prd.md`): (the DRI agent talk: seen 2026-11-17 at Johann, the quest at a party level sum of 87, the hand-in talk without the list and the next one with it; still open: the list's own screen after a real agent talk); a HUNT record
-save and load on a card at a Guardromon save point; the forge requirement line on the real shop screen (and the refusal and max-buy limit, which have only unit tests); the Guide's arrival notice (the log shows it but a capture 30 frames later shows only the map title).
+save and load on a card at a Guardromon save point; the forge requirement line on the real shop screen (and the refusal and max-buy limit, which have only unit tests); the Guide's arrival notice (the log shows it but a capture 30 frames later shows only the map title). Also from the PRDs and the DRI
+task: of the five planned DRI agent checks only Johann's (quest line at sum 87, hand-in, list on the next talk) was seen; a party level sum
+under 30, sum 60+, the DDNA poked into the bag, Agumon poked as joined, and a starter's agent (Ken on 0x258 room 1 with Kotemon joined)
+are untested; that an ordinary NPC with an agent's sprite (43/44/163) on an agent's own map does not open the list (`dri_rookie` should
+refuse it); the floating Rush's level-up stat numbers against the full report screen (same rule, different moment of the draw); combat
+layers 2-4 and progression layers C, E, G, J were accepted by host tests and the owner's play, with no measured timing of the short
+digivolution and no kept screenshot set (the "Enemy x2" indicator against an enemy that really acts twice included).
 **Small fixes** (`handoff-definitive-pendencias.md`): the DRI victory debrief's reward line overflows the panel's right edge ("Metal Power 1 - Metal Power 2 - Metal Pow...", `definitive_dri_screen.c`, reward at +70: split in two lines or shorten); (done, checked 2026-11-17: `def_hunt_battle_end` now counts only result 1; `fightstg_events_end_battle` gives 1 when the enemy side falls, 2 when the party falls, 0 on flight); the floating Rush level-up stat rolls happen at a different moment from the original screen; `docs/images/definitive/definitive_ui.png` predates the per-family screens and needs a new capture; `docs/MECHANICS.md` has a wrong crit range (+148%), fix from the code.
 **Tests not registered** (`scripts/test.sh`): `definitive_dri.py`, `definitive_market.py`, `definitive_economy.py`, `definitive_variants.py`, `definitive_quest.py`, `definitive_rush.py` (run by hand; see Tests).
 **Launcher / battle menu** (`9-Commit...`, `8-Battle...`): the 11 simplification items of plan 9 (done status unverified; History); the `confusion_style` option never existed.
@@ -1999,7 +2601,7 @@ Plans that are closed or only history, kept so the reasons survive. Portuguese o
 - **Plan 5 (environment detection, closed; plan 6 was a mistaken duplicate rejected).** A tester on a Retroid Pocket 5 (Snapdragon 865, ROCKNIX, Wayland) ran the same 32-bit armhf binary by switching the video backend by hand; the plan automated that with zero regression on the reference RK3326. Invariants: branch `feature/env-detect`, no C or runtime changes; reference behaviour (`/dev/fb0` writable, no Wayland) byte for byte (fbdev, framebuffer menu, GLES,
   alsa); renderer by strict allowlist: software unless all of no Wayland, `/dev/fb0` writable, CPU part Cortex-A35 (`0xd04`), Mali node under `/sys/class/misc/mali*` or `/dev/mali0` hold; manual overrides (`settings.json`, `DW3_FORCE_RENDERER`/`DW3_FORCE_VIDEO`) win; unverified assumptions marked `TODO: validate`. Work items: passive probe `handheld/probe.sh` (to `ports/dw3/logs/probe.txt`: kernel/OS, `/dev/fb0`, `/dev/dri`, Wayland socket,
   `timeout 2 pactl info`, `aplay -l`, CPU part, Mali, devfreq, `ldd` "not found" check or "ldd unavailable" without failing, the armhf loader, PortMaster context); `handheld/detect-env.sh` decision order (override, Wayland with a real socket -> `sdl2` + `SDL_VIDEODRIVER=wayland` + menu skip, `/dev/fb0` writable -> `fbdev` + `fb` menu, else `sdl2` with `SDL_VIDEODRIVER` unset); audio pulse if `pactl` answers else alsa;
-  safe menu fallback: `dw3-menu.py` opening `/dev/fb0` in `try/except`, exit code **3** reserved for `FB_UNAVAILABLE` (the script then skips the menu and runs with `settings.json`), `trap pm_finish`, a 32-bit dependency preflight only if `ldd` exists (missing libs -> blocker + `pm_show_error`); the README says headless/Wayland platforms (`DW3_MENU=skip`) configure mods through `settings.json`. Tests planned in 4 simulated states: reference
+  safe menu fallback (historic: written for `dw3-menu.py`, removed in `cbf34ce`): opening `/dev/fb0` in `try/except`, exit code **3** reserved for `FB_UNAVAILABLE` (the script then skips the menu and runs with `settings.json`), `trap pm_finish`, a 32-bit dependency preflight only if `ldd` exists (missing libs -> blocker + `pm_show_error`); the README says headless/Wayland platforms (`DW3_MENU=skip`) configure mods through `settings.json`. Tests planned in 4 simulated states: reference
   (fbdev, fb menu, gles, alsa), Wayland (sdl2, skip, software), unrecognised (sdl2, skip, software, unset `SDL_VIDEODRIVER`), override (`DW3_FORCE_RENDERER=software` wins); a 1:1 regression diff of the variables against the legacy script; a hardware gate on the real XF35H; delivery by pushing the branch to `al4xdev/PortMaster-MV-New` so the tester downloads the zip from GitHub (no local zip). Detection commit `00c4082`.
 - **Plan 7, one idiomatic PortMaster launcher (closed; commit/branch `feature/env-detect`).** Consolidate `handheld/Digimon World 3.sh` and `handheld/dw3.sh` into one script that sources `control.txt` and delegates environment, controls and error dialogs to PortMaster, keeping only game-specific logic (disc detection, the framebuffer settings menu, the targeted GLES enablement); target "about 75% gone" by line count. Process: Stage G a read-only gate note
   `.dumps/tasks/portmaster-launcher-gate.md` tied to the local references (`.dumps/tasks/portmaster-ref/`: the 5058-line `portmaster-ai-complete-reference.md`, `packaging.html`, `porting.html`; provenance in `SOURCE.txt`; never refetch the site, never read `~/Downloads`); Stage C two independent critics attacking the gate note (routes `google-antigravity/gemini-3.8-flash-low` and `xai/grok-4.7`, no shared transcript, no repo edits, no new framework);
