@@ -677,11 +677,12 @@ int def_hunt_target_lead(int rare);
 #define DEF_EQUIP_W_BOOST 100     /* Boost: the turn rate (actions per enemy action = own / enemy Boost, up to 2) */
 #define DEF_EQUIP_W_HIT 25        /* accuracy or evasion: a point is a Boost point for the hit roll alone */
 #define DEF_EQUIP_W_ELEMENT 5     /* a resist point: affinity +0.3 per 999 on WEAK! and open hits only (Dark twice) */
-enum { DEF_EQUIP_SPEED, DEF_EQUIP_ELEMENT, DEF_EQUIP_TANK };
+enum { DEF_EQUIP_SPEED, DEF_EQUIP_ELEMENT, DEF_EQUIP_TANK, DEF_EQUIP_TRADE };
 typedef struct DefEquipVariant {
     short item;                  /* the item's ID: a weapon or armour a shop sells */
-    unsigned char kind;          /* DEF_EQUIP_SPEED, _ELEMENT or _TANK */
-    unsigned char weapon;        /* 1: RecordsWeapon (power, accuracy); 0: RecordsArmor (guard, evasion) */
+    unsigned char kind;          /* DEF_EQUIP_SPEED, _ELEMENT, _TANK or _TRADE */
+    unsigned char weapon;        /* 1: RecordsWeapon (power, accuracy); 0: RecordsArmor (guard, evasion); 2:
+                                  * RecordsAccessory (main and hit unused; the second stat is its penalty) */
     unsigned short main;         /* the new power or guard */
     unsigned char hit;           /* the new accuracy or evasion */
     unsigned char stats[2];      /* the new bonus stats (RecordsBonusStat, 0: none) */
@@ -694,6 +695,10 @@ extern const int def_equip_variant_count;
  * data. Called where def_mp_hook is (a new game, a battle's start) and at every field map, so a loaded save has them
  * before its first shop or status screen. */
 void def_variants_hook(void);
+/* An accessory's second stat (a DEF_EQUIP_TRADE variant's penalty: RecordsAccessory has one bonus, so the variant
+ * keeps the second in its unused unk_09 bytes, the stat then the signed value): 1 and the pair when `data` has one,
+ * added where the game adds the accessory's own bonus (gamestate_get_stats, the shop's preview). */
+int def_accessory_penalty(const void *data, short *stat, short *value);
 /* 1 when text entry `index` of file `file` (a Japanese file ID, as def_text_overrides has it) is a variant's name or
  * description that must not show: a replay script, or DEF_EQUIP_ON 0 (def_text_override then gives the disc's). */
 #define DEF_TEXT_ITMNAM 0x6A      /* the item names' file (records_language + 0x6A), JPN ID */

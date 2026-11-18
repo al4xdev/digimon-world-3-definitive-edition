@@ -9,7 +9,15 @@ Status (2026-11-17, night):
   heads' 50% (at 50 a weapon lost half its damage and the resists hit their 400 cap from tier 4 on). Names: Ember
   Dagger, Mizuchimaru, Sylph Tale, Volt Fang, Shade Gun, Blaze Glove, Tidal Horn, Storm Spear; Raijin Fist and Suijin
   Cannon keep theirs. Seen in game: shop 15's Suijin Cannon. Portuguese names: the owner's translation.
-- **Part 2B (accessory trade-offs): not started**; it needs the two engine hooks described below.
+- **Part 2B: done**: four Trade-off accessories (`TRADES` in `tools/gen_equipment.py`, kind `DEF_EQUIP_TRADE`),
+  the stat +50% over the list's plain piece and the extra paid in a second stat at the budget's weights: Fury Gem
+  (Power Gem: Power +15, Guard -5), Sage Gem (Wisdom Gem: Wisdom +15, Boost -3), Fury Ring (Guard Ring: Power +30,
+  Guard -10), Sage Ring (Spirit Ring: Wisdom +30, Boost -5). Each list converts the piece of a stat the other list
+  keeps plain. The penalty sits in RecordsAccessory's unused `unk_09` and `def_accessory_penalty` adds it in
+  `gamestate_get_stats` and the shop's `stitshop_info_get_stats` (an item ID was not needed: the data pointer is
+  enough). Host test: `definitive_variants.py` (penalty with `def_on`, none in a replay script). Seen in game: shops 1
+  and 16, the preview shows Power up in blue and Guard (or Boost) down in red. Portuguese texts of 292/295/297/298
+  (pt.txt still has the plain pieces' lines): the owner's translation.
 - Part 2 needs the texts (`tools/text_override/*.txt`, `tools/gen_text_override.py`, the generated
   `definitive_text*.{c,inc}`). Those belong to the story session until it says its types are done. Part 2 also
   creates items, so the owner approves the list first (PRD rule).
@@ -210,8 +218,8 @@ best plain item, and `--check` refusing straight upgrades. A new archetype adds:
   - It must go in the two places that add an accessory's bonus:
     - `src/main/gamestate.c:928`, the party's stats in and out of battle;
     - `src/stitshop/stitshop_800859C0.c:972`, the shop's preview.
-  - In both, under `PC_PORT`, add `def_accessory_extra(item, &stat, &value)` from a small generated table. The
-    item ID is not in scope at :928 today, but `items[j]` is.
+  - In both, under `PC_PORT`, `def_accessory_penalty(data, &stat, &value)` (done: the penalty is stored in the
+    accessory's unused bytes, so no table lookup by ID).
   - The FIGHTSTG read at `fightstg_8008D3B4.c:9689` is a crest's MP cost, not a stat, so it needs nothing.
   - Check that the preview's stat page shows the penalty in red, as for the Tank pieces.
 - **Without the hook:** a single bigger stat is a straight upgrade, which the rules forbid. So B is

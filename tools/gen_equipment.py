@@ -10,6 +10,10 @@ for a party of two or three, one of each in every equipment shop's goods (a "tie
   - Tank: body armour or a shield above the tier's best guard, with Spirit, paid with Boost.
 And a fourth, picked by hand (ELEMENT_WEAPONS below, not by the selection rule): the Elemental weapon, a plain
 one-handed weapon that gives up power for one family's resists.
+And the Trade-off accessories, also by hand (TRADES below, forge-variety.md Part 2B): a Gem or Ring that gives
+TRADE_GAIN % more of its stat than its list's plain piece and pays the extra in a second stat, at the budget's weights,
+so it scores what the plain piece does. RecordsAccessory has one bonus; the penalty is kept in its unused bytes and
+added by the port (def_accessory_penalty).
 
   tools/venv/bin/python tools/gen_equipment.py            # write port/game/definitive_equipment.c and the review list
   tools/venv/bin/python tools/gen_equipment.py --check    # exit 1 if the committed table is not the rule's, or a
@@ -63,7 +67,7 @@ STAT = {1: "Power", 2: "Guard", 3: "Spirit", 4: "Wisdom", 5: "Boost", 6: "Charis
         11: "Wind", 12: "Thunder", 13: "Machine", 14: "Dark"}
 ENUM = {v: k for k, v in BONUS.items() if k != "0"}
 FAMILIES = [(8,), (9, 10), (11,), (12, 13), (14,)]  # definitive_mask.c's: Fire, Water+Ice, Wind, Thunder+Machine, Dark
-SPEED, ELEMENT, TANK, ELEMENT_WEAPON = 0, 1, 2, 3
+SPEED, ELEMENT, TANK, ELEMENT_WEAPON, TRADE = 0, 1, 2, 3, 4
 # The Elemental weapons (forge-variety.md Part 2A, the owner's list of 2026-11-17): one per tier, two in the last, picked
 # by hand so every Rookie gets one and the families rotate. Each is a plain one-handed weapon that gives up
 # ELEMENT_WEAPON_COST % of the tier's best power for its family's resists (the heads give up guard instead), at most
@@ -72,8 +76,14 @@ ELEMENT_WEAPONS = {0: [("Dagger", 0)], 1: [("Shishioumaru", 1)], 2: [("Fairy Tal
                    4: [("Shotgun", 4)], 5: [("Tiger Glove", 0)], 6: [("Scissor Horn", 1)], 7: [("Royal Spear", 2)],
                    8: [("Raijin Fist", 3), ("Suijin Cannon", 1)]}
 ELEMENT_WEAPON_COST = 25  # half the heads' 50: a weapon's power is the whole damage, and at 50 the resists hit their cap
-KINDS = ["DEF_EQUIP_SPEED", "DEF_EQUIP_ELEMENT", "DEF_EQUIP_TANK", "DEF_EQUIP_ELEMENT"]
-KIND_PT = ["Speed", "Elemental", "Tank", "Elemental weapon"]
+# The Trade-off accessories (forge-variety.md Part 2B): (the item converted, the stat it gives, the stat it costs). The
+# Gems list (shops 1, 8, 23) and the Rings list (shop 16) each convert two pieces, and a piece is converted in one list
+# only when its stat's piece in the other list stays plain: Power and Wisdom keep their Rings, Guard and Spirit their
+# Gems, so no stat loses its last plain accessory. Boost is the Sage pieces' price (Wisdom drives the support buffs).
+TRADES = [("Power Gem", 1, 2), ("Wisdom Gem", 4, 5), ("Guard Ring", 1, 2), ("Spirit Ring", 4, 5)]
+TRADE_GAIN = 50  # % over the list's plain piece of the stat given
+KINDS = ["DEF_EQUIP_SPEED", "DEF_EQUIP_ELEMENT", "DEF_EQUIP_TANK", "DEF_EQUIP_ELEMENT", "DEF_EQUIP_TRADE"]
+KIND_PT = ["Speed", "Elemental", "Tank", "Elemental weapon", "Trade-off"]
 ROOKIES = ["Kotemon", "Kumamon", "Monmon", "Agumon", "Veemon", "Guilmon", "Renamon", "Patamon"]  # members bits
 DESC_MAX = 34  # the description window (tests/port/text_override.py's MAX)
 TEXT_OK = re.compile(r"^[A-Za-z0-9 .,'/!-]+$")
@@ -93,12 +103,16 @@ def items():
     """{id: item}: records_items' price, category, type and English name, and the data struct's fields."""
     s = (ROOT / "src/main/records.c").read_text()
     data = {}
-    for m in re.finditer(r"Records(Weapon|Armor) records_item_(\d+) = \{(.*?)\}; /\* \d+ (.*?) \*/", s):
+    for m in re.finditer(r"Records(Weapon|Armor|Accessory) records_item_(\d+) = \{(.*?)\}; /\* \d+ (.*?) \*/", s):
         v = [BONUS[t] if t.startswith("RECORDS") else int(t, 0) for t in re.findall(r"RECORDS_BONUS_\w+|" + NUM, m.group(3))]
         if m.group(1) == "Weapon":  # charisma, slot, group, members, -, bonus_values[2], power, bonus_stats[2], accuracy,
             # -, status_chance, status_power, strong_type, -
             d = dict(weapon=1, charisma=v[0], slot=v[1], group=v[2], members=v[3], values=v[5:7], main=v[7],
                      stats=v[8:10], hit=v[10], status=(v[12], v[13]), strong=v[14])
+        elif m.group(1) == "Accessory":  # charisma, slot, group, members, -, bonus_value, bonus_stat, unk_09[3]; the
+            # second stat is a Trade-off's penalty (none on the disc)
+            d = dict(weapon=2, charisma=v[0], slot=v[1], group=v[2], members=v[3], values=[v[5], 0], main=0,
+                     stats=[v[6], 0], hit=0, status=(0, 0), strong=0)
         else:  # charisma, slot, group, members, -, bonus_values[2], bonus_stats[2], guard, -, -, evasion, -
             d = dict(weapon=0, charisma=v[0], slot=v[1], group=v[2], members=v[3], values=v[5:7], stats=v[7:9],
                      main=v[9], hit=v[12], status=(0, 0), strong=0)
@@ -345,7 +359,36 @@ def plan():
                      towns=sorted({m for s in shops for m in towns.get(s, ())}))
             taken.add(pick["id"])
             rows.append(v)
+    rows += trades(its, c, towns)
     return rows, its, c, effects
+
+
+def accessory_lists(its):
+    """[(goods list number, (accessory IDs), shops)] of the distinct goods lists with accessories."""
+    lists, shops = goods()
+    seen = {}
+    for n, ids in lists:
+        acc = tuple(i for i in ids if its.get(i, {}).get("cat") == "RECORDS_ITEM_ACCESSORY")
+        if acc:
+            seen.setdefault(acc, (n, []))[1].extend(shops[n])
+    return [(n, acc, sorted(sh)) for acc, (n, sh) in seen.items()]
+
+
+def trades(its, c, towns):
+    """The Trade-off rows: the stat given is the list's plain piece's plus TRADE_GAIN %, the stat paid covers the extra
+    at the budget's weights (rounded up), so the score is the plain piece's, within the list's budget."""
+    out = []
+    for name, gain, pay in TRADES:
+        base = next(it for it in its.values() if it["name"] == name and it["cat"] == "RECORDS_ITEM_ACCESSORY")
+        n, acc, shops = next(t for t in accessory_lists(its) if base["id"] in t[1])
+        plain = max(its[i]["values"][0] for i in acc if its[i]["stats"][0] == gain)  # the disc's piece of the stat
+        given = plain * (100 + TRADE_GAIN) // 100
+        paid = -(-weight(c, STAT[gain]) * (given - plain) // weight(c, STAT[pay]))
+        budget = max(score(c, its[i]["vec"]) for i in acc)  # the disc's pieces, as a tier's budget
+        out.append(dict(kind=TRADE, base=base, rank=-1, goods=n, shops=shops, family=0, dominated=False, redundancy=0.0,
+                        peers=list(acc), towns=sorted({m for s in shops for m in towns.get(s, ())}), main=0, hit=0,
+                        bonus=[(gain, given), (pay, -paid)], budget=budget, best=0, plain=plain))
+    return out
 
 
 def render(rows):
@@ -383,15 +426,23 @@ def checks(rows, its, c, effects):
         b = v["base"]
         i = b["id"]
         it = its.get(i)
-        out.append((it is not None and it["cat"] == ("RECORDS_ITEM_WEAPON" if b["weapon"] else "RECORDS_ITEM_ARMOR")
-                    and (2 <= it["type"] <= 14 if b["weapon"] else 15 <= it["type"] <= 20),
+        cat, types = {0: ("RECORDS_ITEM_ARMOR", (15, 20)), 1: ("RECORDS_ITEM_WEAPON", (2, 14)),
+                      2: ("RECORDS_ITEM_ACCESSORY", (21, 24))}[b["weapon"]]
+        out.append((it is not None and it["cat"] == cat and types[0] <= it["type"] <= types[1]
+                    and (v["kind"] == TRADE) == (b["weapon"] == 2),
                     f"{i} {b['name']}: shop equipment of the row's category (type {it and it['type']})"))
         out.append((all(s in STAT and s != 6 or s == 0 for s, _ in v["bonus"]) and all(-999 <= x <= 999 for _, x in v["bonus"])
                     and 0 <= v["main"] <= 999 and 0 <= v["hit"] <= 255, f"{i}: fields in range"))
+        if v["kind"] == TRADE:  # the penalty goes in a signed byte, and a Trade-off has one (else a straight upgrade)
+            (gs, gv), (ps, pv) = v["bonus"]
+            out.append((gs and ps and gs != ps and gv > 0 and -128 <= pv < 0, f"{i}: a gain and a penalty in a signed byte"))
         sv = score(c, vecs[i])
         out.append((sv <= v["budget"], f"{i}: score {sv / 100:.2f} within the tier's budget {v['budget'] / 100:.2f}"))
         # not a straight upgrade of any other item of its tier sharing its slot and a wearer (plain or variant)
-        eq = [its[x] for x in next(t[2] for t in tiers(its) if t[1] == v["goods"])]
+        if v["kind"] == TRADE:
+            eq = [its[x] for x in next(t[1] for t in accessory_lists(its) if t[0] == v["goods"])]
+        else:
+            eq = [its[x] for x in next(t[2] for t in tiers(its) if t[1] == v["goods"])]
         for o in eq:
             if o["id"] == i or slot_key(o) != slot_key(b) or not wears(o, b):
                 continue
@@ -410,7 +461,8 @@ def checks(rows, its, c, effects):
     out.append((not extra, f"no ITMNAM/ITMINF line for an item that is not a variant {extra}"))
     per = defaultdict(set)
     for v in rows:
-        per[v["goods"]].add(v["kind"])
+        if v["kind"] != TRADE:
+            per[v["goods"]].add(v["kind"])
     out.append((all({SPEED, ELEMENT, TANK} <= k for k in per.values()), "every tier has the three archetypes"))
     return out
 
@@ -462,7 +514,7 @@ def write_md(rows, its, c, effects):
         after = variant_vec(b, v, effects)
         towns = " ".join(hex(m) for m in v["towns"])
         who = "todos" if b["members"] == 0xFF else " ".join(n for k, n in enumerate(ROOKIES) if (b["members"] >> k) & 1)
-        lines.append(f"| {v['rank'] + 1} | {' '.join(map(str, v['shops']))} ({towns}) | {KIND_PT[v['kind']]} | {b['id']} | "
+        lines.append(f"| {v['rank'] + 1 if v['rank'] >= 0 else 'acc'} | {' '.join(map(str, v['shops']))} ({towns}) | {KIND_PT[v['kind']]} | {b['id']} | "
                      f"{b['name']} ({b['price']}) | {who} | {describe(b['vec'])} | {describe(after)} | "
                      f"{tx.get(('ITMNAM', b['id']), '?')} | {v['redundancy']:.2f}{' dominado' if v['dominated'] else ''} | "
                      f"{score(c, after) / 100:.1f} / {v['budget'] / 100:.1f} |")

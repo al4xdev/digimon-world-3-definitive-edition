@@ -44,5 +44,9 @@ const DefEquipVariant def_equip_variants[] = {
     { 280, DEF_EQUIP_TANK, 0, 37, 30, { RECORDS_BONUS_SPIRIT, RECORDS_BONUS_BOOST }, { 6, -18 } }, /* Kulon Shield */
     { 290, DEF_EQUIP_TANK, 0, 52, 35, { RECORDS_BONUS_SPIRIT, RECORDS_BONUS_BOOST }, { 8, -25 } }, /* High Security */
     { 291, DEF_EQUIP_TANK, 0, 60, 40, { RECORDS_BONUS_SPIRIT, RECORDS_BONUS_BOOST }, { 10, -30 } }, /* Apocalypse */
+    { 292, DEF_EQUIP_TRADE, 2, 0, 0, { RECORDS_BONUS_POWER, RECORDS_BONUS_GUARD }, { 15, -5 } }, /* Power Gem */
+    { 295, DEF_EQUIP_TRADE, 2, 0, 0, { RECORDS_BONUS_POWER, RECORDS_BONUS_GUARD }, { 30, -10 } }, /* Guard Ring */
+    { 297, DEF_EQUIP_TRADE, 2, 0, 0, { RECORDS_BONUS_WISDOM, RECORDS_BONUS_BOOST }, { 30, -5 } }, /* Spirit Ring */
+    { 298, DEF_EQUIP_TRADE, 2, 0, 0, { RECORDS_BONUS_WISDOM, RECORDS_BONUS_BOOST }, { 15, -3 } }, /* Wisdom Gem */
 };
-const int def_equip_variant_count = 37;
+const int def_equip_variant_count = 41;

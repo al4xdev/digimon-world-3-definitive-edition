@@ -930,6 +930,11 @@ void gamestate_get_stats(s32 i, GamestateStats *out) {
                 if (stat != 0) {
                     gamestate_add_stat_bonus(out->values, stat, value);
                 }
+#ifdef PC_PORT
+                if (def_accessory_penalty(data, &stat, &value)) { /* a trade-off accessory's second stat */
+                    gamestate_add_stat_bonus(out->values, stat, value);
+                }
+#endif
             } else {
                 continue;
             }

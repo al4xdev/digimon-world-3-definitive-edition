@@ -5,7 +5,8 @@ that are not one. Checked: in a replay script (def_on 0) every item keeps record
 description override is held back (the disc's text shows); with def_on the variants have the table's main stat, hit
 and bonus stats, everything else of theirs (charisma, slot, group, wearers, status, strong type) is records.c's, the
 other items are untouched and no text is held back; a second hook changes nothing (written again, never compounded); a
-row whose item is not of its category writes nothing. Then tools/gen_equipment.py --check
+row whose item is not of its category writes nothing; a Trade-off accessory's penalty (def_accessory_penalty)
+is its row's second stat with def_on and nothing in a replay script, a plain accessory has none. Then tools/gen_equipment.py --check
 (the table is the rule's: IDs, budget, no straight upgrade, texts). Needs only the host gcc, no disc."""
 import re
 import subprocess
@@ -17,13 +18,18 @@ OUT = ROOT / "build/port-test/definitive_variants"
 sys.path.insert(0, str(ROOT / "tools"))
 import gen_equipment as ge  # noqa: E402
 
-CAT = {"RECORDS_ITEM_WEAPON": 3, "RECORDS_ITEM_ARMOR": 4}
+CAT = {"RECORDS_ITEM_WEAPON": 3, "RECORDS_ITEM_ARMOR": 4, "RECORDS_ITEM_ACCESSORY": 5}
+WEAPON_CAT = {0: "RECORDS_ITEM_ARMOR", 1: "RECORDS_ITEM_WEAPON", 2: "RECORDS_ITEM_ACCESSORY"}
 ITMNAM, ITMINF, SKLNAM = 0x6A, 0x63, 0xA2
-OTHERS = (92, 97, 236, 262, 98, 151)  # plain items of the same tiers, a set piece and an item with an ID effect
+# plain items of the same tiers, a set piece, an item with an ID effect, a plain Gem and an elemental ring
+OTHERS = (92, 97, 236, 262, 98, 151, 294, 304)
 
 
 def line(it):
     head = f"{it['id']} {CAT[it['cat']]} {it['type']}"
+    if it["weapon"] == 2:
+        return (f"{head} X {it['charisma']} {it['slot']} {it['group']} {it['members']} {it['values'][0]} {it['stats'][0]} "
+                f"{it['stats'][1]} {it['values'][1]}")
     if it["weapon"]:
         return (f"{head} W {it['charisma']} {it['slot']} {it['group']} {it['members']} {it['values'][0]} {it['values'][1]} "
                 f"{it['main']} {it['stats'][0]} {it['stats'][1]} {it['hit']} {it['status'][0]} {it['status'][1]} {it['strong']}")
@@ -90,9 +96,14 @@ def main():
     check(f"def_on: the {len(rows)} variants have the table's stats, the rest of theirs and the other items are records.c's",
           p["first"] == want)
     check("a second hook writes the same numbers (patched once, never compounded)", p["second"] == p["first"])
-    check("the table's rows: one per variant, every ID a shop weapon or armour of its row's kind",
-          len(rows) == len(set(rows)) and all(its[i]["cat"] == ("RECORDS_ITEM_WEAPON" if r[0] else "RECORDS_ITEM_ARMOR")
-                                              for i, r in rows.items()))
+    check("the table's rows: one per variant, every ID a shop weapon, armour or accessory of its row's kind",
+          len(rows) == len(set(rows)) and all(its[i]["cat"] == WEAPON_CAT[r[0]] for i, r in rows.items()))
+    acc = [i for i in ids if its[i]["weapon"] == 2]
+    want_pen = [f"penalty {i} {int(i in rows)} {rows[i][3][1] if i in rows else 0} {rows[i][4][1] if i in rows else 0}"
+                for i in acc]
+    check(f"def_on: the {sum(i in rows for i in acc)} Trade-off accessories give their penalty, the others none",
+          any(i in rows for i in acc) and p["penalty-on"] == want_pen)
+    check("a replay script sees no penalty", p["penalty-replay"] == [f"penalty {i} 0 0 0" for i in acc])
     check("the icon (type), slot, group, wearers and charisma never change",
           all(a.split()[:3] == b.split()[:3] and a.split()[4:8] == b.split()[4:8] for a, b in zip(p["first"], orig)))
     hid_off = {tuple(map(int, ln.split()[1:])) for ln in p["text-replay"]}

@@ -486,6 +486,7 @@ int def_item_sell(int item);
 /* PRD 4 layer F: the equipment variants written into the items' data (port/game/definitive_variants.c; nothing in a
  * replay script), at every field map besides def_mp_hook's new game and battle start. */
 void def_variants_hook(void);
+int def_accessory_penalty(const void *data, short *stat, short *value); /* a trade-off accessory's penalty (definitive_variants.c) */
 /* PRD 4 layer E, the forge in the shops: how many the materials make, whether one, taking them, the requirements' line
  * (NULL without a recipe; palette 3 while short) and the refusal's text. */
 void def_recipe_set_shop(int shop); /* the shop the forge's calls are about, set as STITSHOP opens */

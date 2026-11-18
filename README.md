@@ -364,9 +364,9 @@ you lack the Bits ("Not enough materials."), and how many you can buy at once is
 
 ### Equipment variants
 
-The game has no free item slots, so 37 shop items were turned into variants in place: one of each of the first three
-kinds in every shop tier, one Elemental weapon per tier (two in the last), each built around a style instead of a
-bigger number. They keep their icon, price and recipe, and a Digimon
+The game has no free item slots, so 41 shop items were turned into variants in place: one of each of the first three
+kinds in every shop tier, one Elemental weapon per tier (two in the last) and four Trade-off accessories, each built
+around a style instead of a bigger number. They keep their icon, price and recipe, and a Digimon
 already wearing one simply gets the new stats.
 
 - **Speed** (one-handed weapons): half the power of the tier's best weapon, for Boost, from +5 in the first tier to +85
@@ -384,6 +384,11 @@ already wearing one simply gets the new stats.
   and weapon stack, paying with both guard and power. Every Rookie has one, and the families rotate: Ember Dagger,
   Mizuchimaru (both for everyone), Sylph Tale, Volt Fang, Shade Gun, Blaze Glove, Tidal Horn, Storm Spear, Raijin Fist
   and Suijin Cannon (thunder and water, as their names already said).
+- **Trade-off** (accessories): half again as much of one stat as the plain piece, paid for with another. In the Gems
+  list (the accessory shops of Amaterasu and Zhu Que) the Fury Gem gives Power +15 for Guard −5 and the Sage Gem
+  Wisdom +15 for Boost −3; in the Rings list (Amaterasu's later accessory shop) the Fury Ring gives Power +30 for
+  Guard −10 and the Sage Ring Wisdom +30 for Boost −5. Each replaces the plain piece of a stat whose other list keeps
+  it (the Power and Wisdom Rings, the Guard and Spirit Gems stay), and the shop's preview shows the cost in red.
 
 ### The Black Market
 
@@ -758,12 +763,15 @@ Poison reads Wisdom + Spirit + Wind affinity.
   is picked by level gap plus 2 per earlier use in the shop, among the commons within 8 levels of the nearest; a shop
   with fewer than 3 commons around widens its reach up to 7 exits. `--check` also requires all 16 commons asked, no
   shop on one common, and a worst level gap of 25 outside shop 23 (Zhu Que's rings, reached late: accepted).
-- Variants: 37 shop items converted in place, written by `def_variants_hook` into RecordsWeapon/RecordsArmor every time
-  (absolute values, so re-running is safe). Budget weights: Guard 100, Spirit 100, Wisdom 50, Boost 100, hit 25,
+- Variants: 41 shop items converted in place, written by `def_variants_hook` into RecordsWeapon/RecordsArmor/
+  RecordsAccessory every time (absolute values, so re-running is safe). Budget weights: Guard 100, Spirit 100, Wisdom 50, Boost 100, hit 25,
   element 5. Speed: weapon power minus 50% with Boost +5..+85; Elemental: head guard minus 50% with resists up to 400;
   Tank: guard +50%, Spirit 25%, Boost -6..-30; Elemental weapon (`ELEMENT_WEAPONS`, hand-picked, kind
-  `DEF_EQUIP_ELEMENT` with the weapon's fields): power minus 25% with resists up to 400. Only two items were strictly
-  dominated (Long Sword and Kulon Sword).
+  `DEF_EQUIP_ELEMENT` with the weapon's fields): power minus 25% with resists up to 400. Trade-off (`TRADES`,
+  hand-picked, kind `DEF_EQUIP_TRADE`, `weapon` 2): the stat +50% over the list's plain piece, the extra paid in the
+  second stat at the budget's weights; RecordsAccessory has one bonus, so the penalty sits in its unused `unk_09` bytes
+  and `def_accessory_penalty` adds it where the game adds the accessory's bonus (`gamestate_get_stats`, the shop's
+  `stitshop_info_get_stats`), only with `def_on`. Only two items were strictly dominated (Long Sword and Kulon Sword).
   Generator: `tools/gen_equipment.py --check`.
 
 ### The Black Market, in detail

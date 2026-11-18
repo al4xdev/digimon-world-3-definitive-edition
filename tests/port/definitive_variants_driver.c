@@ -3,9 +3,11 @@
  * them), one per line:
  *   id category type W charisma slot group members value0 value1 power stat0 stat1 accuracy chance power2 strong
  *   id category type A charisma slot group members value0 value1 stat0 stat1 guard evasion
+ *   id category type X charisma slot group members value stat penalty_stat penalty_value
  * Prints every item in the same shape after each pass ("pass <name>" first): a replay script (def_on 0), the run's
  * first hook and a second one; and "text <file> <id> <hidden>" for every item and both item text files (and one that
- * is not an item text), in a replay script and not. With argument "mismatch" every item is loaded as the other
+ * is not an item text), in a replay script and not; and "penalty <id> <found> <stat> <value>" (def_accessory_penalty) for
+ * every accessory after the first hook, in a replay script and not. With argument "mismatch" every item is loaded as the other
  * category (a table and a records.c drifted apart) and the one pass printed is a hook with def_on: nothing may change. */
 #include <stdio.h>
 #include <string.h>
@@ -28,6 +30,7 @@ void port_log(const char *fmt, ...) {
 static RecordsItem items[MAX_ITEMS];
 static RecordsWeapon weapons[MAX_ITEMS];
 static RecordsArmor armours[MAX_ITEMS];
+static RecordsAccessory accessories[MAX_ITEMS];
 static int ids[MAX_ITEMS], count;
 
 RecordsItem *records_get_item(s32 i) {
@@ -53,6 +56,10 @@ static void dump(const char *pass) {
             printf("%d %d %d W %d %d %d %d %d %d %d %d %d %d %d %d %d\n", ids[k], it->category, it->type, w->charisma,
                    w->slot, w->group, w->members, w->bonus_values[0], w->bonus_values[1], w->power, w->bonus_stats[0],
                    w->bonus_stats[1], w->accuracy, w->status_chance, w->status_power, w->strong_type);
+        } else if (it->data == (void *)&accessories[k]) {
+            RecordsAccessory *a = &accessories[k];
+            printf("%d %d %d X %d %d %d %d %d %d %d %d\n", ids[k], it->category, it->type, a->charisma, a->slot, a->group,
+                   a->members, a->bonus_value, a->bonus_stat, a->unk_09[0], (s8)a->unk_09[1]);
         } else {
             RecordsArmor *a = &armours[k];
             printf("%d %d %d A %d %d %d %d %d %d %d %d %d %d\n", ids[k], it->category, it->type, a->charisma, a->slot,
@@ -70,6 +77,20 @@ static void texts(const char *pass) {
     for (k = 0; k < count; k++) {
         for (f = 0; f < 3; f++) {
             printf("text %d %d %d\n", files[f], ids[k], def_variant_text_hidden(files[f], ids[k]));
+        }
+    }
+}
+
+static void penalties(const char *pass) {
+    int k;
+
+    printf("pass %s\n", pass);
+    for (k = 0; k < count; k++) {
+        if (items[k].data == (void *)&accessories[k]) {
+            s16 stat = 0, value = 0;
+            int found = def_accessory_penalty(items[k].data, &stat, &value);
+
+            printf("penalty %d %d %d %d\n", ids[k], found, stat, value);
         }
     }
 }
@@ -104,6 +125,20 @@ int main(int argc, char **argv) {
             w->status_power = v[11];
             w->strong_type = v[12];
             it->data = w;
+        } else if (kind[0] == 'X') {
+            RecordsAccessory *a = &accessories[count];
+            if (scanf("%d %d %d %d %d %d %d %d", &v[0], &v[1], &v[2], &v[3], &v[4], &v[5], &v[6], &v[7]) != 8) {
+                return 2;
+            }
+            a->charisma = v[0];
+            a->slot = v[1];
+            a->group = v[2];
+            a->members = v[3];
+            a->bonus_value = v[4];
+            a->bonus_stat = v[5];
+            a->unk_09[0] = v[6];
+            a->unk_09[1] = (u8)(s8)v[7];
+            it->data = a;
         } else {
             RecordsArmor *a = &armours[count];
             if (scanf("%d %d %d %d %d %d %d %d %d %d", &v[0], &v[1], &v[2], &v[3], &v[4], &v[5], &v[6], &v[7], &v[8],
@@ -144,6 +179,10 @@ int main(int argc, char **argv) {
     on = 1;
     def_variants_hook();
     dump("first");
+    penalties("penalty-on");
+    on = 0;
+    penalties("penalty-replay"); /* the bytes are written, but a replay script must not see them */
+    on = 1;
     def_variants_hook();
     dump("second");
     texts("text-on");

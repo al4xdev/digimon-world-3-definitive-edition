@@ -974,6 +974,11 @@ void stitshop_info_get_stats(s32 i, GamestateStats *out) {
                 if (stat != 0) {
                     stitshop_info_add_stat(out->values, stat, value);
                 }
+#ifdef PC_PORT
+                if (def_accessory_penalty(data, &stat, &value)) { /* a trade-off accessory's second stat */
+                    stitshop_info_add_stat(out->values, stat, value);
+                }
+#endif
             } else {
                 continue;
             }

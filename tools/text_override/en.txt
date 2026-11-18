@@ -504,6 +504,15 @@ ITMNAM 290: Aegis Wall
 ITMINF 290: More Guard and Spirit, less Boost.
 ITMNAM 291: Titan Shield
 ITMINF 291: More Guard and Spirit, less Boost.
+# Trade-off: accessories, more of one stat for less of another (the Gems list, then shop 16's Rings).
+ITMNAM 292: Fury Gem
+ITMINF 292: More Power, less Guard.
+ITMNAM 298: Sage Gem
+ITMINF 298: More Wisdom, less Boost.
+ITMNAM 295: Fury Ring
+ITMINF 295: Much more Power, less Guard.
+ITMNAM 297: Sage Ring
+ITMINF 297: Much more Wisdom, less Boost.
 
 # PRD 4 layer I, the floating Rush's panel on the field (port/game/definitive_rush.c): "120 EXP  LV UP!" after a
 # member's name, NEW TECH! / TP FULL! under it, "240 Bits", "<item> x15", "<material> x2" (quoted: the spaces are kept).
