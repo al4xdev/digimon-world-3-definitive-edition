@@ -1,10 +1,10 @@
 #!/bin/bash
-# build_android.sh: build the Android (arm64-v8a) APK using tools/Dockerfile.android (or host SDK/NDK if
+# build_android.sh: build the Android (arm64-v8a) APK using .ci-cd/android/Dockerfile (or host SDK/NDK if
 # DW3_ANDROID_LOCAL=1). Outputs dist/dw2003-<version>-android-arm64-v8a.apk.
 set -euo pipefail
 
-TOOLS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO="$(cd "$TOOLS_DIR/.." && pwd)"
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"   # .ci-cd/android/: the Dockerfile
+REPO="$(cd "$HERE/../.." && pwd)"
 IMAGE="dw3-android-builder:latest"
 
 if [ -n "${DW3_VERSION:-}" ]; then
@@ -28,7 +28,7 @@ else
     fi
     if [ "${DW3_REBUILD_IMAGE:-0}" = "1" ] || ! docker image inspect "$IMAGE" >/dev/null 2>&1; then
         echo "Building Android toolchain image $IMAGE..."
-        docker build -t "$IMAGE" -f "$TOOLS_DIR/Dockerfile.android" "$TOOLS_DIR"
+        docker build -t "$IMAGE" -f "$HERE/Dockerfile" "$HERE"
     fi
     echo "=== Building Android APK in Docker ($VER, arm64-v8a) ==="
     mkdir -p "$REPO/.dumps/gradle-home" "$REPO/.dumps/android-home" "$REPO/.dumps/android-shaders"

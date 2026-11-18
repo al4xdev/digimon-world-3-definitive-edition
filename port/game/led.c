@@ -38,7 +38,7 @@ const char *led_status(void) { return NULL; }
 /* The daemon the whole card shares, put there by the handheld menu's install (launcher/cfg.c, led_install), and this
  * port's own copy as the fallback for a card where nobody has installed it yet. */
 #define LEDD_SHARED "/storage/.config/ledd/ledd.py"
-#define LEDD_FILE "ledd.py" /* in the package's directory, which is the game's working directory (handheld/dw3.sh) */
+#define LEDD_FILE "ledd.py" /* in the package's directory, which is the game's working directory (.ci-cd/portmaster/handheld/dw3.sh) */
 #define LED_REPLY 96
 
 static int led_ready;      /* the daemon answered once: send changes from here on */

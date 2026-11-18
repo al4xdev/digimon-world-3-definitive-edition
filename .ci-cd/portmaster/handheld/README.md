@@ -1,16 +1,16 @@
 # The handheld port's launcher and menu
 
 The files that run on the console, versioned with the port they start. This folder is the source of everything in the
-package except the binaries (`dw2003` and the `dw3-launcher` menu, built from [`launcher/`](../launcher)), the mods, the
+package except the binaries (`dw2003` and the `dw3-launcher` menu, built from [`launcher/`](../../../launcher)), the mods, the
 licences and what belongs to the player. For running and deploying, see
-[`docs/HANDHELD.md`](../docs/HANDHELD.md); the player page is [`portmaster/README.md`](../portmaster/README.md); the
-publishing checklist is [`portmaster/PUBLISHING.md`](../portmaster/PUBLISHING.md).
+[`docs/HANDHELD.md`](../../../docs/HANDHELD.md); the player page is [`.ci-cd/portmaster/README.md`](../README.md); the
+publishing checklist is [`.ci-cd/portmaster/PUBLISHING.md`](../PUBLISHING.md).
 
 | file | what it is |
 |---|---|
 | `Digimon World 3.sh` | the one launcher. It sits beside `dw3/` (flow below). |
-| `dw3-launcher.<arch>` (not in this folder) | the console-first C menu, built from `launcher/` by `tools/build_arm.sh`: pad only, 640x480 framebuffer (or SDL2 on desktop), writes `settings.json`, `pad.map`, `tui.state`, and runs the game (`$DW3_GAME_BIN`, `dw2003.<arch>`) behind an animated loading screen until `DW3_STATUS_FD` signals start. |
-| `ledd.py` | the LED bar's daemon: the only process that writes `/dev/ttyS2`, started by the game's `led_bar` mod ([`docs/LAUNCHER.md`](../docs/LAUNCHER.md), "LED bar"). Holds an `flock` so there is one at a time, and turns the bar off when the pid that asked for the animation goes away. Timings: [`docs/XF35H.md`](../docs/XF35H.md). |
+| `dw3-launcher.<arch>` (not in this folder) | the console-first C menu, built from `launcher/` by `.ci-cd/portmaster/build_arm.sh`: pad only, 640x480 framebuffer (or SDL2 on desktop), writes `settings.json`, `pad.map`, `tui.state`, and runs the game (`$DW3_GAME_BIN`, `dw2003.<arch>`) behind an animated loading screen until `DW3_STATUS_FD` signals start. |
+| `ledd.py` | the LED bar's daemon: the only process that writes `/dev/ttyS2`, started by the game's `led_bar` mod ([`docs/LAUNCHER.md`](../../../docs/LAUNCHER.md), "LED bar"). Holds an `flock` so there is one at a time, and turns the bar off when the pid that asked for the animation goes away. Timings: [`docs/XF35H.md`](../../../docs/XF35H.md). |
 | `probe.sh` | a passive environment probe (OS, framebuffer, Wayland, audio, CPU part, Mali, `ldd` of the binary, PortMaster variables). Writes `logs/probe.txt` and changes nothing else. |
 | `README.txt` | the short file guide that ships on the card, inside `dw3/`. |
 | `README.md` | this file. It is not shipped. |
@@ -20,10 +20,10 @@ and `logs/`.
 
 ## How the package is assembled
 
-- `tools/build_arm.sh` builds `dw2003` and `dw3-launcher` in `build/armhf-sdl2/` and `build/aarch64-sdl2/` and mirrors
-  the package into `../portmaster`, a directory outside the repository (not the in-repo `portmaster/`), as
+- `.ci-cd/portmaster/build_arm.sh` builds `dw2003` and `dw3-launcher` in `build/armhf-sdl2/` and `build/aarch64-sdl2/` and mirrors
+  the package into `../portmaster`, a directory outside the repository (not the in-repo `.ci-cd/portmaster/`), as
   `dw2003.<arch>` and `dw3-launcher.<arch>`.
-- `portmaster/make_release.sh` writes `dist/dw3.zip` from those two build directories, this folder and `portmaster/`.
+- `.ci-cd/portmaster/make_release.sh` writes `dist/dw3.zip` from those two build directories, this folder and `.ci-cd/portmaster/`.
 - Both copy every file in this folder into `dw3/` by rule, except `README.md` and the launcher; a new helper script
   needs no list entry.
 
@@ -72,7 +72,7 @@ The one-off meters (`DW3_PRESENT_LOG`, `DW3_GPU_LOG`, `DW3_PHASE`) are commented
 
 ## Deploying the launcher
 
-The card's `dw3-launcher.<arch>` must be built from the committed `launcher/` (`tools/build_arm.sh`). The EmuELEC
+The card's `dw3-launcher.<arch>` must be built from the committed `launcher/` (`.ci-cd/portmaster/build_arm.sh`). The EmuELEC
 firmware has no `scp`, so copy it over ssh:
 
 ```

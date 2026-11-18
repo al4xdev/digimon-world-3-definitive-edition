@@ -12,15 +12,15 @@
   (create, claim, poll, status, approve), `/v1/me`, `/v1/devices` and `/v1/devices/revoke`, saves, and admin ban/cleanup;
   PS1 card validation (0x20000 bytes) and rate limits; tests in `cloud-sync/test/`; schema `cloud-sync/schema.sql`.
   `DW3_SYNC_URL`, `DW3_CLOUD_CURL`.
-- **Android** (`android/`, `tools/build_android.sh`): `arm64-v8a`, SDL3 GPU, a touch pad (`android/touch_pad.c`), SAF disc
+- **Android** (`android/`, `.ci-cd/android/build_android.sh`): `arm64-v8a`, SDL3 GPU, a touch pad (`android/touch_pad.c`), SAF disc
   picker, `FLOATING PAD` toggle. The original design (a Kotlin overlay, Fase 0 audit of `psxstack` for the NDK) is in the
   backlog list below.
-- **Handhelds / PortMaster:** entry `handheld/Digimon World 3.sh` (the old `dw3-menu.py` menu was removed in `cbf34ce`; the C launcher `dw3-launcher` replaced it), `portmaster/` (`port.json`
+- **Handhelds / PortMaster:** entry `.ci-cd/portmaster/handheld/Digimon World 3.sh` (the old `dw3-menu.py` menu was removed in `cbf34ce`; the C launcher `dw3-launcher` replaced it), `.ci-cd/portmaster/` (`port.json`
   arch `["armhf","aarch64"]`), docs `docs/HANDHELD.md`, `docs/XF35H.md`. Probe with `Debug logs: heavy` and `logs/probe.txt`.
 - **Console deploy handoff (ssh to a handheld, procedure of 2026-11-12; it predates the multi-arch package: the binaries are now `dw2003.armhf` / `dw2003.aarch64` and `dw3-launcher.*`, see `docs/HANDHELD.md`):** the owner supplies `<USER>@<IP>`, the password or key and the PortMaster folder
   (usually `/roms/ports`, or `/roms2/ports`, `/storage/roms/ports`; find it with `ssh <console> 'ls -d /roms*/ports /storage/roms/ports 2>/dev/null'`); `PORTS` below.
-  Source is `../portmaster/` (a sibling of the checkout) (the device mirror `tools/build_arm.sh` writes the new build into): copy `dw3/dw2003` (the 32-bit ARM binary; check `file` says
-  `ELF 32-bit LSB ... ARM` and the date is current, else run `tools/build_arm.sh`, Docker image `dw3-armhf-builder`), `dw3/mods/`, and only if changed `ledd.py`, `probe.sh`,
+  Source is `../portmaster/` (a sibling of the checkout) (the device mirror `.ci-cd/portmaster/build_arm.sh` writes the new build into): copy `dw3/dw2003` (the 32-bit ARM binary; check `file` says
+  `ELF 32-bit LSB ... ARM` and the date is current, else run `.ci-cd/portmaster/build_arm.sh`, Docker image `dw3-armhf-builder`), `dw3/mods/`, and only if changed `ledd.py`, `probe.sh`,
   `README.txt` and `Digimon World 3.sh`. **Never overwrite or delete:** `PORTS/dw3/game/` (the player's disc), `card1.mcd`, `card2.mcd`, `settings.json`, `pad.map`, `tui.state`, `logs/`,
   `log.txt`, `menu.log`; no `rsync --delete`, no `scp -r` of the whole folder. **Step 1, mandatory backup:** create `PORTS/dw3-backup-<date>` with `card1.mcd`, `card2.mcd`, `settings.json`,
   `pad.map`, `tui.state`, `dw2003.old`, `mods.old`, the `.sh`; then bring a copy of the saves to `../backups-console/` and check they exist and are not empty (`card1.mcd`

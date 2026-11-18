@@ -72,11 +72,11 @@ cmake -S port -B build/port-sdl -G Ninja -DPSXSTACK_SDL=ON && cmake --build buil
 build/port-sdl/dw2003 --disc iso/dw2003.cue --window                 # the game in a window
 cmake -S psxstack/launcher -B build/launcher -G Ninja -DPSXSTACK_GAME_JSON=$PWD/port/game/game.json -DPSXSTACK_VERSION_ROOT=$PWD -DPSXSTACK_TOOLS_DIR=$PWD/tools && cmake --build build/launcher
 build/launcher/dw2003-launcher                                        # the launcher
-scripts/setup.sh imgui sdl3-desktop appimage && scripts/package_appimage.sh --test   # the release AppImage
+scripts/setup.sh imgui sdl3-desktop appimage && .ci-cd/linux/package_appimage.sh --test   # the release AppImage
 ```
 
 Without `-DPSXSTACK_SDL=ON` the port builds headless, which is what the port tests run. The Windows cross-build is
-`scripts/build_windows.sh` (`scripts/setup.sh llvm-mingw sdl3-windows` first).
+`.ci-cd/windows/build_windows.sh` (`scripts/setup.sh llvm-mingw sdl3-windows` first).
 
 See [`port/README.md`](../port/README.md), `psxstack/docs/RUNTIME.md`, `psxstack/launcher/README.md` and
 [`docs/RELEASE.md`](RELEASE.md) for the packages.

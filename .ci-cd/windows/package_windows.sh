@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # Builds the Windows release package (DECISIONS "Releases: tagged drafts, published by hand"; docs/RELEASE.md): the game
-# (the SDL build) and the launcher cross-compiled for Windows x86_64 in Release (scripts/build_windows.sh: llvm-mingw,
+# (the SDL build) and the launcher cross-compiled for Windows x86_64 in Release (.ci-cd/windows/build_windows.sh: llvm-mingw,
 # static, a PDB beside each executable), zipped as one folder with the mods' manifests, LICENSES/ and a README, plus a
 # second zip with the two PDBs (the symbols of crash minidumps and reports: docs/PORT.md "Crash report"). Players
 # supply their own disc in the launcher.
 #
-# Usage: scripts/package_windows.sh [--version V] [--out DIR] [--test] [--jobs N]
+# Usage: .ci-cd/windows/package_windows.sh [--version V] [--out DIR] [--test] [--jobs N]
 #   --version V  the version in the file names (default: the release tag being built, vX.Y.Z..., else the last such
 #                tag by `git describe`, else dev-<commit>; a leading v dropped)
 #   --out DIR    where the zips and SHA256SUMS-windows go (default build/release/)
@@ -21,7 +21,7 @@
 # build/release/windows/.
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 MAIN="$(dirname "$(git -C "$ROOT" rev-parse --path-format=absolute --git-common-dir)")"
 JOBS="${DW3_JOBS:-$(nproc)}"
 log() { printf '\033[1;34m[windows-package]\033[0m %s\n' "$*"; }
@@ -45,7 +45,7 @@ tool() {
     if [[ -e "$ROOT/tools/$1" ]]; then echo "$ROOT/tools/$1"; else echo "$MAIN/tools/$1"; fi
 }
 
-# ---- The version, as scripts/package_appimage.sh names its file.
+# ---- The version, as .ci-cd/linux/package_appimage.sh names its file.
 if [[ -z "$version" ]]; then
     if [[ "${GITHUB_REF:-}" == refs/tags/v* ]]; then
         version="${GITHUB_REF#refs/tags/}"
@@ -70,16 +70,16 @@ imgui="$(tool imgui)"
 python="$(tool venv)/bin/python"
 [[ -x "$python" ]] || die "no tools/venv/bin/python: scripts/setup.sh venv"
 command -v objdump >/dev/null || die "no objdump on PATH (the host's binutils: the import check)"
-pkg="$ROOT/packaging/windows"
-[[ -f "$pkg/README.txt" && -f "$pkg/LICENSES/README.txt" ]] || die "no packaging/windows/"
+pkg="$ROOT/.ci-cd/windows/package"
+[[ -f "$pkg/README.txt" && -f "$pkg/LICENSES/README.txt" ]] || die "no .ci-cd/windows/package/"
 log "dw2003 $version for Windows: llvm-mingw at $llvm, SDL3 at $sdl, Dear ImGui at $imgui"
 
 # ---- The two programs, in Release (build_windows.sh's own build directories: build/port-win, build/launcher-win),
 # the version stamped into both (psxstack/cmake/version.cmake reads PSXSTACK_VERSION).
 work="$ROOT/build/release/windows"
 mkdir -p "$work" "$out"
-log "building the game and the launcher (scripts/build_windows.sh --launcher; log: $work/build.log)"
-DW3_VERSION="$version" "$ROOT/scripts/build_windows.sh" --launcher --jobs "$JOBS" >"$work/build.log" 2>&1 ||
+log "building the game and the launcher (.ci-cd/windows/build_windows.sh --launcher; log: $work/build.log)"
+DW3_VERSION="$version" "$ROOT/.ci-cd/windows/build_windows.sh" --launcher --jobs "$JOBS" >"$work/build.log" 2>&1 ||
     { tail -n 30 "$work/build.log" >&2; die "the Windows build failed (the whole output: $work/build.log)"; }
 game_dir="$ROOT/build/port-win"
 launcher_dir="$ROOT/build/launcher-win"
@@ -115,7 +115,7 @@ sed "s/@VERSION@/$version/g" "$pkg/README.txt" > "$stage/README.txt"
 cp "$ROOT/LICENSE" "$stage/LICENSES/dw2003recomp.txt"
 cp "$sdl/share/licenses/SDL3/LICENSE.txt" "$stage/LICENSES/SDL3.txt"
 cp "$imgui/LICENSE.txt" "$stage/LICENSES/imgui.txt"
-cp "$ROOT/packaging/appimage/LICENSES/ProggyClean.txt" "$ROOT/packaging/appimage/LICENSES/ProggyForever.txt" \
+cp "$ROOT/.ci-cd/linux/appimage/LICENSES/ProggyClean.txt" "$ROOT/.ci-cd/linux/appimage/LICENSES/ProggyForever.txt" \
     "$stage/LICENSES/"
 cp "$llvm/LICENSE.TXT" "$stage/LICENSES/llvm.txt"
 cp "$pkg/LICENSES/"*.txt "$stage/LICENSES/"

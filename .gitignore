@@ -81,10 +81,10 @@ __pycache__
 .dumps/
 # Local Claude Code state
 .claude/
-# The PortMaster release built by portmaster/make_release.sh (binary + launcher, regenerable)
+# The PortMaster release built by .ci-cd/portmaster/make_release.sh (binary + launcher, regenerable)
 /dist/
 
-# The console launcher built by launcher/Makefile (tools/build_arm.sh builds the package's into build/)
+# The console launcher built by launcher/Makefile (.ci-cd/portmaster/build_arm.sh builds the package's into build/)
 launcher/dw3-launcher
 
 # Cloud sync worker local dependencies & wrangler state, and runtime client sync state

@@ -2,7 +2,7 @@
 # Cross-builds the PC port and the launcher for Windows x86_64 from Linux (psxstack/cmake/windows-x86_64.cmake: llvm-mingw's
 # clang and lld, SDL3 for Windows; DECISIONS "Windows: cross-built from Linux").
 #
-# Usage: scripts/build_windows.sh [--launcher] [--configure-only] [--test] [--jobs N]
+# Usage: .ci-cd/windows/build_windows.sh [--launcher] [--configure-only] [--test] [--jobs N]
 #   (default)         the game into build/port-win (the SDL build, Release): every object (ninja -k 0), then the link
 #   --launcher        also the launcher into build/launcher-win (dw2003-launcher.exe and its PDB)
 #   --configure-only  stop after configuring
@@ -19,7 +19,7 @@
 # the layer-2 scripts with it under Wine.
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 MAIN="$(dirname "$(git -C "$ROOT" rev-parse --path-format=absolute --git-common-dir)")"
 JOBS="${DW3_JOBS:-$(nproc)}"
 log() { printf '\033[1;34m[windows]\033[0m %s\n' "$*"; }

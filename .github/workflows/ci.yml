@@ -16,7 +16,7 @@
 # the repository variable RELEASE_RUN_CI is "true".
 #
 # What runs: the `areas` job sorts the changed files (a pull request's against its base, a push to main's against the
-# commit before it; scripts/ci_areas.sh) into three areas, each implying the next, and the other jobs run in parallel,
+# commit before it; .ci-cd/common/ci_areas.sh) into three areas, each implying the next, and the other jobs run in parallel,
 # each gated by its area (a job an area does not need is skipped, no runner starts for it):
 #   game      src/, include/, config/, configure.py, tools/ (but port_gen.py), tests/ (but the port's), scripts/
 #             (setup.sh pins every tool), any file no rule names
@@ -33,9 +33,9 @@
 #   launcher  launcher/ (the port's json.c/sha1.c it compiles are port/, which implies launcher)
 #             -> `launcher`: the SDL game's build and input self-tests, the launcher's build and self-test, the
 #                self-test with the disc and that game
-#   none      documentation, release.yml, scripts/package_appimage.sh, scripts/check_release_contents.py, packaging/
+#   none      documentation, release.yml, .ci-cd/linux/, .ci-cd/windows/ (but build_windows.sh), .ci-cd/common/check_release_contents.py
 #             (release.yml tests those)
-# ci.yml, .github/actions/ and scripts/ci_areas.sh themselves, manual runs, release tags (workflow_call) and a push
+# ci.yml, .github/actions/ and .ci-cd/common/ci_areas.sh themselves, manual runs, release tags (workflow_call) and a push
 # whose base commit is unknown run every area. `check` (the scripts parse, the Python compiles) always runs.
 #
 # psxstack, the submodule (al4xdev/dw3-psxstack), comes with each job's actions/checkout at its pin. Public, it needs
@@ -101,7 +101,7 @@ jobs:
         with:
           fetch-depth: 0   # the areas need the base commit (the repository is a few MB)
 
-      - name: Which areas changed (scripts/ci_areas.sh)
+      - name: Which areas changed (.ci-cd/common/ci_areas.sh)
         id: areas
         env:
           EVENT: ${{ github.event_name }}
@@ -109,12 +109,12 @@ jobs:
         run: |
           # A pull request's checkout is its merge commit: its first parent is the base it is tested against.
           if [[ "$EVENT" == pull_request ]] && git rev-parse -q --verify HEAD^2 >/dev/null; then
-            scripts/ci_areas.sh --diff HEAD^1 HEAD >> "$GITHUB_OUTPUT"
+            .ci-cd/common/ci_areas.sh --diff HEAD^1 HEAD >> "$GITHUB_OUTPUT"
           elif [[ "$EVENT" == push && "$GITHUB_REF" == refs/heads/* && ! "$BEFORE" =~ ^0*$ ]] &&
                git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
-            scripts/ci_areas.sh --diff "$BEFORE" HEAD >> "$GITHUB_OUTPUT"
+            .ci-cd/common/ci_areas.sh --diff "$BEFORE" HEAD >> "$GITHUB_OUTPUT"
           else
-            scripts/ci_areas.sh --all >> "$GITHUB_OUTPUT"
+            .ci-cd/common/ci_areas.sh --all >> "$GITHUB_OUTPUT"
           fi
           { echo "### Areas"; echo; sed -n 's/^\([a-z]*\)=\(.*\)/- \1: \2/p' "$GITHUB_OUTPUT"; } >> "$GITHUB_STEP_SUMMARY"
           cat "$GITHUB_OUTPUT"
@@ -144,13 +144,13 @@ jobs:
 
       - name: Scripts parse, Python compiles
         run: |
-          bash -n scripts/*.sh tools/*.sh tests/*/*.sh handheld/*.sh portmaster/*.sh
-          tools/venv/bin/python -m py_compile configure.py diff_settings.py tools/*.py tests/golden/*.py tests/golden/families/*.py tests/replay/*.py tests/host/*.py tests/port/*.py
+          bash -n scripts/*.sh tools/*.sh tests/*/*.sh .ci-cd/*/*.sh .ci-cd/*/*/*.sh
+          tools/venv/bin/python -m py_compile configure.py diff_settings.py tools/*.py tests/golden/*.py tests/golden/families/*.py tests/replay/*.py tests/host/*.py tests/port/*.py .ci-cd/*/*.py .ci-cd/*/*/*.py
 
       # A home directory or a drive letter with a real name in it works for one person and breaks everybody else; in a
       # tree meant to be read by strangers (and by assistants) it is also the easiest thing to copy. Cheap, always runs.
-      - name: No path from somebody's machine (scripts/check_paths.sh)
-        run: scripts/check_paths.sh
+      - name: No path from somebody's machine (.ci-cd/common/check_paths.sh)
+        run: .ci-cd/common/check_paths.sh
 
       - name: Workaround census (the game code all C, the FAKE/LOOP_BLOCK markers, the counts in docs/STATUS.md)
         if: needs.areas.outputs.game == 'true'
@@ -387,7 +387,7 @@ jobs:
       # launcher's self-test under Wine (SDL's offscreen video: no display, no disc).
       - name: Windows cross-build and the launcher's self-test under Wine
         timeout-minutes: 25
-        run: scripts/build_windows.sh --launcher --test --jobs "$DW3_JOBS"
+        run: .ci-cd/windows/build_windows.sh --launcher --test --jobs "$DW3_JOBS"
 
       # The crash report on Windows (docs/PORT.md "Crash report"): a forced access violation in a run on the disc
       # writes the report and the minidump under Wine, with the exception's exit code.
@@ -436,8 +436,8 @@ jobs:
       - name: Build ARM cross-compile image (armhf, cached)
         uses: docker/build-push-action@v6
         with:
-          context: tools
-          file: tools/Dockerfile.armhf
+          context: .ci-cd/portmaster
+          file: .ci-cd/portmaster/Dockerfile.armhf
           load: true
           tags: dw3-armhf-builder:latest
           cache-from: type=gha,scope=armhf-builder
@@ -446,8 +446,8 @@ jobs:
       - name: Build ARM64 cross-compile image (aarch64, cached)
         uses: docker/build-push-action@v6
         with:
-          context: tools
-          file: tools/Dockerfile.aarch64
+          context: .ci-cd/portmaster
+          file: .ci-cd/portmaster/Dockerfile.aarch64
           load: true
           tags: dw3-aarch64-builder:latest
           cache-from: type=gha,scope=aarch64-builder
@@ -457,7 +457,7 @@ jobs:
         env:
           DW3_BUILD_ONLY: "1"
         run: |
-          tools/build_arm.sh
+          .ci-cd/portmaster/build_arm.sh
           for bin in build/armhf-sdl2/dw2003 build/armhf-sdl2/dw3-launcher build/aarch64-sdl2/dw2003 build/aarch64-sdl2/dw3-launcher; do
             file "$bin"
             readelf -d "$bin" | grep NEEDED
@@ -477,8 +477,8 @@ jobs:
 
       - name: Assemble and check dist/dw3.zip
         run: |
-          (cd portmaster && ./make_release.sh)
-          python3 scripts/check_release_contents.py portmaster dist/dw3.zip
+          .ci-cd/portmaster/make_release.sh
+          python3 .ci-cd/common/check_release_contents.py portmaster dist/dw3.zip
           (cd dist && sha256sum -c SHA256SUMS-portmaster)
 
   # Android (arm64-v8a): fourth CI line alongside Linux, Windows, and PortMaster.
@@ -501,8 +501,8 @@ jobs:
       - name: Build Android toolchain image (cached)
         uses: docker/build-push-action@v6
         with:
-          context: tools
-          file: tools/Dockerfile.android
+          context: .ci-cd/android
+          file: .ci-cd/android/Dockerfile
           load: true
           tags: dw3-android-builder:latest
           cache-from: type=gha,scope=android-builder
@@ -523,9 +523,9 @@ jobs:
 
       - name: Build and verify Android arm64-v8a APK
         run: |
-          tools/build_android.sh
+          .ci-cd/android/build_android.sh
           apk="$(ls -1 dist/dw2003-*-android-arm64-v8a.apk)"
-          python3 scripts/check_release_contents.py android "$apk"
+          python3 .ci-cd/common/check_release_contents.py android "$apk"
           (cd dist && sha256sum -c SHA256SUMS-android)
           docker run --rm -v "$PWD:/work:ro" dw3-android-builder:latest bash -c "
             /opt/android-sdk/build-tools/34.0.0/apksigner verify /work/$apk

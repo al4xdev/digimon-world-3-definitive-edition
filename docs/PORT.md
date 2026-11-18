@@ -178,7 +178,7 @@ battle state of `port/game/definitive.c`). The debug channel's `save_state`/`loa
 - **Windows (run under Wine and Proton, not yet on real Windows):**
   - *Build:* the cross build (DECISIONS "Windows: cross-built from Linux"): `scripts/setup.sh llvm-mingw
     sdl3-windows`, psxstack's CMake toolchain file `psxstack/cmake/windows-x86_64.cmake`,
-    `scripts/build_windows.sh [--launcher] [--test]` (the game into `build/port-win`, the launcher into
+    `.ci-cd/windows/build_windows.sh [--launcher] [--test]` (the game into `build/port-win`, the launcher into
     `build/launcher-win`, the launcher's self-test under Wine) and `tools/port_inventory.py probe --target windows`
     (the units through llvm-mingw's clang). The overlay sections need no linker script (psxstack's `docs/PORT.md`
     "Overlays"). The SDL window is 64-bit only; macOS is not planned.
@@ -188,8 +188,8 @@ battle state of `port/game/definitive.c`). The debug channel's `save_state`/`loa
     the cross-build, the launcher's self-test (`DW3_SELFTEST_VIDEO_DRIVER=offscreen`: Wine drops `SDL_VIDEO_DRIVER`
     from the Windows environment), the crash report (`tests/port/crash.py --wine`) and, with the disc, both replays;
     `build`'s probe step compiles every unit with llvm-mingw's clang too. Locally the same gate is
-    `scripts/build_windows.sh --test`, every Wine run under a timeout.
-  - *Package:* the release carries a Windows zip (`scripts/package_windows.sh`, `docs/RELEASE.md` "The Windows
+    `.ci-cd/windows/build_windows.sh --test`, every Wine run under a timeout.
+  - *Package:* the release carries a Windows zip (`.ci-cd/windows/package_windows.sh`, `docs/RELEASE.md` "The Windows
     package"). The packaged `dw2003.exe` has run under Wine 11.17 and GE-Proton 10-25 (umu-run): a window at scale 2,
     WASAPI audio with no refill or drop, 49.97 frames a second, the `new_game` route to the first field map.
   - *Runtime:* the operating-system calls are in one file with a POSIX and a Windows half,

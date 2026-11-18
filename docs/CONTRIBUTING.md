@@ -68,8 +68,7 @@ submodule, git worktrees, and the extract, build and test commands.
 | `launcher/` | The C99 console launcher `dw3-launcher` (PortMaster, Android, a standalone PC build) |
 | `android/` | The Android APK: the entry point, the floating touch pad, the Gradle project |
 | `cloud-sync/` | The Cloudflare Worker behind the launcher's cloud save sync |
-| `cmake/` | The ARM toolchain files for `tools/build_arm.sh` |
-| `packaging/`, `portmaster/`, `handheld/` | Release packaging, the PortMaster package, the handheld launcher |
+| `.ci-cd/` | CI/CD by target: `common/` (CI areas, release checks, the local release), `linux/` (AppImage), `windows/`, `android/`, `portmaster/` (ARM builds, the package, the handheld scripts), `recomplauncher/` ([`.ci-cd/README.md`](../.ci-cd/README.md)) |
 | `docs/` | Reference documentation ([index](README.md)); the Definitive Edition's in [`docs/definitive-edition/`](definitive-edition/README.md) |
 | `iso/`, `extracted/`, `asm/`, `assets/`, `build/` | Untracked: your disc link, its contents, splat's output, build outputs |
 
@@ -123,15 +122,15 @@ scripts/test.sh                                             # the reference test
 tools/venv/bin/python tools/port_inventory.py probe         # the game C still compiles for the host
 ```
 
-`scripts/check_paths.sh` runs in CI and takes a second: it fails if a tracked file carries a path from a specific
+`.ci-cd/common/check_paths.sh` runs in CI and takes a second: it fails if a tracked file carries a path from a specific
 machine (`/home/<someone>/`, `/Users/<someone>/`, `C:\Users\<someone>`, a mounted drive). Write `<name>`, `$HOME` or a
 path relative to the checkout instead.
 
 For port or launcher changes also build them (the `cmake` commands in
 [`BUILDING.md`](BUILDING.md#the-pc-port-and-the-launcher)) and run the relevant tests (`tests/port/run.py`, the
-launcher's `--self-test`). CI also cross-builds them for Windows and runs them under Wine; `scripts/build_windows.sh
+launcher's `--self-test`). CI also cross-builds them for Windows and runs them under Wine; `.ci-cd/windows/build_windows.sh
 --test` is the same gate (it needs `scripts/setup.sh llvm-mingw sdl3-windows` and `wine`). A change to the release
-packaging has its own checks in [`RELEASE.md`](RELEASE.md). `scripts/ci_areas.sh --diff origin/main` tells you which CI
+packaging has its own checks in [`RELEASE.md`](RELEASE.md). `.ci-cd/common/ci_areas.sh --diff origin/main` tells you which CI
 areas your change touches.
 
 ## Opening a pull request

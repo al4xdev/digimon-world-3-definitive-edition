@@ -10,7 +10,7 @@ Needs build/port/dw2003 (tests/port/run.py builds it), the disc and addr2line. T
     unstripped build;
   - a fatal error (--disc of a missing file): status 1, a report of kind `fatal` with the reason and the log's tail;
   - `--version` prints the stamp the report's `build:` line carries.
---wine: the same three runs with the Windows build (--exe, default build/port-win/dw2003.exe; scripts/build_windows.sh)
+--wine: the same three runs with the Windows build (--exe, default build/port-win/dw2003.exe; .ci-cd/windows/build_windows.sh)
 through `wine` (headless: SDL's dummy drivers, the prefix in build/wine-prefix/). The crash is then an access
 violation (0xC0000005: the process's exit status, which wine's own exit truncates to 5), the report names the
 exception, the fault address and the access, its stack is walked from the exception's context (frame 0 the faulting
@@ -139,7 +139,7 @@ def main():
     if WINE:
         BINARY = Path(args.exe) if args.exe else ROOT / "build/port-win/dw2003.exe"
         if not BINARY.is_file():
-            print(f"crash test: no {BINARY} (scripts/build_windows.sh)")
+            print(f"crash test: no {BINARY} (.ci-cd/windows/build_windows.sh)")
             return 2
         if not BINARY.with_suffix(".pdb").is_file():
             print(f"crash test: no PDB beside {BINARY}")

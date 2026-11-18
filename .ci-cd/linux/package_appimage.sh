@@ -4,7 +4,7 @@
 # usr/bin/mods/, AppRun (the launcher, or the game when --disc/--game is passed), a .desktop file, the icon, recomplauncher.json and LICENSES/, then appimagetool with the pinned
 # static runtime (no libfuse2 needed to run it). Players supply their own disc in the launcher.
 #
-# Usage: scripts/package_appimage.sh [--version V] [--out DIR] [--sdl3 DIR] [--test] [--shared-libstdcxx]
+# Usage: .ci-cd/linux/package_appimage.sh [--version V] [--out DIR] [--sdl3 DIR] [--test] [--shared-libstdcxx]
 #   --version V  the version in the file name (default: the release tag being built, vX.Y.Z..., else the last such
 #                tag by `git describe`, else dev-<commit>; a leading v dropped)
 #   --out DIR    where the AppImage and SHA256SUMS go (default build/release/)
@@ -21,7 +21,7 @@
 # under build/release/.
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 MAIN="$(dirname "$(git -C "$ROOT" rev-parse --path-format=absolute --git-common-dir)")"
 JOBS="${DW3_JOBS:-$(nproc)}"
 log() { printf '\033[1;34m[package]\033[0m %s\n' "$*"; }
@@ -113,7 +113,7 @@ quiet "$work/launcher.log" cmake --build "$work/launcher" -j "$JOBS"
 
 # ---- The AppDir.
 appdir="$work/AppDir"
-pkg="$ROOT/packaging/appimage"
+pkg="$ROOT/.ci-cd/linux/appimage"
 rm -rf "$appdir"
 mkdir -p "$appdir/usr/bin" "$appdir/usr/share/applications" "$appdir/usr/share/icons/hicolor/scalable/apps" \
     "$appdir/LICENSES"

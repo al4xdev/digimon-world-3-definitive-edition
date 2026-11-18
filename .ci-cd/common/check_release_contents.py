@@ -9,11 +9,11 @@ file fails here until someone decides it belongs in a release; a mod's directory
 pack or texture made from the disc is game data). The size cap catches a disc track or an extracted movie under an
 allowed name.
 
-Usage: scripts/check_release_contents.py appimage DIR        an AppDir, or an extracted AppImage (squashfs-root)
-       scripts/check_release_contents.py windows ZIP [SYMBOLS_ZIP]
-       scripts/check_release_contents.py portmaster ZIP    the PortMaster ARM zip (dw3.zip)
-       scripts/check_release_contents.py android APK       the Android arm64-v8a APK
-       scripts/check_release_contents.py dist DIR            the release's assets: their names and all zips' contents
+Usage: .ci-cd/common/check_release_contents.py appimage DIR        an AppDir, or an extracted AppImage (squashfs-root)
+       .ci-cd/common/check_release_contents.py windows ZIP [SYMBOLS_ZIP]
+       .ci-cd/common/check_release_contents.py portmaster ZIP    the PortMaster ARM zip (dw3.zip)
+       .ci-cd/common/check_release_contents.py android APK       the Android arm64-v8a APK
+       .ci-cd/common/check_release_contents.py dist DIR            the release's assets: their names and all zips' contents
 Exit 0 when every file is allowed, 1 otherwise (each offending path printed).
 """
 import re

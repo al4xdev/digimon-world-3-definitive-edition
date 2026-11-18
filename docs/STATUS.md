@@ -5,7 +5,7 @@ compiles from matching C (Psy-Q's libraries stay split assembly). The PC port, b
 on Windows (cross-built): it boots the user's disc, plays the movies, the music and the effects, draws through a software
 GPU or a hardware renderer, and saves to memory-card images that an emulator can also read. A launcher and the built-in
 mods ([`LAUNCHER.md`](LAUNCHER.md) "Built-in mods") are done. An ARM build runs on Linux handhelds through PortMaster
-([`portmaster/README.md`](../portmaster/README.md), [`HANDHELD.md`](HANDHELD.md)).
+([`.ci-cd/portmaster/README.md`](../.ci-cd/portmaster/README.md), [`HANDHELD.md`](HANDHELD.md)).
 
 Issue numbers written `#NN` below are issues of the upstream repository
 [gascarcella/dw2003recomp](https://github.com/gascarcella/dw2003recomp/issues); this repository has its own tracker.
@@ -78,7 +78,7 @@ The design is in [`PORT.md`](PORT.md); the reasons are in [`DECISIONS.md`](DECIS
   take screenshots between two vsyncs; `psxstack/tools/mcp/` (registered by `.mcp.json`) is the MCP server over it
   (gate: `tests/port/debug.py`).
 - **Platforms:** Linux x86_64, Linux ARM (handhelds, through PortMaster) and Windows x86_64, cross-built from Linux
-  (`scripts/build_windows.sh`; upstream #37). Under Wine, headless, the game replays both layer-2 scripts with the Linux
+  (`.ci-cd/windows/build_windows.sh`; upstream #37). Under Wine, headless, the game replays both layer-2 scripts with the Linux
   build's log, record and SPU trace byte for byte (`tests/port/run.py --exe build/port-win/dw2003.exe --wine`). The
   Windows zip has been run under Wine 11.17 and GE-Proton 10-25; it has not run on real Windows. macOS is not planned.
 - **The port stack:** the runtime, the Psy-Q shim, the build (`psxstack_add_game()`), the launcher and the debug tools
@@ -90,9 +90,9 @@ The design is in [`PORT.md`](PORT.md); the reasons are in [`DECISIONS.md`](DECIS
 ## Launcher and mods
 - **Launcher** (`psxstack/launcher/README.md`): Dear ImGui on SDL3. Handles the disc (with a SHA-1 check), Play,
   settings, controls (rebinding, hotkeys, chords) and the mods' pages. A headless self-test runs in CI. On handhelds the
-  launcher is `handheld/Digimon World 3.sh` with the C99 pad menu `dw3-launcher` (`launcher/`; `handheld/README.md`,
+  launcher is `.ci-cd/portmaster/handheld/Digimon World 3.sh` with the C99 pad menu `dw3-launcher` (`launcher/`; `.ci-cd/portmaster/handheld/README.md`,
   [`LAUNCHER.md`](LAUNCHER.md)).
-- **Android (arm64) APK:** `tools/build_android.sh` and `android/`: the C launcher's touch-first build linked with the
+- **Android (arm64) APK:** `.ci-cd/android/build_android.sh` and `android/`: the C launcher's touch-first build linked with the
   game and a floating touch pad ([`LAUNCHER.md`](LAUNCHER.md),
   [`definitive-edition/platforms.md`](definitive-edition/platforms.md)).
 - **Cloud save sync:** the launcher's SAVES & CLOUD screen (`launcher/cloud.c`) against a Cloudflare Worker
@@ -102,12 +102,12 @@ The design is in [`PORT.md`](PORT.md); the reasons are in [`DECISIONS.md`](DECIS
   `scripts/symbolize.py`. On Windows the report comes with a minidump (`tests/port/crash.py --wine`).
 - **Mods:** the built-in mods and their settings are in [`LAUNCHER.md`](LAUNCHER.md) "Built-in mods". With mods off, the
   binary's logs, records and audio are unchanged.
-- **Release:** `scripts/package_appimage.sh` builds the Linux AppImage and `scripts/package_windows.sh` the Windows zip
+- **Release:** `.ci-cd/linux/package_appimage.sh` builds the Linux AppImage and `.ci-cd/windows/package_windows.sh` the Windows zip
   (and its PDB symbols zip); a tag `vX.Y.Z` produces a draft release with both ([`RELEASE.md`](RELEASE.md)). The
-  PortMaster package is built by `portmaster/make_release.sh` (`portmaster/PUBLISHING.md`).
+  PortMaster package is built by `.ci-cd/portmaster/make_release.sh` (`.ci-cd/portmaster/PUBLISHING.md`).
 
 ## Infrastructure
-- **CI** (`.github/workflows/ci.yml`) runs per area (game, port, launcher; `scripts/ci_areas.sh`) on pull requests and
+- **CI** (`.github/workflows/ci.yml`) runs per area (game, port, launcher; `.ci-cd/common/ci_areas.sh`) on pull requests and
   pushes to `main`, and skips docs-only changes. An `areas` job gates parallel jobs (`check`, `game`, `port`,
   `port-mods`, `launcher`, `windows`), each set up by `.github/actions/setup`. A deploy key adds the disc-dependent
   build and tests. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the checks and [`DECISIONS.md`](DECISIONS.md) "CI per
@@ -122,7 +122,7 @@ The design is in [`PORT.md`](PORT.md); the reasons are in [`DECISIONS.md`](DECIS
 - The port's `-m32` and sanitizer builds need system packages (`gcc-multilib`/`glibc-devel.i686`, `libasan`,
   `libubsan`); CI installs its own.
 - Handheld limitations are in [`HANDHELD.md`](HANDHELD.md#known-limitations) "Known limitations" and
-  [`portmaster/README.md`](../portmaster/README.md) "Known issues".
+  [`.ci-cd/portmaster/README.md`](../.ci-cd/portmaster/README.md) "Known issues".
 
 ## Where work is tracked
 - **Bugs and problems:** [GitHub Issues](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues).

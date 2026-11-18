@@ -170,7 +170,7 @@ def main():
             raise Missing(f"no binary at {args.exe}")
         if args.wine:
             if not args.exe or shutil.which("wine") is None:
-                raise Missing("--wine needs --exe (scripts/build_windows.sh) and wine on PATH")
+                raise Missing("--wine needs --exe (.ci-cd/windows/build_windows.sh) and wine on PATH")
             prefix = ROOT / "build/wine-prefix"
             prefix.mkdir(parents=True, exist_ok=True)
             run.RUNNER[:] = ["wine"]

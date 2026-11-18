@@ -1,11 +1,11 @@
 # Running on a handheld
 
-How the port runs on PortMaster ARM handhelds (`armhf` and `aarch64`: RK3326 R36S/XF35H and clones, H700, RK3566, A133P TrimUI, Mali-G31, PowerVR, Panfrost, across 480x320 to 1280x720 panels), how to build and deploy the multi-arch ARM package, and what is known not to work. Only one handheld with one firmware (XF35H, EmuELEC 4.7-Nexus) has been tested on physical hardware; all other CFWs and resolutions are verified synthetically (source audit + Docker/QEMU simulation; see `portmaster/README.md`).
+How the port runs on PortMaster ARM handhelds (`armhf` and `aarch64`: RK3326 R36S/XF35H and clones, H700, RK3566, A133P TrimUI, Mali-G31, PowerVR, Panfrost, across 480x320 to 1280x720 panels), how to build and deploy the multi-arch ARM package, and what is known not to work. Only one handheld with one firmware (XF35H, EmuELEC 4.7-Nexus) has been tested on physical hardware; all other CFWs and resolutions are verified synthetically (source audit + Docker/QEMU simulation; see `.ci-cd/portmaster/README.md`).
 
 Related documents:
 
-- [`../portmaster/README.md`](../portmaster/README.md): the page a player reads (install, disc, controls).
-- [`../handheld/README.md`](../handheld/README.md): the launcher, the menu and the package flow, for developers.
+- [`../.ci-cd/portmaster/README.md`](../.ci-cd/portmaster/README.md): the page a player reads (install, disc, controls).
+- [`../.ci-cd/portmaster/handheld/README.md`](../.ci-cd/portmaster/handheld/README.md): the launcher, the menu and the package flow, for developers.
 - [`LAUNCHER.md`](LAUNCHER.md): the mods, the settings file and the LED bar.
 - [`XF35H.md`](XF35H.md): the panel, LED bar and rumble of the XF35H.
 - [`PERFORMANCE.md`](PERFORMANCE.md): frame costs and how to measure them.
@@ -60,7 +60,7 @@ outline:
 - It checks with `ldd` that the 32-bit libraries are present before starting.
 - Logs go to `logs/game.log`; the launcher's own output is in `log.txt` and the menu's in `menu.log`.
 
-The step-by-step flow (menu exit codes, skip rules, log levels) is in [`../handheld/README.md`](../handheld/README.md).
+The step-by-step flow (menu exit codes, skip rules, log levels) is in [`../.ci-cd/portmaster/handheld/README.md`](../.ci-cd/portmaster/handheld/README.md).
 
 The device directory:
 
@@ -68,9 +68,9 @@ The device directory:
 /storage/roms/ports/dw3/
   dw2003.armhf      the port binary (ARM 32-bit; .aarch64 for 64-bit)
   dw3-launcher.armhf  the pad menu (.aarch64 for 64-bit; built from launcher/)
-  ledd.py           the LED bar's daemon       (from handheld/)
-  probe.sh          diagnostic, run only with heavy logs (from handheld/)
-  README.txt        what each file is, on the device (from handheld/)
+  ledd.py           the LED bar's daemon       (from .ci-cd/portmaster/handheld/)
+  probe.sh          diagnostic, run only with heavy logs (from .ci-cd/portmaster/handheld/)
+  README.txt        what each file is, on the device (from .ci-cd/portmaster/handheld/)
   settings.json     the player's settings and mods
   pad.map           button letters shown in text
   game/             the disc image (the player's own)
@@ -78,31 +78,31 @@ The device directory:
   logs/             game.log
 ```
 
-`handheld/` is the versioned source of everything in that directory except the two binaries (built by
-`tools/build_arm.sh`) and `settings.json`, `pad.map`, `game/`, `card1.mcd` and `logs/`, which belong to the player.
+`.ci-cd/portmaster/handheld/` is the versioned source of everything in that directory except the two binaries (built by
+`.ci-cd/portmaster/build_arm.sh`) and `settings.json`, `pad.map`, `game/`, `card1.mcd` and `logs/`, which belong to the player.
 
 `Select + Start`, `SIGTERM`, `SIGINT` and `SIGHUP` end the run at the end of the current vsync, through the normal exit
 path, so the log is closed.
 
 ## Building
 
-The ARM cross-builds run in Docker (`tools/Dockerfile.armhf` for 32-bit `armhf` and `tools/Dockerfile.aarch64` for 64-bit `aarch64`, both on Debian 10 `buster` against glibc 2.28), so nothing is installed on the host:
+The ARM cross-builds run in Docker (`.ci-cd/portmaster/Dockerfile.armhf` for 32-bit `armhf` and `.ci-cd/portmaster/Dockerfile.aarch64` for 64-bit `aarch64`, both on Debian 10 `buster` against glibc 2.28), so nothing is installed on the host:
 
 ```sh
-tools/build_arm.sh               # builds both armhf and aarch64 (DW3_ARCH=armhf|aarch64 for one)
+.ci-cd/portmaster/build_arm.sh               # builds both armhf and aarch64 (DW3_ARCH=armhf|aarch64 for one)
 ```
 
-It configures `build/armhf-sdl2` (`cmake/armhf-linux.cmake`) and `build/aarch64-sdl2` (`cmake/aarch64-linux.cmake`) with Ninja (`dw2003` + `dw3-launcher`).
+It configures `build/armhf-sdl2` (`.ci-cd/portmaster/cmake/armhf-linux.cmake`) and `build/aarch64-sdl2` (`.ci-cd/portmaster/cmake/aarch64-linux.cmake`) with Ninja (`dw2003` + `dw3-launcher`).
 
-It then assembles a multi-arch package directory for deploying to a device: `Digimon World 3.sh` and `dw3/` (`dw2003.armhf`, `dw2003.aarch64`, `dw3-launcher.armhf`, `dw3-launcher.aarch64`, everything in `handheld/`, and the mods — no symlinks, so FAT32/exFAT cards work). That directory is `../portmaster`, a sibling of the repository checkout and not the repository's own `portmaster/`. Set `DW3_PACKAGE_DIR` to put it somewhere else. Do not pipe the script through `head`: the script stops on `SIGPIPE` before it copies the binary, and the next deploy would silently ship the previous one.
+It then assembles a multi-arch package directory for deploying to a device: `Digimon World 3.sh` and `dw3/` (`dw2003.armhf`, `dw2003.aarch64`, `dw3-launcher.armhf`, `dw3-launcher.aarch64`, everything in `.ci-cd/portmaster/handheld/`, and the mods — no symlinks, so FAT32/exFAT cards work). That directory is `../portmaster`, a sibling of the repository checkout and not the repository's own `.ci-cd/portmaster/`. Set `DW3_PACKAGE_DIR` to put it somewhere else. Do not pipe the script through `head`: the script stops on `SIGPIPE` before it copies the binary, and the next deploy would silently ship the previous one.
 
 To build the zip for PortMaster, run the script after the build:
 
 ```sh
-portmaster/make_release.sh
+.ci-cd/portmaster/make_release.sh
 ```
 
-It writes `dist/dw3.zip` from `build/armhf-sdl2/` and `build/aarch64-sdl2/`, `handheld/` and the metadata in `portmaster/`, refuses to build when a required file is missing or the binaries are not valid `armhf` / `aarch64` ELFs, and never includes game data. Publishing steps are in [`../portmaster/PUBLISHING.md`](../portmaster/PUBLISHING.md).
+It writes `dist/dw3.zip` from `build/armhf-sdl2/` and `build/aarch64-sdl2/`, `.ci-cd/portmaster/handheld/` and the metadata in `.ci-cd/portmaster/`, refuses to build when a required file is missing or the binaries are not valid `armhf` / `aarch64` ELFs, and never includes game data. Publishing steps are in [`../.ci-cd/portmaster/PUBLISHING.md`](../.ci-cd/portmaster/PUBLISHING.md).
 
 ## Deploying and rolling back
 
@@ -118,7 +118,7 @@ ssh root@<console-ip> md5sum /storage/roms/ports/dw3/dw2003.armhf
 md5sum build/armhf-sdl2/dw2003
 ```
 
-The two checksums must match. The launcher (from `handheld/`) and the menu (the `dw3-launcher` binary of the same
+The two checksums must match. The launcher (from `.ci-cd/portmaster/handheld/`) and the menu (the `dw3-launcher` binary of the same
 build) are copied the same way:
 
 ```sh
@@ -132,7 +132,7 @@ deploy as above:
 
 ```sh
 git checkout <commit> && git submodule update
-tools/build_arm.sh
+.ci-cd/portmaster/build_arm.sh
 ```
 
 Two other things to know:

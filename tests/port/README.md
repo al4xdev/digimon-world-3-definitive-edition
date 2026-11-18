@@ -8,7 +8,7 @@ reach what PCSX-Redux reached in `tests/replay/expected/new_game.json`.
 tests/port/run.py                     # build/port, two runs, compare (~1 s once built; a build from scratch ~1 min)
 tests/port/run.py --m32 --sanitize    # also the -m32 build (same log and record) and an ASan/UBSan build (no report)
 tests/port/run.py --cd-speed instant  # the port's CD without seek or transfer time (the default is realistic)
-tests/port/run.py --exe build/port-win/dw2003.exe --wine   # the Windows build (scripts/build_windows.sh) under Wine, headless;
+tests/port/run.py --exe build/port-win/dw2003.exe --wine   # the Windows build (.ci-cd/windows/build_windows.sh) under Wine, headless;
                                                            # with --exe build/port is only configured (the generated headers) and
                                                            # LIBSND's replay on the emulator's timeline is left to the plain run;
                                       # its log, record and SPU trace must be the Linux build's (build/port is still built)
@@ -166,7 +166,7 @@ within `SCALED_BUDGET` of the software image, with the 3D at its sub-pixel posit
 run must log sub-pixel vertices). The debug channel's screenshot with `"renderer": "gpu"` (a headless
 `--renderer gpu --internal-scale 2`) is 640x480. `--lavapipe` uses Mesa's software Vulkan driver. ~70 s.
 **The Windows build:** `--exe build/port-win/dw2003.exe --wine` runs the device, the pictures, the VRAM checks and the
-internal scales with that binary under Wine (`scripts/build_windows.sh`; the prefix `build/wine-prefix` unless
+internal scales with that binary under Wine (`.ci-cd/windows/build_windows.sh`; the prefix `build/wine-prefix` unless
 `WINEPREFIX` names one): SDL_GPU on Direct3D 12 there (Wine's vkd3d, or vkd3d-proton in a prefix that has it), on
 Vulkan with `SDL_GPU_DRIVER=vulkan`; ~3 min. Skipped without a device (CI's Wine 9.0 has none: issue #67). In `scripts/test.sh --layer port`, followed by `tests/host/gpu_hw_replay.py` (the gpu golden
 family's 715 lists through the rasteriser, the whole target after each; `tests/README.md`).
@@ -217,7 +217,7 @@ platform, vsync 30, the signal, fault address 0, a pc and a stack that `scripts/
 `port_crash_test_write` and `port_frame`; a missing disc must give a `fatal` report with the reason; a normal run
 writes none. Needs `build/port/dw2003`, the disc and `addr2line`. In `scripts/test.sh --layer port`.
 `crash.py --wine [--exe PATH]` runs the same three with the Windows build (`build/port-win/dw2003.exe`,
-`scripts/build_windows.sh`) through `wine`, headless: the crash is an access violation (exit status 0xC0000005, which
+`.ci-cd/windows/build_windows.sh`) through `wine`, headless: the crash is an access violation (exit status 0xC0000005, which
 `wine` reports as 5), the report names the exception, the fault address and the access, its stack walked from the
 exception's context resolves through `port_crash_test_write`, `port_frame`, the game's frames and `main` with
 llvm-symbolizer and the PDB beside the exe, and the minidump beside it is read by the test's own minidump reader: the

@@ -1,15 +1,15 @@
 #!/bin/bash
 # build_arm.sh: cross-compile this port for ARM handhelds (PortMaster multi-arch: armhf + aarch64) and assemble
-# the package the card runs. The toolchains are Docker images built from tools/Dockerfile.armhf and
-# tools/Dockerfile.aarch64 (Debian 10 buster, glibc 2.28 floor), so nothing host-wide is installed.
+# the package the card runs. The toolchains are Docker images built from .ci-cd/portmaster/Dockerfile.armhf and
+# .ci-cd/portmaster/Dockerfile.aarch64 (Debian 10 buster, glibc 2.28 floor), so nothing host-wide is installed.
 #
-#   tools/build_arm.sh                 build both armhf + aarch64 and package into ../portmaster
-#   DW3_ARCH=armhf tools/build_arm.sh  build only armhf (or aarch64)
-#   DW3_PACKAGE_DIR=... tools/build_arm.sh   assemble the package somewhere else
+#   .ci-cd/portmaster/build_arm.sh                 build both armhf + aarch64 and package into ../portmaster
+#   DW3_ARCH=armhf .ci-cd/portmaster/build_arm.sh  build only armhf (or aarch64)
+#   DW3_PACKAGE_DIR=... .ci-cd/portmaster/build_arm.sh   assemble the package somewhere else
 set -euo pipefail
 
-TOOLS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO="$(cd "$TOOLS_DIR/.." && pwd)"
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"   # .ci-cd/portmaster/: the Dockerfiles and the toolchains
+REPO="$(cd "$HERE/../.." && pwd)"
 PACKAGE_DIR="${DW3_PACKAGE_DIR:-$REPO/../portmaster}"
 TARGET_ARCH="${DW3_ARCH:-all}"
 
@@ -37,9 +37,9 @@ echo "Version stamp: $PSXSTACK_VERSION ($PSXSTACK_COMMIT)"
 build_one_arch() {
     local arch="$1"
     local image="dw3-${arch}-builder:latest"
-    local dockerfile="$TOOLS_DIR/Dockerfile.${arch}"
+    local dockerfile="$HERE/Dockerfile.${arch}"
     local build_sub="build/${arch}-sdl2"
-    local toolchain="/work/cmake/${arch}-linux.cmake"
+    local toolchain="/work/.ci-cd/portmaster/cmake/${arch}-linux.cmake"
     local cc
     if [ "$arch" = "armhf" ]; then
         cc="arm-linux-gnueabihf-gcc"
@@ -49,7 +49,7 @@ build_one_arch() {
 
     if [ "${DW3_REBUILD_IMAGE:-0}" = "1" ] || ! docker image inspect "$image" &> /dev/null; then
         echo "Building toolchain image $image from $dockerfile..."
-        docker build -t "$image" -f "$dockerfile" "$TOOLS_DIR"
+        docker build -t "$image" -f "$dockerfile" "$HERE"
     fi
 
     echo "Configuring and compiling ($arch) with CMake + Ninja inside Docker..."
@@ -95,7 +95,7 @@ if [ "${DW3_BUILD_ONLY:-0}" = "1" ]; then
     exit 0
 fi
 
-# The package is what the card holds: multi-arch binaries plus everything in handheld/ (no symlinks for exFAT/FAT32).
+# The package is what the card holds: multi-arch binaries plus everything in .ci-cd/portmaster/handheld/ (no symlinks for exFAT/FAT32).
 echo "Assembling the package in $PACKAGE_DIR..."
 mkdir -p "$PACKAGE_DIR/dw3/game" "$PACKAGE_DIR/dw3/mods"
 
@@ -108,13 +108,13 @@ for arch in armhf aarch64; do
     fi
 done
 
-# Retired files: the package is a mirror, so a file that left handheld/ has to leave it too (the copy loop only adds).
+# Retired files: the package is a mirror, so a file that left .ci-cd/portmaster/handheld/ has to leave it too (the copy loop only adds).
 rm -f "$PACKAGE_DIR/dw3/dw3-tui.sh" "$PACKAGE_DIR/dw3/dw3.sh" "$PACKAGE_DIR/dw3/detect-env.sh" "$PACKAGE_DIR/dw3/dw3-menu.py"
 
-cp "$REPO/handheld/Digimon World 3.sh" "$PACKAGE_DIR/Digimon World 3.sh"
+cp "$REPO/.ci-cd/portmaster/handheld/Digimon World 3.sh" "$PACKAGE_DIR/Digimon World 3.sh"
 chmod +x "$PACKAGE_DIR/Digimon World 3.sh"
 
-for f in "$REPO"/handheld/*; do
+for f in "$REPO"/.ci-cd/portmaster/handheld/*; do
     case "$(basename "$f")" in
         README.md|"Digimon World 3.sh"|__pycache__) continue ;;
     esac

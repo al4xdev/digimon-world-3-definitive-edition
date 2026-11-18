@@ -103,7 +103,7 @@ Handhelds and PC, 16:9 widescreen, GPU renderer and shaders, and free cross-play
 2. Copy your disc image into `ports/dw3/game/`.
 3. Start *Digimon World 3* from the ports menu.
 
-Tested devices, install details and known issues: [`portmaster/README.md`](portmaster/README.md).
+Tested devices, install details and known issues: [`.ci-cd/portmaster/README.md`](.ci-cd/portmaster/README.md).
 
 **PC (Linux and Windows)**
 
@@ -381,8 +381,8 @@ handheld path and the Definitive Edition.
 
 | For | Command | Details |
 |---|---|---|
-| The ARM handheld binary and package | `tools/build_arm.sh` | [`docs/HANDHELD.md`](docs/HANDHELD.md#building) |
-| The PortMaster zip | `portmaster/make_release.sh` | [`portmaster/PUBLISHING.md`](portmaster/PUBLISHING.md) |
+| The ARM handheld binary and package | `.ci-cd/portmaster/build_arm.sh` | [`docs/HANDHELD.md`](docs/HANDHELD.md#building) |
+| The PortMaster zip | `.ci-cd/portmaster/make_release.sh` | [`.ci-cd/portmaster/PUBLISHING.md`](.ci-cd/portmaster/PUBLISHING.md) |
 | The PC port and the tests | see the guide | [`docs/BUILDING.md`](docs/BUILDING.md) |
 
 ## Contributing and support

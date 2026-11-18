@@ -1,5 +1,5 @@
 # The ARM 32-bit cross toolchain for the RK3326 handhelds and PortMaster CFWs (EmuELEC, ArkOS, AmberELEC, ROCKNIX,
-# muOS, Knulli). tools/build_arm.sh builds this image on first use (and CI builds it with Docker layer caching) and runs
+# muOS, Knulli). .ci-cd/portmaster/build_arm.sh builds this image on first use (and CI builds it with Docker layer caching) and runs
 # CMake and Ninja inside it, so nothing is installed on the host.
 #
 # Debian 10 (buster, archive.debian.org) provides arm-linux-gnueabihf gcc-8 and armhf multiarch SDL2/EGL/GLES/GBM/DRM

@@ -109,7 +109,7 @@ opening and closing `/dev/ttyS2` with no fork at all **~14 ms** (the tty's drain
 0.15–0.9 ms**, and through the daemon **1.7–2.4 ms** (max 5.8) for a whole socket round trip. So the expensive part is
 not the byte: it is paying the setup again.
 
-That is why the bar is driven by one process, `handheld/ledd.py` (`ledd` in the package), and not by whoever wants a
+That is why the bar is driven by one process, `.ci-cd/portmaster/handheld/ledd.py` (`ledd` in the package), and not by whoever wants a
 colour: it holds the fd, takes an `flock` so there is only ever one of it, coalesces callers that queue behind each
 other, runs the animation's own clock, and turns the bar off within a second of the pid that asked for the animation
 going away — a crash leaves no bar blinking for ever. The game's side is `port/game/led.c` (`docs/LAUNCHER.md`, "LED

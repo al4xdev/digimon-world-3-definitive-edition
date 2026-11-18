@@ -23,8 +23,8 @@ the game, and how the Definitive Edition is put together. The player's overview 
 | Document | Contents |
 |---|---|
 | [`HANDHELD.md`](HANDHELD.md) | running on a handheld, building and deploying the ARM package, the two renderers, environment variables, limitations |
-| [`../portmaster/README.md`](../portmaster/README.md) | the page a PortMaster player reads: install, disc, the menu, controls, tested devices, known issues |
-| [`../handheld/README.md`](../handheld/README.md) | the files that run on the console and the launcher's flow, for developers |
+| [`../.ci-cd/portmaster/README.md`](../.ci-cd/portmaster/README.md) | the page a PortMaster player reads: install, disc, the menu, controls, tested devices, known issues |
+| [`../.ci-cd/portmaster/handheld/README.md`](../.ci-cd/portmaster/handheld/README.md) | the files that run on the console and the launcher's flow, for developers |
 | [`LAUNCHER.md`](LAUNCHER.md) | the launchers, the built-in mods, the settings file, the LED bar and the 50/60 Hz mode |
 | [`XF35H.md`](XF35H.md) | the XF35H's panel, LED bar and rumble |
 | [`PERFORMANCE.md`](PERFORMANCE.md) | measured frame costs on the handheld (the NEON framebuffer present, the Cortex-A35 code generation) and how to measure them |
@@ -43,7 +43,7 @@ the game, and how the Definitive Edition is put together. The player's overview 
 | [`CONTRIBUTING.md`](CONTRIBUTING.md) | the rules, naming, CI checks and how to report issues |
 | [`THIRD_PARTY.md`](THIRD_PARTY.md) | what the project borrows, and under which licences |
 | [`../tests/README.md`](../tests/README.md) | the reference tests; the port's in [`../tests/port/README.md`](../tests/port/README.md), the saves' in [`../tests/saves/README.md`](../tests/saves/README.md), the host replay's mismatches in [`../tests/host/FINDINGS.md`](../tests/host/FINDINGS.md) |
-| [`../portmaster/PUBLISHING.md`](../portmaster/PUBLISHING.md) | publishing the PortMaster package |
+| [`../.ci-cd/portmaster/PUBLISHING.md`](../.ci-cd/portmaster/PUBLISHING.md) | publishing the PortMaster package |
 
 ## The game and the decompilation
 
@@ -70,12 +70,11 @@ the span-loop microbenchmarks. The stack's own fork-specific notes are in
 | `port/` | the PC port's adapter for the game ([`port/README.md`](../port/README.md)) |
 | `psxstack/` | the runtime stack, a git submodule ([fork](https://github.com/al4xdev/dw3-psxstack)) |
 | `launcher/` | the C99 console launcher `dw3-launcher` (PortMaster, Android, a standalone PC build): its screens and the `settings.json` it writes ([`LAUNCHER.md`](LAUNCHER.md)) |
-| `handheld/` | the shell launcher and the LED daemon, the source of what runs on the card besides the binaries ([`handheld/README.md`](../handheld/README.md)) |
-| `android/` | the Android APK: the entry point, the floating touch pad and the Gradle project (`tools/build_android.sh`) |
+| `.ci-cd/portmaster/handheld/` | the shell launcher and the LED daemon, the source of what runs on the card besides the binaries ([`.ci-cd/portmaster/handheld/README.md`](../.ci-cd/portmaster/handheld/README.md)) |
+| `android/` | the Android APK: the entry point, the floating touch pad and the Gradle project (`.ci-cd/android/build_android.sh`) |
 | `cloud-sync/` | the Cloudflare Worker behind the launcher's cloud save sync |
-| `portmaster/` | PortMaster metadata, `make_release.sh` and the publishing checklist |
-| `packaging/` | the desktop AppImage and Windows packages |
-| `cmake/` | the ARM toolchain files (`armhf`, `aarch64`) for `tools/build_arm.sh` |
+| `.ci-cd/` | CI/CD by target: what each workflow job runs, the build and package scripts, the Docker images ([`.ci-cd/README.md`](../.ci-cd/README.md)) |
+| `.ci-cd/portmaster/` | PortMaster metadata, `make_release.sh` and the publishing checklist; the ARM builds and their toolchains |
 | `tools/`, `scripts/` | build, analysis and check scripts |
 | `tests/` | the reference tests ([`tests/README.md`](../tests/README.md)) |
 | `docs/` | the documentation, indexed above; the Definitive Edition's in `docs/definitive-edition/` |

@@ -13,7 +13,7 @@
 #   ccache: the pinned static ccache binary into tools/ccache (CI's host builds of the port and the launcher:
 #          .github/actions/setup; no apt package, the runners' mirror stalls)
 #   llvm-mingw: the pinned llvm-mingw release (clang + lld, UCRT) into tools/llvm-mingw: the Windows cross toolchain
-#          (psxstack/cmake/windows-x86_64.cmake, scripts/build_windows.sh; DECISIONS "Windows")
+#          (psxstack/cmake/windows-x86_64.cmake, .ci-cd/windows/build_windows.sh; DECISIONS "Windows")
 #   sdl3-windows: SDL3 cross-built static for Windows into tools/sdl3-windows (needs llvm-mingw)
 #   dxc:   the pinned DirectX Shader Compiler release into tools/dxc: HLSL to SPIR-V (and DXIL) for the hardware renderer's
 #          shaders (issue #31)
@@ -22,7 +22,7 @@
 #          (cmake -DPSXSTACK_SDL=ON; port/README.md "The window"); its backends follow the -dev headers present
 #   sdl3-desktop: the same SDL into tools/sdl3-desktop, with the desktop backends required (the release's);
 #          `scripts/setup.sh --sdl3-desktop-apt` prints the Ubuntu -dev packages it needs
-#   appimage: appimagetool and the static AppImage runtime, pinned, into tools/appimage (scripts/package_appimage.sh)
+#   appimage: appimagetool and the static AppImage runtime, pinned, into tools/appimage (.ci-cd/linux/package_appimage.sh)
 #   cmake: CMake and Ninja (mkpsxiso and the PC port build with them) pip-installed into tools/venv, only when either is
 #          missing from PATH; later steps and tests/port/run.py find them there
 #
@@ -177,7 +177,7 @@ step_mkpsxiso() {
 # (libwayland-dev libxkbcommon-dev wayland-protocols) libasound2-dev libpulse-dev libudev-dev first, then rebuild with
 # `rm -rf tools/sdl3 && scripts/setup.sh sdl3`. Optional (not in the default steps): scripts/setup.sh sdl3
 #
-# sdl3-desktop: the same SDL into tools/sdl3-desktop/, for the release (scripts/package_appimage.sh; DECISIONS
+# sdl3-desktop: the same SDL into tools/sdl3-desktop/, for the release (.ci-cd/linux/package_appimage.sh; DECISIONS
 # "Releases"). It REQUIRES the desktop backends (X11, Wayland, PipeWire, PulseAudio, ALSA; SDL3_DESKTOP_APT lists
 # Ubuntu's -dev packages for them) and fails instead of turning one off, and its library is checked for each backend's
 # driver (nm). Its own directory, so a headless tools/sdl3 (CI's cache) never stands in for it. Optional:
@@ -272,7 +272,7 @@ step_sdl3-desktop() { sdl3_build sdl3-desktop "$INSTALL/sdl3-desktop" 1; }
 
 # llvm-mingw (Apache-2.0 with LLVM exceptions; mingw-w64 runtime under its own permissive licences): clang, lld and the
 # UCRT mingw-w64 sysroot, the Windows cross toolchain (DECISIONS "Windows"; psxstack/cmake/windows-x86_64.cmake is the
-# CMake toolchain file, scripts/build_windows.sh builds the game and the launcher with it). One pinned release tarball for
+# CMake toolchain file, .ci-cd/windows/build_windows.sh builds the game and the launcher with it). One pinned release tarball for
 # Linux x86_64, SHA-256 checked, unpacked into tools/llvm-mingw. Self-contained: no system package, the same build
 # here and on CI. Optional (not in the default steps): scripts/setup.sh llvm-mingw
 LLVM_MINGW_VER=20260922
@@ -309,7 +309,7 @@ step_llvm-mingw() {
 # raw input...). Optional: scripts/setup.sh llvm-mingw sdl3-windows
 step_sdl3-windows() {
     local name=sdl3-windows prefix="$INSTALL/sdl3-windows" dir="$SRC/SDL3-$SDL3_VER-sdl3-windows"
-    local toolchain="$ROOT/psxstack/cmake/windows-x86_64.cmake"   # psxstack's, as scripts/build_windows.sh uses it
+    local toolchain="$ROOT/psxstack/cmake/windows-x86_64.cmake"   # psxstack's, as .ci-cd/windows/build_windows.sh uses it
     if [[ -f "$prefix/lib/libSDL3.a" && -f "$prefix/.sha256" && "$(cat "$prefix/.sha256")" == "$SDL3_SHA256" ]]; then
         log "$name: $SDL3_VER already installed ($prefix)"
         return
@@ -335,7 +335,7 @@ step_sdl3-windows() {
     log "$name: installed $SDL3_VER to $prefix"
 }
 
-# The AppImage tools for the release (scripts/package_appimage.sh; DECISIONS "Releases: tagged drafts, published by hand"): appimagetool (MIT) and the
+# The AppImage tools for the release (.ci-cd/linux/package_appimage.sh; DECISIONS "Releases: tagged drafts, published by hand"): appimagetool (MIT) and the
 # static type-2 runtime (MIT, with musl, libfuse 3 (LGPL-2.1), squashfuse, zstd and zlib linked in: the AppImage needs
 # no libfuse2 on the player's machine), each a pinned release asset checked by SHA-256, and the runtime's LICENSE at
 # its tag's commit (bundled in the AppImage's LICENSES/). appimagetool is itself an AppImage: it is unpacked once

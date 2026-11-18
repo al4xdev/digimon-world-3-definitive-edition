@@ -6,13 +6,13 @@ A decompilation of a commercial game is not accepted by the main PortMaster cata
 **PortMaster-MV-New** (the multiverse repository, `https://github.com/PortsMaster-MV/PortMaster-MV-New`), under
 `ports/dw3/`. The portname is `dw3` (lowercase, starts with a letter).
 
-`portmaster/make_release.sh` builds `dist/dw3.zip` (multi-arch: `armhf` + `aarch64`) in the layout the PortMaster packaging page asks for. It refuses to
+`.ci-cd/portmaster/make_release.sh` builds `dist/dw3.zip` (multi-arch: `armhf` + `aarch64`) in the layout the PortMaster packaging page asks for. It refuses to
 build when a required file is missing, when `port.json` does not describe the layout, when the binaries are not valid `armhf` / `aarch64`
 ELFs, or when a disc image is inside.
 
 ## Automated CI & Sync
 
-`.github/workflows/release.yml` also builds `dw3.zip` in the `portmaster` job using `tools/Dockerfile.armhf` and `tools/Dockerfile.aarch64`. When the
+`.github/workflows/release.yml` also builds `dw3.zip` in the `portmaster` job using `.ci-cd/portmaster/Dockerfile.armhf` and `.ci-cd/portmaster/Dockerfile.aarch64`. When the
 repository secret `PORTMASTER_REPO_TOKEN` (`Contents: write` + `Actions: write` on `al4xdev/PortMaster-MV-New`) is
 configured, tagged releases (or manual `workflow_dispatch` runs with `sync_portmaster=true`) automatically unpack
 `dw3.zip` into `ports/dw3/` on `al4xdev/PortMaster-MV-New`, commit, push, and trigger its `release.yaml` workflow.
@@ -20,28 +20,28 @@ configured, tagged releases (or manual `workflow_dispatch` runs with `sync_portm
 ## Build locally
 
 ```
-tools/build_arm.sh               # build/{armhf,aarch64}-sdl2/: dw2003 and dw3-launcher
-cd portmaster && ./make_release.sh   # dist/dw3.zip
+.ci-cd/portmaster/build_arm.sh               # build/{armhf,aarch64}-sdl2/: dw2003 and dw3-launcher
+.ci-cd/portmaster/make_release.sh   # dist/dw3.zip
 ```
 
 ## Open steps
 
 - [x] **Open a testing thread** in the PortMaster Discord. It is required before a pull request. Give the device and CFW
-      tested, the resolution and the known issues (see "Known issues" in `portmaster/README.md`). Done: the release is
+      tested, the resolution and the known issues (see "Known issues" in `.ci-cd/portmaster/README.md`). Done: the release is
       in its testing phase there (2026-11-18), not yet in the catalogue; it was run under emulation on every CFW of
-      the test matrix ("Tested on" in `portmaster/README.md`).
+      the test matrix ("Tested on" in `.ci-cd/portmaster/README.md`).
 - [ ] **Fork `PortMaster-MV-New`**, sparse-checkout it, put the contents of `dist/dw3.zip` under `ports/dw3/`, run the
       repository's check (`python3 tools/build_release.py --do-check`; this script is not in this repository and its
       name has not been confirmed against the current PortMaster-MV-New), and open the pull request citing the thread.
 - [ ] **Test other firmware.** Only the XF35H on EmuELEC has been tested; the other rows of "Tested on" in
-      `portmaster/README.md` are open.
+      `.ci-cd/portmaster/README.md` are open.
 
 ## After any change
 
-1. Fix the source here (`handheld/`, `portmaster/`), not the copy in the zip.
+1. Fix the source here (`.ci-cd/portmaster/handheld/`, `.ci-cd/portmaster/`), not the copy in the zip.
 2. Rebuild: the two commands above.
 3. Update the published release: `gh release upload dw3-port-1 dist/dw3.zip --clobber -R al4xdev/digimon-world-3-definitive-edition`.
 4. Copy the new zip's contents over `ports/dw3/` in the PortMaster-MV-New fork.
 
 The menu on a test device must be built from the committed `launcher/`. To push it without a full install:
-see `handheld/README.md`, "Deploying the launcher".
+see `.ci-cd/portmaster/handheld/README.md`, "Deploying the launcher".

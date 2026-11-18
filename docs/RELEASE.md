@@ -4,14 +4,14 @@
 players (each the launcher/menu, the game and the mods' manifests; the player supplies the disc and never compiles
 anything), all built on CI's `ubuntu-24.04` runner (the AppImage against glibc 2.39, the Windows programs
 cross-compiled with llvm-mingw and linked statically: DECISIONS "Windows: cross-built from Linux", and `dw3.zip`
-cross-compiled in Debian 12 `armhf` Docker via `tools/Dockerfile.armhf`), for a pushed tag `vX.Y.Z` or a manual run
+cross-compiled in Debian 12 `armhf` Docker via `.ci-cd/portmaster/Dockerfile.armhf`), for a pushed tag `vX.Y.Z` or a manual run
 given a tag, and **published** as a GitHub Release. (Upstream's rule, DECISIONS "Releases: tagged drafts, published by
 hand", made a draft; the repository variable `RELEASE_DRAFT` = `true` brings that back.) No release file ever holds
-game data: `scripts/check_release_contents.py` holds every package to the list of files a release has (programs, the
+game data: `.ci-cd/common/check_release_contents.py` holds every package to the list of files a release has (programs, the
 mods' `mod.json`, licences, READMEs), before it is kept and again before it is published. The Windows build is tested
 on Linux under Wine; real Windows comes from testers.
 
-[`portmaster/PUBLISHING.md`](../portmaster/PUBLISHING.md) documents the PortMaster catalogue details; when the secret
+[`.ci-cd/portmaster/PUBLISHING.md`](../.ci-cd/portmaster/PUBLISHING.md) documents the PortMaster catalogue details; when the secret
 `PORTMASTER_REPO_TOKEN` is set, `release.yml` also updates `ports/dw3/` in `al4xdev/PortMaster-MV-New` and dispatches
 its `release.yaml` workflow automatically.
 
@@ -62,12 +62,12 @@ launcher reaches a release by bumping the pin.
 
 ## A local release
 
-release.yml takes about half an hour; `scripts/release_local.sh` makes the same draft in about 6 minutes (cold) on
+release.yml takes about half an hour; `.ci-cd/common/release_local.sh` makes the same draft in about 6 minutes (cold) on
 the maintainer's machine:
 
 ```sh
-scripts/release_local.sh v0.2.0                 # origin/main; --commit REF for another pushed commit
-scripts/release_local.sh v0.2.0 --build-only    # the packages only: no tag, no release
+.ci-cd/common/release_local.sh v0.2.0                 # origin/main; --commit REF for another pushed commit
+.ci-cd/common/release_local.sh v0.2.0 --build-only    # the packages only: no tag, no release
 ```
 
 It builds in a Docker `ubuntu:24.04` container (the runner's base, so the same glibc floor; with `wine64` for the
@@ -91,7 +91,7 @@ Locally (Linux x86_64):
 ```sh
 sudo apt-get install $(scripts/setup.sh --sdl3-desktop-apt)   # Ubuntu; once (Fedora: the same libraries' -devel)
 scripts/setup.sh venv imgui sdl3-desktop appimage
-scripts/package_appimage.sh --test             # build/release/dw2003-<version>-x86_64.AppImage + SHA256SUMS
+.ci-cd/linux/package_appimage.sh --test             # build/release/dw2003-<version>-x86_64.AppImage + SHA256SUMS
 ```
 
 `--test` runs the smoke test (below) with `iso/dw2003.cue` when it exists. On a system without the static libstdc++
@@ -106,7 +106,7 @@ AppRun                                   the launcher, unless --disc/--game was 
 recomplauncher.json                      how RecompLauncher sets the game up (at the AppImage root)
 usr/bin/dw2003                           the game (the SDL build), found by the launcher beside itself
 usr/bin/mods/<id>/mod.json               the mods' manifests (port/mods/), listed by the launcher
-dw2003recomp.desktop, dw2003recomp.svg   packaging/appimage/ (the icon is our own drawing)
+dw2003recomp.desktop, dw2003recomp.svg   .ci-cd/linux/appimage/ (the icon is our own drawing)
 LICENSES/                                ours, SDL3, Dear ImGui, its two fonts, the AppImage runtime (README.txt)
 ```
 
@@ -125,11 +125,11 @@ directory). Known limit: the game runs from the AppImage's mount, so closing the
 
 ```sh
 scripts/setup.sh venv imgui llvm-mingw sdl3-windows
-scripts/package_windows.sh --test              # build/release/dw2003-<version>-windows-x86_64.zip, -symbols.zip, SHA256SUMS-windows
+.ci-cd/windows/package_windows.sh --test              # build/release/dw2003-<version>-windows-x86_64.zip, -symbols.zip, SHA256SUMS-windows
 ```
 
 `package_windows.sh` cross-builds the game (the SDL build) and the launcher in Release through
-`scripts/build_windows.sh` (llvm-mingw's clang and lld, everything static, a PDB beside each executable: DECISIONS
+`.ci-cd/windows/build_windows.sh` (llvm-mingw's clang and lld, everything static, a PDB beside each executable: DECISIONS
 "Windows: cross-built from Linux"), checks both executables (GUI subsystem, the application manifest, no DLL of the
 toolchain's or SDL's imported: only Windows' own), and zips one folder:
 
@@ -139,9 +139,9 @@ dw2003-<version>-windows-x86_64/
   dw2003.exe                 the game, found by the launcher beside itself
   recomplauncher.json        how RecompLauncher sets the game up
   mods/<id>/mod.json         the mods' manifests (port/mods/)
-  README.txt                 packaging/windows/README.txt: the disc, SmartScreen, where settings and crash reports live
+  README.txt                 .ci-cd/windows/package/README.txt: the disc, SmartScreen, where settings and crash reports live
   LICENSES/                  ours, SDL3, Dear ImGui, its two fonts, LLVM's runtime, the mingw-w64 runtime, winpthreads
-                             (packaging/windows/LICENSES/README.txt)
+                             (.ci-cd/windows/package/LICENSES/README.txt)
 dw2003-<version>-windows-x86_64-symbols/
   dw2003.pdb, dw2003-launcher.pdb   the symbols of crash reports and minidumps (not needed to play)
 ```
@@ -174,7 +174,7 @@ scripts/symbolize.py report.txt --binary dw2003-0.2.2-windows-x86_64/dw2003.exe 
 
 ## The AppImage's smoke test
 
-`scripts/package_appimage.sh --test` runs the AppImage itself (extract-and-run, SDL's offscreen video and dummy
+`.ci-cd/linux/package_appimage.sh --test` runs the AppImage itself (extract-and-run, SDL's offscreen video and dummy
 audio) with `--self-test` and `DW3_SELFTEST_GAME=beside`: the launcher's whole self-test, then the game **the launcher
 finds by its own lookup beside its executable** (it must be `usr/bin/dw2003` inside the AppImage) with at least one
 mod manifest beside it; with `DW3_SELFTEST_DISC` (the disc) the bundled game runs 300 frames from the launcher's command

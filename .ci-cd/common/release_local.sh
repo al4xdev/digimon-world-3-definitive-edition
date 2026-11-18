@@ -6,7 +6,7 @@
 # starts and creates the same DRAFT release with the local files. Publishing stays the maintainer's decision
 # (DECISIONS "Releases: tagged drafts, published by hand").
 #
-# Usage: scripts/release_local.sh vX.Y.Z [--commit REF] [--build-only]
+# Usage: .ci-cd/common/release_local.sh vX.Y.Z [--commit REF] [--build-only]
 #   --commit REF   what to release (default origin/main; it must be pushed: the tag goes to origin)
 #   --build-only   build and test the packages only: no tag, no release
 # Needs: docker, gh (logged in, with push rights), the disc (iso/dw2003.bin here or in the main checkout, or
@@ -15,7 +15,7 @@
 # dw2003-<version>-windows-x86_64.zip, its -symbols.zip and SHA256SUMS-windows.
 set -euo pipefail
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 MAIN="$(dirname "$(git -C "$ROOT" rev-parse --path-format=absolute --git-common-dir)")"
 WORK="$ROOT/build/release-local"
 IMAGE=dw2003-release
@@ -89,10 +89,10 @@ scripts/worktree_init.sh
 test -f iso/dw2003.cue
 cmake -S port -B build/port -G Ninja -DCMAKE_BUILD_TYPE=Release
 tools/venv/bin/python tests/port/run.py
-scripts/package_appimage.sh --test
+.ci-cd/linux/package_appimage.sh --test
 mkdir -p build/wine-prefix
 WINEPREFIX=/work/build/wine-prefix wineboot --init
-scripts/package_windows.sh --test
+.ci-cd/windows/package_windows.sh --test
 ' > "$WORK/build.log" 2>&1 || { tail -30 "$WORK/build.log"; die "the build or a test failed (log: $WORK/build.log)"; }
 out="$WORK/src/build/release"
 (cd "$out" && sha256sum -c SHA256SUMS && sha256sum -c SHA256SUMS-windows) || die "SHA256SUMS does not match"

@@ -3,21 +3,21 @@
 # https://portmaster.games/packaging.html asks for, and check it before it is offered:
 #
 #   dist/dw3.zip
-#     Digimon World 3.sh        the launcher (handheld/, versioned with the port)
+#     Digimon World 3.sh        the launcher (.ci-cd/portmaster/handheld/, versioned with the port)
 #     port.json                 the metadata (this directory)
 #     README.md                 the wiki page's notes (this directory)
 #     gameinfo.xml              EmulationStation's entry (this directory)
 #     screenshot.png            640x480, gameplay (this directory; capture it on the device)
 #     cover.png                 the box art (this directory; optional)
-#     dw3/                      the port: dw2003.{armhf,aarch64}, dw3-launcher.{armhf,aarch64} and handheld/ extras
-#       licenses/               what the port borrows and its licences (portmaster/licenses/)
+#     dw3/                      the port: dw2003.{armhf,aarch64}, dw3-launcher.{armhf,aarch64} and .ci-cd/portmaster/handheld/ extras
+#       licenses/               what the port borrows and its licences (.ci-cd/portmaster/licenses/)
 #
 # It refuses to build when one of those is missing, when the port directory's name differs from the port's, or when
 # the binaries are not valid 32-bit ARM / 64-bit aarch64 ELFs. Nothing of the game's data is ever included.
 set -euo pipefail
 
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO="$(cd "$HERE/.." && pwd)"
+REPO="$(cd "$HERE/../.." && pwd)"
 NAME="dw3"                             # the port's name: dist/<name>.zip, ports/<name>/, ports/<name>/<name>/
 SCRIPT="Digimon World 3.sh"
 BIN_ARMHF="$REPO/build/armhf-sdl2/dw2003"
@@ -29,10 +29,10 @@ OUT="$DIST/$NAME"
 
 fail() { echo "make_release: $*" >&2; exit 1; }
 
-[ -f "$BIN_ARMHF" ] || fail "armhf binary not built: $BIN_ARMHF (run tools/build_arm.sh)"
-[ -x "$LAUNCHER_ARMHF" ] || fail "armhf launcher not built: $LAUNCHER_ARMHF (run tools/build_arm.sh)"
-[ -f "$BIN_AARCH64" ] || fail "aarch64 binary not built: $BIN_AARCH64 (run tools/build_arm.sh)"
-[ -x "$LAUNCHER_AARCH64" ] || fail "aarch64 launcher not built: $LAUNCHER_AARCH64 (run tools/build_arm.sh)"
+[ -f "$BIN_ARMHF" ] || fail "armhf binary not built: $BIN_ARMHF (run .ci-cd/portmaster/build_arm.sh)"
+[ -x "$LAUNCHER_ARMHF" ] || fail "armhf launcher not built: $LAUNCHER_ARMHF (run .ci-cd/portmaster/build_arm.sh)"
+[ -f "$BIN_AARCH64" ] || fail "aarch64 binary not built: $BIN_AARCH64 (run .ci-cd/portmaster/build_arm.sh)"
+[ -x "$LAUNCHER_AARCH64" ] || fail "aarch64 launcher not built: $LAUNCHER_AARCH64 (run .ci-cd/portmaster/build_arm.sh)"
 
 file "$BIN_ARMHF" | grep -q "ELF 32-bit LSB.*ARM" || fail "$BIN_ARMHF is not a 32-bit ARM ELF"
 file "$LAUNCHER_ARMHF" | grep -q "ELF 32-bit LSB.*ARM" || fail "$LAUNCHER_ARMHF is not a 32-bit ARM ELF"
@@ -42,17 +42,17 @@ file "$LAUNCHER_AARCH64" | grep -q "ELF 64-bit LSB.*ARM aarch64" || fail "$LAUNC
 for f in port.json README.md gameinfo.xml screenshot.png; do
     [ -f "$HERE/$f" ] || fail "missing $HERE/$f (the screenshot is captured on the device, 640x480 of gameplay)"
 done
-[ -f "$REPO/handheld/$SCRIPT" ] || fail "missing $REPO/handheld/$SCRIPT"
+[ -f "$REPO/.ci-cd/portmaster/handheld/$SCRIPT" ] || fail "missing $REPO/.ci-cd/portmaster/handheld/$SCRIPT"
 
 echo "=== $NAME: assembling $OUT (armhf + aarch64) ==="
 rm -rf "$OUT"
 mkdir -p "$OUT/$NAME/licenses"
 cp "$HERE/port.json" "$HERE/README.md" "$HERE/gameinfo.xml" "$HERE/screenshot.png" "$OUT/"
 [ -f "$HERE/cover.png" ] && cp "$HERE/cover.png" "$OUT/"
-cp "$REPO/handheld/$SCRIPT" "$OUT/$SCRIPT"
+cp "$REPO/.ci-cd/portmaster/handheld/$SCRIPT" "$OUT/$SCRIPT"
 chmod +x "$OUT/$SCRIPT"
 
-for f in "$REPO"/handheld/*; do
+for f in "$REPO"/.ci-cd/portmaster/handheld/*; do
     case "$(basename "$f")" in
         README.md|"$SCRIPT"|__pycache__) continue ;;
     esac
@@ -131,4 +131,4 @@ PY
 sha256sum "$NAME.zip" > SHA256SUMS-portmaster
 md5sum "$DIST/$NAME.zip"
 du -h "$DIST/$NAME.zip"
-echo "=== $NAME ready: publish it as ports/$NAME/ in PortMaster-MV-New (a decomp port) — see portmaster/PUBLISHING.md"
+echo "=== $NAME ready: publish it as ports/$NAME/ in PortMaster-MV-New (a decomp port) — see .ci-cd/portmaster/PUBLISHING.md"

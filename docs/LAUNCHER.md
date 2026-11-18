@@ -9,11 +9,11 @@ separate build lines exist across CI/CD and releases:
   `build/launcher/dw2003-launcher`). The contract between it and the game, the settings directory and file (schema 1),
   the mod manifest and runtime, its screens and self-test, and the crash report are psxstack's `docs/LAUNCHER.md` and
   `psxstack/launcher/README.md`.
-- **PortMaster (armhf) releases** use the shell entry `handheld/Digimon World 3.sh` together with the C99 console-first
-  launcher `launcher/` (`dw3-launcher`, compiled with `-DDW3_TARGET_PORTMASTER -DHAVE_SDL2` by `tools/build_arm.sh` in
+- **PortMaster (armhf) releases** use the shell entry `.ci-cd/portmaster/handheld/Digimon World 3.sh` together with the C99 console-first
+  launcher `launcher/` (`dw3-launcher`, compiled with `-DDW3_TARGET_PORTMASTER -DHAVE_SDL2` by `.ci-cd/portmaster/build_arm.sh` in
   the Debian 10 `buster` armhf container for glibc >= 2.28). It runs on `/dev/fb0` + evdev by default and falls back to
   SDL2 on Wayland/KMSDRM/portrait panels.
-- **Android (`arm64-v8a`) APK releases** (`tools/build_android.sh`, `android/`) link the parallel touch-first C99
+- **Android (`arm64-v8a`) APK releases** (`.ci-cd/android/build_android.sh`, `android/`) link the parallel touch-first C99
   launcher (`launcher/main_android.c`, with larger clickable rows, `< BACK` header/footer pills, SAF disc picker, and
   the `FLOATING PAD` toggle in `GAME`) directly with the `PSXSTACK_SDL2` game and floating virtual gamepad
   (`android/touch_pad.c`), using Android's native controller detection via SDL2.
@@ -165,7 +165,7 @@ screen) and runs `new_game`'s route from the opening in French, whose new game h
 
 The game's commentary is one switch, `debug.logs` in `settings.json`: `off` (the default) prints nothing, `soft` prints
 the startup lines and the events, `heavy` adds the periodic measurements (the per-second `present:` line among them).
-`handheld/Digimon World 3.sh` reads the value and passes it as `DW3_LOG`; the runtime's `port_log` honours it (`runtime/main.c`,
+`.ci-cd/portmaster/handheld/Digimon World 3.sh` reads the value and passes it as `DW3_LOG`; the runtime's `port_log` honours it (`runtime/main.c`,
 `port_log_verbose()` for the periodic lines). **With the logs off the game log stays empty** - the file is still created,
 because the launcher appends to it - and the crash report keeps its last lines either way, so a report is possible
 without them. The separate one-off meters (`DW3_PRESENT_LOG`, `DW3_GPU_LOG`, `DW3_PHASE`) are commented in that launcher and

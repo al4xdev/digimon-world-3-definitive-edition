@@ -15,11 +15,11 @@ the Android version. The PortMaster release is in its testing phase on the PortM
 Not started or only staged unless the entry says otherwise. Each entry says where its detail lives.
 
 - **muOS aarch64 (staging 10):** the build exists since `8373ea6` (see the History entry for the whole plan and the tester's data); on-device result unverified.
-- **Android (staging 14):** the code exists (`android/`, `tools/build_android.sh`, `android/touch_pad.c`; the README line above), the plan's phase gates are the open part: the Phase 0 audit of `psxstack` for the NDK/Bionic,
+- **Android (staging 14):** the code exists (`android/`, `.ci-cd/android/build_android.sh`, `android/touch_pad.c`; the README line above), the plan's phase gates are the open part: the Phase 0 audit of `psxstack` for the NDK/Bionic,
   the "Show Touch Controls" toggle only in the Android build, SAF disc import, and **a test on a real Android device** (`adb install`, `adb logcat`: boot, disc selection, entering the game, battle with Vulkan + widescreen,
   the toggle). Whole plan in History.
 - **FR/DE/ES/IT delta of the Definitive text (staging 15):** about 250 lines of `en.txt` plus the `def_str_*` strings; needs per-language override files and the tool options that do not exist yet (Texts above).
-- **PortMaster submission:** the package is checked (`portmaster/make_release.sh`, `dist/dw3.zip`) and **in its testing phase on the PortMaster Discord** (owner, 2026-11-18), not yet in the catalogue. Every CFW of the test matrix was run under emulation; real-device results on CFWs other than the XF35H's are the open part (plan 1).
+- **PortMaster submission:** the package is checked (`.ci-cd/portmaster/make_release.sh`, `dist/dw3.zip`) and **in its testing phase on the PortMaster Discord** (owner, 2026-11-18), not yet in the catalogue. Every CFW of the test matrix was run under emulation; real-device results on CFWs other than the XF35H's are the open part (plan 1).
 - **Telemetry Harness and Plugin Gatekeeper (staging 16):** a separate PRD v0.1 draft, unrelated to the game; the whole PRD is condensed in History.
 - **Combat ideas never done:** the Layer 6 technique candidates (Combat design record); the Super Hard rebalance by the owner.
 - **Onboarding hooks in the main story** (the Velvet Room "section 6": a forced Guardromon interaction after the second teleport point; steering the player through a wardrobe door when rare materials start to appear): out of scope, the owner is rewriting the main quest elsewhere and will make guide quests.

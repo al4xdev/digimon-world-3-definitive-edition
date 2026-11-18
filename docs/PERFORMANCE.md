@@ -107,7 +107,7 @@ slack does not change this. A menu is fine either way, and a player who only use
 |---|---|
 | `Fbdev_PresentVram` (`psxstack/runtime/fbdev_present.c`) expands the PS1 VRAM straight into the XRGB8888 framebuffer with NEON at integer 2x, with no intermediate buffer | present 10 ms to 1.0 ms (15-bit), 23 ms to 1.5 ms (24-bit) |
 | The NEON textured span now covers `GPU_COPY` and the four semi-transparent modes, not only `GPU_OPAQUE` | vector spans 152 of 8212 to 4439 (the rest are untextured polygons); only ~4% faster, because the cost was already the texture fetch |
-| `-mcpu=cortex-a35 -mfpu=neon-fp-armv8` in `cmake/armhf-linux.cmake` instead of generic armv7-a | 17 `__aeabi_idiv` call sites to 0; the A35 has hardware SDIV/UDIV |
+| `-mcpu=cortex-a35 -mfpu=neon-fp-armv8` in `.ci-cd/portmaster/cmake/armhf-linux.cmake` instead of generic armv7-a | 17 `__aeabi_idiv` call sites to 0; the A35 has hardware SDIV/UDIV |
 | Meters off by default: the cycle-counter read costs 6-15 cycles and was done ~10 times a span | 1-2 ms back in a battle |
 | VRAM rows padded to 1056 pixels (2112 bytes) and 64-byte aligned, read through `psyq_gpu_vram_stride()` | fixes an L1 set alias (119 ns to 31 ns a pixel in the synthetic fetch test); no measurable gain in the real battle |
 
@@ -157,7 +157,7 @@ In the order of what they would cost to try:
 
 ## Measuring
 
-The meters cost real frames, so `handheld/Digimon World 3.sh` leaves them off (commented exports). To measure one run,
+The meters cost real frames, so `.ci-cd/portmaster/handheld/Digimon World 3.sh` leaves them off (commented exports). To measure one run,
 enable them by hand and read `logs/gpu.log` while the scene is on screen. `DW3_GPU_LOG` prints one line a second:
 
 ```

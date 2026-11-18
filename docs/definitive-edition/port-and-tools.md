@@ -6,11 +6,11 @@
 
 - Host build: `cmake -S port -B build/port -G Ninja`, then `cmake --build build/port`; run
   `build/port/dw2003 --disc iso/dw2003.cue`. The SDL3 build: `scripts/setup.sh sdl3 dxc` plus `-DPSXSTACK_SDL=ON`.
-- Other builds: `tools/build_arm.sh` (since commit `8373ea6`, 2026-11-14, it builds **both armhf and aarch64**: `DW3_ARCH=armhf|aarch64` for one; Docker images from `tools/Dockerfile.armhf`
-  and `tools/Dockerfile.aarch64`, both Debian 10 against glibc 2.28; toolchains `cmake/armhf-linux.cmake` (`-mcpu=cortex-a35`) and `cmake/aarch64-linux.cmake`; trees `build/armhf-sdl2`, `build/aarch64-sdl2`, each with
-  `dw2003` + `dw3-launcher`; it assembles a multi-arch package directory `../portmaster` with `dw2003.armhf/.aarch64`, `dw3-launcher.armhf/.aarch64`, `handheld/` and the mods, no symlinks so FAT32/exFAT cards work, override
-  with `DW3_PACKAGE_DIR`; do not pipe the script through `head`, it stops on SIGPIPE before copying the binary and the next deploy would silently ship the previous one), `portmaster/make_release.sh` (needs both the 32-bit ARM and the 64-bit
-  aarch64 ELFs, `build/armhf-sdl2/` and `build/aarch64-sdl2/`), `scripts/package_appimage.sh`, `scripts/build_windows.sh`, `tools/build_android.sh`.
+- Other builds: `.ci-cd/portmaster/build_arm.sh` (since commit `8373ea6`, 2026-11-14, it builds **both armhf and aarch64**: `DW3_ARCH=armhf|aarch64` for one; Docker images from `.ci-cd/portmaster/Dockerfile.armhf`
+  and `.ci-cd/portmaster/Dockerfile.aarch64`, both Debian 10 against glibc 2.28; toolchains `.ci-cd/portmaster/cmake/armhf-linux.cmake` (`-mcpu=cortex-a35`) and `.ci-cd/portmaster/cmake/aarch64-linux.cmake`; trees `build/armhf-sdl2`, `build/aarch64-sdl2`, each with
+  `dw2003` + `dw3-launcher`; it assembles a multi-arch package directory `../portmaster` with `dw2003.armhf/.aarch64`, `dw3-launcher.armhf/.aarch64`, `.ci-cd/portmaster/handheld/` and the mods, no symlinks so FAT32/exFAT cards work, override
+  with `DW3_PACKAGE_DIR`; do not pipe the script through `head`, it stops on SIGPIPE before copying the binary and the next deploy would silently ship the previous one), `.ci-cd/portmaster/make_release.sh` (needs both the 32-bit ARM and the 64-bit
+  aarch64 ELFs, `build/armhf-sdl2/` and `build/aarch64-sdl2/`), `.ci-cd/linux/package_appimage.sh`, `.ci-cd/windows/build_windows.sh`, `.ci-cd/android/build_android.sh`.
 - `port/CMakeLists.txt` keeps the game's C at `-O0`: `-O2` crashes at boot (`sound_init` -> `sound_update_loading` ->
   `cdload_get_subfile`, SIGSEGV). It also holds the psxstack workaround block.
 - Link failures on `__start_dw2003_data_wstagNNN`: see the Testing note under Super Rare hunts.

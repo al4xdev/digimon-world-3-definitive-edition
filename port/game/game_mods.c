@@ -225,7 +225,7 @@ static void ws_frame(struct PortMod *mod) {
 }
 
 /* ---- led_bar (docs/LAUNCHER.md "LED bar"): the acting member's health on the LED bar of the RK3326 handhelds, through
- * the package's daemon (port/game/led.c, handheld/ledd.py). Off the handheld it is a no-op that logs one line, and it
+ * the package's daemon (port/game/led.c, .ci-cd/portmaster/handheld/ledd.py). Off the handheld it is a no-op that logs one line, and it
  * is off by default: with it on, the bar's regulator is raised in a battle and dropped when the battle ends.
  *
  * Nothing here reads the game's data: the daemon owns the animation and the game only says which of its six readings

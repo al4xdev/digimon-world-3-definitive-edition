@@ -27,7 +27,7 @@ same LIBSND calls (the segments between them are reported: docs/SOUND.md section
   --exe PATH  run this binary instead of building build/port; build/port is only configured (the run's own sound
               check compiles against its generated headers), and LIBSND's replay on the emulator's timeline is
               skipped (it tests the host's LIBSND, the plain run's job); --m32 and --sanitize do not apply to it
-  --wine      run the binary (--exe, a Windows build: scripts/build_windows.sh) through `wine`, headless (SDL's
+  --wine      run the binary (--exe, a Windows build: .ci-cd/windows/build_windows.sh) through `wine`, headless (SDL's
               dummy video and audio drivers, the prefix in build/wine-prefix/); its log and record must equal the
               Linux build's, which is what tests/replay/expected/ holds
   --out DIR   where the logs, records and checkpoint dumps go (default build/port-test/)

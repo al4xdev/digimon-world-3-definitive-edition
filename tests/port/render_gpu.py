@@ -38,7 +38,7 @@ centred) with target pixel p reading image pixel floor((p - x0 + 0.5) * w / dw) 
 --lavapipe runs on Mesa's software Vulkan driver (VK_DRIVER_FILES) instead of the default device.
 --exe BINARY tests that binary instead of building build/port-sdl: the device, the pictures, the VRAM checks and the
 internal scales (the fallback, the window, the debug channel and SDL_Renderer's present are the Linux build's parts).
---wine runs it through `wine` (a Windows build: scripts/build_windows.sh), headless: SDL_GPU on Direct3D 12 there
+--wine runs it through `wine` (a Windows build: .ci-cd/windows/build_windows.sh), headless: SDL_GPU on Direct3D 12 there
 (Wine's vkd3d, or vkd3d-proton in a prefix that has it), Vulkan with SDL_GPU_DRIVER=vulkan. The prefix is
 build/wine-prefix unless WINEPREFIX names one; VKD3D_SHADER_CACHE_PATH=0 keeps vkd3d-proton from writing its cache
 into the working directory. Without a device under Wine (CI's Wine 9.0 has none: issue #67) the pictures are skipped.
