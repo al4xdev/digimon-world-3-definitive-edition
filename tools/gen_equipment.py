@@ -165,8 +165,9 @@ def set_items():
 
 
 # Items outside the variants whose text the port rewrites on purpose (not equipment, so not this rule's): the revive
-# items' tiers (46, 67, 70), the Demon Bell (26, Super Hard) and the DV Plug (76, the Blast's cursed catalyst).
-OTHER_TEXTS = {26, 46, 67, 70, 76}
+# items' tiers (46, 67, 70), the Demon Bell (26, Super Hard), the Hunter's Mark (27, DEF_HUNT_MARK_ITEM, the Black
+# Market's key item) and the DV Plug (76, the Blast's cursed catalyst).
+OTHER_TEXTS = {26, 27, 46, 67, 70, 76}
 
 
 def texts():

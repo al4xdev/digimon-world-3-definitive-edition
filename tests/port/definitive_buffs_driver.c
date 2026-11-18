@@ -102,6 +102,19 @@ int def_record_blast_count(void) { return 0; }
 const DefBlastEntry *def_record_blast_entry(int i) { (void)i; return 0; }
 void def_record_blast_raise_best(int i, int v) { (void)i; (void)v; }
 int def_record_chosen(void) { return -1; }
+int def_record_heat(int p) { (void)p; return 0; }
+void def_record_set_heat(int p, int t) { (void)p; (void)t; }
+/* the story layer, the Time Room and the Super Rare hunt the battle hooks call (definitive_story.c,
+ * definitive_time_room.c, definitive_superhunt.c): none of them in this test */
+int def_record_story(int bit) { (void)bit; return 0; }
+void def_record_set_story(int bit) { (void)bit; }
+void def_story_battle_begin(void) {}
+void def_story_battle_end(int r) { (void)r; }
+void def_time_battle_begin(void) {}
+void def_time_battle_end(int r) { (void)r; }
+void def_time_savestate(struct PortState *s) { (void)s; }
+int def_super_done(void) { return 0; }
+void def_super_blast_note(void) {}
 int def_record_chosen_charge(void) { return 0; }
 void def_record_set_chosen_charge(int c) { (void)c; }
 int def_record_blast_boost(void) { return 0; }
