@@ -33,7 +33,9 @@
 
 extern int port_script_active;
 extern const unsigned char def_str_Guardromon[], def_str_Save[], def_str_Teleport[], def_str_TravelKeys[],
-    def_str_TravelKeys2[], def_str_Unknown[];
+    def_str_TravelKeys2[], def_str_Unknown[], def_str_GrLore[], def_str_GrNode0[], def_str_GrNode1[], def_str_GrNode2[],
+    def_str_GrNode3[], def_str_GrNode4[], def_str_GrNode5[], def_str_GrNode6[], def_str_GrNode7[], def_str_GrNode8[],
+    def_str_GrNode9[], def_str_GrNode10[], def_str_GrNode11[], def_str_GrNode12[];
 
 /* The inns' Guardromon and the spot the game itself walks the player to before it (the event's FIELDSTG_EVENT_WALK):
  * where a travel lands. Keep in step with gs_inns (port/game/game_mods.c), whose order this is. */
@@ -73,6 +75,12 @@ static const NetNode nodes[NT_NODES] = {
 #define NT_CHOICE_H 56
 #define NT_CHOICE_TEXT_X (NT_CHOICE_X + 22)
 #define NT_CHOICE_ROW_Y (NT_CHOICE_Y + 24)
+/* The first meeting's talk: a panel over the lower half, the Guardromon's two pages (the lore, then the node's joke) and a
+ * blinking marker where the next page waits. */
+#define NT_TALK_Y 120
+#define NT_TALK_H 106
+#define NT_TALK_TEXT_Y (NT_TALK_Y + 24)
+#define NT_BLINK 30 /* frames per half period of the marker */
 #define NT_PAL_TEXT 0
 #define NT_PAL_HOT 3  /* the chosen place (the bestiary's orange) */
 #define NT_PAL_HERE 4 /* the Guardromon in front of the player (its green) */
@@ -82,7 +90,7 @@ static const NetNode nodes[NT_NODES] = {
 #define NT_SND_OK 0x8004503C
 #define NT_SND_BACK 0x800450BD
 
-enum { NT_CHOICE, NT_LIST };
+enum { NT_CHOICE, NT_LIST, NT_TALK };
 enum { NT_IDLE, NT_CLOSE, NT_SAVE, NT_TRAVEL };
 
 static struct {
@@ -94,9 +102,11 @@ static struct {
     s32 sel;     /* the place under the cursor */
     s32 armed;   /* the place the confirm button chose once, or -1 */
     s32 next;    /* the save screen map the script asked for */
+    s32 fresh;   /* this Guardromon was just registered: its talk comes before the answers */
+    s32 page;    /* the talk's page */
     s32 action;
     s32 layer;
-    MessageWindow *name, *title, *hint, *answers[2], *places[NT_NODES];
+    MessageWindow *name, *title, *hint, *talk, *answers[2], *places[NT_NODES];
     MessageCursor *cursor;
 } nt;
 
@@ -109,6 +119,20 @@ static int nt_node_of(s32 map) {
         }
     }
     return -1;
+}
+
+/* The node's joke: the 13 places are the first meeting's own lines; the Amaterasu server's copies of them say the same
+ * (the Chamber Room has none, and the last copy stands for Genbu City). */
+static const u8 nt_joke[NT_NODES] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12 };
+
+static const unsigned char *nt_talk_text(s32 node, s32 page) {
+    static const unsigned char *const jokes[13] = {
+        def_str_GrNode0, def_str_GrNode1, def_str_GrNode2, def_str_GrNode3, def_str_GrNode4, def_str_GrNode5,
+        def_str_GrNode6, def_str_GrNode7, def_str_GrNode8, def_str_GrNode9, def_str_GrNode10, def_str_GrNode11,
+        def_str_GrNode12,
+    };
+
+    return page == 0 ? def_str_GrLore : jokes[nt_joke[node]];
 }
 
 /* The network's node of `map`: its spot in pixels and the direction the game faces the player there. 0 when the map has
@@ -178,6 +202,10 @@ static void nt_fill(void) {
     s32 here = nt_node_of(gamestate_data.funcs.get_map());
     s32 i;
 
+    if (nt.screen == NT_TALK) {
+        nt.talk->set_text(nt.talk, (u8 *)nt_talk_text(here, nt.page), -1);
+        return;
+    }
     if (nt.screen == NT_CHOICE) {
         for (i = 0; i < 2; i++) {
             nt.answers[i]->set_palette(nt.answers[i], i == nt.row ? NT_PAL_HOT : NT_PAL_TEXT);
@@ -210,7 +238,8 @@ static void nt_show(s32 screen) {
 
     nt.screen = screen;
     nt.name->set_visible(nt.name, screen == NT_LIST);
-    nt.title->set_visible(nt.title, screen == NT_CHOICE);
+    nt.title->set_visible(nt.title, screen != NT_LIST);
+    nt.talk->set_visible(nt.talk, screen == NT_TALK);
     for (i = 0; i < 2; i++) {
         nt.answers[i]->set_visible(nt.answers[i], screen == NT_CHOICE);
     }
@@ -218,7 +247,7 @@ static void nt_show(s32 screen) {
     for (i = 0; i < NT_NODES; i++) {
         nt.places[i]->set_visible(nt.places[i], screen == NT_LIST);
     }
-    nt.cursor->show(nt.cursor, 1);
+    nt.cursor->show(nt.cursor, screen != NT_TALK);
     nt_fill();
 }
 
@@ -229,6 +258,8 @@ static void nt_open(void) {
     nt.name->set_text(nt.name, (u8 *)def_str_Guardromon, -1);
     nt.title = nt_window(1, NT_CHOICE_X + 10, NT_CHOICE_Y + 4);
     nt.title->set_text(nt.title, (u8 *)def_str_Guardromon, -1);
+    nt.talk = nt_window(1, NT_CHOICE_X + 10, NT_TALK_TEXT_Y);
+    nt.talk->set_page_lines(nt.talk, 5);
     for (i = 0; i < 2; i++) {
         nt.answers[i] = nt_window(1, NT_CHOICE_TEXT_X, NT_CHOICE_ROW_Y + i * NT_LINE);
     }
@@ -243,13 +274,17 @@ static void nt_open(void) {
     nt.open = 1;
     nt.request = 0;
     nt.armed = -1;
-    nt_show(NT_CHOICE);
+    nt.page = 0;
+    if (nt.fresh) { /* the title sits on the talk panel's band, and the answers' on theirs */
+        nt.title->set_pos(nt.title, NT_CHOICE_X + 10, NT_TALK_Y + 4);
+    }
+    nt_show(nt.fresh ? NT_TALK : NT_CHOICE);
     port_log("network: frame %ld: the Guardromon screen of map 0x%X (mask 0x%X)", port_frames,
              gamestate_data.funcs.get_map(), def_network_mask());
 }
 
 static void nt_close(void) {
-    MessageWindow **all[] = { &nt.name, &nt.title, &nt.hint, &nt.answers[0], &nt.answers[1] };
+    MessageWindow **all[] = { &nt.name, &nt.title, &nt.hint, &nt.talk, &nt.answers[0], &nt.answers[1] };
     s32 i;
 
     for (i = 0; i < (s32)(sizeof(all) / sizeof(all[0])); i++) {
@@ -264,6 +299,7 @@ static void nt_close(void) {
     nt.cursor = NULL;
     nt.open = 0;
     nt.request = 0;
+    nt.fresh = 0;
 }
 
 /* The windows belong to no object's data block, so nothing runs them but this (as the battle's toast does). */
@@ -273,6 +309,7 @@ static void nt_run_windows(void) {
     heap_objects.try_run((Object *)nt.name);
     heap_objects.try_run((Object *)nt.title);
     heap_objects.try_run((Object *)nt.hint);
+    heap_objects.try_run((Object *)nt.talk);
     for (i = 0; i < 2; i++) {
         heap_objects.try_run((Object *)nt.answers[i]);
     }
@@ -285,6 +322,14 @@ static void nt_run_windows(void) {
 static void nt_draw(void) {
     s32 c;
 
+    if (nt.screen == NT_TALK) {
+        /* the marker is added first: the layer draws it last, over the panel */
+        if ((port_frames / NT_BLINK) % 2 == 0) {
+            nt_rect(NT_CHOICE_X + NT_CHOICE_W - 18, NT_TALK_Y + NT_TALK_H - 16, 8, 8, 255, 214, 74);
+        }
+        nt_panel(NT_CHOICE_X, NT_TALK_Y, NT_CHOICE_W, NT_TALK_H, 1);
+        return;
+    }
     if (nt.screen == NT_CHOICE) {
         nt_panel(NT_CHOICE_X, NT_CHOICE_Y, NT_CHOICE_W, NT_CHOICE_H, 1);
         return;
@@ -300,6 +345,19 @@ static void nt_draw(void) {
         nt_panel(NT_COL_X + c * NT_COL_DX, NT_TOP - 5, NT_COL_W, NT_COL_H, 0);
     }
     nt_panel(0, NT_HINT_Y, 320, 240 - NT_HINT_Y, 0);
+}
+
+/* The first meeting's talk: the confirm button turns the page, the cancel buttons skip it. */
+static void nt_talk_input(void) {
+    if (PAD_PRESSED(13) && nt.page == 0) {
+        sound_module.play(NT_SND_OK);
+        nt.page = 1;
+        nt_fill();
+    } else if (PAD_PRESSED(13) || PAD_PRESSED(12) || PAD_PRESSED(14)) {
+        sound_module.play(PAD_PRESSED(13) ? NT_SND_OK : NT_SND_BACK);
+        nt.title->set_pos(nt.title, NT_CHOICE_X + 10, NT_CHOICE_Y + 4);
+        nt_show(NT_CHOICE);
+    }
 }
 
 static void nt_choice_input(void) {
@@ -393,7 +451,9 @@ static void nt_list_input(void) {
 /* One frame of the screen: its keys, its windows and its drawing. */
 static void nt_update(void) {
     nt.action = NT_IDLE;
-    if (nt.screen == NT_CHOICE) {
+    if (nt.screen == NT_TALK) {
+        nt_talk_input();
+    } else if (nt.screen == NT_CHOICE) {
         nt_choice_input();
     } else {
         nt_list_input();
@@ -442,7 +502,9 @@ int dw3_travel_leave(s32 map, s32 next) {
         (next & 0xFF00) != 0xC00) {
         return 0;
     }
+    nt.fresh = 0;
     if (!nt_unlocked(node)) {
+        nt.fresh = 1;
         def_network_unlock(node);
         port_log("network: the Guardromon of map 0x%X registered (mask 0x%X)", map, def_network_mask());
     }

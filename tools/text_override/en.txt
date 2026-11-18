@@ -935,3 +935,24 @@ $Skin13: Silver and Black
 # title). Bob's and Johann's are here; the other six agents' lines are the story rewrite's (en_story.txt).
 TALK06 676: <7>DRI Bob<7>Hey, have you seen<1>Paildramon?<2,2><3>I've been looking<1>for him forever, but<1>I can't find him.<2,2><3>Folks say he flies<1>over Bulk Bridge, in<1>the South Sector.<2,2><3>If you find him, I'll<1>give you something<1>great...<2,2>
 TALK06 691: <7>DRI Johann<7>I'm looking for<1>MetalGreymon...<2,2><3>They say he roams<1>the Bulk Swamp, in<1>the South Sector.<2,2><3>If I can get Agumon's<1>DDNA, I can go on<1>with my research...<2,2><3>Oh! If you see him,<1>can you get the<1>DDNA from him?<2,2><3>I'll add Agumon as<1>your partner as a<1>reward!<2,2>
+
+# The Guardromon's first meeting (definitive_travel.c nt_talk_text): the lore, then a joke per place; and the inns' line
+$GrLore: The Guardian network<1>opens a node only for a<1>tamer who walked up to it.<1>My spot is now in your<1>data: warp here anytime.
+$GrNode0: It's dangerous to go alone!<1>Take this save point.
+$GrNode1: A wild Guardromon appeared!<1>You used SAVE. It's super<1>effective.
+$GrNode2: Sorry, tamer. Your princess<1>is in another tower. But<1>your data is in this one.
+$GrNode3: Every RPG swamp poisons<1>you. This one only has<1>a very comfy bed.
+$GrNode4: Hey! Listen! ...wait, wrong<1>game. Save often. That's<1>the whole advice.
+$GrNode5: Praise the sun! I'm a<1>bonfire with better<1>manners. No embers needed.
+$GrNode6: The cake is a lie. The<1>oasis is real. Drink up,<1>then save.
+$GrNode7: Is this the real hall?<1>Or just a mirage? Caught<1>in a landslide? Save anyway.
+$GrNode8: A big city! Time to talk<1>to every NPC twice and<1>open every barrel.
+$GrNode9: One does not simply walk<1>into the mountains. First,<1>one saves at the inn.
+$GrNode10: I used to be a tamer like<1>you. Then I took a Trojan<1>to the knee.
+$GrNode11: This is the Matrix, tamer.<1>Blue pill: you save and<1>stay. Red pill: you go on.
+$GrNode12: Slow and steady wins the<1>race. Unless a blue shell<1>shows up. Save first.
+
+# The standing Guardromon's line (one per region's talk file)
+TALK01 3: <7>Guardromon<7>Save officer<1>Guardromon, online.<2,2><3>Save, or warp to a<1>node you've met?<1>Talk to me.<2,2>
+TALK05 395: <7>Guardromon<7>Guardian Net: all<1>green. Need to save,<1>or to warp?<2,2><3>Walk up to any of<1>us. We share our<1>nodes with tamers.<2,2>
+TALK06 361: <7>Guardromon<7>Another tamer! My<1>buffer is ready.<2,2><3>Save here, or warp<1>to any node you<1>have met.<2,2>

@@ -2739,3 +2739,30 @@ DMG200:5 13: <7>Kail<7>...Me too.<2,2>
 DMG200:5 18: <7><9><7>All right, everyone.<1>I'm counting on you.<2,2><3>Let's go.<2,2>
 DMG200:5 19: <7><9><7>I'm heading out.<2,2>
 DMG200:5 20: <7>Kail<7>...All right.<1>We split up from<1>here.<2,2>
+
+# The inns' Guardromon: the line before the save screen (the network, definitive_travel.c)
+DMG200:42 1: <7>Guardromon<7>Link stable.<1>Your data is safe<1>in the network.<2,2><3>Ready to save.<2,2>
+DMG200:43 1: <7>Guardromon<7>Link stable.<1>Your data is safe<1>in the network.<2,2><3>Ready to save.<2,2>
+DMG300:26 1: <7>Guardromon<7>Link stable.<1>Your data is safe<1>in the network.<2,2><3>Ready to save.<2,2>
+DMG300:51 1: <7>Guardromon<7>Link stable.<1>Your data is safe<1>in the network.<2,2><3>Ready to save.<2,2>
+DMG400:16 1: <7>Guardromon<7>Link stable.<1>Your data is safe<1>in the network.<2,2><3>Ready to save.<2,2>
+DMG400:17 1: <7>Guardromon<7>Link stable.<1>Your data is safe<1>in the network.<2,2><3>Ready to save.<2,2>
+DMG400:18 1: <7>Guardromon<7>Link stable.<1>Your data is safe<1>in the network.<2,2><3>Ready to save.<2,2>
+DMG400:49 1: <7>Guardromon<7>Link stable.<1>Your data is safe<1>in the network.<2,2><3>Ready to save.<2,2>
+DMG500:8 1: <7>Guardromon<7>Link stable.<1>Your data is safe<1>in the network.<2,2><3>Ready to save.<2,2>
+DMG500:9 1: <7>Guardromon<7>Link stable.<1>Your data is safe<1>in the network.<2,2><3>Ready to save.<2,2>
+DMG500:10 1: <7>Guardromon<7>Link stable.<1>Your data is safe<1>in the network.<2,2><3>Ready to save.<2,2>
+DMG500:11 1: <7>Guardromon<7>Link stable.<1>Your data is safe<1>in the network.<2,2><3>Ready to save.<2,2>
+DMG500:38 1: <7>Guardromon<7>Link stable.<1>Your data is safe<1>in the network.<2,2><3>Ready to save.<2,2>
+DMG500:39 1: <7>Guardromon<7>Link stable.<1>Your data is safe<1>in the network.<2,2><3>Ready to save.<2,2>
+DMG600:6 1: <7>Guardromon<7>Link stable.<1>Your data is safe<1>in the network.<2,2><3>Ready to save.<2,2>
+DMG600:7 1: <7>Guardromon<7>Link stable.<1>Your data is safe<1>in the network.<2,2><3>Ready to save.<2,2>
+DMG600:30 1: <7>Guardromon<7>Link stable.<1>Your data is safe<1>in the network.<2,2><3>Ready to save.<2,2>
+DMG600:31 1: <7>Guardromon<7>Link stable.<1>Your data is safe<1>in the network.<2,2><3>Ready to save.<2,2>
+DMG700:4 1: <7>Guardromon<7>Link stable.<1>Your data is safe<1>in the network.<2,2><3>Ready to save.<2,2>
+DMG700:5 1: <7>Guardromon<7>Link stable.<1>Your data is safe<1>in the network.<2,2><3>Ready to save.<2,2>
+DMG700:6 1: <7>Guardromon<7>Link stable.<1>Your data is safe<1>in the network.<2,2><3>Ready to save.<2,2>
+DMG700:7 1: <7>Guardromon<7>Link stable.<1>Your data is safe<1>in the network.<2,2><3>Ready to save.<2,2>
+DMG700:8 1: <7>Guardromon<7>Link stable.<1>Your data is safe<1>in the network.<2,2><3>Ready to save.<2,2>
+DMG700:38 1: <7>Guardromon<7>Link stable.<1>Your data is safe<1>in the network.<2,2><3>Ready to save.<2,2>
+DMG700:39 1: <7>Guardromon<7>Link stable.<1>Your data is safe<1>in the network.<2,2><3>Ready to save.<2,2>
