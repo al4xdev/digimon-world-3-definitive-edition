@@ -1713,6 +1713,10 @@ static inline void fieldstg_manager_start(FieldstgManager *obj, FieldstgManagerD
     if (fieldstg_stage.entry != NULL) {
         data->stage = OVERLAY_FN(2, fieldstg_stage.entry)(obj);
     }
+#ifdef PC_PORT
+    def_time_stage_setup(); /* the Time Room's trial areas: the stage as the trial has it (definitive_time_room.c) */
+    def_story_stage_setup(); /* the Oikawa's arc: he waits in the Bug Maze Pit's hall (definitive_story.c) */
+#endif
     gamestate_flags.update_map_flags();
     gamestate_flags.set_flag(gamestate_data.funcs.get_map() + 0x1E00, 1);
 #ifdef PC_PORT

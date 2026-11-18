@@ -44,9 +44,9 @@ extern const unsigned char def_str_Q0[], def_str_Q0T[], def_str_Q1[], def_str_Q1
     def_str_Q33[], def_str_Q33T[], def_str_Q34[], def_str_Q34T[], def_str_Q35[], def_str_Q35T[], def_str_Q36[],
     def_str_Q36T[], def_str_Q37[], def_str_Q37T[], def_str_Q38[], def_str_Q38T[], def_str_Q39[], def_str_Q39T[],
     def_str_Q40[], def_str_Q40T[], def_str_Q41[], def_str_Q41T[], def_str_Q43[], def_str_Q43T[], def_str_Q45[],
-    def_str_Q45T[], def_str_Q4s[], def_str_Q4sT[], def_str_Q4a[], def_str_Q4aT[];
+    def_str_Q45T[], def_str_Q4s[], def_str_Q4sT[], def_str_Q4a[], def_str_Q4aT[], def_str_Q27o[], def_str_Q27oT[];
 extern const unsigned char def_str_M0[], def_str_M0T[], def_str_M1[], def_str_M1T[], def_str_M2[], def_str_M2T[],
-    def_str_M3[], def_str_M3T[];
+    def_str_M3[], def_str_M3T[], def_str_M4[], def_str_M4T[];
 extern const unsigned char def_str_AucWhen0[], def_str_AucWhen1[], def_str_AucWhen2[], def_str_AucWhen3[],
     def_str_AucWhen4[], def_str_AucWhen5[], def_str_AucWhen6[], def_str_AucWhen7[], def_str_AucWhen8[],
     def_str_AucWhen9[], def_str_AucWhen10[], def_str_AucWhen11[], def_str_AucWhen12[], def_str_AucWhen13[],
@@ -89,6 +89,7 @@ const DefQuest def_quests[] = {
     { 24, 24, ANY, 0, 0x260, def_str_Q24, def_str_Q24T },
     { 25, 25, ANY, 0, 0x240, def_str_Q25, def_str_Q25T },
     { 26, 26, ANY, 0, 0x246, def_str_Q26, def_str_Q26T },
+    { 27, 27, STORY(DEF_STORY_COND_OIKAWA), 1, 0x245, def_str_Q27o, def_str_Q27oT }, /* the hooded man bars the way */
     { 27, 27, ANY, 0, 0x29E, def_str_Q27, def_str_Q27T },
     { 28, 28, ANY, 0, 0x2AD, def_str_Q28, def_str_Q28T },
     { 29, 29, ANY, 0, 0x2AE, def_str_Q29, def_str_Q29T },
@@ -115,6 +116,7 @@ const DefQuest def_missions[DEF_QUEST_MISSIONS] = {
     { 4, 45, ITEM(402), 0, 0x211, def_str_M1, def_str_M1T }, /* the Folder Bag */
     { 4, 45, ITEM(4), 0, 0x220, def_str_M2, def_str_M2T },   /* the Tree Boots */
     { 4, 45, ITEM(5), 0, 0x21F, def_str_M3, def_str_M3T },   /* the Fishing Pole */
+    { 27, 45, STORY(DEF_STORY_COND_MARKET), 1, 0x20F, def_str_M4, def_str_M4T }, /* the Oikawa's Black Market */
 };
 
 /* The auctions, in fieldstg_flag_events' order: the story step, the item the winning bid gives (the first answer's

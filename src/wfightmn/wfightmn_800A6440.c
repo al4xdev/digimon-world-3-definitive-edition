@@ -741,7 +741,8 @@ void wfightmn_battle_end(WfightmnMain *obj, WfightmnMainData *data) {
             if (fightstg_events.result != 0) {
                 records_battle_results.battle = records_state.battle;
 #ifdef PC_PORT
-                if (def_purify_won_wave()) { /* the Blast quest's simulator pays in TP and buffs, not the template's XP */
+                if (def_purify_won_wave() || def_time_won()) { /* the Blast quest's simulator pays in TP and buffs,
+                                                                * the Time Room's trials nothing: not the template's XP */
                     records_battle_results.battle = 0; /* stfgtrep_rewards[0]: no experience, no Bits */
                 }
 #endif
@@ -834,7 +835,8 @@ void wfightmn_battle_end(WfightmnMain *obj, WfightmnMainData *data) {
             break;
         case 1:
 #ifdef PC_PORT
-            if (def_purify_won_wave()) { /* the Blast quest's simulator: no results screen between its waves */
+            if (def_purify_won_wave() || def_time_won()) { /* the Blast quest's simulator, the Time Room's trials:
+                                                           * no results screen (between waves; no prize) */
                 gamestate_data.funcs.set_next_map(gamestate_data.field_map, 0);
                 break;
             }
@@ -847,8 +849,9 @@ void wfightmn_battle_end(WfightmnMain *obj, WfightmnMainData *data) {
             break;
         case 2:
 #ifdef PC_PORT
-            if (def_dri_defeat() || def_purify_defeat()) { /* PRD 4 layer H, Blast phase 2: a lost simulation or
-                                                             * purification is no game over: back to the field */
+            /* PRD 4 layer H, Blast phase 2, the Time Room, the Oikawa's arc: a lost simulation, purification, trial or
+             * fight with him is no game over: back to the field */
+            if (def_dri_defeat() || def_purify_defeat() || def_time_defeat() || def_story_defeat()) {
                 gamestate_data.funcs.set_next_map(gamestate_data.field_map, 0);
                 break;
             }

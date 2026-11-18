@@ -92,6 +92,8 @@ void def_log_begin(void) {
     def_hunt_reward_done(); /* PRD 4 layer B: a reward a results screen never showed does not carry over */
     def_dri_battle_begin(); /* PRD 4 layer H: whether this battle is the DRI simulation just set up */
     def_purify_battle_begin(); /* Blast phase 2: whether it is a purification's wave */
+    def_time_battle_begin();   /* the Time Room: whether it is a trial */
+    def_story_battle_begin();  /* the Oikawa's arc: whether it is his */
     if (def_hunt_active() || def_super_battle_ready()) {
         def_callout_show(DEF_CALLOUT_RARE, 1); /* PRD 4 layer A; a Super Rare too */
     }
@@ -306,6 +308,8 @@ void def_log_end(int result) {
     def_super_battle_end(result, fightstg_battle.state.members[1][0].hp);
     def_dri_battle_end(result);  /* PRD 4 layer H: a simulation's stages felled and their rewards */
     def_purify_battle_end(result); /* Blast phase 2: the dark forms felled, the next wave or the TP back */
+    def_time_battle_end(result);   /* the Time Room: a trial won or lost */
+    def_story_battle_end(result);  /* the Oikawa's arc */
     if (!log_on()) {
         return;
     }
@@ -648,6 +652,7 @@ void def_savestate(struct PortState *s) {
     def_evohint_savestate(s);
     def_callout_savestate(s);
     def_story_savestate(s); /* the story hooks' talk, with the field's heap it lives in */
+    def_time_savestate(s);  /* the Time Room's run */
 }
 
 static int target_slot(void) {

@@ -76,9 +76,9 @@ $Dr3Ask: So even the brightest<1>hope may falter before<1>the inevitable.<2,2><3
 $Dr3Op1: Forge a miracle.
 $Dr3Op2: I won't give up now.
 $Dr3Op3: ...I don't know anymore.
-$Dr3Re1: So be it. A miracle<1>does not fall from the<1>sky: it is forged.<2,2><3>A door will open: the<1>Time Room. There you<1>will prove it.<2,2>
-$Dr3Re2: Stubborn... The same<1>stubbornness that led<1>you to my door.<2,2><3>A door will open: the<1>Time Room. There it<1>will be put to test.<2,2>
-$Dr3Re3: Not knowing is where<1>every choice begins.<1>Yet you still stand.<2,2><3>A door will open: the<1>Time Room. There you<1>will find out.<2,2>
+$Dr3Re1: So be it. A miracle<1>does not fall from the<1>sky: it is forged.<2,2><3>You forged one in the<1>Time Room already.<1>Forge it once more.<2,2>
+$Dr3Re2: Stubborn... The same<1>stubbornness that led<1>you to my door.<2,2><3>It carried you through<1>the Time Room. Let it<1>carry you now.<2,2>
+$Dr3Re3: Not knowing is where<1>every choice begins.<1>Yet you still stand.<2,2><3>The Time Room knew you<1>before you knew<1>yourself. Trust that.<2,2>
 $IgorBlank: <3>Your partners' paths<1>are still unwritten.<1>Come back later.<2,2>
 $BatonPass: Baton Pass
 STATUS 92: Fire Affinity increased by <5,1>.
@@ -683,6 +683,8 @@ $Q25: The earthquake
 $Q25T: Bulbmon carried the A.o.A. between the<1>servers. Take Submarimon to South Cape<1>and ask Patamon in Suzaku Hall.
 $Q26: The Bug Maze
 $Q26T: The Leader went to the Catacomb, past<1>the Jungle Shrine of the Ether Jungle.<1>Enter the hole she guards, find the<1>hidden ladder and beat Bulbmon in the<1>Bug Maze Pit.
+$Q27o: The hooded man
+$Q27oT: A hooded man bars the way out of the Bug<1>Maze, in its hall. Talk to him and beat<1>him and his three: Arukenimon, Mummymon<1>and VenomMyotismon. A defeat costs<1>nothing; he waits for another try.
 $Q27: Qing Long City
 $Q27T: This is Amaterasu Server. Stay away<1>from Amaterasu City and its Knightmon.<1>Go east by Divermon's Lake and the Wind<1>Prairie and beat the Chief in Qing Long<1>Tower.
 $Q28: Zhu Que City
@@ -720,6 +722,8 @@ $Q45T: The world is safe. The DRI Agents, the<1>tournaments and the card masters
 # The missions: shown while their key item is missing.
 $M0: El Dorado ID
 $M0T: Ponchomon, in El Dorado (the blue roof<1>of Asuka City), gives it on the second<1>talk to a party with 210 Charisma. It<1>opens the auctions of the Cargo Tower.
+$M4: The Black Market
+$M4T: The hooded man from the Bug Maze trades<1>in the dark now. Enter the Velvet Room<1>by an inn's blue door: he keeps the<1>Black Market behind the counter.
 $M1: Folder Bag
 $M1T: Divermon, in the Yellow Cruiser (the<1>yellow roof of Asuka City's lower<1>level), gives the bag Card Battles need.
 $M2: Tree Boots
@@ -731,12 +735,48 @@ $M3T: Tai Kong Wang, at Shell Beach, makes<1>one from a Bamboo Spear (Asuka Armo
 # after his line.
 TALK05 81: <7>Gennai<7>Hm hm... The forms<1>a Blast calls up.<1>Let me see them.<2,2>
 TALK05 82: <7>Etemon<7>Heh heh heh! This<1>tune... I heard it<1>in another game!<2,2><3>Don't tell anyone<1>I said that!<2,2>
+# The Time Room (port/game/definitive_time_room.c): the gatekeeper before the Warp Gate to the Gunslinger. Its lines are
+# entries of the bar's talk file (TALK05) and of map 0x288's (TALK03) that are the letter "a" on the disc, said by no
+# stage. 47..49 Igor's welcome by Act II's answer (50 unanswered), 51 again, 52 after a lost or abandoned run, 53 passed;
+# 54..57 the challengers in the room (54 the real Gennai, 55 Myotismon in his shape); 58..61 before each trial and
+# 62..65 after it (Oikawa, Sepikmon, Gennai, Myotismon); TALK03 311/312 the gate held, without and with the Chosen.
+TALK05 47: <7>Igor<7>Welcome to the Time<1>Room, my guest. Here<1>the clock is asleep.<2,2><3>You told me once that<1>you carry this burden<1>of your own will.<2,2><3>Then let us weigh it.<1>Past the upper door<1>wait three trials.<2,2><3>Oikawa, the Sepikmon,<1>and the old man. One<1>after the other.<2,2><3>Turn back or fall,<1>and time rewinds to<1>the first of them.<2,2><3>There is no prize.<1>Only the truth of<1>what you have become.<2,2>
+TALK05 48: <7>Igor<7>Welcome to the Time<1>Room, my guest. Here<1>the clock is asleep.<2,2><3>You told me you did<1>not choose this road.<1>Yet here you stand.<2,2><3>Let us see what the<1>road made of you.<1>Past the upper door<2,2><3>wait three trials:<1>Oikawa, the Sepikmon,<1>and the old man.<2,2><3>Turn back or fall,<1>and time rewinds to<1>the first of them.<2,2><3>There is no prize.<1>Only the truth of<1>what you have become.<2,2>
+TALK05 49: <7>Igor<7>Welcome to the Time<1>Room, my guest. Here<1>the clock is asleep.<2,2><3>You told me you were<1>afraid, and went on.<1>Is your fear here too?<2,2><3>Good. Bring it along.<1>Past the upper door<1>wait three trials:<2,2><3>Oikawa, the Sepikmon,<1>and the old man. One<1>after the other.<2,2><3>Turn back or fall,<1>and time rewinds to<1>the first of them.<2,2><3>There is no prize.<1>Only the truth of<1>what you have become.<2,2>
+TALK05 50: <7>Igor<7>Welcome to the Time<1>Room, my guest. Here<1>the clock is asleep.<2,2><3>Past the gate outside,<1>no road leads back.<1>So we pause, first.<2,2><3>Past the upper door<1>wait three trials:<1>Oikawa, the Sepikmon,<2,2><3>and the old man. Turn<1>back or fall, and time<1>rewinds to the first.<2,2><3>There is no prize.<1>Only the truth of<1>what you have become.<2,2>
+TALK05 51: <7>Igor<7>Time will wait for<1>you as long as you<1>need. It has nowhere<2,2><3>else to be. The upper<1>door, when you are<1>ready.<2,2>
+TALK05 52: <7>Igor<7>Time turned back, my<1>guest. The trials wait<1>from the first again.<2,2><3>Rest. Here the clock<1>does not run, and no<1>one is counting.<2,2>
+TALK05 53: <7>Igor<7>Three trials, three<1>answers. The gate<1>outside will open.<2,2><3>Whatever waits past<1>it, you chose to meet<1>it. Go, my guest.<2,2>
+TALK05 54: <7>Gennai<7>A room where the clock<1>stands still. My old<1>bones are grateful.<2,2><3>I will be your last<1>trial. Don't hold back<1>for an old man.<2,2>
+TALK05 55: <7>Gennai<7>Hm hm... A room where<1>time sleeps. How very<1>restful.<2,2><3>I will be your last<1>trial, child. Do make<1>sure your partners<2,2><3>are... ready.<2,2>
+TALK05 56: <7>Sepikmon<7>The clock stopped, and<1>still my trackers hum.<1>Strange place.<2,2><3>Up there you will face<1>what I hunted myself.<1>Show me the hunter<2,2><3>you became.<2,2>
+TALK05 57: <7>Oikawa<7>I've lost my way more<1>times than I can tell.<1>Here, at least,<2,2><3>the clock can't mock<1>me. I go first. Don't<1>expect me to be kind.<2,2>
+TALK05 58: <7>Oikawa<7>I spent my life trying<1>to reach a world like<1>this one.<2,2><3>Now I can't find the<1>way out. Funny, isn't<1>it?<2,2><3>These two never left<1>my side. Neither did<1>that darkness.<2,2><3>Show me what a chosen<1>one carries.<2,2>
+TALK05 59: <7>Sepikmon<7>Every beast I sent you<1>after, I hunted first.<1>These were my finest.<2,2><3>Today they hunt you.<1>Mind the wind.<2,2>
+TALK05 60: <7>Gennai<7>Long ago I kept watch<1>over children like<1>you. I never stopped.<2,2><3>These three kept watch<1>with me. Let's see if<1>the watching was worth<2,2><3>it.<2,2>
+TALK05 61: <7>Gennai<7>Hm hm hm... Gennai,<1>they call me. Let the<1>old man show you<2,2><3>what lives in the<1>dark you carry.<2,2>
+TALK05 62: <7>Oikawa<7>...Heh. I lost again.<1>I'm getting good at<1>it.<2,2><3>Go on. The next one<1>won't be as gentle.<2,2>
+TALK05 63: <7>Sepikmon<7>A clean hunt. My<1>trackers will sing of<1>it tonight.<2,2><3>Go. The last trial<1>waits for you.<2,2>
+TALK05 64: <7>Gennai<7>Well done. The watch<1>was worth it, after<1>all.<2,2><3>Go back to the room.<1>The gate is yours.<2,2>
+TALK05 65: <7>Gennai<7>Hm... Strong enough.<1>For now.<2,2><3>Keep your partners<1>warm, child. We will<1>see each other again.<2,2>
+# The Oikawa's arc (definitive_story.c): TALK06's letter "a" entries (5..27 are, no stage talks with them). 5 he calls
+# the player over in the Bug Maze Pit's hall, 6 again after a won fight, 7 his voice once beaten; TALK05 99 his first
+# word behind the Velvet Room's counter.
+TALK06 5: <7>Hooded Man<7>Bulbmon was a lever.<1>You pulled it down<1>for me. Thank you.<2,2><3>I have walked these<1>servers for a long<1>time, looking for a<2,2><3>door. You found one<1>with ease. A blue one,<1>wasn't it?<2,2><3>Let me see what makes<1>you worth that door.<2,2>
+TALK06 6: <7>Hooded Man<7>Back already? Good.<1>Losing is a habit I<1>know very well.<2,2><3>Let's go again.<2,2>
+TALK06 7: <7>Hooded Man<7>...So that's what it<1>takes. I see now.<2,2><3>My name is Oikawa.<1>I have something to<1>sell, and nowhere to<2,2><3>sell it. Your blue<1>door, perhaps. We'll<1>meet behind it.<2,2>
+TALK05 99: <7>Oikawa<7>You came. Igor let me<1>keep a counter here.<1>He says I owe you.<2,2><3>What I sell, the game<1>never meant to give.<1>Crystals. Rare ones.<2,2><3>Bits up front. No<1>questions, no refunds.<2,2>
+TALK03 311: <7>Igor<7>Stop, my guest. Past<1>that gate, no road<1>leads back.<2,2><3>Your partners still<1>carry the curse, and<1>Gennai's road is not<2,2><3>walked to its end.<1>Walk it first... or<1>prove your own power<2,2><3>is enough. The blue<1>door to your left<1>opens the Time Room.<2,2>
+TALK03 312: <7>Igor<7>Stop, my guest. Past<1>that gate, no road<1>leads back.<2,2><3>Before you cross it,<1>let time stand still<1>a while.<2,2><3>The blue door to your<1>left opens on the<1>Time Room. Pass its<2,2><3>trials, and the gate<1>is yours.<2,2>
 # Blast Gauge phase 1 (port/game/definitive.c def_blast_plug): the DV Plug is the cursed catalyst, its description warns
 # of the price (34 characters at most, the item window's).
 ITMINF 76: Blast past its limit. Costs 10 TP
 # The Velvet Room's map title (port/game/definitive_velvet.c): the bar's own name gives way to the room's when the map is
 # the room. One line, the name plate's.
 $VelvetTitle: VELVET
+# The Time Room's (definitive_time_room.c): the room's title while it is the Time Room.
+$TimeTitle: TIME
+$TimeTitle2: ROOM
 # The Blast Gauge's quest, Gennai's panel (port/game/definitive_purify.c). Quoted ones keep their spaces. The 11-pixel
 # font (titles, lists, the story's pages) has no "," or ":"; a page is up to six lines of about 44 characters.
 $PfDomTitle: Dark forms

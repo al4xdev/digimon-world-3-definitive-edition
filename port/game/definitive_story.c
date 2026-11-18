@@ -59,6 +59,14 @@ extern void *font_get_entry(void *data, s32 i);
 
 /* Seiryu City: world map area 0x0E of the first server (maps 0x22E..0x231), whose stages talk from TALK01 (0xCC). */
 #define ST_SEIRYU_STEP 4
+#define OK_MAP 0x245   /* the Oikawa's arc: the Bug Maze Pit's hall, step 27 (see oikawa_hook) */
+#define OK_STEP 27
+#define OK_TALK06 0xEF /* its talk file */
+#define OK_STAGE 10          /* his battle's scenery and music: Bulbmon's, in the same pit (WSTAG545's scripted 0); */
+#define OK_MUSIC 0x60880000  /* fieldstg_start_battle leaves them as the last battle had them, unset after a load */
+#define OK_CALL 5      /* TALK06's letter "a" entries (5..27 are, and no stage talks with them) */
+#define OK_AGAIN 6
+#define OK_BEATEN 7
 #define ST_TALK01 0xCC
 #define ST_TOM_LINE 79       /* Repeating Tom, in the city's inn: "Seiryu Leader is training at the Protocol Ruins" */
 #define ST_SEIRYU_FELT 178   /* TALK01's letter "a" no stage talks with: the player's feeling after Tom's news */
@@ -102,6 +110,9 @@ static struct {
     s32 tom_told; /* Repeating Tom's news is on screen: the player's feeling and the door come after it */
     s32 speaker;  /* the actor the balloon is on (its ID), 0: the player */
 } story;
+
+static int oikawa_here(void);
+static int oikawa_ahead(void);
 
 static int idle(void) {
     return !fieldstg_stage.event_running && !fieldstg_stage.battle_starting && !fieldstg_stage.menu_open &&
@@ -161,6 +172,10 @@ int def_story_cond(int cond) {
         return seiryu_active();
     case DEF_STORY_COND_SEIRYU_ASK:
         return def_on() && seiryu_ask();
+    case DEF_STORY_COND_OIKAWA:
+        return def_on() && gamestate_data.progress == OK_STEP && !def_record_story(DEF_STORY_OIKAWA_BEATEN);
+    case DEF_STORY_COND_MARKET:
+        return def_on() && def_record_story(DEF_STORY_OIKAWA_BEATEN) && !def_record_story(DEF_STORY_MARKET_OPEN);
     }
     return 0;
 }
@@ -186,8 +201,8 @@ int def_story_velvet_level(void) {
             level = steps[i].level;
         }
     }
-    /* the Black Market: the Oikawa beaten on the way to Amaterasu (until his arc is in, the step after it) */
-    if (def_record_story(DEF_STORY_OIKAWA_BEATEN) || p >= 27) {
+    /* the Black Market: the Oikawa beaten on the way out of the Bug Maze Pit (a save already past step 27 skipped him) */
+    if (def_record_story(DEF_STORY_OIKAWA_BEATEN) || p > OK_STEP) {
         level = DEF_VELVET_LEVEL_MAX;
     }
     return level;
@@ -204,6 +219,9 @@ int def_story_room_intro(void) {
 int def_story_text_own(int base_id, int index) {
     if (base_id == ST_TALK01) {
         return index == ST_SEIRYU_FELT;
+    }
+    if (base_id == OK_TALK06) {
+        return index == OK_CALL || index == OK_AGAIN || index == OK_BEATEN;
     }
     if (base_id == ST_TALK05) {
         return index == ST_SEPIK_REPORT || index == ST_SEPIK_CALLED || index == ST_IGOR_KEY || index == ST_IGOR_READ ||
@@ -555,9 +573,10 @@ static const Dream dreams[] = {
     /* Act II, the burden: the first free moment on the Amaterasu Server (step 27, past the Bug Maze Pit). */
     { 1, 27, 27, 0, def_str_Dr2Ask, { def_str_Dr2Op1, def_str_Dr2Op2, def_str_Dr2Op3 },
       { def_str_Dr2Re1, def_str_Dr2Re2, def_str_Dr2Re3 }, -1, { NULL, NULL, NULL } },
-    /* Act III, the abyss: Snatchmon fused with the Gunslinger (WSTAG820's event 1080: step 0x2B, flag 0x7401). Igor
-     * recalls Act II's answer before he asks; the Time Room comes after (not built yet). */
-    { 2, 0x2B, 0x2B, 0x7401, def_str_Dr3Ask, { def_str_Dr3Op1, def_str_Dr3Op2, def_str_Dr3Op3 },
+    /* Act III, the abyss: Snatchmon fused with the Gunslinger (WSTAG820's event 1080 ends at step 0x2B). In the game
+     * Galacticmon's battle starts as that event ends; the port holds it until this dream is over (galactic_hook). Igor
+     * recalls Act II's answer before he asks; the Time Room was passed before the Warp Gate (definitive_time_room.c). */
+    { 2, 0x2B, 0x2B, 0, def_str_Dr3Ask, { def_str_Dr3Op1, def_str_Dr3Op2, def_str_Dr3Op3 },
       { def_str_Dr3Re1, def_str_Dr3Re2, def_str_Dr3Re3 }, 1, { def_str_Dr3Rc1, def_str_Dr3Rc2, def_str_Dr3Rc3 } },
 };
 #define DREAMS ((s32)(sizeof(dreams) / sizeof(dreams[0])))
@@ -608,8 +627,9 @@ static void dream_hook(void) {
 
         if (i != forced && (def_record_story_answer(d->question) != 0 ||
                             gamestate_data.progress < d->progress || gamestate_data.progress > d->last ||
-                            (d->flag != 0 && !gamestate_get_flag((u16)d->flag, 1)))) {
-            continue;
+                            (d->flag != 0 && !gamestate_get_flag((u16)d->flag, 1)) ||
+                            (d->question == 1 && oikawa_ahead()))) {
+            continue; /* Act II waits while the Oikawa still bars the way out of the Bug Maze */
         }
         if (i == forced) {
             dream.forced = 1;
@@ -986,6 +1006,216 @@ int def_story_sepik_line(int met) {
     return 0;
 }
 
+/* ---- The Oikawa's arc (.plan/tasks/velvet-historia.md, step 26 -> 27): Bulbmon beaten in the Bug Maze Pit, event 711
+ * sets step 27 and leaves the player in the maze's hall (map 0x245, WSTAG540) on the way out to Amaterasu. There the
+ * hooded dealer stands in the way (the Black Market's trader, actor 42: the same figure the Velvet Room draws over),
+ * calls the player over and fights (def_oikawa_fight: Arukenimon, Mummymon, VenomMyotismon, Lv28..32; no escape). A
+ * defeat is no game over (the party as it went in, he calls again); beaten, he leaves a word and is gone, and the Guide
+ * sends the player to the Velvet Room, where he now keeps the Black Market behind the counter (DEF_STORY_MARKET_OPEN
+ * when he opens it). Igor's second dream waits until then on that map. */
+#define OK_ACTOR 42 /* the dealer's figure (map 0x20C's trader) */
+#define OK_PLACE 6  /* the VRAM place of map 0x245's third figure (actor 78), left out while he waits: a slot no
+                     * figure of the stage uses may hold the map's own graphics */
+#define OK_X 1778   /* two steps up-left of where event 711 leaves the player (1800,524), facing him */
+#define OK_Y 502
+#define OK_DIR 7
+enum { OK_IDLE, OK_TALKING, OK_FIGHTING, OK_WON, OK_LOST };
+
+extern s32 fieldstg_actor_talk_to(FieldstgActor *obj, FieldstgPos *pos);
+extern FieldstgPos fieldstg_front_offsets[8];
+
+static FieldstgTalk ok_talks[2] = { { NULL, NULL, OK_CALL }, { NULL, NULL, 0 } };
+static FieldstgPlacedActor ok_npc = { NULL, ok_talks, OK_ACTOR, OK_PLACE, OK_X, OK_Y, OK_DIR };
+static FieldstgPlacedActor *ok_actors[16];
+static struct {
+    s32 phase;   /* OK_* */
+    s32 called;  /* he called the player over (once per visit, again after a defeat) */
+    s32 tries;   /* battles lost to him */
+    s32 pending; /* his battle set up, not begun yet */
+    s16 party[3], hp[3], mp[3];
+} oik;
+
+/* The hooded man's figure (the Velvet Room draws the dealer's art over it). */
+int def_story_oikawa_figure(const FieldstgPlacedActor *placed) {
+    return placed == &ok_npc;
+}
+
+static int oikawa_here(void) {
+    return def_on() && gamestate_data.progress == OK_STEP && gamestate_data.funcs.get_map() == OK_MAP &&
+           !def_record_story(DEF_STORY_OIKAWA_BEATEN);
+}
+
+/* Step 27 still in the Bug Maze (its maps 0x244..0x246: Bulbmon's pit, its hall, the way back), the Oikawa not beaten:
+ * Igor's second dream waits for the Amaterasu side. */
+static int oikawa_ahead(void) {
+    s32 map = gamestate_data.funcs.get_map();
+
+    return def_on() && gamestate_data.progress == OK_STEP && !def_record_story(DEF_STORY_OIKAWA_BEATEN) &&
+           map >= 0x244 && map <= 0x246;
+}
+
+/* The end of a stage's setup (fieldstg_manager_start): the hooded dealer added to map 0x245's figures while he waits. */
+void def_story_stage_setup(void) {
+    FieldstgPlacedActor **list = fieldstg_stage.actors;
+    s32 n = 0;
+
+    if (!oikawa_here()) {
+        return;
+    }
+    for (; list != NULL && *list != NULL && n < (s32)(sizeof(ok_actors) / sizeof(ok_actors[0])) - 2; list++) {
+        if ((*list)->vram_place != OK_PLACE) {
+            ok_actors[n++] = *list;
+        }
+    }
+    ok_actors[n++] = &ok_npc;
+    ok_actors[n] = NULL;
+    fieldstg_stage.actors = ok_actors;
+    oik.called = 0;
+    port_log("story: the Oikawa waits on map 0x%X (try %d)", OK_MAP, oik.tries);
+}
+
+/* A talk to the hooded dealer (dw3_velvet_shop_talk): his line, and the battle after it. 1 when it was his. */
+int def_story_oikawa_talk(FieldstgActor *actor) {
+    if (!oikawa_here() || actor == NULL || actor->placed != &ok_npc) {
+        return 0;
+    }
+    ok_talks[0].message = oik.tries > 0 ? OK_AGAIN : OK_CALL;
+    oik.phase = OK_TALKING;
+    port_log("story: frame %ld: the Oikawa speaks (message %d)", port_frames, ok_talks[0].message);
+    return 1;
+}
+
+static void oikawa_hook(void) {
+    FieldstgActor *player, *him;
+
+    if (oik.phase == OK_WON && gamestate_data.funcs.get_map() == OK_MAP) {
+        static const s32 line[1] = { OK_BEATEN };
+
+        if (story_talk(line, 1)) { /* his voice as he goes (his figure went with the battle) */
+            oik.phase = OK_IDLE;
+        }
+        return;
+    }
+    if (!oikawa_here() || (player = player_ready()) == NULL) {
+        return;
+    }
+    if (oik.phase == OK_TALKING) { /* his line closed: the battle */
+        if (def_time_set_battle(&def_oikawa_fight, OK_STAGE, OK_MUSIC, oik.party, oik.hp, oik.mp)) {
+            oik.phase = OK_FIGHTING;
+            oik.pending = 1;
+            port_log("story: frame %ld: the Oikawa's battle begins", port_frames);
+        }
+        return;
+    }
+    if (oik.phase == OK_LOST) {
+        oik.phase = OK_IDLE;
+        oik.called = 0;
+    }
+    if (oik.called || (him = (FieldstgActor *)heap_objects.find(5, OK_ACTOR, -1)) == NULL || him->placed != &ok_npc) {
+        return;
+    }
+    oik.called = 1; /* he calls the player over: the player turns to him and talks */
+    {
+        FieldstgPos pos = him->pixel_pos;
+        s32 dx = pos.x - player->pixel_pos.x, dy = pos.y - player->pixel_pos.y, d, best = 0, score = -0x7FFFFFFF;
+
+        for (d = 0; d < 8; d++) {
+            s32 dot = dx * fieldstg_front_offsets[d].x + dy * fieldstg_front_offsets[d].y;
+
+            if (dot > score) {
+                score = dot;
+                best = d;
+            }
+        }
+        player->dir = best;
+        port_log("story: frame %ld: the Oikawa calls the player over", port_frames);
+        fieldstg_actor_talk_to(player, &pos);
+    }
+}
+
+void def_story_battle_begin(void) {
+    if (oik.pending) {
+        oik.pending = 0;
+        if (oik.phase != OK_FIGHTING) {
+            return;
+        }
+    } else if (oik.phase == OK_FIGHTING) {
+        oik.phase = OK_IDLE; /* not his battle after all */
+    }
+}
+
+void def_story_battle_end(int result) {
+    if (oik.phase != OK_FIGHTING) {
+        return;
+    }
+    if (result == 1) {
+        oik.phase = OK_WON;
+        def_record_set_story(DEF_STORY_OIKAWA_BEATEN);
+        port_log("story: the Oikawa beaten: the Black Market will open");
+    } else {
+        oik.phase = OK_LOST;
+        oik.tries++;
+        port_log("story: the Oikawa won (result %d): he waits again", result);
+    }
+}
+
+/* WFIGHTMN, a lost battle: 1 when it was the Oikawa's (no game over: back to the hall, the party as it went in). */
+int def_story_defeat(void) {
+    if (oik.phase == OK_FIGHTING) {
+        def_story_battle_end(2);
+    }
+    if (oik.phase != OK_LOST) {
+        return 0;
+    }
+    def_time_restore(oik.party, oik.hp, oik.mp);
+    return 1;
+}
+
+/* The Velvet Room's dealer opened the market for the first time since he was beaten (definitive_velvet.c). */
+void def_story_market_opened(void) {
+    if (def_record_story(DEF_STORY_OIKAWA_BEATEN) && !def_record_story(DEF_STORY_MARKET_OPEN)) {
+        def_record_set_story(DEF_STORY_MARKET_OPEN);
+        port_log("story: the Black Market opened");
+    }
+}
+
+/* ---- Galacticmon (step 0x2B, map 0x2DF, WSTAG820): event 1080 (Snatchmon fuses with the Gunslinger) ends by setting
+ * flag 0x7401, whose type starts the stage's listed battle 1, Galacticmon's, at once: no free frame for Igor's last
+ * dream. The port lets the event end without it (def_story_hold_galacticmon) and starts it itself once the dream was
+ * answered, on the first free frame back on the map. The event's own trigger is held shut from then on: the game never
+ * gave a free frame after it, so nothing in it marks it done (its flag 0x40A5 is set by no one). */
+#define ST_GALACTIC_MAP 0x2DF
+#define ST_GALACTIC_STEP 0x2B
+#define ST_GALACTIC_FLAG 0x7401 /* type 0x74: setting it starts listed battle 1 (gamestate_set_flag) */
+#define ST_GALACTIC_EVENT 0x438 /* event 1080's map event (type 8) */
+static s32 st_galactic; /* event 1080 ended without its battle: the port owes it */
+
+int def_story_hold_galacticmon(void) {
+    if (!def_on()) {
+        return 0;
+    }
+    st_galactic = 1;
+    port_log("story: frame %ld: Galacticmon's battle held for Igor's last dream", port_frames);
+    return 1;
+}
+
+static void galactic_hook(void) {
+    if (!st_galactic || gamestate_data.progress != ST_GALACTIC_STEP ||
+        gamestate_data.funcs.get_map() != ST_GALACTIC_MAP || def_record_story_answer(dreams[2].question) == 0 ||
+        player_ready() == NULL) {
+        return;
+    }
+    st_galactic = 0;
+    port_log("story: frame %ld: Igor's last dream over: Galacticmon's battle", port_frames);
+    gamestate_flags.set_flag(ST_GALACTIC_FLAG, 1);
+}
+
+/* A map event a story hook holds shut (FIELDSTG's check, through dw3_velvet_event_closed). */
+int def_story_event_closed(int type, int param) {
+    return def_on() && type == 8 && param == ST_GALACTIC_EVENT && gamestate_data.progress >= ST_GALACTIC_STEP &&
+           gamestate_data.funcs.get_map() == ST_GALACTIC_MAP;
+}
+
 /* Step 4: Repeating Tom's news closed: the player's feeling, and the room's door opens on the inn's stairs. */
 static void seiryu_hook(void) {
     static const s32 talk[] = { ST_SEIRYU_FELT };
@@ -1063,7 +1293,16 @@ void def_story_frame(void) {
     if (idle()) {
         seiryu_hook();
         if (story.count == 0) {
+            def_time_gate_frame(story_talk); /* the Warp Gate held shut: Igor's voice (definitive_time_room.c) */
+        }
+        if (story.count == 0) {
             dream_hook();
+        }
+        if (story.count == 0 && !dream.on) {
+            galactic_hook();
+        }
+        if (story.count == 0 && !dream.on) {
+            oikawa_hook();
         }
     }
 }
@@ -1074,4 +1313,8 @@ void def_story_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, st_igor_text);
     PORT_STATE_VAR(s, dream);
     PORT_STATE_VAR(s, choice);
+    PORT_STATE_VAR(s, st_galactic);
+    PORT_STATE_VAR(s, oik);
+    PORT_STATE_VAR(s, ok_talks);
+    PORT_STATE_VAR(s, ok_actors);
 }

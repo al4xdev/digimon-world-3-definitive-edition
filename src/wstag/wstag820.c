@@ -291,6 +291,11 @@ void wstag820_event_1070_end(void) {
 
 void wstag820_event_1080_end(void) {
     gamestate_data.progress = 0x2B;
+#ifdef PC_PORT
+    if (def_story_hold_galacticmon()) {
+        return; /* Igor's last dream first: the port starts Galacticmon's battle after it (definitive_story.c) */
+    }
+#endif
     gamestate_flags.set_flag(0x7401, 1);
 }
 

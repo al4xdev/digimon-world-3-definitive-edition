@@ -33,7 +33,7 @@
 
 #include "definitive_velvet_art.h"
 
-extern const unsigned char def_str_VelvetTitle[], def_str_VelvetTitle2[];
+extern const unsigned char def_str_VelvetTitle[], def_str_VelvetTitle2[], def_str_TimeTitle[], def_str_TimeTitle2[];
 #include "port.h"
 #include "port_runtime.h"
 #include "psxstack/savestate.h"
@@ -89,6 +89,7 @@ int dw3_velvet_igor_head(FieldstgActor *actor, u32 *ot, s32 x, s32 y); /* defini
 #define VL_SHOP_GREET_B 9
 #define VL_SHOP_BOUGHT 12
 #define VL_SHOP_LEFT 13
+#define VL_SHOP_OIKAWA 99 /* his first word there, after the Bug Maze Pit (the letter "a" on the disc, no stage's) */
 
 /* Where the player appears in the room: just inside the front door (the map's own exit spot, attr layer 7 of map
  * 0x20F), facing in. */
@@ -266,12 +267,32 @@ static FieldstgPlacedActor *vl_who(s32 code) {
     if (code == DW3_VELVET_PULL_IGOR) {
         return &vl_igor;
     }
+    if (code == DW3_VELVET_PULL_TRIAL) {
+        return def_time_challenger(); /* the Time Room's trial (definitive_time_room.c) */
+    }
     for (i = 0; i < VL_GUESTS; i++) {
         if (vl_guests[i].greet == code) {
             return vl_guests[i].who;
         }
     }
     return &vl_sepik;
+}
+
+/* The room's figure a call-over code names (the Time Room's cast is the room's own figures). */
+FieldstgPlacedActor *dw3_velvet_figure(s32 code) {
+    return vl_who(code);
+}
+
+/* The figure a code names calls the player over on the next free frame (the Time Room: Igor, a trial's challenger). */
+void dw3_velvet_call(s32 code) {
+    vl_pulled = code;
+}
+
+/* The room's music (its bank and key), for the Time Room's trial areas too. */
+void dw3_velvet_room_music(s32 *music, s32 *sound) {
+    *music = VL_MUSIC;
+    *sound = VL_SOUND;
+    dw3_velvet_music(music, sound);
 }
 
 /* The first visit after the room's level rose: the newest guest that greets calls the player over (0: none). */
@@ -396,6 +417,20 @@ static void vl_portal(s32 x, s32 y) {
  * entry, (x, y) the screen spot of its feet. One drawing whatever way the actor faces (he does not turn: see
  * dw3_velvet_actor_setup); he breathes as the game's townsfolk stand, on the art's idle (game ticks are vsyncs, as
  * port_frames counts). 1 when he was drawn (the caller leaves the game's sprite out, and keeps its shadow). */
+/* The dealer's figure, drawn by hand over actor VL_MERCHANT's sprite: behind the room's counter, as the Time Room's
+ * first challenger, and as the hooded man of the Oikawa's arc in the Bug Maze Pit (definitive_story.c). */
+static int vl_dealer(const FieldstgActor *actor) {
+    const FieldstgPlacedActor *placed = actor != NULL ? actor->placed : NULL;
+
+    if (!vl_on() || placed == NULL) {
+        return 0;
+    }
+    if (vl_room && placed == &vl_merchant) {
+        return 1;
+    }
+    return placed->id == VL_MERCHANT && ((vl_room && placed == def_time_challenger()) || def_story_oikawa_figure(placed));
+}
+
 int dw3_velvet_actor_art(FieldstgActor *actor, u32 *ot, s32 x, s32 y) {
     s32 frame;
     s32 i;
@@ -404,7 +439,7 @@ int dw3_velvet_actor_art(FieldstgActor *actor, u32 *ot, s32 x, s32 y) {
     if (vl_on() && vl_room && actor != NULL && actor->placed == &vl_igor) {
         return dw3_velvet_igor_head(actor, ot, x, y); /* over the game's figure, which is drawn too */
     }
-    if (!vl_on() || !vl_room || actor == NULL || actor->placed != &vl_merchant) {
+    if (!vl_dealer(actor)) {
         return 0;
     }
     x -= VELVET_ART_LEFT;
@@ -522,15 +557,19 @@ int dw3_velvet_in_room(void) {
 }
 
 /* The room's backdrop and its portals: called every frame from FIELDSTG's idle step, before the frame is drawn. */
+static const VelvetDoor *vl_door_at(s32 map, s32 *gate);
+
 void dw3_velvet_draw(void) {
     const VelvetDoor *door;
+    s32 gate;
 
     if (!vl_on()) {
         return;
     }
     if (vl_room) {
         vl_backdrop();
-        if (vl_pulled && vl_call_over(vl_who(vl_pulled))) {
+        def_time_frame(); /* the Time Room's trials (definitive_time_room.c) */
+        if (vl_pulled && vl_who(vl_pulled) != NULL && vl_call_over(vl_who(vl_pulled))) {
             vl_pulled = 0;
         }
         if (vl_igor_phase == 1 && fieldstg_stage.actor_busy == 0) {
@@ -550,6 +589,7 @@ void dw3_velvet_draw(void) {
         } else if (vl_shop_phase == 2) {
             if (def_bm_talk(VL_MAP, VL_MERCHANT)) {
                 vl_shop_phase = 3;
+                def_story_market_opened(); /* the Oikawa's arc: the Guide's errand is done */
             }
         } else if (vl_shop_phase == 3 && !def_bm_screen_open()) {
             vl_shop_last = def_bm_bought() ? 1 : 2; /* his next line answers how this visit ended */
@@ -558,10 +598,26 @@ void dw3_velvet_draw(void) {
         }
         return;
     }
-    door = vl_door(gamestate_data.funcs.get_map());
+    door = vl_door_at(gamestate_data.funcs.get_map(), &gate);
     if (door != NULL && fieldstg_stage.title_shown == 0 && def_story_velvet_level() > 0) {
         vl_portal(door->x, door->y);
     }
+}
+
+/* The door on `map`: an inn's, or the Time Room's beside the Warp Gate (`gate` set). */
+static const VelvetDoor *vl_door_at(s32 map, s32 *gate) {
+    static VelvetDoor time_door;
+    s32 x, y;
+
+    *gate = 0;
+    if (def_time_door(map, &x, &y)) {
+        time_door.map = (s16)map;
+        time_door.x = (s16)x;
+        time_door.y = (s16)y;
+        *gate = 1;
+        return &time_door;
+    }
+    return vl_door(map);
 }
 
 /* One frame of the field's idle step: takes the portal the player stands on. 0 always: the room owns no screen. */
@@ -571,13 +627,14 @@ int dw3_velvet_frame(void) {
     s32 map;
     s32 dx;
     s32 dy;
+    s32 gate;
 
     if (!vl_on() || vl_room || fieldstg_stage.event_running != 0 || fieldstg_stage.menu_open != 0
         || fieldstg_stage.battle_starting != 0 || fieldstg_stage.title_shown != 0) {
         return 0;
     }
     map = gamestate_data.funcs.get_map();
-    door = vl_door(map);
+    door = vl_door_at(map, &gate);
     if (door == NULL || def_story_velvet_level() == 0) {
         vl_armed = 0;
         return 0; /* the doors open with the story (Repeating Tom's news) */
@@ -600,7 +657,10 @@ int dw3_velvet_frame(void) {
     vl_room = 1;
     vl_scene = 0;
     vl_pulled = 0;
-    if (def_story_room_intro()) {
+    if (gate) {
+        def_time_enter(); /* the Warp Gate's door: the room is the Time Room, Igor tells it */
+        vl_pulled = DW3_VELVET_PULL_IGOR;
+    } else if (def_story_room_intro()) {
         vl_scene = 1; /* Seiryu: Igor alone shows the room again, then the scene cuts (dw3_velvet_cut) */
         vl_pulled = DW3_VELVET_PULL_IGOR;
     } else {
@@ -619,7 +679,16 @@ void dw3_velvet_leave(s32 *map, s32 *x, s32 *y, s32 *dir) {
     s32 node_x;
     s32 node_y;
     s32 node_dir;
+    s32 time;
 
+    if (vl_room && (time = def_time_leave(map, x, y, dir)) != 0) {
+        if (time == 2) { /* out of the Time Room, to the gate */
+            vl_room = 0;
+            vl_pulled = 0;
+            vl_scene = 0;
+        }
+        return; /* the Time Room's run goes on, or the gate takes the player back */
+    }
     if (!vl_room || *map == VL_MAP) {
         return;
     }
@@ -640,16 +709,26 @@ void dw3_velvet_leave(s32 *map, s32 *x, s32 *y, s32 *dir) {
  * game goes back to the inn of Asuka City (the owner's "porta de cima fica fechada"). The bar's other door, at the
  * bottom of the room, is the room's way out (dw3_velvet_leave). */
 int dw3_velvet_event_closed(s32 type, s32 param) {
-    return vl_room && type == 1 && param == 0x20A;
+    if (def_time_warp_closed(type, param)) {
+        return 1; /* the Warp Gate to the Gunslinger, until the Time Room is passed */
+    }
+    if (def_story_event_closed(type, param)) {
+        return 1; /* a story hook's (definitive_story.c) */
+    }
+    if (def_time_on() && def_time_challenger() != NULL) {
+        return type == 8; /* a trial's area: none of its own events (its exits lead back to the room) */
+    }
+    return vl_room && type == 1 && param == 0x20A && !def_time_side_door_open();
 }
 
 /* The room's figures, as the actor is made: the shopkeeper keeps his own sprite and keeps facing his counter instead of
  * turning to whoever talks to him (a placed actor turns to the talker otherwise). */
 void dw3_velvet_actor_setup(FieldstgActor *actor) {
-    if (!vl_on() || !vl_room || actor == NULL || actor->base.key2 != 1) {
+    if (!vl_on() || actor == NULL || actor->base.key2 != 1) {
         return;
     }
-    if (actor->placed == &vl_merchant || actor->placed == &vl_igor) { /* Igor's head is drawn for one facing */
+    if (vl_dealer(actor) || (vl_room && actor->placed == &vl_igor)) {
+        /* Igor's head is drawn for one facing, the dealer's art for one */
         actor->no_turn = 1;
     }
 }
@@ -699,8 +778,9 @@ FieldstgActor *dw3_velvet_talk_find(void *front) {
  * has nothing in them (the letter "a", said by nobody) and no other language has either, so the English text is served
  * for every language. */
 int dw3_velvet_text_own(s32 base_id, s32 index) {
-    if (def_story_text_own(base_id, index)) {
-        return 1; /* the story hooks' entries (definitive_story.c) */
+    if (def_story_text_own(base_id, index) || def_time_text_own(base_id, index) ||
+        (base_id == 0xE8 && index == VL_SHOP_OIKAWA)) {
+        return 1; /* the story hooks' entries (definitive_story.c, definitive_time_room.c) */
     }
     if (base_id != 0xE8) {
         return 0; /* TALK05, the bar's talk file (records_language + 0xE8) */
@@ -725,6 +805,17 @@ int dw3_velvet_text_own(s32 base_id, s32 index) {
 /* The visit's opener: the shopkeeper says a greeting (the two take turns) unless the last visit ended in a trade or in
  * nothing bought, which have their own lines. The game's own talk shows it; the market then opens behind it. */
 void dw3_velvet_shop_talk(FieldstgActor *actor) {
+    s32 time;
+
+    if (def_story_oikawa_talk(actor)) {
+        return; /* the Oikawa in the Bug Maze Pit's hall (definitive_story.c) */
+    }
+    if (vl_on() && vl_room && actor != NULL && actor->placed != NULL && actor->placed->talks != NULL &&
+        (time = def_time_talk(actor)) != 0) {
+        actor->placed->talks[0].message = time; /* the Time Room's lines: no shop, no board, no panel there */
+        port_log("velvet: the Time Room, message %d (actor %d)", time, actor->base.key1);
+        return;
+    }
     if (vl_on() && vl_room && actor != NULL && actor->base.key1 == VL_DEMON && actor->base.key2 == 1) {
         /* The Bell changes hands as he speaks: the line says what just happened. */
         vl_demon_talks[0].message = def_super_toggle() ? VL_DEMON_GIVE : VL_DEMON_TAKE;
@@ -745,6 +836,7 @@ void dw3_velvet_shop_talk(FieldstgActor *actor) {
         return;
     }
     if (vl_on() && vl_room && actor != NULL && actor->base.key1 == VL_MENTOR && actor->base.key2 == 1) {
+        vl_mentor_talks[0].message = VL_MENTOR_LINE; /* the Time Room may have left its own there */
         vl_mentor_phase = 1;
         return;
     }
@@ -757,7 +849,9 @@ void dw3_velvet_shop_talk(FieldstgActor *actor) {
     if (!vl_on() || !vl_room || actor == NULL || actor->placed != &vl_merchant || vl_shop_phase != 0) {
         return;
     }
-    if (vl_shop_last != 0 && vl_shop_last != vl_shop_said) {
+    if (def_record_story(DEF_STORY_OIKAWA_BEATEN) && !def_record_story(DEF_STORY_MARKET_OPEN)) {
+        vl_merchant_talks[0].message = VL_SHOP_OIKAWA; /* the hooded man from the Bug Maze Pit, behind the counter */
+    } else if (vl_shop_last != 0 && vl_shop_last != vl_shop_said) {
         vl_merchant_talks[0].message = vl_shop_last == 1 ? VL_SHOP_BOUGHT : VL_SHOP_LEFT;
         vl_shop_said = vl_shop_last; /* a run of visits that end the same way is answered once */
     } else {
@@ -784,11 +878,11 @@ void dw3_velvet_title_window(void *line_0, void *line_1) {
     }
     if (line_0 != NULL) {
         w = (MessageWindow *)line_0;
-        w->set_text(w, (u8 *)def_str_VelvetTitle, -1);
+        w->set_text(w, (u8 *)(def_time_on() ? def_str_TimeTitle : def_str_VelvetTitle), -1);
     }
     if (line_1 != NULL) {
         w = (MessageWindow *)line_1;
-        w->set_text(w, (u8 *)def_str_VelvetTitle2, -1);
+        w->set_text(w, (u8 *)(def_time_on() ? def_str_TimeTitle2 : def_str_VelvetTitle2), -1);
     }
 }
 
@@ -798,7 +892,7 @@ void dw3_velvet_stage_setup(void) {
         return;
     }
     vl_igor.dir = vl_scene ? VL_SCENE_IGOR_DIR : VL_IGOR_DIR;
-    fieldstg_stage.actors = vl_scene ? vl_dream_actors : vl_guests_now();
+    fieldstg_stage.actors = vl_scene ? vl_dream_actors : def_time_on() ? def_time_room_actors() : vl_guests_now();
     cdload_module.is_loading(records_language + 0x4E); /* queues the names Igor reads the party's forms with */
     fieldstg_stage.music = VL_MUSIC;
     fieldstg_stage.sound = VL_SOUND;

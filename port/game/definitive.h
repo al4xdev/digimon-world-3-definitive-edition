@@ -775,7 +775,7 @@ void def_rush_savestate(struct PortState *s);
 /* The Guide (definitive_quest.c: the rules; definitive_quest_screen.c: the screen and the field's notices). The field
  * menu gets a GUIDE entry: the main quest's current step, the missions still open and the Cargo Tower's auctions. */
 #define DEF_QUEST_NO_FLAG 0xFFFF  /* a quest row that asks for no game flag beside its story steps */
-#define DEF_QUEST_MISSIONS 4      /* rows of def_missions: what the Guide's list holds under the main quest */
+#define DEF_QUEST_MISSIONS 5      /* rows of def_missions: what the Guide's list holds under the main quest */
 #define DEF_QUEST_AUCTIONS 16     /* the Cargo Tower's auctions (fieldstg_flag_events) */
 #define DEF_AUCTION_FLAG 0x400    /* auction N's "attended" flag is this + N (set by either answer) */
 #define DEF_GUIDE_TRAVEL_MAP 0x213 /* where the Guide's travel lands: El Dorado, at the stage's own start position */
@@ -956,7 +956,9 @@ void def_record_set_story_gate(int stage);
  * entries they own and the disc lines they change, the Sepikmon's line, and the field's frame. */
 enum {
     DEF_STORY_COND_SEIRYU = 1, /* step 4: the Leader is missing, the Ogremon hunt not reported */
-    DEF_STORY_COND_SEIRYU_ASK  /* step 4, before Repeating Tom's news: ask around Seiryu City */
+    DEF_STORY_COND_SEIRYU_ASK, /* step 4, before Repeating Tom's news: ask around Seiryu City */
+    DEF_STORY_COND_MARKET,     /* the Oikawa beaten, the Black Market not opened yet: to the Velvet Room */
+    DEF_STORY_COND_OIKAWA      /* step 27, the Oikawa not beaten: he bars the Bug Maze Pit's hall */
 };
 #define DEF_STORY_FLAG 0xF000 /* a quest row's flag at or past it is a story condition (game flags stay below) */
 int def_story_cond(int cond);
@@ -1004,6 +1006,44 @@ unsigned char *def_record3_buffer(void);
 #define DEF_PURIFY_WEAK 60        /* its lowest resistances, as the enemy table's weaknesses (DEF_WEAK_MAX) */
 #define DEF_PURIFY_STRONG 300     /* its highest, as a strong resistance */
 #define DEF_PURIFY_TP_CAP 99      /* the TP the game's level-ups stop at (stfgtrep) */
+/* The Time Room (definitive_time_room.c; owner, 2026-11-17): the gatekeeper before the Warp Gate to the Gunslinger, the
+ * point of no return. Three trials in a row against the room's challengers, each one battle of the challenger's three
+ * members (tools/gen_time_room.py); no prize, no game over: a defeat or a step back starts the run over. */
+#define DEF_TIME_TRIALS 4 /* Oikawa, Sepikmon, Gennai, and Myotismon in the old man's shape (before Gennai came) */
+#define DEF_TIME_ROUNDS 3 /* trials won in a row to pass */
+typedef struct DefTimeTrial {
+    DefDriStage stages[DEF_DRI_STAGES]; /* the enemy members, in the order they come in */
+    short battle;                       /* the boss battle it is set up as (kind, immunities) */
+} DefTimeTrial;
+extern const DefTimeTrial def_time_trials[DEF_TIME_TRIALS];
+extern const DefTimeTrial def_oikawa_fight; /* the Oikawa's arc (definitive_story.c) */
+int def_time_set_battle(const DefTimeTrial *t, int stage, int music, short *party, short *hp, short *mp);
+void def_time_restore(const short *party, const short *hp, const short *mp);
+int def_time_on(void);                  /* the Time Room or one of its trials runs (the Velvet Room's map state) */
+int def_time_door(int map, int *x, int *y); /* the gate's door on `map`: 1 and its foot */
+void def_time_enter(void);              /* its door was taken: the Velvet Room is the Time Room this visit */
+int def_time_leave(int *map, int *x, int *y, int *dir); /* a map change while it runs: see definitive_time_room.c */
+struct FieldstgPlacedActor;
+struct FieldstgActor;
+struct FieldstgPlacedActor **def_time_room_actors(void); /* the Time Room's figures (NULL-ended) */
+struct FieldstgPlacedActor *def_time_challenger(void);   /* the trial's challenger, NULL outside a trial */
+int def_time_talk(struct FieldstgActor *actor);          /* the line of a figure talked to, 0: not the Time Room's */
+int def_time_side_door_open(void);      /* the room's upper door leads to the trials */
+void def_time_frame(void);              /* each field frame while the room runs */
+int def_time_warp_closed(int type, int param); /* the Warp Gate held shut until the trials are passed */
+void def_time_battle_begin(void);
+void def_time_battle_end(int result);
+int def_time_fighting(void);
+void def_time_savestate(struct PortState *s);
+int def_time_text_own(int base_id, int index);
+void def_time_gate_frame(int (*say)(const int *messages, int n)); /* the shut gate's warning (def_story_frame) */
+int def_story_event_closed(int type, int param); /* a map event a story hook holds shut (definitive_story.c) */
+/* The Oikawa's arc (definitive_story.c): his talk, his battle, and the Black Market opened for the first time. */
+int def_story_oikawa_talk(struct FieldstgActor *actor);
+int def_story_oikawa_figure(const struct FieldstgPlacedActor *placed);
+void def_story_battle_begin(void);
+void def_story_battle_end(int result);
+void def_story_market_opened(void);
 int def_purify_fighting(void);
 void def_purify_battle_begin(void);
 void def_purify_battle_end(int result);

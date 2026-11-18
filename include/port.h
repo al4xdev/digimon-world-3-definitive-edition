@@ -262,7 +262,8 @@ enum {
     DW3_VELVET_PULL_IGOR,
     DW3_VELVET_PULL_MENTOR,
     DW3_VELVET_PULL_ETEMON,
-    DW3_VELVET_PULL_MERCHANT
+    DW3_VELVET_PULL_MERCHANT,
+    DW3_VELVET_PULL_TRIAL /* the Time Room's challenger, in his trial's area (definitive_time_room.c) */
 };
 void dw3_velvet_pull_by(s32 from, s32 who);
 void dw3_velvet_cut(s32 who); /* the story cuts Igor's scene: the room as its level has it, `who` calls over */
@@ -273,6 +274,7 @@ int dw3_velvet_in_room(void);
 short *def_story_event_script(int id, short *script);
 int def_story_event_command(int cmd);
 int def_story_event_dialog(s32 msg, s32 *actor); /* 1: the event's dialog waits (the hero's choice) */
+int def_story_hold_galacticmon(void); /* 1: event 1080's end leaves Galacticmon's battle to the story */
 /* The market screen's own state (port/game/definitive_market_screen.c). */
 int def_bm_screen_open(void);
 int def_bm_bought(void);
@@ -480,6 +482,13 @@ int def_superhunt_frame(void);
 int def_purify_stage_enters(int member);
 int def_purify_defeat(void);
 int def_purify_won_wave(void); /* the battle just ended was a purification's wave, won (def_log_end ran) */
+/* The Time Room (port/game/definitive_time_room.c): a trial's area as the trial has it (after its stage's setup), and a
+ * trial's battle won (no results screen) or lost (no game over: back to the field). */
+void def_time_stage_setup(void);
+void def_story_stage_setup(void); /* the Oikawa's arc: map 0x245's figures while he waits (definitive_story.c) */
+int def_story_defeat(void);       /* his battle lost: no game over */
+int def_time_won(void);
+int def_time_defeat(void);
 /* PRD 4 layer D: an item's buying and selling price in a shop, the definitive ones (port/game/definitive_economy.c). */
 int def_item_buy(int item);
 int def_item_sell(int item);

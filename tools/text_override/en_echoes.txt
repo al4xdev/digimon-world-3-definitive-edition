@@ -561,3 +561,70 @@ Q17=1 kaili TALK03 513: <7>Kurt<7>Thanks for everything,<1><8,1><5,1>. You swore
 Q30=1 TALK09 145: <7>Xuan Wu Leader<7>Who are you, to beat<1>me? Twice now. You<1>forgave my test.<2,2><3>How did you get so<1>strong?<2,2><3>If there's a secret<1>training program, I<1>want it.<2,2>
 Q36=1 DMG200:41 12: <7>Kail<7>We beat the A.o.A. You<1>sounded so sure.<2,2><3>...Right?<2,2>
 Q36=1 kaili DMG200:41 12: <7>Junior<7>We beat the A.o.A. You<1>sounded so sure.<2,2><3>...Right?<2,2>
+
+# round 3, cross-chapter echoes
+# chapter 2
+# Q40 (chapter 1): twenty minutes late -> Teddy, bursting in with the Lucky Mouse news
+Q40=1 DMG300:0 1: <7>Teddy<7><8,1><5,1>! Hey! I know,<1>I know. Twenty.<2,2><3>Listen: this is big.<1>Really, really big!<2,2>
+Q40=2 DMG300:0 1: <7>Teddy<7><8,1><5,1>! Hey! Alarm set,<1>next time. I swear.<2,2><3>Listen: this is big.<1>Really, really big!<2,2>
+Q40=3 DMG300:0 1: <7>Teddy<7><8,1><5,1>! Hey! Yes, you<1>almost left me.<2,2><3>Listen: this is big.<1>Really, really big!<2,2>
+# Q57 (chapter 1): Lisa's green Digimon act -> Lisa, asking for silence about the A.o.A
+Q57=1 DMG600:16 7: <7>Lisa<7>I'm asking you this<1>too. You liked my act,<1>so you'll manage this.<2,2><3>I don't want people<1>to panic...<2,2><3>So can you keep quiet<1>about the A.o.A?<2,2>
+Q57=2 DMG600:16 7: <7>Lisa<7>I'm asking you this<1>too. You worried about<1>me once. I'm fine.<2,2><3>I don't want people<1>to panic...<2,2><3>So can you keep quiet<1>about the A.o.A?<2,2>
+Q57=3 DMG600:16 7: <7>Lisa<7>I'm asking you this<1>too. You saw through<1>my act. Keep this one.<2,2><3>I don't want people<1>to panic...<2,2><3>So can you keep quiet<1>about the A.o.A?<2,2>
+# chapter 3
+# Q58 (chapter 1): "ready to step into my arena?" -> Suzaku Leader, refusing the way to the hole
+Q58=1 DMG500:29 5: <7>Suzaku Leader<7>I said you can't go.<1>You were so sure in my<1>arena. This is worse.<2,2><3>You don't know what's<1>waiting. It's far too<1>dangerous.<2,2><3>As Leader of South<1>Sector, I won't let<1>anyone be hurt.<2,2>
+Q58=2 DMG500:29 5: <7>Suzaku Leader<7>I said you can't go.<1>Ready, you said.<1>Not for this.<2,2><3>You don't know what's<1>waiting. It's far too<1>dangerous.<2,2><3>As Leader of South<1>Sector, I won't let<1>anyone be hurt.<2,2>
+Q58=3 DMG500:29 5: <7>Suzaku Leader<7>I said you can't go.<1>Born ready? Not for<1>this.<2,2><3>You don't know what's<1>waiting. It's far too<1>dangerous.<2,2><3>As Leader of South<1>Sector, I won't let<1>anyone be hurt.<2,2>
+# Q70 (chapter 2): the Suzaku Badge -> Suzaku Leader, giving in
+Q70=1 DMG500:29 8: <7>Suzaku Leader<7>...Very well. You<1>thanked me for the<1>badge, and meant it.<2,2><3>But if it gets too<1>dangerous, come back.<1>Promise me.<2,2>
+Q70=2 DMG500:29 8: <7>Suzaku Leader<7>...Very well. You took<1>my badge and want the<1>rest. Go, then.<2,2><3>But if it gets too<1>dangerous, come back.<1>Promise me.<2,2>
+Q70=3 DMG500:29 8: <7>Suzaku Leader<7>...Very well. You<1>never got ahead of<1>yourself. I like that.<2,2><3>But if it gets too<1>dangerous, come back.<1>Promise me.<2,2>
+# Q43 (chapter 1): Keith's "sucker" parting shot -> Keith, ordered about by Lisa
+Q43=1 DMG600:23 3: <7>Keith<7>Yes, ma'am. Right<1>away.<2,2><3>And not a word about<1>who's the sucker, kid.<2,2>
+Q43=2 DMG600:23 3: <7>Keith<7>Yes, ma'am. Right<1>away.<2,2><3>Hard to forget me?<1>Then forget this.<2,2>
+Q43=3 DMG600:23 3: <7>Keith<7>Yes, ma'am. Right<1>away.<2,2><3>My best, kid? Today<1>it's a mop and bucket.<2,2>
+# Q52 (chapter 1): Nick's age ("I'm only 21!") -> Nick, on how demanding Lisa is
+Q52=1 DMG600:24 10: <7>Nick<7>Lisa is... very<1>demanding. You get<1>used to it.<2,2><3>Twenty-one, and I feel<1>fifty. Thanks for<1>remembering my age.<2,2>
+Q52=2 DMG600:24 10: <7>Nick<7>Lisa is... very<1>demanding. You get<1>used to it.<2,2><3>You were right about<1>the shadows under my<1>eyes. Blame her.<2,2>
+Q52=3 DMG600:24 10: <7>Nick<7>Lisa is... very<1>demanding. You get<1>used to it.<2,2><3>You were kind about<1>my age. Don't tell her<1>I said this.<2,2>
+# Q75 (chapter 2): Kail leaves in her Agumon Suit -> Kail, seeing the hero off
+Q75=1 DMG600:24 17: <7>Kail<7>Be careful, OK?<1>You told me the same<1>once.<2,2><3>...I mean it.<2,2>
+Q75=2 DMG600:24 17: <7>Kail<7>Be careful, OK? And<1>when this is over, I<1>owe you answers.<2,2><3>...I mean it.<2,2>
+Q75=3 DMG600:24 17: <7>Kail<7>Be careful, OK? And<1>mind your own tail<1>this time.<2,2><3>...I mean it.<2,2>
+Q75=1 kaili DMG600:24 17: <7>Junior<7>Be careful, OK?<1>You told me the same<1>once.<2,2><3>...I mean it.<2,2>
+Q75=2 kaili DMG600:24 17: <7>Junior<7>Be careful, OK? And<1>when this is over, I<1>owe you answers.<2,2><3>...I mean it.<2,2>
+Q75=3 kaili DMG600:24 17: <7>Junior<7>Be careful, OK? And<1>mind your own tail<1>this time.<2,2><3>...I mean it.<2,2>
+# Q84 (chapter 2): rescuing Lisa from WaruMonzaemon -> Lisa, sending the hero off to Asuka City
+Q84=1 DMG600:24 16: <7>Lisa<7>Good luck. We are<1>counting on you.<2,2><3>You made WaruMonzaemon<1>let me go. I believe<1>you can do this.<2,2>
+Q84=2 DMG600:24 16: <7>Lisa<7>Good luck. We are<1>counting on you.<2,2><3>Anyone who lectures<1>WaruMonzaemon can<1>handle Asuka City.<2,2>
+Q84=3 DMG600:24 16: <7>Lisa<7>Good luck. We are<1>counting on you.<2,2><3>You stood up for my<1>no once. Now stand<1>up for everyone's.<2,2>
+# Q73 (chapter 2): Teddy ran off after the Lucky Mouse news -> Teddy, back at the computer
+Q73=1 DMG200:34 15: <7>Teddy<7>Be careful. I'll dig<1>into this computer<1>meanwhile.<2,2><3>And I'm staying put<1>this time. Promise.<2,2>
+Q73=2 DMG200:34 15: <7>Teddy<7>Be careful. I'll dig<1>into this computer<1>meanwhile.<2,2><3>I know I worried you<1>last time. I'm staying<1>right here.<2,2>
+Q73=3 DMG200:34 15: <7>Teddy<7>Be careful. I'll dig<1>into this computer<1>meanwhile.<2,2><3>And yes, I know. I<1>forgot you all last<1>time. Not again.<2,2>
+# chapter 4
+# Q102 (chapter 3): greeting Teddy after the rescue -> Teddy, catching up before Amaterasu City
+Q102=1 DMG300:14 2: <7>Teddy<7><8,1><5,1>!<1>Wait a second!<2,2><3>Don't look relieved.<1>I walked here.<2,2>
+Q102=2 DMG300:14 2: <7>Teddy<7><8,1><5,1>!<1>Wait a second!<2,2><3>Report: Teddy, unhurt<1>and ready for duty.<2,2>
+Q102=3 DMG300:14 2: <7>Teddy<7><8,1><5,1>!<1>Wait a second!<2,2><3>I'm fine. And no more<1>apologies. OK?<2,2>
+# Q72 (chapter 2): Teddy's fandom for Lucky Mouse -> Teddy, worn out after the final fight
+Q72=1 DMG300:19 4: <7>Teddy<7>Man, I'm beat...<2,2><3>What a day. And you<1>hadn't even heard of<1>Lucky Mouse before.<2,2>
+Q72=2 DMG300:19 4: <7>Teddy<7>Man, I'm beat...<2,2><3>What a day. And you<1>nodded along about<1>Lucky Mouse. Admit it.<2,2>
+Q72=3 DMG300:19 4: <7>Teddy<7>Man, I'm beat...<2,2><3>What a day. You asked<1>what Lucky Mouse could<1>do. Now you know.<2,2>
+# Q78 (chapter 2): vow to find Lucky Mouse and bring Teddy back -> Kail, on the Oinkmon
+Q78=1 DMG300:22 19: <7>Kail<7>Yeah... Teddy, Lisa<1>and the others are<1>Oinkmon now.<2,2><3>You swore to bring<1>Teddy back. Now it's<1>all of them.<2,2>
+Q78=2 DMG300:22 19: <7>Kail<7>Yeah... Teddy, Lisa<1>and the others are<1>Oinkmon now.<2,2><3>You said you'd settle<1>it for Teddy. Now<1>there's even more.<2,2>
+Q78=3 DMG300:22 19: <7>Kail<7>Yeah... Teddy, Lisa<1>and the others are<1>Oinkmon now.<2,2><3>You promised to bring<1>Teddy home. Now it's<1>all of them.<2,2>
+Q78=1 kaili DMG300:22 19: <7>Junior<7>Yeah... Teddy, Lisa<1>and the others are<1>Oinkmon now.<2,2><3>You swore to bring<1>Teddy back. Now it's<1>all of them.<2,2>
+Q78=2 kaili DMG300:22 19: <7>Junior<7>Yeah... Teddy, Lisa<1>and the others are<1>Oinkmon now.<2,2><3>You said you'd settle<1>it for Teddy. Now<1>there's even more.<2,2>
+Q78=3 kaili DMG300:22 19: <7>Junior<7>Yeah... Teddy, Lisa<1>and the others are<1>Oinkmon now.<2,2><3>You promised to bring<1>Teddy home. Now it's<1>all of them.<2,2>
+# Q88 (chapter 2): the General's attack at the hideout -> Lisa, welcoming the hero back
+Q88=1 DMG305:8 3: <7>Lisa<7>Good work.<1>You never disappoint,<1><8,1><5,1>.<2,2><3>You told the Attacker<1>to get past you. It<1>never did.<2,2>
+Q88=2 DMG305:8 3: <7>Lisa<7>Good work.<1>You never disappoint,<1><8,1><5,1>.<2,2><3>You said you'd finish<1>the Attacker quickly.<1>You did.<2,2>
+Q88=3 DMG305:8 3: <7>Lisa<7>Good work.<1>You never disappoint,<1><8,1><5,1>.<2,2><3>You put yourself in<1>front of all of us at<1>the hideout. I saw.<2,2>
+# Q87 (chapter 2): Kurt turning into a Digimon -> Kurt, after the Arena duel
+Q87=1 DMG900:5 2: <7>Kurt<7>Congratulations,<1><8,1><5,1>. You beat<1>me fair and square.<2,2><3>You are the new<1>strongest tamer.<2,2><3>You looked horrified<1>when I changed. Look<1>at me now.<2,2>
+Q87=2 DMG900:5 2: <7>Kurt<7>Congratulations,<1><8,1><5,1>. You beat<1>me fair and square.<2,2><3>You are the new<1>strongest tamer.<2,2><3>You couldn't believe I<1>had changed. Believe<1>this: you won.<2,2>
+Q87=3 DMG900:5 2: <7>Kurt<7>Congratulations,<1><8,1><5,1>. You beat<1>me fair and square.<2,2><3>You are the new<1>strongest tamer.<2,2><3>You were furious for<1>me when I turned. I<1>never thanked you.<2,2>
