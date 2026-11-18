@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Digimon World 3: Definitive Edition</title>
+<meta name="description" content="A fan remaster of Digimon World 3 that runs natively on PC and handhelds. The site is under construction.">
+<meta property="og:title" content="Digimon World 3: Definitive Edition">
+<meta property="og:description" content="Persona-style weakness combat, less grinding, a hunting economy, the Velvet Room and playable Kail. Native on PC and RK3326 handhelds.">
+<meta property="og:image" content="/assets/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#14161c">
+<link rel="icon" href="/assets/icon.png">
+<style>
+  :root { --bg: #0d0f16; --text: #f0efec; --muted: #c3c2b7; --violet: #9085e9; --orange: #ef6a3a; --line: #30374a; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: var(--bg) url(/assets/backdrop.jpg) center / cover no-repeat fixed;
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    display: flex; flex-direction: column; min-height: 100vh;
+  }
+  /* darken the left side so the text reads over the backdrop's art */
+  body::before {
+    content: ""; position: fixed; inset: 0; z-index: -1;
+    background: linear-gradient(90deg, rgba(13,15,22,.92) 0%, rgba(13,15,22,.7) 45%, rgba(13,15,22,.15) 100%);
+  }
+  main { flex: 1; display: flex; align-items: center; padding: 48px 16px; }
+  .wrap { width: 100%; max-width: 1180px; margin: 0 auto; }
+  .card { max-width: 620px; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px; border-radius: 999px;
+    border: 1px solid rgba(239,106,58,.5); background: rgba(239,106,58,.12); color: #ffc7ad;
+    font-size: 14px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); animation: pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 50% { opacity: .25; transform: scale(.7); } }
+  .logo { display: block; width: 100%; max-width: 560px; height: auto; margin: 28px 0 8px; }
+  h1 { position: absolute; left: -9999px; }
+  .lead { font-size: clamp(17px, 2.2vw, 20px); line-height: 1.55; color: var(--muted); margin: 18px 0 28px; }
+  .lead b { color: var(--text); }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; padding: 13px 20px; border-radius: 10px;
+    font-weight: 700; font-size: 16px; text-decoration: none; transition: transform .15s ease, background .15s ease;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .primary { background: var(--violet); color: #0d0f16; }
+  .primary:hover { background: #a89ff3; }
+  .ghost { border: 1px solid var(--line); color: var(--text); background: rgba(20,22,28,.6); }
+  .ghost:hover { background: rgba(48,55,74,.7); }
+  .facts { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 34px; padding: 0; list-style: none; color: var(--muted); font-size: 14px; }
+  .facts li::before { content: "◆"; color: var(--violet); margin-right: 8px; font-size: 10px; vertical-align: 2px; }
+  footer { padding: 18px 16px 24px; color: #8a8f9c; font-size: 13px; }
+  footer .wrap { border-top: 1px solid rgba(48,55,74,.6); padding-top: 16px; }
+  @media (max-width: 720px) {
+    body::before { background: rgba(13,15,22,.82); }
+  }
+  @media (prefers-reduced-motion: reduce) { .dot { animation: none; } .btn { transition: none; } }
+</style>
+</head>
+<body>
+<main>
+  <div class="wrap">
+    <div class="card">
+      <span class="pill"><span class="dot"></span>Site under construction</span>
+      <h1>Digimon World 3: Definitive Edition</h1>
+      <img class="logo" src="/assets/logo.png" width="1600" height="454" alt="Digimon World 3: Definitive Edition">
+      <p class="lead">
+        <b>Digimon World 3, as it could have been.</b> Persona-style weakness combat, a journey without the grind,
+        prey worth hunting, the Velvet Room and playable Kail. A fan remaster that runs natively, with no emulator,
+        on PC and handhelds.
+      </p>
+      <div class="actions">
+        <a class="btn primary" href="https://github.com/al4xdev/digimon-world-3-definitive-edition">See it on GitHub</a>
+        <a class="btn ghost" href="https://github.com/al4xdev/digimon-world-3-definitive-edition/releases">Releases</a>
+        <a class="btn ghost" href="https://recomplauncher.com">RecompLauncher</a>
+      </div>
+      <ul class="facts">
+        <li>Free</li>
+        <li>No emulator</li>
+        <li>Linux, Windows, RK3326 handhelds</li>
+        <li>Bring your own disc</li>
+      </ul>
+    </div>
+  </div>
+</main>
+<footer>
+  <div class="wrap">
+    A fan project. No game data is included: you need your own disc of <i>Digimon World 2003</i> (Europe).
+    Not affiliated with or endorsed by Bandai, Bandai Namco or Sony.
+  </div>
+</footer>
+</body>
+</html>
