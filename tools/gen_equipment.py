@@ -8,6 +8,8 @@ for a party of two or three, one of each in every equipment shop's goods (a "tie
   - Elemental: a head piece that gives up guard for the resists of one family (def_affinity reads them: Water+Ice and
     Thunder+Machine on the pair's sum), so WEAK! and the open target's hit (One More) do more;
   - Tank: body armour or a shield above the tier's best guard, with Spirit, paid with Boost.
+And a fourth, picked by hand (ELEMENT_WEAPONS below, not by the selection rule): the Elemental weapon, a plain
+one-handed weapon that gives up power for one family's resists.
 
   tools/venv/bin/python tools/gen_equipment.py            # write port/game/definitive_equipment.c and the review list
   tools/venv/bin/python tools/gen_equipment.py --check    # exit 1 if the committed table is not the rule's, or a
@@ -61,9 +63,17 @@ STAT = {1: "Power", 2: "Guard", 3: "Spirit", 4: "Wisdom", 5: "Boost", 6: "Charis
         11: "Wind", 12: "Thunder", 13: "Machine", 14: "Dark"}
 ENUM = {v: k for k, v in BONUS.items() if k != "0"}
 FAMILIES = [(8,), (9, 10), (11,), (12, 13), (14,)]  # definitive_mask.c's: Fire, Water+Ice, Wind, Thunder+Machine, Dark
-SPEED, ELEMENT, TANK = 0, 1, 2
-KINDS = ["DEF_EQUIP_SPEED", "DEF_EQUIP_ELEMENT", "DEF_EQUIP_TANK"]
-KIND_PT = ["Speed", "Elemental", "Tank"]
+SPEED, ELEMENT, TANK, ELEMENT_WEAPON = 0, 1, 2, 3
+# The Elemental weapons (forge-variety.md Part 2A, the owner's list of 2026-11-17): one per tier, two in the last, picked
+# by hand so every Rookie gets one and the families rotate. Each is a plain one-handed weapon that gives up
+# ELEMENT_WEAPON_COST % of the tier's best power for its family's resists (the heads give up guard instead), at most
+# DEF_EQUIP_ELEM_MAX each. The game sees an Elemental piece (DEF_EQUIP_ELEMENT) with the weapon's fields.
+ELEMENT_WEAPONS = {0: [("Dagger", 0)], 1: [("Shishioumaru", 1)], 2: [("Fairy Tale", 2)], 3: [("Wolf Fang", 3)],
+                   4: [("Shotgun", 4)], 5: [("Tiger Glove", 0)], 6: [("Scissor Horn", 1)], 7: [("Royal Spear", 2)],
+                   8: [("Raijin Fist", 3), ("Suijin Cannon", 1)]}
+ELEMENT_WEAPON_COST = 25  # half the heads' 50: a weapon's power is the whole damage, and at 50 the resists hit their cap
+KINDS = ["DEF_EQUIP_SPEED", "DEF_EQUIP_ELEMENT", "DEF_EQUIP_TANK", "DEF_EQUIP_ELEMENT"]
+KIND_PT = ["Speed", "Elemental", "Tank", "Elemental weapon"]
 ROOKIES = ["Kotemon", "Kumamon", "Monmon", "Agumon", "Veemon", "Guilmon", "Renamon", "Patamon"]  # members bits
 DESC_MAX = 34  # the description window (tests/port/text_override.py's MAX)
 TEXT_OK = re.compile(r"^[A-Za-z0-9 .,'/!-]+$")
@@ -246,9 +256,13 @@ def build(kind, base, peers, c, family):
         main = best * (100 - c["DEF_EQUIP_SPEED_COST"]) // 100
         boost = (budget - 100 * main - wh) // c["DEF_EQUIP_W_BOOST"]
         bonus = [(5, max(1, boost)), (0, 0)]
-    elif kind == ELEMENT:
-        main = best * (100 - c["DEF_EQUIP_ELEM_COST"]) // 100
-        room = budget - c["DEF_EQUIP_W_GUARD"] * main - wh
+    elif kind in (ELEMENT, ELEMENT_WEAPON):
+        if kind == ELEMENT:
+            main = best * (100 - c["DEF_EQUIP_ELEM_COST"]) // 100
+            room = budget - c["DEF_EQUIP_W_GUARD"] * main - wh
+        else:
+            main = best * (100 - ELEMENT_WEAPON_COST) // 100
+            room = budget - 100 * main - wh
         fam = FAMILIES[family]
         per = room // (len(fam) * weight(c, STAT[fam[0]]))
         per = max(1, min(per, c["DEF_EQUIP_ELEM_MAX"]))
@@ -320,6 +334,17 @@ def plan():
                      towns=sorted({m for s in shops for m in towns.get(s, ())}))
             taken.add(pick["id"])
             rows.append(v)
+        for name, family in ELEMENT_WEAPONS.get(rank, []):
+            pick = next(it for it in eq if it["name"] == name)
+            assert (pick["weapon"] and pick["id"] not in effects and pick["strong"] < 2 and pick["id"] not in sets
+                    and pick["id"] not in taken), f"{name}: not a free weapon of tier {rank}"
+            peers = [o for o in eq if slot_key(o) == slot_key(pick) and wears(o, pick) and o["id"] not in taken]
+            v = build(ELEMENT_WEAPON, pick, peers, c, family)
+            v.update(kind=ELEMENT_WEAPON, base=pick, rank=rank, goods=n, shops=shops, family=family, dominated=False,
+                     redundancy=0.0, peers=[p["id"] for p in peers],
+                     towns=sorted({m for s in shops for m in towns.get(s, ())}))
+            taken.add(pick["id"])
+            rows.append(v)
     return rows, its, c, effects
 
 
@@ -386,7 +411,7 @@ def checks(rows, its, c, effects):
     per = defaultdict(set)
     for v in rows:
         per[v["goods"]].add(v["kind"])
-    out.append((all(len(k) == 3 for k in per.values()), "every tier has the three archetypes"))
+    out.append((all({SPEED, ELEMENT, TANK} <= k for k in per.values()), "every tier has the three archetypes"))
     return out
 
 

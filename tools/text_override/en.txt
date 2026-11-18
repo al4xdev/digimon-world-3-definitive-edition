@@ -464,6 +464,27 @@ ITMNAM 234: Blaze Crown
 ITMINF 234: Fire Affinity up for WEAK! hits.
 ITMNAM 235: Tempest Crown
 ITMINF 235: Wind Affinity up for WEAK! hits.
+# Elemental weapons: one-handed weapons, power for one family's Affinity.
+ITMNAM 157: Ember Dagger
+ITMINF 157: Fire Affinity for less Power.
+ITMNAM 158: Mizuchimaru
+ITMINF 158: Water/Ice Affinity, less Power.
+ITMNAM 169: Sylph Tale
+ITMINF 169: Wind Affinity for less Power.
+ITMNAM 145: Volt Fang
+ITMINF 145: Thunder/Machine up, less Power.
+ITMNAM 122: Shade Gun
+ITMINF 122: Dark Affinity for less Power.
+ITMNAM 111: Blaze Glove
+ITMINF 111: Fire Affinity for less Power.
+ITMNAM 212: Tidal Horn
+ITMINF 212: Water/Ice Affinity, less Power.
+ITMNAM 174: Storm Spear
+ITMINF 174: Wind Affinity for less Power.
+ITMNAM 115: Raijin Fist
+ITMINF 115: Thunder/Machine up, less Power.
+ITMNAM 127: Suijin Cannon
+ITMINF 127: Water/Ice Affinity, less Power.
 # Tank: body armour and shields, guard and Spirit for Boost.
 ITMNAM 249: Padded Coat
 ITMINF 249: More Guard and Spirit, less Boost.
@@ -848,3 +869,9 @@ $Skin10: Ocean
 $Skin11: Sunset
 $Skin12: Wild Colors
 $Skin13: Silver and Black
+
+# The DRI Agents' DDNA quests (port/game/definitive_dri_screen.c, .plan/tasks/dri-agents-unlock.md): with the level
+# window gone an agent says his quest line until the DDNA is brought, so it tells where the Digimon is (each map's own
+# title). Bob's and Johann's are here; the other six agents' lines are the story rewrite's (en_story.txt).
+TALK06 676: <7>DRI Bob<7>Hey, have you seen<1>Paildramon?<2,2><3>I've been looking<1>for him forever, but<1>I can't find him.<2,2><3>Folks say he flies<1>over Bulk Bridge, in<1>the South Sector.<2,2><3>If you find him, I'll<1>give you something<1>great...<2,2>
+TALK06 691: <7>DRI Johann<7>I'm looking for<1>MetalGreymon...<2,2><3>They say he roams<1>the Bulk Swamp, in<1>the South Sector.<2,2><3>If I can get Agumon's<1>DDNA, I can go on<1>with my research...<2,2><3>Oh! If you see him,<1>can you get the<1>DDNA from him?<2,2><3>I'll add Agumon as<1>your partner as a<1>reward!<2,2>

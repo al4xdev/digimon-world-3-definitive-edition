@@ -8,6 +8,13 @@
 
 const DefEquipVariant def_equip_variants[] = {
     { 99, DEF_EQUIP_SPEED, 1, 65, 40, { RECORDS_BONUS_BOOST, 0 }, { 65, 0 } }, /* Onimaru */
+    { 111, DEF_EQUIP_ELEMENT, 1, 82, 35, { RECORDS_BONUS_FIRE, 0 }, { 400, 0 } }, /* Tiger Glove */
+    { 115, DEF_EQUIP_ELEMENT, 1, 135, 50, { RECORDS_BONUS_THUNDER, RECORDS_BONUS_MACHINE }, { 400, 400 } }, /* Raijin Fist */
+    { 122, DEF_EQUIP_ELEMENT, 1, 90, 0, { RECORDS_BONUS_DARK, 0 }, { 300, 0 } }, /* Shotgun */
+    { 127, DEF_EQUIP_ELEMENT, 1, 127, 10, { RECORDS_BONUS_WATER, RECORDS_BONUS_ICE }, { 400, 400 } }, /* Suijin Cannon */
+    { 145, DEF_EQUIP_ELEMENT, 1, 55, 25, { RECORDS_BONUS_THUNDER, RECORDS_BONUS_MACHINE }, { 190, 190 } }, /* Wolf Fang */
+    { 157, DEF_EQUIP_ELEMENT, 1, 10, 10, { RECORDS_BONUS_FIRE, 0 }, { 80, 0 } }, /* Dagger */
+    { 158, DEF_EQUIP_ELEMENT, 1, 19, 15, { RECORDS_BONUS_WATER, RECORDS_BONUS_ICE }, { 70, 70 } }, /* Shishioumaru */
     { 159, DEF_EQUIP_SPEED, 1, 25, 20, { RECORDS_BONUS_BOOST, 0 }, { 25, 0 } }, /* Long Sword */
     { 160, DEF_EQUIP_SPEED, 1, 37, 25, { RECORDS_BONUS_BOOST, 0 }, { 37, 0 } }, /* Shamshir */
     { 161, DEF_EQUIP_SPEED, 1, 50, 30, { RECORDS_BONUS_BOOST, 0 }, { 50, 0 } }, /* Wing Sword */
@@ -16,6 +23,9 @@ const DefEquipVariant def_equip_variants[] = {
     { 166, DEF_EQUIP_SPEED, 1, 75, 50, { RECORDS_BONUS_BOOST, 0 }, { 85, 0 } }, /* Fenrir Sword */
     { 167, DEF_EQUIP_SPEED, 1, 5, 10, { RECORDS_BONUS_BOOST, 0 }, { 5, 0 } }, /* Bamboo Spear */
     { 168, DEF_EQUIP_SPEED, 1, 10, 15, { RECORDS_BONUS_BOOST, 0 }, { 10, 0 } }, /* Spear */
+    { 169, DEF_EQUIP_ELEMENT, 1, 25, 20, { RECORDS_BONUS_WIND, 0 }, { 180, 0 } }, /* Fairy Tale */
+    { 174, DEF_EQUIP_ELEMENT, 1, 105, 45, { RECORDS_BONUS_WIND, 0 }, { 400, 0 } }, /* Royal Spear */
+    { 212, DEF_EQUIP_ELEMENT, 1, 82, 5, { RECORDS_BONUS_WATER, RECORDS_BONUS_ICE }, { 350, 350 } }, /* Scissor Horn */
     { 215, DEF_EQUIP_ELEMENT, 0, 3, 0, { RECORDS_BONUS_FIRE, 0 }, { 85, 0 } }, /* Bandanna */
     { 216, DEF_EQUIP_ELEMENT, 0, 4, 0, { RECORDS_BONUS_WATER, RECORDS_BONUS_ICE }, { 62, 62 } }, /* Sun Visor */
     { 219, DEF_EQUIP_ELEMENT, 0, 9, 0, { RECORDS_BONUS_WATER, RECORDS_BONUS_ICE }, { 130, 130 } }, /* Wool Cap */
@@ -35,4 +45,4 @@ const DefEquipVariant def_equip_variants[] = {
     { 290, DEF_EQUIP_TANK, 0, 52, 35, { RECORDS_BONUS_SPIRIT, RECORDS_BONUS_BOOST }, { 8, -25 } }, /* High Security */
     { 291, DEF_EQUIP_TANK, 0, 60, 40, { RECORDS_BONUS_SPIRIT, RECORDS_BONUS_BOOST }, { 10, -30 } }, /* Apocalypse */
 };
-const int def_equip_variant_count = 27;
+const int def_equip_variant_count = 37;
