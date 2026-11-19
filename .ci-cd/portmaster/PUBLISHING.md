@@ -6,7 +6,7 @@ A decompilation of a commercial game is not accepted by the main PortMaster cata
 **PortMaster-MV-New** (the multiverse repository, `https://github.com/PortsMaster-MV/PortMaster-MV-New`), under
 `ports/dw3/`. The portname is `dw3` (lowercase, starts with a letter).
 
-`.ci-cd/portmaster/make_release.sh` builds two zips (multi-arch: `armhf` + `aarch64`): `dist/dw3.zip`, what a player installs (only `Digimon World 3.sh` and `dw3/` at its root, as PortMaster's autoinstall unpacks it into `ports/`), and `dist/dw3-portmaster-repo.zip`, the same plus the catalogue's files (`port.json`, `README.md`, `gameinfo.xml`, `screenshot.png`, `cover.png`) in the layout the PortMaster packaging page asks for for the repository. It refuses to
+`.ci-cd/portmaster/make_release.sh` builds `dist/dw3.zip` (multi-arch: `armhf` + `aarch64`) in the layout the PortMaster packaging page asks for. It refuses to
 build when a required file is missing, when `port.json` does not describe the layout, when the binaries are not valid `armhf` / `aarch64`
 ELFs, or when a disc image is inside.
 
@@ -15,7 +15,7 @@ ELFs, or when a disc image is inside.
 `.github/workflows/release.yml` also builds `dw3.zip` in the `portmaster` job using `.ci-cd/portmaster/Dockerfile.armhf` and `.ci-cd/portmaster/Dockerfile.aarch64`. When the
 repository secret `PORTMASTER_REPO_TOKEN` (`Contents: write` + `Actions: write` on `al4xdev/PortMaster-MV-New`) is
 configured, tagged releases (or manual `workflow_dispatch` runs with `sync_portmaster=true`) automatically unpack
-`dw3-portmaster-repo.zip` into `ports/dw3/` on `al4xdev/PortMaster-MV-New`, commit, push, and trigger its `release.yaml` workflow.
+`dw3.zip` into `ports/dw3/` on `al4xdev/PortMaster-MV-New`, commit, push, and trigger its `release.yaml` workflow.
 
 ## Build locally
 
@@ -30,7 +30,7 @@ configured, tagged releases (or manual `workflow_dispatch` runs with `sync_portm
       tested, the resolution and the known issues (see "Known issues" in `.ci-cd/portmaster/README.md`). Done: the release is
       in its testing phase there (2026-11-18), not yet in the catalogue; it was run under emulation on every CFW of
       the test matrix ("Tested on" in `.ci-cd/portmaster/README.md`).
-- [ ] **Fork `PortMaster-MV-New`**, sparse-checkout it, put the contents of `dist/dw3-portmaster-repo.zip` under `ports/dw3/`, run the
+- [ ] **Fork `PortMaster-MV-New`**, sparse-checkout it, put the contents of `dist/dw3.zip` under `ports/dw3/`, run the
       repository's check (`python3 tools/build_release.py --do-check`; this script is not in this repository and its
       name has not been confirmed against the current PortMaster-MV-New), and open the pull request citing the thread.
 - [ ] **Test other firmware.** Only the XF35H on EmuELEC has been tested; the other rows of "Tested on" in
