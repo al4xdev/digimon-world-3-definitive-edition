@@ -8,7 +8,7 @@
  * the game enters it (its own two doors from Asuka City), so nothing of the story is lost.
  *
  * The way in: a spot of each inn (`doors`: one per inn map, the second half's copies sharing the first half's layouts)
- * in front of a piece of its own scenery (a wardrobe, a door, a crate) that a faint blue light marks (`looks`: no door
+ * in front of a piece of its own scenery (a wardrobe, a door, a crate) that a soft blue light marks (`looks`: no door
  * of its own, the owner's call). Standing there (VL_RADIUS) shows the map exits' prompt; CIRCLE takes it, as a map exit
  * is taken. `dw3_velvet_leave` takes the room's front door back to the inn the way was taken in, and closes the other
  * one (`dw3_velvet_event_closed`).
@@ -535,19 +535,27 @@ static void vl_backdrop(void) {
 }
 
 /* The blue of the hints' light at full power, and the pulse that breathes it (a triangle of VL_PULSE frames, from
- * VL_PULSE_LOW/256 up to full): slow and shallow, a light that is there more than one that calls. */
-#define VL_HINT_R 26
-#define VL_HINT_G 62
-#define VL_HINT_B 150
-#define VL_LIT_R 70 /* a lit pixel's own light at full power: paler than a glow's, a light source more than a cast */
-#define VL_LIT_G 140
+ * VL_PULSE_LOW/256 up to full): slow, a light that is there more than one that calls. Owner, 2026-11-18: the first
+ * cut (26,62,150 breathing from 150/256) hid most ways in from a player not looking for them; the light is now half
+ * as bright again at its peak and breathes deeper, so the eye catches it moving, still on the same scenery. */
+#define VL_HINT_R 40
+#define VL_HINT_G 96
+#define VL_HINT_B 230
+#define VL_LIT_R 80 /* a lit pixel's own light at full power: paler than a glow's, a light source more than a cast */
+#define VL_LIT_G 170
 #define VL_LIT_B 255
 #define VL_DIM_R 150 /* what a hint's dimming takes out at 255, before its blue goes on */
 #define VL_DIM_G 100
 #define VL_PULSE 120
-#define VL_PULSE_LOW 150
+#define VL_PULSE_LOW 120
 #define VL_GLOW_SIDES 16
 #define VL_SEAM_SPREAD 4 /* a crack's halo, pixels either side of its line */
+/* The aura: one wide, faint glow over a way in's whole light, so a crack or a pin a few pixels across still reads as a
+ * place from across the room (owner, 2026-11-18: the way in should be easy to see for a player not looking for it). It
+ * is the hints' own blue, breathing with them, and nothing at its rim, so it lights the scenery rather than marks it. */
+#define VL_AURA_POWER 230
+#define VL_AURA_PAD 18 /* pixels past the light's own extent, each way */
+#define VL_AURA_MIN 22 /* the smallest radius: a two-pixel pin still gets a pool of light */
 /* The layer draws its ordering table from the far end: the map's back tiles at 11 and 7, the actors at 4 (or the depth
  * a map's event gives the player), the foreground tiles at 3 (fieldstg_tile_ot_depths). */
 #define VL_HINT_DEPTH 5       /* on the floor and the walls, behind the actors */
@@ -668,6 +676,60 @@ static void vl_hint(GfxLayer *layer, const VelvetHint *h, s32 sx, s32 sy, const 
     }
 }
 
+/* The aura of `look` (VL_AURA_*): a glow over the box its hints cover, drawn with the hints of the first one's `front`. */
+static void vl_aura(GfxLayer *layer, const VelvetLook *look, s32 sx, s32 sy, s32 level) {
+    s32 x0 = 0x7FFF, y0 = 0x7FFF, x1 = -0x7FFF, y1 = -0x7FFF;
+    VelvetHint aura;
+    u8 core[3];
+    s32 i, k;
+
+    for (i = 0; i < VL_HINTS && look->hint[i].kind != VL_HINT_NONE; i++) {
+        const VelvetHint *h = &look->hint[i];
+        s32 bx0, by0, bx1, by1;
+
+        if (h->kind == VL_HINT_PIXELS) {
+            bx0 = by0 = 0x7FFF;
+            bx1 = by1 = -0x7FFF;
+            for (k = 0; k < h->x1; k++) {
+                const VelvetRun *r = &vl_runs[h->x0 + k];
+
+                bx0 = r->x0 < bx0 ? r->x0 : bx0;
+                bx1 = r->x1 > bx1 ? r->x1 : bx1;
+                by0 = r->y < by0 ? r->y : by0;
+                by1 = r->y > by1 ? r->y : by1;
+            }
+        } else if (h->kind == VL_HINT_GLOW) { /* its heart, not its rim: a wide glow already spreads */
+            bx0 = h->x0 - h->x1 / 2;
+            bx1 = h->x0 + h->x1 / 2;
+            by0 = h->y0 - h->y1 / 2;
+            by1 = h->y0 + h->y1 / 2;
+        } else {
+            bx0 = h->x0 < h->x1 ? h->x0 : h->x1;
+            bx1 = h->x0 < h->x1 ? h->x1 : h->x0;
+            by0 = h->y0 < h->y1 ? h->y0 : h->y1;
+            by1 = h->y0 < h->y1 ? h->y1 : h->y0;
+        }
+        x0 = bx0 < x0 ? bx0 : x0;
+        x1 = bx1 > x1 ? bx1 : x1;
+        y0 = by0 < y0 ? by0 : y0;
+        y1 = by1 > y1 ? by1 : y1;
+    }
+    if (x1 < x0) {
+        return;
+    }
+    aura.kind = VL_HINT_GLOW;
+    aura.x0 = (s16)((x0 + x1) / 2);
+    aura.y0 = (s16)((y0 + y1) / 2);
+    aura.x1 = (s16)((x1 - x0) / 2 + VL_AURA_PAD);
+    aura.y1 = (s16)((y1 - y0) / 2 + VL_AURA_PAD);
+    aura.x1 = aura.x1 < VL_AURA_MIN ? VL_AURA_MIN : aura.x1;
+    aura.y1 = aura.y1 < VL_AURA_MIN * 2 / 3 ? VL_AURA_MIN * 2 / 3 : aura.y1; /* the floor's isometric squash */
+    core[0] = (u8)(VL_HINT_R * VL_AURA_POWER / 255 * level / 256);
+    core[1] = (u8)(VL_HINT_G * VL_AURA_POWER / 255 * level / 256);
+    core[2] = (u8)(VL_HINT_B * VL_AURA_POWER / 255 * level / 256);
+    vl_hint(layer, &aura, sx, sy, core);
+}
+
 /* The look of `map`'s way in: its hints, breathing. Each depth's packets are queued backwards (addPrim puts each in
  * front of the last): drawn, they go the subtracting DR_TPAGE, the dimmings, the adding DR_TPAGE, the lights, then a
  * DR_TPAGE that puts the field's opaque mode back, so no later primitive of the depth inherits a blend. */
@@ -712,6 +774,9 @@ static void vl_hints_draw(const VelvetLook *look) {
                 core[2] = (u8)((lit ? VL_LIT_B : VL_HINT_B) * h->power / 255 * level / 256);
                 vl_hint(layer, h, ofs[0], ofs[1], core);
             }
+        }
+        if (look->hint[0].front == front) {
+            vl_aura(layer, look, ofs[0], ofs[1], level);
         }
         vl_tpage(ot, 1); /* abr 1: the lights add to what is behind them */
         for (i = 0; i < VL_HINTS && look->hint[i].kind != VL_HINT_NONE; i++) {
