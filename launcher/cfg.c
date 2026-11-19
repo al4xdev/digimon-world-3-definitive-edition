@@ -153,7 +153,7 @@ void cfg_defaults(Cfg *c) {
     memset(c, 0, sizeof(*c));
     c->hz = 50;
     c->ff = 3;
-    c->load = 2; /* faster loading on at 4x: the original port's default for the install and the loads */
+    c->load = 3; /* faster loading on at 8x (owner, 2026-11-18; it was 4x) */
     c->btext = 1; /* skip: the definitive HUD has no need of battle messages */
     c->bmem = 1;
     c->bbuf = 1;
@@ -459,7 +459,7 @@ static int write_settings(const Cfg *c) {
         "    \"led_bar\": { \"enabled\": %s }\n  },\n  \"touch_pad\": %s,\n  \"input\": { \"gamepad\": %s }\n}\n",
         disc_esc, vscale, vfull ? "true" : "false", vfill ? "true" : "false", c->hz, renderer, vfilt,
         log_names[c->logs], c->ff ? "true" : "false", ff_names[c->ff ? c->ff : 3],
-        c->load ? "true" : "false", load_names[c->load ? c->load : 2],
+        c->load ? "true" : "false", load_names[c->load ? c->load : 3],
         c->skip ? "true" : "false", c->battles ? "true" : "false", c->battles && c->hit ? "true" : "false",
         btext_names[c->btext], lang_names[c->lang < 0 || c->lang > 7 ? 0 : c->lang], vw ? "true" : "false",
         hud_name(c->hud[H_FIGHT]), hud_name(c->hud[H_TECH]), hud_name(c->hud[H_DV]),

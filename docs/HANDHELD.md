@@ -168,7 +168,7 @@ action sits on the pad is the menu's `BATTLE HUD` screen ([`LAUNCHER.md`](LAUNCH
 ## Mods and menu defaults
 
 The mods are described in [`LAUNCHER.md`](LAUNCHER.md). What matters on a handheld is what the menu writes when nobody
-opens it. Its defaults are the settings this port was tuned with: 8x fast-forward (audio muted), faster loading at 4x,
+opens it. Its defaults are the settings this port was tuned with: 8x fast-forward (audio muted), faster loading at 8x,
 battle text in `skip`. The experience rules (the party sharing all the experience, form experience 14x, the three
 chosen forms earning) are the Definitive Edition's own, in the game, not settings
 ([`definitive-edition/progression.md`](definitive-edition/progression.md#experience); the code's view in

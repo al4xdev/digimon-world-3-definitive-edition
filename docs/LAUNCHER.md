@@ -60,7 +60,7 @@ repeating (`tests/port/settings.py`).
 ### Faster loading
 
 `fast_loading` (runtime only, no game C). Option: `speed` (enum `2x 4x 8x instant`, default `4x`). The launcher's
-GAME screen writes it on at `4x` (`FAST LOAD`); `OFF` leaves the drive as it is.
+GAME screen writes it on at `8x` (`FAST LOAD`); `OFF` leaves the drive as it is.
 
 While it is enabled, cdload's data reads (overlays, maps, sound banks: the install and the loads between screens) run
 at that multiple of the drive's rate, with the seek shortened as much, or at once. The movie stream and any read with
