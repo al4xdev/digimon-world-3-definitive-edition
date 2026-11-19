@@ -261,10 +261,10 @@ static const char *led_bar_status(struct PortMod *mod) {
  * west, west is east, east is south, north is north. The game index is that translation: `game`, an index of this same
  * table. The order is the options' values and bm_place's indexes. */
 #define BM_PLACES(X)                                \
-    X("south", NULL, 14, 1, 'A')                    \
-    X("west", NULL, 15, 3, 'X')                     \
+    X("south", NULL, 14, 0, 'A')                    \
+    X("west", NULL, 15, 1, 'X')                     \
     X("north", NULL, 12, 2, 'Y')                    \
-    X("east", NULL, 13, 0, 'B')                     \
+    X("east", NULL, 13, 3, 'B')                     \
     X("l1", "leftshoulder", 10, 4, 0)               \
     X("r1", "rightshoulder", 11, 5, 0)              \
     X("l2", "lefttrigger", 8, 6, 0)                 \
@@ -705,21 +705,30 @@ static void dw3_pad_load(void) {
         return;
     }
     dw3_pad.has_file = 1;
-    while (fscanf(f, "%15s %15s %c", name, place, &letter) == 3) {
-        bit = dw3_pad_bit_of_name(name);
-        if (letter >= 'a' && letter <= 'z') {
-            letter = (char)(letter - 'a' + 'A');
-        }
-        if (bit >= 0 && bit < 16) {
-            dw3_pad.letter[bit] = (letter >= 'A' && letter <= 'Z') ? letter : 0; /* '-': the symbol itself */
-        }
-        at = dw3_pad_bit_of_place(place);
-        if (at >= 0 && at < 16 && bit >= 0 && bit < 16) {
-            dw3_pad.perm[bit] = (u16)at;
-        }
-        idx = dw3_place_index(place);
-        if (idx >= 0 && bit >= 0 && bit < 16) {
-            dw3_pad.at[idx] = (u8)bit;
+    {
+        char line[128];
+        while (fgets(line, sizeof(line), f) != NULL) {
+            if (line[0] == '#') {
+                continue;
+            }
+            if (sscanf(line, "%15s %15s %c", name, place, &letter) != 3) {
+                continue;
+            }
+            bit = dw3_pad_bit_of_name(name);
+            if (letter >= 'a' && letter <= 'z') {
+                letter = (char)(letter - 'a' + 'A');
+            }
+            if (bit >= 0 && bit < 16) {
+                dw3_pad.letter[bit] = (letter >= 'A' && letter <= 'Z') ? letter : 0; /* '-': the symbol itself */
+            }
+            at = dw3_pad_bit_of_place(place);
+            if (at >= 0 && at < 16 && bit >= 0 && bit < 16) {
+                dw3_pad.perm[bit] = (u16)at;
+            }
+            idx = dw3_place_index(place);
+            if (idx >= 0 && bit >= 0 && bit < 16) {
+                dw3_pad.at[idx] = (u8)bit;
+            }
         }
     }
     fclose(f);

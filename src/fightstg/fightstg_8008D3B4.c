@@ -3824,6 +3824,14 @@ static void fightstg_battle_menu_icon_text(u8 *buf, s32 action) {
         return;
     }
     if (code != 0) {
+        extern int port_script_active;
+        if (!port_script_active) {
+            if (code == 0x2F) {
+                code = 0x34;
+            } else if (code == 0x34) {
+                code = 0x2F;
+            }
+        }
         buf[0] = 1;
         buf[1] = code;
         buf[2] = 0;

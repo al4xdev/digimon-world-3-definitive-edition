@@ -116,8 +116,8 @@ static const char *bt_label[3] = {"OFF", "SKIP", "ASYNC"};
 static const char *buf_label[3] = {"OFF", "SHORT", "LONG"};
 static const char *log_label[3] = {"OFF", "SOFT", "HEAVY"};
 static const char *lay_label[4] = {"PS1", "XBOX", "NINTENDO", "CUSTOM"};
-static const char *act_label[A_COUNT] = {"CONFIRM / CROSS", "MENU / SQUARE", "BACK / CIRCLE", "CAM / TRIANGLE", "PREV / L1", "NEXT / R1", "START", "SELECT"};
-static const int act_order[A_COUNT] = {A_CROSS, A_CIRCLE, A_SQUARE, A_TRIANGLE, A_L1, A_R1, A_START, A_SELECT};
+static const char *act_label[A_COUNT] = {"CONFIRM / CROSS", "CARD / SQUARE", "BACK / CIRCLE", "MENU / TRIANGLE", "PREV / L1", "NEXT / R1", "START", "SELECT"};
+static const int act_order[A_COUNT] = {A_CROSS, A_CIRCLE, A_TRIANGLE, A_SQUARE, A_L1, A_R1, A_START, A_SELECT};
 static const char *hud_label[H_COUNT] = {"FIGHT", "TECH", "DIGIVOLVE", "TAG", "ITEM", "RUN", "INSPECT", "BLAST"};
 
 static const char *S(const char *en) {
