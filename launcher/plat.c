@@ -8,6 +8,7 @@
 #include <time.h>
 #ifndef _WIN32
 #include <poll.h>
+#include <signal.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include <unistd.h>
@@ -107,6 +108,32 @@ static unsigned char *fbmap;
 static size_t fbsize;
 static int fb_stride, fb_bpp = 32, fb_w = W, fb_h = H;
 static int fb_r_off = 16, fb_r_len = 8, fb_g_off = 8, fb_g_len = 8, fb_b_off = 0, fb_b_len = 8;
+/* What the screen held before the menu took it: page 0's pixels and the page that was up. Quitting puts both back,
+ * so a frontend still running beside the menu (started over SSH) does not keep flipping to the menu's last frame. */
+static unsigned char *fb_saved;
+static size_t fb_saved_len;
+static unsigned fb_saved_xoff, fb_saved_yoff;
+
+static void fb_give_back(void) {
+    if (!fbmap || fbfd < 0) return;
+    if (fb_saved) memcpy(fbmap, fb_saved, fb_saved_len);
+#ifdef __linux__
+    if (fb_saved_xoff != 0 || fb_saved_yoff != 0) {
+        struct fb_var_screeninfo var;
+        if (ioctl(fbfd, FBIOGET_VSCREENINFO, &var) == 0) {
+            var.xoffset = fb_saved_xoff;
+            var.yoffset = fb_saved_yoff;
+            (void)ioctl(fbfd, FBIOPAN_DISPLAY, &var);
+        }
+    }
+#endif
+}
+
+static void fb_on_signal(int sig) {
+    fb_give_back();
+    signal(sig, SIG_DFL);
+    raise(sig);
+}
 
 static int fb_open(void) {
     const char *dev = getenv("DW3_FB");
@@ -151,6 +178,16 @@ static int fb_open(void) {
         fbfd = -1;
         return -1;
     }
+    fb_saved = malloc(vis);
+    if (fb_saved) {
+        memcpy(fb_saved, fbmap, vis);
+        fb_saved_len = vis;
+    }
+    fb_saved_xoff = var.xoffset;
+    fb_saved_yoff = var.yoffset;
+    signal(SIGHUP, fb_on_signal);
+    signal(SIGINT, fb_on_signal);
+    signal(SIGTERM, fb_on_signal);
     memset(fbmap, 0, vis);
     /* This draws at the start of the map. A double-buffered panel (the H700's, under muOS: its frontend leaves the
      * other page up) would keep showing that one and the menu would be a black screen: put page 0 up. */
@@ -890,8 +927,24 @@ int plat_poll(Ev *ev, int timeout_ms) {
     return 0;
 }
 
+void plat_quit(void) {
+#ifndef _WIN32
+    fb_give_back();
+#endif
+    plat_release();
+}
+
 void plat_release(void) {
 #ifndef _WIN32
+    /* From here the screen is someone else's (the game's, or the shell's): a signal must not paint the old page back. */
+    if (fbmap) {
+        signal(SIGHUP, SIG_DFL);
+        signal(SIGINT, SIG_DFL);
+        signal(SIGTERM, SIG_DFL);
+    }
+    free(fb_saved);
+    fb_saved = NULL;
+    fb_saved_len = 0;
     for (int i = 0; i < ev_count; i++) {
         if (evfds[i] >= 0) {
             close(evfds[i]);

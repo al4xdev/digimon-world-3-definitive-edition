@@ -15,6 +15,7 @@ int plat_open(int kind, const char *script);   /* 0 on success; PLAT_NULL runs a
 int plat_poll(Ev *ev, int timeout_ms);         /* 1 when an event was filled in, 0 on timeout; -1 when the window closed */
 void plat_present(void);
 void plat_release(void);                       /* stop using the screen and the pad, leaving the last picture up */
+void plat_quit(void);                          /* plat_release, and give the screen back as the menu found it */
 long plat_now_ms(void);                        /* monotonic; virtual (33 ms a poll) under PLAT_NULL */
 void plat_desktop_size(int *w, int *h);        /* detected monitor size (1280x720 fallback if headless) */
 void plat_toggle_fullscreen(void);
