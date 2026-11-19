@@ -314,6 +314,7 @@ jobs:
         run: |
           .ci-cd/portmaster/make_release.sh
           python3 .ci-cd/common/check_release_contents.py portmaster dist/dw3.zip
+          python3 .ci-cd/common/check_release_contents.py portmaster dist/dw3-portmaster-repo.zip
           (cd dist && sha256sum -c SHA256SUMS-portmaster)
 
       - name: Keep the PortMaster package (the run's artifact)
@@ -323,6 +324,14 @@ jobs:
           path: |
             dist/dw3.zip
             dist/SHA256SUMS-portmaster
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Keep the PortMaster repository's copy (for the sync, not a release asset)
+        uses: actions/upload-artifact@v7
+        with:
+          name: dw2003-portmaster-repo
+          path: dist/dw3-portmaster-repo.zip
           if-no-files-found: error
           retention-days: 30
 
@@ -487,7 +496,7 @@ jobs:
       - uses: actions/download-artifact@v8
         if: env.HAS_PM_TOKEN == 'true'
         with:
-          name: dw2003-portmaster
+          name: dw2003-portmaster-repo
           path: dist
 
       - uses: actions/checkout@v7
@@ -505,7 +514,7 @@ jobs:
         run: |
           rm -rf pm-repo/ports/dw3
           mkdir -p pm-repo/ports/dw3
-          unzip -oq dist/dw3.zip -d pm-repo/ports/dw3
+          unzip -oq dist/dw3-portmaster-repo.zip -d pm-repo/ports/dw3
           chmod +x "pm-repo/ports/dw3/Digimon World 3.sh" pm-repo/ports/dw3/dw3/dw2003.* pm-repo/ports/dw3/dw3/dw3-launcher.*
           [ -f pm-repo/ports/dw3/dw3/ledd.py ] && chmod +x pm-repo/ports/dw3/dw3/ledd.py
           [ -f pm-repo/ports/dw3/dw3/probe.sh ] && chmod +x pm-repo/ports/dw3/dw3/probe.sh

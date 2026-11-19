@@ -2,15 +2,18 @@
 # make_release.sh: assemble the multi-arch (armhf + aarch64) PortMaster release of this port, in the layout
 # https://portmaster.games/packaging.html asks for, and check it before it is offered:
 #
-#   dist/dw3.zip
+#   dist/dw3.zip                what a player installs (PortMaster's autoinstall unpacks it as it is into ports/):
 #     Digimon World 3.sh        the launcher (.ci-cd/portmaster/handheld/, versioned with the port)
+#     dw3/                      the port: dw2003.{armhf,aarch64}, dw3-launcher.{armhf,aarch64} and .ci-cd/portmaster/handheld/ extras
+#       licenses/               what the port borrows and its licences (.ci-cd/portmaster/licenses/)
+#
+#   dist/dw3-portmaster-repo.zip   the same, plus the catalogue's files at its root, which become ports/dw3/ in the
+#                                  PortMaster repository (the release workflow's sync): not a release asset
 #     port.json                 the metadata (this directory)
 #     README.md                 the wiki page's notes (this directory)
 #     gameinfo.xml              EmulationStation's entry (this directory)
 #     screenshot.png            640x480, gameplay (this directory; capture it on the device)
 #     cover.png                 the box art (this directory; optional)
-#     dw3/                      the port: dw2003.{armhf,aarch64}, dw3-launcher.{armhf,aarch64} and .ci-cd/portmaster/handheld/ extras
-#       licenses/               what the port borrows and its licences (.ci-cd/portmaster/licenses/)
 #
 # It refuses to build when one of those is missing, when the port directory's name differs from the port's, or when
 # the binaries are not valid 32-bit ARM / 64-bit aarch64 ELFs. Nothing of the game's data is ever included.
@@ -83,52 +86,69 @@ fi
 cp "$HERE"/licenses/* "$OUT/$NAME/licenses/"
 
 cd "$DIST"
-rm -f "$NAME.zip"
-python3 - "$NAME" <<'PY'
+REPO_ZIP="$NAME-portmaster-repo.zip"
+rm -f "$NAME.zip" "$REPO_ZIP"
+python3 - "$NAME" "$SCRIPT" "$REPO_ZIP" <<'PY'
 import os
 import sys
 import zipfile
 
-name = sys.argv[1]
-with zipfile.ZipFile(name + ".zip", "w", zipfile.ZIP_DEFLATED, compresslevel=9) as z:
-    for root, _dirs, files in os.walk(name):
-        for f in sorted(files):
-            path = os.path.join(root, f)
-            arcname = os.path.relpath(path, name)
-            info = zipfile.ZipInfo.from_file(path, arcname)
-            info.compress_type = zipfile.ZIP_DEFLATED
-            with open(path, "rb") as src:
-                z.writestr(info, src.read())
-print("zip ok:", name + ".zip")
+name, script, repo_zip = sys.argv[1], sys.argv[2], sys.argv[3]
+
+
+def build(zip_name, keep):
+    with zipfile.ZipFile(zip_name, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as z:
+        for root, _dirs, files in os.walk(name):
+            for f in sorted(files):
+                path = os.path.join(root, f)
+                arcname = os.path.relpath(path, name).replace(os.sep, "/")
+                if not keep(arcname):
+                    continue
+                info = zipfile.ZipInfo.from_file(path, arcname)
+                info.compress_type = zipfile.ZIP_DEFLATED
+                with open(path, "rb") as src:
+                    z.writestr(info, src.read())
+    print("zip ok:", zip_name)
+
+
+# The player's zip holds the launcher script and the port's folder and nothing else at its root; the repository's copy
+# also holds the catalogue's files.
+build(name + ".zip", lambda a: a == script or a.startswith(name + "/"))
+build(repo_zip, lambda a: True)
 PY
 
 echo "=== checks"
-python3 - "$DIST/$NAME.zip" <<'PY'
+python3 - "$DIST/$NAME.zip" "$DIST/$REPO_ZIP" <<'PY'
 import json
 import sys
 import zipfile
 
-z = zipfile.ZipFile(sys.argv[1])
-names = z.namelist()
-with z.open("port.json") as f:
+player = zipfile.ZipFile(sys.argv[1])
+repo = zipfile.ZipFile(sys.argv[2])
+pnames, rnames = player.namelist(), repo.namelist()
+with repo.open("port.json") as f:
     port = json.load(f)
-missing = [n for n in ("Digimon World 3.sh", "port.json", "README.md", "gameinfo.xml",
-                       "screenshot.png", "dw3/dw2003.armhf", "dw3/dw3-launcher.armhf",
-                       "dw3/dw2003.aarch64", "dw3/dw3-launcher.aarch64")
-           if n not in names]
+core = ("Digimon World 3.sh", "dw3/dw2003.armhf", "dw3/dw3-launcher.armhf", "dw3/dw2003.aarch64",
+        "dw3/dw3-launcher.aarch64")
+meta = ("port.json", "README.md", "gameinfo.xml", "screenshot.png")
+missing = [n for n in core if n not in pnames] + [n for n in core + meta if n not in rnames]
 if missing:
-    sys.exit("missing from the zip: " + ", ".join(missing))
+    sys.exit("missing from the zips: " + ", ".join(missing))
+roots = {n.split("/")[0] for n in pnames}
+if roots != {"Digimon World 3.sh", "dw3"}:
+    sys.exit("dw3.zip holds only the launcher script and dw3/ at its root, found: %s" % ", ".join(sorted(roots)))
 if port["name"] != "dw3.zip" or port["items"] != ["Digimon World 3.sh", "dw3"]:
     sys.exit("port.json does not describe this layout: %r / %r" % (port["name"], port["items"]))
 if set(port["attr"]["arch"]) != {"armhf", "aarch64"}:
     sys.exit("port.json arch does not match multi-arch build: %r" % (port["attr"]["arch"],))
-banned = [n for n in names if n.lower().endswith((".bin", ".cue", ".iso", ".chd", ".mcd", ".img"))]
+banned = [n for n in pnames + rnames if n.lower().endswith((".bin", ".cue", ".iso", ".chd", ".mcd", ".img"))]
 if banned:
     sys.exit("the package carries the game's data: " + ", ".join(banned))
-print("zip ok: %d files, port.json %s, arch %s" % (len(names), port["name"], port["attr"]["arch"]))
+print("zip ok: dw3.zip %d files (root: %s), repo zip %d files, port.json %s, arch %s"
+      % (len(pnames), ", ".join(sorted(roots)), len(rnames), port["name"], port["attr"]["arch"]))
 PY
 
 sha256sum "$NAME.zip" > SHA256SUMS-portmaster
 md5sum "$DIST/$NAME.zip"
-du -h "$DIST/$NAME.zip"
+du -h "$DIST/$NAME.zip" "$DIST/$REPO_ZIP"
 echo "=== $NAME ready: publish it as ports/$NAME/ in PortMaster-MV-New (a decomp port) — see .ci-cd/portmaster/PUBLISHING.md"
