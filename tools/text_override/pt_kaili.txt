@@ -82,6 +82,7 @@ DMG600:23 9: <7>Junior<7>Só amigos. Tem<1>certeza?<2,2>
 DMG600:24 15: <7><9><7>Junior, Lisa. Já vou.<1>Cuidem de Kurt.<2,2>
 DMG600:24 17: <7>Junior<7>Se cuida, tá?<1>...Falo sério.<2,2>
 DMG700:0 2: <7>Ivy<7>Eu não queria Junior<1>junto.<2,2><3>Teddy, com sua boca<1>grande, abriu o jogo.<2,2><3>Deviam ter pegado um<1>Login Pass antes.<2,2><3>Agora vamos esperar na<1>fila como todo mundo.<1>Ninguém me escuta.<2,2>
+DMG700:36 4: <7><9><7>Meu irmão realmente<1>conseguiu.<2,2><3>Kurt criou uma empresa<1>nova do zero.<2,2><3>E o Digimon Online<1>volta a funcionar no<1>lugar da MAGAMI.<2,2>
 DMG900:4 5: <7><9><7>Eu senti o mesmo.<2,2><3>Quem mais eu iria<1>querer à minha frente<1>além do meu irmão?<2,2>
 DMG900:5 1: <7><9><7>Consegui.<1>Venci o Kurt. Meu<1>próprio irmão.<2,2>
 TALK00 77: <7>Junior<7><8,1><5,1>, achou<1>algo? Eu não.<2,2><3>Vamos continuar<1>juntando informações.<2,2>
@@ -90,3 +91,22 @@ TALK00 79: <7>Junior<7>...O quê? Um homem no<1>lugar do Etemon?<2,2><3>Olhe mel
 TALK00 676: <7>Junior<7>Vou dar uma olhada em<1>Asuka City por ora.<2,2><3>Vá na frente.<2,2>
 TALK00 1160: <7>Junior<7>...Por que voltou?<2,2><3>Vá perguntar sobre as<1>Digimon suits.<2,2>
 TALK00 1163: <7>Junior<7>Por favor, <8,1><5,1>.<1>Não só pelo seu irmão,<1>mas por todos.<2,2><3>E pela paz do Mundo<1>Real, pare o A.o.A.<2,2>
+TALK02 765: <7>Lisa<7>Seu irmão é um amigo<1>importante meu.<2,2><3>Íamos lutar contra a<1>A.o.A juntos.<1>Por favor, <8,1><5,1>.<2,2><3>Lute contra a A.o.A<1>também pelo Kurt.<2,2>
+TALK02 766: >hero <7><9><7>Kurt não voltava pra<1>casa há um tempo.<2,2><3>Achei que ele estava<1>no Mundo Digital,<1>então vim com Junior.<2,2><3>Como isso pôde<1>acontecer?<2,2>
+TALK02 769: <7>Junior<7>Por favor, <8,1><5,1>.<1>Derrote a A.o.A.<2,2><3>E traga seu irmão de<1>volta ao normal.<2,2>
+TALK02 774: <7>Junior<7>Boa sorte, <8,1><5,1>.<1>Pelo seu irmão também.<2,2>
+TALK03 506: >hero <7><9><7>Derrotamos a A.o.A.<2,2><3>Então por que meu<1>irmão não voltou ao<1>normal?<2,2>
+TALK03 513: <7>Kurt<7>Obrigado por tudo,<1><8,1><5,1>.<2,2><3>Sei o que isso custou<1>a você.<2,2><3>Estou verificando a<1>Câmara Matrix agora.<2,2><3>Algo está afetando o<1>sistema de fora.<2,2>
+TALK03 520: <7>Junior<7><8,1><5,1>, você conseguiu.<2,2><3>Seu irmão voltou ao<1>normal.<2,2><3>Ele vai consertar o<1>programa agora.<2,2><3>Logo podemos voltar<1>ao Mundo Real.<2,2>
+TALK04 838: <7>Junior<7>Vemmon foi para a<1>Sala do Mestre.<2,2><3>Mas acho que isso<1>acabou nos salvando.<2,2><3>Então não se<1>preocupe.<2,2>
+TALK04 922: <7>Junior<7>Vemmon foi para a<1>Sala do Mestre.<2,2><3>Mas acho que isso<1>acabou nos salvando.<2,2><3>Então não se<1>preocupe.<2,2>
+TALK05 88: <7>Junior<7>...<8,1><5,1>. Por aqui.<2,2>
+TALK05 1166: <7>Lisa<7>Seu irmão não está<1>aqui. Você é nossa<1>melhor chance, <8,1><5,1>.<2,2><3>Trabalhe conosco.<1>Ainda podemos salvar<1>o mundo.<2,2>
+TALK06 816: <7>Junior<7><8,1><5,1>,<1>você viu o Kurt?<2,2><3>...Não, esquece.<1>Ele é seu irmão. Você<1>teria me contado.<2,2>
+TALK06 817: <7>Junior<7><8,1><5,1>, escute.<2,2><3>Um Digimon de rosto<1>inesquecível foi para<1>o Setor Leste.<2,2><3>Acho que era o<1>Baronmon.<2,2>
+TALK08 11: <7>Junior<7><8,1><5,1>, seu irmão é<1>impressionante.<2,2><3>Reconstruiu boa parte<1>de Digimon Online.<2,2><3>Você aprenderia algo<1>só observando ele.<2,2>
+TALK08 63: <7>Nick<7>Ah, é. Seu irmão<1>deixou isto comigo.<2,2><3>Aqui, sua Folder Bag.<1>Ainda não tinha<1>pegado, né?<2,2><3>Cartas, folders... o<1>kit de qualquer<1>tamer.<2,2>
+TALK08 64: <7>Nick<7>Seu irmão me chamou<1>para jogar hoje.<2,2><3>Cadê todo mundo?<2,2>
+TALK08 106: <7>Kurt<7><8,1><5,1>. Você chegou.<2,2><3>Tenho orgulho de<1>você, mana.<2,2><3>Digimon Online reabre<1>graças a você.<2,2><3>Agora vá aproveitar.<2,2>
+TALK08 107: <7>Kurt<7>Seu nível subiu<1>mesmo, mana.<2,2><3>Dê uma olhada na<1>arena.<2,2>
+TALK08 108: <7>Kurt<7>Você não para de me<1>surpreender.<2,2><3>Vai ser a próxima<1>campeã mundial.<1>Eu aposto nisso.<2,2>

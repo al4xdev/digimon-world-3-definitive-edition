@@ -160,6 +160,7 @@
 <7>Guard Curt<7> => <7>Guarda Curt<7>
 <7>Guard Russell<7> => <7>Guarda Russell<7>
 <7>Guardsman Max<7> => <7>Guarda Max<7>
+<7>Guardromon<7> => <7>Guardromon<7>
 <7>Guilmon<7> => <7>Guilmon<7>
 <7>HiAndromon<7> => <7>HiAndromon<7>
 <7>Hideki<7> => <7>Hideki<7>

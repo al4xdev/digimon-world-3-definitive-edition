@@ -272,6 +272,60 @@ Q111 DMG600:28 4@3: Sincero: aceito ajuda | <7><9><7>Valeu. Sinceramente,<1>eu a
 Q40 DMG700:0 7@1: Afiado: vinte minutos | <7><9><7>Já era hora, Teddy.<2,2><3>Vinte minutos. Contei<1>cada um.<2,2>
 Q40 DMG700:0 7@2: Tranquilo: chegou | <7><9><7>Você chegou. É o que<1>importa.<2,2><3>Da próxima vez, ponha<1>um despertador.<2,2>
 Q40 DMG700:0 7@3: Irônico: que gentileza | <7><9><7>Que gentileza sua se<1>juntar a nós, Teddy.<2,2><3>Vinte minutos. Quase<1>fomos embora.<2,2>
+Q117 DMG700:10 2@1: Impaciência | <7><9><7>Você não pode estar<1>falando sério. Não<1>tenho tempo pra isso.<2,2>
+Q117 DMG700:10 2@2: Orgulho: não sou criança | <7><9><7>Criança? Eu vim de<1>muito longe. Tente<1>com mais força.<2,2>
+Q117 DMG700:10 2@3: Ironia: eu queria | <7><9><7>Voltar pra casa? Pode<1>acreditar, eu queria.<1>Ainda não.<2,2>
+Q118 DMG700:14 2@1: Polidez | <7><9><7>Sou <8,1><5,1>. Com licença.<1>Quero passar.<2,2>
+Q118 DMG700:14 2@2: Frieza: saia da frente | <7><9><7>Sou <8,1><5,1>. Você está<1>no meu caminho. Saia.<2,2>
+Q118 DMG700:14 2@3: Ousadia: número um | <7><9><7>Sou <8,1><5,1>, Tamer<1>número um da região.<2,2><3>Com licença, você<1>está no meu caminho.<2,2>
+Q116 DMG700:16 2@1: Súplica: por favor | <7><9><7>Genbu Leader, por<1>favor. Me dê a sua<1>insígnia.<2,2><3>Preciso dela pra<1>chegar ao Mundo Real.<2,2>
+Q116 DMG700:16 2@2: Franqueza: diga o preço | <7><9><7>Genbu Leader. Preciso<1>da sua insígnia pra<1>chegar ao Mundo Real.<2,2><3>Diga o seu preço.<2,2>
+Q116 DMG700:16 2@3: Respeito: posso pedir? | <7><9><7>Genbu Leader, posso<1>pedir a sua insígnia?<2,2><3>Preciso dela pra<1>chegar ao Mundo Real.<2,2>
+Q30 DMG700:17 3@1: Perdão | <7><9><7>Eu entendo. Não<1>houve mal nenhum.<2,2>
+Q30 DMG700:17 3@2: Ironia: era só pedir | <7><9><7>Bastava pedir.<1>...Mas eu entendo.<2,2>
+Q30 DMG700:17 3@3: Silêncio | <7><9><7>...Entendo.<2,2>
+Q130 DMG700:25 2@1: Ironia: como isso soa | <7><9><7>Base Militar Magasta,<1>no Mundo Real.<2,2><3>No fundo do oceano.<1>Sim, eu sei como<1>isso soa.<2,2>
+Q130 DMG700:25 2@2: Seriedade: não brinco | <7><9><7>Base Militar Magasta.<1>O Mundo Real. Sob o<1>oceano.<2,2><3>Não estou brincando.<1>Só me mande para lá.<2,2>
+Q130 DMG700:25 2@3: Evasiva: não pergunte | <7><9><7>Base Militar Magasta.<1>Mundo Real. Fundo do<1>mar.<2,2><3>Não pergunte. Se eu<1>voltar, eu conto.<2,2>
+Q31 DMG700:25 5@1: Alarme: só 180? | <7><9><7>Espera. Só 180?<1>O que acontece se meu<1>tempo acabar?<2,2>
+Q31 DMG700:25 5@2: Calma: vou correr | <7><9><7>Então vou correr.<1>E se não der tempo?<1>O que acontece?<2,2>
+Q31 DMG700:25 5@3: Ironia: ótima contagem | <7><9><7>Ótimo. Uma contagem<1>regressiva. E quando<1>chegar a zero?<2,2>
+Q131 DMG700:26 1@1: Saudade: é real | <7><9><7>O Mundo Real.<1>É mesmo...<2,2><3>Meu corpo está aqui.<1>Sinto o chão.<2,2><3>...Eu poderia ficar.<1>Por um segundo.<1>Só um.<2,2><3>Não. 180 segundos.<1>Anda.<2,2>
+Q131 DMG700:26 1@2: Cautela: silêncio demais | <7><9><7>O Mundo Real.<1>É mesmo...<2,2><3>Meu corpo está aqui.<1>Por que parece uma<1>armadilha?<2,2><3>Sem tempo.<1>180 segundos. Anda.<2,2>
+Q131 DMG700:26 1@3: Foco: sem tempo | <7><9><7>O Mundo Real.<1>Bom. Cheguei.<2,2><3>Sinto o chão.<1>Já basta.<2,2><3>180 segundos.<1>Anda.<2,2>
+Q32 DMG700:28 4@1: Culpa: é minha | <7><9><7>O que eu faço?<1>Ele foi lançado, e eu<1>estava bem ali.<2,2><3>A culpa é minha.<2,2>
+Q32 DMG700:28 4@2: Raiva: eu estava ali | <7><9><7>Eu estava bem ali!<1>E ele foi lançado<1>mesmo assim!<2,2><3>Droga! O que eu faço<1>agora?<2,2>
+Q32 DMG700:28 4@3: Vazio: silêncio | <7><9><7>......<1>Foi lançado.<1>Eu estava bem ali.<2,2><3>O que eu faço?<2,2>
+Q33 DMG700:29 4@1: Culpa: eu estava perto | <7><9><7>O que eu faço?<1>Não consegui deter o<1>Juggernaut.<2,2><3>Eu estava tão perto.<1>E deixei escapar.<2,2>
+Q33 DMG700:29 4@2: Raiva: ele escapou | <7><9><7>Tão perto. E ele<1>escapou mesmo assim!<2,2><3>Droga! O que eu faço<1>agora?<2,2>
+Q33 DMG700:29 4@3: Vazio: nada sobrou | <7><9><7>......<1>Não consegui deter o<1>Juggernaut.<2,2><3>O que eu faço?<2,2>
+Q133 DMG700:31 1@1: Teimosia: ainda não | <7><9><7>...Mas ainda não vou<1>desistir.<2,2><3>Tenho certeza de que<1>há outro caminho.<2,2>
+Q133 DMG700:31 1@2: Calma: pense bem | <7><9><7>...Respire. O navio<1>foi embora. O plano,<1>não.<2,2><3>Não vou desistir.<1>Há outro jeito.<2,2>
+Q133 DMG700:31 1@3: Esperança: por eles | <7><9><7>...Todos ainda contam<1>comigo.<2,2><3>Não vou desistir.<1>Há outro jeito.<2,2>
+Q146 DMG700:36 1@1: Parece um sonho | <7><9><7>Depois que derrotei<1>Galacticmon, o mundo<1>voltou a ser inteiro.<2,2><3>Três meses já.<1>E ainda parece<1>um sonho.<2,2>
+Q146 DMG700:36 1@2: Peso: me persegue | <7><9><7>Depois que derrotei<1>Galacticmon, o mundo<1>voltou a ser inteiro.<2,2><3>Três meses já.<1>Não é um sonho. Ainda<1>me persegue.<2,2>
+Q146 DMG700:36 1@3: Gratidão: ainda aqui | <7><9><7>Depois que derrotei<1>Galacticmon, o mundo<1>voltou a ser inteiro.<2,2><3>Três meses já.<1>Gratidão. E ainda<1>parece um sonho.<2,2>
+Q147 DMG700:36 7@1: Provocação: de novo | <7><9><7>Você demorou.<1>De novo.<2,2>
+Q147 DMG700:36 7@2: Na boa | <7><9><7>Você demorou.<2,2>
+Q147 DMG700:36 7@3: Calor: que bom que veio | <7><9><7>Você demorou.<1>...Que bom que veio.<2,2>
+Q132 DMG800:3 1@1: Fúria: de jeito nenhum | <7><9><7>Fique onde está.<1>Pare o lançamento.<1>Agora.<2,2><3>Não vou deixar você<1>escapar dessa.<2,2>
+Q132 DMG800:3 1@2: Apelo: pense nas pessoas | <7><9><7>Pare o lançamento.<1>Por favor. Pense no<1>que isso vai fazer.<2,2><3>Tem gente lá fora.<1>Pare. Agora.<2,2>
+Q132 DMG800:3 1@3: Frieza: último aviso | <7><9><7>Pare o lançamento.<1>Agora.<2,2><3>Este é o único aviso<1>que você vai ter.<2,2>
+Q143 DMG800:13 1@1: Lealdade: estão esperando | <7><9><7>Depressa. Teddy e os<1>outros estão<1>esperando.<2,2><3>Temos que derrotar<1>Lord Megadeath e<1>trazer todos de volta.<2,2>
+Q143 DMG800:13 1@2: Foco: nada mais importa | <7><9><7>Depressa. Nada mais<1>importa agora.<2,2><3>Temos que derrotar<1>Lord Megadeath e<1>trazer todos de volta.<2,2>
+Q143 DMG800:13 1@3: Peso: não posso atrasar | <7><9><7>Todos contam comigo.<1>Não posso me<1>atrasar.<2,2><3>Temos que derrotar<1>Lord Megadeath e<1>trazer todos de volta.<2,2>
+Q144 DMG800:15 8@1: Horror | <7><9><7>O quê? Então é isso<1>que os Oinkmon são...<2,2><3>Pessoas. Esvaziadas.<2,2>
+Q144 DMG800:15 8@2: Pena | <7><9><7>...Então é isso que<1>os Oinkmon são.<2,2><3>Pessoas, esvaziadas.<1>Sinto muito, a todos<1>vocês.<2,2>
+Q144 DMG800:15 8@3: Raiva: de propósito | <7><9><7>Então é isso que os<1>Oinkmon são?<2,2><3>Pessoas. Esvaziadas.<1>Você fez de propósito.<2,2>
+Q145 DMG800:16 1@1: Provocação | <7><9><7>Então, Lord Megadeath.<2,2><3>Ainda acha que é<1>o mais forte?<2,2>
+Q145 DMG800:16 1@2: Seriedade: você perdeu | <7><9><7>Lord Megadeath.<2,2><3>Você perdeu. Ainda se<1>diz o mais forte?<2,2>
+Q145 DMG800:16 1@3: Cansaço: desista | <7><9><7>Lord Megadeath.<2,2><3>Acabou. ...Ainda acha<1>que é o mais forte?<2,2>
+Q38 DMG800:17 11@1: Súplica: ele criou você | <7><9><7>Pare! É o Tamer<1>que criou você!<2,2><3>Tamer e Digimon<1>são um só.<2,2><3>Sempre trabalhamos<1>juntos!<2,2>
+Q38 DMG800:17 11@2: Confronto: seu Tamer | <7><9><7>Olhe o que está<1>fazendo. É o seu<1>próprio Tamer.<2,2><3>Tamer e Digimon são<1>um só. Ou esqueceu<1>isso?<2,2>
+Q38 DMG800:17 11@3: Tristeza: por favor | <7><9><7>...Não. Por favor.<2,2><3>É quem criou você.<2,2><3>Tamers e Digimon são<1>um só. Estamos<1>juntos.<2,2>
+Q148 DMG900:0 4@1: Entusiasmo | <7><9><7>Certo. Lá vamos nós,<1>de verdade agora.<2,2>
+Q148 DMG900:0 4@2: Calma: passo a passo | <7><9><7>Certo. Um passo de<1>cada vez.<2,2><3>Lá vamos nós,<1>de verdade agora.<2,2>
+Q148 DMG900:0 4@3: Saudade: não é como antes | <7><9><7>Certo. Lá vamos nós,<1>de verdade agora.<2,2><3>...Não vai ser como<1>antes. Nunca é.<2,2>
 Q149 DMG900:4 3@1: Espanto | <7><9><7>Hã? Kurt?<2,2><3>Não me diga que você<1>é o Tamer mais forte.<2,2>
 Q149 DMG900:4 3@2: Alegria | <7><9><7>Hã? Kurt?<2,2><3>Não me diga que você<1>é o Tamer mais forte.<1>...Perfeito.<2,2>
 Q149 DMG900:4 3@3: Ironia: claro que é ele | <7><9><7>Kurt. Claro.<2,2><3>Não me diga que você<1>é o Tamer mais forte.<2,2>
