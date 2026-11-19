@@ -105,7 +105,7 @@ typedef struct StdwtitlMenu {
     /* 0x94 */ u8 unk_94[0x8];
     /* 0x9C */ void (*start)(struct StdwtitlMenu *);
     /* 0xA0 */ void (*show_press_start)(struct StdwtitlMenu *);
-    /* 0xA4 */ s32 (*get_result)(struct StdwtitlMenu *); /* stdwtitl_menu_get_result (defined s16; the caller uses a word) */
+    /* 0xA4 */ s32 (*get_result)(struct StdwtitlMenu *); /* stdwtitl_menu_get_result (returns a word: the caller reads one) */
 } StdwtitlMenu; /* size 0xA8 */
 
 /* Creators called from other files. */

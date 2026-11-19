@@ -386,7 +386,10 @@ void stdwtitl_menu_show_press_start(StdwtitlMenu *obj) {
     }
 }
 
-s16 stdwtitl_menu_get_result(StdwtitlMenu *obj) {
+/* The slot get_result is read as a word (stdwtitl_title_run), so this returns one: a 16-bit return leaves the upper half of
+ * the register undefined on the host (the PS1's MIPS sign-extended it), and a stale half read as a choice started the
+ * flash and sent the title to a wrong map: the black screen after Start. */
+s32 stdwtitl_menu_get_result(StdwtitlMenu *obj) {
     return obj->result;
 }
 

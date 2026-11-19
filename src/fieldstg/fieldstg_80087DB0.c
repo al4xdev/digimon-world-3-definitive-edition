@@ -6287,10 +6287,16 @@ FieldstgEventDef fieldstg_stage_events[67] = {
     { 1409, SLOT_PTR(2, s16 *, 0x800A9E60), 0x119003F, NULL, fieldstg_choice_end_second_15 }, { -1, NULL, 0, NULL, NULL },
 };
 
+/* Read through a word-returning slot: a bare 8/16-bit return leaves the register's upper bits undefined on the host (the
+ * PS1 sign-extended them), so the slot gets this word-returning wrapper (the title's black screen was one such). */
+static s32 fieldstg_get_actor_width_word(s32 i) {
+    return fieldstg_get_actor_width(i);
+}
+
 FieldstgStageState fieldstg_stage = {
     .find_stage = fieldstg_find_stage,
     .get_actor_sprite_file = fieldstg_get_actor_sprite_file,
-    .get_actor_width = (s32 (*)(s32))fieldstg_get_actor_width,
+    .get_actor_width = fieldstg_get_actor_width_word,
     .find_battle_lists = (FieldstgBattleLists *(*)(FieldstgBattleLists *, s32))fieldstg_find_battle_lists,
 };
 
