@@ -89,6 +89,15 @@ void fightstg_events_add_escape(u8 side);
 Object *fightstg_digivolve_create(s32 id, s32 blast);
 #ifdef PC_PORT
 Object *fightstg_digivolve_create_enemy(s32 id, s32 blast);
+Object *message_box_create(s32 arg0, u8 *text, s32 arg2);
+int def_dri_fighting(void);
+int def_purify_fighting(void);
+int def_finale_victory(void);
+int def_finale_defeat(void);
+int def_finale_trigger_super_chosen(void);
+int def_finale_dna_chain_next(int *out_partner_id, int *out_result_id);
+int def_finale_on_galacticmon_ko(void);
+void def_finale_stage_enters(void);
 #endif
 void fightstg_events_add_boost_end(void);
 Fade *fightstg_fade_create(void);
