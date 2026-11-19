@@ -184,7 +184,7 @@ The combat PRD was built in layers 0-10 (the older PRDs 2 and 3 added layers A-J
 `DEF_WEAK_MAX` 80, `DEF_RESIST_MIN` 250 (a family's resistance: weak at 80 or less, resisted at 250 or more). Resisted
 hits are a fixed 0.5. Affinity ceilings: single 0.3, pair 0.6, Dark 0.6. Weak +0.5, stagger +0.2. The player's reference
 resistance is 100. Relay costs 50 MP. Resist Down is a delta of 80 and Mega Break 100, for 3 enemy turns. The Baton Pass
-is free (`DEF_BATON_PASS_MP` 0) and offered only while the enemy is staggered. **Overlevel gap 8** (`DEF_OVERLEVEL_GAP`,
+is free (`DEF_BATON_PASS_MP` 0) and offered only while the enemy is staggered. **Overlevel gap 3** (`DEF_OVERLEVEL_GAP`,
 it was 15). The Rush question lasts 300 ticks, the Rush panel 175 ticks and 10 rows.
 
 Their names: multipliers and affinities are fixed point in thousandths (`DEF_MULT_ONE` 1000): `DEF_MULT_WEAK` 500,

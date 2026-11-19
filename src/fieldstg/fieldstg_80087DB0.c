@@ -3233,8 +3233,8 @@ s32 fieldstg_actor_talk_to(FieldstgActor *obj, FieldstgPos *pos) {
         dw3_velvet_shop_talk(other);
     }
     /* The Black Market's trader opens the port's own screen instead of its talk (on the next idle
-     * frame, as the Guardromon screen does); 1 stops the player as a talk does. A DRI Agent's talk is never taken
-     * (def_dri_talk is always 0): its lines and DDNA quest run, and the list opens after them. The placed actor's own
+     * frame, as the Guardromon screen does); 1 stops the player as a talk does. A DRI Agent's talk is taken once his
+     * DDNA quest is done (def_dri_talk): the network's own question, whose "Talk" runs his talk here again. The placed actor's own
      * ID is asked, before the game's talk redirects. */
     if (other != NULL && other->base.state == OBJECT_STATE_RUN && (def_bm_talk(gamestate_data.funcs.get_map(), other->base.key1) ||
                                                                  def_dri_talk(gamestate_data.funcs.get_map(), other->base.key1))) {
@@ -4946,11 +4946,19 @@ void fieldstg_find_stage(void) {
     FieldstgStageEntry *entry;
     s32 id;
 
+#ifdef PC_PORT
+    if (gamestate_data.progress != 0x2D || dw3_velvet_in_room()) {
+        entry = fieldstg_stages;
+    } else {
+        entry = fieldstg_stages_2d;
+    }
+#else
     if (gamestate_data.progress != 0x2D) {
         entry = fieldstg_stages;
     } else {
         entry = fieldstg_stages_2d;
     }
+#endif
     id = gamestate_data.funcs.get_map();
     heap_funcs.bzero(&fieldstg_stage, OFFSETOF(FieldstgStageState, return_pos)); /* the fields before return_pos */
     while (1) {

@@ -106,14 +106,21 @@ SoundBank *sound_banks[] = {
 };
 
 #ifdef PC_PORT
-/* port/game/definitive_velvet_music.c: the Velvet Room's own bank (id 72, a copy of BGM031's files with its own score
- * and tones) and the reverb its score raises. */
+/* port/game/definitive_velvet_music.c (id 72) and port/game/definitive_adventure_music.c (id 73): custom scores
+ * built on copies of BGM031's files with their own tone edits, SPU samples, and reverb lifecycles. */
 extern SoundBank *dw3_velvet_sound_bank(s32 id);
 extern void dw3_velvet_sound_header(s32 id, s32 *buffer);
 extern void dw3_velvet_sound_body(s32 id, s32 *buffer, s32 spu_addr);
 extern void dw3_velvet_sound_music(s32 id);
 extern void dw3_velvet_sound_stopped(s32 id);
 extern void dw3_velvet_sound_silenced(void);
+
+extern SoundBank *dw3_adventure_sound_bank(s32 id);
+extern void dw3_adventure_sound_header(s32 id, s32 *buffer);
+extern void dw3_adventure_sound_body(s32 id, s32 *buffer, s32 spu_addr);
+extern void dw3_adventure_sound_music(s32 id);
+extern void dw3_adventure_sound_stopped(s32 id);
+extern void dw3_adventure_sound_silenced(void);
 #endif
 
 /* The three entries' buffers for the VAB header file, and their VAB bodies' SPU addresses. */
@@ -170,6 +177,7 @@ s32 sound_play(s32 key) {
         sound_module.current = key;
 #ifdef PC_PORT
         dw3_velvet_sound_music(id);
+        dw3_adventure_sound_music(id);
 #endif
     }
     if (is_note) {
@@ -202,6 +210,7 @@ void sound_stop_all(void) {
     SsUtAllKeyOff(0);
 #ifdef PC_PORT
     dw3_velvet_sound_silenced();
+    dw3_adventure_sound_silenced();
 #endif
     sound_module.current = 0;
 }
@@ -220,6 +229,7 @@ void sound_stop(s32 key) {
     SsSepStop(sound_module.entries[index].seps[sep], seq);
 #ifdef PC_PORT
     dw3_velvet_sound_stopped(id);
+    dw3_adventure_sound_stopped(id);
 #endif
     if (sound_module.current == key) {
         sound_module.current = 0;
@@ -267,7 +277,15 @@ void sound_load_bank(s32 index, s32 id) {
     }
     load->step = 1;
 #ifdef PC_PORT
-    load->bank = dw3_velvet_sound_bank(id);
+    if (id == 73) {
+        load->bank = dw3_adventure_sound_bank(id);
+    } else if (id == 72) {
+        load->bank = dw3_velvet_sound_bank(id);
+    } else if (id >= 0 && id < 72) {
+        load->bank = sound_banks[id];
+    } else {
+        load->bank = NULL;
+    }
 #else
     load->bank = sound_banks[id];
 #endif
@@ -318,6 +336,7 @@ void sound_update_loading(void) {
         cdload_module.files.free_file(load->bank->header_file);
 #ifdef PC_PORT
         dw3_velvet_sound_header(entry->id, entry->header_buffer);
+        dw3_adventure_sound_header(entry->id, entry->header_buffer);
 #endif
         entry->vab_id = SsVabOpenHeadSticky(cdload_module.get_subfile(load->bank->vab_header, entry->header_buffer), index,
                                             entry->spu_addr);
@@ -338,6 +357,7 @@ void sound_update_loading(void) {
         cdload_module.files.free_file(load->bank->body_file);
 #ifdef PC_PORT
         dw3_velvet_sound_body(entry->id, entry->header_buffer, entry->spu_addr);
+        dw3_adventure_sound_body(entry->id, entry->header_buffer, entry->spu_addr);
 #endif
         for (j = 0; load->bank->seps[j] != 0; j++) {
             entry->seps[j] = SsSepOpen(cdload_module.get_subfile(load->bank->seps[j], entry->header_buffer),

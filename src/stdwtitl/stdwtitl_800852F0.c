@@ -51,19 +51,30 @@ void stdwtitl_menu_draw(StdwtitlMenu *obj) {
 
 #ifdef PC_PORT
 /* New Game's difficulty question (Hard Mode: a party of two; port/game/definitive.c). Asked between the title's choice
- * and the new game, on a panel where the title's two choices were: two lines to choose from and, under them, a remark
- * on the one the cursor is on (the easy one gets teased). Then, on the same panel, who the hero is (Girls Power). The
- * title has no message font (its windows draw nothing here), so the words are the callouts' polygon letters
- * (def_poly_text). Up/down move, circle confirms, cross goes back a question. Not asked in a replay script. */
-#define DIFF_X 40
-#define DIFF_Y 135 /* under the logo, above the copyright lines */
-#define DIFF_W 240
-#define DIFF_H 60
-#define DIFF_ROW_Y (DIFF_Y + 19) /* the first choice's line; the second is DIFF_ROW_DY under it */
-#define DIFF_ROW_DY 13
+ * and the new game, on a panel under the logo: the question, the two answers as cards side by side (a name, two lines
+ * on what it means) and, under them, a remark on the one chosen (the easy one gets teased). Then, on the same panel,
+ * who the hero is (Girls Power). The title has no message font (its windows draw nothing here), so the words are the
+ * callouts' polygon letters (def_poly_text). Their sizes were picked on a TV: nothing under 10 pixels of the 240, and
+ * what is not chosen stays light enough to read. Any direction moves, circle confirms, cross goes back a question. Not
+ * asked in a replay script. */
+#define DIFF_X 14
+#define DIFF_Y 138 /* under the logo; over the copyright lines while it is up */
+#define DIFF_W 292
+#define DIFF_H 101
+#define DIFF_CARD_Y (DIFF_Y + 23)
+#define DIFF_CARD_W 136
+#define DIFF_CARD_H 54
+#define DIFF_CARD_DX 144
+#define DIFF_PAD 8
+#define DIFF_TITLE_SIZE 176 /* 8.8 of the 16-pixel letters */
+#define DIFF_NAME_SIZE 256
+#define DIFF_LINE_SIZE 160
+#define DIFF_TEASE_SIZE 160
 static s32 diff_cursor; /* 0 easy, 1 hard */
+s32 stdwtitl_question_open; /* the copyright lines (stdwtitl_glow_draw) give the panel their place */
 static s32 diff_ticks;
 
+/* A flat quad on the title's layer: abr -1 opaque, else that blend (1 adds, 2 subtracts). */
 static void stdwtitl_diff_quad(StdwtitlMenu *obj, s32 x, s32 y, s32 w, s32 h, s32 abr, u8 r, u8 g, u8 b) {
     GfxLayer *layer = gfx_module.funcs.get_layer(obj->layer_id);
     POLY_F4 *poly = gfx_module.funcs.get_packet();
@@ -71,61 +82,75 @@ static void stdwtitl_diff_quad(StdwtitlMenu *obj, s32 x, s32 y, s32 w, s32 h, s3
     u32 *ot = layer->get_ot_entry(layer, 0);
 
     setPolyF4(poly);
-    setSemiTrans(poly, 1);
+    setSemiTrans(poly, abr >= 0);
     setRGB0(poly, r, g, b);
     setXY4(poly, x, y, x + w, y, x, y + h, x + w, y + h);
     addPrim(ot, poly);
+    if (abr < 0) {
+        gfx_module.funcs.set_packet(poly + 1);
+        return;
+    }
     SetDrawTPage(tpage, 0, 1, getTPage(1, abr, 0, 0));
     addPrim(ot, tpage);
     gfx_module.funcs.set_packet(tpage + 1);
 }
 
-/* A line of text with its dark edge (queued after it: under it). */
-static void stdwtitl_diff_text(StdwtitlMenu *obj, s32 x, s32 y, s32 size, const char *text, const u8 *rgb) {
-    static const u8 edge[3] = { 8, 12, 40 };
+/* A line of text with its dark edge (queued after it: under it), shrunk until it fits max_w (0: any width); centred
+ * on x when centre is set. */
+static void stdwtitl_diff_text(StdwtitlMenu *obj, s32 x, s32 y, s32 size, s32 max_w, s32 centre, const char *text,
+                               const u8 *rgb) {
+    static const u8 edge[3] = { 4, 6, 24 };
     GfxLayer *layer = gfx_module.funcs.get_layer(obj->layer_id);
+    s32 w = def_poly_text_width(size, text);
 
+    while (max_w > 0 && w > max_w && size > 112) {
+        size -= 8;
+        w = def_poly_text_width(size, text);
+    }
+    if (centre) {
+        x -= w / 2;
+    }
     def_poly_text(layer, 0, x, y, size, text, rgb);
     def_poly_text(layer, 0, x + 1, y + 1, size, text, edge);
 }
 
-/* A question of the panel: its title, two choices (a name, a line beside it from line_x, the name's colour) and the
- * remark under them for each. */
+/* A question of the panel: its title, two answers (a name, two lines under it, the answer's colour) and the remark
+ * under them for each. */
 typedef struct StdwtitlQuestion {
     const char *title;
     const char *names[2];
-    const char *lines[2];
+    const char *lines[2][2];
     const char *tease[2];
-    s32 line_x;
     u8 colour[2][3];
 } StdwtitlQuestion;
 
 #include "port/game/definitive.h"
 
 static const StdwtitlQuestion stdwtitl_q_difficulty = {
-    "CHOOSE YOUR FATE!", { "EASY", "HARD" }, { "3 DIGIMON", "2 DIGIMON  NO THIRD WHEEL" },
-    { "AWW! WANT A BLANKET TOO?", "NOW WE ARE TALKING!" }, 78, { { 96, 200, 255 }, { 255, 72, 56 } },
+    "CHOOSE YOUR FATE!", { "EASY", "HARD" }, { { "3 DIGIMON", "THE CLASSIC PARTY" }, { "2 DIGIMON", "NO THIRD WHEEL" } },
+    { "AWW! WANT A BLANKET TOO?", "NOW WE ARE TALKING!" }, { { 96, 200, 255 }, { 255, 88, 64 } },
 };
 static const StdwtitlQuestion stdwtitl_q_difficulty_pt = {
-    "ESCOLHA SEU DESTINO!", { "FACIL", "DIFICIL" }, { "3 DIGIMON", "2 DIGIMON  MODO DUPLA" },
-    { "QUER UM COBERTOR TAMBEM?", "AGORA SIM!" }, 90, { { 96, 200, 255 }, { 255, 72, 56 } },
+    "ESCOLHA SEU DESTINO!", { "FÁCIL", "DIFÍCIL" }, { { "3 DIGIMON", "O TIME CLÁSSICO" }, { "2 DIGIMON", "MODO DUPLA" } },
+    { "QUER UM COBERTOR TAMBÉM?", "AGORA SIM!" }, { { 96, 200, 255 }, { 255, 88, 64 } },
 };
 /* Girls Power (port/game/girls_power.c): who the hero is. Kail first: the question exists for her. */
 static const StdwtitlQuestion stdwtitl_q_hero = {
-    "CHOOSE YOUR HERO!", { "KAIL", "JUNIOR" }, { "GIRLS POWER", "THE ORIGINAL" },
-    { "GIRLS RULE THE WORLD!", "OLD SCHOOL IS GOLD!" }, 104, { { 255, 120, 170 }, { 96, 160, 255 } },
+    "CHOOSE YOUR HERO!", { "KAIL", "JUNIOR" }, { { "GIRLS POWER", "A NEW HEROINE" }, { "THE ORIGINAL", "AS IN 2003" } },
+    { "GIRLS RULE THE WORLD!", "OLD SCHOOL IS GOLD!" }, { { 255, 128, 184 }, { 104, 168, 255 } },
 };
 static const StdwtitlQuestion stdwtitl_q_hero_pt = {
-    "ESCOLHA SEU HEROI!", { "KAIL", "JUNIOR" }, { "GAROTAS NO PODER", "O CLASSICO" },
-    { "AS GAROTAS MANDAM!", "RAIZ E OUTRO NIVEL!" }, 104, { { 255, 120, 170 }, { 96, 160, 255 } },
+    "ESCOLHA SEU HERÓI!", { "KAIL", "JUNIOR" }, { { "GAROTAS NO PODER", "UMA NOVA HEROÍNA" }, { "O CLÁSSICO", "COMO EM 2003" } },
+    { "AS GAROTAS MANDAM!", "RAIZ É OUTRO NÍVEL!" }, { { 255, 128, 184 }, { 104, 168, 255 } },
 };
 static s32 hero_cursor; /* 0 Kail, 1 Junior */
 
 /* One frame of a question: 0 while it is open, 1 confirmed (*cursor), -1 cancelled. Everything is queued front to
- * back: the words, the frame's lines, the cursor's bar, then the dark panel. */
+ * back: the words, the cards (a frame, then its fill), the panel's lines, then its dark fill. */
 static s32 stdwtitl_question(StdwtitlMenu *obj, const StdwtitlQuestion *q, s32 *cursor) {
-    static const u8 white[3] = { 255, 255, 255 }, grey[3] = { 120, 128, 150 }, title[3] = { 255, 208, 64 };
-    s32 i;
+    static const u8 white[3] = { 255, 255, 255 }, name_off[3] = { 176, 182, 206 }, line_off[3] = { 146, 152, 178 },
+                    title[3] = { 255, 212, 72 };
+    s32 i, k;
 
     if (def_is_ptbr()) {
         if (q == &stdwtitl_q_difficulty) {
@@ -136,29 +161,42 @@ static s32 stdwtitl_question(StdwtitlMenu *obj, const StdwtitlQuestion *q, s32 *
     }
 
     diff_ticks++;
-    stdwtitl_diff_text(obj, DIFF_X + 12, DIFF_Y + 5, 128, q->title, title);
+    stdwtitl_question_open = 1;
+    stdwtitl_diff_text(obj, DIFF_X + DIFF_W / 2, DIFF_Y + 6, DIFF_TITLE_SIZE, DIFF_W - 16, 1, q->title, title);
+    stdwtitl_diff_text(obj, DIFF_X + DIFF_W / 2, DIFF_CARD_Y + DIFF_CARD_H + 9, DIFF_TEASE_SIZE, DIFF_W - 16, 1,
+                       q->tease[*cursor], q->colour[*cursor]);
     for (i = 0; i < 2; i++) {
-        s32 y = DIFF_ROW_Y + i * DIFF_ROW_DY;
+        s32 x = DIFF_X + 4 + i * DIFF_CARD_DX;
         s32 on = *cursor == i;
+        const u8 *c = q->colour[i];
 
-        stdwtitl_diff_text(obj, DIFF_X + 26, y, 160, q->names[i], on ? q->colour[i] : grey);
-        stdwtitl_diff_text(obj, DIFF_X + q->line_x, y + 1, 128, q->lines[i], on ? white : grey);
-        if (on) { /* the cursor: a wedge that nudges, and the line's bar */
-            s32 nudge = (diff_ticks >> 3) & 1;
+        stdwtitl_diff_text(obj, x + DIFF_PAD, DIFF_CARD_Y + 6, DIFF_NAME_SIZE, DIFF_CARD_W - 2 * DIFF_PAD, 0, q->names[i],
+                           on ? c : name_off);
+        for (k = 0; k < 2; k++) {
+            stdwtitl_diff_text(obj, x + DIFF_PAD, DIFF_CARD_Y + 27 + k * 15, DIFF_LINE_SIZE, DIFF_CARD_W - 2 * DIFF_PAD, 0,
+                               q->lines[i][k], on ? white : line_off);
+        }
+        if (on) {
+            /* the chosen card: its colour's frame, two pixels, breathing; a fill of the colour, dark */
+            s32 glow = 160 + ((diff_ticks & 31) < 16 ? (diff_ticks & 15) : 15 - (diff_ticks & 15)) * 6;
 
-            stdwtitl_diff_text(obj, DIFF_X + 11 + nudge, y, 160, "!", q->colour[i]);
-            stdwtitl_diff_quad(obj, DIFF_X + 6, y - 2, DIFF_W - 12, 13, 1, q->colour[i][0] / 4, q->colour[i][1] / 6 + 8,
-                               q->colour[i][2] / 4);
+            stdwtitl_diff_quad(obj, x + 2, DIFF_CARD_Y + 2, DIFF_CARD_W - 4, DIFF_CARD_H - 4, -1, c[0] / 5, c[1] / 5,
+                               c[2] / 4 + 8);
+            stdwtitl_diff_quad(obj, x, DIFF_CARD_Y, DIFF_CARD_W, DIFF_CARD_H, -1, c[0] * glow / 255, c[1] * glow / 255,
+                               c[2] * glow / 255);
+        } else {
+            stdwtitl_diff_quad(obj, x + 1, DIFF_CARD_Y + 1, DIFF_CARD_W - 2, DIFF_CARD_H - 2, -1, 14, 18, 36);
+            stdwtitl_diff_quad(obj, x, DIFF_CARD_Y, DIFF_CARD_W, DIFF_CARD_H, -1, 64, 72, 104);
         }
     }
-    stdwtitl_diff_text(obj, DIFF_X + 12, DIFF_Y + 47, 128, q->tease[*cursor], q->colour[*cursor]);
     stdwtitl_diff_quad(obj, DIFF_X, DIFF_Y, DIFF_W, 1, 1, 60, 130, 230);
     stdwtitl_diff_quad(obj, DIFF_X, DIFF_Y + DIFF_H - 1, DIFF_W, 1, 1, 60, 130, 230);
     stdwtitl_diff_quad(obj, DIFF_X, DIFF_Y + 1, 1, DIFF_H - 2, 1, 60, 130, 230);
     stdwtitl_diff_quad(obj, DIFF_X + DIFF_W - 1, DIFF_Y + 1, 1, DIFF_H - 2, 1, 60, 130, 230);
-    stdwtitl_diff_quad(obj, DIFF_X + 6, DIFF_Y + 15, DIFF_W - 12, 1, 1, 40, 80, 160);
-    stdwtitl_diff_quad(obj, DIFF_X, DIFF_Y, DIFF_W, DIFF_H, 2, 225, 215, 160);
-    if (PAD_PRESSED(4) || PAD_REPEAT(4) || PAD_PRESSED(6) || PAD_REPEAT(6)) {
+    stdwtitl_diff_quad(obj, DIFF_X, DIFF_Y, DIFF_W, DIFF_H, 2, 235, 228, 190);
+    /* any direction: the cards sit side by side, and the old panel's rows went up and down */
+    if (PAD_PRESSED(4) || PAD_REPEAT(4) || PAD_PRESSED(5) || PAD_REPEAT(5) || PAD_PRESSED(6) || PAD_REPEAT(6) ||
+        PAD_PRESSED(7) || PAD_REPEAT(7)) {
         *cursor = !*cursor;
         sound_module.play(0x8004513E);
     }
@@ -306,6 +344,7 @@ void stdwtitl_menu_update(StdwtitlMenu *obj) {
                 obj->base.set_step(obj, 11);
                 break;
             case -1:
+                stdwtitl_question_open = 0;
                 obj->base.set_step(obj, 1);
                 break;
             }

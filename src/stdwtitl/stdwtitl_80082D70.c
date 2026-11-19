@@ -101,14 +101,23 @@ OBJECT_V0(Object *) stdwtitl_create_root(void) {
 
 extern s16 stdwtitl_glow_frames[2][13]; /* frames of the two animations, ended by -1 */
 
+#ifdef PC_PORT
+extern s32 stdwtitl_question_open; /* stdwtitl_800852F0.c: New Game's questions take the bottom of the screen */
+#endif
+
 void stdwtitl_glow_draw(StdwtitlGlow *obj) {
     Sprite spr;
 
     if (obj->shown != 0) {
+#ifdef PC_PORT
+        if (!stdwtitl_question_open) /* the copyright lines: the panel is where they are */
+#endif
+        {
         sprite_init(&spr);
         spr.set_layer_id(obj->layer_id, 0);
         spr.set_vram_pos(0x280, 0x100);
         spr.draw(cdload_module.get_subfile_by_id(stdwtitl_module.bank), 6, 0x1D, 0xD1);
+        }
         sprite_init(&spr);
         spr.set_layer_id(obj->layer_id, 0);
         spr.set_vram_pos(0x280, 0x100);
@@ -118,6 +127,9 @@ void stdwtitl_glow_draw(StdwtitlGlow *obj) {
         spr.set_layer_id(obj->layer_id, 0);
         spr.set_vram_pos(0x280, 0x100);
         spr.set_palette(obj->anims[1].frame);
+#ifdef PC_PORT
+        if (!stdwtitl_question_open) /* the copyright lines' glow band: it would shade the panel's lower half */
+#endif
         spr.draw(cdload_module.get_subfile_by_id(stdwtitl_module.bank), 5, 0x14, 0xCA);
     }
 }

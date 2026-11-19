@@ -11,9 +11,9 @@ Reads the battles and their enemies from src/fieldstg/fieldstg_80083784.c, the s
 the list), the items from src/main/records.c, the Rare Targets from port/game/definitive_hunt_targets.c and the commons'
 names from tools/text_override/en.txt: no disc. The numbers are definitive.h's (DEF_DRI_*, DEF_HUNT_*).
 
-The lines (LINES below) are a choice, not a rule: the disc's enemy species have no Greymon, Garurumon line, Growlmon,
-ExVeemon, Angemon or Gallantmon, so a line's Champion is a stand-in of the same kind, and the Gabumon line is not there
-at all. Every line's Ultimate and Mega are the game's own (the Tamers' rivals and the BK Megas). The rule for the rest:
+The lines (LINES below) are a choice, not a rule: the disc's enemy species have no Greymon, ExVeemon, Angemon, Growlmon
+or Gallantmon, so those stages are the player's own forms fighting on an enemy species' record of the same kind (FORMS,
+def_dri_record); no Gargomon or Rapidmon exists at all, and no Garurumon line. The rule for the rest:
   - challenge k's Champion fights at DEF_DRI_LEVEL_FIRST + k * DEF_DRI_LEVEL_GAP, each next stage DEF_DRI_LEVEL_STEP
     higher; a stage's HP and stat_scale follow its species' own rows in the battle table (the game raises a species
     that way: Tyrannomon's stat_scale is 16 at level 6, 83 at 52): between two of its levels, the line between them;
@@ -44,20 +44,26 @@ FINAL_BOSS = {442, 466, 467}  # Galacticmon's phases (gen_enemy_weaknesses.FINAL
 # Battles wfightmn gives rules of their own (state.type 1..4: 0x143, 0xB, 0x1E, 0x144) and the final boss's.
 SPECIAL = {0x143, 0xB, 0x1E, 0x144, 325, 326}
 
+# Player forms that fight as a stage (records_digimon IDs, src/main/records.c; names from ?SDIGNAM): none has an enemy
+# record on the disc, so a stage written (form, base) shows the form and takes the base enemy species' level rows here and
+# its record in the game (stats, resistances, battle plan; def_dri_record), under the form's name, type and techniques.
+FORMS = {5: "Greymon", 20: "Angemon", 259: "ExVeemon", 367: "Growlmon", 148: "Imperialdramon", 213: "WarGreymon",
+         214: "Seraphimon", 369: "Gallantmon", 372: "MegaGargomon"}
+
 # The lines, in the order of their Mega's story battle (BK MegaGargomon 45, BK Imperialdramon 46, BK Seraphimon 47,
 # BK WarGreymon 53, BK WarGrowlmon 55): stages as enemy species IDs, Champion first; the family's three item IDs.
 LINES = [
-    dict(name="Terriermon (Guardromon)", family="Metal Power", stages=(435, 40, 443), rewards=(354, 355, 356),
-         note="a line without its rookie: Guardromon and Andromon, machines, lead to BK MegaGargomon"),
-    dict(name="Veemon", family="Bolt Power", stages=(135, 450, 444), rewards=(351, 352, 353),
-         note="no ExVeemon: Devidramon, a Champion dragon resisting Thunder/Machine"),
-    dict(name="Patamon", family="Wind Power", stages=(7, 452, 447), rewards=(348, 349, 350),
-         note="no Angemon: Airdramon, the Champion holy dragon, resisting Fire/Wind"),
-    dict(name="Agumon", family="Fire Power", stages=(8, 449, 448), rewards=(339, 340, 341),
-         note="no Greymon: Tyrannomon, the Champion dinosaur"),
-    dict(name="Guilmon", family="Dark Power", stages=(69, 451, 445), rewards=(357, 358, 359),
-         note="no Growlmon nor Gallantmon: Flarerizamon, then BK WarGrowlmon as the Mega; Dark for a Virus line "
-              "(Fire is Agumon's)"),
+    dict(name="Terriermon", family="Metal Power", stages=(435, 434, (372, 443)), rewards=(354, 355, 356),
+         note="no Gargomon nor Rapidmon: Guardromon, a machine, then Antylamon (Andiramon), the Tamers' Ultimate"),
+    dict(name="Veemon", family="Bolt Power", stages=((259, 135), 450, (148, 444)), rewards=(351, 352, 353),
+         note="the player forms ExVeemon and Imperialdramon, on Devidramon's and BK Imperialdramon's records"),
+    dict(name="Patamon", family="Wind Power", stages=((20, 7), 452, (214, 447)), rewards=(348, 349, 350),
+         note="the player forms Angemon and Seraphimon, on Airdramon's and BK Seraphimon's records"),
+    dict(name="Agumon", family="Fire Power", stages=((5, 8), 449, (213, 448)), rewards=(339, 340, 341),
+         note="the player forms Greymon and WarGreymon, on Tyrannomon's and BK WarGreymon's records"),
+    dict(name="Guilmon", family="Dark Power", stages=((367, 69), 451, (369, 445)), rewards=(357, 358, 359),
+         note="the player forms Growlmon and Gallantmon, on Flarerizamon's and BK WarGrowlmon's records; Dark for a "
+              "Virus line (Fire is Agumon's)"),
 ]
 
 # The DRI Agents: (map, actor ID) pairs after whose own talk the list opens (the actor ID is FieldstgPlacedActor.id, the
@@ -216,13 +222,17 @@ def table():
             assert f"DriRival{k}{part}" in say, f"tools/text_override/en.txt has no $DriRival{k}{part}"
     out = []
     for k, line in enumerate(LINES):
-        stages = line["stages"]
-        assert len(stages) == c["DEF_DRI_STAGES"] and all(s in names for s in stages), line
+        looks = [s[0] if isinstance(s, tuple) else s for s in line["stages"]]
+        bases = [s[1] if isinstance(s, tuple) else s for s in line["stages"]]
+        stages = set(looks) | set(bases)
+        assert len(looks) == c["DEF_DRI_STAGES"] and all(b in names for b in bases), line
+        assert all(lk == b or (lk in FORMS and lk not in names) for lk, b in zip(looks, bases)), line
         for item in line["rewards"]:
             assert its.get(item, {}).get("cat") == "RECORDS_ITEM_ACCESSORY", (line, item)
         first = c["DEF_DRI_LEVEL_FIRST"] + k * c["DEF_DRI_LEVEL_GAP"]
         levels = [first + i * c["DEF_DRI_LEVEL_STEP"] for i in range(c["DEF_DRI_STAGES"])]
-        st = [stage_of(s, lv, rows, battles, c) for s, lv in zip(stages, levels)]
+        st = [dict(stage_of(b, lv, rows, battles, c), digimon=lk, base=0 if lk == b else b)
+              for lk, b, lv in zip(looks, bases, levels)]
         top = levels[-1]
         cand = [i for i, b in enumerate(battles)
                 if b["kind"] == 2 and b["escape"] and b["rows"] and i not in SPECIAL
@@ -243,6 +253,11 @@ def table():
     return out, names, its, rows, battles
 
 
+def stage_name(s, names):
+    """A stage's name: the species', or the player form's with the base it fights as."""
+    return f"{FORMS[s['digimon']]} (as {names[s['base']]})" if s["base"] else names[s["digimon"]]
+
+
 def rare_name(t, names):
     return f"{names.get(t['lead'], t['lead'])} Core" + (f" {roman(t['variant'])}" if t["variant"] else "")
 
@@ -256,9 +271,10 @@ def c_text(rows_, names):
              "const DefDriChallenge def_dri_challenges[] = {"]
     for r in rows_:
         st = r["stages"]
-        desc = ", ".join(f"{names[s['digimon']]} Lv{s['level']}" for s in st)
+        desc = ", ".join(f"{stage_name(s, names)} Lv{s['level']}" for s in st)
         lines.append(f"    /* {r['k']} {r['line']['name']} line, {r['line']['family']}: {desc} */")
-        stages = ", ".join(f"{{ {s['digimon']}, {s['level']}, {s['hp']}, {s['mp']}, {s['stat_scale']} }}" for s in st)
+        stages = ", ".join(f"{{ {s['digimon']}, {s['level']}, {s['hp']}, {s['mp']}, {s['stat_scale']}, {s['base']} }}"
+                           for s in st)
         rare = r["rares"] + [(-1, 0)] * (2 - len(r["rares"]))
         lines.append(f"    {{ {{ {stages} }}, {r['battle']}, {{ {', '.join(str(x) for x in r['line']['rewards'])} }}, "
                      f"{r['common']}, {r['common_n']}, {{ {rare[0][0]}, {rare[1][0]} }}, {{ {rare[0][1]}, {rare[1][1]} }} }},")
@@ -287,7 +303,7 @@ def write_md(rows_, names, its, battles, rows):
     rw = rw[rw.index("StfgtrepReward stfgtrep_rewards[] = {"):]
     rewards = [tuple(int(x) for x in m) for m in re.findall(r"\{\s*(\d+),\s*(\d+),\s*(\d+)\s*\}", rw[:rw.index("\n};")])]
     for r in rows_:
-        st = "; ".join(f"{names[s['digimon']]} Lv{s['level']} HP{s['hp']} x{s['stat_scale']}/16" for s in r["stages"])
+        st = "; ".join(f"{stage_name(s, names)} Lv{s['level']} HP{s['hp']} x{s['stat_scale']}/16" for s in r["stages"])
         b = r["battle"]
         who = ", ".join(f"{names.get(rows[i][0], rows[i][0])} Lv{rows[i][1]}" for i in battles[b]["rows"])
         cost = f"{mats.get(r['common'], r['common'])} ×{r['common_n']}, " + ", ".join(

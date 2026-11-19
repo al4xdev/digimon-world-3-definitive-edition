@@ -241,6 +241,13 @@ const unsigned char *def_story_text(int file, int index) {
     if (!def_on()) {
         return NULL;
     }
+    {
+        extern const unsigned char *def_finale_text(int file, int index);
+        const unsigned char *fin = def_finale_text(file, index);
+        if (fin != NULL) {
+            return fin;
+        }
+    }
     if (file == ST_TALK01 && index == ST_TOM_LINE && seiryu_ask()) {
         story.tom_told = 1; /* his talk is the news: the player's feeling and the door follow it (def_story_frame) */
         return def_str_TomNews;
@@ -492,7 +499,8 @@ static int dna_pick(int d, int *a, int *a_need, int *b, int *b_need) {
 static void igor_read(int first) {
     extern unsigned char def_str_IgorMeet[], def_str_IgorBack[], def_str_IgorCould[], def_str_IgorBorn[],
         def_str_IgorLv[], def_str_IgorBoth[], def_str_IgorOne[], def_str_IgorNone[], def_str_IgorBye[],
-        def_str_IgorBlank[], def_str_IgorPage[], def_str_IgorLine[], def_str_IgorEnd[];
+        def_str_IgorBlank[], def_str_IgorPage[], def_str_IgorLine[], def_str_IgorEnd[],
+        def_str_PipimonMeet[], def_str_PipimonBack[];
     unsigned char *buf = st_igor_text;
     int size = (int)sizeof(st_igor_text), p = 0, slot, told = 0;
 
@@ -500,7 +508,11 @@ static void igor_read(int first) {
     if (form_name(1) == NULL) {
         return;
     }
-    def_glyph_put(buf, &p, size, first ? def_str_IgorMeet : def_str_IgorBack);
+    if (def_finale_pipimon_active()) {
+        def_glyph_put(buf, &p, size, first ? def_str_PipimonMeet : def_str_PipimonBack);
+    } else {
+        def_glyph_put(buf, &p, size, first ? def_str_IgorMeet : def_str_IgorBack);
+    }
     for (slot = 0; slot < 3; slot++) {
         int d = gamestate_data.funcs.get_party_member(slot), a, an, b, bn, form, done;
 
@@ -1116,8 +1128,10 @@ static void oikawa_hook(void) {
     if (!oikawa_here() || (player = player_ready()) == NULL) {
         return;
     }
-    if (oik.phase == OK_TALKING) { /* his line closed: the battle */
-        if (def_time_set_battle(&def_oikawa_fight, OK_STAGE, OK_MUSIC, oik.party, oik.hp, oik.mp)) {
+    if (oik.phase == OK_TALKING) { /* his line closed: the battle (with Butter-Fly Adventure theme) */
+        s32 ok_bank = 0, ok_music = OK_MUSIC;
+        dw3_adventure_music(&ok_bank, &ok_music);
+        if (def_time_set_battle(&def_oikawa_fight, OK_STAGE, ok_music, oik.party, oik.hp, oik.mp)) {
             oik.phase = OK_FIGHTING;
             oik.pending = 1;
             port_log("story: frame %ld: the Oikawa's battle begins", port_frames);

@@ -2789,6 +2789,11 @@ FightstgCameraSetting *fightstg_camera_get_preset(FightstgCamera *obj, s32 slot,
     list = (FightstgSlots *)heap_objects.find(0x14, -1, -1);
     if (list != NULL) {
         id = list->get_model_id(list, slot);
+#ifdef PC_PORT
+        if (slot & 0xF0) { /* an enemy's cameras are a type B record's: a player form fighting as one borrows its stand-in's */
+            id = def_enemy_camera_model(id);
+        }
+#endif
         if (id != 0) {
             if (!(slot & 0xF0)) {
                 a = fightstg_models.get(id);
@@ -2832,6 +2837,9 @@ FightstgCameraSetting *fightstg_camera_get_default(FightstgCamera *obj) {
     list = (FightstgSlots *)heap_objects.find(0x14, -1, -1);
     if (list != NULL) {
         id = list->get_model_id(list, 0x10);
+#ifdef PC_PORT
+        id = def_enemy_camera_model(id); /* as fightstg_camera_get_preset's */
+#endif
         if (id != 0) {
             fightstg_models.get(id);
             fightstg_camera_get_preset(obj, 0, fightstg_models.record_b->default_camera - 1);
@@ -2984,6 +2992,12 @@ void fightstg_command_update(FightstgCommand *obj, FightstgCommandData *data) {
                             obj->base.set_substep(obj, 2);
                             return;
                         case 5:
+#ifdef PC_PORT
+                            if (def_flee_ask_on()) { /* Escape asks first (port/game/definitive_flee_ask.c) */
+                                obj->base.set_substep(obj, 10);
+                                return;
+                            }
+#endif
                             obj->command = 1;
                             obj->base.set_step(obj, 0);
                             return;
@@ -3094,6 +3108,19 @@ void fightstg_command_update(FightstgCommand *obj, FightstgCommandData *data) {
                     return;
                 }
                 return;
+#ifdef PC_PORT
+            case 10: /* Escape's question: run (the game's escape command), or back to the menu as a submenu's back */
+                switch (def_flee_ask_frame()) {
+                case 1:
+                    obj->command = 1;
+                    obj->base.set_step(obj, 0);
+                    break;
+                case -1:
+                    obj->base.set_step(obj, 2);
+                    break;
+                }
+                return;
+#endif
             }
             return;
         case 3:
@@ -3709,6 +3736,7 @@ typedef struct FightstgBattleMenuData {
     MessageWindow *twice;             /* "Enemy x2" while the enemy acts twice before our next turn */
     MessageWindow *inspect_title;     /* the panel's title: the enemy's name */
     MessageWindow *tempt;             /* the Blast's temptation (def_blast_tempt), above the cross; empty otherwise */
+    MessageWindow *limit_break;       /* "LIMIT BREAK" badge when Chosen Evolution or Dark Galacticmon exceeds 999 */
 } FightstgBattleMenuData; /* only pointers: the block is run and scanned as objects */
 
 /* The menu's object: FightstgCommandMenu's own fields, then what the animation needs (never in the data block). The
@@ -4114,8 +4142,10 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
          * the battle now (a confirm still in the buffer is left for a technique or item menu). */
         if (port_bm_peek(&b_action, &b_confirm) && b_action >= 0 &&
             !((member->status & 8) && b_action < 3) && !((member->status & 0x20) && b_action == 2) &&
-            !(b_action == FIGHTSTG_BMENU_RUN && def_super_tutorial_battle()) &&
-            !(b_action == FIGHTSTG_BMENU_BLAST && !def_blast_ready())) {
+            !(b_action == FIGHTSTG_BMENU_RUN && (def_super_tutorial_battle() || def_finale_active())) &&
+            !(b_action == FIGHTSTG_BMENU_BLAST && !def_blast_ready() && !def_finale_blast_only()) &&
+            !(def_finale_blast_only() && b_action != FIGHTSTG_BMENU_BLAST) &&
+            !(def_finale_golden_mode() && (b_action == 2 || b_action == 3 || b_action == 5 || b_action == FIGHTSTG_BMENU_BLAST))) {
             port_bm_take_action();
             port_battle_menu_chosen(b_action, port_battle_menu_bit(b_action), 0);
             sound_module.play(0x4001C);
@@ -4131,9 +4161,15 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
             obj->x[i] = x;
             obj->y[i] = y;
             fightstg_battle_menu_cell(obj, i, slot, icon[1] == 0);
-            obj->grey[i] = ((member->status & 8) && i < 3) || ((member->status & 0x20) && i == 2) ||
-                           (i == FIGHTSTG_BMENU_RUN && def_super_tutorial_battle()) ||
-                           (i == FIGHTSTG_BMENU_BLAST && !def_blast_ready());
+            if (def_finale_blast_only()) {
+                obj->grey[i] = (i != FIGHTSTG_BMENU_BLAST);
+            } else if (def_finale_golden_mode()) {
+                obj->grey[i] = (i == 2 || i == 3 || i == FIGHTSTG_BMENU_RUN || i == FIGHTSTG_BMENU_BLAST);
+            } else {
+                obj->grey[i] = ((member->status & 8) && i < 3) || ((member->status & 0x20) && i == 2) ||
+                               (i == FIGHTSTG_BMENU_RUN && (def_super_tutorial_battle() || def_finale_active())) ||
+                               (i == FIGHTSTG_BMENU_BLAST && !def_blast_ready());
+            }
             x -= FIGHTSTG_BMENU_SLIDE * FIGHTSTG_BMENU_SLIDE / 3; /* opens where the slide starts */
             data->icons[i] = message_create_window(0x1005, 3, x + obj->sym_x[i], y + obj->sym_y[i]);
             data->icons[i]->set_text(data->icons[i], icon, -1);
@@ -4157,7 +4193,14 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
         fightstg_battle_menu_inspect_set(data, 0);
         data->twice = message_create_window(0x1005, 3, FIGHTSTG_TWICE_X - wide_pad, FIGHTSTG_TWICE_Y);
         data->twice->set_text(data->twice, (u8 *)(def_enemy_acts_twice() ? def_twice_label() : fightstg_inspect_empty), -1);
-        obj->tempt = def_blast_tempt();
+        data->limit_break = message_create_window(0x1005, 3, FIGHTSTG_TWICE_X + 74 - wide_pad, FIGHTSTG_TWICE_Y);
+        data->limit_break->set_palette(data->limit_break, 2);
+        data->limit_break->set_text(
+            data->limit_break,
+            (u8 *)((def_limit_break_active(0) || def_limit_break_active(1)) ? def_limit_break_label()
+                                                                            : fightstg_inspect_empty),
+            -1);
+        obj->tempt = def_blast_tempt() || def_finale_blast_only();
         data->tempt = message_create_window(0x1005, 1, FIGHTSTG_TEMPT_X - wide_pad, FIGHTSTG_TEMPT_Y); /* the 14-pixel
                                                                                        * font: the 9-pixel one
                                                                                        * reads badly over the arena */
@@ -4604,9 +4647,17 @@ void fightstg_status_show_stats(FightstgStatus *obj, FightstgStatusData *data) {
         e = &fightstg_status_stat_windows[i];
         data->stat_windows[i] = message_create_window(0x1005, 1, e->x, e->y);
         value = ((s16 *)&obj->stats)[e->stat];
+#ifdef PC_PORT
+        if (value >= 1000 && def_limit_break_active(0)) {
+            data->stat_windows[i]->set_palette(data->stat_windows[i], 2);
+        } else if (value >= 1000) {
+            value = 999;
+        }
+#else
         if (value >= 1000) {
             value = 999;
         }
+#endif
         data->stat_windows[i]->set_line_number(data->stat_windows[i], 0, value);
         data->stat_windows[i]->measure(data->stat_windows[i], 1);
     }
@@ -5321,6 +5372,12 @@ void fightstg_tech_menu_update(FightstgTechMenu *obj, FightstgTechMenuData *data
         m = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
         form = m->digimon;
         rec = &records_digimon[id];
+#ifdef PC_PORT
+        if (def_finale_golden_mode()) {
+            obj->techniques[0] = 0x66 | 0x8000; /* Golden Imperialdramon-P: signature Omega Blade only */
+            obj->count = 1;
+        } else
+#endif
         if (form == rec->id) {
             obj->techniques[0] = rec->techniques[6] | 0x8000;
             obj->count = 1;
@@ -7270,7 +7327,11 @@ FightstgEnemyRecord *fightstg_enemy_get_record(s32 id) {
         return &recs[i];
     }
 #ifdef PC_PORT
-    return def_purify_record(id); /* a dark form in a purification: no record on the disc, the port's */
+    { /* a player form as an enemy (a dark form in a purification, a DRI stage): no record on the disc, the port's */
+        FightstgEnemyRecord *made = def_purify_record(id);
+
+        return made != NULL ? made : def_dri_record(id);
+    }
 #else
     return NULL;
 #endif
@@ -8534,6 +8595,7 @@ static inline void fightstg_rules_get_enemy_stats(FightstgStats *out, FightstgMe
         out->stats[j] = enemy->stats[j] * records_state.enemies[member].stat_scale / 16;
     }
 #ifdef PC_PORT
+    def_finale_enemy_stats(out->stats); /* Extended Final Act: Dark Galacticmon Limit Break (~2000) */
     out->stats[4] = (s16)def_super_speed(out->stats[4]); /* Super Hard: past 999 the enemy acts twice */
 #endif
     for (j = 0; j < 12; j++) {

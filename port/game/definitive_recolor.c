@@ -35,11 +35,12 @@ extern void port_log(const char *fmt, ...);
 #define RC_CLUTS 32 /* CLUTs turned per page (a model names a few) */
 
 /* The turn of the colour wheel, in degrees, per kind: the regional Rare's and the Super Rare's (owner-tunable). */
-static const int rc_degrees[DEF_RECOLOR_KINDS] = { 0, 120, 200 };
+static const int rc_degrees[DEF_RECOLOR_KINDS] = { 0, 120, 200, 0, 0, 0 };
 
 static const void *rc_model; /* the enemy's model in a rare battle (compared only, never followed) */
 static int rc_kind;          /* its kind */
-static const void *rc_party_model; /* the party's model in a Blast form (the Blast Gauge's dark forms) */
+static const void *rc_party_model; /* the party's model in a Blast or Super Chosen form */
+static int rc_party_kind;          /* DEF_RECOLOR_DARK or DEF_RECOLOR_GOLD */
 /* The recoloured models' VRAM pages since their texture loaded, and the CLUTs already turned in each (x | y << 16,
  * VRAM coordinates), so none is turned twice. */
 static struct {
@@ -52,14 +53,28 @@ static struct {
 void def_recolor_model_added(const void *model, int id) {
     int kind;
 
-    if (id == RC_PARTY_SLOT_ID) { /* the Blast Gauge: a dark form, taken by a Blast, comes in painted dark */
-        rc_party_model = def_blast_dark() ? model : NULL;
-        if (rc_party_model != NULL) {
+    if (id == RC_PARTY_SLOT_ID || (id == 0 && def_finale_party_gold())) {
+        if (def_finale_party_gold()) {
+            rc_party_model = model;
+            rc_party_kind = DEF_RECOLOR_GOLD;
+            port_log("recolor: the party's Super Chosen form, gold");
+        } else if (id == RC_PARTY_SLOT_ID && def_blast_dark()) {
+            rc_party_model = model;
+            rc_party_kind = DEF_RECOLOR_DARK;
             port_log("recolor: the party's Blast form, dark");
+        } else {
+            rc_party_model = NULL;
+            rc_party_kind = DEF_RECOLOR_NONE;
         }
         return;
     }
     if (id < RC_ENEMY_SLOT_ID) {
+        return;
+    }
+    if (def_finale_enemy_dark()) { /* Extended Final Act: Dark / Mega Galacticmon painted black */
+        rc_model = model;
+        rc_kind = DEF_RECOLOR_BLACK;
+        port_log("recolor: Dark Galacticmon, black");
         return;
     }
     if (def_purify_fighting()) { /* the Blast Gauge's quest: the dark forms of the simulator come in dark too */
@@ -79,7 +94,7 @@ void def_recolor_model_added(const void *model, int id) {
 
 int def_recolor_of(const void *model) {
     if (model != NULL && model == rc_party_model) {
-        return DEF_RECOLOR_DARK;
+        return rc_party_kind;
     }
     return model != NULL && model == rc_model ? rc_kind : DEF_RECOLOR_NONE;
 }
@@ -131,6 +146,56 @@ static unsigned short darken(unsigned short c) {
     return (unsigned short)(o | (c & 0x8000));
 }
 
+/* Dark / Mega Galacticmon: deep obsidian black with subtle crimson-violet highlights. */
+static unsigned short blacken(unsigned short c) {
+    int r = c & 31, g = (c >> 5) & 31, b = (c >> 10) & 31, l, vr, vg, vb;
+    unsigned short o;
+
+    if ((c & 0x7FFF) == 0) {
+        return c;
+    }
+    l = (r * 299 + g * 587 + b * 114) / 1000;
+    vr = l * 32 / 100;
+    vg = l * 18 / 100;
+    vb = l * 28 / 100;
+    if (l > 22) {
+        vr += (l - 22) * 2; /* glowing dark-crimson rim on bright accents */
+    }
+    vr = vr > 31 ? 31 : vr;
+    vg = vg > 31 ? 31 : vg;
+    vb = vb > 31 ? 31 : vb;
+    o = (unsigned short)(vr | vg << 5 | vb << 10);
+    if (o == 0) {
+        o = 1 | 1 << 5 | 1 << 10;
+    }
+    return (unsigned short)(o | (c & 0x8000));
+}
+
+/* Golden Imperialdramon Paladin Mode: radiant royal gold mapped from luminance. */
+static unsigned short golden(unsigned short c) {
+    int r = c & 31, g = (c >> 5) & 31, b = (c >> 10) & 31, l, vr, vg, vb;
+    unsigned short o;
+
+    if ((c & 0x7FFF) == 0) {
+        return c;
+    }
+    l = (r * 299 + g * 587 + b * 114) / 1000;
+    vr = l * 125 / 100 + 3;
+    vg = l * 100 / 100 + 1;
+    vb = l * 35 / 100;
+    if (l > 24) {
+        vb += (l - 24) * 2; /* warm white-gold speculars */
+    }
+    vr = vr > 31 ? 31 : vr;
+    vg = vg > 31 ? 31 : vg;
+    vb = vb > 31 ? 31 : vb;
+    o = (unsigned short)(vr | vg << 5 | vb << 10);
+    if (o == 0) {
+        o = 1 | 1 << 5 | 1 << 10;
+    }
+    return (unsigned short)(o | (c & 0x8000));
+}
+
 const unsigned short *def_recolor_clut(const unsigned short *src, int n, int kind) {
     static unsigned short out[RC_MAX];
     double a, cs, sn, m[3][3];
@@ -142,6 +207,18 @@ const unsigned short *def_recolor_clut(const unsigned short *src, int n, int kin
     if (kind == DEF_RECOLOR_DARK) {
         for (i = 0; i < n; i++) {
             out[i] = darken(src[i]);
+        }
+        return out;
+    }
+    if (kind == DEF_RECOLOR_BLACK) {
+        for (i = 0; i < n; i++) {
+            out[i] = blacken(src[i]);
+        }
+        return out;
+    }
+    if (kind == DEF_RECOLOR_GOLD) {
+        for (i = 0; i < n; i++) {
+            out[i] = golden(src[i]);
         }
         return out;
     }
@@ -221,5 +298,6 @@ void def_recolor_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, rc_model);
     PORT_STATE_VAR(s, rc_kind);
     PORT_STATE_VAR(s, rc_party_model);
+    PORT_STATE_VAR(s, rc_party_kind);
     PORT_STATE_VAR(s, rc_pages);
 }

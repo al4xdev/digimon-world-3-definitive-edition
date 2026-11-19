@@ -134,7 +134,8 @@ to them opens two tabs (L1/R1):
 
 Talk to a DRI Agent: until their Rookie is in your party they give their DDNA quest, at any party level (the game's
 "too busy" and "you don't need it" level window is gone), and tell where the Digimon with the DDNA is found. Once the
-Rookie has joined (at once if it was one of your starters), their lines play and then the list of simulations opens. Each replays a classic Tamer's battle data, who has a word for you before the fight and after it. Each is one battle against an evolution line's three stages,
+Rookie has joined (at once if it was one of your starters), talking to them asks what you want: **Simulations** (the
+list), **Talk** (their own lines, as in the game, with nothing after) or **Leave**. Each replays a classic Tamer's battle data, who has a word for you before the fight and after it. Each is one battle against an evolution line's three stages,
 Champion, Ultimate and Mega: when one falls the next comes in at full HP with a **DIGIVOLVE!** callout, while your
 party keeps the HP, MP and items it has spent. There is no running away and no game over: lose and you are back on the
 field with your HP and MP as they were before (spent items stay spent). A simulation is unlocked once, for good, by
@@ -352,8 +353,9 @@ keeps your best stage. A replay pays the battle's experience and Bits, but no ac
   `en_story.txt`, which wins over `en.txt` (commit `c5e58e4`): Kazuki `TALK02 633`, Michael `TALK02 647`, Jimmy
   `TALK01 277`, Ken `TALK02 831`, Yuji `TALK02 839`, Yang `TALK02 847`. `pt.txt` still has the disc's lines without the
   hints (the Portuguese is the owner's). The quest opening and the Rookie rule are commit `bb15d51`. A starter's agent
-  counts as done from the start: his own line plays, then the list. `def_dri_debug` (tests: start a challenge or open
-  the list from the idle field) is unchanged.
+  counts as done from the start: he asks at once. `def_dri_debug` (tests): a challenge's index starts it, 100
+  (`DEF_DRI_DEBUG_MENU`) opens the list from the idle field, 102 (`DEF_DRI_DEBUG_AGENT`) sets the player 24 pixels under
+  the map's first DRI Agent, or warps to Asuka's Kazuki (0x21D) when the map has none placed; then UP and CIRCLE talk.
 - Host test (`definitive_dri_driver.c`): the tier per stage; the table's bounds; an agent on his map, a map-any row, and
   nobody else (an actor of an agent's sprite on another map); the wait (nothing while the talk runs, the list once, an
   idle gap inside the talk, a battle or another map drops it, a talk that never ends gives up); the Tamers' lines;
@@ -608,9 +610,13 @@ forms (actors 157-161, "Oink...": a quest state, not agents), and the table is n
 the same sprite on another map is an ordinary NPC; the "map -1 = any" rows of the first version are gone): Kazuki/Patamon
 (43, `0x21D`) and Michael/Renamon (44, `0x21D`), Bob/Veemon (43, `0x226`), Johann/Agumon (43, `0x22B`), Jimmy/Guilmon (43, `0x22E`), Ken/
 Kotemon (43, `0x258`), Yuji/Kumamon (44, `0x258`), Yang/Monmon (163, `0x258`), the DDNA researchers, one quest per agent in the whole
-game. The agent's own talk is **never replaced**: `def_dri_talk` only arms a wait and returns 0, so talk and DDNA quest run as in
-the game, and the list opens after `DEF_DRI_WAIT_IDLE` (30) idle frames on the same map (`def_dri_wait_step`; one idle frame between two
-parts of the talk does not count; a battle or another map cancels; after `DEF_DRI_WAIT_MAX` it gives up). Each simulation replays the
+game. Until the agent's Rookie has joined, `def_dri_talk`
+returns 0 and his talk and DDNA quest run as in the game. From then on it takes the talk (returns 1, like the Black Market's
+trader) and opens the network's question (`DRI_ASK`: `$DriAgent`, `$DriGreet` or `$DriGreetDone` once every simulation is
+cleared, then `$DriAskSim` / `$DriAskTalk` / `$DriAskBye`). "Talk" closes it and, once the buttons are up, calls
+`fieldstg_actor_talk_to` again with `dri.bypass` set, so the game runs his own talk and nothing follows it. Until 2026-11-19
+the talk was never taken and the list opened after 30 idle field frames on the same map (`def_dri_wait_step`, removed): walking
+off and stopping later opened it out of nowhere. Each simulation replays the
 battle data of a classic Tamer by title, no name: "The Leader of Courage" (Agumon line), "The Child of Hope" (Patamon), "The Heir of
 Miracles" (Veemon), "The Dreamer Tamer" (Guilmon), "The Calm Tamer" (Terriermon); choosing an open challenge shows the Tamer's page
 (title, the three stages, the line; x fights, triangle returns) and the summary shows the victory line (all three) or the defeat line;

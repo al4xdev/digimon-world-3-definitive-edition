@@ -47,6 +47,15 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/game/definitive_velvet_music.inc")
     set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/game/definitive_velvet_music.c" PROPERTIES
                                 OBJECT_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/game/definitive_velvet_music.inc")
 endif()
+# Digimon Adventure ("Butter-Fly") score (tools/gen_adventure_music.py): from the owner's local MIDI and the disc when
+# both are there, otherwise nothing is written. Not an error either way; the .inc is gitignored.
+execute_process(COMMAND "${PSXSTACK_PYTHON}" "${DW3_ROOT}/tools/gen_adventure_music.py" --apply --quiet
+                RESULT_VARIABLE adventure_music_r OUTPUT_QUIET ERROR_QUIET)
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${DW3_ROOT}/tools/gen_adventure_music.py")
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/game/definitive_adventure_music.inc")
+    set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/game/definitive_adventure_music.c" PROPERTIES
+                                OBJECT_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/game/definitive_adventure_music.inc")
+endif()
 file(GLOB DW3_CONFIG_DEPS "${DW3_ROOT}/config/*.symbols.txt" "${DW3_ROOT}/config/wstag/*.symbols.txt")
 file(GLOB DW3_ADAPTER_SRCS CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/game/*.c")
 

@@ -481,7 +481,7 @@ int def_super_tutorial_battle(void);
 #define DEF_SUPER_FLED_TARGET 1
 #define DEF_SUPER_FLED_PLAYER 2
 void def_super_flee_note(int who);
-/* The DRI Agents' Gauntlet (port/game/definitive_dri_screen.c): a talk to `map`'s actor `actor` (always 0: a DRI Agent's own talk runs, the list opens after it), FIELDSTG's idle frame (1 while its screen owns the field), the next enemy member's entrance
+/* The DRI Agents' Gauntlet (port/game/definitive_dri_screen.c): a talk to `map`'s actor `actor` (1: taken, a DRI Agent asks what the player wants; 0: the game's talk), FIELDSTG's idle frame (1 while its screen owns the field), the next enemy member's entrance
  * (wfightmn_knockout) and a lost battle (1 when it was a simulation: it goes back to the field, no game over). */
 int def_dri_talk(s32 map, s32 actor);
 int def_dri_frame(void);
@@ -490,6 +490,10 @@ int def_dri_defeat(void);
 /* The Blast Gauge's phase 2, the purification (port/game/definitive_purify.c): the dark forms' enemy records (none on
  * the disc), the field's frame (the mentor's panel, the next wave), a wave's next member and a lost wave. */
 struct FightstgEnemyRecord *def_purify_record(s32 id);
+/* The DRI Gauntlet's stages that are player forms: their enemy records, made from a base species' (definitive_dri_screen.c). */
+struct FightstgEnemyRecord *def_dri_record(s32 id);
+/* The model whose cameras an enemy slot reads (type B records only): a DRI stage's player form, its base species'. */
+s32 def_enemy_camera_model(s32 model_id);
 int def_purify_frame(void);
 int def_superhunt_frame(void);
 int def_purify_stage_enters(int member);

@@ -5,16 +5,16 @@
 #include "definitive.h"
 
 const DefDriChallenge def_dri_challenges[] = {
-    /* 0 Terriermon (Guardromon) line, Metal Power: Guardromon Lv24, Andromon Lv27, BK MegaGargomon Lv30 */
-    { { { 435, 24, 701, 9999, 14 }, { 40, 27, 765, 9999, 18 }, { 443, 30, 1735, 9999, 12 } }, 6, { 354, 355, 356 }, 3, 15, { 4, -1 }, { 1, 0 } },
-    /* 1 Veemon line, Bolt Power: Devidramon Lv32, Paildramon Lv35, BK Imperialdramon Lv38 */
-    { { { 135, 32, 909, 9999, 13 }, { 450, 35, 1920, 9999, 27 }, { 444, 38, 2101, 9999, 14 } }, 10, { 351, 352, 353 }, 5, 20, { 26, -1 }, { 1, 0 } },
-    /* 2 Patamon line, Wind Power: Airdramon Lv40, MagnaAngemon Lv43, BK Seraphimon Lv46 */
-    { { { 7, 40, 1080, 9999, 65 }, { 452, 43, 2304, 9999, 24 }, { 447, 46, 2453, 9999, 16 } }, 15, { 348, 349, 350 }, 8, 25, { 24, 60 }, { 1, 1 } },
-    /* 3 Agumon line, Fire Power: Tyrannomon Lv48, MetalGreymon Lv51, BK WarGreymon Lv54 */
-    { { { 8, 48, 1272, 9999, 77 }, { 449, 51, 2688, 9999, 41 }, { 448, 54, 2832, 9999, 16 } }, 26, { 339, 340, 341 }, 13, 35, { 40, 62 }, { 1, 1 } },
-    /* 4 Guilmon line, Dark Power: Flarerizamon Lv56, WarGrowlmon Lv59, BK WarGrowlmon Lv62 */
-    { { { 69, 56, 1417, 9999, 21 }, { 451, 59, 3072, 9999, 33 }, { 445, 62, 3216, 9999, 18 } }, 32, { 357, 358, 359 }, 15, 40, { 5, 20 }, { 1, 1 } },
+    /* 0 Terriermon line, Metal Power: Guardromon Lv24, Antylamon Lv27, MegaGargomon (as BK MegaGargomon) Lv30 */
+    { { { 435, 24, 701, 9999, 14, 0 }, { 434, 27, 805, 9999, 10, 0 }, { 372, 30, 1735, 9999, 12, 443 } }, 6, { 354, 355, 356 }, 3, 15, { 4, -1 }, { 1, 0 } },
+    /* 1 Veemon line, Bolt Power: ExVeemon (as Devidramon) Lv32, Paildramon Lv35, Imperialdramon (as BK Imperialdramon) Lv38 */
+    { { { 259, 32, 909, 9999, 13, 135 }, { 450, 35, 1920, 9999, 27, 0 }, { 148, 38, 2101, 9999, 14, 444 } }, 10, { 351, 352, 353 }, 5, 20, { 26, -1 }, { 1, 0 } },
+    /* 2 Patamon line, Wind Power: Angemon (as Airdramon) Lv40, MagnaAngemon Lv43, Seraphimon (as BK Seraphimon) Lv46 */
+    { { { 20, 40, 1080, 9999, 65, 7 }, { 452, 43, 2304, 9999, 24, 0 }, { 214, 46, 2453, 9999, 16, 447 } }, 15, { 348, 349, 350 }, 8, 25, { 24, 60 }, { 1, 1 } },
+    /* 3 Agumon line, Fire Power: Greymon (as Tyrannomon) Lv48, MetalGreymon Lv51, WarGreymon (as BK WarGreymon) Lv54 */
+    { { { 5, 48, 1272, 9999, 77, 8 }, { 449, 51, 2688, 9999, 41, 0 }, { 213, 54, 2832, 9999, 16, 448 } }, 26, { 339, 340, 341 }, 13, 35, { 40, 62 }, { 1, 1 } },
+    /* 4 Guilmon line, Dark Power: Growlmon (as Flarerizamon) Lv56, WarGrowlmon Lv59, Gallantmon (as BK WarGrowlmon) Lv62 */
+    { { { 367, 56, 1417, 9999, 21, 69 }, { 451, 59, 3072, 9999, 33, 0 }, { 369, 62, 3216, 9999, 18, 445 } }, 32, { 357, 358, 359 }, 15, 40, { 5, 20 }, { 1, 1 } },
 };
 const int def_dri_challenge_count = 5;
 

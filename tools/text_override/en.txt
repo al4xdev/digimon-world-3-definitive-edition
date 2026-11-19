@@ -540,6 +540,9 @@ $RushTimes: " x"
 # The Rush's question: its two answers after their buttons' symbols (port/game/definitive_rush_panel.c).
 $RushAskYes: Rush it
 $RushAskNo: Fight
+# The battle's escape question (port/game/definitive_flee_ask.c): its two answers after their buttons' symbols.
+$FleeAskYes: Run
+$FleeAskNo: Back
 
 # The DRI Agents' Gauntlet (port/game/definitive_dri_screen.c): the list's title, the separator of a
 # line's stages ("Tyrannomon / MetalGreymon / BK WarGreymon"), a locked row's mark, the chosen challenge's lines (quoted:
@@ -585,6 +588,14 @@ $DriStages: "Stages felled "
 $DriNewReward: New reward
 $DriNoReward: No new reward
 $DriOk: × button: OK
+# A DRI Agent whose DDNA quest is done (definitive_dri_screen.c): his name on the question's band, his line (all the
+# simulations cleared or not) and the three answers.
+$DriAgent: DRI Agent
+$DriGreet: The DRI simulation network is online.<1>Want to put your team to the test?
+$DriGreetDone: You cleared every simulation - impressive!<1>Want to run one again?
+$DriAskSim: Simulations
+$DriAskTalk: Talk
+$DriAskBye: Leave
 
 # The Guide (port/game/definitive_quest.c, definitive_quest_screen.c): the field menu's entry, the screen's two tabs,
 # its keys, the auctions' states and the field's notices.
@@ -964,3 +975,17 @@ TALK06 361: <7>Guardromon<7>Another tamer! My<1>buffer is ready.<2,2><3>Save her
 # The Hunter's Mark (Black Market, definitive_market.c): item 27, a Japanese tag slot the US disc never gives.
 ITMNAM 27: Hunter's Mark
 ITMINF 27: Rare hunts: 2x Cores and crystals
+
+# Limit Break badge & Extended Final Act / Post-Credits Farewell (definitive_finale.c).
+$LimitBreak: LIMIT BREAK
+$FinIgorKey: <7>Igor<7>Welcome back, my<1>guest... So the shadow<1>has shown its true form.<2,2><3>May I hold the Velvet<1>Key for a moment?<2,2><3>...Look closely. It is<1>warm. It has changed.<2,2><3>This key no longer<1>belongs only to the<1>Velvet Room.<2,2><3>Your bonds reshaped it.<1>Take it back, and open<1>the door above.<2,2>
+$FinBond1: <7>Ivy<7>Hey, Junior! Don't you<1>dare give up on us now.<2,2><3>Remember who had your<1>back from day one?<1>Go finish this!<2,2>
+$FinBond2: <7>Teddy<7>Even trapped in the<1>network, I knew you'd<1>never stop fighting.<2,2><3>Every partner you<1>raised is standing<1>with you right now!<2,2>
+$FinBond3: <7>Kail<7>You saved Kurt, and<1>you never turned your<1>back on anyone.<2,2><3>We all believe in you.<1>Show that monster what<1>a real Tamer can do!<2,2>
+$FinBond4: <7>Sepikmon<7>The winds of every<1>sector answer your<1>call, Tamer.<2,2><3>No prey is beyond<1>the reach of a heart<1>that refuses to yield.<2,2>
+$FinBond5: <7>Gennai<7>Even the darkest data<1>cannot erase the light<1>you forged together.<2,2><3>Let every bond become<1>one flame. Rise!<2,2>
+$FinBondAll: <7>Everyone<7>You're not alone!<1>All of us are right<1>here with you!<2,2><3>You can do this!<1>Take our strength and<1>break through!<2,2>
+$FinSuperEvo: <7>Super Chosen Evolution<7>All of your partners'<1>bonds resonate as one!<2,2><3>Beyond every limit...<1>SUPER CHOSEN EVOLUTION!<2,2>
+$FinIgorBye: <7>Igor<7>Ah... you have walked<1>far, my guest.<2,2><3>This power belongs to<1>you now. It will serve<1>you well in the future.<2,2><3>I sense your heart can<1>still awaken many more<1>bonds yet to come.<2,2><3>As for me, I must go.<1>To a prison, a<1>limousine...<2,2><3>...or perhaps an<1>elevator. It is hard<1>to say.<2,2><3>For to me, past,<1>present, future, and<1>even places...<2,2><3>...all pass at the<1>very same time.<2,2><3>A dear little friend<1>will tend to your<1>bonds here now. Farewell.<2,2>
+$PipimonMeet: <7>Pipimon<7>Pipi! Hi there! Mr.<1>Igor asked me to watch<1>over this room!<2,2><3>I'm Pipimon! Let's see<1>what DNA bonds your<1>partners have!<2,2>
+$PipimonBack: <7>Pipimon<7>Pipi! Welcome back!<1>Let's check your<1>partners' DNA bonds!<2,2>

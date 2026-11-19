@@ -113,6 +113,13 @@ void def_story_battle_end(int r) { (void)r; }
 void def_time_battle_begin(void) {}
 void def_time_battle_end(int r) { (void)r; }
 void def_time_savestate(struct PortState *s) { (void)s; }
+void def_flee_ask_reset(void) {}
+void def_flee_ask_savestate(struct PortState *s) { (void)s; }
+void def_finale_battle_begin(void) {}
+int def_finale_golden_mode(void) { return 0; }
+int def_finale_enemy_dark(void) { return 0; }
+void def_finale_savestate(struct PortState *s) { (void)s; }
+RecordsDigimon *records_get_digimon(s32 id) { (void)id; return NULL; }
 int def_super_done(void) { return 0; }
 void def_super_blast_note(void) {}
 int def_record_chosen_charge(void) { return 0; }
@@ -180,13 +187,13 @@ int main(void) {
               k1 == 0 && a1 == 1 && k2 == 0 && a2 == 1 && k3 == 1 && a3 == 2 && k4 == 4 && a4 == 0 && k5 == 3 &&
                   a5 == 4 && k6 == 0 && a6 == 1);
     }
-    check("overlevel: DEF_OVERLEVEL_GAP == 8", DEF_OVERLEVEL_GAP == 8);
+    check("overlevel: DEF_OVERLEVEL_GAP == 3", DEF_OVERLEVEL_GAP == 3);
     gamestate_data.digimon[0].record.stats.values[0] = 20;
     records_state.enemies[0].digimon = 100;
-    records_state.enemies[0].level = 13; /* gap = 7 */
-    check("overlevel: gap 7 does not offer rush", def_rush_offer() == 0);
-    records_state.enemies[0].level = 12; /* gap = 8 */
-    check("overlevel: gap 8 offers rush", def_rush_offer() == 1);
+    records_state.enemies[0].level = 18; /* gap = 2 */
+    check("overlevel: gap 2 does not offer rush", def_rush_offer() == 0);
+    records_state.enemies[0].level = 17; /* gap = 3 */
+    check("overlevel: gap 3 offers rush", def_rush_offer() == 1);
 
     /* 2. Fixed 3-tier percentages */
     check("pct: +1=+20, +2=+35, +3=+50, -1=-15, -2=-25, -3=-35",

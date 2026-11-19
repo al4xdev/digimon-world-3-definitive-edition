@@ -1612,6 +1612,9 @@ static void fightstg_digivolve_apply_ready(FightstgDigivolve *obj, FightstgDigiv
     FightstgSlots *slots = obj->slots;
     FightstgModelParams *model;
     GfxLayer *layer;
+    s32 enemy = (obj->base.key2 & 2) != 0;
+    s32 self_slot = enemy ? 0x10 : 0;
+    s32 temp_slot = enemy ? 0x11 : 1;
 
     fightstg_digivolve_end_effects(data);
     layer = gfx_module.funcs.get_layer(0x1004);
@@ -1621,13 +1624,13 @@ static void fightstg_digivolve_apply_ready(FightstgDigivolve *obj, FightstgDigiv
     layer->set_clip_pos(layer, 0, 240);
     layer->set_clip_size(layer, 320, 0);
     if (need_add) {
-        slots->add(slots, 1, obj->base.key1, 0);
+        slots->add(slots, temp_slot, obj->base.key1, 0);
     }
     if (need_swap) {
-        slots->set_id(slots, 1, 0);
-        slots->reset_pos(slots, 0);
+        slots->set_id(slots, temp_slot, self_slot);
+        slots->reset_pos(slots, self_slot);
     }
-    model = slots->get_params(slots, 0);
+    model = slots->get_params(slots, self_slot);
     model->layers[0].shown = 1;
     model->layers[0].layer_id = 0x1004;
     model->layers[0].edges = 0;
@@ -1636,9 +1639,9 @@ static void fightstg_digivolve_apply_ready(FightstgDigivolve *obj, FightstgDigiv
 }
 #endif
 
-/* A model's scene (fightstg_digivolve_create): loads model base.key1 into slot 1 and its files (0x8A2: an
- * image), then shows it between two black bars (layers 0x1004 and 0x1003, closing and opening),
- * with effects 0x3E8... (fightstg_effect_create) and a fade; base.key2 picks the variant. */
+/* A model's scene (fightstg_digivolve_create): loads model base.key1 into slot 1 (or 0x11 for enemy) and its files
+ * (0x8A2: an image), then shows it between two black bars (layers 0x1004 and 0x1003, closing and opening),
+ * with effects 0x3E8... (fightstg_effect_create) and a fade; base.key2 bit 0 picks blast, bit 1 picks enemy side. */
 void fightstg_digivolve_update(FightstgDigivolve *obj, FightstgDigivolveData *data) {
     FightstgSlots *slots = obj->slots;
     FightstgCamera *camera = obj->camera;
@@ -1654,6 +1657,21 @@ void fightstg_digivolve_update(FightstgDigivolve *obj, FightstgDigivolveData *da
     Tim tim;
     s16 step;
     s32 z;
+#ifdef PC_PORT
+    s32 enemy = (obj->base.key2 & 2) != 0;
+    s32 blast = (obj->base.key2 & 1) != 0;
+    s32 self_slot = enemy ? 0x10 : 0;
+    s32 temp_slot = enemy ? 0x11 : 1;
+    s32 other_slot = enemy ? 0 : 0x10;
+    s32 cam_preset = enemy ? 2 : 9;
+#else
+    const s32 enemy = 0;
+    s32 blast = obj->base.key2 != 0;
+    const s32 self_slot = 0;
+    const s32 temp_slot = 1;
+    const s32 other_slot = 0x10;
+    const s32 cam_preset = 9;
+#endif
 
     switch (obj->base.state) {
     case OBJECT_STATE_INIT:
@@ -1685,7 +1703,7 @@ void fightstg_digivolve_update(FightstgDigivolve *obj, FightstgDigivolveData *da
             obj->stage = (FightstgStage *)heap_objects.find(0x15, -1, -1);
             obj->file = (s16)(((FightstgModelRecordA *)fightstg_models.get(obj->base.key1))->model_file >> 16);
             cdload_module.queue_file(obj->file);
-            obj->idle_anim = slots->get_params(slots, 0)->idle_anim;
+            obj->idle_anim = slots->get_params(slots, self_slot)->idle_anim;
             obj->base.next_step(obj);
             /* fallthrough */
         case 2:
@@ -1713,7 +1731,9 @@ void fightstg_digivolve_update(FightstgDigivolve *obj, FightstgDigivolveData *da
             s32 need_add = (obj->base.step == 1 && obj->base.substep == 0);
             s32 need_swap = (obj->base.step < 6);
             def_digivolve_skipped = 1;
-            def_evo_form_mark(obj->base.key1);
+            if (!enemy) {
+                def_evo_form_mark(obj->base.key1);
+            }
             fightstg_digivolve_apply_ready(obj, data, need_add, need_swap);
             obj->base.timer = 0;
             obj->base.step = 11;
@@ -1725,7 +1745,7 @@ void fightstg_digivolve_update(FightstgDigivolve *obj, FightstgDigivolveData *da
         case 0:
         default:
 #ifdef PC_PORT
-            if (def_on() && def_evo_form_seen(obj->base.key1)) {
+            if (def_on() && !enemy && def_evo_form_seen(obj->base.key1)) {
                 fightstg_digivolve_apply_ready(obj, data, 1, 1);
                 obj->base.timer = 0;
                 obj->base.step = 15;
@@ -1733,7 +1753,7 @@ void fightstg_digivolve_update(FightstgDigivolve *obj, FightstgDigivolveData *da
                 break;
             }
 #endif
-            stage->change(stage, obj->base.key2 != 0 ? 0x1F : 0x1C, 0x20, 0x20);
+            stage->change(stage, blast ? 0x1F : 0x1C, 0x20, 0x20);
             obj->base.next_step(obj);
             /* fallthrough */
         case 1:
@@ -1744,7 +1764,13 @@ void fightstg_digivolve_update(FightstgDigivolve *obj, FightstgDigivolveData *da
                     break;
                 }
                 sound_module.play(0x41140000);
-                slots->add(slots, 1, obj->base.key1, 0);
+                if (enemy) {
+                    FightstgModelParams *ep = slots->get_params(slots, self_slot);
+                    ep->layers[0].shown = 1;
+                    ep->anim = blast ? 14 : 13;
+                    slots->get_params(slots, other_slot)->layers[0].shown = 0;
+                }
+                slots->add(slots, temp_slot, obj->base.key1, 0);
                 obj->base.next_substep(obj);
                 /* fallthrough */
             case 1:
@@ -1765,29 +1791,32 @@ void fightstg_digivolve_update(FightstgDigivolve *obj, FightstgDigivolveData *da
             obj->bottom_bar.y = 240;
             obj->bottom_bar.w = 320;
             obj->bottom_bar.h = 0;
-            params = slots->get_params(slots, 0);
-            camera->get_preset(camera, 0, 9);
+            params = slots->get_params(slots, self_slot);
+            camera->get_preset(camera, self_slot, cam_preset);
             z = params->start_pos.z;
             z = -z;
             fightstg_camera_setting.eye[2] += z;
             fightstg_camera_setting.target[2] += z;
             camera->set(camera, &fightstg_camera_setting);
+            params->layers[0].shown = 1;
+            params->layers[0].layer_id = 0x1004;
+            params->layers[0].edges = 0;
             params->layers[1].shown = 1;
             params->layers[1].edges = 1;
             params->layers[1].layer_id = 0x1003;
             params->pos.x = 0;
             params->pos.z = 0;
             params->rot.x = 0;
-            params->rot.y = 0x800;
+            params->rot.y = enemy ? 0 : 0x800;
             params->rot.z = 0;
             params->pos.y = params->start_pos.y;
-            if (obj->base.key2 == 0) {
+            if (!blast) {
                 params->anim = 13;
             } else {
                 params->anim = 14;
             }
-            slots->get_params(slots, 0x10)->layers[0].shown = 0;
-            if (obj->base.key2 == 0) {
+            slots->get_params(slots, other_slot)->layers[0].shown = 0;
+            if (!blast) {
                 data->effects[0] = fightstg_effect_create(0x3E8, (SVECTOR *)&pos_origin);
                 data->effects[1] = fightstg_effect_create(0x3E9, (SVECTOR *)&pos_origin);
             } else {
@@ -1804,7 +1833,7 @@ void fightstg_digivolve_update(FightstgDigivolve *obj, FightstgDigivolveData *da
                 obj->top_bar.h = 0;
                 obj->bottom_bar.h = 240;
                 obj->bottom_bar.y = 0;
-                slots->get_params(slots, 0)->layers[0].shown = 0;
+                slots->get_params(slots, self_slot)->layers[0].shown = 0;
                 data->effects[2] = fightstg_effect_create(0x3EA, (SVECTOR *)&pos_center);
                 obj->base.next_step(obj);
             }
@@ -1838,16 +1867,16 @@ void fightstg_digivolve_update(FightstgDigivolve *obj, FightstgDigivolveData *da
             }
             break;
         case 6:
-            slots->set_id(slots, 1, 0);
-            model = slots->get_params(slots, 0);
+            slots->set_id(slots, temp_slot, self_slot);
+            model = slots->get_params(slots, self_slot);
             model->layers[0].shown = 1;
             model->layers[0].layer_id = 0x1004;
             model->layers[0].edges = 0;
             model->layers[1].shown = 1;
             model->layers[1].edges = 1;
             model->layers[1].layer_id = 0x1003;
-            slots->reset_pos(slots, 0);
-            camera->get_preset(camera, 0, 9);
+            slots->reset_pos(slots, self_slot);
+            camera->get_preset(camera, self_slot, cam_preset);
             z = model->start_pos.z;
             z = -z;
             fightstg_camera_setting.eye[2] += z;
@@ -1857,7 +1886,7 @@ void fightstg_digivolve_update(FightstgDigivolve *obj, FightstgDigivolveData *da
             model->pos.y = model->start_pos.y;
             model->pos.z = 0;
             model->rot.x = 0;
-            model->rot.y = 0x800;
+            model->rot.y = enemy ? 0 : 0x800;
             model->rot.z = 0;
             obj->top_bar.x = 0;
             obj->top_bar.y = 0;
@@ -1893,8 +1922,8 @@ void fightstg_digivolve_update(FightstgDigivolve *obj, FightstgDigivolveData *da
                 obj->top_bar.h = 240;
                 obj->bottom_bar.y = 240;
                 obj->bottom_bar.h = 0;
-                slots->get_params(slots, 0)->layers[1].shown = 0;
-                data->effects[3] = fightstg_effect_create(obj->base.key2 == 0 ? 0x3EB : 0x3F0,
+                slots->get_params(slots, self_slot)->layers[1].shown = 0;
+                data->effects[3] = fightstg_effect_create(!blast ? 0x3EB : 0x3F0,
                                                          (SVECTOR *)&pos_corner);
                 obj->base.next_step(obj);
             }
@@ -1906,7 +1935,7 @@ void fightstg_digivolve_update(FightstgDigivolve *obj, FightstgDigivolveData *da
             bar->set_clip_size(bar, obj->bottom_bar.w, obj->bottom_bar.h);
             break;
         case 9:
-            slots->get_params(slots, 0)->anim = 13;
+            slots->get_params(slots, self_slot)->anim = 13;
             obj->base.next_step(obj);
             /* fallthrough */
         case 10:
@@ -1924,8 +1953,8 @@ void fightstg_digivolve_update(FightstgDigivolve *obj, FightstgDigivolveData *da
             if (stage->base.state == OBJECT_STATE_DONE) {
                 break;
             }
-            slots->reset_pos(slots, 0);
-            camera->set(camera, camera->get_preset(camera, 0, 9));
+            slots->reset_pos(slots, self_slot);
+            camera->set(camera, camera->get_preset(camera, self_slot, cam_preset));
             obj->base.next_step(obj);
             break;
         case 13:
@@ -1935,8 +1964,8 @@ void fightstg_digivolve_update(FightstgDigivolve *obj, FightstgDigivolveData *da
             switch (obj->base.substep) {
             case 0:
             default:
-                slots->get_params(slots, 0x10)->layers[0].shown = 1;
-                slots->get_params(slots, 0)->anim = (obj->base.key2 != 0 || obj->idle_anim == 0) ? 1 : 2;
+                slots->get_params(slots, other_slot)->layers[0].shown = 1;
+                slots->get_params(slots, self_slot)->anim = (blast || obj->idle_anim == 0) ? 1 : 2;
                 camera->move(camera, 0, camera->get_default(camera), 60);
                 sound_module.play(records_state.music);
                 obj->base.next_substep(obj);
@@ -1947,7 +1976,7 @@ void fightstg_digivolve_update(FightstgDigivolve *obj, FightstgDigivolveData *da
                     break;
                 }
 #ifdef PC_PORT
-                if (def_on()) {
+                if (def_on() && !enemy) {
                     def_evo_form_mark(obj->base.key1);
                 }
 #endif
@@ -1961,10 +1990,12 @@ void fightstg_digivolve_update(FightstgDigivolve *obj, FightstgDigivolveData *da
             if (obj->base.timer < 10) {
                 break;
             }
-            slots->get_params(slots, 0x10)->layers[0].shown = 1;
-            slots->get_params(slots, 0)->anim = (obj->base.key2 != 0 || obj->idle_anim == 0) ? 1 : 2;
+            slots->get_params(slots, other_slot)->layers[0].shown = 1;
+            slots->get_params(slots, self_slot)->anim = (blast || obj->idle_anim == 0) ? 1 : 2;
             camera->set(camera, camera->get_default(camera));
-            def_evo_form_mark(obj->base.key1);
+            if (!enemy) {
+                def_evo_form_mark(obj->base.key1);
+            }
             obj->base.set_state(obj, OBJECT_STATE_END);
             break;
 #endif
@@ -1983,6 +2014,16 @@ OBJECT_V0(Object *) fightstg_digivolve_create(s32 digimon, s32 blast) {
     obj->key2 = blast;
     OBJECT_V0_RETURN(obj) /* PC_PORT: FINDINGS 8: callers use the object (v0) */
 }
+
+#ifdef PC_PORT
+Object *fightstg_digivolve_create_enemy(s32 digimon, s32 blast) {
+    Object *obj = object_new(fightstg_digivolve_update, sizeof(FightstgDigivolve), sizeof(FightstgDigivolveData));
+
+    obj->key1 = digimon;
+    obj->key2 = (blast ? 1 : 0) | 2;
+    return obj;
+}
+#endif
 
 /* Starts a fade up (down == 0) or down over `frames` frames. */
 void fightstg_fade_start(Fade *obj, s32 down, s32 frames) {

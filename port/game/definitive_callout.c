@@ -66,10 +66,16 @@ static const Glyph glyphs[] = {
     { 'D', 12, 4, { { 0, 0, 4, 16, 0, 4 }, { 0, 4, 10, 4, 4, 10 }, { 12, 4, 10, 16, 4, 10 }, { 2, 8, 12, 14, 8, 12 } } },
     { 'G', 12, 5, { { 0, 1, 11, 4, 1, 11 }, { 1, 0, 4, 15, 0, 4 }, { 12, 1, 11, 16, 1, 11 }, { 8, 8, 12, 14, 8, 12 },
                     { 7, 6, 12, 10, 6, 12 } } },
-    { 'M', 15, 4, { { 0, 0, 4, 16, 0, 4 }, { 0, 11, 15, 16, 11, 15 }, { 0, 4, 7, 10, 6, 9 }, { 0, 8, 11, 10, 6, 9 } } },
+    /* the V stops short of the stems' tops, with a notch between its arms: a filled top read as an R under 12 pixels */
+    { 'M', 15, 4, { { 0, 0, 4, 16, 0, 4 }, { 0, 11, 15, 16, 11, 15 }, { 0, 4, 6, 9, 6, 8 }, { 0, 9, 11, 9, 7, 9 } } },
     { 'B', 12, 5, { { 0, 0, 4, 16, 0, 4 }, { 0, 4, 10, 4, 4, 10 }, { 6, 4, 10, 10, 4, 10 }, { 12, 4, 10, 16, 4, 10 },
                     { 1, 8, 12, 15, 8, 12 } } },
     { 'L', 10, 2, { { 0, 0, 4, 16, 0, 4 }, { 12, 4, 10, 16, 4, 10 } } },
+    /* the title's Portuguese (RAIZ, QUER) */
+    { 'Q', 12, 5, { { 1, 0, 4, 15, 0, 4 }, { 1, 8, 12, 12, 8, 12 }, { 0, 1, 11, 4, 1, 11 }, { 12, 1, 9, 16, 1, 9 },
+                    { 10, 6, 9, 16, 9, 12 } } },
+    { 'X', 12, 2, { { 0, 0, 4, 16, 8, 12 }, { 0, 8, 12, 16, 0, 4 } } },
+    { 'Z', 11, 3, { { 0, 0, 11, 4, 0, 11 }, { 4, 7, 11, 12, 0, 4 }, { 12, 0, 11, 16, 0, 11 } } },
     { '2', 11, 5, { { 0, 0, 10, 4, 0, 10 }, { 2, 7, 11, 8, 7, 11 }, { 6, 1, 10, 10, 1, 10 }, { 8, 0, 4, 14, 0, 4 },
                     { 12, 0, 11, 16, 0, 11 } } },
     { '3', 11, 4, { { 0, 0, 10, 4, 0, 10 }, { 6, 2, 10, 10, 2, 10 }, { 12, 0, 10, 16, 0, 10 }, { 1, 7, 11, 15, 7, 11 } } },
@@ -329,8 +335,8 @@ static void place(GfxLayer *layer, const Style *st) {
     if (callout.y < -48) {
         callout.y = -48;
     }
-    if (callout.y > 70) {
-        callout.y = 70;
+    if (callout.y > 36) {
+        callout.y = 36;
     }
     callout.placed = 1;
 }
@@ -479,7 +485,7 @@ static POLY_F4 *poly_slab(POLY_F4 *poly, u32 *ot, const Slab *s, int pen, int x,
 
 /* Plain text in the callouts' letters, for a screen where the game's font is not there (the title): upright with the
  * letters' lean, left end at x and top at y on `layer`'s ordering table entry `depth`, `size` 8.8 of the 16-pixel
- * letters, one flat colour. Capitals, 2, 3, ! and ?, and the accented capitals in UTF-8 (FÁCIL, NÃO, AÇÃO); another
+ * letters, one flat colour. Capitals, digits, ! ? % :, and the accented capitals in UTF-8 (FÁCIL, NÃO, AÇÃO); another
  * character is a space. Returns the width drawn. As every primitive here, a later call is drawn under an earlier one.
  * With no layer it only measures. */
 int def_poly_text(GfxLayer *layer, s32 depth, int x, int y, int size, const char *text, const u8 *rgb) {

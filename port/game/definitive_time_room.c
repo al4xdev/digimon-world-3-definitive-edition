@@ -352,8 +352,12 @@ void def_time_restore(const short *party, const short *hp, const short *mp) {
 /* The trial's battle: the challenger's three, on Megadeath's ground; no prize. */
 static int fight(void) {
     const DefTimeTrial *t = &def_time_trials[trial_of(tm.round)];
+    s32 tm_bank = 0, tm_music = TM_MUSIC;
 
-    if (!def_time_set_battle(t, TM_STAGE, TM_MUSIC, tm.party, tm.hp, tm.mp)) {
+    if (trial_of(tm.round) == 0) { /* Oikawa: Butter-Fly Adventure theme */
+        dw3_adventure_music(&tm_bank, &tm_music);
+    }
+    if (!def_time_set_battle(t, TM_STAGE, tm_music, tm.party, tm.hp, tm.mp)) {
         return 0;
     }
     records_state.has_prize = 0;

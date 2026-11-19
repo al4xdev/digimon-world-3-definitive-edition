@@ -239,7 +239,9 @@ def kaili_dollars(rows, src_name, names=NAMES):
 
 def dollar_cap(en_b, pt_b=b"", *more):
     need = max([len(en_b), len(pt_b)] + [len(b) for b in more])
-    return 448 if need > 96 else 128
+    if need <= 96:
+        return 128
+    return max(448, ((need + 63) // 64) * 64)
 
 
 def render(en_rows, pt_rows, tables, inv):

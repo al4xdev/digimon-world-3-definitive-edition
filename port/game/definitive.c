@@ -108,9 +108,11 @@ void def_log_begin(void) {
     def_callout_show(DEF_CALLOUT_NONE, 0);
     def_hunt_reward_done(); /* a reward a results screen never showed does not carry over */
     def_dri_battle_begin(); /* whether this battle is the DRI simulation just set up */
+    def_flee_ask_reset();   /* the escape's question: a new battle's heap */
     def_purify_battle_begin(); /* Blast phase 2: whether it is a purification's wave */
     def_time_battle_begin();   /* the Time Room: whether it is a trial */
     def_story_battle_begin();  /* the Oikawa's arc: whether it is his */
+    def_finale_battle_begin(); /* Extended Final Act: Dark Galacticmon / Super Chosen Evolution */
     if (def_hunt_active() || def_super_battle_ready()) {
         def_callout_show(DEF_CALLOUT_RARE, 1); /* a Rare Target; a Super Rare too */
     }
@@ -475,6 +477,40 @@ const unsigned char *def_twice_label(void) {
     return def_str_Twice;
 }
 
+/* Limit Break (> 999 stats): scoped in v1.0 to Chosen Evolution (side 0) and Dark Galacticmon (side 1). */
+int def_limit_break_active(int side) {
+    if (!def_on()) {
+        return 0;
+    }
+    if (side == 0) {
+        if (def_finale_golden_mode()) {
+            return 1;
+        }
+        if (def_blast_chosen_mode()) {
+            s32 cur = fightstg_battle.state.current[0];
+            if (cur >= 0 && cur < 3 && fightstg_battle.state.members[0][cur].blasted != 0) {
+                FightstgStats *st = fightstg_rules.get_stats(0, 0, cur);
+                int i;
+                for (i = 0; i < 5; i++) {
+                    if (st->stats[i] > 999) {
+                        return 1;
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+    if (side == 1) {
+        return def_finale_enemy_dark();
+    }
+    return 0;
+}
+
+const unsigned char *def_limit_break_label(void) {
+    extern const unsigned char def_str_LimitBreak[];
+    return def_str_LimitBreak;
+}
+
 const unsigned char *def_inspect_element(int e) {
     static const unsigned char *const names[7] = { def_str_Fire, def_str_Water,   def_str_Ice,  def_str_Wind,
                                                     def_str_Thunder, def_str_Machine, def_str_Dark };
@@ -663,6 +699,7 @@ void def_savestate(struct PortState *s) {
     def_bestiary_savestate(s);
     def_hunt_savestate(s);
     def_rush_savestate(s); /* the floating Rush's panel and the field's heap it points into */
+    def_flee_ask_savestate(s); /* the escape's question and the battle's heap it points into */
     PORT_STATE_VAR(s, hit_class);
     PORT_STATE_VAR(s, hit_elem);
     PORT_STATE_VAR(s, hit_id);
@@ -679,6 +716,7 @@ void def_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, plug_last_stand_used);
     def_dri_savestate(s); /* a battle loaded mid-DRI-simulation is still one */
     def_purify_savestate(s); /* Blast phase 2: and mid-purification */
+    def_finale_savestate(s); /* Extended Final Act & Post-Credits Farewell */
     def_superhunt_screen_savestate(s); /* the Sepikmon's board and the hunts' reward panel */
     def_recolor_savestate(s); /* which model is the rare foe's, for its palette */
     def_skin_savestate(s);
@@ -885,6 +923,14 @@ void def_blast_boost_stats(int member, FightstgStats *out) {
     FightstgMember *m = &fightstg_battle.state.members[0][member];
     int pct, i, v;
 
+    if (def_finale_golden_mode()) {
+        for (i = 0; i < 5; i++) {
+            if (out->stats[i] < 1650) {
+                out->stats[i] = 1650;
+            }
+        }
+        return;
+    }
     if (!def_on() || boost_off || !m->blasted || def_purify_fighting()) {
         return;
     }
@@ -1985,7 +2031,12 @@ const unsigned char *def_species_name(int species) {
             return (const unsigned char *)font_get_entry(names, recs[i].name);
         }
     }
-    return NULL;
+    { /* a player form that fights as an enemy (the DRI Gauntlet's stages): its own name */
+        extern RecordsDigimon *records_get_digimon(s32 id);
+        RecordsDigimon *form = records_get_digimon(species);
+
+        return form != NULL ? (const unsigned char *)font_get_entry(names, form->name_id) : NULL;
+    }
 }
 
 /* The results of the battle records_state holds, as won by the party's first member able to fight; no OVERFINISH. */

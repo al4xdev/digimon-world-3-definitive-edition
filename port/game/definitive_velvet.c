@@ -58,6 +58,7 @@ extern const unsigned char def_str_VelvetTitle[], def_str_VelvetTitle2[], def_st
 #define VL_SOUND 0x60EC0000
 void dw3_velvet_music(s32 *music, s32 *sound); /* definitive_velvet_music.c: the arrangement's bank and key */
 int dw3_velvet_igor_head(FieldstgActor *actor, u32 *ot, s32 x, s32 y); /* definitive_velvet_igor.c: his own head */
+int dw3_velvet_pipimon_art(FieldstgActor *actor, u32 *ot, s32 x, s32 y); /* definitive_finale.c: Pipimon post-credits */
 #define VL_MERCHANT 42  /* the Black Market's trader: the figure that traded in map 0x20C */
 /* The mentor (the Gennai of the room, owner 2026-11-16: an old figure of the game until one is drawn): 0x39, the old man
  * the game's Grandpas and Tamer Genji wear (P074JIJI): bald, white-bearded, five facings. Its frame is 24x32, which the
@@ -824,6 +825,9 @@ int dw3_velvet_actor_art(FieldstgActor *actor, u32 *ot, s32 x, s32 y) {
     /* Igor's and the dealer's figures are the room's alone: told by the figure, not vl_room, which a way out
      * (dw3_velvet_leave) clears as the fade out starts, the room still on screen (the opening's dream ends so) */
     if (vl_on() && actor != NULL && actor->placed == &vl_igor) {
+        if (def_finale_pipimon_active() && !def_finale_blue_room_active()) {
+            return dw3_velvet_pipimon_art(actor, ot, x, y); /* post-credits: Pipimon replaces Igor */
+        }
         return dw3_velvet_igor_head(actor, ot, x, y); /* over the game's figure, which is drawn too */
     }
     if (!vl_dealer(actor)) {
@@ -961,7 +965,13 @@ void dw3_velvet_draw(void) {
             vl_pulled = 0;
         }
         if (vl_igor_phase == 1 && fieldstg_stage.actor_busy == 0) {
+            int was_blue = def_finale_blue_room_active();
             vl_igor_phase = 0;
+            def_finale_igor_done(); /* Extended Final Act key return or Post-Credits farewell */
+            if (was_blue && !def_finale_blue_room_active()) {
+                vl_scene = 0;
+                vl_pulled = 0;
+            }
             def_story_igor_done(); /* the opening's dream ends with his line */
         }
         if (vl_sepik_phase == 1 && fieldstg_stage.actor_busy == 0) {
@@ -1073,6 +1083,12 @@ int dw3_velvet_frame(void) {
     s32 gate;
 
     vl_icons_run();
+    if (vl_on()) {
+        def_finale_draw_blue_room();
+        if (def_finale_field_frame()) {
+            return 0;
+        }
+    }
     if (!vl_on() || vl_room) {
         return 0;
     }
@@ -1118,6 +1134,9 @@ int dw3_velvet_frame(void) {
     if (gate) {
         def_time_enter(); /* the Warp Gate's door: the room is the Time Room, Igor tells it */
         vl_pulled = DW3_VELVET_PULL_IGOR;
+    } else if (def_finale_postcredits_enter(map)) {
+        vl_scene = 1; /* post-credits: Igor alone in the Blue Room for his farewell */
+        vl_pulled = DW3_VELVET_PULL_IGOR;
     } else if (def_story_room_intro()) {
         vl_scene = 1; /* Seiryu: Igor alone shows the room again, then the scene cuts (dw3_velvet_cut) */
         vl_pulled = DW3_VELVET_PULL_IGOR;
@@ -1139,6 +1158,9 @@ void dw3_velvet_leave(s32 *map, s32 *x, s32 *y, s32 *dir) {
     s32 node_dir;
     s32 time;
 
+    if (vl_room && *map == 0x20A && def_finale_on_top_door(map, x, y, dir)) {
+        return; /* Phase 3: top door opens into the Blue Room Bonds sequence */
+    }
     if (vl_room && (time = def_time_leave(map, x, y, dir)) != 0) {
         if (time == 2) { /* out of the Time Room, to the gate */
             vl_room = 0;
@@ -1176,7 +1198,7 @@ int dw3_velvet_event_closed(s32 type, s32 param) {
     if (def_time_on() && def_time_challenger() != NULL) {
         return type == 8; /* a trial's area: none of its own events (its exits lead back to the room) */
     }
-    return vl_room && type == 1 && param == 0x20A && !def_time_side_door_open();
+    return vl_room && type == 1 && param == 0x20A && !def_time_side_door_open() && !def_finale_top_door_open();
 }
 
 /* The room's figures, as the actor is made: the shopkeeper keeps his own sprite and keeps facing his counter instead of
@@ -1262,6 +1284,15 @@ int dw3_velvet_text_own(s32 base_id, s32 index) {
 
 /* The visit's opener: the shopkeeper says a greeting (the two take turns) unless the last visit ended in a trade or in
  * nothing bought, which have their own lines. The game's own talk shows it; the market then opens behind it. */
+/* Native item-pickup sparkle/aura burst around the protagonist (fieldstg_actor_effect, object 0x16, step 3). */
+void def_field_item_sparkle(void) {
+    Object *fx = heap_objects.find(0x16, -1, -1);
+
+    if (fx != NULL) {
+        ((void (*)(Object *, s32))fx->set_step)(fx, 3);
+    }
+}
+
 void dw3_velvet_shop_talk(FieldstgActor *actor) {
     s32 time;
 
@@ -1276,7 +1307,11 @@ void dw3_velvet_shop_talk(FieldstgActor *actor) {
     }
     if (vl_on() && vl_room && actor != NULL && actor->base.key1 == VL_DEMON && actor->base.key2 == 1) {
         /* The Bell changes hands as he speaks: the line says what just happened. */
-        vl_demon_talks[0].message = def_super_toggle() ? VL_DEMON_GIVE : VL_DEMON_TAKE;
+        int gave = def_super_toggle();
+        vl_demon_talks[0].message = gave ? VL_DEMON_GIVE : VL_DEMON_TAKE;
+        if (gave) {
+            def_field_item_sparkle();
+        }
         port_log("velvet: the Bell's keeper, message %d (Super Hard %s)", vl_demon_talks[0].message,
                  def_super_on() ? "on" : "off");
         return;
@@ -1299,7 +1334,11 @@ void dw3_velvet_shop_talk(FieldstgActor *actor) {
         return;
     }
     if (vl_on() && vl_room && actor != NULL && actor->placed == &vl_igor) {
-        vl_igor_talks[0].message = def_story_igor_line(); /* the key, or his reading of the party's bonds */
+        s32 fin_msg = def_finale_igor_line();
+        vl_igor_talks[0].message = fin_msg != 0 ? fin_msg : def_story_igor_line();
+        if (vl_igor_talks[0].message == 18 || vl_igor_talks[0].message == 20) {
+            def_field_item_sparkle(); /* Velvet Key / DV Plug given */
+        }
         vl_igor_phase = 1;
         port_log("velvet: Igor, message %d", vl_igor_talks[0].message);
         return;

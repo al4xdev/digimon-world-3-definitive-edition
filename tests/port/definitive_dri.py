@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """The DRI Agents' Gauntlet: port/game/definitive_dri.c compiled with definitive_bestiary.c against a
-driver with stand-in challenges and agents: the stage-to-tier rule, the agents' match, the wait after an agent's
-talk (the list opens only once it is over), each challenge's Tamer texts, the unlock (once, paid exactly,
+driver with stand-in challenges and agents: the stage-to-tier rule, the agents' match, each challenge's Tamer
+texts, the unlock (once, paid exactly,
 never again), the rewards (each tier once, the best stage only rises), the second card record's bytes 152..157 written
 and read back (an older record as nothing unlocked) and a replay script (nothing). Then the generated table checked
 against its rule (tools/gen_dri_challenges.py --check) and against the game's data: every stage an enemy species, every
@@ -20,7 +20,7 @@ def table_ok():
     h = (ROOT / "port/game/definitive.h").read_text()
     cap = int(re.search(r"#define DEF_DRI_CHALLENGES (\d+)", h).group(1))
     num = r"(-?\d+)"
-    stage = r"\{ " + ", ".join([num] * 5) + r" \}"
+    stage = r"\{ " + ", ".join([num] * 6) + r" \}"
     rows = re.findall(r"\{ \{ " + stage + ", " + stage + ", " + stage + r" \}, (\d+), \{ (\d+), (\d+), (\d+) \}, "
                       r"(-?\d+), (\d+), \{ (-?\d+), (-?\d+) \}, \{ (\d+), (\d+) \} \},", gen)
     count = int(re.search(r"def_dri_challenge_count = (\d+);", gen).group(1))
@@ -35,9 +35,10 @@ def table_ok():
     ok = len(rows) == count and 0 < count <= cap
     for r in rows:
         v = [int(x) for x in r]
-        st = [v[i * 5:i * 5 + 5] for i in range(3)]
-        battle, rewards, common, common_n, rare, rare_n = v[15], v[16:19], v[19], v[20], v[21:23], v[23:25]
-        ok &= all(s[0] in species and 0 < s[1] <= 99 and 0 < s[2] <= 30000 and s[4] > 0 for s in st)
+        st = [v[i * 6:i * 6 + 6] for i in range(3)]
+        battle, rewards, common, common_n, rare, rare_n = v[18], v[19:22], v[22], v[23], v[24:26], v[26:28]
+        # a player form (s[5], its base species, set) is not an enemy species: its base is
+        ok &= all((s[5] in species if s[5] else s[0] in species) and 0 < s[1] <= 99 and 0 < s[2] <= 30000 and s[4] > 0 for s in st)
         ok &= st[0][1] < st[1][1] < st[2][1]
         ok &= 0 < battle < battles and all(x in acc for x in rewards) and rewards == sorted(rewards)
         ok &= (common == -1 and common_n == 0) or (0 <= common < 16 and 0 < common_n <= 99)

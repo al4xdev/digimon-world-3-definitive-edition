@@ -87,6 +87,9 @@ Object *fightstg_tech_create(s32 side, s32 action);
 Object *fightstg_item_create(s32 member);
 void fightstg_events_add_escape(u8 side);
 Object *fightstg_digivolve_create(s32 id, s32 blast);
+#ifdef PC_PORT
+Object *fightstg_digivolve_create_enemy(s32 id, s32 blast);
+#endif
 void fightstg_events_add_boost_end(void);
 Fade *fightstg_fade_create(void);
 Object *fightstg_player_reaction_create(s32 arg0, s32 arg1);
@@ -844,6 +847,10 @@ void wfightmn_battle_end(WfightmnMain *obj, WfightmnMainData *data) {
                 gamestate_data.funcs.set_next_map(gamestate_data.field_map, 0);
                 break;
             }
+            if (fightstg_battle.state.type == 6 && def_finale_victory() == 2) {
+                gamestate_data.funcs.set_next_map(gamestate_data.field_map, 0);
+                break;
+            }
 #endif
             if (fightstg_battle.state.type == 6) {
                 gamestate_data.funcs.set_next_map(0xE0B, 0);
@@ -853,9 +860,10 @@ void wfightmn_battle_end(WfightmnMain *obj, WfightmnMainData *data) {
             break;
         case 2:
 #ifdef PC_PORT
-            /* The Gauntlet, Blast phase 2, the Time Room, the Oikawa's arc: a lost simulation, purification, trial or
-             * fight with him is no game over: back to the field */
-            if (def_dri_defeat() || def_purify_defeat() || def_time_defeat() || def_story_defeat()) {
+            /* The Gauntlet, Blast phase 2, the Time Room, the Oikawa's arc, the Extended Final Act: a lost
+             * simulation, purification, trial, Oikawa fight or scripted Dark Galacticmon defeat is no game over */
+            if (def_dri_defeat() || def_purify_defeat() || def_time_defeat() || def_story_defeat() ||
+                def_finale_defeat()) {
                 gamestate_data.funcs.set_next_map(gamestate_data.field_map, 0);
                 break;
             }
@@ -1180,6 +1188,20 @@ void wfightmn_blast(WfightmnMain *obj, WfightmnMainData *data) {
                 stage = 4;
             }
             member = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
+#ifdef PC_PORT
+            if (def_finale_trigger_super_chosen()) {
+                int partner_id = 0, result_id = 0;
+                extern const unsigned char def_str_FinSuperEvo[];
+
+                member->base_digimon = member->digimon;
+                member->blasted = 1;
+                data->wait.obj = message_box_create(0x1005, (u8 *)def_str_FinSuperEvo, -1);
+                (void)partner_id;
+                (void)result_id;
+                obj->base.substep = 3;
+                break;
+            }
+#endif
             digimon = records_get_digimon_func(records_digimon[id].id);
             member->base_digimon = member->digimon;
             member->digimon = records_digimon[digimon->blast_forms[stage] - 1].id;
@@ -1218,6 +1240,21 @@ void wfightmn_blast(WfightmnMain *obj, WfightmnMainData *data) {
             obj->base.set_step(obj, 2);
         }
         break;
+#ifdef PC_PORT
+    case 3:
+        if (data->wait.obj == NULL) {
+            int partner_id = 0, result_id = 0;
+
+            if (def_finale_dna_chain_next(&partner_id, &result_id)) {
+                member = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
+                member->digimon = result_id;
+                data->wait.obj = fightstg_digivolve_create(result_id, 1);
+            } else {
+                obj->base.set_step(obj, 2);
+            }
+        }
+        break;
+#endif
     }
 }
 
@@ -1313,15 +1350,30 @@ void wfightmn_knockout(WfightmnMain *obj, WfightmnMainData *data) {
                     obj->base.substep = 2;
                 } else {
                     members = fightstg_battle.state.members[1] + found;
-                    obj->base.substep = 3;
                     obj->msg_args[0] = found;
                     obj->msg_args[1] = fightstg_battle.state.current[1];
-                    fightstg_battle.state.current[1] = found;
-                    data->wait.scene = fightstg_entrance_create(members->digimon, 1, wfightmn_update_idle_anim(0x10, 0));
-                    fightstg_battle.state.current[1] = obj->msg_args[1];
+#ifdef PC_PORT
+                    if (def_dri_fighting() || def_purify_fighting()) {
+                        obj->base.substep = 7;
+                        data->wait.obj = fightstg_digivolve_create_enemy(members->digimon, def_purify_fighting() ? 1 : 0);
+                    } else
+#endif
+                    {
+                        obj->base.substep = 3;
+                        fightstg_battle.state.current[1] = found;
+                        data->wait.scene = fightstg_entrance_create(members->digimon, 1, wfightmn_update_idle_anim(0x10, 0));
+                        fightstg_battle.state.current[1] = obj->msg_args[1];
+                    }
                 }
             } else {
 #ifdef PC_PORT
+                if (ev->args[0] != 0 && def_finale_on_galacticmon_ko()) {
+                    obj->base.substep = 7;
+                    obj->msg_args[0] = 1;
+                    obj->msg_args[1] = fightstg_battle.state.current[1];
+                    data->wait.obj = fightstg_digivolve_create_enemy(fightstg_battle.state.members[1][1].digimon, 1);
+                    break;
+                }
                 if (ev->args[0] == 0 && def_blast_plug_last_stand(fightstg_battle.state.current[0])) {
                     s32 cur = fightstg_battle.state.current[0];
                     s32 k;
@@ -1433,6 +1485,20 @@ void wfightmn_knockout(WfightmnMain *obj, WfightmnMainData *data) {
             obj->msg_args[0] = 3;
             obj->msg_args[1] = 0;
             data->wait.msg->show(data->wait.msg, 23, obj->msg_args);
+            obj->base.set_step(obj, 2);
+        }
+        break;
+    case 7:
+        if (data->wait.obj == NULL) {
+            fightstg_battle.state.current[1] = obj->msg_args[0];
+            def_dri_stage_enters(obj->msg_args[0]);
+            def_purify_stage_enters(obj->msg_args[0]);
+            def_finale_stage_enters();
+            enemy = fightstg_battle.state.members[1];
+            digimon = fightstg_enemy_records.get((enemy + fightstg_battle.state.current[1])->digimon);
+            data->wait.msg = fightstg_message_create();
+            obj->msg_args[0] = digimon->name;
+            data->wait.msg->show(data->wait.msg, 13, obj->msg_args);
             obj->base.set_step(obj, 2);
         }
         break;

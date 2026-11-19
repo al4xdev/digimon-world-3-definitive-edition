@@ -4306,6 +4306,8 @@ $RushBits: " Bits"
 $RushTimes: " x"
 $RushAskYes: Rush!
 $RushAskNo: Lutar
+$FleeAskYes: Fugir
+$FleeAskNo: Voltar
 $DriTitle: Simulações DRI
 $DriSep: " - "
 $DriDash: --
@@ -4342,6 +4344,12 @@ $DriStages: "Fases vencidas "
 $DriNewReward: Novo prêmio
 $DriNoReward: Sem novo prêmio
 $DriOk: Botão ×: OK
+$DriAgent: Agente da DRI
+$DriGreet: A rede de simulação da DRI está online.<1>Quer colocar sua equipe à prova?
+$DriGreetDone: Você venceu todas as simulações - incrível!<1>Quer rodar alguma de novo?
+$DriAskSim: Simulações
+$DriAskTalk: Conversar
+$DriAskBye: Sair
 $GuideMenu: GUIDE
 $GuideTitle: Guide
 $GuideTabQuest: Missão
@@ -4914,3 +4922,16 @@ TALK05 395: <7>Guardromon<7>Rede Guardiã: tudo<1>certo. Quer salvar ou<1>usar o
 TALK06 361: <7>Guardromon<7>Outro Tamer! Meu<1>buffer tá pronto.<2,2><3>Salve aqui ou viaje a<1>qualquer ponto que<1>você já visitou.<2,2>
 ITMNAM 27: Marca do Caçador
 ITMINF 27: Caças raras: 2x Cores e cristais
+
+$LimitBreak: LIMIT BREAK
+$FinIgorKey: <7>Igor<7>Bem-vindo de volta,<1>meu convidado... Então<1>a sombra revelou tudo.<2,2><3>Posso segurar a Chave<1>da Velvet Room por um<1>instante?<2,2><3>...Olhe bem. Ela está<1>quente. Ela mudou.<2,2><3>Esta chave já não<1>pertence mais apenas<1>à Velvet Room.<2,2><3>Seus vínculos a<1>transformaram. Pegue-a<1>e abra a porta acima.<2,2>
+$FinBond1: <7>Ivy<7>Ei, Junior! Nem pense<1>em desistir agora!<2,2><3>Lembra quem sempre<1>esteve com você desde<1>o começo? Vai lá!<2,2>
+$FinBond2: <7>Teddy<7>Mesmo preso na rede,<1>eu sabia que você não<1>ia parar de lutar.<2,2><3>Cada parceiro que você<1>criou está do seu lado<1>neste exato momento!<2,2>
+$FinBond3: <7>Kail<7>Você salvou o Kurt e<1>nunca virou as costas<1>para ninguém.<2,2><3>Todos nós acreditamos<1>em você. Mostra do que<1>um Tamer é capaz!<2,2>
+$FinBond4: <7>Sepikmon<7>Os ventos de todos os<1>setores respondem ao<1>seu chamado, Tamer.<2,2><3>Nenhuma presa resiste<1>a um coração que se<1>recusa a ceder.<2,2>
+$FinBond5: <7>Gennai<7>Nem os dados mais<1>sombrios apagam a luz<1>que vocês forjaram.<2,2><3>Que todos os laços<1>virem uma só chama.<1>Levante-se!<2,2>
+$FinBondAll: <7>Todos<7>Você não está sozinho!<1>Estamos todos aqui<1>com você!<2,2><3>Você consegue! Leve a<1>nossa força e quebre<1>todos os limites!<2,2>
+$FinSuperEvo: <7>Super Chosen Evolution<7>Todos os laços dos seus<1>parceiros ressoam juntos!<2,2><3>Além de todo limite...<1>SUPER CHOSEN EVOLUTION!<2,2>
+$FinIgorBye: <7>Igor<7>Ah... você caminhou<1>longe, meu convidado.<2,2><3>Esse poder pertence a<1>você agora. Ele será<1>útil no futuro.<2,2><3>Sinto que o seu coração<1>ainda poderá despertar<1>mais vínculos.<2,2><3>Quanto a mim, preciso<1>ir para uma prisão,<1>uma limusine...<2,2><3>...ou talvez um<1>elevador. É difícil<1>dizer.<2,2><3>Pois para mim, passado,<1>presente, futuro e até<1>mesmo os locais...<2,2><3>...se passam todos ao<1>mesmo tempo.<2,2><3>Um pequeno amigo vai<1>cuidar dos seus laços<1>aqui agora. Adeus.<2,2>
+$PipimonMeet: <7>Pipimon<7>Pipi! Olá! O Sr. Igor<1>me pediu para cuidar<1>desta sala!<2,2><3>Eu sou o Pipimon! Vamos<1>ver os laços de DNA<1>dos seus parceiros!<2,2>
+$PipimonBack: <7>Pipimon<7>Pipi! Bem-vindo de<1>volta! Vamos ver os<1>laços de DNA!<2,2>

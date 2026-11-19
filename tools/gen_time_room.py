@@ -58,12 +58,12 @@ def c_text(rows):
     for k, r in enumerate(rows):
         desc = ", ".join(f"{n} Lv{s['level']}" for n, s in zip(r["names"], r["stages"]))
         lines.append(f"    /* {k} {r['who']}: {desc} */")
-        st = ", ".join(f"{{ {s['digimon']}, {s['level']}, {s['hp']}, {s['mp']}, {s['stat_scale']} }}" for s in r["stages"])
+        st = ", ".join(f"{{ {s['digimon']}, {s['level']}, {s['hp']}, {s['mp']}, {s['stat_scale']}, 0 }}" for s in r["stages"])
         lines.append(f"    {{ {{ {st} }}, {r['battle']} }},")
     lines.append("};")
     r = table([ARC])[0]
     desc = ", ".join(f"{n} Lv{s['level']}" for n, s in zip(r["names"], r["stages"]))
-    st = ", ".join(f"{{ {s['digimon']}, {s['level']}, {s['hp']}, {s['mp']}, {s['stat_scale']} }}" for s in r["stages"])
+    st = ", ".join(f"{{ {s['digimon']}, {s['level']}, {s['hp']}, {s['mp']}, {s['stat_scale']}, 0 }}" for s in r["stages"])
     lines += ["", f"/* {r['who']}: {desc} */", f"const DefTimeTrial def_oikawa_fight = {{ {{ {st} }}, {r['battle']} }};"]
     return "\n".join(lines) + "\n"
 

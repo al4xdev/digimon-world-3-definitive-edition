@@ -7,7 +7,7 @@
 /* The tunable numbers (the battle log has none). */
 #define DEF_FAMILIES 5          /* element families on the grouped screens (Water+Ice, Thunder+Machine as one each) */
 #define DEF_OVERFINISH_BITS_PCT 10 /* Bits earned per 100 damage dealt to an enemy already knocked out (OVERFINISH) */
-#define DEF_OVERLEVEL_GAP 8        /* levels the party's best must be above the enemies' best for a random battle to offer the Overlevel Rush */
+#define DEF_OVERLEVEL_GAP 3        /* levels the party's best must be above the enemies' best for a random battle to offer the Overlevel Rush */
 #define DEF_RUSH_TICKS 70          /* ticks (1/60 s) of the rush on the field before the battle's report opens */
 #define DEF_RUSH_ASK_TICKS 300     /* ticks (1/60 s, 5 s) the Rush's question waits for an answer; none goes to the battle */
 #define DEF_RUSH_WARN_SOUND 0x4001F /* WNG_STEP (COMMON seq 31, ~1.7 s with its tail): the question's warning */
@@ -492,7 +492,7 @@ void def_superhunt_board_offer(void);       /* his line is over: the board opens
 int def_superhunt_frame(void);              /* the field's idle step: 1 while the board or a panel owns the field */
 void def_superhunt_screen_savestate(struct PortState *s);
 /* The rare foes' palette swap (definitive_recolor.c): the kinds, and its save-state part (the hooks are in port.h). */
-enum { DEF_RECOLOR_NONE, DEF_RECOLOR_RARE, DEF_RECOLOR_SUPER, DEF_RECOLOR_DARK, DEF_RECOLOR_KINDS };
+enum { DEF_RECOLOR_NONE, DEF_RECOLOR_RARE, DEF_RECOLOR_SUPER, DEF_RECOLOR_DARK, DEF_RECOLOR_BLACK, DEF_RECOLOR_GOLD, DEF_RECOLOR_KINDS };
 void def_recolor_savestate(struct PortState *s);
 /* The hero's skins (definitive_skins.c): a colour recipe for the hero's field sprites, each hunt won unlocks one. */
 #define DEF_SKIN_COUNT 13   /* one per hunt (DEF_SUPER_COUNT) */
@@ -582,12 +582,15 @@ void def_hunt_target_name(unsigned char *buf, int *p, int size, int rare);
 #define DEF_DRI_STAGE 19         /* the simulations' battle scenery (records_state.stage: the game's boss battles') */
 #define DEF_DRI_MUSIC 0x60880000 /* and their music (the boss battles') */
 #define DEF_DRI_DEBUG_MENU 100   /* def_dri_debug's value that opens the list as a DRI Agent would (tests) */
+#define DEF_DRI_DEBUG_AGENT 102  /* ... that sets the player 24 pixels under the map's first DRI Agent (tests: UP, then talk) */
 typedef struct DefDriStage {
     short digimon;    /* the species (FightstgEnemyRecord.id) */
     short level;
     short hp;
     short mp;
     short stat_scale; /* / 16, as RecordsEnemy's */
+    short base;       /* 0, or: `digimon` is a player form (records_digimon, no enemy record on the disc) and this enemy
+                       * species' record lends it its stats, resistances and battle plan (def_dri_record) */
 } DefDriStage;
 typedef struct DefDriChallenge {
     DefDriStage stages[DEF_DRI_STAGES]; /* the battle's enemy members in order: Champion, Ultimate, Mega */
@@ -617,20 +620,6 @@ int def_dri_can_unlock(int c);
 int def_dri_unlock(int c);
 int def_dri_award(int c, int fallen, short items[DEF_DRI_STAGES]);
 const unsigned char *def_dri_cost_label(int c, int *palette);
-/* After a DRI Agent's talk (owner, 2026-11-13). The agents are the researchers of the DDNA quests, one quest each for the
- * whole game, so their talk is never taken: it runs as in the game, and the list opens once the field has been idle on
- * the same map for a while. Arming it (nothing in a replay script), and each idle-step frame: 1 when the list opens. A
- * battle (the quest may start one), another map or a talk past DEF_DRI_WAIT_MAX frames drops it. */
-#define DEF_DRI_WAIT_IDLE 30   /* idle field frames in a row that end the talk (its lines leave a frame or two between) */
-#define DEF_DRI_WAIT_MAX 3600  /* frames a talk may last before the list gives up on it */
-typedef struct DefDriWait {
-    short map;         /* the map of the talk */
-    short idle;        /* idle frames in a row since */
-    short frames;      /* frames since */
-    signed char armed; /* a DRI Agent's talk began; the list waits for its end */
-} DefDriWait;
-void def_dri_wait_arm(DefDriWait *w, int map);
-int def_dri_wait_step(DefDriWait *w, int map, int idle, int battle);
 /* The Tamers the simulations replay (owner, 2026-11-13: classic characters, the old Digimon tamers, as rivals), one per
  * challenge in the table's order (gen_dri_challenges.py's LINES, which checks en.txt has them): its title, its line
  * before the fight, after a full clear and after less (glyph bytes, $DriRival<n>*); NULL past them or in a replay. */
@@ -640,14 +629,15 @@ int def_dri_wait_step(DefDriWait *w, int map, int idle, int battle);
 #define DEF_DRI_RIVAL_WON 2
 #define DEF_DRI_RIVAL_LOST 3
 const unsigned char *def_dri_rival(int c, int what);
-/* The game's side (definitive_dri_screen.c; the ones the game's C calls are in include/port.h too): a talk (always 0:
- * a DRI Agent's own talk runs, the list opens after it), FIELDSTG's idle frame (1 while the screen owns the field), the
+/* The game's side (definitive_dri_screen.c; the ones the game's C calls are in include/port.h too): a talk (1: a DRI
+ * Agent whose DDNA quest is done says the network's line and asks; 0: the game's own talk runs), FIELDSTG's idle frame (1 while the screen owns the field), the
  * battle's begin and end
  * (def_log_begin, def_log_end), a stage's entrance (wfightmn_knockout), a lost battle (1 when it was a simulation: back to
  * the field, the party restored), the save state, and the tests' hook. */
 int def_dri_talk(int map, int actor);
 int def_dri_frame(void);
 void def_dri_battle_begin(void);
+int def_dri_fighting(void);
 void def_dri_battle_end(int result);
 void def_dri_stage_enters(int member);
 int def_dri_defeat(void);
@@ -810,6 +800,13 @@ void def_rush_ask_frame(int waited, int total);
 void def_rush_ask_close(void);
 struct PortState;
 void def_rush_savestate(struct PortState *s);
+/* The battle's escape asks first (definitive_flee_ask.c): on (not in a replay script), one frame of the question (0
+ * open, 1 run, -1 back to the menu; it closes itself on an answer), close, a new battle's reset, the save state. */
+int def_flee_ask_on(void);
+int def_flee_ask_frame(void);
+void def_flee_ask_close(void);
+void def_flee_ask_reset(void);
+void def_flee_ask_savestate(struct PortState *s);
 
 /* The Guide (definitive_quest.c: the rules; definitive_quest_screen.c: the screen and the field's notices). The field
  * menu gets a GUIDE entry: the main quest's current step, the missions still open and the Cargo Tower's auctions. */
@@ -980,7 +977,9 @@ enum {
     DEF_STORY_GATE_WARNED,   /* step 40: the warning before the warp gate was given */
     DEF_STORY_GATE_PASSED,   /* the three trials were won: the warp gate opens */
     DEF_STORY_SEIRYU_ROOM,   /* step 4: Igor showed the room again, the Sepikmon took his place */
-    DEF_STORY_BLAST_FIRST    /* the first Blast of the game was set off (it is the blessed one: see DEF_SUPER_TUTORIAL_BOOST_PCT) */
+    DEF_STORY_BLAST_FIRST,   /* the first Blast of the game was set off (it is the blessed one: see DEF_SUPER_TUTORIAL_BOOST_PCT) */
+    DEF_STORY_FINALE_DONE,   /* Extended Final Act (Dark Galacticmon + Super Chosen Evolution) completed */
+    DEF_STORY_IGOR_GONE      /* Post-credits Blue Room farewell played: Igor left, Pipimon took his place */
 };
 /* The Velvet Room's level (definitive_story.c): who is in the room, rising with the story. 0 the doors are closed; 1
  * (Repeating Tom's news, step 4) the Sepikmon; 2 Gennai and Igor; 3 the Demon Bell's keeper; 4 Etemon and the pig;
@@ -1015,6 +1014,50 @@ void def_story_igor_done(void);
 int def_story_room_intro(void); /* 1: the next entry through a door is Seiryu's, Igor alone shows the room again */
 struct PortState;
 void def_story_savestate(struct PortState *s);
+
+/* Native item-pickup sparkle/aura burst around the protagonist (fieldstg actor effect 0x16, step 3). */
+void def_field_item_sparkle(void);
+
+/* Limit Break (> 999 stats): scoped in v1.0 to Chosen Evolution (side 0) and Dark Galacticmon (side 1). */
+int def_limit_break_active(int side);
+const unsigned char *def_limit_break_label(void);
+
+/* Extended Final Act (Dark Galacticmon + Last Velvet Room + Blue Room Bonds + Super Chosen Evolution) and
+ * Post-Credits Farewell (Igor -> Pipimon as DNA oracle), implemented in port/game/definitive_finale.c. */
+enum {
+    DEF_FINALE_NONE = 0,
+    DEF_FINALE_PHASE1_CLASSIC = 1,
+    DEF_FINALE_PHASE2_DARK_LOSS = 2,
+    DEF_FINALE_PHASE3_VELVET = 3,
+    DEF_FINALE_PHASE3_BLUE_ROOM = 4,
+    DEF_FINALE_PHASE4_SUPER_CHOSEN = 5,
+    DEF_FINALE_POSTCREDITS_BLUE = 6
+};
+int def_finale_phase(void);
+int def_finale_active(void);
+void def_finale_battle_begin(void);
+int def_finale_on_galacticmon_ko(void);
+void def_finale_stage_enters(void);
+int def_finale_defeat(void);
+int def_finale_victory(void);
+int def_finale_enemy_dark(void);
+int def_finale_party_gold(void);
+void def_finale_enemy_stats(short stats[5]);
+int def_finale_blast_only(void);
+int def_finale_golden_mode(void);
+int def_finale_trigger_super_chosen(void);
+int def_finale_dna_chain_next(int *out_partner_id, int *out_result_id);
+int def_finale_velvet_active(void);
+int def_finale_top_door_open(void);
+int def_finale_blue_room_active(void);
+int def_finale_on_top_door(int *map, int *x, int *y, int *dir);
+int def_finale_postcredits_enter(int from_map);
+int def_finale_pipimon_active(void);
+int def_finale_igor_line(void);
+void def_finale_igor_done(void);
+int def_finale_field_frame(void);
+void def_finale_draw_blue_room(void);
+void def_finale_savestate(struct PortState *s);
 /* The slot's third record (memcard.c part 7, DEF_RECORD3_AT + slot * DEF_RECORD3_SIZE, the card file's last free bytes):
  * the quest's dark forms, the first DEF_BLAST_QUEST_FORMS partner+form pairs a Blast called up, each with the stats it
  * had the first time (the Digimon as transformed: FightstgStats.stats and its max HP), its strongest stat and the best
@@ -1088,6 +1131,7 @@ int def_story_oikawa_figure(const struct FieldstgPlacedActor *placed);
 void def_story_battle_begin(void);
 void def_story_battle_end(int result);
 void def_story_market_opened(void);
+void dw3_adventure_music(int *music, int *sound);
 int def_purify_fighting(void);
 void def_purify_battle_begin(void);
 void def_purify_battle_end(int result);

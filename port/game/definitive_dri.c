@@ -48,31 +48,6 @@ int def_dri_agent(int map, int actor) {
     return 0;
 }
 
-void def_dri_wait_arm(DefDriWait *w, int map) {
-    w->armed = (signed char)(def_on() != 0);
-    w->map = (short)map;
-    w->idle = 0;
-    w->frames = 0;
-}
-
-/* The talk's end is the field idle DEF_DRI_WAIT_IDLE frames in a row, not its first idle frame: the game's event can
- * hand the field back for a frame between two of its parts, and the list must never open inside the quest. */
-int def_dri_wait_step(DefDriWait *w, int map, int idle, int battle) {
-    if (!w->armed) {
-        return 0;
-    }
-    if (battle || map != w->map || ++w->frames > DEF_DRI_WAIT_MAX) {
-        w->armed = 0;
-        return 0;
-    }
-    w->idle = (short)(idle ? w->idle + 1 : 0);
-    if (w->idle < DEF_DRI_WAIT_IDLE) {
-        return 0;
-    }
-    w->armed = 0;
-    return 1;
-}
-
 /* No names: each is a classic Tamer by the title of what their partner's line stood for (en.txt). */
 static const unsigned char *const rival_texts[DEF_DRI_RIVALS][4] = {
     { def_str_DriRival0, def_str_DriRival0Hello, def_str_DriRival0Won, def_str_DriRival0Lost },
