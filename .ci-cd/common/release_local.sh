@@ -124,7 +124,7 @@ gh release create "$tag" --draft --verify-tag --title "dw2003recomp $tag" \
 Bring your own disc image of Digimon World 2003 (PS1, Europe; the launcher checks its SHA-1).
 
 **Linux x86_64**: \`dw2003-*-x86_64.AppImage\`: \`chmod +x\` it, then run it. Needs glibc 2.39 or newer (Ubuntu 24.04, Fedora 40, Debian 13 or later).
-**Windows x86_64**: \`dw2003-*-windows-x86_64.zip\`: unzip, run \`dw2003-launcher.exe\` (unsigned: SmartScreen's \"More info\", \"Run anyway\"). Windows 10 or newer. Tested on Linux under Wine and Proton only, not yet on real Windows: reports are welcome in the issues (#37).
+**Windows x86_64**: \`dw2003-*-windows-x86_64.zip\`: unzip, run \`dw2003-launcher.exe\` (unsigned: SmartScreen's \"More info\", \"Run anyway\"). Windows 10 or newer. Tested on Linux under Wine and Proton and on Windows 11: reports are welcome in the issues (#37).
 The .debug file and the -symbols.zip are the programs' debug info for crash reports (not needed to play)." \
     "./$(basename "$appimage")" "./$(basename "$debug")" "./$(basename "$winzip")" "./$(basename "$winsyms")" \
     SHA256SUMS SHA256SUMS-windows

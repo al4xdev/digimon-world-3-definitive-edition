@@ -88,9 +88,10 @@ The design is in [`PORT.md`](PORT.md); the reasons are in [`DECISIONS.md`](DECIS
   `tools/mcp_game.py` and `.mcp.json`.
 
 ## Launcher and mods
-- **Launcher** (`psxstack/launcher/README.md`): Dear ImGui on SDL3. Handles the disc (with a SHA-1 check), Play,
-  settings, controls (rebinding, hotkeys, chords) and the mods' pages. A headless self-test runs in CI. On handhelds the
-  launcher is `.ci-cd/portmaster/handheld/Digimon World 3.sh` with the C99 pad menu `dw3-launcher` (`launcher/`; `.ci-cd/portmaster/handheld/README.md`,
+- **Launcher** (`launcher/`, [`LAUNCHER.md`](LAUNCHER.md)): the one C99 launcher on every platform (SDL3 on Windows and the
+  AppImage). Handles the disc (with a SHA-1 check), Play, settings, controls (rebinding, hotkeys, chords), the save
+  backups and the cloud sync. A headless self-test (`--self-test DIR`) runs in CI. psxstack's ImGui launcher is no longer
+  built or shipped. On handhelds the launcher is `.ci-cd/portmaster/handheld/Digimon World 3.sh` with the C99 pad menu `dw3-launcher` (`launcher/`; `.ci-cd/portmaster/handheld/README.md`,
   [`LAUNCHER.md`](LAUNCHER.md)).
 - **Android (arm64) APK:** `.ci-cd/android/build_android.sh` and `android/`: the C launcher's touch-first build linked with the
   game and a floating touch pad ([`LAUNCHER.md`](LAUNCHER.md),

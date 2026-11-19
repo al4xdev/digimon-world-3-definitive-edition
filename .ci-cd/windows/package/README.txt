@@ -37,7 +37,8 @@ A portable.txt file beside dw2003-launcher.exe keeps all of this in the launcher
 
 Reporting a problem
 -------------------
-This build was tested on Linux through Wine, not yet on real Windows. If the game crashes, the launcher shows why.
+This build was tested on Linux through Wine and on Windows 11 (the launcher's self-test, 14 checks, and a title-screen replay
+with a real disc). If the game crashes, the launcher shows why.
 Set DEBUG > LOGS to HEAVY, play until it happens again, then DEBUG > SAVE LOGS writes dw3-logs-<date>.zip (the logs and
 crash reports) into the folder above: attach it to a new issue at https://github.com/al4xdev/digimon-world-3-definitive-edition/issues (the bug
 report form). Your disc image and your saves are never part of it.

@@ -591,7 +591,7 @@ static int write_settings(const Cfg *c) {
         "    \"widescreen\": { \"enabled\": %s },\n"
         "    \"battle_menu\": { \"enabled\": true, \"fight\": \"%s\", \"tech\": \"%s\", \"digivolve\": \"%s\", \"tag\": \"%s\", "
         "\"item\": \"%s\", \"run\": \"%s\", \"inspect\": \"%s\", \"blast\": \"%s\", \"remember_cursor\": %s, \"buffer_input\": \"%s\" },\n"
-        "    \"led_bar\": { \"enabled\": %s }\n  },\n  \"touch_pad\": %s,\n  \"input\": { \"gamepad\": %s }\n}\n",
+        "    \"led_bar\": { \"enabled\": %s }\n  },\n%s  \"input\": { \"gamepad\": %s }\n}\n",
         disc_esc, vscale, vfull ? "true" : "false", vfill ? "true" : "false", c->hz, renderer, vfilt,
         log_names[c->logs], c->ff ? "true" : "false", ff_names[c->ff ? c->ff : 3],
         c->load ? "true" : "false", load_names[c->load ? c->load : 3],
@@ -600,7 +600,9 @@ static int write_settings(const Cfg *c) {
         hud_name(c->hud[H_FIGHT]), hud_name(c->hud[H_TECH]), hud_name(c->hud[H_DV]),
         hud_name(c->hud[H_TAG]), hud_name(c->hud[H_ITEM]), hud_name(c->hud[H_RUN]), hud_name(c->hud[H_INSPECT]), hud_name(c->hud[H_BLAST]),
         c->bmem ? "true" : "false", bbuf_names[c->bbuf], (!is_pc && !is_android && c->led) ? "true" : "false",
-        c->touch_pad ? "true" : "false", pads);
+        /* The runtime has no touch_pad setting (it warns "unknown key, ignored" on every start): only the Android
+         * build, whose launcher reads it back, keeps the key in settings.json. */
+        is_android ? (c->touch_pad ? "  \"touch_pad\": true,\n" : "  \"touch_pad\": false,\n") : "", pads);
     return write_atomic(path, text);
 }
 
