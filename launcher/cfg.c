@@ -170,6 +170,14 @@ void cfg_defaults(Cfg *c) {
     c->sync_enabled = 1;
     c->sync_interval_min = 10;
     int h[H_COUNT] = {K_EAST, K_R1, K_NORTH, K_SOUTH, K_L1, K_WEST, K_L2, K_R2};
+    if (is_android) {
+        /* The touch pad's face buttons send other PS1 buttons than a gamepad's (android/touch_pad.c, main_android.c:
+         * circle is its A, triangle its B, cross its Y), so the menu's places are turned to put each action under the
+         * touch button at its cell (owner's check on the phone): Fight on B, Tag on A, Digivolve on Y, Run on X. */
+        h[H_FIGHT] = K_NORTH;
+        h[H_DV] = K_SOUTH;
+        h[H_TAG] = K_EAST;
+    }
     memcpy(c->hud, h, sizeof(h));
     /* The face rows rotate circle and triangle against the console's own order: back is the right-hand button and
      * the menu the top one, as in any modern game; the letters follow the places, so the text never says triangle. */

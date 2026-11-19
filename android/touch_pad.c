@@ -255,6 +255,8 @@ static void tp_pill_column(TpLayout *L, int b0, float cx, int left, const TpGrou
     }
 }
 
+static void tp_apply_faces(TpLayout *L);
+
 static void tp_compute_layout(int w, int h, TpLayout *L) {
     if (w <= 0) w = 1280;
     if (h <= 0) h = 576;
@@ -284,6 +286,7 @@ static void tp_compute_layout(int w, int h, TpLayout *L) {
     L->btns[BTN_CIRCLE] = (TpBtn){PAD_CIRCLE, L->face_cx + L->face_sp, L->face_cy, L->face_r, L->face_r, 1, 255, 100, 105, "O"};
     L->btns[BTN_SQUARE] = (TpBtn){PAD_SQUARE, L->face_cx - L->face_sp, L->face_cy, L->face_r, L->face_r, 1, 225, 125, 255, "[]"};
     L->btns[BTN_TRIANGLE] = (TpBtn){PAD_TRIANGLE, L->face_cx, L->face_cy - L->face_sp, L->face_r, L->face_r, 1, 70, 235, 165, "/\\"};
+    tp_apply_faces(L);
 
     /* Shoulders and Select/Start, a column on each side */
     float colx = m + fh * 0.105f;
@@ -350,6 +353,47 @@ static int tp_hit_group(const TpLayout *L, float px, float py) {
         }
     }
     return best;
+}
+
+/* The controller setting's face buttons (dw3_touch_pad_set_faces): each PS1 button moves to the spot of the button it
+ * is bound to and shows that button's letter, so the pad reads like the gamepad the game's prompts describe ("press
+ * X" is the left button, as on an Xbox pad). */
+static int tp_face_place[4] = {TP_PLACE_BOTTOM, TP_PLACE_LEFT, TP_PLACE_RIGHT, TP_PLACE_TOP};
+static char tp_face_letter[4] = {'-', '-', '-', '-'};
+static char tp_face_label[4][2];
+
+void dw3_touch_pad_set_faces(const int place[4], const char letter[4]) {
+    int seen = 0;
+    for (int i = 0; i < 4; i++) {
+        if (place[i] < TP_PLACE_BOTTOM || place[i] > TP_PLACE_TOP || (seen & (1 << place[i]))) return;
+        seen |= 1 << place[i];
+    }
+    for (int i = 0; i < 4; i++) {
+        tp_face_place[i] = place[i];
+        tp_face_letter[i] = letter[i];
+    }
+}
+
+static void tp_apply_faces(TpLayout *L) {
+    static const int btn_of[4] = {BTN_CROSS, BTN_SQUARE, BTN_CIRCLE, BTN_TRIANGLE};
+    static const float dx[4] = {0.0f, 1.0f, -1.0f, 0.0f}, dy[4] = {1.0f, 0.0f, 0.0f, -1.0f};
+    for (int i = 0; i < 4; i++) {
+        TpBtn *b = &L->btns[btn_of[i]];
+        b->cx = L->face_cx + dx[tp_face_place[i]] * L->face_sp;
+        b->cy = L->face_cy + dy[tp_face_place[i]] * L->face_sp;
+        char ch = tp_face_letter[i];
+        if (ch != 'A' && ch != 'B' && ch != 'X' && ch != 'Y') continue; /* the PS1 shapes and colours stay */
+        tp_face_label[i][0] = ch;
+        tp_face_label[i][1] = 0;
+        b->label = tp_face_label[i];
+        /* The colours the letters carry on the pads that print them (green A, red B, blue X, yellow Y). */
+        switch (ch) {
+        case 'A': b->cr = 80; b->cg = 215; b->cb = 110; break;
+        case 'B': b->cr = 255; b->cg = 95; b->cb = 95; break;
+        case 'X': b->cr = 80; b->cg = 160; b->cb = 255; break;
+        case 'Y': b->cr = 250; b->cg = 210; b->cb = 70; break;
+        }
+    }
 }
 
 static int tp_closest_face(const TpLayout *L, float px, float py, float max_dist) {
@@ -862,6 +906,21 @@ static void draw_glyph(uint32_t *buf, int w, int h, float cx, float cy, float s,
         aa_line(buf, w, h, cx - hs * 0.6f, cy - hs, cx - hs * 0.6f, cy + hs, th, r, g, b, a);
         aa_line(buf, w, h, cx + hs * 0.6f, cy - hs, cx - hs * 0.6f, cy + hs * 0.1f, th, r, g, b, a);
         aa_line(buf, w, h, cx - hs * 0.2f, cy - hs * 0.2f, cx + hs * 0.6f, cy + hs, th, r, g, b, a);
+        break;
+    case 'B':
+        aa_line(buf, w, h, cx - hs * 0.55f, cy - hs, cx - hs * 0.55f, cy + hs, th, r, g, b, a);
+        aa_line(buf, w, h, cx - hs * 0.55f, cy - hs, cx + hs * 0.3f, cy - hs, th, r, g, b, a);
+        aa_line(buf, w, h, cx + hs * 0.3f, cy - hs, cx + hs * 0.5f, cy - hs * 0.55f, th, r, g, b, a);
+        aa_line(buf, w, h, cx + hs * 0.5f, cy - hs * 0.55f, cx + hs * 0.3f, cy, th, r, g, b, a);
+        aa_line(buf, w, h, cx - hs * 0.55f, cy, cx + hs * 0.35f, cy, th, r, g, b, a);
+        aa_line(buf, w, h, cx + hs * 0.35f, cy, cx + hs * 0.6f, cy + hs * 0.5f, th, r, g, b, a);
+        aa_line(buf, w, h, cx + hs * 0.6f, cy + hs * 0.5f, cx + hs * 0.35f, cy + hs, th, r, g, b, a);
+        aa_line(buf, w, h, cx + hs * 0.35f, cy + hs, cx - hs * 0.55f, cy + hs, th, r, g, b, a);
+        break;
+    case 'Y':
+        aa_line(buf, w, h, cx - hs * 0.6f, cy - hs, cx, cy, th, r, g, b, a);
+        aa_line(buf, w, h, cx + hs * 0.6f, cy - hs, cx, cy, th, r, g, b, a);
+        aa_line(buf, w, h, cx, cy, cx, cy + hs, th, r, g, b, a);
         break;
     case 'A':
         aa_line(buf, w, h, cx, cy - hs, cx - hs * 0.6f, cy + hs, th, r, g, b, a);

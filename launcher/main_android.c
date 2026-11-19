@@ -19,6 +19,7 @@
 #include "plat.h"
 #include "ui.h"
 #include "update.h"
+#include "touch_pad.h"
 
 #include <SDL3/SDL.h>
 
@@ -1594,6 +1595,16 @@ int dw3_android_launcher_run(int kind, const char *script, int *out_touch_pad, i
     plat_release();
 
     if (out_touch_pad) *out_touch_pad = c.touch_pad;
+    /* With the Xbox layout the touch pad's face buttons carry the letters the game's prompts print for them (owner's
+     * check on the phone: circle is A, triangle B, square X, cross Y) at an Xbox pad's places (A bottom, B right, X
+     * left, Y top); each still sends its own PS1 button. Any other layout keeps the PS1 diamond and shapes. */
+    {
+        static const int xbox_place[4] = {TP_PLACE_TOP, TP_PLACE_LEFT, TP_PLACE_BOTTOM, TP_PLACE_RIGHT};
+        static const int ps1_place[4] = {TP_PLACE_BOTTOM, TP_PLACE_LEFT, TP_PLACE_RIGHT, TP_PLACE_TOP};
+        static const char xbox[4] = {'Y', 'X', 'A', 'B'}, ps1[4] = {'-', '-', '-', '-'};
+        int is_xbox = cfg_layout(&c) == LAYOUT_XBOX;
+        dw3_touch_pad_set_faces(is_xbox ? xbox_place : ps1_place, is_xbox ? xbox : ps1);
+    }
     if (out_log_level) *out_log_level = c.logs;
     if (out_disc && out_disc_sz > 0) snprintf(out_disc, out_disc_sz, "%s", disc_path);
     return android_cancelled ? 1 : 0;
