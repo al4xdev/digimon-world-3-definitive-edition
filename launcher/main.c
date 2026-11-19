@@ -86,10 +86,10 @@ static const char *bt_label[] = {"OFF", "SKIP", "ASYNC"};
 static const char *log_label[] = {"OFF", "SOFT", "HEAVY"};
 static const char *lay_label[] = {"PS1", "XBOX", "NINTENDO", "CUSTOM"};
 static const char *filt_label[] = {"NONE", "SHARP", "SCANLINES", "CRT", "SMOOTH"};
-static const char *act_label[A_COUNT] = {"CONFIRM", "CARD", "MENU", "BACK", "L1", "R1", "START", "SELECT"};
+static const char *act_label[A_COUNT] = {"CONFIRM", "CARD", "BACK", "MENU", "L1", "R1", "START", "SELECT"};
 static const char *hud_label[H_COUNT] = {"FIGHT", "TECH", "DIGIVOLVE", "TAG", "ITEM", "RUN", "INSPECT", "BLAST"};
 /* On-screen order of the pad rows follows the pad: confirm, back, menu, card first. */
-static const int act_order[A_COUNT] = {A_CROSS, A_TRIANGLE, A_CIRCLE, A_SQUARE, A_L1, A_R1, A_START, A_SELECT};
+static const int act_order[A_COUNT] = {A_CROSS, A_CIRCLE, A_TRIANGLE, A_SQUARE, A_L1, A_R1, A_START, A_SELECT};
 
 static int home_items[HI_COUNT];
 static int home_n;
@@ -673,7 +673,7 @@ static void draw_pair_host(void) {
         text_c(W / 2, 254, req, 17, C_GOLD);
         text_c(W / 2, 286, "Approve adding this device to your cloud saves?", 15, C_TEXT);
         char ga[16], gy[16], gb[16];
-        glyph(btn_ok(), ga); glyph(c.pad[A_CIRCLE].code, gy); glyph(btn_back(), gb);
+        glyph(btn_ok(), ga); glyph(c.pad[A_TRIANGLE].code, gy); glyph(btn_back(), gb);
         const char *k[] = {ga, gy, gb}, *w[] = {"APPROVE", "DENY", "CANCEL"};
         footer(k, w, 3);
     } else {
@@ -1275,7 +1275,7 @@ static void start_game(void) {
     }
     /* What the script used to export after its menu: the game reads the player's pad map itself, and the log level
      * is the DEBUG screen's choice (the game gets "off" unless it was asked for more). */
-    setenv("DW3_PAD_REMAP", "1", 1);
+    if (is_portmaster) setenv("DW3_PAD_REMAP", "1", 1);
     setenv("DW3_LOG", c.logs == 2 ? "heavy" : c.logs == 1 ? "soft" : "off", 1);
     if (getenv("DW3_NOEXEC")) { /* test hook: the loading screen without a game */
         launch_pid = -2;
@@ -1754,7 +1754,7 @@ static void on_press(int code) {
                 } else {
                     snprintf(status, sizeof(status), "%s", err);
                 }
-            } else if (code == c.pad[A_CIRCLE].code) {
+            } else if (code == c.pad[A_TRIANGLE].code) {
                 cloud_pair_approve(&cloud, pair_code, 0, err, sizeof(err));
                 go(S_CLOUD, 0, -1, 206 + 14);
             }
@@ -1850,7 +1850,7 @@ static void on_press(int code) {
             } else {
                 go(S_GAME, 7, -1, 90 + 7 * game_step() + 14);
             }
-        } else if (code == c.pad[A_CIRCLE].code && is_pc) {
+        } else if (code == c.pad[A_TRIANGLE].code && is_pc) {
             if (browse_disc() == 0) {
                 cfg_save(&c);
                 go(S_GAME, 7, -1, 90 + 7 * game_step() + 14);

@@ -116,8 +116,8 @@ static const char *bt_label[3] = {"OFF", "SKIP", "ASYNC"};
 static const char *buf_label[3] = {"OFF", "SHORT", "LONG"};
 static const char *log_label[3] = {"OFF", "SOFT", "HEAVY"};
 static const char *lay_label[4] = {"PS1", "XBOX", "NINTENDO", "CUSTOM"};
-static const char *act_label[A_COUNT] = {"CONFIRM / CROSS", "MENU / SQUARE", "BACK / CIRCLE", "CAM / TRIANGLE", "PREV / L1", "NEXT / R1", "START", "SELECT"};
-static const int act_order[A_COUNT] = {A_CROSS, A_CIRCLE, A_SQUARE, A_TRIANGLE, A_L1, A_R1, A_START, A_SELECT};
+static const char *act_label[A_COUNT] = {"CONFIRM / CROSS", "CARD / SQUARE", "BACK / CIRCLE", "MENU / TRIANGLE", "PREV / L1", "NEXT / R1", "START", "SELECT"};
+static const int act_order[A_COUNT] = {A_CROSS, A_CIRCLE, A_TRIANGLE, A_SQUARE, A_L1, A_R1, A_START, A_SELECT};
 static const char *hud_label[H_COUNT] = {"FIGHT", "TECH", "DIGIVOLVE", "TAG", "ITEM", "RUN", "INSPECT", "BLAST"};
 
 static const char *S(const char *en) {
@@ -1599,11 +1599,17 @@ int dw3_android_launcher_run(int kind, const char *script, int *out_touch_pad, i
      * check on the phone: circle is A, triangle B, square X, cross Y) at an Xbox pad's places (A bottom, B right, X
      * left, Y top); each still sends its own PS1 button. Any other layout keeps the PS1 diamond and shapes. */
     {
-        static const int xbox_place[4] = {TP_PLACE_TOP, TP_PLACE_LEFT, TP_PLACE_BOTTOM, TP_PLACE_RIGHT};
-        static const int ps1_place[4] = {TP_PLACE_BOTTOM, TP_PLACE_LEFT, TP_PLACE_RIGHT, TP_PLACE_TOP};
-        static const char xbox[4] = {'Y', 'X', 'A', 'B'}, ps1[4] = {'-', '-', '-', '-'};
-        int is_xbox = cfg_layout(&c) == LAYOUT_XBOX;
-        dw3_touch_pad_set_faces(is_xbox ? xbox_place : ps1_place, is_xbox ? xbox : ps1);
+        int place[4];
+        char letter[4];
+        for (int i = 0; i < 4; i++) {
+            int code = c.pad[i].code;
+            place[i] = code == K_SOUTH ? TP_PLACE_BOTTOM
+                     : code == K_EAST  ? TP_PLACE_RIGHT
+                     : code == K_WEST  ? TP_PLACE_LEFT
+                                       : TP_PLACE_TOP;
+            letter[i] = c.pad[i].letter;
+        }
+        dw3_touch_pad_set_faces(place, letter);
     }
     if (out_log_level) *out_log_level = c.logs;
     if (out_disc && out_disc_sz > 0) snprintf(out_disc, out_disc_sz, "%s", disc_path);

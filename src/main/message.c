@@ -709,6 +709,14 @@ s32 message_handle_char(MessageWindow *obj, MessageLine *line, MessageDrawState 
 #ifdef PC_PORT
         /* Face buttons are 2 bytes. Swap the picture, keep the advance. */
         {
+            extern int port_script_active;
+            if (!port_script_active) {
+                if (n == 0x2F) {
+                    n = 0x34;
+                } else if (n == 0x34) {
+                    n = 0x2F;
+                }
+            }
             s16 letter = dw3_button_glyph((u8)n); /* 0 when icons are off (DW3_FEAT_ICONS) or no letter is set */
             /* A font's glyphs cover codes 4..glyph_end - 1. The main font has the letters, but a smaller overlay font
              * may not; keep the character's own symbol when the letter is outside this font's table. */

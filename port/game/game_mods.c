@@ -261,10 +261,10 @@ static const char *led_bar_status(struct PortMod *mod) {
  * west, west is east, east is south, north is north. The game index is that translation: `game`, an index of this same
  * table. The order is the options' values and bm_place's indexes. */
 #define BM_PLACES(X)                                \
-    X("south", NULL, 14, 1, 'A')                    \
-    X("west", NULL, 15, 3, 'X')                     \
+    X("south", NULL, 14, 0, 'A')                    \
+    X("west", NULL, 15, 1, 'X')                     \
     X("north", NULL, 12, 2, 'Y')                    \
-    X("east", NULL, 13, 0, 'B')                     \
+    X("east", NULL, 13, 3, 'B')                     \
     X("l1", "leftshoulder", 10, 4, 0)               \
     X("r1", "rightshoulder", 11, 5, 0)              \
     X("l2", "lefttrigger", 8, 6, 0)                 \
@@ -705,21 +705,30 @@ static void dw3_pad_load(void) {
         return;
     }
     dw3_pad.has_file = 1;
-    while (fscanf(f, "%15s %15s %c", name, place, &letter) == 3) {
-        bit = dw3_pad_bit_of_name(name);
-        if (letter >= 'a' && letter <= 'z') {
-            letter = (char)(letter - 'a' + 'A');
-        }
-        if (bit >= 0 && bit < 16) {
-            dw3_pad.letter[bit] = (letter >= 'A' && letter <= 'Z') ? letter : 0; /* '-': the symbol itself */
-        }
-        at = dw3_pad_bit_of_place(place);
-        if (at >= 0 && at < 16 && bit >= 0 && bit < 16) {
-            dw3_pad.perm[bit] = (u16)at;
-        }
-        idx = dw3_place_index(place);
-        if (idx >= 0 && bit >= 0 && bit < 16) {
-            dw3_pad.at[idx] = (u8)bit;
+    {
+        char line[128];
+        while (fgets(line, sizeof(line), f) != NULL) {
+            if (line[0] == '#') {
+                continue;
+            }
+            if (sscanf(line, "%15s %15s %c", name, place, &letter) != 3) {
+                continue;
+            }
+            bit = dw3_pad_bit_of_name(name);
+            if (letter >= 'a' && letter <= 'z') {
+                letter = (char)(letter - 'a' + 'A');
+            }
+            if (bit >= 0 && bit < 16) {
+                dw3_pad.letter[bit] = (letter >= 'A' && letter <= 'Z') ? letter : 0; /* '-': the symbol itself */
+            }
+            at = dw3_pad_bit_of_place(place);
+            if (at >= 0 && at < 16 && bit >= 0 && bit < 16) {
+                dw3_pad.perm[bit] = (u16)at;
+            }
+            idx = dw3_place_index(place);
+            if (idx >= 0 && bit >= 0 && bit < 16) {
+                dw3_pad.at[idx] = (u8)bit;
+            }
         }
     }
     fclose(f);
@@ -799,10 +808,10 @@ s16 dw3_button_glyph(u8 code) {
 }
 
 /* Where a PS1 bit sits on the player's pad: the bit the runtime delivers for it (pad.map's middle column; the identity
- * when the runtime maps the pad itself). */
+ * when there is no pad.map). */
 int port_battle_menu_place(int bit) {
     dw3_pad_load();
-    return (bit >= 0 && bit < 16 && dw3_pad.remap) ? (int)dw3_pad.perm[bit] : bit;
+    return (bit >= 0 && bit < 16 && dw3_pad.has_file) ? (int)dw3_pad.perm[bit] : bit;
 }
 
 /* The PS1 bit whose button is at the action's place. A face place can hold any bit once the player has remapped, so
@@ -829,10 +838,16 @@ int port_battle_menu_bit(int action) {
 u16 dw3_raw_pressed = 0;
 
 int port_battle_menu_pressed(int action) {
+    int bit;
+
     if (action < 0 || action >= BM_ACTIONS) {
         return 0;
     }
-    return (dw3_raw_pressed >> bm_slot[bm_place[action]].bit) & 1;
+    dw3_pad_load();
+    /* With DW3_PAD_REMAP=1 (PortMaster) dw3_raw_pressed is pre-permute (physical); on SDL3 (PC/Android) input.c
+     * already applied the pad map before dw3_raw_pressed, so look up the logical bit holding that physical place. */
+    bit = dw3_pad.remap ? bm_slot[bm_place[action]].bit : port_battle_menu_bit(action);
+    return (bit >= 0 && bit < 16) ? ((dw3_raw_pressed >> bit) & 1) : 0;
 }
 
 /* The action's place in pad.map's names (the launcher's physical south is the game's west...: bm_slot.game). The
@@ -842,13 +857,12 @@ static int bm_place_in_file(int action) {
     return bm_slot[bm_place[action]].game;
 }
 
-/* The PS1 button the player's pad.map puts at the action's place: the symbol the menu shows when there is no letter. */
+/* The PS1 button at the action's physical place: the symbol the menu shows when there is no letter. */
 int port_battle_menu_symbol_bit(int action) {
     if (action < 0 || action >= BM_ACTIONS) {
         return -1;
     }
-    dw3_pad_load();
-    return dw3_pad.at[bm_place_in_file(action)];
+    return bm_slot[bm_place[action]].bit;
 }
 
 /* The letter on the button at the action's place: its row's own, or the Xbox one when there is no pad.map; 0 is the

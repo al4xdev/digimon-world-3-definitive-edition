@@ -24,7 +24,7 @@ char game_dir[512] = ".";
 char disc_path[1200];
 
 static const struct { int code; const char *name; const char *display; } places[] = {
-    {K_SOUTH, "south", "SOUTH"}, {K_EAST, "east", "EAST"}, {K_NORTH, "north", "WEST"}, {K_WEST, "west", "NORTH"},
+    {K_SOUTH, "south", "SOUTH"}, {K_EAST, "east", "EAST"}, {K_WEST, "west", "WEST"}, {K_NORTH, "north", "NORTH"},
     {K_L1, "leftshoulder", "L1"}, {K_R1, "rightshoulder", "R1"}, {K_L2, "lefttrigger", "L2"},
     {K_R2, "righttrigger", "R2"}, {K_SELECT, "back", "SELECT"}, {K_START, "start", "START"},
 };
@@ -92,42 +92,11 @@ int hud_cycle(int code, int dir) {
     return hud_places[((i < NHUD ? i : 0) + dir + NHUD) % NHUD].code;
 }
 
-/* pad.map names the places in the game's SDL vocabulary, a quarter turn from the kernel's. */
-static const char *game_name(int code) {
-    switch (code) {
-    case K_SOUTH: return "west";
-    case K_NORTH: return "north";
-    case K_WEST: return "east";
-    case K_EAST: return "south";
-    }
-    return code_name(code);
-}
-
-/* settings.json's input.gamepad on Android: SDL3 reports a phone's or a Bluetooth pad's face buttons at their real
- * places (plat.c: SDL's west arrives as K_NORTH, its north as K_WEST), with none of the handheld's quarter turn. */
-static const char *sdl3_name(int code) {
-    switch (code) {
-    case K_SOUTH: return "south";
-    case K_EAST: return "east";
-    case K_NORTH: return "west";
-    case K_WEST: return "north";
-    }
-    return code_name(code);
-}
-
-static int code_from_game(const char *n) {
-    if (!strcmp(n, "west")) return K_SOUTH;
-    if (!strcmp(n, "north")) return K_NORTH;
-    if (!strcmp(n, "east")) return K_WEST;
-    if (!strcmp(n, "south")) return K_EAST;
-    return code_by_name(n);
-}
-
 static const char *action_name[A_COUNT] = {"cross", "square", "circle", "triangle", "l1", "r1", "start", "select"};
 
 char layout_letter(int layout, int code) {
     static const char xbox[4] = {'A', 'B', 'X', 'Y'}, nin[4] = {'B', 'A', 'Y', 'X'};
-    int i = code == K_SOUTH ? 0 : code == K_EAST ? 1 : code == K_NORTH ? 2 : code == K_WEST ? 3 : -1;
+    int i = code == K_SOUTH ? 0 : code == K_EAST ? 1 : code == K_WEST ? 2 : code == K_NORTH ? 3 : -1;
     if (i < 0 || layout == LAYOUT_PS1 || layout == LAYOUT_CUSTOM) {
         return '-';
     }
@@ -174,25 +143,11 @@ void cfg_defaults(Cfg *c) {
     c->sync_enabled = 1;
     c->sync_interval_min = 10;
     int h[H_COUNT] = {K_EAST, K_R1, K_NORTH, K_SOUTH, K_L1, K_WEST, K_L2, K_R2};
-    if (is_android) {
-        /* The touch pad's face buttons send other PS1 buttons than a gamepad's (android/touch_pad.c, main_android.c:
-         * circle is its A, triangle its B, cross its Y), so the menu's places are turned to put each action under the
-         * touch button at its cell (owner's check on the phone): Fight on B, Tag on A, Digivolve on Y, Run on X. */
-        h[H_FIGHT] = K_NORTH;
-        h[H_DV] = K_SOUTH;
-        h[H_TAG] = K_EAST;
-    }
     memcpy(c->hud, h, sizeof(h));
-    /* The face rows rotate circle and triangle against the console's own order: back is the right-hand button and
-     * the menu the top one, as in any modern game; the letters follow the places, so the text never says triangle. */
     c->pad[A_CROSS].code = K_SOUTH;
-    c->pad[A_SQUARE].code = K_NORTH;
-    c->pad[A_CIRCLE].code = K_WEST;
-    c->pad[A_TRIANGLE].code = K_EAST;
-    if (is_android) { /* the PC's layout (the PS1's own places: circle right, triangle top), as on the touch pad */
-        c->pad[A_CIRCLE].code = K_EAST;
-        c->pad[A_TRIANGLE].code = K_WEST;
-    }
+    c->pad[A_SQUARE].code = K_WEST;
+    c->pad[A_CIRCLE].code = K_EAST;
+    c->pad[A_TRIANGLE].code = K_NORTH;
     c->pad[A_L1].code = K_L1;
     c->pad[A_R1].code = K_R1;
     c->pad[A_START].code = K_START;
@@ -205,7 +160,7 @@ void cfg_defaults(Cfg *c) {
 }
 
 int cfg_confirm_code(const Cfg *c) { return c->pad[A_CROSS].code; }
-int cfg_back_code(const Cfg *c) { return c->pad[A_TRIANGLE].code; }
+int cfg_back_code(const Cfg *c) { return c->pad[A_CIRCLE].code; }
 
 static unsigned dup_mask(const int *codes, int n) {
     unsigned m = 0;
@@ -495,14 +450,18 @@ void cfg_load(Cfg *c) {
     }
     path_of(path, sizeof(path), "pad.map");
     f = fopen(path, "r");
-    int game_places = 0;
+    int legacy_game_places = 0;
     while (f && fgets(line, sizeof(line), f)) {
         char a[32], p[32], l;
-        if (line[0] == '#') { game_places = 1; continue; }
+        if (line[0] == '#') {
+            if (strstr(line, "game-places")) legacy_game_places = 1;
+            continue;
+        }
+        if (legacy_game_places) continue;
         if (sscanf(line, "%31s %31s %c", a, p, &l) != 3) continue;
         for (int i = 0; i < A_COUNT; i++) {
             if (strcmp(a, action_name[i])) continue;
-            int code = game_places ? code_from_game(p) : code_by_name(p);
+            int code = code_by_name(p);
             if (code && strchr("ABXYLRSE-", l)) {
                 c->pad[i].code = code;
                 c->pad[i].letter = l;
@@ -510,11 +469,6 @@ void cfg_load(Cfg *c) {
         }
     }
     if (f) fclose(f);
-    if (is_android && c->touch_pad &&
-        c->pad[A_CROSS].letter == 'Y' && c->pad[A_SQUARE].letter == 'X' &&
-        c->pad[A_CIRCLE].letter == 'A' && c->pad[A_TRIANGLE].letter == 'B') {
-        cfg_set_layout(c, LAYOUT_XBOX);
-    }
     path_of(path, sizeof(path), "settings.json");
     char *j = slurp(path);
     if (j) {
@@ -549,8 +503,7 @@ static int write_settings(const Cfg *c) {
     char pads[512] = "{ ";
     for (int i = 0; i < A_COUNT; i++) {
         char one[64];
-        snprintf(one, sizeof(one), "%s\"%s\": \"%s\"", i ? ", " : "", action_name[i],
-                 is_android ? sdl3_name(c->pad[i].code) : game_name(c->pad[i].code));
+        snprintf(one, sizeof(one), "%s\"%s\": \"%s\"", i ? ", " : "", action_name[i], code_name(c->pad[i].code));
         strcat(pads, one);
     }
     strcat(pads, " }");
@@ -627,12 +580,9 @@ int cfg_save(const Cfg *c) {
     strcat(text, line);
     path_of(path, sizeof(path), "tui.state");
     rc |= write_atomic(path, text);
-    int tp_xbox = is_android && c->touch_pad && cfg_layout(c) == LAYOUT_XBOX;
-    static const char tp_xbox_letter[4] = {'Y', 'X', 'A', 'B'};
-    char pm[1024] = "# game-places x\n";
+    char pm[1024] = "# pad-map\n";
     for (int i = 0; i < A_COUNT; i++) {
-        char letter = (tp_xbox && i < 4) ? tp_xbox_letter[i] : c->pad[i].letter;
-        snprintf(line, sizeof(line), "%s %s %c\n", action_name[i], game_name(c->pad[i].code), letter);
+        snprintf(line, sizeof(line), "%s %s %c\n", action_name[i], code_name(c->pad[i].code), c->pad[i].letter);
         strcat(pm, line);
     }
     path_of(path, sizeof(path), "pad.map");
