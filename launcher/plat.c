@@ -70,7 +70,8 @@ long plat_now_ms(void) {
 }
 
 int plat_open_url(const char *url) {
-#if defined(HAVE_SDL2) || defined(HAVE_SDL3)
+/* SDL_OpenURL: SDL3, or SDL2 2.0.14 and later (PortMaster's Debian 10 SDL2 is older, and it never asks for it). */
+#if defined(HAVE_SDL3) || (defined(HAVE_SDL2) && SDL_VERSION_ATLEAST(2, 0, 14))
     return strncmp(url, "https://", 8) == 0 && SDL_OpenURL(url) ? 0 : -1;
 #else
     (void)url;
