@@ -353,7 +353,7 @@ swap. Thirteen **hero skins** from the Super Rare hunts recolour your hero's hai
 
 <p align="center"><img src="docs/images/definitive/cross-play.svg" width="800" alt="Cross-Play cloud sync: the launcher syncs card1.mcd between handhelds and PC through a free Cloudflare Worker. Pair a device with a 6-digit code the host approves, choose a side when both changed, and keep 1 to 100 rotating local snapshots."></p>
 
-**Cross-play saves.** Free **Cloud Sync** keeps your memory card in step between a handheld and a PC: pair a device
+**Cross-play saves.** Free **Cloud Sync** keeps your memory card in step between a handheld, an Android phone and a PC: pair a device
 with a 6-digit code, resolve conflicts, revoke a lost device, and keep up to 100 local snapshots with one-button
 restore. A console-first launcher handles the disc, video, controls, the battle HUD and the saves, and plays a little
 runner game with Kumamon, Guilmon and Agumon while your disc is checked.

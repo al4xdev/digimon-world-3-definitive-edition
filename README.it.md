@@ -362,7 +362,7 @@ segue lo scambio. Tredici **skin da eroe** delle cacce Super Rare ricolorano i c
 
 <p align="center"><img src="docs/images/definitive/cross-play.svg" width="800" alt="Cloud Sync cross-play: il launcher sincronizza card1.mcd tra portatili e PC tramite un Cloudflare Worker gratuito. Abbina un dispositivo con un codice a 6 cifre che l'host approva, scegli un lato quando entrambi sono cambiati e conserva da 1 a 100 snapshot locali a rotazione."></p>
 
-**Salvataggi cross-play.** Il **Cloud Sync** gratuito tiene allineata la tua memory card tra un portatile e un PC:
+**Salvataggi cross-play.** Il **Cloud Sync** gratuito tiene allineata la tua memory card tra un portatile, un telefono Android e un PC:
 abbina un dispositivo con un codice a 6 cifre, risolvi i conflitti, revoca un dispositivo perso e conserva fino a 100
 snapshot locali con ripristino a un tasto. Un launcher pensato prima di tutto per console gestisce il disco, il video,
 i comandi, l'HUD di battaglia e i salvataggi, e fa partire un piccolo gioco di corsa con Kumamon, Guilmon e Agumon

@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 #include "cfg.h"
@@ -26,12 +27,17 @@ static int android_pick_disc_files(void) { return -1; }
 
 enum {
     S_SPLASH, S_HOME, S_GAME, S_HUD, S_CONTROLS, S_SAVES, S_BACKUPS, S_BACKUP_CONFIRM,
-    S_DEBUG, S_BROWSE, S_RESET, S_CLEAN, S_LOADING, S_ERROR
+    S_DEBUG, S_BROWSE, S_RESET, S_CLEAN, S_LOADING, S_ERROR,
+    S_CLOUD, S_PAIR_HOST, S_PAIR_ENTER, S_DEVICES, S_REVOKE_CONFIRM, S_RENEW_CONFIRM, S_CONFLICT, S_CONFLICT_CONFIRM
 };
 enum { HI_PLAY, HI_GAME, HI_HUD, HI_CONTROLS, HI_SAVES, HI_DEBUG, HI_RESET, HI_COUNT };
 enum { GAME_LANG, GAME_FF, GAME_LOAD, GAME_SKIP, GAME_BATTLES, GAME_HIT, GAME_BTEXT, GAME_TOUCHPAD, GAME_DISC, GAME_N };
 #define GAME_ROW_STEP 36
-enum { SAVES_SYNC, SAVES_INTERVAL, SAVES_BACKUPS, SAVES_NOW, SAVES_RESTORE, SAVES_N };
+enum { SAVES_SYNC, SAVES_INTERVAL, SAVES_BACKUPS, SAVES_NOW, SAVES_RESTORE, SAVES_ACCOUNT, SAVES_N };
+/* CLOUD ACCOUNT rows: the first two when this device has no live key, all four once it has one. */
+enum { CLOUD_REGISTER_OR_ADD, CLOUD_LINK, CLOUD_DEVICES, CLOUD_RENEW };
+#define CLOUD_ROW_Y 182
+#define CLOUD_ROW_STEP 50
 enum { DEBUG_LOGS, DEBUG_SAVE_LOGS, DEBUG_CLEAN_LOGS, DEBUG_N };
 
 static Cfg c;
@@ -52,6 +58,37 @@ static int bk_count, bk_scroll;
 #define LIST_VIS 6
 
 static int touch_drag_active, touch_drag_y0, touch_drag_scrolled;
+
+/* Cloud pairing (the flow of launcher/main.c's CLOUD ACCOUNT screens). The host shows a 6-digit code and approves the
+ * request; the joining device types the code on the keypad and polls until the host approves. */
+static CloudDevice dev_items[CLOUD_MAX_DEVICES];
+static int dev_count, dev_scroll;
+static char pair_code[8];
+static long pair_expires_at;
+static PairStatus pair_st;
+static PairClaim pair_claim;
+static char pair_digits[8];
+static int pair_len, pair_waiting, pair_done, kp_sel;
+static long pair_last_poll_ms;
+static char pair_done_msg[160];
+#define PAIR_POLL_MS 1800
+/* The keypad: two rows of six keys, 1-6 / 7 8 9 0 DEL OK. */
+#define KP_COLS 6
+#define KP_KEYS 12
+#define KP_DEL 10
+#define KP_OK 11
+#define KP_X 36
+#define KP_Y 222
+#define KP_W 88
+#define KP_H 62
+#define KP_GAP 8
+
+/* A sync that found cloud and local both changed waits here for the player's choice. */
+static int conflict_ret, conflict_ret_sel, conflict_choice, conflict_sel, conflict_then_play;
+static char conflict_cloud_info[96], conflict_local_info[96];
+#define CONFLICT_PILL_Y 296
+#define CONFLICT_PILL_W 176
+#define CONFLICT_PILL_H 48
 
 static long launch_t0, launch_prev_ms;
 static int launch_pct;
@@ -149,6 +186,8 @@ static int row_target_y(int s, int idx) {
     case S_BACKUPS: return 114 + (idx - bk_scroll) * 44;
     case S_BROWSE: return 116 + (idx - b_scroll) * 44;
     case S_DEBUG: return 86 + idx * 54;
+    case S_CLOUD: return CLOUD_ROW_Y + idx * CLOUD_ROW_STEP;
+    case S_DEVICES: return 114 + (idx - dev_scroll) * 44;
     }
     return -1;
 }
@@ -229,10 +268,78 @@ static void pick_disc_android(void) {
     open_browse();
 }
 
-static void start_game_flow(void) {
+static void draw(void);
+
+static int cloud_active(void) { return cloud.registered && !cloud.revoked; }
+
+/* Cloud calls block the loop (a few seconds at worst, offline): put a line on screen before one starts so the tap
+ * visibly did something. */
+static void busy(const char *what) {
+    draw();
+    rect(0, H / 2 - 30, W, 60, C_BG0, 225);
+    rect(0, H / 2 - 30, W, 1, C_GOLD, 200);
+    rect(0, H / 2 + 29, W, 1, C_GOLD, 200);
+    text_c(W / 2, H / 2 - 11, S(what), 19, C_GOLD);
+    plat_present();
+}
+
+static void fmt_epoch(long ts, char *out, size_t n) {
+    if (ts <= 0) { snprintf(out, n, "?"); return; }
+    time_t t = (time_t)ts;
+    struct tm tm;
+    localtime_r(&t, &tm);
+    strftime(out, n, "%Y-%m-%d %H:%M", &tm);
+}
+
+/* then_play: the sync ran on the way into the game, which goes on once the conflict is settled (or put off). */
+static void open_conflict(int ret, int ret_sel, int then_play) {
+    conflict_ret = ret;
+    conflict_ret_sel = ret_sel;
+    conflict_then_play = then_play;
+    conflict_sel = 0;
+    char cts[32], lts[32], csha[9] = "--------", lsha[65] = "";
+    fmt_epoch(cloud.cloud_updated_at, cts, sizeof(cts));
+    if (cloud.cloud_sha256[0]) snprintf(csha, sizeof(csha), "%.8s", cloud.cloud_sha256);
+    snprintf(conflict_cloud_info, sizeof(conflict_cloud_info), "%s: REV #%d   %s   [%s]", S("CLOUD"),
+             cloud.cloud_seq, cts, csha);
+    char card_p[1024];
+    snprintf(card_p, sizeof(card_p), "%s/card1.mcd", game_dir);
+    struct stat st;
+    if (stat(card_p, &st) == 0 && save_is_valid_mc(card_p, lsha)) {
+        fmt_epoch((long)st.st_mtime, lts, sizeof(lts));
+        snprintf(conflict_local_info, sizeof(conflict_local_info), "%s: card1.mcd   %s   [%.8s]", S("LOCAL"), lts, lsha);
+    } else {
+        snprintf(conflict_local_info, sizeof(conflict_local_info), "%s: -", S("LOCAL"));
+    }
+    go(S_CONFLICT, 0, +1);
+}
+
+static void start_game(int sync);
+
+static void start_game_flow(void) { start_game(1); }
+
+static void conflict_finish(const char *res) {
+    go(conflict_ret, conflict_ret_sel, -1);
+    snprintf(status, sizeof(status), "%s", res ? res : "");
+    if (conflict_then_play) start_game(0);
+}
+
+static void start_game(int sync) {
     if (!disc_path[0]) {
         pick_disc_android();
         if (!disc_path[0]) return;
+    }
+    /* SAVES & CLOUD's CLOUD SYNC promises a pull before play. The game runs inside this process and Android kills it
+     * rather than letting it exit, so there is no push on exit as on desktop: this same sync pushes the last session's
+     * save on the next start, and SYNC NOW does it on demand. */
+    if (sync && c.sync_enabled && cloud_active()) {
+        busy("SYNCING SAVE...");
+        int conf = 0;
+        char smsg[160] = "";
+        if (cloud_sync_card1(&cloud, game_dir, c.backup_max, 1, &conf, smsg, sizeof(smsg)) == 1 && conf) {
+            open_conflict(screen, sel, 1);
+            return;
+        }
     }
     if (cfg_save(&c) != 0) {
         snprintf(msg, sizeof(msg), "Cannot write settings.json");
@@ -421,8 +528,188 @@ static void draw_saves(void) {
     row_touch(190, 44, "LOCAL BACKUPS", sl_val, sel == SAVES_BACKUPS, 0, 1, 0, 1);
     row_touch(242, 44, "SYNC NOW", cloud.registered && !cloud.revoked ? "RUN" : "-", sel == SAVES_NOW, 0, 0, 0, 0);
     row_touch(294, 44, "RESTORE BACKUP", bk_val, sel == SAVES_RESTORE, 0, bk_n > 0, 0, 0);
-    if (status[0]) text(40, H - 80, status, 14, C_CYAN);
-    footer_touch(0, 1, "SELECT");
+    char acc_val[32];
+    if (cloud.revoked) snprintf(acc_val, sizeof(acc_val), "REVOKED");
+    else if (cloud.registered) snprintf(acc_val, sizeof(acc_val), "REV #%d", cloud.cloud_seq > 0 ? cloud.cloud_seq : cloud.last_seq);
+    else snprintf(acc_val, sizeof(acc_val), "NOT LINKED");
+    row_touch(346, 44, "CLOUD ACCOUNT", acc_val, sel == SAVES_ACCOUNT, cloud.revoked, cloud_active(), 0, 0);
+    if (status[0]) text(40, 398, status, 14, C_CYAN);
+    footer_touch(0, 1, NULL);
+}
+
+static int cloud_n(void) { return cloud_active() ? 4 : 2; }
+
+static void draw_cloud(void) {
+    header_touch("CLOUD ACCOUNT", 1);
+    rrect(32, 74, W - 64, 98, 10, C_PANEL, 256);
+    rrect_line(32, 74, W - 64, 98, 10, cloud.revoked ? C_RED : cloud.registered ? C_CYAN : C_EDGE);
+    if (cloud.revoked) {
+        text(52, 84, "STATUS: REVOKED / BANNED", 18, C_RED);
+        text(52, 112, cloud.revoke_reason[0] ? cloud.revoke_reason : "THIS DEVICE KEY IS NO LONGER VALID.", 15, C_ORANGE);
+        text(52, 140, "Register again or link with a code to renew access.", 14, C_NOTE);
+    } else if (cloud.registered) {
+        int days_left = cloud.retention_days > 0 ? cloud.retention_days : 40;
+        if (cloud.expires_at > 0) {
+            long rem = cloud.expires_at - (long)time(NULL);
+            days_left = rem > 0 ? (int)((rem + 86399) / 86400) : 0;
+        }
+        char l1[128], l2[128], l3[128];
+        snprintf(l1, sizeof(l1), "%s: %.24s   %s: %d", S("DEVICE"), cloud.device_name, S("DEVICES"),
+                 cloud.active_devices > 0 ? cloud.active_devices : 1);
+        snprintf(l2, sizeof(l2), "%s: #%d   %s: %d", S("CLOUD REV"), cloud.cloud_seq > 0 ? cloud.cloud_seq : cloud.last_seq,
+                 S("DAYS LEFT"), days_left);
+        snprintf(l3, sizeof(l3), "%.60s", cloud.worker_url);
+        text(52, 84, "STATUS: ACTIVE", 18, C_GREEN);
+        text(52, 110, l1, 15, C_TEXT);
+        text(52, 132, l2, 15, C_CYAN);
+        text(52, 152, l3, 13, C_OFF);
+    } else {
+        text(52, 84, "STATUS: NOT REGISTERED", 18, C_GOLD);
+        text(52, 112, "Register once to get a key for free cross-play sync.", 14, C_NOTE);
+        text(52, 136, "Saves stay online for 40 days after your last activity.", 14, C_NOTE);
+    }
+    int gy = (int)(cur_y >= 0 && cur_screen == S_CLOUD ? cur_y : row_target_y(S_CLOUD, sel));
+    draw_focus(32, gy, W - 64, 44, 10, 0);
+    if (!cloud_active()) {
+        row_touch(CLOUD_ROW_Y, 44, "REGISTER THIS DEVICE", "NEW KEY", sel == 0, 0, 1, 0, 0);
+        row_touch(CLOUD_ROW_Y + CLOUD_ROW_STEP, 44, "LINK EXISTING ACCOUNT", "6-DIGIT CODE", sel == 1, 0, 0, 0, 0);
+    } else {
+        row_touch(CLOUD_ROW_Y, 44, "ADD NEW DEVICE", "GET CODE", sel == 0, 0, 1, 0, 0);
+        row_touch(CLOUD_ROW_Y + CLOUD_ROW_STEP, 44, "LINK TO ANOTHER ACCOUNT", "ENTER CODE", sel == 1, 0, 0, 0, 0);
+        row_touch(CLOUD_ROW_Y + 2 * CLOUD_ROW_STEP, 44, "LINKED DEVICES", "LIST / REVOKE", sel == 2, 0, 0, 0, 0);
+        row_touch(CLOUD_ROW_Y + 3 * CLOUD_ROW_STEP, 44, "NEW ACCOUNT", "ROTATE KEY", sel == 3, 0, 0, 0, 0);
+    }
+    if (status[0]) text(40, 398, status, 14, C_CYAN);
+    footer_touch(0, 1, NULL);
+}
+
+/* The 6 code boxes both pairing screens show: code[i] or a blank, the box at `active` lit. */
+static void draw_code_boxes(int y, const char *code, int active) {
+    int start_x = W / 2 - 170;
+    for (int i = 0; i < 6; i++) {
+        int bx = start_x + i * 56 + (i >= 3 ? 16 : 0), on = i == active;
+        rrect(bx, y, 44, 58, 8, on ? C_FOCUS : C_BG1, 256);
+        rrect_line(bx, y, 44, 58, 8, on ? C_GOLD : C_CYAN);
+        char ch[2] = {code[i] ? code[i] : ' ', 0};
+        text_c(bx + 22, y + 12, ch, 28, C_GOLD);
+    }
+}
+
+static long pair_remaining(void) {
+    long rem = pair_expires_at - (long)time(NULL);
+    return rem > 0 ? rem : 0;
+}
+
+static void draw_pair_host(void) {
+    header_touch("ADD NEW DEVICE", 1);
+    rrect(32, 74, W - 64, 340, 14, C_PANEL, 230);
+    rrect_line(32, 74, W - 64, 340, 14, C_CYAN);
+    text_c(W / 2, 88, "ENTER THIS CODE ON YOUR OTHER DEVICE", 16, C_NOTE);
+    draw_code_boxes(116, pair_code, -1);
+    long rem = pair_remaining();
+    if (pair_done) {
+        text_c(W / 2, 236, "DEVICE APPROVED AND LINKED!", 20, C_GREEN);
+        text_c(W / 2, 270, "The second device can now pull and push your saves.", 15, C_NOTE);
+    } else if (!strcmp(pair_st.status, "awaiting_approval")) {
+        char req[160];
+        snprintf(req, sizeof(req), "%s %s (%s, %s)", S("REQUEST FROM:"),
+                 pair_st.pending_name[0] ? pair_st.pending_name : "?",
+                 pair_st.pending_platform[0] ? pair_st.pending_platform : "?",
+                 pair_st.pending_country[0] ? pair_st.pending_country : "XX");
+        text_c(W / 2, 206, req, 17, C_GOLD);
+        text_c(W / 2, 236, "Approve adding this device to your cloud saves?", 15, C_TEXT);
+        if (status[0]) text_c(W / 2, 266, status, 14, C_ORANGE);
+        draw_touch_pill(90, 300, 210, 48, S("APPROVE"), RGB(22, 68, 48), C_GREEN);
+        draw_touch_pill(340, 300, 210, 48, S("DENY"), RGB(68, 24, 30), C_RED);
+    } else if (rem <= 0) {
+        text_c(W / 2, 236, "CODE EXPIRED", 20, C_ORANGE);
+        text_c(W / 2, 270, "Go back and get a new code.", 15, C_NOTE);
+    } else {
+        char tm[64];
+        snprintf(tm, sizeof(tm), "%s %02ld:%02ld", S("EXPIRES IN"), rem / 60, rem % 60);
+        text_c(W / 2, 196, tm, 15, rem < 30 ? C_ORANGE : C_CYAN);
+        text_c(W / 2, 240, "WAITING FOR SECOND DEVICE TO ENTER CODE...", 16, C_TEXT);
+        if (status[0]) text_c(W / 2, 274, status, 14, C_ORANGE);
+    }
+    footer_touch(0, 1, NULL);
+}
+
+static void kp_rect(int k, int *x, int *y) {
+    *x = KP_X + (k % KP_COLS) * (KP_W + KP_GAP);
+    *y = KP_Y + (k / KP_COLS) * (KP_H + KP_GAP);
+}
+
+static const char *kp_label(int k) {
+    static const char *const lab[KP_KEYS] = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "DEL", "OK"};
+    return lab[k];
+}
+
+static void draw_pair_enter(void) {
+    header_touch("LINK ACCOUNT", 1);
+    text_c(W / 2, 80, "ENTER THE 6-DIGIT CODE FROM YOUR HOST DEVICE", 16, C_NOTE);
+    draw_code_boxes(106, pair_digits, (!pair_waiting && !pair_done && pair_len < 6) ? pair_len : -1);
+    if (pair_done) {
+        text_c(W / 2, 196, "LINKED TO CLOUD ACCOUNT!", 20, C_GREEN);
+        text_c(W / 2, 230, "Your cloud cross-play sync is ready.", 15, C_NOTE);
+        if (pair_done_msg[0]) text_c(W / 2, 258, pair_done_msg, 14, C_CYAN);
+    } else if (pair_waiting) {
+        text_c(W / 2, 196, "WAITING FOR APPROVAL ON HOST DEVICE...", 18, C_GOLD);
+        text_c(W / 2, 230, "Tap APPROVE on your first device.", 15, C_NOTE);
+    } else {
+        if (status[0]) text_c(W / 2, 186, status, 15, C_RED);
+        else text_c(W / 2, 186, "Type the code, then tap OK.", 15, C_NOTE);
+        for (int k = 0; k < KP_KEYS; k++) {
+            int x, y;
+            kp_rect(k, &x, &y);
+            int live = k != KP_OK || pair_len == 6;
+            uint32_t fg = k == KP_OK ? (live ? C_GREEN : C_OFF) : k == KP_DEL ? C_ORANGE : C_TEXT;
+            rrect(x, y, KP_W, KP_H, 12, k == KP_OK && live ? RGB(18, 64, 48) : C_BG1, 235);
+            rrect_line(x, y, KP_W, KP_H, 12, k == kp_sel ? C_GOLD : C_EDGE);
+            text_c(x + KP_W / 2, y + (KP_H - 24) / 2, S(kp_label(k)), k < 10 ? 26 : 18, fg);
+        }
+    }
+    footer_touch(0, 1, NULL);
+}
+
+static void draw_devices(void) {
+    header_touch("LINKED DEVICES", 1);
+    text(40, 76, "TAP A DEVICE TO REVOKE IT", 15, C_CYAN);
+    if (dev_count > 0) {
+        int gy = (int)(cur_y >= 0 && cur_screen == S_DEVICES ? cur_y : row_target_y(S_DEVICES, sel));
+        draw_focus(32, gy, W - 64, 40, 10, 0);
+        for (int i = dev_scroll; i < dev_count && i < dev_scroll + LIST_VIS; i++) {
+            char lbl[96];
+            snprintf(lbl, sizeof(lbl), "%.30s (%s/%s)", dev_items[i].name, dev_items[i].platform, dev_items[i].country);
+            int revoked = !strcmp(dev_items[i].status, "revoked");
+            const char *tag = dev_items[i].is_current ? "THIS DEVICE" : revoked ? "REVOKED" : "ACTIVE";
+            row_touch(114 + (i - dev_scroll) * 44, 40, lbl, tag, i == sel, revoked, dev_items[i].is_current, 0, 0);
+        }
+    } else {
+        text_c(W / 2, 220, "NO DEVICES FOUND", 18, C_NOTE);
+    }
+    if (status[0]) text(40, 398, status, 14, C_CYAN);
+    footer_touch(0, 1, NULL);
+}
+
+static const char *const conflict_pill[3] = {"DOWNLOAD CLOUD", "UPLOAD LOCAL", "DECIDE LATER"};
+
+static void draw_conflict(void) {
+    header_touch("CLOUD CONFLICT", 1);
+    rrect(32, 74, W - 64, 340, 14, C_PANEL, 230);
+    rrect_line(32, 74, W - 64, 340, 14, C_GOLD);
+    text(52, 90, "BOTH CLOUD AND LOCAL SAVES CHANGED", 18, C_GOLD);
+    text(52, 128, conflict_cloud_info, 15, C_CYAN);
+    text(52, 154, conflict_local_info, 15, C_TEXT);
+    text(52, 196, "Pick the save to keep on both sides.", 15, C_NOTE);
+    text(52, 220, "A backup of this device's save is kept either way.", 15, C_NOTE);
+    for (int i = 0; i < 3; i++) {
+        uint32_t fg = i == 0 ? C_GREEN : i == 1 ? C_ORANGE : C_NOTE;
+        int x = 44 + i * (CONFLICT_PILL_W + 12);
+        draw_touch_pill(x, CONFLICT_PILL_Y, CONFLICT_PILL_W, CONFLICT_PILL_H, S(conflict_pill[i]),
+                        i == conflict_sel ? C_FOCUS : C_BG1, fg);
+        if (i == conflict_sel) rrect_line(x - 3, CONFLICT_PILL_Y - 3, CONFLICT_PILL_W + 6, CONFLICT_PILL_H + 6, 27, C_GOLD);
+    }
+    footer_touch(0, 1, NULL);
 }
 
 static void draw_backups(void) {
@@ -513,6 +800,31 @@ static void draw_screen(void) {
         break;
     case S_LOADING: draw_loading(); break;
     case S_ERROR: draw_error(); break;
+    case S_CLOUD: draw_cloud(); break;
+    case S_PAIR_HOST: draw_pair_host(); break;
+    case S_PAIR_ENTER: draw_pair_enter(); break;
+    case S_DEVICES: draw_devices(); break;
+    case S_REVOKE_CONFIRM:
+        draw_devices();
+        modal_touch("REVOKE DEVICE?", "Block this device from syncing saves:", dev_count > 0 ? dev_items[sel].name : "",
+                    "It will have to register or pair again.", "YES, REVOKE", "CANCEL", C_RED);
+        break;
+    case S_RENEW_CONFIRM:
+        draw_cloud();
+        modal_touch("START A NEW ACCOUNT?", "This device leaves its cloud account.", "A new account starts with its save.",
+                    "Other devices stay on the old one.", "YES, NEW ACCOUNT", "NO, KEEP", C_ORANGE);
+        break;
+    case S_CONFLICT: draw_conflict(); break;
+    case S_CONFLICT_CONFIRM:
+        draw_conflict();
+        if (conflict_choice == 1) {
+            modal_touch("OVERWRITE CLOUD SAVE?", "This device's save replaces the cloud's.",
+                        "Other devices get it on their next sync.", "", "YES, UPLOAD", "CANCEL", C_RED);
+        } else {
+            modal_touch("REPLACE LOCAL SAVE?", "The cloud save replaces this device's.",
+                        "The current one is backed up first.", "", "YES, DOWNLOAD", "CANCEL", C_ORANGE);
+        }
+        break;
     default: draw_home(); break;
     }
 }
@@ -568,6 +880,254 @@ static void activate_home_row(int row) {
     }
 }
 
+static void open_cloud_account(void) {
+    status[0] = 0;
+    if (cloud.registered) {
+        char err[128] = "";
+        busy("CONNECTING...");
+        if (cloud_refresh_me(&cloud, game_dir, err, sizeof(err)) != 0) snprintf(status, sizeof(status), "%s", err);
+    }
+    go(S_CLOUD, 0, +1);
+}
+
+static void activate_saves_row(int row, int dir) {
+    switch (row) {
+    case SAVES_SYNC:
+        if (!cloud_active()) { open_cloud_account(); return; }
+        c.sync_enabled = !c.sync_enabled;
+        break;
+    case SAVES_INTERVAL: {
+        static const int ivs[] = {0, 5, 10, 15, 20, 30};
+        int k = 0;
+        for (int j = 0; j < 6; j++) if (c.sync_interval_min == ivs[j]) k = j;
+        c.sync_interval_min = ivs[(k + dir + 6) % 6];
+        break;
+    }
+    case SAVES_BACKUPS:
+        c.backup_max += dir * 5;
+        if (c.backup_max < 1) c.backup_max = 100;
+        if (c.backup_max > 100) c.backup_max = 1;
+        break;
+    case SAVES_NOW:
+        if (!cloud_active()) {
+            snprintf(status, sizeof(status), "%s",
+                     S(cloud.revoked ? "DEVICE REVOKED - OPEN CLOUD ACCOUNT" : "REGISTER IN CLOUD ACCOUNT FIRST"));
+        } else {
+            int conf = 0;
+            busy("SYNCING SAVE...");
+            if (cloud_sync_card1(&cloud, game_dir, c.backup_max, 1, &conf, status, sizeof(status)) == 1 && conf) {
+                open_conflict(S_SAVES, SAVES_NOW, 0);
+                return;
+            }
+        }
+        break;
+    case SAVES_RESTORE:
+        bk_count = save_backup_list(game_dir, bk_items, BACKUP_MAX_LIST);
+        bk_scroll = 0;
+        go(S_BACKUPS, 0, +1);
+        return;
+    case SAVES_ACCOUNT:
+        open_cloud_account();
+        return;
+    }
+    cfg_save(&c);
+}
+
+/* REGISTER THIS DEVICE and NEW ACCOUNT: a fresh account whose first save is this device's card, as on desktop. */
+static void register_device(int new_account) {
+    char err[128] = "";
+    busy("CONNECTING...");
+    if (cloud_register(&cloud, game_dir, is_portmaster, err, sizeof(err)) != 0) {
+        snprintf(status, sizeof(status), "%s", err);
+        return;
+    }
+    c.sync_enabled = 1;
+    cfg_save(&c);
+    const char *done = S(new_account ? "NEW ACCOUNT CREATED" : "REGISTERED");
+    char card_p[1024], smsg[96] = "";
+    snprintf(card_p, sizeof(card_p), "%s/card1.mcd", game_dir);
+    if (save_is_valid_mc(card_p, NULL) && cloud_push_card1(&cloud, game_dir, c.backup_max, 0, smsg, sizeof(smsg)) == 0) {
+        snprintf(status, sizeof(status), "%s - %s", done, smsg);
+    } else {
+        snprintf(status, sizeof(status), "%s", done);
+    }
+}
+
+static void open_pair_enter(void) {
+    pair_len = 0;
+    pair_digits[0] = 0;
+    pair_waiting = pair_done = 0;
+    pair_done_msg[0] = 0;
+    kp_sel = 0;
+    status[0] = 0;
+    go(S_PAIR_ENTER, 0, +1);
+}
+
+static void activate_cloud_row(int row) {
+    char err[128] = "";
+    status[0] = 0;
+    if (!cloud_active()) {
+        if (row == CLOUD_REGISTER_OR_ADD) register_device(0);
+        else if (row == CLOUD_LINK) open_pair_enter();
+        return;
+    }
+    switch (row) {
+    case CLOUD_REGISTER_OR_ADD: {
+        int exp_sec = 300;
+        memset(&pair_st, 0, sizeof(pair_st));
+        memset(pair_code, 0, sizeof(pair_code));
+        pair_done = 0;
+        busy("CONNECTING...");
+        if (cloud_pair_create(&cloud, pair_code, &exp_sec, err, sizeof(err)) == 0) {
+            pair_expires_at = (long)time(NULL) + exp_sec;
+            pair_last_poll_ms = plat_now_ms();
+            go(S_PAIR_HOST, 0, +1);
+        } else {
+            snprintf(status, sizeof(status), "%s", err[0] ? err : S("PAIRING FAILED"));
+        }
+        break;
+    }
+    case CLOUD_LINK: open_pair_enter(); break;
+    case CLOUD_DEVICES:
+        busy("CONNECTING...");
+        if (cloud_list_devices(&cloud, dev_items, CLOUD_MAX_DEVICES, &dev_count, err, sizeof(err)) == 0) {
+            dev_scroll = 0;
+            go(S_DEVICES, 0, +1);
+        } else {
+            snprintf(status, sizeof(status), "%s", err);
+        }
+        break;
+    case CLOUD_RENEW: go(S_RENEW_CONFIRM, CLOUD_RENEW, +1); break;
+    }
+}
+
+static void pair_host_answer(int approve) {
+    char err[128] = "";
+    busy("CONNECTING...");
+    if (cloud_pair_approve(&cloud, pair_code, approve, err, sizeof(err)) != 0) {
+        snprintf(status, sizeof(status), "%s", err);
+        return;
+    }
+    if (approve) {
+        pair_done = 1;
+        status[0] = 0;
+        cloud_refresh_me(&cloud, game_dir, err, sizeof(err));
+    } else {
+        go(S_CLOUD, CLOUD_REGISTER_OR_ADD, -1);
+    }
+}
+
+static void pair_host_leave(void) {
+    /* Leaving with a request on screen answers it: the other device stops waiting instead of timing out. */
+    if (!pair_done && !strcmp(pair_st.status, "awaiting_approval")) {
+        char err[128];
+        cloud_pair_approve(&cloud, pair_code, 0, err, sizeof(err));
+    }
+    status[0] = 0;
+    go(S_CLOUD, CLOUD_REGISTER_OR_ADD, -1);
+}
+
+static void pair_key(int k) {
+    if (pair_waiting || pair_done || k < 0 || k >= KP_KEYS) return;
+    if (k < 10) {
+        if (pair_len < 6) pair_digits[pair_len++] = kp_label(k)[0];
+        status[0] = 0;
+    } else if (k == KP_DEL) {
+        if (pair_len > 0) pair_len--;
+        status[0] = 0;
+    } else if (pair_len == 6) {
+        char err[128] = "";
+        busy("CONNECTING...");
+        if (cloud_pair_claim(&cloud, pair_digits, is_portmaster, &pair_claim, err, sizeof(err)) == 0) {
+            pair_waiting = 1;
+            pair_last_poll_ms = plat_now_ms();
+            status[0] = 0;
+        } else {
+            snprintf(status, sizeof(status), "%s", err);
+        }
+    }
+    pair_digits[pair_len] = 0;
+}
+
+/* The pairing screens' background polling (every PAIR_POLL_MS, as on desktop). */
+static void cloud_poll(void) {
+    long now = plat_now_ms();
+    if (now - pair_last_poll_ms < PAIR_POLL_MS) return;
+    char perr[128] = "";
+    if (screen == S_PAIR_HOST && !pair_done && pair_remaining() > 0) {
+        pair_last_poll_ms = now;
+        PairStatus ps;
+        /* A failed poll keeps the last answer, so an APPROVE already on screen does not flicker away. */
+        if (cloud_pair_status(&cloud, pair_code, &ps, perr, sizeof(perr)) == 0) pair_st = ps;
+        else if (perr[0]) snprintf(status, sizeof(status), "%s", perr);
+    } else if (screen == S_PAIR_ENTER && pair_waiting && !pair_done) {
+        pair_last_poll_ms = now;
+        int approved = 0;
+        int prc = cloud_pair_poll(&cloud, game_dir, &pair_claim, &approved, perr, sizeof(perr));
+        if (prc == 0 && approved) {
+            pair_waiting = 0;
+            pair_done = 1;
+            c.sync_enabled = 1;
+            cfg_save(&c);
+            cloud_refresh_me(&cloud, game_dir, perr, sizeof(perr));
+            int conf = 0;
+            char smsg[128] = "";
+            busy("SYNCING SAVE...");
+            int src = cloud_sync_card1(&cloud, game_dir, c.backup_max, 1, &conf, smsg, sizeof(smsg));
+            if (src == 1 && conf) {
+                open_conflict(S_CLOUD, 0, 0);
+                return;
+            }
+            snprintf(pair_done_msg, sizeof(pair_done_msg), "%s", smsg);
+        } else if (prc == -2) {
+            /* Denied, expired or gone: back to the keypad with the reason. */
+            pair_waiting = 0;
+            pair_len = 0;
+            pair_digits[0] = 0;
+            snprintf(status, sizeof(status), "%s", perr[0] ? perr : S("PAIRING FAILED"));
+        }
+    }
+}
+
+static void conflict_choose(int i) {
+    if (i == 2) {
+        conflict_finish(S("SAVES LEFT AS THEY ARE"));
+        return;
+    }
+    conflict_choice = i;
+    go(S_CONFLICT_CONFIRM, 0, +1);
+}
+
+static void conflict_apply(void) {
+    char res[160] = "";
+    busy("SYNCING SAVE...");
+    if (conflict_choice == 0) cloud_pull_card1(&cloud, game_dir, c.backup_max, res, sizeof(res));
+    else cloud_push_card1(&cloud, game_dir, c.backup_max, 1, res, sizeof(res));
+    conflict_finish(res);
+}
+
+static void revoke_selected(void) {
+    char err[128] = "";
+    busy("CONNECTING...");
+    if (dev_count > 0 && cloud_revoke_device(&cloud, dev_items[sel].device_id, err, sizeof(err)) == 0) {
+        cloud_list_devices(&cloud, dev_items, CLOUD_MAX_DEVICES, &dev_count, err, sizeof(err));
+        int ns = sel >= dev_count ? (dev_count > 0 ? dev_count - 1 : 0) : sel;
+        if (dev_scroll > ns) dev_scroll = ns;
+        if (dev_count <= LIST_VIS) dev_scroll = 0;
+        go(S_DEVICES, ns, -1);
+        snprintf(status, sizeof(status), "%s", S("DEVICE REVOKED"));
+    } else {
+        go(S_DEVICES, sel, -1);
+        snprintf(status, sizeof(status), "%s", err);
+    }
+}
+
+static int is_cloud_screen(int s) {
+    return s == S_CLOUD || s == S_PAIR_HOST || s == S_PAIR_ENTER || s == S_DEVICES || s == S_CONFLICT;
+}
+
+static void on_back(void);
+
 static void on_touch(int code, int x, int y) {
     if (screen == S_SPLASH) {
         if (code == K_TOUCH_DOWN) go(S_HOME, 0, +1);
@@ -577,16 +1137,18 @@ static void on_touch(int code, int x, int y) {
         if (code == K_TOUCH_DOWN) load_press(c.pad[A_CROSS].code);
         return;
     }
-    if (code == K_TOUCH_MOVE && touch_drag_active && (screen == S_BROWSE || screen == S_BACKUPS)) {
+    if (code == K_TOUCH_MOVE && touch_drag_active && (screen == S_BROWSE || screen == S_BACKUPS || screen == S_DEVICES)) {
         int dy = y - touch_drag_y0;
         if (dy > 32) {
             if (screen == S_BROWSE && b_scroll > 0) b_scroll--;
             if (screen == S_BACKUPS && bk_scroll > 0) bk_scroll--;
+            if (screen == S_DEVICES && dev_scroll > 0) dev_scroll--;
             touch_drag_y0 = y;
             touch_drag_scrolled = 1;
         } else if (dy < -32) {
             if (screen == S_BROWSE && b_scroll + BROWSE_VIS < b_count) b_scroll++;
             if (screen == S_BACKUPS && bk_scroll + LIST_VIS < bk_count) bk_scroll++;
+            if (screen == S_DEVICES && dev_scroll + LIST_VIS < dev_count) dev_scroll++;
             touch_drag_y0 = y;
             touch_drag_scrolled = 1;
         }
@@ -637,8 +1199,21 @@ static void on_touch(int code, int x, int y) {
         return;
     }
 
+    /* The modals' two buttons; the BACK pill behind them cancels too. */
+    if (screen == S_REVOKE_CONFIRM || screen == S_RENEW_CONFIRM || screen == S_CONFLICT_CONFIRM) {
+        if (in_rect(x, y, 90, 294, 210, 44)) {
+            if (screen == S_REVOKE_CONFIRM) revoke_selected();
+            else if (screen == S_RENEW_CONFIRM) { register_device(1); go(S_CLOUD, 0, -1); }
+            else conflict_apply();
+        } else if (in_rect(x, y, 340, 294, 210, 44) || in_rect(x, y, 520, 14, 98, 36) || in_rect(x, y, 28, H - 46, 126, 36)) {
+            on_back();
+        }
+        return;
+    }
+
     if (screen != S_HOME && (in_rect(x, y, 520, 14, 98, 36) || in_rect(x, y, 28, H - 46, 126, 36))) {
-        if (screen == S_BROWSE) go(S_GAME, GAME_DISC, -1);
+        if (is_cloud_screen(screen)) on_back();
+        else if (screen == S_BROWSE) go(S_GAME, GAME_DISC, -1);
         else if (screen == S_BACKUPS) go(S_SAVES, SAVES_RESTORE, -1);
         else if (screen == S_ERROR) go(return_screen, return_sel, -1);
         else { cfg_save(&c); go(S_HOME, 0, -1); }
@@ -720,29 +1295,47 @@ static void on_touch(int code, int x, int y) {
         for (int i = 0; i < SAVES_N; i++) {
             if (in_rect(x, y, 32, 86 + i * 52, W - 64, 46)) {
                 sel = i;
-                int dir = (x >= 380 && x < 490) ? -1 : +1;
-                if (i == SAVES_SYNC && cloud.registered && !cloud.revoked) c.sync_enabled = !c.sync_enabled;
-                else if (i == SAVES_INTERVAL) {
-                    static const int ivs[] = {0, 5, 10, 15, 20, 30};
-                    int k = 0;
-                    for (int j = 0; j < 6; j++) if (c.sync_interval_min == ivs[j]) k = j;
-                    c.sync_interval_min = ivs[(k + dir + 6) % 6];
-                } else if (i == SAVES_BACKUPS) {
-                    c.backup_max += dir * 5;
-                    if (c.backup_max < 1) c.backup_max = 100;
-                    if (c.backup_max > 100) c.backup_max = 1;
-                } else if (i == SAVES_NOW && cloud.registered && !cloud.revoked) {
-                    int conf = 0;
-                    if (cloud_sync_card1(&cloud, game_dir, c.backup_max, 0, &conf, status, sizeof(status)) == 0 && !status[0]) {
-                        snprintf(status, sizeof(status), "SYNC COMPLETE");
-                    }
-                } else if (i == SAVES_RESTORE) {
-                    bk_count = save_backup_list(game_dir, bk_items, BACKUP_MAX_LIST);
-                    bk_scroll = 0;
-                    go(S_BACKUPS, 0, +1);
-                    return;
-                }
-                cfg_save(&c);
+                activate_saves_row(i, (x >= 380 && x < 490) ? -1 : +1);
+                return;
+            }
+        }
+    } else if (screen == S_CLOUD) {
+        for (int i = 0; i < cloud_n(); i++) {
+            if (in_rect(x, y, 32, CLOUD_ROW_Y + i * CLOUD_ROW_STEP, W - 64, 46)) {
+                sel = i;
+                activate_cloud_row(i);
+                return;
+            }
+        }
+    } else if (screen == S_PAIR_HOST) {
+        if (!pair_done && !strcmp(pair_st.status, "awaiting_approval")) {
+            if (in_rect(x, y, 90, 300, 210, 48)) pair_host_answer(1);
+            else if (in_rect(x, y, 340, 300, 210, 48)) pair_host_answer(0);
+        }
+    } else if (screen == S_PAIR_ENTER) {
+        if (pair_waiting || pair_done) return;
+        for (int k = 0; k < KP_KEYS; k++) {
+            int kx, ky;
+            kp_rect(k, &kx, &ky);
+            if (in_rect(x, y, kx, ky, KP_W, KP_H)) {
+                kp_sel = k;
+                pair_key(k);
+                return;
+            }
+        }
+    } else if (screen == S_DEVICES) {
+        for (int i = dev_scroll; i < dev_count && i < dev_scroll + LIST_VIS; i++) {
+            if (in_rect(x, y, 32, 114 + (i - dev_scroll) * 44, W - 64, 40)) {
+                sel = i;
+                if (!dev_items[i].is_current && !strcmp(dev_items[i].status, "active")) go(S_REVOKE_CONFIRM, i, +1);
+                return;
+            }
+        }
+    } else if (screen == S_CONFLICT) {
+        for (int i = 0; i < 3; i++) {
+            if (in_rect(x, y, 44 + i * (CONFLICT_PILL_W + 12), CONFLICT_PILL_Y, CONFLICT_PILL_W, CONFLICT_PILL_H)) {
+                conflict_sel = i;
+                conflict_choose(i);
                 return;
             }
         }
@@ -816,6 +1409,14 @@ static void on_back(void) {
     case S_BROWSE: go(S_GAME, GAME_DISC, -1); return;
     case S_BACKUPS: go(S_SAVES, SAVES_RESTORE, -1); return;
     case S_ERROR: go(return_screen, return_sel, -1); return;
+    case S_CLOUD: status[0] = 0; go(S_SAVES, SAVES_ACCOUNT, -1); return;
+    case S_PAIR_HOST: pair_host_leave(); return;
+    case S_PAIR_ENTER: status[0] = 0; go(S_CLOUD, CLOUD_LINK, -1); return;
+    case S_DEVICES: status[0] = 0; go(S_CLOUD, CLOUD_DEVICES, -1); return;
+    case S_REVOKE_CONFIRM: go(S_DEVICES, sel, -1); return;
+    case S_RENEW_CONFIRM: go(S_CLOUD, CLOUD_RENEW, -1); return;
+    case S_CONFLICT: conflict_finish(S("SAVES LEFT AS THEY ARE")); return;
+    case S_CONFLICT_CONFIRM: go(S_CONFLICT, 0, -1); return;
     default: cfg_save(&c); go(S_HOME, 0, -1); return;
     }
 }
@@ -831,23 +1432,40 @@ static void on_key(int code) {
         cfg_save(&c);
         return;
     }
+    if (screen == S_PAIR_ENTER && !pair_waiting && !pair_done) {
+        /* A pad walks the keypad; OK presses the lit key. */
+        if (code == K_UP || code == K_DOWN) { kp_sel = (kp_sel + KP_COLS) % KP_KEYS; return; }
+        if (code == K_LEFT) { kp_sel = (kp_sel + KP_KEYS - 1) % KP_KEYS; return; }
+        if (code == K_RIGHT) { kp_sel = (kp_sel + 1) % KP_KEYS; return; }
+        if (code == btn_ok() || code == K_SOUTH) { pair_key(kp_sel); return; }
+    }
+    if (screen == S_CONFLICT) {
+        if (code == K_LEFT) { conflict_sel = (conflict_sel + 2) % 3; return; }
+        if (code == K_RIGHT) { conflict_sel = (conflict_sel + 1) % 3; return; }
+        if (code == btn_ok() || code == K_SOUTH) { conflict_choose(conflict_sel); return; }
+    }
     if (code == K_UP) {
         int n = screen == S_HOME ? HI_COUNT : screen == S_GAME ? GAME_N : screen == S_HUD ? H_COUNT + 2 :
                 screen == S_CONTROLS ? (A_COUNT + 1) : screen == S_SAVES ? SAVES_N : screen == S_DEBUG ? DEBUG_N :
-                screen == S_BROWSE ? b_count : screen == S_BACKUPS ? bk_count : 1;
+                screen == S_BROWSE ? b_count : screen == S_BACKUPS ? bk_count : screen == S_CLOUD ? cloud_n() :
+                screen == S_DEVICES ? dev_count : 1;
         if (n > 0) sel = (sel - 1 + n) % n;
         if (screen == S_BROWSE && sel < b_scroll) b_scroll = sel;
         if (screen == S_BACKUPS && sel < bk_scroll) bk_scroll = sel;
+        if (screen == S_DEVICES && sel < dev_scroll) dev_scroll = sel;
     } else if (code == K_DOWN) {
         int n = screen == S_HOME ? HI_COUNT : screen == S_GAME ? GAME_N : screen == S_HUD ? H_COUNT + 2 :
                 screen == S_CONTROLS ? (A_COUNT + 1) : screen == S_SAVES ? SAVES_N : screen == S_DEBUG ? DEBUG_N :
-                screen == S_BROWSE ? b_count : screen == S_BACKUPS ? bk_count : 1;
+                screen == S_BROWSE ? b_count : screen == S_BACKUPS ? bk_count : screen == S_CLOUD ? cloud_n() :
+                screen == S_DEVICES ? dev_count : 1;
         if (n > 0) sel = (sel + 1) % n;
         if (screen == S_BROWSE && sel >= b_scroll + BROWSE_VIS) b_scroll = sel - BROWSE_VIS + 1;
         if (screen == S_BACKUPS && sel >= bk_scroll + LIST_VIS) bk_scroll = sel - LIST_VIS + 1;
+        if (screen == S_DEVICES && sel >= dev_scroll + LIST_VIS) dev_scroll = sel - LIST_VIS + 1;
     } else if (code == K_LEFT || code == K_RIGHT) {
         int dir = code == K_LEFT ? -1 : +1;
         if (screen == S_GAME) activate_game_row(sel, dir);
+        else if (screen == S_SAVES && (sel == SAVES_INTERVAL || sel == SAVES_BACKUPS)) activate_saves_row(sel, dir);
         else if (screen == S_HUD && sel < H_COUNT) { c.hud[sel] = hud_cycle(c.hud[sel], dir); cfg_save(&c); }
         else if (screen == S_CONTROLS && sel == 0) {
             int l = cfg_layout(&c);
@@ -857,12 +1475,19 @@ static void on_key(int code) {
     } else if (code == btn_ok() || code == K_SOUTH) {
         if (screen == S_HOME) activate_home_row(sel);
         else if (screen == S_GAME) activate_game_row(sel, +1);
+        else if (screen == S_SAVES) activate_saves_row(sel, +1);
+        else if (screen == S_CLOUD) activate_cloud_row(sel);
+        else if (screen == S_PAIR_HOST && !pair_done && !strcmp(pair_st.status, "awaiting_approval")) pair_host_answer(1);
+        else if (screen == S_DEVICES && dev_count > 0 && !dev_items[sel].is_current && !strcmp(dev_items[sel].status, "active")) {
+            go(S_REVOKE_CONFIRM, sel, +1);
+        }
         else if (screen == S_DEBUG) {
             if (sel == DEBUG_LOGS) { c.logs = (c.logs + 1) % 3; cfg_save(&c); }
             else if (sel == DEBUG_CLEAN_LOGS) go(S_CLEAN, 0, +1);
         }
     } else if (code == btn_back() || code == K_EAST) {
-        if (screen != S_HOME) { cfg_save(&c); go(S_HOME, 0, -1); }
+        if (is_cloud_screen(screen) || screen == S_REVOKE_CONFIRM || screen == S_RENEW_CONFIRM || screen == S_CONFLICT_CONFIRM) on_back();
+        else if (screen != S_HOME) { cfg_save(&c); go(S_HOME, 0, -1); }
     } else if (code == btn_start()) {
         start_game_flow();
     }
@@ -910,6 +1535,7 @@ int dw3_android_launcher_run(int kind, const char *script, int *out_touch_pad, i
             if (cur_screen != screen || cur_y < 0.0f) { cur_y = (float)ty; cur_screen = screen; }
             else cur_y += ((float)ty - cur_y) * 0.42f;
         }
+        cloud_poll();
         draw();
         plat_present();
 

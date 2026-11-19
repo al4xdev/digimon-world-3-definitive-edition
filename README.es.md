@@ -363,7 +363,7 @@ ropa de tu héroe.
 
 <p align="center"><img src="docs/images/definitive/cross-play.svg" width="800" alt="Cloud Sync cross-play: el launcher sincroniza card1.mcd entre portátiles y PC mediante un Cloudflare Worker gratuito. Empareja un dispositivo con un código de 6 dígitos que aprueba el anfitrión, elige un lado cuando ambos han cambiado, y conserva de 1 a 100 snapshots locales rotativos."></p>
 
-**Partidas guardadas con cross-play.** El **Cloud Sync** gratuito mantiene tu memory card al día entre un portátil y un
+**Partidas guardadas con cross-play.** El **Cloud Sync** gratuito mantiene tu memory card al día entre un portátil, un móvil Android y un
 PC: empareja un dispositivo con un código de 6 dígitos, resuelve conflictos, revoca un dispositivo perdido y conserva
 hasta 100 snapshots locales con restauración en un botón. Un launcher pensado primero para consola se encarga del
 disco, el vídeo, los controles, el HUD de combate y las partidas guardadas, y reproduce un pequeño juego de carreras

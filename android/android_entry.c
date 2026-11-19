@@ -65,6 +65,71 @@ int android_pick_disc_files(void) {
     return saf_ok ? 0 : -1;
 }
 
+/* launcher/cloud.c's HTTP on Android: Dw3Activity.httpRequest (HttpURLConnection). headers is "Name: value\n" lines;
+ * body may be NULL. On success *body_out is a malloc'd, NUL-terminated copy of the response body (any status) and
+ * resp_headers holds "Name: value\n" lines; returns -1 when no HTTP response arrived at all. Runs on the SDL thread,
+ * which never returns to Java, so every local reference lives in a frame popped before returning. */
+int android_http_request(const char *method, const char *url, const char *headers, const void *body, size_t body_len,
+                         int *status_out, char **body_out, size_t *body_len_out, char *resp_headers,
+                         size_t resp_headers_n) {
+    *status_out = 0;
+    *body_out = NULL;
+    *body_len_out = 0;
+    if (resp_headers_n) resp_headers[0] = 0;
+    JNIEnv *env = (JNIEnv *)SDL_GetAndroidJNIEnv();
+    if (!env || (*env)->PushLocalFrame(env, 16) != 0) return -1;
+    int rc = -1;
+    jobject activity = (jobject)SDL_GetAndroidActivity();
+    /* FindClass on a native thread only sees the system class loader; the activity's class comes from the app's. */
+    jclass cls = activity ? (*env)->GetObjectClass(env, activity) : NULL;
+    jmethodID mid = cls ? (*env)->GetStaticMethodID(env, cls, "httpRequest",
+                                                     "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[B[I[Ljava/lang/String;)[B")
+                        : NULL;
+    if (!mid) goto out;
+    jstring jm = (*env)->NewStringUTF(env, method);
+    jstring ju = (*env)->NewStringUTF(env, url);
+    jstring jh = (*env)->NewStringUTF(env, headers ? headers : "");
+    jbyteArray jb = NULL;
+    if (body) {
+        jb = (*env)->NewByteArray(env, (jsize)body_len);
+        if (jb) (*env)->SetByteArrayRegion(env, jb, 0, (jsize)body_len, (const jbyte *)body);
+    }
+    jintArray jst = (*env)->NewIntArray(env, 1);
+    jclass str_cls = (*env)->FindClass(env, "java/lang/String");
+    jobjectArray jhdr = str_cls ? (*env)->NewObjectArray(env, 1, str_cls, NULL) : NULL;
+    if (!jm || !ju || !jh || (body && !jb) || !jst || !jhdr) goto out;
+
+    jbyteArray jres = (jbyteArray)(*env)->CallStaticObjectMethod(env, cls, mid, jm, ju, jh, jb, jst, jhdr);
+    if ((*env)->ExceptionCheck(env)) {
+        (*env)->ExceptionClear(env);
+        goto out;
+    }
+    if (!jres) goto out;
+    jint st = 0;
+    (*env)->GetIntArrayRegion(env, jst, 0, 1, &st);
+    jsize n = (*env)->GetArrayLength(env, jres);
+    char *buf = malloc((size_t)n + 1);
+    if (!buf) goto out;
+    (*env)->GetByteArrayRegion(env, jres, 0, n, (jbyte *)buf);
+    buf[n] = 0;
+    jstring jrh = (jstring)(*env)->GetObjectArrayElement(env, jhdr, 0);
+    if (jrh && resp_headers_n) {
+        const char *h = (*env)->GetStringUTFChars(env, jrh, NULL);
+        if (h) {
+            snprintf(resp_headers, resp_headers_n, "%s", h);
+            (*env)->ReleaseStringUTFChars(env, jrh, h);
+        }
+    }
+    *status_out = st;
+    *body_out = buf;
+    *body_len_out = (size_t)n;
+    rc = 0;
+out:
+    if ((*env)->ExceptionCheck(env)) (*env)->ExceptionClear(env);
+    (*env)->PopLocalFrame(env, NULL);
+    return rc;
+}
+
 static void ensure_dir(const char *path) {
     struct stat st;
     if (stat(path, &st) != 0) mkdir(path, 0755);

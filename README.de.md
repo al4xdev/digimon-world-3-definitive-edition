@@ -364,7 +364,7 @@ und Kleidung deines Helden um.
 
 <p align="center"><img src="docs/images/definitive/cross-play.svg" width="800" alt="Cross-Play-Cloud-Sync: Der Launcher synchronisiert card1.mcd zwischen Handhelds und PC über einen kostenlosen Cloudflare Worker. Koppele ein Gerät mit einem 6-stelligen Code, den der Host bestätigt, wähle eine Seite, wenn beide sich geändert haben, und behalte 1 bis 100 rotierende lokale Snapshots."></p>
 
-**Cross-Play-Spielstände.** Der kostenlose **Cloud Sync** hält deine Memory Card zwischen Handheld und PC auf dem
+**Cross-Play-Spielstände.** Der kostenlose **Cloud Sync** hält deine Memory Card zwischen Handheld, Android-Handy und PC auf dem
 gleichen Stand: Koppele ein Gerät mit einem 6-stelligen Code, löse Konflikte, sperre ein verlorenes Gerät und behalte
 bis zu 100 lokale Snapshots mit Wiederherstellung per Tastendruck. Ein konsolenorientierter Launcher kümmert sich um
 Disc, Video, Steuerung, das Kampf-HUD und die Spielstände und spielt ein kleines Runner-Spiel mit Kumamon, Guilmon und

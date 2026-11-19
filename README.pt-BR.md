@@ -359,7 +359,7 @@ história acompanha a troca. Treze **skins de herói** das caçadas Super Rare r
 
 <p align="center"><img src="docs/images/definitive/cross-play.svg" width="800" alt="Cloud Sync de cross-play: o launcher sincroniza o card1.mcd entre portáteis e PC por meio de um Cloudflare Worker gratuito. Pareie um dispositivo com um código de 6 dígitos que o host aprova, escolha um lado quando os dois mudarem, e mantenha de 1 a 100 snapshots locais rotativos."></p>
 
-**Saves com cross-play.** O **Cloud Sync** gratuito mantém o seu memory card em dia entre um portátil e um PC: pareie um
+**Saves com cross-play.** O **Cloud Sync** gratuito mantém o seu memory card em dia entre um portátil, um celular Android e um PC: pareie um
 dispositivo com um código de 6 dígitos, resolva conflitos, revogue um aparelho perdido e guarde até 100 snapshots
 locais, com restauração em um botão. Um launcher pensado para console cuida do disco, do vídeo, dos controles, do HUD
 de batalha e dos saves, e ainda exibe um joguinho de corrida com Kumamon, Guilmon e Agumon enquanto o seu disco é

@@ -7,6 +7,8 @@
     <uses-feature android:name="android.hardware.gamepad" android:required="false" />
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- Cloud save sync (launcher/cloud.c, through Dw3Activity.httpRequest). -->
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"

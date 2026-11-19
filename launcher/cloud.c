@@ -15,6 +15,15 @@
 
 #include "sha256.h"
 
+#ifdef __ANDROID__
+#include <sys/system_properties.h>
+
+/* android/android_entry.c: one HTTP request through Java's HttpURLConnection (see http_exec_android). */
+extern int android_http_request(const char *method, const char *url, const char *headers,
+                                const void *body, size_t body_len, int *status_out,
+                                char **body_out, size_t *body_len_out, char *resp_headers, size_t resp_headers_n);
+#endif
+
 /* ---- small JSON helpers (schema-fixed, dependency-free) ---- */
 static void json_escape(const char *src, char *dst, size_t n) {
     size_t j = 0;
@@ -300,7 +309,30 @@ int save_backup_restore(const char *game_dir, const char *backup_name, int max_k
 }
 
 /* ---- Cloud state persistence ---- */
+static const char *client_platform(int is_portmaster) {
+#ifdef __ANDROID__
+    (void)is_portmaster;
+    return "android";
+#else
+    return is_portmaster ? "portmaster" : "pc";
+#endif
+}
+
 static void default_device_name(char *out, size_t n, int is_portmaster) {
+#ifdef __ANDROID__
+    /* An app's hostname is "localhost"; the model ("moto g84 5G") is what the owner recognizes in the device list. */
+    char model[PROP_VALUE_MAX] = "";
+    if (__system_property_get("ro.product.model", model) > 0) {
+        for (size_t i = 0; model[i]; i++) {
+            if ((unsigned char)model[i] < 0x20 || (unsigned char)model[i] > 0x7e) model[i] = '-';
+        }
+        snprintf(out, n, "%.36s", model);
+    } else {
+        snprintf(out, n, "DW3-Android");
+    }
+    (void)is_portmaster;
+    return;
+#endif
     char host[64] = "";
     if (gethostname(host, sizeof(host) - 1) == 0 && host[0]) {
         for (size_t i = 0; host[i]; i++) {
@@ -408,12 +440,59 @@ static int valid_http_url(const char *url) {
     return url && (!strncmp(url, "https://", 8) || !strncmp(url, "http://", 7));
 }
 
+#ifdef __ANDROID__
+/* Android has no curl to rely on: AOSP does not ship /system/bin/curl (some vendors add one, with their own CA setup),
+ * and fork() from a process that runs a JVM is fragile. Java's HttpURLConnection is on every device and uses the
+ * system's CA store, so the request goes there; the response comes back in the same shape as the curl path. */
+static int http_exec_android(const char *method, const char *url, const char *bearer,
+                             const char *const *extra_headers, int n_extra,
+                             const char *json_body, const char *upload_file,
+                             const char *download_file, HttpResp *resp) {
+    char hdrs[1024] = "";
+    size_t hl = 0;
+    if (bearer && bearer[0]) hl += (size_t)snprintf(hdrs + hl, sizeof(hdrs) - hl, "Authorization: Bearer %s\n", bearer);
+    for (int i = 0; i < n_extra && hl < sizeof(hdrs); i++) {
+        hl += (size_t)snprintf(hdrs + hl, sizeof(hdrs) - hl, "%s\n", extra_headers[i]);
+    }
+    if (hl < sizeof(hdrs) && (json_body || upload_file)) {
+        hl += (size_t)snprintf(hdrs + hl, sizeof(hdrs) - hl, "Content-Type: %s\n",
+                               json_body ? "application/json" : "application/octet-stream");
+    }
+    if (hl >= sizeof(hdrs)) return -1;
+
+    char *upload = NULL;
+    const void *body = json_body;
+    size_t body_len = json_body ? strlen(json_body) : 0;
+    if (!json_body && upload_file) {
+        upload = read_all(upload_file, &body_len);
+        if (!upload) return -1;
+        body = upload;
+    }
+    int rc = android_http_request(method, url, hdrs, body, body_len, &resp->status, &resp->body, &resp->body_len,
+                                  resp->headers, sizeof(resp->headers));
+    free(upload);
+    if (rc != 0) return -1;
+    if (download_file) {
+        /* The curl path writes the body to the file whatever the status; the body also stays in resp so an error
+         * code ("device_revoked") is still readable. */
+        if (write_atomic_bytes(download_file, resp->body ? resp->body : "", resp->body_len, 0644) != 0) {
+            http_resp_free(resp);
+            return -1;
+        }
+    }
+    return 0;
+}
+#endif
+
 static int http_exec(const char *method, const char *url, const char *bearer,
                      const char *const *extra_headers, int n_extra,
                      const char *json_body, const char *upload_file,
                      const char *download_file, HttpResp *resp) {
     memset(resp, 0, sizeof(*resp));
     if (!valid_http_url(url)) return -1;
+#ifdef __ANDROID__
+    return http_exec_android(method, url, bearer, extra_headers, n_extra, json_body, upload_file, download_file, resp);
+#endif
     const char *curl_bin = getenv("DW3_CLOUD_CURL");
     if (!curl_bin || !curl_bin[0]) curl_bin = "curl";
 
@@ -616,7 +695,7 @@ int cloud_register(CloudState *st, const char *game_dir, int is_portmaster, char
     json_escape(name, ename, sizeof(ename));
     snprintf(url, sizeof(url), "%s/v1/register", st->worker_url);
     snprintf(body, sizeof(body), "{\"device_name\":\"%s\",\"platform\":\"%s\"}",
-             ename, is_portmaster ? "portmaster" : "pc");
+             ename, client_platform(is_portmaster));
 
     HttpResp r;
     if (http_exec("POST", url, NULL, NULL, 0, body, NULL, NULL, &r) != 0) {
@@ -705,7 +784,13 @@ int cloud_push_card1(CloudState *st, const char *game_dir, int backup_max, int f
     char sha[65];
     sha256_bytes(raw, sz, sha);
 
-    char snap[64] = "/tmp/dw3push_XXXXXX";
+    char snap[1100];
+#ifdef __ANDROID__
+    /* Android has no /tmp; the app's own directory is always writable. */
+    snprintf(snap, sizeof(snap), "%s/dw3push_XXXXXX", game_dir);
+#else
+    snprintf(snap, sizeof(snap), "/tmp/dw3push_XXXXXX");
+#endif
     int sfd = mkstemp(snap);
     if (sfd < 0) {
         free(raw);
@@ -1000,7 +1085,7 @@ int cloud_pair_claim(CloudState *st, const char *code, int is_portmaster, PairCl
     json_escape(name, ename, sizeof(ename));
     snprintf(url, sizeof(url), "%s/v1/pair/claim", st->worker_url);
     snprintf(body, sizeof(body), "{\"code\":\"%s\",\"device_name\":\"%s\",\"platform\":\"%s\"}",
-             code, ename, is_portmaster ? "portmaster" : "pc");
+             code, ename, client_platform(is_portmaster));
     HttpResp r;
     if (http_exec("POST", url, NULL, NULL, 0, body, NULL, NULL, &r) != 0) {
         snprintf(err, err_n, "OFFLINE OR NETWORK ERROR");

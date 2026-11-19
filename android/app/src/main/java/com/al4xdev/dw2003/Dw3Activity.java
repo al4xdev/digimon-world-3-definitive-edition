@@ -69,6 +69,55 @@ public class Dw3Activity extends SDLActivity {
         } catch (Throwable ignored) {}
     }
 
+    /* One HTTP request for launcher/cloud.c (android_http_request in android/android_entry.c): Android has no curl
+     * to exec, and this uses the system's CA store. headers holds "Name: value" lines. Returns the response body for
+     * any status (the status in statusOut[0], the headers as "Name: value\n" lines in headersOut[0]), or null when
+     * no response arrived. Called on the SDL thread, never the UI thread, so blocking here is fine. */
+    public static byte[] httpRequest(String method, String url, String headers, byte[] body, int[] statusOut,
+                                     String[] headersOut) {
+        java.net.HttpURLConnection conn = null;
+        try {
+            conn = (java.net.HttpURLConnection) new java.net.URL(url).openConnection();
+            conn.setConnectTimeout(4000);
+            conn.setReadTimeout(12000);
+            conn.setUseCaches(false);
+            conn.setRequestMethod(method);
+            for (String line : headers.split("\n")) {
+                int colon = line.indexOf(':');
+                if (colon > 0) conn.setRequestProperty(line.substring(0, colon).trim(), line.substring(colon + 1).trim());
+            }
+            if (body != null) {
+                conn.setDoOutput(true);
+                conn.setFixedLengthStreamingMode(body.length);
+                try (java.io.OutputStream os = conn.getOutputStream()) {
+                    os.write(body);
+                }
+            }
+            int status = conn.getResponseCode();
+            InputStream in = status >= 400 ? conn.getErrorStream() : conn.getInputStream();
+            java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+            if (in != null) {
+                try (InputStream is = in) {
+                    byte[] buf = new byte[16384];
+                    int n;
+                    while ((n = is.read(buf)) > 0) out.write(buf, 0, n);
+                }
+            }
+            StringBuilder hb = new StringBuilder();
+            for (java.util.Map.Entry<String, List<String>> e : conn.getHeaderFields().entrySet()) {
+                if (e.getKey() == null) continue; // the status line
+                for (String v : e.getValue()) hb.append(e.getKey()).append(": ").append(v).append('\n');
+            }
+            statusOut[0] = status;
+            headersOut[0] = hb.toString();
+            return out.toByteArray();
+        } catch (Throwable t) {
+            return null;
+        } finally {
+            if (conn != null) conn.disconnect();
+        }
+    }
+
     public void pickDiscFiles() {
         runOnUiThread(() -> {
             try {
