@@ -438,6 +438,12 @@ void pad_update_actuators(u8 id) {
     }
 }
 
+/* Read through a word-returning slot: a bare 8/16-bit return leaves the register's upper bits undefined on the host (the
+ * PS1 sign-extended them), so the slot gets this word-returning wrapper (the title's black screen was one such). */
+static s32 pad_get_button_map_word(s32 port, s32 button) {
+    return pad_get_button_map(port, button);
+}
+
 /* The table's callers pass full words where some of these functions take u8/s16 (casts below). */
 PadState pad_state = {
     .init = (void (*)(s32, s32))pad_init,
@@ -450,7 +456,7 @@ PadState pad_state = {
     .get_repeat = pad_get_repeat,
     .reset_button_map = pad_reset_button_map,
     .swap_buttons = pad_swap_buttons,
-    .get_button_map = (s32 (*)(s32, s32))pad_get_button_map,
+    .get_button_map = pad_get_button_map_word,
     .start_recording = pad_start_recording,
     .stop_recording = pad_stop_recording,
     .is_recording_port = pad_is_recording_port,
@@ -818,4 +824,10 @@ u16 pad_random_next(void) {
     return pad_random_table[pad_random.index];
 }
 
-PadRandom pad_random = { 0, pad_random_seed, (s32 (*)(void))pad_random_next };
+/* Read through a word-returning slot: a bare 8/16-bit return leaves the register's upper bits undefined on the host (the
+ * PS1 sign-extended them), so the slot gets this word-returning wrapper (the title's black screen was one such). */
+static s32 pad_random_next_word(void) {
+    return pad_random_next();
+}
+
+PadRandom pad_random = { 0, pad_random_seed, pad_random_next_word };

@@ -2548,6 +2548,12 @@ s32 stfgtrep_member_anims[8][7] = {
     { 21, 22, 23, 24, 23, 22, -1 },
 };
 
+/* Read through a word-returning slot: a bare 8/16-bit return leaves the register's upper bits undefined on the host (the
+ * PS1 sign-extended them), so the slot gets this word-returning wrapper (the title's black screen was one such). */
+static s32 stfgtrep_learn_skill_word(s32 digimon, s32 tech) {
+    return stfgtrep_learn_skill(digimon, tech);
+}
+
 StfgtrepFuncs stfgtrep_funcs = {
     stfgtrep_load_files,
     stfgtrep_is_loading,
@@ -2558,7 +2564,7 @@ StfgtrepFuncs stfgtrep_funcs = {
     stfgtrep_add_exp,
     stfgtrep_learn_technique,
     stfgtrep_add_technique_exp,
-    (s32 (*)(s32, s32))stfgtrep_learn_skill,
+    stfgtrep_learn_skill_word,
     stfgtrep_mark_skill,
     stfgtrep_get_technique_exp,
 };

@@ -1868,4 +1868,10 @@ MessageFont message_fonts[] = {
 /* Length of each control code. */
 s32 message_code_lengths[] = { 1, 2, 3, 2, 5, 3, 3, 2, 3, 2, 0 };
 
-MessageModule message_module = { message_fonts, message_code_lengths, message_load_font, (s32 (*)(u8 *, u8, MessageFont *))message_decode_char };
+/* Read through a word-returning slot: a bare 8/16-bit return leaves the register's upper bits undefined on the host (the
+ * PS1 sign-extended them), so the slot gets this word-returning wrapper (the title's black screen was one such). */
+static s32 message_decode_char_word(u8 *text, u8 arg1, MessageFont *font) {
+    return message_decode_char(text, arg1, font);
+}
+
+MessageModule message_module = { message_fonts, message_code_lengths, message_load_font, message_decode_char_word };

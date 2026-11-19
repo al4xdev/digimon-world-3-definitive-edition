@@ -908,12 +908,18 @@ void stitshop_list_collect(StitshopList *obj) {
     }
 }
 
+/* Read through a word-returning slot: a bare 8/16-bit return leaves the register's upper bits undefined on the host (the
+ * PS1 sign-extended them), so the slot gets this word-returning wrapper (the title's black screen was one such). */
+static s32 stitshop_list_get_item_word(StitshopList *obj) {
+    return stitshop_list_get_item(obj);
+}
+
 StitshopList *stitshop_list_create(void *owner, s32 kind, s32 mode) {
     StitshopList *obj = object_new(stitshop_list_update, sizeof(StitshopList), sizeof(StitshopListData));
 
     obj->resume = stitshop_list_resume;
     obj->close = stitshop_list_close;
-    obj->get_item = (s32 (*)(StitshopList *))stitshop_list_get_item;
+    obj->get_item = stitshop_list_get_item_word;
     obj->set_input = stitshop_list_set_input;
     obj->grey_cursor = stitshop_list_grey_cursor;
     obj->refresh = stitshop_list_refresh;
