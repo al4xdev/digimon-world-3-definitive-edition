@@ -101,7 +101,6 @@ jobs:
           path: |
             tools/venv
             tools/mkpsxiso
-            tools/imgui
             tools/sdl3-desktop
             tools/appimage
             tools/dxc
@@ -109,7 +108,7 @@ jobs:
 
       # mkpsxiso: worktree_init.sh extracts the disc (the port's sound check reads the EXE from extracted/).
       - name: Release tools
-        run: scripts/setup.sh venv mkpsxiso imgui sdl3-desktop appimage dxc
+        run: scripts/setup.sh venv mkpsxiso sdl3-desktop appimage dxc
 
       - name: Disc from the data checkout
         if: env.HAS_DATA == 'true'
@@ -202,14 +201,13 @@ jobs:
           path: |
             tools/venv
             tools/mkpsxiso
-            tools/imgui
             tools/llvm-mingw
             tools/sdl3-windows
             tools/dxc
           key: tools-windows-${{ runner.os }}-${{ github.event.repository.name }}-${{ hashFiles('scripts/setup.sh', 'tools/requirements.txt') }}
 
       - name: Windows toolchain
-        run: scripts/setup.sh venv mkpsxiso imgui llvm-mingw sdl3-windows dxc
+        run: scripts/setup.sh venv mkpsxiso llvm-mingw sdl3-windows dxc
 
       - name: Wine prefix
         run: |

@@ -4,14 +4,14 @@
 #
 # Usage: .ci-cd/windows/build_windows.sh [--launcher] [--configure-only] [--test] [--jobs N]
 #   (default)         the game into build/port-win (the SDL build, Release): every object (ninja -k 0), then the link
-#   --launcher        also the launcher into build/launcher-win (dw2003-launcher.exe and its PDB)
+#   --launcher        also the launcher (launcher/) into build/launcher-win (dw2003-launcher.exe and its PDB)
 #   --configure-only  stop after configuring
-#   --test            after the launcher: its --self-test under Wine (wine on PATH; SDL's offscreen video) in
+#   --test            after the launcher: its --self-test under Wine (wine on PATH) in
 #                     build/launcher-win/selftest/, the prefix in build/wine-prefix/; and when the disc is there
 #                     (iso/dw2003.cue) the game's crash report under Wine (tests/port/crash.py --wine) and its
 #                     layer-2 replays under Wine (tests/port/run.py --exe ... --wine: the log and the record must
 #                     equal the Linux build's). The same gate as CI's windows job; each Wine run under `timeout`.
-# Needs: scripts/setup.sh llvm-mingw sdl3-windows dxc (and imgui for the launcher; dxc: the hardware renderer's
+# Needs: scripts/setup.sh llvm-mingw sdl3-windows dxc (dxc: the hardware renderer's
 # shaders, compiled on this host); cmake and ninja (tools/venv's when the
 # system has none). Exit 0 when everything asked for built (and the test passed), else 1 with a summary: which objects
 # did not compile and whether the link failed. The game links since the overlay sections stopped needing a linker
@@ -85,13 +85,10 @@ fi
 
 # ---- The launcher.
 if [[ $launcher -eq 1 ]]; then
-    imgui="$(tool imgui)"
-    [[ -f "$imgui/imgui.cpp" ]] || die "no Dear ImGui: scripts/setup.sh imgui"
     launcher_dir="$ROOT/build/launcher-win"
     log "launcher: configuring $launcher_dir"
-    cmake -S "$ROOT/psxstack/launcher" -B "$launcher_dir" -G Ninja -DCMAKE_TOOLCHAIN_FILE="$toolchain" \
-        -DCMAKE_BUILD_TYPE=Release -DPSXSTACK_LAUNCHER_STATIC_RUNTIME=ON -DPSXSTACK_IMGUI_DIR="$imgui" \
-        -DPSXSTACK_GAME_JSON="$ROOT/port/game/game.json" -DPSXSTACK_VERSION_ROOT="$ROOT" -DPSXSTACK_TOOLS_DIR="$PSXSTACK_TOOLS_DIR" \
+    cmake -S "$ROOT/launcher" -B "$launcher_dir" -G Ninja -DCMAKE_TOOLCHAIN_FILE="$toolchain" \
+        -DCMAKE_BUILD_TYPE=Release -DSDL3_DIR="$sdl/lib/cmake/SDL3" -DPSXSTACK_TOOLS_DIR="$PSXSTACK_TOOLS_DIR" \
         >"$launcher_dir.configure.log" 2>&1 ||
         { tail -30 "$launcher_dir.configure.log" >&2; die "launcher: configure failed (see $launcher_dir.configure.log)"; }
     if [[ $configure_only -eq 0 ]]; then
@@ -110,12 +107,9 @@ if [[ $launcher -eq 1 ]]; then
         rm -rf "$selftest"
         mkdir -p "$selftest" "$ROOT/build/wine-prefix"
         log "launcher: --self-test under wine ($(wine --version 2>/dev/null); log: $selftest.log)"
-        # Wine sees the Unix tree as drive Z:; forward slashes are fine for the Windows API.
-        # Wine drops SDL_VIDEO_DRIVER from the Windows environment (Proton, wine-staging): the self-test takes the
-        # driver from DW3_SELFTEST_VIDEO_DRIVER (SDL's hint). `timeout`: a hang (a window waiting for a display) fails
-        # instead of holding the runner.
-        if WINEPREFIX="$ROOT/build/wine-prefix" WINEDEBUG=-all DW3_SELFTEST_VIDEO_DRIVER=offscreen \
-            SDL_VIDEO_DRIVER=offscreen SDL_AUDIO_DRIVER=dummy \
+        # Wine sees the Unix tree as drive Z:; forward slashes are fine for the Windows API. The self-test draws
+        # headless (no window). `timeout`: a hang fails instead of holding the runner.
+        if WINEPREFIX="$ROOT/build/wine-prefix" WINEDEBUG=-all \
             timeout 600 wine "$launcher_dir/dw2003-launcher.exe" --self-test "Z:$selftest" >"$selftest.log" 2>&1; then
             log "launcher: self-test passed under wine: $(grep -o '[0-9]* of [0-9]* checks passed' "$selftest.log" || true)"
         else

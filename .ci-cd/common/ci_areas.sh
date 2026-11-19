@@ -9,7 +9,7 @@
 # The areas and the jobs each runs (ci.yml has the steps; the jobs run in parallel, each gated by its area):
 #   game        `check`'s workaround census, `game`: toolchain smoke test, byte-identical rebuild, layer 2
 #   port        `check`'s probes, `port` (layer 1 + port), `port-mods`, `windows`, `portmaster`, and `android`
-#   launcher    `launcher` (SDL3 game + psxstack/launcher desktop build & self-test) and `windows`
+#   launcher    `launcher` (SDL3 game + launcher/'s PC build & self-test) and `windows`
 #   portmaster  `portmaster` (armhf + aarch64 Docker cross-build, dw3.zip packaging & checks)
 #   android     `android` (arm64-v8a Android APK build & verification)
 # Each implies the downstream areas it affects: game => port => launcher + portmaster + android.
@@ -24,8 +24,8 @@ area_of() {
         docs/*|*.md|LICENSE|.gitignore|.github/ISSUE_TEMPLATE/*) echo none ;;
         # Android-specific Gradle/JNI/touch-pad build, and its build script and image (.ci-cd/android/).
         android/*|.ci-cd/android/*) echo android ;;
-        # Standalone C launcher affects both PortMaster and Android touch launcher.
-        launcher/*) echo handheld ;;
+        # The C launcher: the PC's (Linux and Windows), PortMaster's and Android's.
+        launcher/*) echo launcher-all ;;
         # PortMaster: its packaging, the handheld scripts, the armhf/aarch64 build, images and toolchains.
         .ci-cd/portmaster/*) echo portmaster ;;
         # The Windows cross-build: the `launcher` area (its jobs are `launcher` and `windows`).
@@ -46,6 +46,7 @@ mark() {
         all|game) game=true; port=true; launcher=true; portmaster=true; android=true ;;
         port) port=true; launcher=true; portmaster=true; android=true ;;
         launcher) launcher=true ;;
+        launcher-all) launcher=true; portmaster=true; android=true ;;
         handheld) portmaster=true; android=true ;;
         portmaster) portmaster=true ;;
         android) android=true ;;

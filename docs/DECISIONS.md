@@ -288,6 +288,11 @@ third-party code mods. The game never loads a configuration on its own (tests ru
 `--script` unless asked for, a mod's change in the game's C sits in a `PC_PORT` block, and hotkeys never reach the pad.
 Linux first; Windows after the launcher works on Linux.
 
+_Revised: 2026-11-19._ One launcher on every platform: this repository's C99 `launcher/` (Linux AppImage, Windows,
+PortMaster, Android), with one settings format (`tui.state`, `pad.map`, and the game's `settings.json` it writes) and
+one settings directory rule (a `portable.txt` beside the launcher, else the per-user folder; the runtime's and
+`recomplauncher.json`'s too). psxstack's ImGui launcher is not built or shipped here; nothing reads its files.
+
 ## Crash reports are one text file, named on stderr, kept by the launcher
 _Decided: 2026-10-07_
 
@@ -426,7 +431,7 @@ _Decided: 2026-10-08_
 runtime, shim and launcher its tests passed against, a stack change reaches the game as a reviewable pin bump, and other
 games pin their own. `scripts/worktree_init.sh` checks the submodule out in a worktree (from the main checkout's copy
 when it has one; offline it links the sibling clone and says so, so a session without network still builds). The tools
-are one tree, this repository's `tools/` (its `setup.sh` installs SDL3, DXC, ImGui, llvm-mingw, the AppImage tools),
+are one tree, this repository's `tools/` (its `setup.sh` installs SDL3, DXC, llvm-mingw, the AppImage tools),
 handed to the stack's CMake as `PSXSTACK_TOOLS_DIR`; psxstack's own `setup.sh` is for its own CI and for a stack
 developer, and its pins must stay equal to ours. The release's version is `DW3_VERSION` in release.yml and
 `release_local.sh`, exported as `PSXSTACK_VERSION` by the packaging scripts for psxstack's `version.cmake`. The

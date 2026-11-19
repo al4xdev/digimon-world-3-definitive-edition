@@ -28,6 +28,4 @@ checkout's `tools/` (`PSXSTACK_TOOLS_DIR`, set by `port/CMakeLists.txt`).
 | `game/asmdata.c` | Weak stand-ins for the data the matching build keeps in asm |
 | `mods/<id>/mod.json` | The game's mods' manifests (copied beside the binary with psxstack's `fast_forward` and `fast_loading`) |
 
-The mods' behaviour: `docs/LAUNCHER.md` "Built-in mods". The launcher is psxstack's, built for this game with
-`cmake -S psxstack/launcher -B build/launcher -G Ninja -DPSXSTACK_GAME_JSON=$PWD/port/game/game.json
--DPSXSTACK_VERSION_ROOT=$PWD -DPSXSTACK_TOOLS_DIR=$PWD/tools`.
+The mods' behaviour: `docs/LAUNCHER.md` "Built-in mods". The launcher is this repository's `launcher/` (`docs/LAUNCHER.md`).

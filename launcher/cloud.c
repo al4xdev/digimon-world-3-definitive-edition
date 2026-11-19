@@ -9,11 +9,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#ifndef _WIN32
 #include <sys/wait.h>
+#endif
 #include <time.h>
 #include <unistd.h>
 
+#include "compat.h"
 #include "sha256.h"
+#include "win32.h"
 
 #ifdef __ANDROID__
 #include <sys/system_properties.h>
@@ -122,7 +126,7 @@ static int write_atomic_bytes(const char *path, const void *data, size_t len, mo
     char tmp[1400];
     int tn = snprintf(tmp, sizeof(tmp), "%s.tmp.%ld", path, (long)getpid());
     if (tn <= 0 || (size_t)tn >= sizeof(tmp)) return -1;
-    int fd = open(tmp, O_WRONLY | O_CREAT | O_TRUNC, mode);
+    int fd = open(tmp, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, mode);
     if (fd < 0) return -1;
     const uint8_t *p = (const uint8_t *)data;
     size_t rem = len;
@@ -139,7 +143,7 @@ static int write_atomic_bytes(const char *path, const void *data, size_t len, mo
     }
     fsync(fd);
     close(fd);
-    if (rename(tmp, path) != 0) {
+    if (rename_over(tmp, path) != 0) {
         unlink(tmp);
         return -1;
     }
@@ -334,7 +338,13 @@ static void default_device_name(char *out, size_t n, int is_portmaster) {
     return;
 #endif
     char host[64] = "";
+#ifdef _WIN32
+    const char *cn = getenv("COMPUTERNAME");
+    snprintf(host, sizeof(host), "%s", cn ? cn : "");
+    if (host[0]) {
+#else
     if (gethostname(host, sizeof(host) - 1) == 0 && host[0]) {
+#endif
         for (size_t i = 0; host[i]; i++) {
             if ((unsigned char)host[i] < 0x20 || (unsigned char)host[i] > 0x7e) host[i] = '-';
         }
@@ -440,11 +450,12 @@ static int valid_http_url(const char *url) {
     return url && (!strncmp(url, "https://", 8) || !strncmp(url, "http://", 7));
 }
 
-#ifdef __ANDROID__
+#if defined(__ANDROID__) || defined(_WIN32)
 /* Android has no curl to rely on: AOSP does not ship /system/bin/curl (some vendors add one, with their own CA setup),
  * and fork() from a process that runs a JVM is fragile. Java's HttpURLConnection is on every device and uses the
- * system's CA store, so the request goes there; the response comes back in the same shape as the curl path. */
-static int http_exec_android(const char *method, const char *url, const char *bearer,
+ * system's CA store, so the request goes there; the response comes back in the same shape as the curl path.
+ * Windows has no fork either: WinHTTP (win32.c) takes the same request, with the system's certificate store. */
+static int http_exec_native(const char *method, const char *url, const char *bearer,
                              const char *const *extra_headers, int n_extra,
                              const char *json_body, const char *upload_file,
                              const char *download_file, HttpResp *resp) {
@@ -468,8 +479,13 @@ static int http_exec_android(const char *method, const char *url, const char *be
         if (!upload) return -1;
         body = upload;
     }
+#ifdef _WIN32
+    int rc = w32_http_request(method, url, hdrs, body, body_len, &resp->status, &resp->body, &resp->body_len,
+                              resp->headers, sizeof(resp->headers));
+#else
     int rc = android_http_request(method, url, hdrs, body, body_len, &resp->status, &resp->body, &resp->body_len,
                                   resp->headers, sizeof(resp->headers));
+#endif
     free(upload);
     if (rc != 0) return -1;
     if (download_file) {
@@ -490,9 +506,9 @@ static int http_exec(const char *method, const char *url, const char *bearer,
                      const char *download_file, HttpResp *resp) {
     memset(resp, 0, sizeof(*resp));
     if (!valid_http_url(url)) return -1;
-#ifdef __ANDROID__
-    return http_exec_android(method, url, bearer, extra_headers, n_extra, json_body, upload_file, download_file, resp);
-#endif
+#if defined(__ANDROID__) || defined(_WIN32)
+    return http_exec_native(method, url, bearer, extra_headers, n_extra, json_body, upload_file, download_file, resp);
+#else
     const char *curl_bin = getenv("DW3_CLOUD_CURL");
     if (!curl_bin || !curl_bin[0]) curl_bin = "curl";
 
@@ -647,6 +663,7 @@ static int http_exec(const char *method, const char *url, const char *bearer,
         resp->body_len = 0;
     }
     return 0;
+#endif
 }
 
 static int header_val(const char *headers, const char *name, char *out, size_t n) {
@@ -785,8 +802,8 @@ int cloud_push_card1(CloudState *st, const char *game_dir, int backup_max, int f
     sha256_bytes(raw, sz, sha);
 
     char snap[1100];
-#ifdef __ANDROID__
-    /* Android has no /tmp; the app's own directory is always writable. */
+#if defined(__ANDROID__) || defined(_WIN32)
+    /* Android and Windows have no /tmp; the settings directory is always writable. */
     snprintf(snap, sizeof(snap), "%s/dw3push_XXXXXX", game_dir);
 #else
     snprintf(snap, sizeof(snap), "/tmp/dw3push_XXXXXX");
@@ -797,6 +814,9 @@ int cloud_push_card1(CloudState *st, const char *game_dir, int backup_max, int f
         snprintf(msg_out, msg_n, "TMP WRITE FAILED");
         return -1;
     }
+#ifdef _WIN32
+    _setmode(sfd, O_BINARY); /* the card's bytes as they are, never a \n turned into \r\n */
+#endif
     size_t rem = sz;
     const char *wp = raw;
     while (rem > 0) {
@@ -909,7 +929,7 @@ int cloud_pull_card1(CloudState *st, const char *game_dir, int backup_max, char 
     if (save_is_valid_mc(dst, NULL)) {
         save_backup_rotate(game_dir, "card1.mcd", backup_max);
     }
-    if (rename(tmp, dst) != 0) {
+    if (rename_over(tmp, dst) != 0) {
         unlink(tmp);
         http_resp_free(&r);
         snprintf(msg_out, msg_n, "COULD NOT REPLACE card1.mcd");

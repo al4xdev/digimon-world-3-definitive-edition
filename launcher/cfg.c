@@ -7,13 +7,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/socket.h>
 #include <sys/stat.h>
+#ifndef _WIN32
+#include <sys/socket.h>
 #include <sys/un.h>
+#endif
 #include <time.h>
 #include <unistd.h>
 
+#include "compat.h"
 #include "plat.h"
+#include "win32.h"
 
 int is_pc, is_portmaster, is_android;
 char game_dir[512] = ".";
@@ -258,7 +262,7 @@ static int write_atomic(const char *path, const char *text) {
     if (!bad) fsync(fileno(f));
     if (fclose(f) != 0) bad = 1;
     if (bad) { unlink(tmp); return -1; }
-    if (rename(tmp, path) != 0) { unlink(tmp); return -1; }
+    if (rename_over(tmp, path) != 0) { unlink(tmp); return -1; }
     return 0;
 }
 
@@ -294,6 +298,86 @@ static int json_enabled(const char *text, const char *mod) {
     return s && !strncmp(s, "true", 4);
 }
 
+/* ---- settings.json, read back on PC ----
+ * settings.json is the game's file and RecompLauncher edits it in place (recomplauncher.json: the same options as the
+ * VIDEO and GAME screens), so on PC its values win over tui.state's for every option it holds. A small reader of
+ * object members by path ("video/fullscreen"): enough for the file this launcher writes and the same members
+ * rewritten by another program; arrays and numbers other than integers are skipped, never interpreted. */
+static const char *j_ws(const char *p) {
+    while (*p == ' ' || *p == '\t' || *p == '\r' || *p == '\n') p++;
+    return p;
+}
+
+static const char *j_skip_str(const char *p) { /* p at the opening quote: past the closing one */
+    p++;
+    while (*p && *p != '"') p += (*p == '\\' && p[1]) ? 2 : 1;
+    return *p ? p + 1 : p;
+}
+
+static const char *j_skip_val(const char *p) {
+    if (*p == '"') return j_skip_str(p);
+    if (*p == '{' || *p == '[') {
+        int depth = 0;
+        while (*p) {
+            if (*p == '"') { p = j_skip_str(p); continue; }
+            if (*p == '{' || *p == '[') depth++;
+            else if ((*p == '}' || *p == ']') && --depth == 0) return p + 1;
+            p++;
+        }
+        return p;
+    }
+    while (*p && *p != ',' && *p != '}' && *p != ']') p++;
+    return p;
+}
+
+static const char *j_path(const char *text, const char *path) {
+    const char *p = j_ws(text);
+    while (*path) {
+        if (*p != '{') return NULL;
+        const char *slash = strchr(path, '/');
+        size_t kl = slash ? (size_t)(slash - path) : strlen(path);
+        const char *found = NULL;
+        p = j_ws(p + 1);
+        while (*p == '"') {
+            const char *k = p + 1, *ke = j_skip_str(p) - 1;
+            p = j_ws(j_skip_str(p));
+            if (*p != ':') return NULL;
+            p = j_ws(p + 1);
+            if ((size_t)(ke - k) == kl && !strncmp(k, path, kl)) { found = p; break; }
+            p = j_ws(j_skip_val(p));
+            if (*p == ',') p = j_ws(p + 1);
+        }
+        if (!found) return NULL;
+        p = found;
+        path += kl + (slash ? 1 : 0);
+    }
+    return p;
+}
+
+static int j_bool(const char *t, const char *path, int def) {
+    const char *v = j_path(t, path);
+    if (v && !strncmp(v, "true", 4)) return 1;
+    if (v && !strncmp(v, "false", 5)) return 0;
+    return def;
+}
+
+static int j_int(const char *t, const char *path, int def) {
+    const char *v = j_path(t, path);
+    return v && (*v == '-' || isdigit((unsigned char)*v)) ? atoi(v) : def;
+}
+
+static int j_str(const char *t, const char *path, char *out, size_t n) {
+    const char *v = j_path(t, path);
+    if (!v || *v != '"' || n == 0) return 0;
+    size_t i = 0;
+    for (v++; *v && *v != '"' && i + 1 < n; v++) {
+        if (*v == '\\' && v[1]) v++;
+        out[i++] = *v;
+    }
+    out[i] = 0;
+    return 1;
+}
+
 static const char *ff_names[] = {"off", "2x", "4x", "8x", "unlimited"};
 static const char *load_names[] = {"off", "2x", "4x", "8x", "instant"};
 static const char *lang_names[] = {"english", "portuguese", "french", "german", "italian", "spanish", "usa", "japanese"};
@@ -317,6 +401,41 @@ int cfg_auto_scale(const Cfg *c) {
 static int idx_of(const char *const *names, int n, const char *v, int def) {
     for (int i = 0; i < n; i++) if (!strcmp(names[i], v)) return i;
     return def;
+}
+
+/* settings.json's values for the launcher's own options (VIDEO, GAME, DEBUG LOGS; recomplauncher.json shows the same
+ * ones) over tui.state's (PC): what RecompLauncher changed shows here, and the next save keeps it. Nothing else of
+ * settings.json is read: the launcher rewrites the rest. */
+static void cfg_read_settings(Cfg *c, const char *j) {
+    char s[1200];
+    c->fullscreen = j_bool(j, "video/fullscreen", c->fullscreen);
+    c->fill = j_bool(j, "video/fill", c->fill);
+    if (j_str(j, "video/renderer", s, sizeof(s))) c->renderer_pc = !strcmp(s, "software");
+    if (j_str(j, "video/filter", s, sizeof(s))) c->filter = idx_of(filter_names, 5, s, c->filter);
+    c->widescreen = j_bool(j, "mods/widescreen/enabled", c->widescreen) && !c->renderer_pc;
+    /* the window scale: AUTO stays AUTO while the file holds what AUTO gives on this monitor */
+    int sc = j_int(j, "video/scale", 0);
+    if (sc >= 1 && !(c->scale == 0 && sc == cfg_auto_scale(c))) c->scale = sc < 2 ? 2 : sc > 8 ? 8 : sc;
+    if (!j_bool(j, "mods/fast_forward/enabled", 1)) c->ff = 0;
+    else if (j_str(j, "mods/fast_forward/speed", s, sizeof(s))) c->ff = idx_of(ff_names, 5, s, 0) ?: 3; /* on: never "off" */
+    if (!j_bool(j, "mods/fast_loading/enabled", 1)) c->load = 0;
+    else if (j_str(j, "mods/fast_loading/speed", s, sizeof(s))) c->load = idx_of(load_names, 5, s, 0) ?: 3;
+    c->skip = j_bool(j, "mods/skip_dialogues/enabled", c->skip);
+    c->battles = j_bool(j, "mods/battle_animations/enabled", c->battles);
+    c->hit = c->battles && j_bool(j, "mods/battle_animations/hit_reaction", c->hit);
+    if (!j_bool(j, "mods/battle_text/enabled", 1)) c->btext = 0;
+    else if (j_str(j, "mods/battle_text/mode", s, sizeof(s))) c->btext = idx_of(btext_names, 3, s, c->btext);
+    if (j_bool(j, "mods/preset_language/enabled", 1) && j_str(j, "mods/preset_language/language", s, sizeof(s)))
+        c->lang = idx_of(lang_names, 8, s, c->lang);
+    if (j_str(j, "debug/logs", s, sizeof(s))) c->logs = idx_of(log_names, 3, s, c->logs);
+    /* the disc: RecompLauncher's game_path is disc/path; relative paths are the settings directory's */
+    if (j_str(j, "disc/path", s, sizeof(s)) && s[0]) {
+        char full[1200];
+        int abs = s[0] == '/' || s[0] == '\\' || (s[0] && s[1] == ':');
+        if (abs) snprintf(full, sizeof(full), "%s", s);
+        else snprintf(full, sizeof(full), "%s/%s", game_dir, s);
+        if (access(full, F_OK) == 0) snprintf(disc_path, sizeof(disc_path), "%s", full);
+    }
 }
 
 void cfg_load(Cfg *c) {
@@ -406,6 +525,7 @@ void cfg_load(Cfg *c) {
             if (json_str(j, "\"preset_language\"", "language", lstr, sizeof(lstr)))
                 c->lang = idx_of(lang_names, 8, lstr, 0);
         }
+        if (is_pc) cfg_read_settings(c, j);
         free(j);
     }
 }
@@ -553,6 +673,13 @@ void find_disc(void) {
 }
 
 int browse_disc(void) {
+#ifdef _WIN32
+    char start[1200] = "", picked[1200];
+    browse_start_dir(start, sizeof(start));
+    if (w32_pick_disc(start, picked, sizeof(picked)) != 0 || access(picked, F_OK) != 0) return -1;
+    snprintf(disc_path, sizeof(disc_path), "%s", picked);
+    return 0;
+#else
     const char *cmds[] = {
         "zenity --file-selection --title='Select Digimon World 3 (.cue / .bin)' --file-filter='*.cue *.bin' 2>/dev/null",
         "kdialog --getopenfilename . '*.cue *.bin|PS1 Disc Image' 2>/dev/null",
@@ -571,6 +698,7 @@ int browse_disc(void) {
         }
     }
     return -1;
+#endif
 }
 
 static int cmp_browse(const void *a, const void *b) {
@@ -585,7 +713,7 @@ int browse_read(const char *dir, BrowseItem *out, int max_items) {
     DIR *d = opendir(dir);
     if (!d) return 0;
     int n = 0;
-    if (strcmp(dir, "/") != 0 && n < max_items) {
+    if (!path_is_root(dir) && n < max_items) {
         snprintf(out[n].name, sizeof(out[n].name), "..");
         out[n].is_dir = 1;
         n++;
@@ -619,24 +747,30 @@ void browse_start_dir(char *out, size_t n) {
     if (disc_path[0]) {
         char tmp[1200];
         snprintf(tmp, sizeof(tmp), "%s", disc_path);
-        char *sl = strrchr(tmp, '/');
+        char *sl = path_last_sep(tmp);
         if (sl) {
             if (sl == tmp) strcpy(tmp, "/");
+            else if (sl == tmp + 2 && tmp[1] == ':') sl[1] = 0; /* a drive's root keeps its separator: "C:\\" */
             else *sl = 0;
             if (access(tmp, R_OK) == 0 && realpath(tmp, out)) return;
         }
     }
-    const char *cands[] = {NULL, getenv("HOME"), "/sdcard", "."};
+    const char *cands[] = {NULL, getenv("HOME"), getenv("USERPROFILE"), "/sdcard", "."};
     char iso[700];
     snprintf(iso, sizeof(iso), "%s/iso", game_dir);
     cands[0] = access(iso, R_OK) == 0 ? iso : NULL;
-    for (unsigned i = 0; i < 4; i++) {
+    for (unsigned i = 0; i < sizeof(cands) / sizeof(cands[0]); i++) {
         if (cands[i] && access(cands[i], R_OK) == 0 && realpath(cands[i], out)) return;
     }
     snprintf(out, n, ".");
 }
 
-/* ---- LED bar ---- */
+/* ---- LED bar (the XF35H handheld's; the home screen never offers it on PC) ---- */
+#ifdef _WIN32
+int led_state(const Cfg *c) { (void)c; return LED_NONE; }
+int led_compatible(void) { return 0; }
+int led_install(char *why, size_t n) { snprintf(why, n, "NOT ON THIS SYSTEM"); return -1; }
+#else
 #define LED_SOCK "/tmp/ledd.sock"
 
 static const char *led_dir(void) {
@@ -734,8 +868,107 @@ int led_install(char *why, size_t n) {
     snprintf(why, n, "THE DAEMON DID NOT ANSWER");
     return -1;
 }
+#endif
 
 /* ---- logs ---- */
+#ifdef _WIN32
+/* Windows has no python3 to write the zip: a stored (uncompressed) one is written here, the same files in it. */
+typedef struct {
+    char name[200];
+    unsigned long crc, size, off;
+} ZipEnt;
+
+static unsigned long zip_crc(const unsigned char *b, size_t n) {
+    unsigned long crc = 0xffffffffUL;
+    for (size_t i = 0; i < n; i++) {
+        crc ^= b[i];
+        for (int k = 0; k < 8; k++) crc = (crc >> 1) ^ (0xedb88320UL & (0UL - (crc & 1)));
+    }
+    return crc ^ 0xffffffffUL;
+}
+
+static void zip_u16(FILE *z, unsigned v) { fputc((int)(v & 255), z); fputc((int)((v >> 8) & 255), z); }
+static void zip_u32(FILE *z, unsigned long v) { zip_u16(z, (unsigned)(v & 0xffff)); zip_u16(z, (unsigned)(v >> 16)); }
+
+static void zip_put(FILE *z, ZipEnt *e, int *count, int max, const char *arcname, const unsigned char *data, size_t len) {
+    if (*count >= max) return;
+    ZipEnt *x = &e[(*count)++];
+    snprintf(x->name, sizeof(x->name), "%s", arcname);
+    x->crc = zip_crc(data, len);
+    x->size = (unsigned long)len;
+    x->off = (unsigned long)ftell(z);
+    size_t nl = strlen(x->name);
+    zip_u32(z, 0x04034b50UL); zip_u16(z, 20); zip_u16(z, 0); zip_u16(z, 0); zip_u16(z, 0); zip_u16(z, 0x21);
+    zip_u32(z, x->crc); zip_u32(z, x->size); zip_u32(z, x->size); zip_u16(z, (unsigned)nl); zip_u16(z, 0);
+    fwrite(x->name, 1, nl, z);
+    fwrite(data, 1, len, z);
+}
+
+static void zip_file(FILE *z, ZipEnt *e, int *count, int max, const char *arcname, const char *path) {
+    struct stat st;
+    if (stat(path, &st) != 0 || !S_ISREG(st.st_mode) || st.st_size > 64L * 1024 * 1024) return;
+    FILE *f = fopen(path, "rb");
+    if (!f) return;
+    unsigned char *b = malloc((size_t)st.st_size + 1);
+    size_t r = b ? fread(b, 1, (size_t)st.st_size, f) : 0;
+    fclose(f);
+    if (b) zip_put(z, e, count, max, arcname, b, r);
+    free(b);
+}
+
+static void zip_dir(FILE *z, ZipEnt *e, int *count, int max, const char *dir, const char *prefix, const char *suffix,
+                    const char *arc_dir) {
+    DIR *d = opendir(dir);
+    struct dirent *de;
+    while (d && (de = readdir(d))) {
+        size_t l = strlen(de->d_name), sl = strlen(suffix);
+        if (de->d_name[0] == '.' || strncmp(de->d_name, prefix, strlen(prefix)) || l < sl || strcmp(de->d_name + l - sl, suffix)) continue;
+        char p[1400], arc[400];
+        snprintf(p, sizeof(p), "%s/%s", dir, de->d_name);
+        snprintf(arc, sizeof(arc), "%s%s", arc_dir, de->d_name);
+        zip_file(z, e, count, max, arc, p);
+    }
+    if (d) closedir(d);
+}
+
+int logs_save(char *name, size_t n) {
+    time_t t = time(NULL);
+    struct tm tm;
+    localtime_r(&t, &tm);
+    strftime(name, n, "dw3-logs-%Y%m%d-%H%M%S.zip", &tm);
+    char zp[1200], p[1200];
+    snprintf(zp, sizeof(zp), "%s/%s", game_dir, name);
+    FILE *z = fopen(zp, "wb");
+    if (!z) return -1;
+    enum { MAXE = 256 };
+    ZipEnt *e = calloc(MAXE, sizeof(ZipEnt));
+    int count = 0;
+    if (!e) { fclose(z); return -1; }
+    static const char *const files[] = {"settings.json", "pad.map", "tui.state", "menu.log", "log.txt"};
+    for (unsigned i = 0; i < sizeof(files) / sizeof(files[0]); i++) {
+        path_of(p, sizeof(p), files[i]);
+        zip_file(z, e, &count, MAXE, files[i], p);
+    }
+    zip_dir(z, e, &count, MAXE, game_dir, "crash-", ".txt", "crashes/");
+    path_of(p, sizeof(p), "logs");
+    zip_dir(z, e, &count, MAXE, p, "", "", "logs/");
+    static const char sys[] = "os: windows\n";
+    zip_put(z, e, &count, MAXE, "system.txt", (const unsigned char *)sys, sizeof(sys) - 1);
+    unsigned long cd = (unsigned long)ftell(z);
+    for (int i = 0; i < count; i++) {
+        size_t nl = strlen(e[i].name);
+        zip_u32(z, 0x02014b50UL); zip_u16(z, 20); zip_u16(z, 20); zip_u16(z, 0); zip_u16(z, 0); zip_u16(z, 0);
+        zip_u16(z, 0x21); zip_u32(z, e[i].crc); zip_u32(z, e[i].size); zip_u32(z, e[i].size); zip_u16(z, (unsigned)nl);
+        zip_u16(z, 0); zip_u16(z, 0); zip_u16(z, 0); zip_u16(z, 0); zip_u32(z, 0); zip_u32(z, e[i].off);
+        fwrite(e[i].name, 1, nl, z);
+    }
+    unsigned long cd_size = (unsigned long)ftell(z) - cd;
+    zip_u32(z, 0x06054b50UL); zip_u16(z, 0); zip_u16(z, 0); zip_u16(z, (unsigned)count); zip_u16(z, (unsigned)count);
+    zip_u32(z, cd_size); zip_u32(z, cd); zip_u16(z, 0);
+    free(e);
+    return fclose(z) == 0 ? 0 : -1;
+}
+#else
 int logs_save(char *name, size_t n) {
     char cmd[2048];
     time_t t = time(NULL);
@@ -754,6 +987,7 @@ int logs_save(char *name, size_t n) {
         "z.writestr('system.txt','uname: '+' '.join(os.uname())+'\\n')\n\" '%s' 2>/dev/null", game_dir, name);
     return system(cmd) == 0 ? 0 : -1;
 }
+#endif
 
 static int rm_matching(const char *dirpath, const char *prefix, const char *suffix) {
     DIR *d = opendir(dirpath);

@@ -67,16 +67,17 @@ pad scripts from boot with hashes at checkpoints, and save **round trips**. The 
 ## The PC port and the launcher
 
 ```sh
-scripts/setup.sh sdl3 imgui
+scripts/setup.sh sdl3
 cmake -S port -B build/port-sdl -G Ninja -DPSXSTACK_SDL=ON && cmake --build build/port-sdl
 build/port-sdl/dw2003 --disc iso/dw2003.cue --window                 # the game in a window
-cmake -S psxstack/launcher -B build/launcher -G Ninja -DPSXSTACK_GAME_JSON=$PWD/port/game/game.json -DPSXSTACK_VERSION_ROOT=$PWD -DPSXSTACK_TOOLS_DIR=$PWD/tools && cmake --build build/launcher
-build/launcher/dw2003-launcher                                        # the launcher
-scripts/setup.sh imgui sdl3-desktop appimage && .ci-cd/linux/package_appimage.sh --test   # the release AppImage
+make -C launcher SDL=1 && ./launcher/dw3-launcher --sdl               # the launcher (finds build/port-sdl/dw2003)
+cmake -S launcher -B build/launcher -G Ninja -DSDL3_DIR=$PWD/tools/sdl3/lib/cmake/SDL3 && cmake --build build/launcher
+build/launcher/dw2003-launcher --self-test build/launcher-test        # the release's build of it, and its self-test
+scripts/setup.sh sdl3-desktop appimage && .ci-cd/linux/package_appimage.sh --test   # the release AppImage
 ```
 
 Without `-DPSXSTACK_SDL=ON` the port builds headless, which is what the port tests run. The Windows cross-build is
 `.ci-cd/windows/build_windows.sh` (`scripts/setup.sh llvm-mingw sdl3-windows` first).
 
-See [`port/README.md`](../port/README.md), `psxstack/docs/RUNTIME.md`, `psxstack/launcher/README.md` and
+See [`port/README.md`](../port/README.md), `psxstack/docs/RUNTIME.md`, [`docs/LAUNCHER.md`](LAUNCHER.md) and
 [`docs/RELEASE.md`](RELEASE.md) for the packages.

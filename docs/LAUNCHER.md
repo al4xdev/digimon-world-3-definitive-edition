@@ -1,14 +1,22 @@
 # The launcher and the mods: this game's part
 
-This page is mostly the reference for this game's built-in mods (including the LED bar) and its 60 Hz mode. Three
-separate build lines exist across CI/CD and releases:
+This page is mostly the reference for this game's built-in mods (including the LED bar) and its 60 Hz mode. There is
+one launcher, the C99 `launcher/`, with the same screens and options everywhere; each release line compiles its sources:
 
-- **Linux x86_64 & Windows x86_64 desktop releases** use psxstack's C++/ImGui+SDL3 launcher (`psxstack/launcher/`),
-  built for this game from `port/game/game.json` (`cmake -S psxstack/launcher -B build/launcher -G Ninja
-  -DPSXSTACK_GAME_JSON=$PWD/port/game/game.json -DPSXSTACK_VERSION_ROOT=$PWD -DPSXSTACK_TOOLS_DIR=$PWD/tools`;
-  `build/launcher/dw2003-launcher`). The contract between it and the game, the settings directory and file (schema 1),
-  the mod manifest and runtime, its screens and self-test, and the crash report are psxstack's `docs/LAUNCHER.md` and
-  `psxstack/launcher/README.md`.
+- **Linux x86_64 (AppImage) and Windows x86_64 (zip) releases**: `launcher/CMakeLists.txt`, `-DDW3_TARGET_PC`, SDL3
+  linked statically (`cmake -S launcher -B build/launcher -G Ninja -DSDL3_DIR=$PWD/tools/sdl3-desktop/lib/cmake/SDL3`;
+  `build/launcher/dw2003-launcher`). Windows is cross-built by `.ci-cd/windows/build_windows.sh --launcher`, with
+  `launcher/win32.c` for the game's process, the file dialog and WinHTTP and `launcher/compat.h` for the POSIX calls
+  UCRT spells differently. The game (`dw2003`, `dw2003.exe`) and its `mods/` sit beside the launcher.
+  The settings directory has one rule, the game's too (`psxstack/runtime/main.c`) and `recomplauncher.json`'s: a
+  `portable.txt` beside the launcher keeps everything in the launcher's folder, else the per-user folder
+  (`~/.local/share/dw2003/`, `%APPDATA%\dw2003\`). In it: `tui.state` (the launcher's settings), `pad.map` (its
+  controls), `settings.json` (the game's, written by the launcher; its VIDEO, GAME and DEBUG LOGS values are read
+  back, so what RecompLauncher changed shows in the launcher), the memory cards, `logs/`. `--self-test DIR` checks the
+  rule, the files' round trip, settings.json's read-back and every screen, headless; with `DW3_SELFTEST_GAME=beside`
+  and `DW3_SELFTEST_DISC` also the game started from PLAY for 300 frames (its status channel, card and log).
+  RecompLauncher starts this launcher (`.ci-cd/recomplauncher/README.md`); `--play` presses PLAY at once (its
+  "Launcher menu: Skip"), with the same backup, cloud sync and conflict screen around the game.
 - **PortMaster (armhf) releases** use the shell entry `.ci-cd/portmaster/handheld/Digimon World 3.sh` together with the C99 console-first
   launcher `launcher/` (`dw3-launcher`, compiled with `-DDW3_TARGET_PORTMASTER -DHAVE_SDL2` by `.ci-cd/portmaster/build_arm.sh` in
   the Debian 10 `buster` armhf container for glibc >= 2.28). It runs on `/dev/fb0` + evdev by default and falls back to
@@ -17,8 +25,8 @@ separate build lines exist across CI/CD and releases:
   launcher (`launcher/main_android.c`, with larger clickable rows, `< BACK` header/footer pills, SAF disc picker, and
   the `FLOATING PAD` toggle in `GAME`) directly with the `PSXSTACK_SDL2` game and floating virtual gamepad
   (`android/touch_pad.c`), using Android's native controller detection via SDL2.
-- **Standalone C desktop build** (`launcher/Makefile`, `-DDW3_TARGET_PC`) compiles `launcher/` directly on Linux with
-  SDL2 for local desktop testing of the C99 UI and cloud sync without affecting the official AppImage/Windows releases.
+- **A desktop checkout's quick build** (`launcher/Makefile`, `-DDW3_TARGET_PC`, SDL2): `make -C launcher SDL=1`, then
+  `./launcher/dw3-launcher --sdl` finds `build/port-sdl/dw2003`.
 
 The decisions behind the design: DECISIONS "Launcher and mods".
 
@@ -33,8 +41,8 @@ Code cites this file as `docs/LAUNCHER.md "<heading>"`; keep the headings stable
   per-user folder) and puts crash reports and data mods beside it. A start without that variable is unchanged.
 - The disc check is the game's description's: `port/game/game.json` names the unpatched EU disc (SLES-03936) by its
   SHA-1 and size; the launcher and the game both check against it.
-- The environment variables keep their names (`DW3_CONFIG_DIR`, `DW3_GAME`, `DW3_SELFTEST_*`, `DW3_PORT_*`): the
-  description's `env_prefix` is `DW3`.
+- The environment variables keep their names (`DW3_SELFTEST_*`, `DW3_PORT_*`): the description's `env_prefix` is
+  `DW3`.
 - Texture packs are data mods in the settings directory's `mods/` (psxstack `docs/LAUNCHER.md` "Data mods"; the
   launcher passes `--mods-dir`); `tests/port/settings.py` checks `mod_order` and the data mods' settings, and
   `tests/port/textures.py` the packs found that way.

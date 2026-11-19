@@ -62,7 +62,7 @@ submodule, git worktrees, and the extract, build and test commands.
 | `src/`, `include/` | The decompiled C and the recovered headers and structs |
 | `config/` | splat YAML per link unit, `symbol_addrs.txt` (EXE names), `<overlay>.symbols.txt` (overlay names), `*.sha1` |
 | `port/` | The PC port's game side: the adapter, `game.json`, the mods ([`port/README.md`](../port/README.md)) |
-| `psxstack/` | Submodule: the runtime, the Psy-Q shim and the launcher |
+| `psxstack/` | Submodule: the runtime and the Psy-Q shim |
 | `tests/` | The reference tests ([`tests/README.md`](../tests/README.md)); they never touch `src/` |
 | `scripts/`, `tools/` | Setup, build and test scripts; the Python tools. `tools/` also receives the built toolchain (untracked) |
 | `launcher/` | The C99 console launcher `dw3-launcher` (PortMaster, Android, a standalone PC build) |
@@ -92,11 +92,11 @@ match are in [`docs/MATCHING.md`](MATCHING.md). In short:
 
 ### The PC port and the launcher
 
-The port's game side is `port/` (C: the adapter, `game.json`, the mods); the runtime, the Psy-Q shim and the launcher
-(C++17, Dear ImGui on SDL3) are the `psxstack` submodule, pinned by commit. Read [`docs/PORT.md`](PORT.md),
-[`docs/LAUNCHER.md`](LAUNCHER.md), [`port/README.md`](../port/README.md) and psxstack's `docs/RUNTIME.md` and
-`psxstack/launcher/README.md`. A change to the runtime or the launcher is a psxstack pull request, then a pin bump
-here; a change to this game's adapter or mods, or to the C99 console launcher in `launcher/`, is a pull request here. A change in behaviour should come with a test: a
+The port's game side is `port/` (C: the adapter, `game.json`, the mods); the runtime and the Psy-Q shim are the
+`psxstack` submodule, pinned by commit; the launcher is `launcher/` (C99, every platform's). Read
+[`docs/PORT.md`](PORT.md), [`docs/LAUNCHER.md`](LAUNCHER.md), [`port/README.md`](../port/README.md) and psxstack's
+`docs/RUNTIME.md`. A change to the runtime is a psxstack pull request, then a pin bump here; a change to this game's
+adapter or mods, or to the launcher, is a pull request here. A change in behaviour should come with a test: a
 layer-1 golden, a layer-2 pad script, or the launcher's self-test ([`tests/README.md`](../tests/README.md)).
 
 ### Scripts and tools

@@ -19,8 +19,7 @@
     ]
   },
   "start": {
-    "program": ["dw2003.exe", "usr/bin/dw2003", "dw2003", "dw2003.AppImage", "AppRun"],
-    "args": ["--game", "{game}", "--window"]
+    "program": ["dw2003-launcher.exe", "usr/bin/dw2003-launcher", "dw2003-launcher", "dw2003.AppImage", "AppRun"]
   },
   "config": [
     {
@@ -71,165 +70,192 @@
     "reason": "This recomp already has its own filters, and it draws with SDL_GPU rather than a single API ReShade can sit on."
   },
   "groups": [
-    { "id": "Picture" },
-    { "id": "Sound" },
-    { "id": "Play" }
+    { "id": "Launcher" },
+    { "id": "Video" },
+    { "id": "Game" },
+    { "id": "Debug" }
   ],
   "settings": [
     {
-      "id": "window",
-      "label": "Window",
-      "group": "Picture",
-      "help": "Fullscreen fills the screen. Windowed keeps the game in a window you can move.",
+      "id": "launcher_menu",
+      "label": "Launcher menu",
+      "group": "Launcher",
+      "in": "args",
+      "help": "Skip starts the game at once. The cloud sync and the save backups still run, and a save conflict still asks.",
       "choices": [
-        { "label": "Windowed", "set": { "video/fullscreen": "false" } },
-        { "label": "Fullscreen", "set": { "video/fullscreen": "true" } }
-      ],
-      "defaults": { "video/fullscreen": "false" }
-    },
-    {
-      "id": "scale",
-      "label": "Window size",
-      "group": "Picture",
-      "help": "How large the window is, in PlayStation pixels. 2x is 640 by 480.",
-      "when": { "video/fullscreen": "false" },
-      "defaults": { "video/scale": "2", "video/fullscreen": "false" },
-      "slider": { "key": "video/scale", "min": 1, "max": 8, "step": 1, "format": "%d" }
-    },
-    {
-      "id": "fit",
-      "label": "Fit",
-      "group": "Picture",
-      "help": "Integer keeps the pixels sharp. Fill uses the whole screen and keeps the picture's shape.",
-      "choices": [
-        { "label": "Integer", "set": { "video/fill": "false" } },
-        { "label": "Fill", "set": { "video/fill": "true" } }
-      ],
-      "defaults": { "video/fill": "false" }
-    },
-    {
-      "id": "renderer",
-      "label": "Renderer",
-      "group": "Picture",
-      "help": "GPU is the sharp hardware picture, and what widescreen and filters need. Software is the console's own pixels.",
-      "choices": [
-        { "label": "Software", "set": { "video/renderer": "\"software\"" } },
-        { "label": "GPU", "set": { "video/renderer": "\"gpu\"" } }
-      ],
-      "defaults": { "video/renderer": "\"software\"" }
-    },
-    {
-      "id": "internal_scale",
-      "label": "Resolution",
-      "group": "Picture",
-      "help": "How sharp the GPU picture is. 1x is the PlayStation's own. Higher needs a faster card.",
-      "when": { "video/renderer": "gpu" },
-      "defaults": { "video/internal_scale": "1", "video/renderer": "\"software\"" },
-      "slider": { "key": "video/internal_scale", "min": 1, "max": 8, "step": 1, "format": "%d" }
-    },
-    {
-      "id": "filter",
-      "label": "Filter",
-      "group": "Picture",
-      "help": "How the GPU picture is fitted to the screen. Software always shows the pixels as they are.",
-      "when": { "video/renderer": "gpu" },
-      "defaults": { "video/filter": "\"none\"", "video/renderer": "\"software\"" },
-      "choices": [
-        { "label": "Pixels", "set": { "video/filter": "\"none\"" } },
-        { "label": "Sharp", "set": { "video/filter": "\"sharp\"" } },
-        { "label": "Scanlines", "set": { "video/filter": "\"scanlines\"" } },
-        { "label": "CRT", "set": { "video/filter": "\"crt\"" } },
-        { "label": "Smooth", "set": { "video/filter": "\"smooth\"" } }
+        { "label": "Show", "args": [] },
+        { "label": "Skip", "args": ["--play"] }
       ]
-    },
-    {
-      "id": "subpixel",
-      "label": "3D vertices",
-      "group": "Picture",
-      "advanced": true,
-      "help": "Above 1x, where the 3D models sit. Game's own is the usual. Perspective is smoother and less like the PlayStation.",
-      "when": { "video/renderer": "gpu" },
-      "defaults": { "video/subpixel": "\"on\"", "video/renderer": "\"software\"" },
-      "choices": [
-        { "label": "Game's own", "set": { "video/subpixel": "\"on\"" } },
-        { "label": "Perspective", "set": { "video/subpixel": "\"perspective\"" } },
-        { "label": "Whole pixels", "set": { "video/subpixel": "\"off\"" } }
-      ]
-    },
-    {
-      "id": "refresh",
-      "label": "Speed",
-      "group": "Picture",
-      "help": "50 is the European disc. 60 is the game's own faster mode, in battles and on the field.",
-      "choices": [
-        { "label": "50 Hz", "set": { "video/refresh": "50" } },
-        { "label": "60 Hz", "set": { "video/refresh": "60" } }
-      ],
-      "defaults": { "video/refresh": "50" }
-    },
-    {
-      "id": "mute",
-      "label": "Sound",
-      "group": "Sound",
-      "help": "Turn the game's audio off without closing it.",
-      "choices": [
-        { "label": "On", "set": { "audio/mute": "false" } },
-        { "label": "Muted", "set": { "audio/mute": "true" } }
-      ],
-      "defaults": { "audio/mute": "false" }
     },
     {
       "id": "widescreen",
       "label": "Widescreen",
-      "group": "Play",
-      "help": "Battles and the field at the screen's shape, up to 16:9. Needs the GPU renderer. Takes effect on the next start.",
-      "when": { "video/renderer": "gpu" },
-      "defaults": { "mods/widescreen/enabled": "false", "video/renderer": "\"software\"" },
+      "group": "Video",
+      "help": "Battles and field fill 16:9 (auto-selects GPU). Menus stay 4:3.",
       "choices": [
         { "label": "Off", "set": { "mods/widescreen/enabled": "false" } },
-        { "label": "On", "set": { "mods/widescreen/enabled": "true" } }
-      ]
+        { "label": "On", "set": { "mods/widescreen/enabled": "true", "video/renderer": "\"gpu\"" } }
+      ],
+      "defaults": { "mods/widescreen/enabled": "true" }
     },
     {
-      "id": "battle_text",
-      "label": "Battle text",
-      "group": "Play",
-      "help": "Show technique names as the fight goes on, skip them, or wait as on the disc.",
+      "id": "fullscreen",
+      "label": "Fullscreen",
+      "group": "Video",
+      "help": "Open the game in fullscreen (F11 also toggles).",
       "choices": [
-        { "label": "As on the disc", "set": { "mods/battle_text/enabled": "false" } },
-        { "label": "As they happen", "set": { "mods/battle_text/enabled": "true", "mods/battle_text/mode": "\"async\"" } },
-        { "label": "Skip them", "set": { "mods/battle_text/enabled": "true", "mods/battle_text/mode": "\"skip\"" } }
+        { "label": "Off", "set": { "video/fullscreen": "false" } },
+        { "label": "On", "set": { "video/fullscreen": "true" } }
       ],
-      "defaults": { "mods/battle_text/enabled": "false", "mods/battle_text/mode": "\"async\"" }
+      "defaults": { "video/fullscreen": "false" }
     },
     {
-      "id": "skip_dialogues",
-      "label": "Dialogues",
-      "group": "Play",
-      "help": "Show story text all at once and move on. Choices and shops still wait for you.",
+      "id": "scaling",
+      "label": "Scaling",
+      "group": "Video",
+      "help": "Fill stretches cleanly to screen height; Integer uses exact multiples.",
       "choices": [
-        { "label": "Wait", "set": { "mods/skip_dialogues/enabled": "false" } },
-        { "label": "Skip", "set": { "mods/skip_dialogues/enabled": "true" } }
+        { "label": "Integer", "set": { "video/fill": "false" } },
+        { "label": "Fill", "set": { "video/fill": "true" } }
       ],
-      "defaults": { "mods/skip_dialogues/enabled": "false" }
+      "defaults": { "video/fill": "true" }
+    },
+    {
+      "id": "window_scale",
+      "label": "Window scale",
+      "group": "Video",
+      "help": "Window resolution scale. The launcher's Auto writes what fits the monitor.",
+      "defaults": { "video/scale": "3" },
+      "slider": { "key": "video/scale", "min": 2, "max": 8, "step": 1, "format": "%d" }
+    },
+    {
+      "id": "renderer",
+      "label": "Renderer",
+      "group": "Video",
+      "help": "GPU enables widescreen and shaders; Software is exact PS1.",
+      "choices": [
+        { "label": "GPU", "set": { "video/renderer": "\"gpu\"" } },
+        { "label": "Software", "set": { "video/renderer": "\"software\"", "mods/widescreen/enabled": "false" } }
+      ],
+      "defaults": { "video/renderer": "\"gpu\"" }
+    },
+    {
+      "id": "filter",
+      "label": "Filter",
+      "group": "Video",
+      "help": "GPU screen filter (Sharp keeps crisp pixels).",
+      "when": { "video/renderer": "gpu" },
+      "choices": [
+        { "label": "None", "set": { "video/filter": "\"none\"" } },
+        { "label": "Sharp", "set": { "video/filter": "\"sharp\"" } },
+        { "label": "Scanlines", "set": { "video/filter": "\"scanlines\"" } },
+        { "label": "CRT", "set": { "video/filter": "\"crt\"" } },
+        { "label": "Smooth", "set": { "video/filter": "\"smooth\"" } }
+      ],
+      "defaults": { "video/filter": "\"sharp\"", "video/renderer": "\"gpu\"" }
     },
     {
       "id": "language",
       "label": "Language",
-      "group": "Play",
-      "help": "Skips the language screen and starts in this language. Takes effect on the next start.",
+      "group": "Game",
+      "help": "Game text language.",
       "choices": [
-        { "label": "Ask at the start", "set": { "mods/preset_language/enabled": "false" } },
         { "label": "English", "set": { "mods/preset_language/enabled": "true", "mods/preset_language/language": "\"english\"" } },
-        { "label": "Portuguese", "set": { "mods/preset_language/enabled": "true", "mods/preset_language/language": "\"portuguese\"" } },
-        { "label": "French", "set": { "mods/preset_language/enabled": "true", "mods/preset_language/language": "\"french\"" } },
-        { "label": "German", "set": { "mods/preset_language/enabled": "true", "mods/preset_language/language": "\"german\"" } },
-        { "label": "Italian", "set": { "mods/preset_language/enabled": "true", "mods/preset_language/language": "\"italian\"" } },
-        { "label": "Spanish", "set": { "mods/preset_language/enabled": "true", "mods/preset_language/language": "\"spanish\"" } },
+        { "label": "Português (BR)", "set": { "mods/preset_language/enabled": "true", "mods/preset_language/language": "\"portuguese\"" } },
+        { "label": "Français", "set": { "mods/preset_language/enabled": "true", "mods/preset_language/language": "\"french\"" } },
+        { "label": "Deutsch", "set": { "mods/preset_language/enabled": "true", "mods/preset_language/language": "\"german\"" } },
+        { "label": "Italiano", "set": { "mods/preset_language/enabled": "true", "mods/preset_language/language": "\"italian\"" } },
+        { "label": "Español", "set": { "mods/preset_language/enabled": "true", "mods/preset_language/language": "\"spanish\"" } },
         { "label": "English (USA)", "set": { "mods/preset_language/enabled": "true", "mods/preset_language/language": "\"usa\"" } },
         { "label": "Japanese", "set": { "mods/preset_language/enabled": "true", "mods/preset_language/language": "\"japanese\"" } }
       ],
-      "defaults": { "mods/preset_language/enabled": "false", "mods/preset_language/language": "\"english\"" }
+      "defaults": { "mods/preset_language/enabled": "true", "mods/preset_language/language": "\"english\"" }
+    },
+    {
+      "id": "fast_forward",
+      "label": "Fast-forward",
+      "group": "Game",
+      "help": "How fast the fast-forward button runs the game.",
+      "choices": [
+        { "label": "Off", "set": { "mods/fast_forward/enabled": "false" } },
+        { "label": "2x", "set": { "mods/fast_forward/enabled": "true", "mods/fast_forward/speed": "\"2x\"" } },
+        { "label": "4x", "set": { "mods/fast_forward/enabled": "true", "mods/fast_forward/speed": "\"4x\"" } },
+        { "label": "8x", "set": { "mods/fast_forward/enabled": "true", "mods/fast_forward/speed": "\"8x\"" } },
+        { "label": "Unlimited", "set": { "mods/fast_forward/enabled": "true", "mods/fast_forward/speed": "\"unlimited\"" } }
+      ],
+      "defaults": { "mods/fast_forward/enabled": "true", "mods/fast_forward/speed": "\"8x\"" }
+    },
+    {
+      "id": "fast_load",
+      "label": "Fast load",
+      "group": "Game",
+      "help": "Reads the game's files faster. Movies keep normal speed.",
+      "choices": [
+        { "label": "Off", "set": { "mods/fast_loading/enabled": "false" } },
+        { "label": "2x", "set": { "mods/fast_loading/enabled": "true", "mods/fast_loading/speed": "\"2x\"" } },
+        { "label": "4x", "set": { "mods/fast_loading/enabled": "true", "mods/fast_loading/speed": "\"4x\"" } },
+        { "label": "8x", "set": { "mods/fast_loading/enabled": "true", "mods/fast_loading/speed": "\"8x\"" } },
+        { "label": "Instant", "set": { "mods/fast_loading/enabled": "true", "mods/fast_loading/speed": "\"instant\"" } }
+      ],
+      "defaults": { "mods/fast_loading/enabled": "true", "mods/fast_loading/speed": "\"8x\"" }
+    },
+    {
+      "id": "skip_dialogues",
+      "label": "Skip dialogues",
+      "group": "Game",
+      "help": "Dialogue boxes close on their own.",
+      "choices": [
+        { "label": "Off", "set": { "mods/skip_dialogues/enabled": "false" } },
+        { "label": "On", "set": { "mods/skip_dialogues/enabled": "true" } }
+      ],
+      "defaults": { "mods/skip_dialogues/enabled": "false" }
+    },
+    {
+      "id": "skip_battle_animations",
+      "label": "Skip battle animations",
+      "group": "Game",
+      "help": "Battle moves play without their animation.",
+      "choices": [
+        { "label": "Off", "set": { "mods/battle_animations/enabled": "false", "mods/battle_animations/hit_reaction": "false" } },
+        { "label": "On", "set": { "mods/battle_animations/enabled": "true" } }
+      ],
+      "defaults": { "mods/battle_animations/enabled": "false" }
+    },
+    {
+      "id": "hit_reaction",
+      "label": "Hit reaction",
+      "group": "Game",
+      "help": "Keep the hit flinch while animations are skipped.",
+      "when": { "mods/battle_animations/enabled": "true" },
+      "choices": [
+        { "label": "Off", "set": { "mods/battle_animations/hit_reaction": "false" } },
+        { "label": "On", "set": { "mods/battle_animations/hit_reaction": "true" } }
+      ],
+      "defaults": { "mods/battle_animations/hit_reaction": "false" }
+    },
+    {
+      "id": "battle_text",
+      "label": "Battle text",
+      "group": "Game",
+      "help": "Skip closes battle message boxes so combat flows.",
+      "choices": [
+        { "label": "Off", "set": { "mods/battle_text/enabled": "true", "mods/battle_text/mode": "\"off\"" } },
+        { "label": "Skip", "set": { "mods/battle_text/enabled": "true", "mods/battle_text/mode": "\"skip\"" } },
+        { "label": "Async", "set": { "mods/battle_text/enabled": "true", "mods/battle_text/mode": "\"async\"" } }
+      ],
+      "defaults": { "mods/battle_text/enabled": "true", "mods/battle_text/mode": "\"skip\"" }
+    },
+    {
+      "id": "logs",
+      "label": "Logs",
+      "group": "Debug",
+      "help": "A bug report is easier with Logs on Heavy and the zip attached.",
+      "choices": [
+        { "label": "Off", "set": { "debug/logs": "\"off\"" } },
+        { "label": "Soft", "set": { "debug/logs": "\"soft\"" } },
+        { "label": "Heavy", "set": { "debug/logs": "\"heavy\"" } }
+      ],
+      "defaults": { "debug/logs": "\"off\"" }
     }
   ],
   "actions": [

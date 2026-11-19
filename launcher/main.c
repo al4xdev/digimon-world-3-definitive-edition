@@ -1,22 +1,27 @@
 /* dw3-launcher: the console-first menu. One canvas, one pad, no widgets: every screen is a short list. */
+#include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <poll.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-#include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
+#ifndef _WIN32
+#include <poll.h>
+#include <sys/wait.h>
+#endif
 
 #include "cfg.h"
 #include "cloud.h"
+#include "compat.h"
 #include "loading.h"
 #include "plat.h"
 #include "sha256.h"
 #include "ui.h"
+#include "win32.h"
 
 enum {
     S_SPLASH, S_HOME, S_GAME, S_VIDEO, S_HUD, S_CONTROLS, S_SAVES, S_BACKUPS, S_BACKUP_CONFIRM,
@@ -29,7 +34,12 @@ static Cfg c;
 static CloudState cloud;
 static int screen = S_SPLASH, sel, capture, quit_flag;
 static char msg[160], last_err[160], status[160], exe_dir[512] = ".";
-static int launch_pid = -1, launch_fd = -1, status_fd = -1, launch_pct, launch_started;
+static int launch_pid = -1, launch_pct, launch_started;
+#ifdef _WIN32
+static W32Proc wproc; /* the game's process, its output and its status pipes (launch_pid 1 while it runs) */
+#else
+static int launch_fd = -1, status_fd = -1; /* the game's output and its status pipes */
+#endif
 static long launch_t0, splash_t0 = -1;
 static FILE *game_log;
 static char launch_stage[64] = "CHECKING THE DISC";
@@ -374,7 +384,7 @@ static void draw_game(void) {
     header("DIGIMON WORLD 3", "GAME");
     const char *disc_lbl = "BROWSE...";
     if (disc_path[0]) {
-        const char *b = strrchr(disc_path, '/');
+        const char *b = path_last_sep(disc_path);
         disc_lbl = b ? b + 1 : disc_path;
     }
     const char *v[8] = {lang_label[c.lang < 0 || c.lang > 7 ? 0 : c.lang], ff_label[c.ff], load_label[c.load],
@@ -1003,18 +1013,28 @@ static void draw(void) {
 }
 
 /* ---- launching ---- */
+static const char *game_extra[8]; /* more arguments for the game: the self-test's --max-frames */
+
 static void find_game_bin(char *out, size_t n) {
-    char cand[1024];
     const char *env_bin = getenv("DW3_GAME_BIN");
-    if (env_bin && env_bin[0] && access(env_bin, X_OK) == 0) {
+    if (env_bin && env_bin[0] && exe_ok(env_bin)) {
         snprintf(out, n, "%s", env_bin);
         return;
     }
+#ifdef _WIN32
+    /* The release's folder: dw2003.exe beside the launcher. */
+    snprintf(out, n, "%s/dw2003.exe", exe_dir);
+    return;
+#else
+    char cand[1024];
     if (is_pc) {
-        snprintf(cand, sizeof(cand), "%s/build/port-sdl/dw2003", game_dir);
-        if (access(cand, X_OK) == 0) { snprintf(out, n, "%s", cand); return; }
-        snprintf(cand, sizeof(cand), "%s/build/release/port-sdl/dw2003", game_dir);
-        if (access(cand, X_OK) == 0) { snprintf(out, n, "%s", cand); return; }
+        /* The release (the AppImage's usr/bin/, or any folder): the game beside the launcher. A checkout's build:
+         * launcher/dw3-launcher beside build/. */
+        static const char *const rel[] = {"dw2003", "../build/port-sdl/dw2003", "../build/release/port-sdl/dw2003"};
+        for (unsigned i = 0; i < sizeof(rel) / sizeof(rel[0]); i++) {
+            snprintf(cand, sizeof(cand), "%s/%s", exe_dir, rel[i]);
+            if (exe_ok(cand)) { snprintf(out, n, "%s", cand); return; }
+        }
     }
 #if defined(__aarch64__)
     const char *arch_name = "dw2003.aarch64";
@@ -1024,24 +1044,170 @@ static void find_game_bin(char *out, size_t n) {
     const char *arch_name = "dw2003";
 #endif
     snprintf(cand, sizeof(cand), "%s/%s", game_dir, arch_name);
-    if (access(cand, X_OK) == 0) { snprintf(out, n, "%s", cand); return; }
+    if (exe_ok(cand)) { snprintf(out, n, "%s", cand); return; }
     snprintf(cand, sizeof(cand), "%s/%s", exe_dir, arch_name);
-    if (access(cand, X_OK) == 0) { snprintf(out, n, "%s", cand); return; }
+    if (exe_ok(cand)) { snprintf(out, n, "%s", cand); return; }
     snprintf(cand, sizeof(cand), "%s/dw2003", game_dir);
-    if (access(cand, X_OK) == 0) { snprintf(out, n, "%s", cand); return; }
+    if (exe_ok(cand)) { snprintf(out, n, "%s", cand); return; }
     snprintf(cand, sizeof(cand), "%s/dw2003", exe_dir);
-    if (access(cand, X_OK) == 0) { snprintf(out, n, "%s", cand); return; }
+    if (exe_ok(cand)) { snprintf(out, n, "%s", cand); return; }
     if (!is_pc) {
         snprintf(cand, sizeof(cand), "%s/build/port/dw2003", game_dir);
-        if (access(cand, X_OK) == 0) { snprintf(out, n, "%s", cand); return; }
+        if (exe_ok(cand)) { snprintf(out, n, "%s", cand); return; }
     }
     snprintf(out, n, "./%s", arch_name);
+#endif
+}
+
+/* The game's command line: settings.json in the settings directory, which is its working directory. */
+static void game_argv(const char *bin, const char **argv, int max) {
+    const char *fr = getenv("DW3_FORCE_RENDERER");
+    int ac = 0;
+    argv[ac++] = bin;
+    argv[ac++] = "--config";
+    argv[ac++] = "./settings.json";
+    argv[ac++] = "--window";
+    if (!(is_pc && !c.fullscreen)) argv[ac++] = "--fullscreen";
+    argv[ac++] = "--watchdog";
+    argv[ac++] = "0";
+    if (fr && fr[0]) {
+        argv[ac++] = "--renderer";
+        argv[ac++] = fr;
+    }
+    for (int i = 0; game_extra[i] && ac < max - 1; i++) argv[ac++] = game_extra[i];
+    argv[ac] = NULL;
+}
+
+/* ---- the running game, as each system has it: its output, its loading status and its end ---- */
+/* What a pipe of the game has now, without waiting: >0 bytes, 0 nothing yet, -1 closed. */
+static long game_read(int status, char *buf, size_t n) {
+#ifdef _WIN32
+    return w32_read(status ? &wproc.status : &wproc.out, buf, n);
+#else
+    int *fd = status ? &status_fd : &launch_fd;
+    if (*fd < 0) return -1;
+    for (;;) {
+        ssize_t r = read(*fd, buf, n);
+        if (r > 0) return (long)r;
+        if (r < 0 && errno == EINTR) continue;
+        if (r < 0 && (errno == EAGAIN || errno == EWOULDBLOCK)) return 0;
+        close(*fd);
+        *fd = -1;
+        return -1;
+    }
+#endif
+}
+
+static void game_close_status(void) {
+#ifdef _WIN32
+    char buf[64];
+    while (w32_read(&wproc.status, buf, sizeof(buf)) > 0) {}
+    w32_close_pipe(&wproc.status);
+#else
+    if (status_fd >= 0) { close(status_fd); status_fd = -1; }
+#endif
+}
+
+static void game_close(void) {
+#ifdef _WIN32
+    w32_proc_close(&wproc);
+#else
+    if (status_fd >= 0) { close(status_fd); status_fd = -1; }
+    if (launch_fd >= 0) { close(launch_fd); launch_fd = -1; }
+#endif
+}
+
+/* Waits up to ms for the game's output or its end. */
+static void game_wait(int ms) {
+#ifdef _WIN32
+    w32_wait(&wproc, ms);
+#else
+    if (launch_fd >= 0) {
+        struct pollfd pfd = {launch_fd, POLLIN, 0};
+        poll(&pfd, 1, ms);
+    } else {
+        sleep(1);
+    }
+#endif
+}
+
+/* 1 once the game has ended: *code is the launcher's own exit status then (0 when the game ended normally), and why
+ * says what went wrong otherwise. */
+static int game_reap(int *code, char *why, size_t n) {
+#ifdef _WIN32
+    unsigned long st = 1;
+    if (!w32_exited(&wproc, &st)) return 0;
+    *code = (int)st;
+    /* an exception's code (0xC0000005: an access violation), not a status the game chose */
+    if (st != 0) snprintf(why, n, st >= 0xC0000000UL ? "THE GAME CRASHED (0X%08lX)" : "THE GAME EXITED WITH CODE %lu", st);
+    return 1;
+#else
+    int st;
+    if (launch_pid <= 0 || waitpid(launch_pid, &st, WNOHANG) != launch_pid) return 0;
+    *code = WIFEXITED(st) ? WEXITSTATUS(st) : 1;
+    if (*code != 0) {
+        snprintf(why, n, WIFSIGNALED(st) ? "THE GAME CRASHED (SIGNAL %d)" : "THE GAME EXITED WITH CODE %d",
+                 WIFSIGNALED(st) ? WTERMSIG(st) : WEXITSTATUS(st));
+    }
+    return 1;
+#endif
+}
+
+/* The periodic cloud push while the game runs (it only pushes: the running game's card is never overwritten): a child
+ * process on Linux, a thread on Windows (a copy of the cloud state; the launcher reloads the file afterwards). */
+#ifdef _WIN32
+static CloudState sync_cloud;
+static void *sync_thread;
+
+static int sync_push(void *arg) {
+    char smsg[128];
+    (void)arg;
+    return cloud_push_card1(&sync_cloud, game_dir, c.backup_max, 0, smsg, sizeof(smsg)) == 0 ? 0 : 1;
+}
+#else
+static pid_t sync_pid = -1;
+#endif
+
+static int sync_start(void) {
+#ifdef _WIN32
+    sync_cloud = cloud;
+    sync_thread = w32_thread(sync_push, NULL);
+    return sync_thread ? 0 : -1;
+#else
+    sync_pid = fork();
+    if (sync_pid == 0) {
+        char smsg[128];
+        int prc = cloud_push_card1(&cloud, game_dir, c.backup_max, 0, smsg, sizeof(smsg));
+        _exit(prc == 0 ? 0 : 1);
+    }
+    return sync_pid > 0 ? 0 : -1;
+#endif
+}
+
+/* 1 when the push has ended (*ok: it succeeded), 0 while it runs; `wait` waits for it. */
+static int sync_end(int wait, int *ok) {
+#ifdef _WIN32
+    int rc = 1;
+    if (!sync_thread || !w32_thread_end(sync_thread, wait, &rc)) return 0;
+    sync_thread = NULL;
+    *ok = rc == 0;
+    return 1;
+#else
+    int sst = 0;
+    pid_t r;
+    if (sync_pid <= 0) return 0;
+    while ((r = waitpid(sync_pid, &sst, wait ? 0 : WNOHANG)) < 0 && errno == EINTR) {}
+    if (r != sync_pid) return 0;
+    sync_pid = -1;
+    *ok = WIFEXITED(sst) && WEXITSTATUS(sst) == 0;
+    return 1;
+#endif
 }
 
 static void browse_load(const char *dir) {
     char resolved[1200];
-    if (realpath(dir, resolved)) snprintf(b_dir, sizeof(b_dir), "%s", resolved);
-    else snprintf(b_dir, sizeof(b_dir), "%s", dir);
+    if (!realpath(dir, resolved)) snprintf(resolved, sizeof(resolved), "%s", dir); /* dir may be b_dir itself */
+    memcpy(b_dir, resolved, sizeof(b_dir));
     b_count = browse_read(b_dir, b_items, BROWSE_MAX);
     sel = 0;
     b_scroll = 0;
@@ -1090,10 +1256,24 @@ static void start_game(void) {
         launch_pid = -2;
     } else {
         char bin_path[1024];
+        const char *argv[24];
         find_game_bin(bin_path, sizeof(bin_path));
+        game_argv(bin_path, argv, 24);
+#ifdef _WIN32
+        /* The status descriptor's number in the game: w32_spawn hands it over as the CRT does (lpReserved2). */
+        setenv("DW3_STATUS_FD", "3", 1);
+        if (w32_spawn(&wproc, argv, game_dir, 3) != 0) {
+            snprintf(msg, sizeof(msg), "THE GAME DID NOT START");
+            snprintf(last_err, sizeof(last_err), "%.159s", bin_path);
+            screen = S_ERROR;
+            return;
+        }
+        launch_pid = 1;
+#else
         int p[2], sp[2];
         if (pipe(p) != 0) return;
         if (pipe(sp) != 0) { close(p[0]); close(p[1]); return; }
+        argv[0] = "dw2003";
         launch_pid = fork();
         if (launch_pid == 0) {
             char fd_str[16];
@@ -1109,26 +1289,22 @@ static void start_game(void) {
                 (void)system("sh ./probe.sh >/dev/null 2>&1 || true");
             }
             const char *ex = getenv("DW3_EXEC");
-            const char *fr = getenv("DW3_FORCE_RENDERER");
             if (ex) execl("/bin/sh", "sh", "-c", ex, (char *)NULL);
-            else if (fr && fr[0]) {
-                if (is_pc && !c.fullscreen) execl(bin_path, "dw2003", "--config", "./settings.json", "--window", "--watchdog", "0", "--renderer", fr, (char *)NULL);
-                else execl(bin_path, "dw2003", "--config", "./settings.json", "--window", "--fullscreen", "--watchdog", "0", "--renderer", fr, (char *)NULL);
-            } else if (is_pc && !c.fullscreen) execl(bin_path, "dw2003", "--config", "./settings.json", "--window", "--watchdog", "0", (char *)NULL);
-            else execl(bin_path, "dw2003", "--config", "./settings.json", "--window", "--fullscreen", "--watchdog", "0", (char *)NULL);
+            else execv(bin_path, (char *const *)argv);
             _exit(127);
         }
         close(p[1]);
         close(sp[1]);
+        launch_fd = p[0];
+        status_fd = sp[0];
+        fcntl(launch_fd, F_SETFL, O_NONBLOCK);
+        fcntl(status_fd, F_SETFL, O_NONBLOCK);
+#endif
         char lp[700];
         snprintf(lp, sizeof(lp), "%s/logs", game_dir);
         mkdir(lp, 0755);
         snprintf(lp, sizeof(lp), "%s/logs/game.log", game_dir);
         game_log = fopen(lp, "a");
-        launch_fd = p[0];
-        status_fd = sp[0];
-        fcntl(launch_fd, F_SETFL, O_NONBLOCK);
-        fcntl(status_fd, F_SETFL, O_NONBLOCK);
     }
     launch_t0 = plat_now_ms();
     launch_pct = 0;
@@ -1141,66 +1317,70 @@ static void start_game(void) {
     cur_screen = S_LOADING;
 }
 
-/* Reads what the game prints: status_fd tells us even when DW3_LOG=off. */
+static int status_said_start; /* the runtime's own "start" arrived (the self-test checks the status channel) */
+
+/* Reads what the game prints: the status channel tells us even when DW3_LOG=off. */
 static void pump_game(void) {
     char buf[512];
     static char line[512], sline[64];
     static int ln, sln;
-    if (status_fd >= 0) {
-        ssize_t n;
-        while ((n = read(status_fd, buf, sizeof(buf))) > 0) {
-            for (ssize_t i = 0; i < n; i++) {
-                if (buf[i] == '\n' || sln == (int)sizeof(sline) - 1) {
-                    sline[sln] = 0;
-                    sln = 0;
-                    if (!strcmp(sline, "disc")) snprintf(launch_stage, sizeof(launch_stage), "VERIFYING THE DISC");
-                    if (!strcmp(sline, "start")) { launch_started = 1; snprintf(launch_stage, sizeof(launch_stage), "STARTING"); }
-                } else sline[sln++] = buf[i];
-            }
+    long n;
+    while ((n = game_read(1, buf, sizeof(buf))) > 0) {
+        for (long i = 0; i < n; i++) {
+            if (buf[i] == '\n' || sln == (int)sizeof(sline) - 1) {
+                sline[sln] = 0;
+                sln = 0;
+                if (!strcmp(sline, "disc")) snprintf(launch_stage, sizeof(launch_stage), "VERIFYING THE DISC");
+                if (!strcmp(sline, "start")) {
+                    launch_started = status_said_start = 1;
+                    snprintf(launch_stage, sizeof(launch_stage), "STARTING");
+                }
+            } else sline[sln++] = buf[i];
         }
     }
-    if (launch_fd >= 0) {
-        ssize_t n;
-        while ((n = read(launch_fd, buf, sizeof(buf))) > 0) {
-            if (game_log) { fwrite(buf, 1, (size_t)n, game_log); fflush(game_log); }
-            for (ssize_t i = 0; i < n; i++) {
-                if (buf[i] == '\n' || ln == (int)sizeof(line) - 1) {
-                    line[ln] = 0;
-                    ln = 0;
-                    if (line[0]) snprintf(last_err, sizeof(last_err), "%.159s", line);
-                    if (strstr(line, "port: disc")) snprintf(launch_stage, sizeof(launch_stage), "VERIFYING THE DISC");
-                    if (strstr(line, "port: start:")) { launch_started = 1; snprintf(launch_stage, sizeof(launch_stage), "STARTING"); }
-                } else line[ln++] = buf[i];
-            }
+    while ((n = game_read(0, buf, sizeof(buf))) > 0) {
+        if (game_log) { fwrite(buf, 1, (size_t)n, game_log); fflush(game_log); }
+        for (long i = 0; i < n; i++) {
+            if (buf[i] == '\n' || ln == (int)sizeof(line) - 1) {
+                line[ln] = 0;
+                ln = 0;
+                if (line[0]) snprintf(last_err, sizeof(last_err), "%.159s", line);
+                if (strstr(line, "port: disc")) snprintf(launch_stage, sizeof(launch_stage), "VERIFYING THE DISC");
+                if (strstr(line, "port: start:")) { launch_started = 1; snprintf(launch_stage, sizeof(launch_stage), "STARTING"); }
+            } else line[ln++] = buf[i];
         }
     }
     long t = plat_now_ms() - launch_t0;
     int target = launch_started ? 100 : (int)(90 - 90 * 20000 / (20000 + t)); /* creeps towards 90 until the game says so */
     if (target > launch_pct) launch_pct = target;
-    if (launch_pid > 0) {
-        int st;
-        if (waitpid(launch_pid, &st, WNOHANG) == launch_pid) {
-            launch_pid = -1;
-            ln = sln = 0;
-            if (status_fd >= 0) { close(status_fd); status_fd = -1; }
-            if (launch_fd >= 0) { close(launch_fd); launch_fd = -1; }
-            if (game_log) { fclose(game_log); game_log = NULL; }
-            if (WIFEXITED(st) && WEXITSTATUS(st) == 0) {
-                char card_p[1024], smsg[128] = "";
-                snprintf(card_p, sizeof(card_p), "%s/card1.mcd", game_dir);
-                if (save_is_valid_mc(card_p, NULL)) {
-                    save_backup_rotate(game_dir, "card1.mcd", c.backup_max);
-                    if (c.sync_enabled && cloud.registered && !cloud.revoked) {
-                        cloud_push_card1(&cloud, game_dir, c.backup_max, 0, smsg, sizeof(smsg));
-                    }
+#ifdef _WIN32
+    /* the game's window is up: the hand-over, whatever the status channel said */
+    if (launch_pid > 0 && !launch_started && w32_window_up(&wproc)) {
+        launch_started = 1;
+        snprintf(launch_stage, sizeof(launch_stage), "STARTING");
+    }
+#endif
+    int code = 1;
+    char why[160] = "";
+    if (launch_pid > 0 && game_reap(&code, why, sizeof(why))) {
+        launch_pid = -1;
+        ln = sln = 0;
+        game_close();
+        if (game_log) { fclose(game_log); game_log = NULL; }
+        if (code == 0) {
+            char card_p[1024], smsg[128] = "";
+            snprintf(card_p, sizeof(card_p), "%s/card1.mcd", game_dir);
+            if (save_is_valid_mc(card_p, NULL)) {
+                save_backup_rotate(game_dir, "card1.mcd", c.backup_max);
+                if (c.sync_enabled && cloud.registered && !cloud.revoked) {
+                    cloud_push_card1(&cloud, game_dir, c.backup_max, 0, smsg, sizeof(smsg));
                 }
-                quit_flag = 1;
-                return;
             }
-            snprintf(msg, sizeof(msg), WIFSIGNALED(st) ? "THE GAME CRASHED (SIGNAL %d)" : "THE GAME EXITED WITH CODE %d",
-                     WIFSIGNALED(st) ? WTERMSIG(st) : WEXITSTATUS(st));
-            screen = S_ERROR;
+            quit_flag = 1;
+            return;
         }
+        snprintf(msg, sizeof(msg), "%s", why);
+        screen = S_ERROR;
     }
 }
 
@@ -1638,7 +1818,7 @@ static void on_press(int code) {
         break;
     case S_BROWSE:
         if (back) {
-            if (strcmp(b_dir, "/") != 0 && b_count > 0 && strcmp(b_items[0].name, "..") == 0) {
+            if (!path_is_root(b_dir) && b_count > 0 && strcmp(b_items[0].name, "..") == 0) {
                 char next[1400];
                 snprintf(next, sizeof(next), "%s/..", b_dir);
                 browse_load(next);
@@ -1706,36 +1886,242 @@ static void on_press(int code) {
     }
 }
 
+#ifdef DW3_TARGET_PC
+/* The settings directory on PC, one rule: portable.txt beside the launcher makes it the launcher's own folder; else
+ * the per-user directory (%APPDATA%\dw2003, ~/.local/share/dw2003), the one the game and RecompLauncher use. Never
+ * the current directory nor the program's (an AppImage is read-only). */
+static int settings_dir_for(const char *exe, char *out, size_t n) {
+    char p[1200];
+    snprintf(p, sizeof(p), "%s/portable.txt", exe);
+    if (access(p, F_OK) == 0) {
+        snprintf(out, n, "%s", exe);
+        return 0;
+    }
+    return plat_pref_dir(out, n);
+}
+#endif
+
+/* ---- the self-test (--self-test DIR): the release packages run it, under Wine for Windows ---- */
+static int st_checks, st_fails;
+
+static void check(int ok, const char *what) {
+    st_checks++;
+    if (!ok) st_fails++;
+    fprintf(stderr, "self-test: %s %s\n", ok ? "ok    " : "FAILED", what);
+}
+
+static int write_text(const char *path, const char *text) {
+    FILE *f = fopen(path, "wb");
+    if (!f) return -1;
+    fputs(text, f);
+    return fclose(f);
+}
+
+static char *read_text(const char *path) {
+    FILE *f = fopen(path, "rb");
+    if (!f) return NULL;
+    char *b = malloc(1 << 16);
+    size_t r = b ? fread(b, 1, (1 << 16) - 1, f) : 0;
+    fclose(f);
+    if (b) b[r] = 0;
+    return b;
+}
+
+static int replace_in_file(const char *path, const char *from, const char *to) {
+    char *t = read_text(path);
+    char *at = t ? strstr(t, from) : NULL;
+    if (!at) { free(t); return -1; }
+    size_t len = strlen(t) + strlen(to) + 1;
+    char *o = malloc(len);
+    if (!o) { free(t); return -1; }
+    snprintf(o, len, "%.*s%s%s", (int)(at - t), t, to, at + strlen(from));
+    int rc = write_text(path, o);
+    free(t);
+    free(o);
+    return rc;
+}
+
+static int count_mods(const char *dir) {
+    DIR *d = opendir(dir);
+    struct dirent *e;
+    int n = 0;
+    while (d && (e = readdir(d))) {
+        char p[1400];
+        if (e->d_name[0] == '.') continue;
+        snprintf(p, sizeof(p), "%s/%s/mod.json", dir, e->d_name);
+        n += access(p, F_OK) == 0;
+    }
+    if (d) closedir(d);
+    return n;
+}
+
+static int self_test(const char *root) {
+    char p[1200], q[1200], what[1400];
+    mkdir(root, 0755);
+#ifdef DW3_TARGET_PC
+    /* The settings directory's rule. */
+    char exe[1200], got[1200], pref[1200] = "";
+    snprintf(exe, sizeof(exe), "%s/exe", root);
+    mkdir(exe, 0755);
+    snprintf(p, sizeof(p), "%s/portable.txt", exe);
+    remove(p);
+    check(settings_dir_for(exe, got, sizeof(got)) == 0 && plat_pref_dir(pref, sizeof(pref)) == 0 && !strcmp(got, pref),
+          "settings directory: the per-user one without portable.txt");
+    write_text(p, "");
+    check(settings_dir_for(exe, got, sizeof(got)) == 0 && !strcmp(got, exe),
+          "settings directory: the launcher's own folder with portable.txt");
+#endif
+    /* The files: every setting off its default, saved, read back the same. */
+    snprintf(game_dir, sizeof(game_dir), "%s/settings", root);
+    mkdir(game_dir, 0755);
+    snprintf(p, sizeof(p), "%s/game", game_dir);
+    mkdir(p, 0755);
+    snprintf(p, sizeof(p), "%s/game/dw2003.cue", game_dir);
+    write_text(p, "FILE \"dw2003.bin\" BINARY\n");
+    snprintf(disc_path, sizeof(disc_path), "%s", p);
+    Cfg a, b;
+    cfg_defaults(&a);
+    a.lang = 1; a.ff = 2; a.load = 4; a.skip = 1; a.battles = 1; a.hit = 1; a.btext = 2; a.bmem = 0; a.bbuf = 2;
+    a.logs = 1; a.fullscreen = !a.fullscreen; a.fill = !a.fill; a.scale = 4; a.filter = 3; a.backup_max = 42;
+    a.sync_enabled = 0; a.sync_interval_min = 30; a.hud[H_FIGHT] = K_R2; a.hud[H_RUN] = K_L1;
+    a.pad[A_START].code = K_SELECT; a.pad[A_SELECT].code = K_START;
+    check(cfg_save(&a) == 0, "settings: tui.state, pad.map and settings.json written");
+    disc_path[0] = 0;
+    cfg_load(&b);
+    check(!memcmp(&a, &b, sizeof(a)), "settings: read back as written");
+    check(!strcmp(disc_path, p), "settings: the disc read back");
+#ifdef DW3_TARGET_PC
+    /* settings.json as RecompLauncher leaves it (recomplauncher.json's options): the launcher shows its values. */
+    snprintf(q, sizeof(q), "%s/settings.json", game_dir);
+    replace_in_file(q, "\"filter\": \"crt\"", "\"filter\": \"smooth\"");
+    replace_in_file(q, "\"skip_dialogues\": { \"enabled\": true", "\"skip_dialogues\": { \"enabled\": false");
+    replace_in_file(q, "\"language\": \"portuguese\"", "\"language\": \"german\"");
+    cfg_load(&b);
+    check(b.filter == 4 && b.skip == 0 && b.lang == 3, "settings: settings.json's own changes win over tui.state");
+#endif
+    /* Every screen draws. */
+    snprintf(q, sizeof(q), "%s/screens", root);
+    mkdir(q, 0755);
+    plat_shot_dir = q;
+    c = a;
+    int drawn = 0;
+    for (int s = S_SPLASH; s <= S_ERROR; s++) {
+        if (s == S_LOADING) continue;
+        screen = s;
+        sel = 0;
+        draw_screen();
+        snprintf(what, sizeof(what), "screen%02d", s);
+        plat_shot(what);
+        drawn++;
+    }
+    check(drawn > 20, "screens: every screen drawn");
+    /* The game beside the launcher (the release's layout) and its mods; with a disc, 300 frames from PLAY. */
+    const char *real = getenv("DW3_SELFTEST_GAME");
+    if (!real) return st_fails;
+    char bin[1024];
+    find_game_bin(bin, sizeof(bin));
+    snprintf(what, sizeof(what), "the game beside the launcher: %s", bin);
+    check(exe_ok(bin), what);
+    snprintf(q, sizeof(q), "%s/mods", exe_dir);
+    snprintf(what, sizeof(what), "the mods beside the game: %s", q);
+    check(count_mods(q) > 0, what);
+    const char *disc = getenv("DW3_SELFTEST_DISC");
+    if (!disc || !exe_ok(bin)) return st_fails;
+    snprintf(disc_path, sizeof(disc_path), "%s", disc);
+    c = a;
+    c.fullscreen = 0;
+    c.logs = 2;
+    c.sync_enabled = 0;
+    static const char *const extra[] = {"--max-frames", "300", "--fps", "0", NULL};
+    memcpy(game_extra, extra, sizeof(extra));
+    const char *vd = getenv("DW3_SELFTEST_VIDEO_DRIVER"); /* Wine drops SDL_VIDEO_DRIVER from the environment */
+    setenv("SDL_VIDEO_DRIVER", vd && vd[0] ? vd : "offscreen", 1);
+    setenv("SDL_AUDIO_DRIVER", "dummy", 1);
+    screen = S_HOME;
+    quit_flag = 0;
+    start_game();
+    check(screen == S_LOADING && launch_pid > 0, "the game starts from PLAY");
+    for (int i = 0; i < 120000 / 10 && launch_pid > 0; i++) {
+        pump_game();
+        if (launch_pid > 0) plat_poll(&(Ev){0}, 10);
+#ifdef _WIN32
+        if (launch_pid > 0) w32_wait(&wproc, 10);
+#else
+        if (launch_pid > 0) poll(NULL, 0, 10);
+#endif
+    }
+    check(status_said_start, "the game's status channel said start (DW3_STATUS_FD)");
+    snprintf(what, sizeof(what), "the game ran 300 frames and ended normally: %s%s%s", msg, last_err[0] ? "; " : "",
+             last_err);
+    check(launch_pid < 0 && quit_flag == 1, what);
+    snprintf(p, sizeof(p), "%s/card1.mcd", game_dir);
+    check(access(p, F_OK) == 0, "the game made memory card 1 in the settings directory");
+    snprintf(p, sizeof(p), "%s/logs/game.log", game_dir);
+    check(access(p, F_OK) == 0, "the game's output in logs/game.log");
+    return st_fails;
+}
+
 int main(int argc, char **argv) {
     int kind = PLAT_FB, force_splash = 0;
-    const char *script = NULL;
-    const char *sl = argc > 0 && argv[0] ? strrchr(argv[0], '/') : NULL;
-    if (sl && (size_t)(sl - argv[0]) < sizeof(exe_dir)) {
-        size_t n = (size_t)(sl - argv[0]);
-        memcpy(exe_dir, argv[0], n);
-        exe_dir[n] = 0;
+#ifdef DW3_TARGET_PC
+    kind = PLAT_SDL; /* a desktop: a window, never the console's framebuffer */
+#endif
+    const char *script = NULL, *self_test_dir = NULL;
+    int play_now = 0;
+#ifdef _WIN32
+    char self[1024];
+    if (w32_exe_path(self, sizeof(self)) == 0 && path_last_sep(self)) {
+        *path_last_sep(self) = 0;
+        snprintf(exe_dir, sizeof(exe_dir), "%s", self);
     }
+#else
+    char self[1024];
+    ssize_t sl_n = readlink("/proc/self/exe", self, sizeof(self) - 1);
+    if (sl_n > 0) {
+        self[sl_n] = 0;
+        if (path_last_sep(self)) *path_last_sep(self) = 0;
+        snprintf(exe_dir, sizeof(exe_dir), "%s", self);
+    } else {
+        const char *sl = argc > 0 && argv[0] ? strrchr(argv[0], '/') : NULL;
+        if (sl && (size_t)(sl - argv[0]) < sizeof(exe_dir)) {
+            size_t n = (size_t)(sl - argv[0]);
+            memcpy(exe_dir, argv[0], n);
+            exe_dir[n] = 0;
+        }
+    }
+#endif
     for (int i = 1; i < argc; i++) {
         if (!strcmp(argv[i], "--sdl")) kind = PLAT_SDL;
         else if (!strcmp(argv[i], "--fb")) kind = PLAT_FB;
         else if (!strcmp(argv[i], "--pc")) is_pc = 1;
         else if (!strcmp(argv[i], "--splash")) force_splash = 1;
+        else if (!strcmp(argv[i], "--play")) play_now = 1;
         else if (!strcmp(argv[i], "--null") && i + 1 < argc) { kind = PLAT_NULL; script = argv[++i]; }
+#ifndef DW3_TARGET_PC
+        /* the handhelds' folder; a PC launcher has only the rule (settings_dir_for) */
         else if (!strcmp(argv[i], "--dir") && i + 1 < argc) snprintf(game_dir, sizeof(game_dir), "%s", argv[++i]);
+#endif
         else if (!strcmp(argv[i], "--shots") && i + 1 < argc) plat_shot_dir = argv[++i];
+        else if (!strcmp(argv[i], "--self-test") && i + 1 < argc) { self_test_dir = argv[++i]; kind = PLAT_NULL; script = ""; }
     }
     if (kind == PLAT_NULL && !force_splash) {
         screen = S_HOME;
         cur_screen = S_HOME;
         cur_y = (float)row_target_y(S_HOME, 0);
     }
+#ifndef _WIN32
     signal(SIGPIPE, SIG_IGN);
+#endif
 #if defined(DW3_TARGET_PORTMASTER)
     is_portmaster = 1;
     is_pc = 0;
 #elif defined(DW3_TARGET_PC)
     is_pc = 1;
     is_portmaster = 0;
+    if (settings_dir_for(exe_dir, game_dir, sizeof(game_dir)) != 0) {
+        fprintf(stderr, "dw3-launcher: no per-user settings directory (SDL_GetPrefPath failed)\n");
+        return 3;
+    }
 #else
     if (getenv("DW3_PORTMASTER") || getenv("CFW_NAME")) is_portmaster = 1;
     if (getenv("DW3_PC")) { is_pc = 1; is_portmaster = 0; }
@@ -1753,6 +2139,12 @@ int main(int argc, char **argv) {
     if (!is_pc && kind == PLAT_FB) is_portmaster = 1;
 #endif
     build_home_list();
+    if (self_test_dir) {
+        int fails = self_test(self_test_dir);
+        fprintf(stderr, "self-test: %d of %d checks passed\n", st_checks - st_fails, st_checks);
+        plat_release();
+        return fails ? 1 : 0;
+    }
     find_disc();
     cfg_load(&c);
     cloud_state_load(&cloud, game_dir);
@@ -1763,6 +2155,15 @@ int main(int argc, char **argv) {
     /* Pre-render first frame so any initial transition snapshots a real picture */
     draw();
     plat_present();
+    /* --play (RecompLauncher's "Launcher menu: Skip"): PLAY at once, from HOME. Everything PLAY does around the game
+     * still happens (the backup, the cloud sync, a save conflict's screen); a missing disc or game lands on the
+     * menu's own screens, and a normal end of the game ends the launcher, as after PLAY. */
+    if (play_now && kind != PLAT_NULL) {
+        screen = S_HOME;
+        cur_screen = S_HOME;
+        cur_y = (float)row_target_y(S_HOME, 0);
+        start_game();
+    }
     for (;;) {
         int ty = row_target_y(screen, sel);
         int cursor_moving = ty >= 0 && cur_screen == screen && (cur_y - ty > 0.5f || ty - cur_y > 0.5f);
@@ -1840,64 +2241,36 @@ int main(int argc, char **argv) {
                 draw();
                 plat_present();
                 plat_release();
-                if (status_fd >= 0) { close(status_fd); status_fd = -1; }
+                game_close_status();
 
                 char card1_p[1024], last_sha[65] = "", cur_sha[65] = "", pending_sha[65] = "", smsg[128] = "";
+                char buf[1024], why[160] = "";
+                long n;
                 snprintf(card1_p, sizeof(card1_p), "%s/card1.mcd", game_dir);
                 save_is_valid_mc(card1_p, last_sha);
                 time_t last_sync_ts = time(NULL);
-                pid_t sync_pid = -1;
-                int st = 0, exited = 0;
+                int syncing = 0, sync_ok = 0, code = 1;
 
-                while (launch_pid > 0 && !exited) {
-                    if (launch_fd >= 0) {
-                        struct pollfd pfd = {launch_fd, POLLIN, 0};
-                        poll(&pfd, 1, 1000);
-                        char buf[1024];
-                        ssize_t n;
-                        for (;;) {
-                            n = read(launch_fd, buf, sizeof(buf));
-                            if (n > 0) {
-                                if (game_log) { fwrite(buf, 1, (size_t)n, game_log); fflush(game_log); }
-                            } else if (n == 0) {
-                                close(launch_fd);
-                                launch_fd = -1;
-                                break;
-                            } else {
-                                if (errno == EINTR) continue;
-                                if (errno == EAGAIN || errno == EWOULDBLOCK) break;
-                                close(launch_fd);
-                                launch_fd = -1;
-                                break;
-                            }
-                        }
-                    } else {
-                        sleep(1);
+                for (;;) {
+                    game_wait(1000);
+                    while ((n = game_read(0, buf, sizeof(buf))) > 0) {
+                        if (game_log) { fwrite(buf, 1, (size_t)n, game_log); fflush(game_log); }
                     }
-
-                    if (sync_pid > 0) {
-                        int sst = 0;
-                        if (waitpid(sync_pid, &sst, WNOHANG) == sync_pid) {
-                            sync_pid = -1;
-                            if (WIFEXITED(sst) && WEXITSTATUS(sst) == 0) {
-                                cloud_state_load(&cloud, game_dir);
-                                snprintf(last_sha, sizeof(last_sha), "%s", pending_sha);
-                                if (game_log) {
-                                    fprintf(game_log, "[cloud-sync] periodic push ok (rev #%d)\n", cloud.last_seq);
-                                    fflush(game_log);
-                                }
+                    if (syncing && sync_end(0, &sync_ok)) {
+                        syncing = 0;
+                        if (sync_ok) {
+                            cloud_state_load(&cloud, game_dir);
+                            snprintf(last_sha, sizeof(last_sha), "%s", pending_sha);
+                            if (game_log) {
+                                fprintf(game_log, "[cloud-sync] periodic push ok (rev #%d)\n", cloud.last_seq);
+                                fflush(game_log);
                             }
                         }
                     }
-
-                    if (waitpid(launch_pid, &st, WNOHANG) == launch_pid) {
-                        exited = 1;
-                        break;
-                    }
+                    if (game_reap(&code, why, sizeof(why))) break;
 
                     time_t tnow = time(NULL);
-                    if (sync_pid < 0 && c.sync_interval_min > 0 &&
-                        tnow - last_sync_ts >= (time_t)c.sync_interval_min * 60) {
+                    if (!syncing && c.sync_interval_min > 0 && tnow - last_sync_ts >= (time_t)c.sync_interval_min * 60) {
                         struct stat cst;
                         if (stat(card1_p, &cst) == 0) {
                             if ((tnow - cst.st_mtime) < 2) {
@@ -1908,12 +2281,7 @@ int main(int argc, char **argv) {
                                 save_backup_rotate(game_dir, "card1.mcd", c.backup_max);
                                 if (c.sync_enabled && cloud.registered && !cloud.revoked) {
                                     snprintf(pending_sha, sizeof(pending_sha), "%s", cur_sha);
-                                    sync_pid = fork();
-                                    if (sync_pid == 0) {
-                                        /* Periodic in-game sync ONLY pushes, never overwrites running game's card1.mcd. */
-                                        int prc = cloud_push_card1(&cloud, game_dir, c.backup_max, 0, smsg, sizeof(smsg));
-                                        _exit(prc == 0 ? 0 : 1);
-                                    }
+                                    syncing = sync_start() == 0;
                                 } else {
                                     snprintf(last_sha, sizeof(last_sha), "%s", cur_sha);
                                 }
@@ -1922,21 +2290,17 @@ int main(int argc, char **argv) {
                         last_sync_ts = tnow;
                     }
                 }
+                launch_pid = -1;
 
-                if (sync_pid > 0) {
-                    int sst = 0;
-                    while (waitpid(sync_pid, &sst, 0) < 0 && errno == EINTR) {}
-                    if (WIFEXITED(sst) && WEXITSTATUS(sst) == 0) cloud_state_load(&cloud, game_dir);
+                if (syncing && sync_end(1, &sync_ok) && sync_ok) cloud_state_load(&cloud, game_dir);
+
+                while ((n = game_read(0, buf, sizeof(buf))) > 0) {
+                    if (game_log) { fwrite(buf, 1, (size_t)n, game_log); fflush(game_log); }
                 }
-
-                if (launch_fd >= 0) {
-                    char buf[1024];
-                    ssize_t n;
-                    while ((n = read(launch_fd, buf, sizeof(buf))) > 0) {
-                        if (game_log) { fwrite(buf, 1, (size_t)n, game_log); fflush(game_log); }
-                    }
-                    close(launch_fd);
-                    launch_fd = -1;
+                game_close();
+                if (code != 0 && game_log) {
+                    fprintf(game_log, "[launcher] %s\n", why);
+                    fflush(game_log);
                 }
 
                 /* Final local backup rotation + cloud push on game exit */
@@ -1951,7 +2315,7 @@ int main(int argc, char **argv) {
                     }
                 }
                 if (game_log) { fclose(game_log); game_log = NULL; }
-                return WIFEXITED(st) ? WEXITSTATUS(st) : 1;
+                return code;
             }
         }
         last = now;

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Builds the Windows release package (DECISIONS "Releases: tagged drafts, published by hand"; docs/RELEASE.md): the game
-# (the SDL build) and the launcher cross-compiled for Windows x86_64 in Release (.ci-cd/windows/build_windows.sh: llvm-mingw,
+# (the SDL build) and the launcher (launcher/) cross-compiled for Windows x86_64 in Release (.ci-cd/windows/build_windows.sh: llvm-mingw,
 # static, a PDB beside each executable), zipped as one folder with the mods' manifests, LICENSES/ and a README, plus a
 # second zip with the two PDBs (the symbols of crash minidumps and reports: docs/PORT.md "Crash report"). Players
 # supply their own disc in the launcher.
@@ -11,11 +11,11 @@
 #   --out DIR    where the zips and SHA256SUMS-windows go (default build/release/)
 #   --test       then test the package itself, unzipped, under Wine (wine on PATH; build/wine-prefix/): the launcher's
 #                --self-test with DW3_SELFTEST_GAME=beside (the bundled game and mods, found by the launcher's own
-#                lookup) and, when iso/dw2003.cue exists, the disc (the bundled game runs 300 frames from the
-#                launcher's command) and a forced crash of the bundled game (tests/port/crash.py --wine) whose report
-#                symbolizes with the symbols zip's PDB
+#                lookup) and, when iso/dw2003.cue exists, the disc (the bundled game runs 300 frames from PLAY, its
+#                status channel included) and a forced crash of the bundled game (tests/port/crash.py --wine) whose
+#                report symbolizes with the symbols zip's PDB
 #   --jobs N     parallel compile jobs (default: every core)
-# Needs: scripts/setup.sh llvm-mingw sdl3-windows imgui dxc; cmake, ninja, python3 (tools/venv), the host's objdump.
+# Needs: scripts/setup.sh llvm-mingw sdl3-windows dxc; cmake, ninja, python3 (tools/venv), the host's objdump.
 # Outputs: <out>/dw2003-<version>-windows-x86_64.zip, <out>/dw2003-<version>-windows-x86_64-symbols.zip,
 # <out>/SHA256SUMS-windows; the build trees in build/port-win and build/launcher-win, the staging under
 # build/release/windows/.
@@ -65,14 +65,12 @@ llvm="$(tool llvm-mingw)"
 [[ -x "$llvm/bin/x86_64-w64-mingw32-clang" ]] || die "no llvm-mingw at $llvm: scripts/setup.sh llvm-mingw"
 sdl="$(tool sdl3-windows)"
 [[ -f "$sdl/lib/libSDL3.a" && -f "$sdl/share/licenses/SDL3/LICENSE.txt" ]] || die "no SDL3 for Windows at $sdl: scripts/setup.sh sdl3-windows"
-imgui="$(tool imgui)"
-[[ -f "$imgui/imgui.cpp" && -f "$imgui/LICENSE.txt" ]] || die "no Dear ImGui: scripts/setup.sh imgui"
 python="$(tool venv)/bin/python"
 [[ -x "$python" ]] || die "no tools/venv/bin/python: scripts/setup.sh venv"
 command -v objdump >/dev/null || die "no objdump on PATH (the host's binutils: the import check)"
 pkg="$ROOT/.ci-cd/windows/package"
 [[ -f "$pkg/README.txt" && -f "$pkg/LICENSES/README.txt" ]] || die "no .ci-cd/windows/package/"
-log "dw2003 $version for Windows: llvm-mingw at $llvm, SDL3 at $sdl, Dear ImGui at $imgui"
+log "dw2003 $version for Windows: llvm-mingw at $llvm, SDL3 at $sdl"
 
 # ---- The two programs, in Release (build_windows.sh's own build directories: build/port-win, build/launcher-win),
 # the version stamped into both (psxstack/cmake/version.cmake reads PSXSTACK_VERSION).
@@ -114,9 +112,7 @@ cp -r "$game_dir/mods" "$stage/mods"
 sed "s/@VERSION@/$version/g" "$pkg/README.txt" > "$stage/README.txt"
 cp "$ROOT/LICENSE" "$stage/LICENSES/dw2003recomp.txt"
 cp "$sdl/share/licenses/SDL3/LICENSE.txt" "$stage/LICENSES/SDL3.txt"
-cp "$imgui/LICENSE.txt" "$stage/LICENSES/imgui.txt"
-cp "$ROOT/.ci-cd/linux/appimage/LICENSES/ProggyClean.txt" "$ROOT/.ci-cd/linux/appimage/LICENSES/ProggyForever.txt" \
-    "$stage/LICENSES/"
+cp "$ROOT/launcher/LICENSES/"*.txt "$stage/LICENSES/"   # the launcher's font and stb_truetype
 cp "$llvm/LICENSE.TXT" "$stage/LICENSES/llvm.txt"
 cp "$pkg/LICENSES/"*.txt "$stage/LICENSES/"
 # Windows line endings for the text files a player opens in Notepad (the licences as their authors wrote them).
@@ -144,18 +140,19 @@ if [[ $test -eq 1 ]]; then
        -f "$unz/$base-symbols/dw2003.pdb" ]] || die "the zips do not unpack to $base/ and $base-symbols/"
     export WINEPREFIX="$ROOT/build/wine-prefix" WINEDEBUG=-all
     # The launcher's self-test from the unzipped folder: the game and the mods beside it, found by its own lookup.
-    # Wine sees the Unix tree as drive Z:. DW3_SELFTEST_VIDEO_DRIVER: SDL's hint, since Wine may drop SDL_VIDEO_DRIVER
-    # from the program's environment (launcher/README.md). `timeout`: a hang fails instead of waiting for a display.
+    # Wine sees the Unix tree as drive Z:. DW3_SELFTEST_VIDEO_DRIVER: the game's video driver, set by the launcher
+    # itself, since Wine may drop SDL_VIDEO_DRIVER from a program's environment. `timeout`: a hang fails instead of
+    # waiting for a display.
     scratch="$unz/selftest"
     mkdir -p "$scratch"
-    vars=(DW3_SELFTEST_VIDEO_DRIVER=offscreen SDL_VIDEO_DRIVER=offscreen SDL_AUDIO_DRIVER=dummy DW3_SELFTEST_GAME=beside)
+    vars=(DW3_SELFTEST_VIDEO_DRIVER=offscreen DW3_SELFTEST_GAME=beside)
     if [[ -f "$ROOT/iso/dw2003.cue" ]]; then
         vars+=("DW3_SELFTEST_DISC=Z:$ROOT/iso/dw2003.cue")
         log "test: the launcher's self-test under wine ($(wine --version)) with the bundled game, the mods and the disc"
     else
         log "test: the launcher's self-test under wine ($(wine --version)) with the bundled game and the mods (no iso/dw2003.cue: no disc run)"
     fi
-    if env -u DW3_GAME -u DW3_CONFIG_DIR "${vars[@]}" timeout 900 wine "$unz/$base/dw2003-launcher.exe" \
+    if env "${vars[@]}" timeout 900 wine "$unz/$base/dw2003-launcher.exe" \
         --self-test "Z:$scratch" >"$scratch.log" 2>&1; then
         log "test: self-test passed: $(grep -o '[0-9]* of [0-9]* checks passed' "$scratch.log" || true)"
     else

@@ -89,7 +89,6 @@ runs:
           tools/sdl3
           tools/sdl3-desktop
           tools/sdl3-windows
-          tools/imgui
           tools/llvm-mingw
           tools/appimage
           tools/ccache

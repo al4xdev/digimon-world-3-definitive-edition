@@ -8,7 +8,7 @@
 
 - [ ] Decompilation (matching C, names, types, config)
 - [ ] PC port (`port/`)
-- [ ] Launcher (`psxstack/launcher/`; a psxstack change is a pull request there, then a pin bump here)
+- [ ] Launcher (`launcher/`)
 - [ ] Tests or tools
 - [ ] Documentation
 

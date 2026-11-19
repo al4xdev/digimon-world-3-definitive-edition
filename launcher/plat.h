@@ -1,5 +1,6 @@
 #ifndef DW3_PLAT_H
 #define DW3_PLAT_H
+#include <stddef.h>
 /* The platform layer: where the canvas goes and where the buttons come from. Buttons are Linux evdev codes in the
  * handheld's own vocabulary (305 east ... see names in app.c); every backend translates to them. */
 typedef struct Ev {
@@ -17,7 +18,9 @@ void plat_release(void);                       /* stop using the screen and the 
 long plat_now_ms(void);                        /* monotonic; virtual (33 ms a poll) under PLAT_NULL */
 void plat_desktop_size(int *w, int *h);        /* detected monitor size (1280x720 fallback if headless) */
 void plat_toggle_fullscreen(void);
+int plat_pref_dir(char *out, size_t n);         /* the per-user settings directory (SDL's pref path); 0 on success */
 extern const char *plat_shot_dir;
+void plat_shot(const char *name);              /* the canvas as <plat_shot_dir>/<name>.ppm */
 
 #define K_SOUTH 304
 #define K_EAST 305

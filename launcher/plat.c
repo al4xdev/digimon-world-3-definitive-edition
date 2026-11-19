@@ -2,14 +2,16 @@
 
 #include <errno.h>
 #include <fcntl.h>
-#include <poll.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+#ifndef _WIN32
+#include <poll.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
-#include <time.h>
 #include <unistd.h>
+#endif
 
 #include "ui.h"
 
@@ -58,12 +60,35 @@ long plat_now_ms(void) {
     if (kind_open == PLAT_NULL) {
         return virt_ms;
     }
+#ifdef _WIN32
+    return (long)SDL_GetTicks();
+#else
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
     return ts.tv_sec * 1000L + ts.tv_nsec / 1000000L;
+#endif
 }
 
-/* ---- framebuffer + evdev ---- */
+int plat_pref_dir(char *out, size_t n) {
+#if defined(HAVE_SDL2) || defined(HAVE_SDL3)
+    /* The game's own default (psxstack/runtime/main.c: SDL_GetPrefPath("", <id>)), and RecompLauncher's
+     * (recomplauncher.json: {local}/dw2003 on Linux, {config}/dw2003 on Windows). SDL creates it. */
+    char *p = SDL_GetPrefPath("", "dw2003");
+    if (!p) return -1;
+    size_t l = strlen(p);
+    while (l > 1 && (p[l - 1] == '/' || p[l - 1] == '\\')) p[--l] = 0;
+    snprintf(out, n, "%s", p);
+    SDL_free(p);
+    return 0;
+#else
+    (void)out;
+    (void)n;
+    return -1;
+#endif
+}
+
+/* ---- framebuffer + evdev (the handheld's; never on Windows) ---- */
+#ifndef _WIN32
 #define MAX_EV_FDS 16
 static int fbfd = -1;
 static int evfds[MAX_EV_FDS];
@@ -193,6 +218,7 @@ static int ev_open(void) {
 #endif
     return ev_count > 0 ? 0 : -1;
 }
+#endif
 
 #ifdef HAVE_SDL2
 static SDL_Renderer *ren;
@@ -331,6 +357,10 @@ static int sdl_open(void) {
             win_h = win_w * 3 / 4;
         }
         wflags = SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY;
+        /* RecompLauncher's Big Picture (couch play, a controller in hand): fullscreen, as the game does then
+         * (psxstack/runtime/main.c) */
+        const char *rl = getenv("RECOMPLAUNCHER_MODE");
+        if (rl && !strcmp(rl, "bigpicture")) wflags |= SDL_WINDOW_FULLSCREEN;
     }
     win = SDL_CreateWindow(pm_mode ? "dw3-launcher" : "Digimon World 3", win_w, win_h, wflags);
     if (!win) {
@@ -432,6 +462,10 @@ static void save_ppm(const char *name) {
     fclose(f);
 }
 
+void plat_shot(const char *name) {
+    save_ppm(name);
+}
+
 static int pending_release; /* a press token emits its release on the next poll */
 static int pending_code;
 static int pending_x, pending_y;
@@ -447,6 +481,9 @@ int plat_open(int kind, const char *script) {
         return 0;
     }
     if (kind == PLAT_FB) {
+#ifdef _WIN32
+        return -1;
+#else
         ui_init(1);
         if (fb_open() != 0) {
             return -1;
@@ -458,6 +495,7 @@ int plat_open(int kind, const char *script) {
             return -1;
         }
         return 0;
+#endif
     }
 #if defined(HAVE_SDL2) || defined(HAVE_SDL3)
     return sdl_open();
@@ -466,6 +504,7 @@ int plat_open(int kind, const char *script) {
 #endif
 }
 
+#ifndef _WIN32
 static uint32_t fb_pack32(uint32_t c) {
     if (fb_r_off == 16 && fb_g_off == 8 && fb_b_off == 0) {
         return c & 0x00ffffffu;
@@ -479,7 +518,10 @@ static uint16_t fb_pack16(uint32_t c) {
     return (uint16_t)(((r >> (8 - fb_r_len)) << fb_r_off) | ((g >> (8 - fb_g_len)) << fb_g_off) | ((b >> (8 - fb_b_len)) << fb_b_off));
 }
 
+#endif
+
 void plat_present(void) {
+#ifndef _WIN32
     if (kind_open == PLAT_FB && fbmap) {
         int fast_xrgb = (fb_bpp == 32 && fb_r_off == 16 && fb_g_off == 8 && fb_b_off == 0);
         if (fb_w >= W && fb_h >= H) {
@@ -532,6 +574,7 @@ void plat_present(void) {
             }
         }
     }
+#endif
 #ifdef HAVE_SDL2
     if (kind_open == PLAT_SDL && ren) {
         SDL_UpdateTexture(tex, NULL, fb, ui_w * 4);
@@ -829,6 +872,7 @@ int plat_poll(Ev *ev, int timeout_ms) {
 }
 
 void plat_release(void) {
+#ifndef _WIN32
     for (int i = 0; i < ev_count; i++) {
         if (evfds[i] >= 0) {
             close(evfds[i]);
@@ -844,6 +888,7 @@ void plat_release(void) {
         close(fbfd);
         fbfd = -1;
     }
+#endif
 #ifdef HAVE_SDL2
     if (kind_open == PLAT_SDL) {
         if (pad) { SDL_GameControllerClose(pad); pad = NULL; }

@@ -4,12 +4,12 @@ The licences of what this package contains.
                           (https://github.com/gascarcella/dw2003recomp)
   SDL3.txt                SDL 3 (zlib licence), linked statically into both programs (dw2003.exe and
                           dw2003-launcher.exe)
-  imgui.txt               Dear ImGui (MIT), compiled into the launcher
-  ProggyForever.txt       the launcher's font (MIT), embedded in Dear ImGui
-  ProggyClean.txt         Dear ImGui's other embedded font (MIT)
+  LiberationSans.txt      the launcher's font, Liberation Sans Bold (SIL Open Font License 1.1), embedded in
+                          dw2003-launcher.exe
+  stb_truetype.txt        stb_truetype (MIT or public domain), the launcher's font rasterizer, compiled into it
   llvm.txt                the LLVM project (Apache 2.0 with the LLVM exception): the parts of its runtime linked
-                          statically into both programs by llvm-mingw (compiler-rt's builtins, libunwind; libc++ in
-                          the launcher) (https://github.com/mstorsjo/llvm-mingw)
+                          statically into both programs by llvm-mingw (compiler-rt's builtins, libunwind)
+                          (https://github.com/mstorsjo/llvm-mingw)
   mingw-w64-runtime.txt   the mingw-w64 runtime (its own notices), linked statically into both programs
                           (https://www.mingw-w64.org/)
   winpthreads.txt         mingw-w64's winpthreads (MIT and BSD), linked statically into both programs

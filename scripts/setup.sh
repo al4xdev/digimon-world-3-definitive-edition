@@ -5,11 +5,11 @@
 # Usage: scripts/setup.sh [--disc /path/to/disc.bin] [step...]
 #        scripts/setup.sh --pins      print the pinned versions, tags, hashes and URLs (CI's tool-cache key)
 #   steps: binutils venv cmake mkpsxiso gcc objdiff ext redux link gamedata disc  (default: all)
-#   The PC port's tools (sdl3, sdl3-desktop, imgui, llvm-mingw, sdl3-windows, dxc, appimage, ccache) are installed by
+#   The PC port's tools (sdl3, sdl3-desktop, llvm-mingw, sdl3-windows, dxc, appimage, ccache) are installed by
 #   THIS script into tools/, one tree for the game and the stack: psxstack's build reads them through
 #   PSXSTACK_TOOLS_DIR (port/CMakeLists.txt and the scripts pass $ROOT/tools); psxstack's own scripts/setup.sh is not
 #   run here. Its pins must stay equal to these (psxstack's CI builds its own copy from its pins).
-#          optional: psyq sdl3 imgui sdl3-desktop appimage llvm-mingw sdl3-windows ccache dxc
+#          optional: psyq sdl3 sdl3-desktop appimage llvm-mingw sdl3-windows ccache dxc
 #   ccache: the pinned static ccache binary into tools/ccache (CI's host builds of the port and the launcher:
 #          .github/actions/setup; no apt package, the runners' mirror stalls)
 #   llvm-mingw: the pinned llvm-mingw release (clang + lld, UCRT) into tools/llvm-mingw: the Windows cross toolchain
@@ -17,7 +17,6 @@
 #   sdl3-windows: SDL3 cross-built static for Windows into tools/sdl3-windows (needs llvm-mingw)
 #   dxc:   the pinned DirectX Shader Compiler release into tools/dxc: HLSL to SPIR-V (and DXIL) for the hardware renderer's
 #          shaders (issue #31)
-#   imgui: Dear ImGui at its pinned tag into tools/imgui, for the launcher (launcher/README.md; needs sdl3 too)
 #   sdl3:  SDL3 built from its pinned source tarball into tools/sdl3 (static), for the PC port's window
 #          (cmake -DPSXSTACK_SDL=ON; port/README.md "The window"); its backends follow the -dev headers present
 #   sdl3-desktop: the same SDL into tools/sdl3-desktop, with the desktop backends required (the release's);
@@ -419,10 +418,6 @@ step_dxc() {
     log "dxc: installed $DXC_VER to $dir ($("$dir/bin/dxc" --version 2>&1 | head -1))"
 }
 
-# Dear ImGui (MIT) for the launcher (launcher/README.md; DECISIONS "Launcher and mods"): the pinned
-# release tag cloned into tools/imgui/, its commit checked (the commit hash is the checksum, as for the ext step). The
-# launcher's CMake compiles its core files and the SDL3 + SDL_Renderer backends from there. Optional (not in the
-# default steps; the launcher needs sdl3 too): scripts/setup.sh sdl3 imgui
 # ccache (GPL-3.0, a build tool only: nothing of it ships), the static Linux x86_64 build of its release.
 CCACHE_VER=4.14.1
 CCACHE_SHA256=fa1443c9fbea879c9bff6619d1284eda3102992e91831b9f6e546879972195cc
@@ -448,23 +443,6 @@ step_ccache() {
     "$dir/ccache" --version >/dev/null || die "ccache: the binary does not run"
     echo "$CCACHE_SHA256" > "$dir/.sha256"
     log "ccache: installed $("$dir/ccache" --version | head -1) to $dir"
-}
-
-IMGUI_VER=1.92.9b
-IMGUI_COMMIT=f1cc2ae15e53a861a874c3034aae6798fde194ab
-step_imgui() {
-    local dir="$INSTALL/imgui"
-    if [[ -f "$dir/imgui.cpp" && -d "$dir/.git" && "$(git -C "$dir" rev-parse HEAD)" == "$IMGUI_COMMIT" ]]; then
-        log "imgui: $IMGUI_VER already installed ($dir)"
-        return
-    fi
-    rm -rf "$dir"
-    log "imgui: cloning v$IMGUI_VER"
-    git -c advice.detachedHead=false clone -q --depth 1 --branch "v$IMGUI_VER" https://github.com/ocornut/imgui.git "$dir"
-    [[ "$(git -C "$dir" rev-parse HEAD)" == "$IMGUI_COMMIT" ]] || die "imgui: v$IMGUI_VER is not at $IMGUI_COMMIT"
-    [[ -f "$dir/backends/imgui_impl_sdl3.cpp" && -f "$dir/backends/imgui_impl_sdlrenderer3.cpp" ]] ||
-        die "imgui: the SDL3 backends are missing"
-    log "imgui: installed $IMGUI_VER (${IMGUI_COMMIT:0:12}) to $dir"
 }
 
 # CMake and Ninja from PyPI (official wheels), pinned, into the venv: only when the system has none (no sudo).

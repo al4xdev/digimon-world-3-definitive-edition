@@ -90,41 +90,39 @@ Locally (Linux x86_64):
 
 ```sh
 sudo apt-get install $(scripts/setup.sh --sdl3-desktop-apt)   # Ubuntu; once (Fedora: the same libraries' -devel)
-scripts/setup.sh venv imgui sdl3-desktop appimage
+scripts/setup.sh venv sdl3-desktop appimage
 .ci-cd/linux/package_appimage.sh --test             # build/release/dw2003-<version>-x86_64.AppImage + SHA256SUMS
 ```
 
-`--test` runs the smoke test (below) with `iso/dw2003.cue` when it exists. On a system without the static libstdc++
-(Fedora: `libstdc++-static`) add `--shared-libstdcxx`: the launcher then needs the system's libstdc++, fine for a test
-on that machine, not for a release. `--version V` names the file; the default is the tag being built, else
+`--test` runs the smoke test (below) with `iso/dw2003.cue` when it exists. `--version V` names the file; the default is the tag being built, else
 `git describe` over the release tags, else `dev-<commit>`.
 
 ## What the AppImage holds
 
 ```
-AppRun                                   the launcher, unless --disc/--game was passed (RecompLauncher: the game, no window)
+AppRun                                   the launcher, for a double-click and RecompLauncher alike (--play: PLAY at once)
 recomplauncher.json                      how RecompLauncher sets the game up (at the AppImage root)
+usr/bin/dw2003-launcher                  the launcher (launcher/, SDL3)
 usr/bin/dw2003                           the game (the SDL build), found by the launcher beside itself
 usr/bin/mods/<id>/mod.json               the mods' manifests (port/mods/), listed by the launcher
 dw2003recomp.desktop, dw2003recomp.svg   .ci-cd/linux/appimage/ (the icon is our own drawing)
-LICENSES/                                ours, SDL3, Dear ImGui, its two fonts, the AppImage runtime (README.txt)
+LICENSES/                                ours, SDL3, the launcher's font and stb_truetype, the AppImage runtime (README.txt)
 ```
 
 Both programs are stripped, link SDL3 statically (`tools/sdl3-desktop`: X11, Wayland, PipeWire, PulseAudio and ALSA
-compiled in, each opened with `dlopen` at run time), and need only the C library (`libc`, `libm`, the loader): the
-launcher links `libstdc++`/`libgcc` statically (`-DPSXSTACK_LAUNCHER_STATIC_RUNTIME=ON`). `package_appimage.sh` fails when
+compiled in, each opened with `dlopen` at run time), and need only the C library (`libc`, `libm`, the loader). `package_appimage.sh` fails when
 `ldd` shows anything else. The runtime is AppImage's static type-2 runtime: no `libfuse2` is needed (it mounts with
 `fusermount`/`fusermount3`; without FUSE, `--appimage-extract-and-run` or `APPIMAGE_EXTRACT_AND_RUN=1` works).
 
-Settings live where the launcher's lookup puts them (`psxstack/launcher/README.md`): inside a read-only AppImage that is the
-per-user directory `~/.local/share/dw2003/` (or `--config-dir`, `$DW3_CONFIG_DIR`, a `settings.json` in the current
-directory). Known limit: the game runs from the AppImage's mount, so closing the launcher while the game runs
-(the launcher's window is hidden then) can end the mount under the game.
+Settings live in the per-user directory `~/.local/share/dw2003/` (`docs/LAUNCHER.md`: the one rule; the AppImage is
+read-only, so a `portable.txt` cannot be placed beside its launcher). Known limit: the game runs from the AppImage's
+mount, so ending the launcher's process while the game runs (its window is closed then; it waits for the game) can
+end the mount under the game.
 
 ## The Windows package
 
 ```sh
-scripts/setup.sh venv imgui llvm-mingw sdl3-windows
+scripts/setup.sh venv llvm-mingw sdl3-windows
 .ci-cd/windows/package_windows.sh --test              # build/release/dw2003-<version>-windows-x86_64.zip, -symbols.zip, SHA256SUMS-windows
 ```
 
@@ -140,7 +138,7 @@ dw2003-<version>-windows-x86_64/
   recomplauncher.json        how RecompLauncher sets the game up
   mods/<id>/mod.json         the mods' manifests (port/mods/)
   README.txt                 .ci-cd/windows/package/README.txt: the disc, SmartScreen, where settings and crash reports live
-  LICENSES/                  ours, SDL3, Dear ImGui, its two fonts, LLVM's runtime, the mingw-w64 runtime, winpthreads
+  LICENSES/                  ours, SDL3, the launcher's font and stb_truetype, LLVM's runtime, the mingw-w64 runtime, winpthreads
                              (.ci-cd/windows/package/LICENSES/README.txt)
 dw2003-<version>-windows-x86_64-symbols/
   dw2003.pdb, dw2003-launcher.pdb   the symbols of crash reports and minidumps (not needed to play)
@@ -148,10 +146,10 @@ dw2003-<version>-windows-x86_64-symbols/
 
 `--test` unzips both and, under Wine (`wine` on PATH, the prefix in `build/wine-prefix/`): the launcher's self-test
 from the unzipped folder with `DW3_SELFTEST_GAME=beside` (the bundled game and mods found by its own lookup; with
-`iso/dw2003.cue` the game runs 300 frames from the launcher's command), then a forced crash of the bundled game
+`iso/dw2003.cue` the game runs 300 frames from PLAY), then a forced crash of the bundled game
 (`tests/port/crash.py --wine`) whose report must symbolize with the symbols zip's PDB. Settings, memory cards, logs
 and crash reports go to `%APPDATA%\dw2003\` (`C:\Users\<name>\AppData\Roaming\dw2003\`), or beside the launcher with
-a `portable.txt` there (`psxstack/launcher/README.md`). The programs are not signed: SmartScreen warns the first time.
+a `portable.txt` there (`docs/LAUNCHER.md`). The programs are not signed: SmartScreen warns the first time.
 
 ## Crash reports from a release
 
