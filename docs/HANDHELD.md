@@ -58,7 +58,7 @@ outline:
   fbdev, and anything else selects SDL2. The menu draws on the framebuffer with fbdev and through SDL2 otherwise; when
   it finds no screen at all (exit code 3) the launcher starts the game itself, from `settings.json` as it is.
 - It checks with `ldd` that the 32-bit libraries are present before starting.
-- Logs go to `logs/game.log`; the launcher's own output is in `log.txt` and the menu's in `menu.log`.
+- Logs go to `logs/game.log`; the script's and the menu's output are in `log.txt` (the device, the video path and the disc it found come first).
 
 The step-by-step flow (menu exit codes, skip rules, log levels) is in [`../.ci-cd/portmaster/handheld/README.md`](../.ci-cd/portmaster/handheld/README.md).
 
