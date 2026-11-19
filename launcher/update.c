@@ -1,13 +1,24 @@
 /* The launcher's check for a newer release (update.h). */
 #include "update.h"
 
-#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
+#ifdef _WIN32
+#include <windows.h>
+
+#include "win32.h"
+static SRWLOCK up_lock = SRWLOCK_INIT;
+#define UP_LOCK() AcquireSRWLockExclusive(&up_lock)
+#define UP_UNLOCK() ReleaseSRWLockExclusive(&up_lock)
+#else
+#include <pthread.h>
 static pthread_mutex_t up_lock = PTHREAD_MUTEX_INITIALIZER;
+#define UP_LOCK() pthread_mutex_lock(&up_lock)
+#define UP_UNLOCK() pthread_mutex_unlock(&up_lock)
+#endif
 static UpdateInfo up_info;
 static int up_started;
 static char up_cache[600];
@@ -62,11 +73,11 @@ static int json_string(const char *json, const char *key, char *out, size_t n) {
 }
 
 static void finish(int state, const char *latest, const char *url) {
-    pthread_mutex_lock(&up_lock);
+    UP_LOCK();
     up_info.state = state;
     snprintf(up_info.latest, sizeof(up_info.latest), "%s", latest ? latest : "");
     snprintf(up_info.url, sizeof(up_info.url), "%s", url ? url : "");
-    pthread_mutex_unlock(&up_lock);
+    UP_UNLOCK();
 }
 
 /* The cache: "<epoch> <tag> <url>". The answer for a newer release is kept as it came, and judged again against the
@@ -92,8 +103,7 @@ static void cache_write(const char *tag, const char *url) {
     fclose(f);
 }
 
-static void *check_thread(void *arg) {
-    (void)arg;
+static void check_body(void) {
     char *body = NULL;
     size_t len = 0;
     int status = 0;
@@ -102,19 +112,32 @@ static void *check_thread(void *arg) {
     if (launcher_http_get(DW3_RELEASES_API, &body, &len, &status) != 0 || status != 200 || !body) {
         free(body);
         finish(UPDATE_FAILED, NULL, NULL);
-        return NULL;
+        return;
     }
     int ok = json_string(body, "tag_name", tag, sizeof(tag)) && json_string(body, "html_url", url, sizeof(url)) &&
              !strncmp(url, "https://github.com/", 19) && !strchr(url, ' ');
     free(body);
     if (!ok) {
         finish(UPDATE_FAILED, NULL, NULL);
-        return NULL;
+        return;
     }
     cache_write(tag, url);
     finish(update_is_newer(tag, up_current) ? UPDATE_AVAILABLE : UPDATE_CURRENT, tag, url);
+}
+
+#ifdef _WIN32
+static int check_thread(void *arg) {
+    (void)arg;
+    check_body();
+    return 0;
+}
+#else
+static void *check_thread(void *arg) {
+    (void)arg;
+    check_body();
     return NULL;
 }
+#endif
 
 void update_check_start(const char *dir, const char *current, int enabled) {
     if (up_started || !enabled || !current) return;
@@ -130,16 +153,23 @@ void update_check_start(const char *dir, const char *current, int enabled) {
         return;
     }
     finish(UPDATE_CHECKING, NULL, NULL);
+#ifdef _WIN32
+    if (!w32_thread(check_thread, NULL)) {
+        finish(UPDATE_FAILED, NULL, NULL);
+        return;
+    }
+#else
     pthread_t t;
     if (pthread_create(&t, NULL, check_thread, NULL) != 0) {
         finish(UPDATE_FAILED, NULL, NULL);
         return;
     }
     pthread_detach(t);
+#endif
 }
 
 void update_poll(UpdateInfo *out) {
-    pthread_mutex_lock(&up_lock);
+    UP_LOCK();
     *out = up_info;
-    pthread_mutex_unlock(&up_lock);
+    UP_UNLOCK();
 }

@@ -21,6 +21,7 @@
 #include "plat.h"
 #include "sha256.h"
 #include "ui.h"
+#include "update.h"
 #include "win32.h"
 
 enum {
@@ -301,6 +302,18 @@ static void draw_splash(void) {
     }
 }
 
+#ifdef DW3_TARGET_PC
+/* The update notice (update.h): this launcher asks GitHub for a newer release at most once in 12 hours. PortMaster has
+ * its own updates and the Android launcher its own screen for it. */
+static UpdateInfo upd;
+static int debug_n(void) {
+    update_poll(&upd);
+    return upd.state == UPDATE_AVAILABLE ? 5 : 4;
+}
+#else
+static int debug_n(void) { return 3; }
+#endif
+
 static void draw_home(void) {
     header("DIGIMON WORLD 3", "DEFINITIVE EDITION");
     int step = home_step();
@@ -334,6 +347,14 @@ static void draw_home(void) {
     text(44, 412, home_hint[home_items[sel]], 16, C_NOTE);
     text_r(W - 44, 394, disc_path[0] ? "DISC READY" : (is_portmaster ? "NO DISC IN game/" : "SELECT DISC IN GAME"), 14,
            disc_path[0] ? C_GREEN : C_RED);
+#ifdef DW3_TARGET_PC
+    update_poll(&upd);
+    if (upd.state == UPDATE_AVAILABLE) {
+        char nv[64];
+        snprintf(nv, sizeof(nv), "NEW VERSION %s: SEE DEBUG", upd.latest);
+        text(44, 394, nv, 14, C_GOLD);
+    }
+#endif
     char ga[16], gst[16], gsel[16], chord[36];
     glyph(btn_ok(), ga); glyph(btn_start(), gst); glyph(btn_select(), gsel);
     snprintf(chord, sizeof(chord), "%s+%s", gsel, gst);
@@ -860,8 +881,12 @@ static void draw_debug(void) {
     row(92, "LOGS", log_label[c.logs], sel == 0, 0, c.logs > 0, 0);
     row(140, "SAVE LOGS", "ZIP", sel == 1, 0, 0, 0);
     row(188, "CLEAN LOGS", "ASK", sel == 2, 0, 0, 0);
-    if (status[0]) text(64, 260, status, 16, C_GREEN);
-    text(64, 330, "A bug report is easier with LOGS on HEAVY and the zip attached.", 15, C_NOTE);
+#ifdef DW3_TARGET_PC
+    row(236, "CHECK FOR UPDATES", c.update_check ? "ON" : "OFF", sel == 3, 0, c.update_check, 0);
+    if (debug_n() == 5) row(284, "NEW VERSION", upd.latest, sel == 4, 0, 1, 0);
+#endif
+    if (status[0]) text(64, 350, status, 16, C_GREEN);
+    text(64, 380, "A bug report is easier with LOGS on HEAVY and the zip attached.", 15, C_NOTE);
     foot_std("RUN");
 }
 
@@ -1477,7 +1502,7 @@ static void on_press(int code) {
     case S_CLOUD: n = cloud_n(); break;
     case S_CONFLICT: n = 3; break;
     case S_DEVICES: n = dev_count; break;
-    case S_DEBUG: n = 3; break;
+    case S_DEBUG: n = debug_n(); break;
     case S_BROWSE: n = b_count; break;
     }
     if (n && code == K_UP) sel = (sel + n - 1) % n;
@@ -1852,6 +1877,17 @@ static void on_press(int code) {
             snprintf(status, sizeof(status), r == 0 ? "SAVED %s" : "COULD NOT SAVE THE ZIP%.0s", nm);
         }
         if (sel == 2 && ok) { start_trans(1, 188 + 14); screen = S_CLEAN; }
+#ifdef DW3_TARGET_PC
+        if (sel == 3 && (ok || d)) {
+            c.update_check = !c.update_check;
+            cfg_save(&c);
+            update_check_start(game_dir, DW3_LAUNCHER_VERSION, c.update_check);
+        }
+        if (sel == 4 && ok) {
+            update_poll(&upd);
+            if (upd.state == UPDATE_AVAILABLE && plat_open_url(upd.url) != 0) snprintf(status, sizeof(status), "OPEN %s", upd.url);
+        }
+#endif
         break;
     case S_LED:
         if (back) { int hi = home_index(HI_LED); go(S_HOME, hi, -1, 92 + hi * home_step() + 14); }
@@ -1970,6 +2006,9 @@ static int self_test(const char *root) {
     write_text(p, "");
     check(settings_dir_for(exe, got, sizeof(got)) == 0 && !strcmp(got, exe),
           "settings directory: the launcher's own folder with portable.txt");
+    check(update_is_newer("v0.8.2", "0.8.1") && !update_is_newer("v0.8.1", "0.8.1") && !update_is_newer("v0.8.0", "0.8.1") &&
+              !update_is_newer("v0.8.2", "0.8.1-3-gabcdef1") && !update_is_newer("v0.8.2", "dev"),
+          "update notice: a newer release is told; an equal, older or non-release build is not");
 #endif
     /* The files: every setting off its default, saved, read back the same. */
     snprintf(game_dir, sizeof(game_dir), "%s/settings", root);
@@ -1998,6 +2037,21 @@ static int self_test(const char *root) {
     replace_in_file(q, "\"language\": \"portuguese\"", "\"language\": \"german\"");
     cfg_load(&b);
     check(b.filter == 4 && b.skip == 0 && b.lang == 3, "settings: settings.json's own changes win over tui.state");
+#endif
+#ifdef DW3_TARGET_PC
+    /* The update notice, without the network: a fresh update.cache naming a release far ahead of this build. */
+    {
+        UpdateInfo u;
+        snprintf(q, sizeof(q), "%s/update.cache", game_dir);
+        snprintf(what, sizeof(what), "%ld v99.0.0 https://github.com/al4xdev/digimon-world-3-definitive-edition/releases/tag/v99.0.0\n",
+                 (long)time(NULL));
+        write_text(q, what);
+        update_check_start(game_dir, "0.8.1", 1);
+        update_poll(&u);
+        check(u.state == UPDATE_AVAILABLE && !strcmp(u.latest, "v99.0.0") && !strncmp(u.url, "https://github.com/", 19),
+              "update notice: a newer release in update.cache is told without a request");
+        check(debug_n() == 5, "update notice: the DEBUG screen gets its NEW VERSION row");
+    }
 #endif
     /* Every screen draws. */
     snprintf(q, sizeof(q), "%s/screens", root);
@@ -2148,6 +2202,9 @@ int main(int argc, char **argv) {
     find_disc();
     cfg_load(&c);
     cloud_state_load(&cloud, game_dir);
+#ifdef DW3_TARGET_PC
+    if (kind != PLAT_NULL) update_check_start(game_dir, DW3_LAUNCHER_VERSION, c.update_check); /* never in a test run */
+#endif
     trans_from = malloc((size_t)ui_w * ui_h * sizeof(uint32_t));
     trans_to = malloc((size_t)ui_w * ui_h * sizeof(uint32_t));
     long last = plat_now_ms();

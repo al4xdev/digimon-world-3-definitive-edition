@@ -15,6 +15,9 @@ one launcher, the C99 `launcher/`, with the same screens and options everywhere;
   back, so what RecompLauncher changed shows in the launcher), the memory cards, `logs/`. `--self-test DIR` checks the
   rule, the files' round trip, settings.json's read-back and every screen, headless; with `DW3_SELFTEST_GAME=beside`
   and `DW3_SELFTEST_DISC` also the game started from PLAY for 300 frames (its status channel, card and log).
+  The update notice: once in 12 hours (cached in `update.cache` beside the settings) the launcher asks GitHub for the latest
+  full release and, when it is newer than this build, says so on HOME and offers its page in DEBUG (`CHECK FOR UPDATES`
+  turns it off; a build that is not a release, `dev`, never asks; nothing is downloaded or installed).
   RecompLauncher starts this launcher (`.ci-cd/recomplauncher/README.md`); `--play` presses PLAY at once (its
   "Launcher menu: Skip"), with the same backup, cloud sync and conflict screen around the game.
 - **PortMaster (armhf) releases** use the shell entry `.ci-cd/portmaster/handheld/Digimon World 3.sh` together with the C99 console-first

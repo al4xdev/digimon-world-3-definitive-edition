@@ -69,6 +69,15 @@ long plat_now_ms(void) {
 #endif
 }
 
+int plat_open_url(const char *url) {
+#if defined(HAVE_SDL2) || defined(HAVE_SDL3)
+    return strncmp(url, "https://", 8) == 0 && SDL_OpenURL(url) ? 0 : -1;
+#else
+    (void)url;
+    return -1;
+#endif
+}
+
 int plat_pref_dir(char *out, size_t n) {
 #if defined(HAVE_SDL2) || defined(HAVE_SDL3)
     /* The game's own default (psxstack/runtime/main.c: SDL_GetPrefPath("", <id>)), and RecompLauncher's

@@ -13,8 +13,16 @@ set(CMAKE_C_EXTENSIONS ON) # gnu99, as the handheld's build
 find_package(SDL3 3.2 CONFIG REQUIRED)
 message(STATUS "SDL3 ${SDL3_VERSION}: ${SDL3_DIR}")
 
-add_executable(dw2003-launcher main.c ui.c plat.c cfg.c loading.c cloud.c sha256.c assets/assets.c)
-target_compile_definitions(dw2003-launcher PRIVATE DW3_TARGET_PC HAVE_SDL3 _GNU_SOURCE)
+add_executable(dw2003-launcher main.c ui.c plat.c cfg.c loading.c cloud.c sha256.c update.c assets/assets.c)
+
+# The running build's version for the update notice (update.h): a release's X.Y.Z, from the tag the packaging scripts
+# export as PSXSTACK_VERSION; any other build is "dev", which never asks.
+set(DW3_LAUNCHER_VERSION "dev")
+if("$ENV{PSXSTACK_VERSION}" MATCHES "^v?([0-9]+\.[0-9]+\.[0-9]+)$")
+    set(DW3_LAUNCHER_VERSION "${CMAKE_MATCH_1}")
+endif()
+message(STATUS "launcher version: ${DW3_LAUNCHER_VERSION}")
+target_compile_definitions(dw2003-launcher PRIVATE DW3_TARGET_PC HAVE_SDL3 _GNU_SOURCE DW3_LAUNCHER_VERSION="${DW3_LAUNCHER_VERSION}")
 target_compile_options(dw2003-launcher PRIVATE -Wall)
 if(TARGET SDL3::SDL3-static)
     target_link_libraries(dw2003-launcher PRIVATE SDL3::SDL3-static)
@@ -33,5 +41,6 @@ if(WIN32)
     target_link_libraries(dw2003-launcher PRIVATE winhttp comdlg32)
     set_target_properties(dw2003-launcher PROPERTIES WIN32_EXECUTABLE ON)
 else()
-    target_link_libraries(dw2003-launcher PRIVATE m)
+    find_package(Threads REQUIRED)
+    target_link_libraries(dw2003-launcher PRIVATE m Threads::Threads)
 endif()
