@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dw3-definitive.pages.dev/sitemap.xml
