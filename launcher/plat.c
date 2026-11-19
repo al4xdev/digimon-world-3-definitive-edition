@@ -322,8 +322,8 @@ static int btn_code(int b) {
     switch (b) {
     case SDL_CONTROLLER_BUTTON_A: return K_SOUTH;
     case SDL_CONTROLLER_BUTTON_B: return K_EAST;
-    case SDL_CONTROLLER_BUTTON_X: return K_NORTH; /* the handheld's kernel calls the physical left "north" */
-    case SDL_CONTROLLER_BUTTON_Y: return K_WEST;
+    case SDL_CONTROLLER_BUTTON_X: return K_WEST;
+    case SDL_CONTROLLER_BUTTON_Y: return K_NORTH;
     case SDL_CONTROLLER_BUTTON_LEFTSHOULDER: return K_L1;
     case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER: return K_R1;
     case SDL_CONTROLLER_BUTTON_BACK: return K_SELECT;
@@ -430,8 +430,8 @@ static int btn_code(int b) {
     switch (b) {
     case SDL_GAMEPAD_BUTTON_SOUTH: return K_SOUTH;
     case SDL_GAMEPAD_BUTTON_EAST: return K_EAST;
-    case SDL_GAMEPAD_BUTTON_WEST: return K_NORTH;
-    case SDL_GAMEPAD_BUTTON_NORTH: return K_WEST;
+    case SDL_GAMEPAD_BUTTON_WEST: return K_WEST;
+    case SDL_GAMEPAD_BUTTON_NORTH: return K_NORTH;
     case SDL_GAMEPAD_BUTTON_LEFT_SHOULDER: return K_L1;
     case SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER: return K_R1;
     case SDL_GAMEPAD_BUTTON_BACK: return K_SELECT;
@@ -698,7 +698,10 @@ int plat_poll(Ev *ev, int timeout_ms) {
                 struct input_event e;
                 while (read(evfds[i], &e, sizeof(e)) == (ssize_t)sizeof(e)) {
                     if (e.type == EV_KEY && e.value != 2) {
-                        ev->code = e.code;
+                        int c = e.code;
+                        if (c == K_WEST) c = K_NORTH;
+                        else if (c == K_NORTH) c = K_WEST;
+                        ev->code = c;
                         ev->down = e.value;
                         return 1;
                     }

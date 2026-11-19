@@ -315,6 +315,14 @@ void pad_read_buttons(u8 id, u8 *data, u8 *rec) {
             dw3_raw_prev = buttons;
         }
         buttons = dw3_pad_permute(buttons, 0);
+        {
+            extern int port_script_active;
+            if (!port_script_active) {
+                u16 raw = buttons;
+                buttons &= ~0x6000;
+                buttons |= ((raw >> 14) & 1) << 13 | ((raw >> 13) & 1) << 14;
+            }
+        }
 #endif
         if (mode == 7) {
             for (i = 0; i < 4; i++) {
