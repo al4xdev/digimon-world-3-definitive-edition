@@ -1,10 +1,15 @@
 /* Ergonomic, fluid multi-touch virtual PlayStation gamepad overlay for Android.
  *
  * Layout:
- *   When the device is wider than 16:9 (e.g. 20:9 / 19.5:9 / 21:9 phones), all controls live
- *   in the left/right side margins OUTSIDE the 16:9 game area so zero gameplay pixels are covered,
- *   and anchors stay fixed even on 4:3 menu/video screens so thumb muscle memory never shifts.
- *   On narrower 16:9 displays, controls tuck cleanly onto the outer screen edges with subtle alpha.
+ *   Every control is sized from the screen's height (a thumb is the same size on any phone), so the D-pad and the face
+ *   diamond reach past a 20:9 phone's side margins onto the picture's edges, drawn translucent there; the shoulders and
+ *   Select/Start stay in the margins. The first cut fitted everything inside the margins and came out too small for a
+ *   thumb (owner, 2026-11-18). Two small buttons in the top corners: hide the pad (left) and edit it (right).
+ *
+ * Editing: the right corner button opens the layout editor over the running game (the pad sends nothing while it is
+ *   open). Each group (D-pad, face buttons, L1/L2/SELECT, R1/R2/START) is dragged to its place and sized with the
+ *   - and + buttons in the middle; RESET puts the defaults back, OK leaves. The layout is kept in touch_layout.cfg in
+ *   the app's files directory, as offsets in screen heights, so it survives a rotation or a resolution change.
  *
  * Fluidity:
  *   - Physical-pixel hitboxes (zero aspect-ratio distortion on wide screens).
@@ -18,6 +23,7 @@
 #include <SDL3/SDL.h>
 #include <math.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -39,13 +45,17 @@
 extern void port_input_set_touch_bits(uint16_t bits);
 
 #define MAX_TOUCH_FINGERS 8
+#define TP_LAYOUT_FILE "touch_layout.cfg"
 
 enum {
     ROLE_NONE = 0,
     ROLE_DPAD,
     ROLE_FACE,
     ROLE_PILL,
-    ROLE_TOGGLE
+    ROLE_TOGGLE,
+    ROLE_EDIT,     /* the corner button that opens the editor */
+    ROLE_DRAG,     /* editor: a finger moving a group */
+    ROLE_EDIT_UI   /* editor: a finger on one of its buttons */
 };
 
 enum {
@@ -62,12 +72,24 @@ enum {
     N_BTNS
 };
 
+/* The groups the editor moves and sizes as one. */
+enum { G_DPAD = 0, G_FACE, G_LEFT, G_RIGHT, N_GROUPS };
+
+/* The editor's buttons, in the middle of the screen. */
+enum { UI_SMALLER = 0, UI_BIGGER, UI_RESET, UI_OK, N_UI };
+
+#define TP_SCALE_MIN 0.6f
+#define TP_SCALE_MAX 1.8f
+#define TP_SCALE_STEP 0.1f
+
 typedef struct {
     int active;
     SDL_FingerID id;
     int role;
     int locked_btn;
     float x, y; /* normalized [0..1] */
+    float sx, sy; /* editor: where the drag started, in pixels */
+    float sox, soy; /* editor: the group's offset then */
 } TouchFinger;
 
 typedef struct {
@@ -80,17 +102,30 @@ typedef struct {
 } TpBtn;
 
 typedef struct {
+    float ox, oy; /* offset from the default place, in screen heights */
+    float s;      /* size, 1 = the default */
+} TpGroup;
+
+typedef struct {
+    float cx, cy, hw, hh;
+    const char *label;
+} TpUiBtn;
+
+typedef struct {
     int w, h;
-    int left_zone, right_zone;
-    int in_bezel;
     float dpad_cx, dpad_cy, dpad_r;
     float face_cx, face_cy, face_sp, face_r;
     TpBtn btns[N_BTNS];
-    float tog_cx, tog_cy, tog_hw, tog_hh;
+    float tog_cx, tog_cy, corner_r; /* hide button, top left */
+    float edit_cx, edit_cy;         /* editor button, top right */
+    TpUiBtn ui[N_UI];
 } TpLayout;
 
 static int tp_enabled = -1;
 static int tp_collapsed = 0;
+static int tp_editing = 0;
+static int tp_sel_group = G_DPAD; /* the editor's group that - and + size */
+static TpGroup tp_groups[N_GROUPS];
 /* A gamepad being connected hides the pad (the picture is left clean); the next finger on the screen shows it
  * again, so a pad that SDL lists but the player does not use (some phones expose built-in sensors as one) never
  * locks the touch controls away. */
@@ -106,19 +141,57 @@ static int tp_last_w, tp_last_h;
 static int tp_last_rect[4] = {-1, -1, -1, -1};
 static int tp_view_w = 1280, tp_view_h = 576;
 
+static void tp_groups_reset(void) {
+    for (int g = 0; g < N_GROUPS; g++) {
+        tp_groups[g].ox = tp_groups[g].oy = 0.0f;
+        tp_groups[g].s = 1.0f;
+    }
+}
+
+static float tp_clampf(float v, float lo, float hi) {
+    return v < lo ? lo : v > hi ? hi : v;
+}
+
+static void tp_layout_load(void) {
+    tp_groups_reset();
+    FILE *f = fopen(TP_LAYOUT_FILE, "r");
+    if (!f) return;
+    int g;
+    float ox, oy, s;
+    while (fscanf(f, "%d %f %f %f", &g, &ox, &oy, &s) == 4) {
+        if (g < 0 || g >= N_GROUPS) continue;
+        tp_groups[g].ox = tp_clampf(ox, -4.0f, 4.0f);
+        tp_groups[g].oy = tp_clampf(oy, -1.0f, 1.0f);
+        tp_groups[g].s = tp_clampf(s, TP_SCALE_MIN, TP_SCALE_MAX);
+    }
+    fclose(f);
+}
+
+static void tp_layout_save(void) {
+    FILE *f = fopen(TP_LAYOUT_FILE, "w");
+    if (!f) return;
+    for (int g = 0; g < N_GROUPS; g++) {
+        fprintf(f, "%d %.4f %.4f %.3f\n", g, tp_groups[g].ox, tp_groups[g].oy, tp_groups[g].s);
+    }
+    fclose(f);
+}
+
 static void tp_ensure_init(void) {
     if (tp_enabled >= 0) return;
     const char *e = getenv("DW3_TOUCH_PAD");
     tp_enabled = (!e || e[0] != '0') ? 1 : 0;
+    tp_layout_load();
 }
 
 void dw3_touch_pad_set_enabled(int enabled) {
+    tp_ensure_init();
     tp_enabled = enabled ? 1 : 0;
     if (!tp_enabled) {
         memset(tp_fingers, 0, sizeof(tp_fingers));
         tp_bits = 0;
         tp_dpad_held = 0;
         tp_thumb_dx = tp_thumb_dy = 0.0f;
+        tp_editing = 0;
         port_input_set_touch_bits(0);
     }
     tp_dirty = 1;
@@ -129,6 +202,59 @@ int dw3_touch_pad_enabled(void) {
     return tp_enabled;
 }
 
+/* A group's point the size is taken about, and the box it covers (for the editor's grab and highlight). */
+static void tp_group_box(const TpLayout *L, int g, float *cx, float *cy, float *hw, float *hh) {
+    if (g == G_DPAD) {
+        *cx = L->dpad_cx;
+        *cy = L->dpad_cy;
+        *hw = *hh = L->dpad_r;
+        return;
+    }
+    if (g == G_FACE) {
+        *cx = L->face_cx;
+        *cy = L->face_cy;
+        *hw = *hh = L->face_sp + L->face_r;
+        return;
+    }
+    int b0 = g == G_LEFT ? BTN_L1 : BTN_R1;
+    float x0 = 1e9f, y0 = 1e9f, x1 = -1e9f, y1 = -1e9f;
+    for (int b = b0; b < b0 + 3; b++) {
+        const TpBtn *t = &L->btns[b];
+        x0 = fminf(x0, t->cx - t->hw);
+        x1 = fmaxf(x1, t->cx + t->hw);
+        y0 = fminf(y0, t->cy - t->hh);
+        y1 = fmaxf(y1, t->cy + t->hh);
+    }
+    *cx = (x0 + x1) * 0.5f;
+    *cy = (y0 + y1) * 0.5f;
+    *hw = (x1 - x0) * 0.5f;
+    *hh = (y1 - y0) * 0.5f;
+}
+
+/* A shoulder column (L1, L2, SELECT or R1, R2, START) at column centre cx, sized and moved by its group. */
+static void tp_pill_column(TpLayout *L, int b0, float cx, int left, const TpGroup *G) {
+    float fh = (float)L->h;
+    float pw = fh * 0.105f;
+    float ph = fh * 0.048f;
+    static const float ys[3] = {0.19f, 0.315f, 0.44f};
+    static const float sizes[3][2] = {{1.0f, 1.0f}, {0.92f, 0.92f}, {0.84f, 0.82f}};
+    float ay = fh * ys[1]; /* the column's middle: the size is taken about it */
+    for (int i = 0; i < 3; i++) {
+        float y = ay + (fh * ys[i] - ay) * G->s;
+        TpBtn *t = &L->btns[b0 + i];
+        t->bit = left ? (i == 0 ? PAD_L1 : i == 1 ? PAD_L2 : PAD_SELECT) : (i == 0 ? PAD_R1 : i == 1 ? PAD_R2 : PAD_START);
+        t->cx = cx + G->ox * fh;
+        t->cy = y + G->oy * fh;
+        t->hw = pw * sizes[i][0] * G->s;
+        t->hh = ph * sizes[i][1] * G->s;
+        t->is_circle = 0;
+        t->cr = i == 2 ? 170 : 0;
+        t->cg = i == 0 ? 220 : i == 1 ? 185 : 195;
+        t->cb = i == 0 ? 195 : i == 1 ? 175 : 220;
+        t->label = left ? (i == 0 ? "L1" : i == 1 ? "L2" : "SEL") : (i == 0 ? "R1" : i == 1 ? "R2" : "STA");
+    }
+}
+
 static void tp_compute_layout(int w, int h, TpLayout *L) {
     if (w <= 0) w = 1280;
     if (h <= 0) h = 576;
@@ -136,76 +262,94 @@ static void tp_compute_layout(int w, int h, TpLayout *L) {
     L->w = w;
     L->h = h;
 
-    /* Anchor relative to the 16:9 safe box so controls never jump when screens switch to 4:3. */
-    int w16_9 = (int)((long long)h * 16 / 9);
-    int bezel = (w - w16_9) / 2;
-    int min_zone = (int)(h * 0.21f);
-    if (bezel < 0) bezel = 0;
-
-    L->in_bezel = bezel >= (int)(h * 0.16f);
-    /* Use the real bezel when there is one: forcing min_zone on 18:9-19.5:9 pushed controls onto the image. */
-    L->left_zone = L->in_bezel ? bezel : min_zone;
-    L->right_zone = L->left_zone;
-    if (L->left_zone > w * 40 / 100) {
-        L->left_zone = L->right_zone = w * 40 / 100;
-    }
-
-    float lz = (float)L->left_zone;
-    float rz = (float)L->right_zone;
     float fh = (float)h;
     float fw = (float)w;
-
-    float lcx = lz * 0.50f;
-    float rcx = fw - rz * 0.50f;
+    float m = fh * 0.035f; /* the margin from the screen's edges */
+    const TpGroup *G;
 
     /* D-pad (left bottom) */
-    L->dpad_cx = lcx;
-    L->dpad_cy = fh * 0.70f;
-    L->dpad_r = lz * 0.43f;
-    if (L->dpad_r > fh * 0.22f) L->dpad_r = fh * 0.22f;
-    if (L->dpad_r < 24.0f) L->dpad_r = 24.0f;
+    G = &tp_groups[G_DPAD];
+    L->dpad_r = fh * 0.19f * G->s;
+    L->dpad_cx = m + fh * 0.19f + G->ox * fh;
+    L->dpad_cy = fh - m - fh * 0.19f + G->oy * fh;
 
     /* Face diamond (right bottom) */
-    L->face_cx = rcx;
-    L->face_cy = fh * 0.70f;
-    L->face_sp = rz * 0.305f;
-    if (L->face_sp > fh * 0.145f) L->face_sp = fh * 0.145f;
-    L->face_r = rz * 0.165f;
-    if (L->face_r > fh * 0.078f) L->face_r = fh * 0.078f;
-    if (L->face_r < 14.0f) L->face_r = 14.0f;
+    G = &tp_groups[G_FACE];
+    L->face_sp = fh * 0.155f * G->s;
+    L->face_r = fh * 0.082f * G->s;
+    L->face_cx = fw - m - fh * (0.155f + 0.082f) + G->ox * fh;
+    L->face_cy = fh - m - fh * (0.155f + 0.082f) + G->oy * fh;
 
     L->btns[BTN_CROSS] = (TpBtn){PAD_CROSS, L->face_cx, L->face_cy + L->face_sp, L->face_r, L->face_r, 1, 90, 175, 255, "X"};
     L->btns[BTN_CIRCLE] = (TpBtn){PAD_CIRCLE, L->face_cx + L->face_sp, L->face_cy, L->face_r, L->face_r, 1, 255, 100, 105, "O"};
     L->btns[BTN_SQUARE] = (TpBtn){PAD_SQUARE, L->face_cx - L->face_sp, L->face_cy, L->face_r, L->face_r, 1, 225, 125, 255, "[]"};
     L->btns[BTN_TRIANGLE] = (TpBtn){PAD_TRIANGLE, L->face_cx, L->face_cy - L->face_sp, L->face_r, L->face_r, 1, 70, 235, 165, "/\\"};
 
-    /* Left pills: L1, L2, SELECT */
-    float pw = lz * 0.39f;
-    float ph = fh * 0.052f;
-    if (ph < 14.0f) ph = 14.0f;
-    L->btns[BTN_L1] = (TpBtn){PAD_L1, lcx, fh * 0.115f, pw, ph, 0, 0, 220, 195, "L1"};
-    L->btns[BTN_L2] = (TpBtn){PAD_L2, lcx, fh * 0.240f, pw * 0.90f, ph * 0.90f, 0, 0, 185, 175, "L2"};
-    L->btns[BTN_SELECT] = (TpBtn){PAD_SELECT, lcx, fh * 0.365f, pw * 0.84f, ph * 0.82f, 0, 170, 195, 220, "SEL"};
+    /* Shoulders and Select/Start, a column on each side */
+    float colx = m + fh * 0.105f;
+    tp_pill_column(L, BTN_L1, colx, 1, &tp_groups[G_LEFT]);
+    tp_pill_column(L, BTN_R1, fw - colx, 0, &tp_groups[G_RIGHT]);
 
-    /* Right pills: R1, R2, START */
-    L->btns[BTN_R1] = (TpBtn){PAD_R1, rcx, fh * 0.115f, pw, ph, 0, 0, 220, 195, "R1"};
-    L->btns[BTN_R2] = (TpBtn){PAD_R2, rcx, fh * 0.240f, pw * 0.90f, ph * 0.90f, 0, 0, 185, 175, "R2"};
-    L->btns[BTN_START] = (TpBtn){PAD_START, rcx, fh * 0.365f, pw * 0.84f, ph * 0.82f, 0, 170, 195, 220, "STA"};
+    /* The corner buttons: hide (top left) and edit (top right) */
+    L->corner_r = fh * 0.04f;
+    if (L->corner_r < 16.0f) L->corner_r = 16.0f;
+    L->tog_cx = m + L->corner_r;
+    L->tog_cy = m * 0.6f + L->corner_r;
+    L->edit_cx = fw - m - L->corner_r;
+    L->edit_cy = L->tog_cy;
 
-    /* Top-center hide/show toggle pill */
-    L->tog_cx = fw * 0.50f;
-    L->tog_cy = fh * 0.032f;
-    if (L->tog_cy < 12.0f) L->tog_cy = 12.0f;
-    L->tog_hw = fh * 0.058f;
-    L->tog_hh = fh * 0.022f;
-    if (L->tog_hw < 26.0f) L->tog_hw = 26.0f;
-    if (L->tog_hh < 9.0f) L->tog_hh = 9.0f;
+    /* The editor's buttons, a row in the middle of the screen */
+    {
+        static const char *labels[N_UI] = {"-", "+", "RESET", "OK"};
+        static const float widths[N_UI] = {0.075f, 0.075f, 0.16f, 0.09f};
+        float gap = fh * 0.03f, total = 0.0f;
+        for (int i = 0; i < N_UI; i++) total += fh * widths[i] * 2.0f + (i ? gap : 0.0f);
+        float x = fw * 0.5f - total * 0.5f;
+        for (int i = 0; i < N_UI; i++) {
+            float hw = fh * widths[i];
+            L->ui[i] = (TpUiBtn){x + hw, fh * 0.5f, hw, fh * 0.06f, labels[i]};
+            x += hw * 2.0f + gap;
+        }
+    }
 }
 
 static int tp_hit_pill(const TpLayout *L, int idx, float px, float py, float pad) {
     float dx = fabsf(px - L->btns[idx].cx);
     float dy = fabsf(py - L->btns[idx].cy);
     return dx <= L->btns[idx].hw + pad && dy <= L->btns[idx].hh + pad;
+}
+
+static int tp_hit_corner(const TpLayout *L, float cx, float cy, float px, float py, float pad) {
+    float dx = px - cx, dy = py - cy, r = L->corner_r + pad;
+    return dx * dx + dy * dy <= r * r;
+}
+
+static int tp_hit_ui(const TpLayout *L, float px, float py) {
+    for (int i = 0; i < N_UI; i++) {
+        if (fabsf(px - L->ui[i].cx) <= L->ui[i].hw + 6.0f && fabsf(py - L->ui[i].cy) <= L->ui[i].hh + 6.0f) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+/* The editor's group under a finger: the nearest whose box (a little grown) holds it. */
+static int tp_hit_group(const TpLayout *L, float px, float py) {
+    int best = -1;
+    float best_d = 1e18f;
+    for (int g = 0; g < N_GROUPS; g++) {
+        float cx, cy, hw, hh;
+        tp_group_box(L, g, &cx, &cy, &hw, &hh);
+        float pad = L->h * 0.03f;
+        if (fabsf(px - cx) <= hw + pad && fabsf(py - cy) <= hh + pad) {
+            float d = (px - cx) * (px - cx) + (py - cy) * (py - cy);
+            if (d < best_d) {
+                best_d = d;
+                best = g;
+            }
+        }
+    }
+    return best;
 }
 
 static int tp_closest_face(const TpLayout *L, float px, float py, float max_dist) {
@@ -228,7 +372,7 @@ static void tp_recompute(void) {
     int dpad_held = 0;
     float tdx = 0.0f, tdy = 0.0f;
 
-    if (!tp_enabled || tp_collapsed) {
+    if (!tp_enabled || tp_collapsed || tp_editing) {
         if (tp_bits != 0 || tp_dpad_held) {
             tp_dirty = 1;
         }
@@ -294,6 +438,39 @@ static void tp_recompute(void) {
     port_input_set_touch_bits(bits);
 }
 
+/* The editor's drag: the group follows the finger, its anchor kept on the screen. */
+static void tp_drag(TouchFinger *f, float px, float py) {
+    float fh = (float)tp_view_h;
+    TpGroup *G = &tp_groups[tp_sel_group];
+    float ox = G->ox, oy = G->oy;
+    G->ox = f->sox + (px - f->sx) / fh;
+    G->oy = f->soy + (py - f->sy) / fh;
+    TpLayout L;
+    tp_compute_layout(tp_view_w, tp_view_h, &L);
+    float cx, cy, hw, hh;
+    tp_group_box(&L, tp_sel_group, &cx, &cy, &hw, &hh);
+    if (cx < 0.0f || cx > (float)L.w || cy < 0.0f || cy > (float)L.h) {
+        G->ox = ox;
+        G->oy = oy;
+    }
+    tp_dirty = 1;
+}
+
+static void tp_edit_button(int ui) {
+    TpGroup *G = &tp_groups[tp_sel_group];
+    if (ui == UI_SMALLER) {
+        G->s = tp_clampf(G->s - TP_SCALE_STEP, TP_SCALE_MIN, TP_SCALE_MAX);
+    } else if (ui == UI_BIGGER) {
+        G->s = tp_clampf(G->s + TP_SCALE_STEP, TP_SCALE_MIN, TP_SCALE_MAX);
+    } else if (ui == UI_RESET) {
+        tp_groups_reset();
+    } else if (ui == UI_OK) {
+        tp_editing = 0;
+    }
+    tp_layout_save();
+    tp_dirty = 1;
+}
+
 void port_touch_event(const void *sdl_event) {
     const SDL_Event *e = (const SDL_Event *)sdl_event;
     tp_ensure_init();
@@ -345,8 +522,28 @@ void port_touch_event(const void *sdl_event) {
         f->y = fy;
         f->locked_btn = -1;
 
-        /* Top-center toggle pill */
-        if (fabsf(px - L.tog_cx) <= L.tog_hw + 6.0f && py <= L.tog_cy + L.tog_hh + 8.0f) {
+        if (tp_editing) {
+            int ui = tp_hit_ui(&L, px, py);
+            if (ui >= 0) {
+                f->role = ROLE_EDIT_UI;
+                f->locked_btn = ui;
+                return;
+            }
+            int g = tp_hit_group(&L, px, py);
+            if (g >= 0) {
+                tp_sel_group = g;
+                f->role = ROLE_DRAG;
+                f->sx = px;
+                f->sy = py;
+                f->sox = tp_groups[g].ox;
+                f->soy = tp_groups[g].oy;
+                tp_dirty = 1;
+            }
+            return;
+        }
+
+        /* The corner buttons: hide (left) and edit (right); the edit one is not there while the pad is hidden */
+        if (tp_hit_corner(&L, L.tog_cx, L.tog_cy, px, py, 10.0f)) {
             f->role = ROLE_TOGGLE;
             tp_recompute();
             return;
@@ -355,12 +552,16 @@ void port_touch_event(const void *sdl_event) {
             f->role = ROLE_NONE;
             return;
         }
+        if (tp_hit_corner(&L, L.edit_cx, L.edit_cy, px, py, 10.0f)) {
+            f->role = ROLE_EDIT;
+            tp_recompute();
+            return;
+        }
 
-        /* Left D-pad capture */
+        /* D-pad capture */
         float ddx = px - L.dpad_cx;
         float ddy = py - L.dpad_cy;
-        if (ddx * ddx + ddy * ddy <= (L.dpad_r * 1.45f) * (L.dpad_r * 1.45f) ||
-            (px <= (float)L.left_zone * 1.15f && py >= (float)L.h * 0.45f)) {
+        if (ddx * ddx + ddy * ddy <= (L.dpad_r * 1.45f) * (L.dpad_r * 1.45f)) {
             f->role = ROLE_DPAD;
             tp_recompute();
             return;
@@ -378,8 +579,11 @@ void port_touch_event(const void *sdl_event) {
 
         /* Face diamond (closest button inside capture radius) */
         int fb = tp_closest_face(&L, px, py, L.face_r * 1.65f);
-        if (fb < 0 && px >= (float)L.w - (float)L.right_zone * 1.15f && py >= (float)L.h * 0.45f) {
-            fb = tp_closest_face(&L, px, py, L.face_sp * 2.0f);
+        if (fb < 0) {
+            float fdx = px - L.face_cx, fdy = py - L.face_cy, reach = (L.face_sp + L.face_r) * 1.3f;
+            if (fdx * fdx + fdy * fdy <= reach * reach) {
+                fb = tp_closest_face(&L, px, py, L.face_sp * 2.0f);
+            }
         }
         if (fb >= 0) {
             f->role = ROLE_FACE;
@@ -392,6 +596,9 @@ void port_touch_event(const void *sdl_event) {
             if (tp_fingers[i].active && tp_fingers[i].id == fid) {
                 tp_fingers[i].x = fx;
                 tp_fingers[i].y = fy;
+                if (tp_fingers[i].role == ROLE_DRAG && tp_editing) {
+                    tp_drag(&tp_fingers[i], px, py);
+                }
                 break;
             }
         }
@@ -399,10 +606,17 @@ void port_touch_event(const void *sdl_event) {
         for (int i = 0; i < MAX_TOUCH_FINGERS; i++) {
             TouchFinger *f = &tp_fingers[i];
             if (f->active && f->id == fid) {
-                if (e->type == SDL_EVENT_FINGER_UP && f->role == ROLE_TOGGLE &&
-                    fabsf(px - L.tog_cx) <= L.tog_hw + 22.0f && py <= L.tog_cy + L.tog_hh + 26.0f) {
+                int up = e->type == SDL_EVENT_FINGER_UP;
+                if (up && f->role == ROLE_TOGGLE && tp_hit_corner(&L, L.tog_cx, L.tog_cy, px, py, 24.0f)) {
                     tp_collapsed = !tp_collapsed;
                     tp_dirty = 1;
+                } else if (up && f->role == ROLE_EDIT && tp_hit_corner(&L, L.edit_cx, L.edit_cy, px, py, 24.0f)) {
+                    tp_editing = 1;
+                    tp_dirty = 1;
+                } else if (up && f->role == ROLE_EDIT_UI && tp_hit_ui(&L, px, py) == f->locked_btn) {
+                    tp_edit_button(f->locked_btn);
+                } else if (f->role == ROLE_DRAG) {
+                    tp_layout_save();
                 }
                 f->active = 0;
                 f->role = ROLE_NONE;
@@ -637,6 +851,18 @@ static void draw_glyph(uint32_t *buf, int w, int h, float cx, float cy, float s,
         aa_line(buf, w, h, cx - hs * 0.7f, cy - hs, cx + hs * 0.7f, cy - hs, th, r, g, b, a);
         aa_line(buf, w, h, cx, cy - hs, cx, cy + hs, th, r, g, b, a);
         break;
+    case '+':
+        aa_line(buf, w, h, cx - hs * 0.7f, cy, cx + hs * 0.7f, cy, th, r, g, b, a);
+        aa_line(buf, w, h, cx, cy - hs * 0.7f, cx, cy + hs * 0.7f, th, r, g, b, a);
+        break;
+    case '-':
+        aa_line(buf, w, h, cx - hs * 0.7f, cy, cx + hs * 0.7f, cy, th, r, g, b, a);
+        break;
+    case 'K':
+        aa_line(buf, w, h, cx - hs * 0.6f, cy - hs, cx - hs * 0.6f, cy + hs, th, r, g, b, a);
+        aa_line(buf, w, h, cx + hs * 0.6f, cy - hs, cx - hs * 0.6f, cy + hs * 0.1f, th, r, g, b, a);
+        aa_line(buf, w, h, cx - hs * 0.2f, cy - hs * 0.2f, cx + hs * 0.6f, cy + hs, th, r, g, b, a);
+        break;
     case 'A':
         aa_line(buf, w, h, cx, cy - hs, cx - hs * 0.6f, cy + hs, th, r, g, b, a);
         aa_line(buf, w, h, cx, cy - hs, cx + hs * 0.6f, cy + hs, th, r, g, b, a);
@@ -655,6 +881,43 @@ static void draw_label(uint32_t *buf, int w, int h, float cx, float cy, float s,
     draw_glyph(buf, w, h, cx, cy, s, ch, r, g, b, a);
 }
 
+/* A word of the glyphs above, centred on (cx, cy), each letter s tall. */
+static void draw_word(uint32_t *buf, int w, int h, float cx, float cy, float s, const char *str, uint8_t a) {
+    int n = (int)strlen(str);
+    float step = s * 1.05f;
+    float x = cx - step * (float)(n - 1) * 0.5f;
+    for (int i = 0; i < n; i++, x += step) {
+        draw_label(buf, w, h, x, cy, s, str[i], 240, 250, 255, a);
+    }
+}
+
+/* The hide button: a chevron pointing up (the pad shown: tap to hide) or a bar (hidden: tap to show). */
+static void draw_hide_button(uint32_t *buf, int w, int h, const TpLayout *L) {
+    float cx = L->tog_cx, cy = L->tog_cy, r = L->corner_r;
+    aa_circle_panel(buf, w, h, cx, cy, r, 0, 215, 190, 0, 0.75f);
+    if (tp_collapsed) {
+        aa_line(buf, w, h, cx - r * 0.4f, cy, cx + r * 0.4f, cy, r * 0.12f, 220, 245, 240, 220);
+        aa_line(buf, w, h, cx, cy - r * 0.4f, cx, cy + r * 0.4f, r * 0.12f, 220, 245, 240, 220);
+    } else {
+        aa_line(buf, w, h, cx - r * 0.4f, cy + r * 0.15f, cx, cy - r * 0.25f, r * 0.12f, 220, 245, 240, 220);
+        aa_line(buf, w, h, cx, cy - r * 0.25f, cx + r * 0.4f, cy + r * 0.15f, r * 0.12f, 220, 245, 240, 220);
+    }
+}
+
+/* The edit button: four arrows out of the centre (move and size the pad). */
+static void draw_edit_button(uint32_t *buf, int w, int h, const TpLayout *L) {
+    float cx = L->edit_cx, cy = L->edit_cy, r = L->corner_r, t = r * 0.11f, a = r * 0.5f, k = r * 0.17f;
+    aa_circle_panel(buf, w, h, cx, cy, r, 0, 215, 190, tp_editing, 0.75f);
+    aa_line(buf, w, h, cx - a, cy, cx + a, cy, t, 220, 245, 240, 220);
+    aa_line(buf, w, h, cx, cy - a, cx, cy + a, t, 220, 245, 240, 220);
+    for (int s = -1; s <= 1; s += 2) {
+        aa_line(buf, w, h, cx + s * a, cy, cx + s * (a - k), cy - k, t, 220, 245, 240, 220);
+        aa_line(buf, w, h, cx + s * a, cy, cx + s * (a - k), cy + k, t, 220, 245, 240, 220);
+        aa_line(buf, w, h, cx, cy + s * a, cx - k, cy + s * (a - k), t, 220, 245, 240, 220);
+        aa_line(buf, w, h, cx, cy + s * a, cx + k, cy + s * (a - k), t, 220, 245, 240, 220);
+    }
+}
+
 int port_touch_draw_rgba(uint32_t *rgba, int w, int h, const int game_rect[4]) {
     tp_ensure_init();
     if (!tp_enabled || w <= 0 || h <= 0) {
@@ -666,6 +929,7 @@ int port_touch_draw_rgba(uint32_t *rgba, int w, int h, const int game_rect[4]) {
         int has_gamepad = SDL_HasGamepad() ? 1 : 0;
         if (has_gamepad && !tp_had_gamepad) {
             tp_pad_hidden = 1;
+            tp_editing = 0;
             memset(tp_fingers, 0, sizeof(tp_fingers));
             tp_recompute();
         } else if (!has_gamepad && tp_pad_hidden) {
@@ -696,20 +960,31 @@ int port_touch_draw_rgba(uint32_t *rgba, int w, int h, const int game_rect[4]) {
 
     TpLayout L;
     tp_compute_layout(w, h, &L);
-    float alpha_scale = L.in_bezel ? 1.0f : 0.72f;
+    /* The bigger pad lies on the picture's edges on most phones: translucent enough to see the game through. */
+    float alpha_scale = 0.85f;
 
-    /* Top-center subtle collapse pill */
-    aa_rrect_panel(rgba, w, h, L.tog_cx, L.tog_cy, L.tog_hw, L.tog_hh, L.tog_hh,
-                   0, 215, 190, !tp_collapsed, 0.50f);
+    draw_hide_button(rgba, w, h, &L);
     if (tp_collapsed) {
-        aa_line(rgba, w, h, L.tog_cx - L.tog_hw * 0.35f, L.tog_cy, L.tog_cx + L.tog_hw * 0.35f, L.tog_cy,
-                2.0f, 220, 245, 240, 175);
         return 1;
     }
-    aa_line(rgba, w, h, L.tog_cx - L.tog_hw * 0.3f, L.tog_cy - 2.0f, L.tog_cx, L.tog_cy + 2.5f,
-            1.8f, 220, 245, 240, 190);
-    aa_line(rgba, w, h, L.tog_cx, L.tog_cy + 2.5f, L.tog_cx + L.tog_hw * 0.3f, L.tog_cy - 2.0f,
-            1.8f, 220, 245, 240, 190);
+    draw_edit_button(rgba, w, h, &L);
+
+    if (tp_editing) {
+        /* The editor: the chosen group lit behind, the others dimmed, and its buttons in the middle. */
+        for (int g = 0; g < N_GROUPS; g++) {
+            float cx, cy, hw, hh;
+            tp_group_box(&L, g, &cx, &cy, &hw, &hh);
+            float pad = (float)h * 0.02f;
+            aa_rrect_panel(rgba, w, h, cx, cy, hw + pad, hh + pad, (float)h * 0.03f,
+                           g == tp_sel_group ? 255 : 120, g == tp_sel_group ? 200 : 140, g == tp_sel_group ? 60 : 160,
+                           g == tp_sel_group, g == tp_sel_group ? 0.55f : 0.35f);
+        }
+        for (int i = 0; i < N_UI; i++) {
+            aa_rrect_panel(rgba, w, h, L.ui[i].cx, L.ui[i].cy, L.ui[i].hw, L.ui[i].hh, L.ui[i].hh * 0.8f,
+                           i == UI_OK ? 60 : 0, i == UI_OK ? 220 : 200, i == UI_OK ? 120 : 190, 0, 1.0f);
+            draw_word(rgba, w, h, L.ui[i].cx, L.ui[i].cy, L.ui[i].hh * 0.75f, L.ui[i].label, 240);
+        }
+    }
 
     /* D-pad base ring + cross arms + glowing thumb puck */
     aa_circle_panel(rgba, w, h, L.dpad_cx, L.dpad_cy, L.dpad_r, 0, 215, 195, tp_dpad_held, alpha_scale * 0.85f);

@@ -4,7 +4,7 @@
 
 <p align="center">
   <b>Digimon World 3, tel qu'il aurait pu être.</b><br>
-  Un remaster de fan qui tourne en natif, sans émulateur, sur les consoles portables RK3326 et sur PC.
+  Un remaster de fan qui tourne en natif, sans émulateur, sur les consoles portables RK3326, les téléphones Android et sur PC.
 </p>
 
 <p align="center">
@@ -82,7 +82,7 @@ Un pouvoir maudit qui a un prix, une quête pour le purifier, et un partenaire q
 <td valign="top">
 
 **🎮 Jouez partout**<br>
-Portables et PC, écran large 16:9, rendu GPU et shaders, et sauvegardes cloud cross-play gratuites.
+Portables, Android et PC, écran large 16:9, rendu GPU et shaders, et sauvegardes cloud cross-play gratuites.
 
 </td>
 </tr>
@@ -107,6 +107,16 @@ Portables et PC, écran large 16:9, rendu GPU et shaders, et sauvegardes cloud c
 3. Lancez *Digimon World 3* depuis le menu des ports.
 
 Appareils testés, détails d'installation et problèmes connus : [`.ci-cd/portmaster/README.md`](.ci-cd/portmaster/README.md).
+
+**Android (arm64, Android 7 ou plus récent)**
+
+1. Téléchargez `dw2003-*-android-arm64-v8a.apk` depuis les
+   [releases](https://github.com/al4xdev/digimon-world-3-definitive-edition/releases) et installez-le (autorisez les
+   installations depuis votre navigateur ou votre gestionnaire de fichiers).
+2. Touchez **JOUER**, puis choisissez votre `.bin` (et le `.cue`) dans le sélecteur de fichiers du système : l'appli
+   les copie.
+3. Les flèches du coin supérieur droit déplacent et redimensionnent les commandes tactiles ; le bouton du coin gauche
+   les masque. Une manette fonctionne aussi, et les commandes tactiles s'effacent tant qu'elle est branchée.
 
 **PC (Linux et Windows)**
 
@@ -352,7 +362,7 @@ cheveux et les vêtements de votre héros.
 |---|---|
 | **Consoles portables RK3326** via PortMaster (la XF35H, la R36S et appareils similaires) | optimisé de bout en bout sur une vraie XF35H : affichage direct du framebuffer, rendu GLES, vidéos à pleine vitesse, la barre LED. Chaque custom firmware de la matrice de test a tourné sous émulation ; les retours sur de vrais appareils sont les bienvenus |
 | **PC Linux et Windows** | rendu GPU SDL3 (Vulkan, D3D12), **écran large 16:9** en combat et sur le terrain, plein écran HighDPI avec mise à l'échelle `FILL`, filtres `SHARP` / `SCANLINES` / `CRT` / `SMOOTH`, avance rapide jusqu'à 8× |
-| **Android** (arm64) | un APK avec **écran large 16:9**, un pad tactile flottant qui se place à côté de l'image sur les téléphones larges et s'efface tant qu'une manette est branchée, et un sélecteur de disque qui copie votre image dans l'appli existe  |
+| **Android** (arm64) | un APK avec **écran large 16:9**, de grandes commandes tactiles que vous déplacez et redimensionnez à l'écran (ou masquez), n'importe quelle manette USB ou Bluetooth, et un sélecteur de disque qui copie votre image dans l'appli |
 
 <p align="center"><img src="docs/images/definitive/cross-play.svg" width="800" alt="Cloud Sync cross-play : le launcher synchronise card1.mcd entre portables et PC via un Cloudflare Worker gratuit. Associez un appareil avec un code à 6 chiffres que l'hôte approuve, choisissez un côté quand les deux ont changé, et gardez de 1 à 100 snapshots locaux en rotation."></p>
 

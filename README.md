@@ -4,7 +4,7 @@
 
 <p align="center">
   <b>Digimon World 3, as it could have been.</b><br>
-  A fan remaster that runs natively, with no emulator, on RK3326 handhelds and on PC.
+  A fan remaster that runs natively, with no emulator, on RK3326 handhelds, Android phones and PC.
 </p>
 
 <p align="center">
@@ -81,7 +81,7 @@ A cursed power with a price, a quest to purify it, and one partner who earns a M
 <td valign="top">
 
 **🎮 Play anywhere**<br>
-Handhelds and PC, 16:9 widescreen, GPU renderer and shaders, and free cross-play cloud saves.
+Handhelds, Android and PC, 16:9 widescreen, GPU renderer and shaders, and free cross-play cloud saves.
 
 </td>
 </tr>
@@ -106,6 +106,15 @@ Handhelds and PC, 16:9 widescreen, GPU renderer and shaders, and free cross-play
 3. Start *Digimon World 3* from the ports menu.
 
 Tested devices, install details and known issues: [`.ci-cd/portmaster/README.md`](.ci-cd/portmaster/README.md).
+
+**Android (arm64, Android 7 or newer)**
+
+1. Download `dw2003-*-android-arm64-v8a.apk` from the
+   [releases](https://github.com/al4xdev/digimon-world-3-definitive-edition/releases) and install it (allow installs
+   from your browser or file manager).
+2. Tap **PLAY**, then pick your `.bin` (and `.cue`) in the system's file picker: the app copies them in.
+3. The arrows in the top right corner move and resize the touch controls; the one in the top left hides them. A
+   gamepad works too, and the touch controls step aside while it is connected.
 
 **PC (Linux and Windows)**
 
@@ -340,7 +349,7 @@ swap. Thirteen **hero skins** from the Super Rare hunts recolour your hero's hai
 |---|---|
 | **RK3326 handhelds** through PortMaster (the XF35H, the R36S and similar devices) | tuned end to end on a real XF35H: direct framebuffer present, a GLES renderer, full-speed movies, the LED bar. Every custom firmware of the test matrix was run under emulation; real-device reports are welcome |
 | **Linux and Windows PC** | SDL3 GPU renderer (Vulkan, D3D12), **16:9 widescreen** in battles and the field, HighDPI fullscreen with `FILL` scaling, `SHARP` / `SCANLINES` / `CRT` / `SMOOTH` filters, fast-forward up to 8× |
-| **Android** (arm64) | an APK with **16:9 widescreen**, a floating touch pad that sits beside the picture on wide phones and steps aside while a gamepad is connected, and a disc picker that copies your image into the app |
+| **Android** (arm64) | an APK with **16:9 widescreen**, big touch controls you can move and resize on screen (or hide), any USB or Bluetooth gamepad, and a disc picker that copies your image into the app |
 
 <p align="center"><img src="docs/images/definitive/cross-play.svg" width="800" alt="Cross-Play cloud sync: the launcher syncs card1.mcd between handhelds and PC through a free Cloudflare Worker. Pair a device with a 6-digit code the host approves, choose a side when both changed, and keep 1 to 100 rotating local snapshots."></p>
 

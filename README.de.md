@@ -4,7 +4,7 @@
 
 <p align="center">
   <b>Digimon World 3, so wie es hätte sein können.</b><br>
-  Ein Fan-Remaster, das nativ und ohne Emulator auf RK3326-Handhelds und auf dem PC läuft.
+  Ein Fan-Remaster, das nativ und ohne Emulator auf RK3326-Handhelds, Android-Handys und dem PC läuft.
 </p>
 
 <p align="center">
@@ -82,7 +82,7 @@ Eine verfluchte Kraft mit ihrem Preis, eine Quest, sie zu läutern, und ein Part
 <td valign="top">
 
 **🎮 Überall spielen**<br>
-Handhelds und PC, 16:9-Widescreen, GPU-Renderer und Shader sowie kostenlose Cross-Play-Cloud-Spielstände.
+Handhelds, Android und PC, 16:9-Widescreen, GPU-Renderer und Shader sowie kostenlose Cross-Play-Cloud-Spielstände.
 
 </td>
 </tr>
@@ -107,6 +107,15 @@ Handhelds und PC, 16:9-Widescreen, GPU-Renderer und Shader sowie kostenlose Cros
 3. Starte *Digimon World 3* über das Ports-Menü.
 
 Getestete Geräte, Installationsdetails und bekannte Probleme: [`.ci-cd/portmaster/README.md`](.ci-cd/portmaster/README.md).
+
+**Android (arm64, Android 7 oder neuer)**
+
+1. Lade `dw2003-*-android-arm64-v8a.apk` aus den
+   [Releases](https://github.com/al4xdev/digimon-world-3-definitive-edition/releases) herunter und installiere es
+   (erlaube Installationen aus deinem Browser oder Dateimanager).
+2. Tippe auf **SPIELEN** und wähle deine `.bin` (und die `.cue`) in der Dateiauswahl des Systems: die App kopiert sie.
+3. Die Pfeile oben rechts verschieben und skalieren die Touch-Steuerung; der Knopf oben links blendet sie aus. Ein
+   Gamepad funktioniert auch, und die Touch-Steuerung tritt zur Seite, solange es verbunden ist.
 
 **PC (Linux und Windows)**
 
@@ -351,7 +360,7 @@ und Kleidung deines Helden um.
 |---|---|
 | **RK3326-Handhelds** über PortMaster (der XF35H, der R36S und ähnliche Geräte) | von Anfang bis Ende auf einem echten XF35H abgestimmt: direkte Framebuffer-Ausgabe, ein GLES-Renderer, Videos in voller Geschwindigkeit, die LED-Leiste. Jede Custom Firmware der Testmatrix lief unter Emulation; Berichte von echten Geräten sind willkommen |
 | **Linux- und Windows-PC** | SDL3-GPU-Renderer (Vulkan, D3D12), **16:9-Widescreen** in Kämpfen und im Feld, HighDPI-Vollbild mit `FILL`-Skalierung, Filter `SHARP` / `SCANLINES` / `CRT` / `SMOOTH`, Vorspulen bis 8× |
-| **Android** (arm64) | ein APK mit **16:9-Breitbild**, einem schwebenden Touchpad, das auf breiten Handys neben dem Bild sitzt und verschwindet, solange ein Gamepad verbunden ist, und einer Disc-Auswahl, die dein Image in die App kopiert, existiert |
+| **Android** (arm64) | ein APK mit **16:9-Breitbild**, großen Touch-Steuerelementen, die du auf dem Bildschirm verschieben und skalieren (oder ausblenden) kannst, jedem USB- oder Bluetooth-Gamepad und einer Disc-Auswahl, die dein Image in die App kopiert |
 
 <p align="center"><img src="docs/images/definitive/cross-play.svg" width="800" alt="Cross-Play-Cloud-Sync: Der Launcher synchronisiert card1.mcd zwischen Handhelds und PC über einen kostenlosen Cloudflare Worker. Koppele ein Gerät mit einem 6-stelligen Code, den der Host bestätigt, wähle eine Seite, wenn beide sich geändert haben, und behalte 1 bis 100 rotierende lokale Snapshots."></p>
 

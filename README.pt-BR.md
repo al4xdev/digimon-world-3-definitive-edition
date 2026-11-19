@@ -4,7 +4,7 @@
 
 <p align="center">
   <b>Digimon World 3, como poderia ter sido.</b><br>
-  Um remaster feito por fã que roda nativamente, sem emulador, em portáteis RK3326 e no PC.
+  Um remaster feito por fã que roda nativamente, sem emulador, em portáteis RK3326, celulares Android e no PC.
 </p>
 
 <p align="center">
@@ -82,7 +82,7 @@ Um poder amaldiçoado que cobra seu preço, uma missão para purificá-lo e um p
 <td valign="top">
 
 **🎮 Jogue em qualquer lugar**<br>
-Portáteis e PC, widescreen 16:9, renderizador de GPU e shaders, e saves na nuvem com cross-play, de graça.
+Portáteis, Android e PC, widescreen 16:9, renderizador de GPU e shaders, e saves na nuvem com cross-play, de graça.
 
 </td>
 </tr>
@@ -107,6 +107,15 @@ Portáteis e PC, widescreen 16:9, renderizador de GPU e shaders, e saves na nuve
 3. Abra o *Digimon World 3* pelo menu de ports.
 
 Dispositivos testados, detalhes de instalação e problemas conhecidos: [`.ci-cd/portmaster/README.md`](.ci-cd/portmaster/README.md).
+
+**Android (arm64, Android 7 ou mais novo)**
+
+1. Baixe o `dw2003-*-android-arm64-v8a.apk` nas
+   [releases](https://github.com/al4xdev/digimon-world-3-definitive-edition/releases) e instale (permita instalar pelo
+   navegador ou pelo gerenciador de arquivos).
+2. Toque em **JOGAR** e escolha o seu `.bin` (e o `.cue`) no seletor de arquivos do sistema: o app copia os dois.
+3. As setas no canto superior direito movem e redimensionam os controles de toque; o botão do canto esquerdo esconde
+   os controles. Um controle físico também funciona, e o toque sai da frente enquanto ele está conectado.
 
 **PC (Linux e Windows)**
 
@@ -346,7 +355,7 @@ história acompanha a troca. Treze **skins de herói** das caçadas Super Rare r
 |---|---|
 | **Portáteis RK3326** via PortMaster (o XF35H, o R36S e dispositivos parecidos) | ajustado de ponta a ponta num XF35H de verdade: framebuffer direto, renderizador GLES, vídeos em velocidade total, a barra de LED. Todas as custom firmwares da matriz de testes rodaram sob emulação; relatos de dispositivos reais são bem-vindos |
 | **PC Linux e Windows** | renderizador de GPU SDL3 (Vulkan, D3D12), **widescreen 16:9** nas batalhas e no campo, tela cheia HighDPI com escala `FILL`, filtros `SHARP` / `SCANLINES` / `CRT` / `SMOOTH`, avanço rápido de até 8× |
-| **Android** (arm64) | existe um APK com **widescreen 16:9**, um touchpad flutuante que fica ao lado da imagem nos celulares largos e sai da frente enquanto um controle está conectado, e um seletor de disco que copia sua imagem para dentro do app |
+| **Android** (arm64) | um APK com **widescreen 16:9**, controles de toque grandes que você move e redimensiona na tela (ou esconde), qualquer controle USB ou Bluetooth, e um seletor de disco que copia sua imagem para dentro do app |
 
 <p align="center"><img src="docs/images/definitive/cross-play.svg" width="800" alt="Cloud Sync de cross-play: o launcher sincroniza o card1.mcd entre portáteis e PC por meio de um Cloudflare Worker gratuito. Pareie um dispositivo com um código de 6 dígitos que o host aprova, escolha um lado quando os dois mudarem, e mantenha de 1 a 100 snapshots locais rotativos."></p>
 
