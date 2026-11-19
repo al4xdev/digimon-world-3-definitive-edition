@@ -56,7 +56,7 @@ file(GLOB DW3_ADAPTER_SRCS CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/game/*
 # A Release build (the release's packages: .ci-cd/linux/package_appimage.sh, .ci-cd/windows/package_windows.sh) would compile
 # them at the build type's -O3: they stay at -O0 there too, the level the tests and the handheld run them at (the
 # runtime, the shim and the renderers keep their -O3). -DPSXSTACK_GAME_OPT= (empty) gives the game -O3 back.
-if(CMAKE_BUILD_TYPE STREQUAL "Release" AND NOT DEFINED PSXSTACK_GAME_OPT)
+if(NOT DEFINED PSXSTACK_GAME_OPT AND (CMAKE_BUILD_TYPE STREQUAL "Release" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo" OR CMAKE_BUILD_TYPE STREQUAL "MinSizeRel"))
     set(PSXSTACK_GAME_OPT -O0)
 endif()
 
