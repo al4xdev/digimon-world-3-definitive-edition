@@ -1,0 +1,13 @@
+{
+  "name": "Digimon World 3: Definitive Edition",
+  "short_name": "DW3 DE",
+  "description": "A free fan remaster of Digimon World 2003 for PC, Android and handhelds.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "browser",
+  "background_color": "#0d0f16",
+  "theme_color": "#0d0f16",
+  "icons": [
+    {"src": "/assets/icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}
+  ]
+}
