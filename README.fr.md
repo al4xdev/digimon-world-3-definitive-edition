@@ -261,13 +261,13 @@ la forge et chaque variante sont détaillés dans [la référence de la chasse](
 
 <table>
 <tr>
-<td width="50%" align="center"><img src="docs/images/definitive/shots/velvet-way-in.gif" alt="Une faible lueur bleue dans l'auberge marque l'entrée de la Velvet Room."><br><sub>Une faible lueur bleue dans une auberge, et le passage s'ouvre</sub></td>
+<td width="50%" align="center"><img src="docs/images/definitive/shots/velvet-way-in.gif" alt="Une douce lueur bleue dans l'auberge marque l'entrée de la Velvet Room."><br><sub>Une douce lueur bleue dans une auberge, et le passage s'ouvre</sub></td>
 <td width="50%" align="center"><img src="docs/images/definitive/shots/velvet-room.png" alt="La Velvet Room et ses invités."><br><sub>La pièce à son apogée, avec Kail pour héros</sub></td>
 </tr>
 </table>
 
 Quelque part dans le Monde Digital, une pièce bleue attend entre les serveurs. Au début, ses portes sont closes. Puis
-une rumeur court dans Seiryu City et, dans chaque auberge, une faible **lueur bleue** se met à palpiter sur un morceau
+une rumeur court dans Seiryu City et, dans chaque auberge, une douce **lueur bleue** se met à palpiter sur un morceau
 du décor. Placez-vous dedans, appuyez sur Circle, et vous voilà à l'intérieur.
 
 <p align="center"><img src="docs/images/definitive/velvet-room.svg" width="800" alt="La Velvet Room grandit avec l'histoire : Sepikmon à l'étape 4, Igor et Gennai à la 10, Guilmon avec le Demon Bell à la 16, Etemon et le cochon à la 22, le Black Market d'Oikawa une fois celui-ci vaincu, et la Time Room avant le point de non-retour."></p>
@@ -352,7 +352,7 @@ cheveux et les vêtements de votre héros.
 |---|---|
 | **Consoles portables RK3326** via PortMaster (la XF35H, la R36S et appareils similaires) | optimisé de bout en bout sur une vraie XF35H : affichage direct du framebuffer, rendu GLES, vidéos à pleine vitesse, la barre LED. Chaque custom firmware de la matrice de test a tourné sous émulation ; les retours sur de vrais appareils sont les bienvenus |
 | **PC Linux et Windows** | rendu GPU SDL3 (Vulkan, D3D12), **écran large 16:9** en combat et sur le terrain, plein écran HighDPI avec mise à l'échelle `FILL`, filtres `SHARP` / `SCANLINES` / `CRT` / `SMOOTH`, avance rapide jusqu'à 8× |
-| **Android** (arm64) | un APK avec un pad tactile flottant et un sélecteur de disque existe ; il demande encore son propre cycle de travail (voir [Ce qu'il reste à faire](#ce-quil-reste-à-faire)) |
+| **Android** (arm64) | un APK avec **écran large 16:9**, un pad tactile flottant qui se place à côté de l'image sur les téléphones larges et s'efface tant qu'une manette est branchée, et un sélecteur de disque qui copie votre image dans l'appli existe  |
 
 <p align="center"><img src="docs/images/definitive/cross-play.svg" width="800" alt="Cloud Sync cross-play : le launcher synchronise card1.mcd entre portables et PC via un Cloudflare Worker gratuit. Associez un appareil avec un code à 6 chiffres que l'hôte approuve, choisissez un côté quand les deux ont changé, et gardez de 1 à 100 snapshots locaux en rotation."></p>
 
@@ -378,8 +378,6 @@ Ce qui reste :
 - **Le combat final** va recevoir une extension. Elle ne change pas l'histoire, et tous les autres systèmes sont déjà
   implémentés.
 - **L'optimisation pour d'autres plateformes et appareils**, au-delà de la XF35H et du PC sur lesquels il a été réglé.
-- **La version Android** existe, mais elle demande encore une session entière dédiée de ma part avant que quiconque
-  puisse compter dessus.
 
 La liste détaillée des points ouverts se trouve dans [la feuille de route](docs/definitive-edition/roadmap.md).
 

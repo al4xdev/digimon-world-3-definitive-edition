@@ -260,13 +260,13 @@ variante están en [la referencia de la caza](docs/definitive-edition/hunt-and-e
 
 <table>
 <tr>
-<td width="50%" align="center"><img src="docs/images/definitive/shots/velvet-way-in.gif" alt="Una tenue luz azul en la posada marca la entrada a la Velvet Room."><br><sub>Una tenue luz azul en una posada, y el camino se abre</sub></td>
+<td width="50%" align="center"><img src="docs/images/definitive/shots/velvet-way-in.gif" alt="Una suave luz azul en la posada marca la entrada a la Velvet Room."><br><sub>Una suave luz azul en una posada, y el camino se abre</sub></td>
 <td width="50%" align="center"><img src="docs/images/definitive/shots/velvet-room.png" alt="La Velvet Room y sus invitados."><br><sub>La sala en su apogeo, con Kail como héroe</sub></td>
 </tr>
 </table>
 
 En algún lugar del Mundo Digital, una sala azul espera entre los servidores. Al principio sus puertas están cerradas.
-Luego empieza a correr un rumor por Seiryu City y, en cada posada, una tenue **luz azul** comienza a latir sobre un
+Luego empieza a correr un rumor por Seiryu City y, en cada posada, una suave **luz azul** comienza a latir sobre un
 trozo del decorado. Plántate en ella, pulsa Circle, y ya estás dentro.
 
 <p align="center"><img src="docs/images/definitive/velvet-room.svg" width="800" alt="La Velvet Room crece con la historia: Sepikmon en el paso 4, Igor y Gennai en el 10, Guilmon con el Demon Bell en el 16, Etemon y el cerdo en el 22, el Black Market de Oikawa una vez derrotado, y la Time Room antes del punto sin retorno."></p>
@@ -350,7 +350,7 @@ ropa de tu héroe.
 |---|---|
 | **Portátiles RK3326** con PortMaster (la XF35H, la R36S y dispositivos similares) | ajustado de principio a fin en una XF35H real: presentación directa del framebuffer, un renderizador GLES, vídeos a velocidad completa, la barra LED. Cada custom firmware de la matriz de pruebas se ejecutó bajo emulación; los informes de dispositivos reales son bienvenidos |
 | **PC Linux y Windows** | renderizador por GPU SDL3 (Vulkan, D3D12), **panorámico 16:9** en combates y en el campo, pantalla completa HighDPI con escalado `FILL`, filtros `SHARP` / `SCANLINES` / `CRT` / `SMOOTH`, avance rápido de hasta 8× |
-| **Android** (arm64) | existe un APK con un pad táctil flotante y un selector de disco; todavía necesita su propia ronda de trabajo (consulta [Lo que falta](#lo-que-falta)) |
+| **Android** (arm64) | existe un APK con **pantalla panorámica 16:9**, un pad táctil flotante que queda al lado de la imagen en los móviles anchos y se aparta mientras hay un mando conectado, y un selector de disco que copia tu imagen dentro de la app |
 
 <p align="center"><img src="docs/images/definitive/cross-play.svg" width="800" alt="Cloud Sync cross-play: el launcher sincroniza card1.mcd entre portátiles y PC mediante un Cloudflare Worker gratuito. Empareja un dispositivo con un código de 6 dígitos que aprueba el anfitrión, elige un lado cuando ambos han cambiado, y conserva de 1 a 100 snapshots locales rotativos."></p>
 
@@ -375,8 +375,6 @@ joven: parte de él solo se ha jugado unas pocas veces, así que cuenta con aspe
 - **El combate final** recibirá una ampliación. No cambia la historia, y todos los demás sistemas ya están
   implementados.
 - **El ajuste para otras plataformas y dispositivos**, más allá de la XF35H y del PC en los que se afinó.
-- **La versión de Android** existe, pero aún necesita una sesión entera y dedicada por mi parte antes de que nadie
-  cuente con ella.
 
 La lista detallada de puntos abiertos está en [la hoja de ruta](docs/definitive-edition/roadmap.md).
 

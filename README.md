@@ -254,13 +254,13 @@ are in [the hunt reference](docs/definitive-edition/hunt-and-economy.md).
 
 <table>
 <tr>
-<td width="50%" align="center"><img src="docs/images/definitive/shots/velvet-way-in.gif" alt="A faint blue light in the inn marks the way into the Velvet Room."><br><sub>A faint blue light in an inn, and the way opens</sub></td>
+<td width="50%" align="center"><img src="docs/images/definitive/shots/velvet-way-in.gif" alt="A soft blue light in the inn marks the way into the Velvet Room."><br><sub>A soft blue light in an inn, and the way opens</sub></td>
 <td width="50%" align="center"><img src="docs/images/definitive/shots/velvet-room.png" alt="The Velvet Room and its guests."><br><sub>The room at its fullest, with Kail as the hero</sub></td>
 </tr>
 </table>
 
 Somewhere in the Digital World, a blue room waits between the servers. At first its doors are shut. Then a rumour
-goes around Seiryu City, and in every inn a faint **blue light** starts to breathe on a piece of the scenery. Stand in
+goes around Seiryu City, and in every inn a soft **blue light** starts to breathe on a piece of the scenery. Stand in
 it, press Circle, and you are inside.
 
 <p align="center"><img src="docs/images/definitive/velvet-room.svg" width="800" alt="The Velvet Room grows with the story: Sepikmon at step 4, Igor and Gennai at 10, Guilmon with the Demon Bell at 16, Etemon and the pig at 22, Oikawa's Black Market once he is beaten, and the Time Room before the point of no return."></p>
@@ -340,7 +340,7 @@ swap. Thirteen **hero skins** from the Super Rare hunts recolour your hero's hai
 |---|---|
 | **RK3326 handhelds** through PortMaster (the XF35H, the R36S and similar devices) | tuned end to end on a real XF35H: direct framebuffer present, a GLES renderer, full-speed movies, the LED bar. Every custom firmware of the test matrix was run under emulation; real-device reports are welcome |
 | **Linux and Windows PC** | SDL3 GPU renderer (Vulkan, D3D12), **16:9 widescreen** in battles and the field, HighDPI fullscreen with `FILL` scaling, `SHARP` / `SCANLINES` / `CRT` / `SMOOTH` filters, fast-forward up to 8× |
-| **Android** (arm64) | an APK with a floating touch pad and a disc picker exists; it still needs its own round of work (see [What's left](#whats-left)) |
+| **Android** (arm64) | an APK with **16:9 widescreen**, a floating touch pad that sits beside the picture on wide phones and steps aside while a gamepad is connected, and a disc picker that copies your image into the app |
 
 <p align="center"><img src="docs/images/definitive/cross-play.svg" width="800" alt="Cross-Play cloud sync: the launcher syncs card1.mcd between handhelds and PC through a free Cloudflare Worker. Pair a device with a 6-digit code the host approves, choose a side when both changed, and keep 1 to 100 rotating local snapshots."></p>
 
@@ -367,7 +367,6 @@ it has only been played through a few times, so expect rough edges and frequent 
 - **The final battle** will get an extension. It does not change the story, and every other system is already
   implemented.
 - **Tuning for other platforms and devices**, beyond the XF35H and the PC it was tuned on.
-- **The Android version** exists but still needs a full dedicated session of mine before anyone should rely on it.
 
 The detailed list of open items is in [the roadmap](docs/definitive-edition/roadmap.md).
 

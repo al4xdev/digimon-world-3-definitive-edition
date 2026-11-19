@@ -1,6 +1,7 @@
 package com.al4xdev.dw2003;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.Intent;
 import android.database.Cursor;
@@ -8,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import org.libsdl.app.SDLActivity;
 
@@ -81,6 +83,16 @@ public class Dw3Activity extends SDLActivity {
         });
     }
 
+    private long querySize(Uri uri) {
+        try (Cursor c = getContentResolver().query(uri, new String[]{OpenableColumns.SIZE}, null, null, null)) {
+            if (c != null && c.moveToFirst()) {
+                int idx = c.getColumnIndex(OpenableColumns.SIZE);
+                if (idx >= 0 && !c.isNull(idx)) return c.getLong(idx);
+            }
+        } catch (Throwable ignored) {}
+        return -1;
+    }
+
     private String queryDisplayName(Uri uri) {
         try (Cursor c = getContentResolver().query(uri, new String[]{OpenableColumns.DISPLAY_NAME}, null, null, null)) {
             if (c != null && c.moveToFirst()) {
@@ -120,22 +132,64 @@ public class Dw3Activity extends SDLActivity {
             return;
         }
 
+        // The copy of a ~660 MB image takes from seconds to a minute; the launcher cannot draw while it waits, so the
+        // progress is a dialog of the activity's own.
+        long total = 0;
+        for (Uri u : uris) {
+            long n = querySize(u);
+            if (n > 0) total += n;
+        }
+        final long totalBytes = total;
+        final ProgressBar bar = new ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal);
+        bar.setIndeterminate(totalBytes <= 0);
+        bar.setMax(1000);
+        bar.setPadding(48, 32, 48, 32);
+        final AlertDialog dialog = new AlertDialog.Builder(this)
+            .setTitle("Copying the disc image")
+            .setView(bar)
+            .setCancelable(false)
+            .create();
+        dialog.show();
+
         new Thread(() -> {
             boolean anyCopied = false;
             File gameDir = new File(resolveAppDataDir(), "game");
             gameDir.mkdirs();
-            byte[] buf = new byte[65536];
+            byte[] buf = new byte[1 << 20];
+            long done = 0;
+            int shown = -1;
             for (Uri u : uris) {
                 String name = queryDisplayName(u).replaceAll("[/\\\\]", "_");
                 File out = new File(gameDir, name);
+                // Into a .part first: a copy cut short (no space, the file vanished) must not leave a truncated image
+                // where the launcher looks for the disc.
+                File part = new File(gameDir, name + ".part");
+                boolean ok = false;
                 try (InputStream in = getContentResolver().openInputStream(u);
-                     FileOutputStream fos = new FileOutputStream(out)) {
+                     FileOutputStream fos = new FileOutputStream(part)) {
                     if (in == null) continue;
                     int r;
-                    while ((r = in.read(buf)) > 0) fos.write(buf, 0, r);
-                    anyCopied = true;
+                    while ((r = in.read(buf)) > 0) {
+                        fos.write(buf, 0, r);
+                        done += r;
+                        int p = totalBytes > 0 ? (int)(done * 1000 / totalBytes) : 0;
+                        if (p != shown) {
+                            shown = p;
+                            final int pp = p;
+                            runOnUiThread(() -> bar.setProgress(pp));
+                        }
+                    }
+                    ok = true;
                 } catch (Throwable ignored) {}
+                if (ok && part.renameTo(out)) {
+                    anyCopied = true;
+                } else {
+                    part.delete();
+                }
             }
+            runOnUiThread(() -> {
+                try { dialog.dismiss(); } catch (Throwable ignored) {}
+            });
             nativeOnDiscPicked(anyCopied);
         }).start();
     }

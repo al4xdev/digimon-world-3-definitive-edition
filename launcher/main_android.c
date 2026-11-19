@@ -509,7 +509,7 @@ static void draw_screen(void) {
     case S_CLEAN:
         draw_debug();
         modal_touch("CLEAN LOGS AND DUMPS?", "Delete logs/, crash-*.txt and old log zips?", "Saves and disc are never touched.",
-                    "", "CANCEL", "DONE", C_ORANGE);
+                    "", "YES, CLEAN", "NO, KEEP", C_ORANGE);
         break;
     case S_LOADING: draw_loading(); break;
     case S_ERROR: draw_error(); break;
@@ -627,11 +627,11 @@ static void on_touch(int code, int x, int y) {
         return;
     }
     if (screen == S_CLEAN) {
-        if (in_rect(x, y, 340, 294, 210, 44)) {
+        if (in_rect(x, y, 90, 294, 210, 44)) {
             int rm = logs_clean();
             snprintf(status, sizeof(status), "CLEANED %d FILES", rm);
             go(S_DEBUG, DEBUG_CLEAN_LOGS, -1);
-        } else if (in_rect(x, y, 90, 294, 210, 44)) {
+        } else if (in_rect(x, y, 340, 294, 210, 44)) {
             go(S_DEBUG, DEBUG_CLEAN_LOGS, -1);
         }
         return;
@@ -804,7 +804,24 @@ static void on_touch(int code, int x, int y) {
     }
 }
 
+/* Android's Back: the same step back as the BACK pill or a modal's cancel. On the home screen it does nothing, so a
+ * stray edge swipe never leaves the app. */
+static void on_back(void) {
+    if (capture) { capture = 0; return; }
+    switch (screen) {
+    case S_SPLASH: case S_HOME: case S_LOADING: return;
+    case S_RESET: go(S_HOME, HI_RESET, -1); return;
+    case S_BACKUP_CONFIRM: go(S_BACKUPS, sel, -1); return;
+    case S_CLEAN: go(S_DEBUG, DEBUG_CLEAN_LOGS, -1); return;
+    case S_BROWSE: go(S_GAME, GAME_DISC, -1); return;
+    case S_BACKUPS: go(S_SAVES, SAVES_RESTORE, -1); return;
+    case S_ERROR: go(return_screen, return_sel, -1); return;
+    default: cfg_save(&c); go(S_HOME, 0, -1); return;
+    }
+}
+
 static void on_key(int code) {
+    if (code == K_BACK) { on_back(); return; }
     if (screen == S_SPLASH) { go(S_HOME, 0, +1); return; }
     if (screen == S_LOADING) { load_press(code); return; }
     if (capture) {

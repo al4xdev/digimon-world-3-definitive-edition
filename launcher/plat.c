@@ -793,7 +793,7 @@ int plat_poll(Ev *ev, int timeout_ms) {
                 plat_toggle_fullscreen();
                 return 0;
             }
-            ev->code = key_code(e.key.key);
+            ev->code = is_android && e.key.key == SDLK_AC_BACK ? K_BACK : key_code(e.key.key);
             ev->down = e.type == SDL_EVENT_KEY_DOWN;
             return ev->code != 0;
         case SDL_EVENT_GAMEPAD_BUTTON_DOWN:

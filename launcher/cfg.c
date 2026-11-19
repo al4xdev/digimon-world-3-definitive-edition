@@ -99,6 +99,18 @@ static const char *game_name(int code) {
     return code_name(code);
 }
 
+/* settings.json's input.gamepad on Android: SDL3 reports a phone's or a Bluetooth pad's face buttons at their real
+ * places (plat.c: SDL's west arrives as K_NORTH, its north as K_WEST), with none of the handheld's quarter turn. */
+static const char *sdl3_name(int code) {
+    switch (code) {
+    case K_SOUTH: return "south";
+    case K_EAST: return "east";
+    case K_NORTH: return "west";
+    case K_WEST: return "north";
+    }
+    return code_name(code);
+}
+
 static int code_from_game(const char *n) {
     if (!strcmp(n, "west")) return K_SOUTH;
     if (!strcmp(n, "north")) return K_NORTH;
@@ -164,6 +176,10 @@ void cfg_defaults(Cfg *c) {
     c->pad[A_SQUARE].code = K_NORTH;
     c->pad[A_CIRCLE].code = K_WEST;
     c->pad[A_TRIANGLE].code = K_EAST;
+    if (is_android) { /* the PC's layout (the PS1's own places: circle right, triangle top), as on the touch pad */
+        c->pad[A_CIRCLE].code = K_EAST;
+        c->pad[A_TRIANGLE].code = K_WEST;
+    }
     c->pad[A_L1].code = K_L1;
     c->pad[A_R1].code = K_R1;
     c->pad[A_START].code = K_START;
@@ -398,7 +414,8 @@ static int write_settings(const Cfg *c) {
     char pads[512] = "{ ";
     for (int i = 0; i < A_COUNT; i++) {
         char one[64];
-        snprintf(one, sizeof(one), "%s\"%s\": \"%s\"", i ? ", " : "", action_name[i], game_name(c->pad[i].code));
+        snprintf(one, sizeof(one), "%s\"%s\": \"%s\"", i ? ", " : "", action_name[i],
+                 is_android ? sdl3_name(c->pad[i].code) : game_name(c->pad[i].code));
         strcat(pads, one);
     }
     strcat(pads, " }");

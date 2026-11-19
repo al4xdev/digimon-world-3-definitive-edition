@@ -69,8 +69,19 @@ EOF
     if [ -n "${DW3_ANDROID_ABI:-}" ]; then
         ABI_PROP="-PabiFilters=${DW3_ANDROID_ABI}"
     fi
+    # The release key (android/app/build.gradle): the keystore is mounted read-only, the passwords pass by name only.
+    KEY_ARGS=()
+    if [ -n "${DW3_ANDROID_KEYSTORE:-}" ]; then
+        [ -f "$DW3_ANDROID_KEYSTORE" ] || { echo "Error: DW3_ANDROID_KEYSTORE=$DW3_ANDROID_KEYSTORE is not a file" >&2; exit 1; }
+        KEY_ARGS=(-v "$(realpath "$DW3_ANDROID_KEYSTORE"):/run/dw3-release.jks:ro" -e DW3_ANDROID_KEYSTORE=/run/dw3-release.jks
+                  -e DW3_ANDROID_KEYSTORE_PASSWORD -e DW3_ANDROID_KEY_ALIAS -e DW3_ANDROID_KEY_PASSWORD)
+        echo "Signing with the release key ($DW3_ANDROID_KEYSTORE)"
+    else
+        echo "Warning: DW3_ANDROID_KEYSTORE is not set; the APK is signed with a debug key and will not install over one signed with the release key" >&2
+    fi
     docker run --rm -u "$(id -u):$(id -g)" \
         -e DW3_VERSION \
+        "${KEY_ARGS[@]}" \
         ${SDL3_ENV:+-e SDL3_ANDROID_DIR="$SDL3_ENV"} \
         -e HOME=/work/.dumps/android-home \
         -e ANDROID_USER_HOME=/work/.dumps/android-home/.android \

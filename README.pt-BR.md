@@ -258,13 +258,13 @@ variantes estão na [referência da caçada](docs/definitive-edition/hunt-and-ec
 
 <table>
 <tr>
-<td width="50%" align="center"><img src="docs/images/definitive/shots/velvet-way-in.gif" alt="Uma luz azul tênue na pousada marca a entrada para a Velvet Room."><br><sub>Uma luz azul tênue numa pousada, e o caminho se abre</sub></td>
+<td width="50%" align="center"><img src="docs/images/definitive/shots/velvet-way-in.gif" alt="Uma luz azul suave na pousada marca a entrada para a Velvet Room."><br><sub>Uma luz azul suave numa pousada, e o caminho se abre</sub></td>
 <td width="50%" align="center"><img src="docs/images/definitive/shots/velvet-room.png" alt="A Velvet Room e os seus convidados."><br><sub>A sala no auge, com o Kail como herói</sub></td>
 </tr>
 </table>
 
 Em algum lugar do Mundo Digital, uma sala azul espera entre os servidores. No começo, as portas estão fechadas. Então
-um boato começa a correr por Seiryu City e, em cada pousada, uma tênue **luz azul** começa a pulsar sobre um pedaço
+um boato começa a correr por Seiryu City e, em cada pousada, uma suave **luz azul** começa a pulsar sobre um pedaço
 do cenário. Fique parado nela, aperte Circle, e pronto: você está lá dentro.
 
 <p align="center"><img src="docs/images/definitive/velvet-room.svg" width="800" alt="A Velvet Room cresce com a história: Sepikmon no passo 4, Igor e Gennai no 10, Guilmon com o Demon Bell no 16, Etemon e o porco no 22, o Black Market do Oikawa depois que ele é derrotado, e a Time Room antes do ponto sem volta."></p>
@@ -346,7 +346,7 @@ história acompanha a troca. Treze **skins de herói** das caçadas Super Rare r
 |---|---|
 | **Portáteis RK3326** via PortMaster (o XF35H, o R36S e dispositivos parecidos) | ajustado de ponta a ponta num XF35H de verdade: framebuffer direto, renderizador GLES, vídeos em velocidade total, a barra de LED. Todas as custom firmwares da matriz de testes rodaram sob emulação; relatos de dispositivos reais são bem-vindos |
 | **PC Linux e Windows** | renderizador de GPU SDL3 (Vulkan, D3D12), **widescreen 16:9** nas batalhas e no campo, tela cheia HighDPI com escala `FILL`, filtros `SHARP` / `SCANLINES` / `CRT` / `SMOOTH`, avanço rápido de até 8× |
-| **Android** (arm64) | existe um APK com um touchpad flutuante e um seletor de disco; ele ainda precisa de uma rodada própria de trabalho (veja [O que falta](#o-que-falta)) |
+| **Android** (arm64) | existe um APK com **widescreen 16:9**, um touchpad flutuante que fica ao lado da imagem nos celulares largos e sai da frente enquanto um controle está conectado, e um seletor de disco que copia sua imagem para dentro do app |
 
 <p align="center"><img src="docs/images/definitive/cross-play.svg" width="800" alt="Cloud Sync de cross-play: o launcher sincroniza o card1.mcd entre portáteis e PC por meio de um Cloudflare Worker gratuito. Pareie um dispositivo com um código de 6 dígitos que o host aprova, escolha um lado quando os dois mudarem, e mantenha de 1 a 100 snapshots locais rotativos."></p>
 
@@ -371,8 +371,6 @@ dele só foi jogada algumas vezes, então espere arestas e hotfixes frequentes. 
 - **A batalha final** vai ganhar uma extensão. Ela não muda a história, e todos os outros sistemas já estão
   implementados.
 - **Ajustes para outras plataformas e dispositivos**, além do XF35H e do PC em que foi afinado.
-- **A versão para Android** existe, mas ainda precisa de uma sessão inteira dedicada de minha parte antes que alguém
-  dependa dela.
 
 A lista detalhada dos itens em aberto está no [roadmap](docs/definitive-edition/roadmap.md).
 

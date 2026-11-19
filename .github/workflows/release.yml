@@ -367,10 +367,22 @@ jobs:
       - name: dxc
         run: scripts/setup.sh dxc
 
+      # The release key: the secret ANDROID_KEYSTORE_B64 holds the keystore in base64. Without it the APK is signed with
+      # this runner's throwaway debug key, and no release would install over the previous one.
       - name: Build Android arm64-v8a APK
         env:
           DW3_VERSION: ${{ github.ref_type == 'tag' && github.ref_name || inputs.tag }}
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          DW3_ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          DW3_ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          DW3_ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
+          if [ -n "$KEYSTORE_B64" ]; then
+            export DW3_ANDROID_KEYSTORE="$RUNNER_TEMP/dw3-release.jks"
+            printf '%s' "$KEYSTORE_B64" | base64 -d > "$DW3_ANDROID_KEYSTORE"
+          else
+            echo "::warning::ANDROID_KEYSTORE_B64 is not set: the APK is signed with a throwaway debug key"
+          fi
           .ci-cd/android/build_android.sh
           apk="$(ls -1 dist/dw2003-*-android-arm64-v8a.apk)"
           python3 .ci-cd/common/check_release_contents.py android "$apk"
@@ -446,12 +458,13 @@ jobs:
           [[ "$TAG" == *-* ]] && flags+=(--prerelease)
           # --target: a manual run's tag that does not exist yet is created on the commit the packages were built from.
           gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" "${flags[@]}" \
-            --title "Digimon World 3: Definitive Edition $TAG" --generate-notes --notes "The PC & handheld builds: the launcher, the game and its mods, for Linux x86_64, Windows x86_64 and RK3326 PortMaster (armhf).
+            --title "Digimon World 3: Definitive Edition $TAG" --generate-notes --notes "The PC & handheld builds: the launcher, the game and its mods, for Linux x86_64, Windows x86_64, RK3326 PortMaster (armhf) and Android (arm64).
           Bring your own disc image of Digimon World 2003 (PS1, Europe, raw .bin + .cue; the launcher checks its SHA-1). These files hold no game data.
 
           **Linux x86_64**: \`dw2003-*-x86_64.AppImage\`: \`chmod +x\` it, then run it. Needs glibc 2.39 or newer (Ubuntu 24.04, Fedora 40, Debian 13 or later).
           **Windows x86_64**: \`dw2003-*-windows-x86_64.zip\`: unzip, run \`dw2003-launcher.exe\` (unsigned: SmartScreen's \"More info\", \"Run anyway\"). Windows 10 or newer. Tested on Linux under Wine; reports from real Windows are welcome in the issues.
           **PortMaster (RK3326 armhf)**: \`dw3.zip\`: unpack into \`ports/\` and put your \`.bin\` + \`.cue\` in \`ports/dw3/game/\`.
+          **Android (arm64)**: \`dw2003-*-android-arm64-v8a.apk\`: install it (allow installs from your browser or file manager), then pick your \`.bin\` (and \`.cue\`) in the launcher; it copies them into the app. Android 7 or newer; a touch pad is on screen, and it hides while a gamepad is connected.
           **Widescreen battles**: the launcher's Mods screen; it needs Video > Renderer \"gpu\".
           The .debug file and the -symbols.zip are the programs' debug info for crash reports (not needed to play)." \
             "${files[@]}"

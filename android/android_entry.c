@@ -1,7 +1,7 @@
 /* Android SDL3 main entry & JNI bridge:
  * 1. Resolves app external/internal storage dir and prepares <files>/game and <files>/logs.
  * 2. Runs the parallel touch launcher (launcher/main_android.c).
- * 3. Configures DW3_TOUCH_PAD, DW3_PAD_REMAP=1, DW3_LOG, and runs dw3_game_main() in-process. */
+ * 3. Configures DW3_TOUCH_PAD, DW3_LOG, and runs dw3_game_main() in-process. */
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 #include <jni.h>
@@ -100,7 +100,9 @@ int main(int argc, char **argv) {
 
     dw3_touch_pad_set_enabled(touch_pad);
     setenv("DW3_TOUCH_PAD", touch_pad ? "1" : "0", 1);
-    setenv("DW3_PAD_REMAP", "1", 1);
+    /* No DW3_PAD_REMAP: that is for the handheld's SDL2 runtime, which has no pad map of its own. This SDL3 runtime maps
+     * the gamepad from settings.json (input.gamepad), so pad.map on top would permute it a second time, and would
+     * permute the touch pad's buttons, which are already the PS1 buttons they show. */
     setenv("DW3_LOG", log_level == 2 ? "heavy" : log_level == 1 ? "soft" : "off", 1);
 
     char *game_argv[] = {

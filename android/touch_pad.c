@@ -91,6 +91,11 @@ typedef struct {
 
 static int tp_enabled = -1;
 static int tp_collapsed = 0;
+/* A gamepad being connected hides the pad (the picture is left clean); the next finger on the screen shows it
+ * again, so a pad that SDL lists but the player does not use (some phones expose built-in sensors as one) never
+ * locks the touch controls away. */
+static int tp_pad_hidden;
+static int tp_had_gamepad;
 static TouchFinger tp_fingers[MAX_TOUCH_FINGERS];
 static uint16_t tp_bits;
 static int tp_dpad_held;
@@ -316,6 +321,11 @@ void port_touch_event(const void *sdl_event) {
 
     if (e->type == SDL_EVENT_FINGER_DOWN) {
         int slot = -1;
+        if (tp_pad_hidden) {
+            tp_pad_hidden = 0; /* this tap only brings the pad back; it presses nothing */
+            tp_dirty = 1;
+            return;
+        }
         for (int i = 0; i < MAX_TOUCH_FINGERS; i++) {
             if (tp_fingers[i].active && tp_fingers[i].id == fid) {
                 slot = i;
@@ -635,6 +645,16 @@ static void draw_glyph(uint32_t *buf, int w, int h, float cx, float cy, float s,
     }
 }
 
+/* A label with a dark drop shadow under it: on a 16:9 or 4:3 screen the pad sits on the picture, and a light glyph
+ * alone disappears on the game's bright scenes (pavements, snow, menus). */
+static void draw_label(uint32_t *buf, int w, int h, float cx, float cy, float s, char ch,
+                       uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+    float off = s * 0.09f;
+    if (off < 1.0f) off = 1.0f;
+    draw_glyph(buf, w, h, cx + off, cy + off, s, ch, 8, 12, 16, (uint8_t)(a * 0.85f));
+    draw_glyph(buf, w, h, cx, cy, s, ch, r, g, b, a);
+}
+
 int port_touch_draw_rgba(uint32_t *rgba, int w, int h, const int game_rect[4]) {
     tp_ensure_init();
     if (!tp_enabled || w <= 0 || h <= 0) {
@@ -642,6 +662,23 @@ int port_touch_draw_rgba(uint32_t *rgba, int w, int h, const int game_rect[4]) {
     }
     tp_view_w = w;
     tp_view_h = h;
+    {
+        int has_gamepad = SDL_HasGamepad() ? 1 : 0;
+        if (has_gamepad && !tp_had_gamepad) {
+            tp_pad_hidden = 1;
+            memset(tp_fingers, 0, sizeof(tp_fingers));
+            tp_recompute();
+        } else if (!has_gamepad && tp_pad_hidden) {
+            tp_pad_hidden = 0;
+        }
+        if (has_gamepad != tp_had_gamepad) {
+            tp_dirty = 1;
+        }
+        tp_had_gamepad = has_gamepad;
+    }
+    if (tp_pad_hidden) {
+        return -1; /* the renderers draw no overlay this frame */
+    }
     if (rgba == NULL) {
         return 0; /* probe: touch overlay enabled */
     }
@@ -706,18 +743,18 @@ int port_touch_draw_rgba(uint32_t *rgba, int w, int h, const int game_rect[4]) {
         const char *lbl = L.btns[b].label;
         float gs = (L.btns[b].is_circle ? L.btns[b].hw : L.btns[b].hh) * 0.92f;
         if (strcmp(lbl, "/\\") == 0) {
-            draw_glyph(rgba, w, h, L.btns[b].cx, L.btns[b].cy, gs, '^', 240, 250, 255, la);
+            draw_label(rgba, w, h, L.btns[b].cx, L.btns[b].cy, gs, '^', 240, 250, 255, la);
         } else if (strcmp(lbl, "[]") == 0) {
-            draw_glyph(rgba, w, h, L.btns[b].cx, L.btns[b].cy, gs, '[', 240, 250, 255, la);
+            draw_label(rgba, w, h, L.btns[b].cx, L.btns[b].cy, gs, '[', 240, 250, 255, la);
         } else if (strlen(lbl) == 1) {
-            draw_glyph(rgba, w, h, L.btns[b].cx, L.btns[b].cy, gs, lbl[0], 240, 250, 255, la);
+            draw_label(rgba, w, h, L.btns[b].cx, L.btns[b].cy, gs, lbl[0], 240, 250, 255, la);
         } else if (strlen(lbl) == 2) {
-            draw_glyph(rgba, w, h, L.btns[b].cx - gs * 0.55f, L.btns[b].cy, gs * 0.9f, lbl[0], 240, 250, 255, la);
-            draw_glyph(rgba, w, h, L.btns[b].cx + gs * 0.55f, L.btns[b].cy, gs * 0.9f, lbl[1], 240, 250, 255, la);
+            draw_label(rgba, w, h, L.btns[b].cx - gs * 0.55f, L.btns[b].cy, gs * 0.9f, lbl[0], 240, 250, 255, la);
+            draw_label(rgba, w, h, L.btns[b].cx + gs * 0.55f, L.btns[b].cy, gs * 0.9f, lbl[1], 240, 250, 255, la);
         } else if (strlen(lbl) == 3) {
-            draw_glyph(rgba, w, h, L.btns[b].cx - gs * 1.0f, L.btns[b].cy, gs * 0.8f, lbl[0], 240, 250, 255, la);
-            draw_glyph(rgba, w, h, L.btns[b].cx, L.btns[b].cy, gs * 0.8f, lbl[1], 240, 250, 255, la);
-            draw_glyph(rgba, w, h, L.btns[b].cx + gs * 1.0f, L.btns[b].cy, gs * 0.8f, lbl[2], 240, 250, 255, la);
+            draw_label(rgba, w, h, L.btns[b].cx - gs * 1.0f, L.btns[b].cy, gs * 0.8f, lbl[0], 240, 250, 255, la);
+            draw_label(rgba, w, h, L.btns[b].cx, L.btns[b].cy, gs * 0.8f, lbl[1], 240, 250, 255, la);
+            draw_label(rgba, w, h, L.btns[b].cx + gs * 1.0f, L.btns[b].cy, gs * 0.8f, lbl[2], 240, 250, 255, la);
         }
     }
 

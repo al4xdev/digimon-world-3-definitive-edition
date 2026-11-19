@@ -261,13 +261,13 @@ nel [riferimento sulla caccia](docs/definitive-edition/hunt-and-economy.md).
 
 <table>
 <tr>
-<td width="50%" align="center"><img src="docs/images/definitive/shots/velvet-way-in.gif" alt="Una debole luce blu nella locanda segna l'ingresso della Velvet Room."><br><sub>Una debole luce blu in una locanda, e la strada si apre</sub></td>
+<td width="50%" align="center"><img src="docs/images/definitive/shots/velvet-way-in.gif" alt="Una morbida luce blu nella locanda segna l'ingresso della Velvet Room."><br><sub>Una morbida luce blu in una locanda, e la strada si apre</sub></td>
 <td width="50%" align="center"><img src="docs/images/definitive/shots/velvet-room.png" alt="La Velvet Room e i suoi ospiti."><br><sub>La stanza al suo massimo, con Kail come eroe</sub></td>
 </tr>
 </table>
 
 Da qualche parte nel Mondo Digitale, una stanza blu aspetta tra i server. All'inizio le sue porte sono chiuse. Poi
-una voce comincia a circolare a Seiryu City e, in ogni locanda, una debole **luce blu** inizia a pulsare su un pezzo
+una voce comincia a circolare a Seiryu City e, in ogni locanda, una morbida **luce blu** inizia a pulsare su un pezzo
 della scenografia. Mettiti lì dentro, premi Circle, e sei dentro.
 
 <p align="center"><img src="docs/images/definitive/velvet-room.svg" width="800" alt="La Velvet Room cresce con la storia: Sepikmon al passo 4, Igor e Gennai al 10, Guilmon con il Demon Bell al 16, Etemon e il maiale al 22, il Black Market di Oikawa una volta sconfitto, e la Time Room prima del punto di non ritorno."></p>
@@ -349,7 +349,7 @@ segue lo scambio. Tredici **skin da eroe** delle cacce Super Rare ricolorano i c
 |---|---|
 | **Portatili RK3326** tramite PortMaster (l'XF35H, l'R36S e dispositivi simili) | ottimizzato da cima a fondo su un vero XF35H: presentazione diretta del framebuffer, un renderer GLES, filmati a piena velocità, la barra LED. Ogni custom firmware della matrice di test è stato eseguito sotto emulazione; le segnalazioni da dispositivi reali sono benvenute |
 | **PC Linux e Windows** | renderer GPU SDL3 (Vulkan, D3D12), **widescreen 16:9** in battaglia e sul campo, schermo intero HighDPI con ridimensionamento `FILL`, filtri `SHARP` / `SCANLINES` / `CRT` / `SMOOTH`, avanzamento rapido fino a 8× |
-| **Android** (arm64) | esiste un APK con un touch pad flottante e un selettore del disco; richiede ancora un suo ciclo di lavoro (vedi [Cosa manca ancora](#cosa-manca-ancora)) |
+| **Android** (arm64) | esiste un APK con **widescreen 16:9**, un touch pad flottante che sta accanto all'immagine sui telefoni larghi e si fa da parte finché è collegato un controller, e un selettore del disco che copia la tua immagine dentro l'app |
 
 <p align="center"><img src="docs/images/definitive/cross-play.svg" width="800" alt="Cloud Sync cross-play: il launcher sincronizza card1.mcd tra portatili e PC tramite un Cloudflare Worker gratuito. Abbina un dispositivo con un codice a 6 cifre che l'host approva, scegli un lato quando entrambi sono cambiati e conserva da 1 a 100 snapshot locali a rotazione."></p>
 
@@ -373,8 +373,6 @@ stata giocata solo poche volte, quindi aspettati qualche spigolo e hotfix freque
   dire e da fare); gli hotfix sono in arrivo.
 - **Lo scontro finale** riceverà un'estensione. Non cambia la storia, e ogni altro sistema è già implementato.
 - **L'ottimizzazione per altre piattaforme e dispositivi**, oltre all'XF35H e al PC su cui è stato calibrato.
-- **La versione Android** esiste, ma richiede ancora una sessione intera e dedicata da parte mia prima che qualcuno
-  ci faccia affidamento.
 
 L'elenco dettagliato dei punti aperti è nella [roadmap](docs/definitive-edition/roadmap.md).
 

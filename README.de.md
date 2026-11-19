@@ -261,13 +261,13 @@ jede Variante stehen in [der Jagdreferenz](docs/definitive-edition/hunt-and-econ
 
 <table>
 <tr>
-<td width="50%" align="center"><img src="docs/images/definitive/shots/velvet-way-in.gif" alt="Ein schwaches blaues Licht im Gasthaus markiert den Weg in den Velvet Room."><br><sub>Ein schwaches blaues Licht in einem Gasthaus, und der Weg öffnet sich</sub></td>
+<td width="50%" align="center"><img src="docs/images/definitive/shots/velvet-way-in.gif" alt="Ein sanftes blaues Licht im Gasthaus markiert den Weg in den Velvet Room."><br><sub>Ein sanftes blaues Licht in einem Gasthaus, und der Weg öffnet sich</sub></td>
 <td width="50%" align="center"><img src="docs/images/definitive/shots/velvet-room.png" alt="Der Velvet Room und seine Gäste."><br><sub>Der Raum in voller Pracht, mit Kail als Held</sub></td>
 </tr>
 </table>
 
 Irgendwo in der Digitalen Welt wartet ein blauer Raum zwischen den Servern. Zuerst sind seine Türen verschlossen. Dann
-geht in Seiryu City ein Gerücht um, und in jedem Gasthaus beginnt ein schwaches **blaues Licht** auf einem Stück der
+geht in Seiryu City ein Gerücht um, und in jedem Gasthaus beginnt ein sanftes **blaues Licht** auf einem Stück der
 Kulisse zu atmen. Stell dich hinein, drück Circle, und du bist drin.
 
 <p align="center"><img src="docs/images/definitive/velvet-room.svg" width="800" alt="Der Velvet Room wächst mit der Geschichte: Sepikmon bei Schritt 4, Igor und Gennai bei 10, Guilmon mit dem Demon Bell bei 16, Etemon und das Schwein bei 22, Oikawas Black Market, sobald er besiegt ist, und der Time Room vor dem Point of no Return."></p>
@@ -351,7 +351,7 @@ und Kleidung deines Helden um.
 |---|---|
 | **RK3326-Handhelds** über PortMaster (der XF35H, der R36S und ähnliche Geräte) | von Anfang bis Ende auf einem echten XF35H abgestimmt: direkte Framebuffer-Ausgabe, ein GLES-Renderer, Videos in voller Geschwindigkeit, die LED-Leiste. Jede Custom Firmware der Testmatrix lief unter Emulation; Berichte von echten Geräten sind willkommen |
 | **Linux- und Windows-PC** | SDL3-GPU-Renderer (Vulkan, D3D12), **16:9-Widescreen** in Kämpfen und im Feld, HighDPI-Vollbild mit `FILL`-Skalierung, Filter `SHARP` / `SCANLINES` / `CRT` / `SMOOTH`, Vorspulen bis 8× |
-| **Android** (arm64) | ein APK mit schwebendem Touchpad und Disc-Auswahl existiert; es braucht noch eine eigene Arbeitsrunde (siehe [Was noch fehlt](#was-noch-fehlt)) |
+| **Android** (arm64) | ein APK mit **16:9-Breitbild**, einem schwebenden Touchpad, das auf breiten Handys neben dem Bild sitzt und verschwindet, solange ein Gamepad verbunden ist, und einer Disc-Auswahl, die dein Image in die App kopiert, existiert |
 
 <p align="center"><img src="docs/images/definitive/cross-play.svg" width="800" alt="Cross-Play-Cloud-Sync: Der Launcher synchronisiert card1.mcd zwischen Handhelds und PC über einen kostenlosen Cloudflare Worker. Koppele ein Gerät mit einem 6-stelligen Code, den der Host bestätigt, wähle eine Seite, wenn beide sich geändert haben, und behalte 1 bis 100 rotierende lokale Snapshots."></p>
 
@@ -376,8 +376,6 @@ Manches wurde erst ein paar Mal durchgespielt, rechne also mit Ecken und Kanten 
 - **Der Endkampf** bekommt eine Erweiterung. Sie ändert die Geschichte nicht, und jedes andere System ist bereits
   umgesetzt.
 - **Feinabstimmung für andere Plattformen und Geräte**, über den XF35H und den PC hinaus, auf denen es abgestimmt wurde.
-- **Die Android-Version** existiert, braucht aber noch eine volle, eigene Sitzung von mir, bevor sich jemand darauf
-  verlassen sollte.
 
 Die ausführliche Liste der offenen Punkte steht in [der Roadmap](docs/definitive-edition/roadmap.md).
 

@@ -42,7 +42,7 @@ publishes nothing).
 | AppImage | `linux/package_appimage.sh --test`, `common/check_release_contents.py appimage` |
 | Windows package | `windows/package_windows.sh --test`, `common/check_release_contents.py windows` |
 | PortMaster | `portmaster/build_arm.sh`, `portmaster/make_release.sh`, `common/check_release_contents.py portmaster` |
-| Android APK | `android/build_android.sh`, `common/check_release_contents.py android` |
+| Android APK | `android/build_android.sh` (signed with the release key when the `ANDROID_KEYSTORE_B64` secret is set), `common/check_release_contents.py android` |
 | Publish the release | `common/check_release_contents.py dist`, then the GitHub release (a pre-release for a tag with a suffix) |
 | Sync to PortMaster-MV-New | `ports/dw3/` in the PortMaster fork, when `PORTMASTER_REPO_TOKEN` is set |
 

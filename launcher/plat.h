@@ -36,4 +36,5 @@ extern const char *plat_shot_dir;
 #define K_TOUCH_DOWN 0x1001
 #define K_TOUCH_MOVE 0x1002
 #define K_TOUCH_UP 0x1003
+#define K_BACK 0x1004 /* Android's system Back (the key, the gesture); never bindable */
 #endif
