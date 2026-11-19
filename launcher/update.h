@@ -6,8 +6,8 @@
 /* The launcher's check for a newer release (update.c): GitHub's latest full release (never a pre-release) against the
  * running build's version. It only tells: the launcher shows the new version and opens its page; nothing is
  * downloaded. A build that is not a release (a version with a suffix, "1.0.0-3-gabcdef1", "dev-abcdef1") never asks.
- * RecompLauncher updates the PC releases by itself and PortMaster has its own updates, so the Android launcher is the
- * one that calls this. */
+ * PortMaster has its own updates, so the PC launcher (Windows and Linux: DEBUG > CHECK FOR UPDATES, the notice on HOME)
+ * and the Android launcher are the ones that call this; RecompLauncher's own updater is independent of it. */
 
 #define DW3_RELEASES_API "https://api.github.com/repos/al4xdev/digimon-world-3-definitive-edition/releases/latest"
 #define DW3_UPDATE_EVERY_S (12 * 3600) /* one request per 12 hours at most: GitHub allows 60 an hour per address */

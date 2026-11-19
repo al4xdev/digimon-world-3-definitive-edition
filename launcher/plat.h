@@ -18,6 +18,7 @@ void plat_release(void);                       /* stop using the screen and the 
 long plat_now_ms(void);                        /* monotonic; virtual (33 ms a poll) under PLAT_NULL */
 void plat_desktop_size(int *w, int *h);        /* detected monitor size (1280x720 fallback if headless) */
 void plat_toggle_fullscreen(void);
+int plat_open_url(const char *url);            /* the system's browser on an https:// page; 0 on success */
 int plat_pref_dir(char *out, size_t n);         /* the per-user settings directory (SDL's pref path); 0 on success */
 extern const char *plat_shot_dir;
 void plat_shot(const char *name);              /* the canvas as <plat_shot_dir>/<name>.ppm */
