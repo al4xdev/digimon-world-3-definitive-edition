@@ -103,7 +103,24 @@ if(ANDROID)
     target_compile_definitions(main PRIVATE HAVE_SDL3 DW3_TARGET_ANDROID)
     target_include_directories(main PRIVATE "${DW3_ROOT}/launcher" "${DW3_ROOT}/android")
 else()
+    # Windows: the game's own resource script (the icon, the manifest and the version information; the stack's default has the
+    # manifest only). The version is the release's X.Y.Z (PSXSTACK_VERSION, as the launcher's), else 0.0.0.0 and "dev".
+    set(DW3_GAME_RC "")
+    if(WIN32)
+        set(DW3_GAME_VERSION "dev")
+        set(DW3_RC_NUM "0,0,0,0")
+        if("$ENV{PSXSTACK_VERSION}" MATCHES "^v?([0-9]+[.][0-9]+[.][0-9]+)$")
+            set(DW3_GAME_VERSION "${CMAKE_MATCH_1}")
+            string(REPLACE "." "," DW3_RC_NUM "${DW3_GAME_VERSION},0")
+        endif()
+        set(DW3_ICON "${DW3_ROOT}/launcher/windows/dw2003.ico")
+        set(DW3_MANIFEST "${CMAKE_CURRENT_SOURCE_DIR}/windows/dw2003.manifest")
+        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/windows/dw2003.rc.in" "${CMAKE_BINARY_DIR}/gen/dw2003.rc" @ONLY)
+        set(DW3_GAME_RC "${CMAKE_BINARY_DIR}/gen/dw2003.rc")
+        set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${DW3_ICON}" "${DW3_MANIFEST}")
+    endif()
     psxstack_add_game(dw2003
+        RC "${DW3_GAME_RC}"
         GAME_JSON "${CMAKE_CURRENT_SOURCE_DIR}/game/game.json"
         UNITS "${DW3_INPUTS}/units.txt"
         MAIN_UNIT "${DW3_ROOT}/src/main/main.c"

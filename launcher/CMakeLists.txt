@@ -18,7 +18,7 @@ add_executable(dw2003-launcher main.c ui.c plat.c cfg.c loading.c cloud.c sha256
 # The running build's version for the update notice (update.h): a release's X.Y.Z, from the tag the packaging scripts
 # export as PSXSTACK_VERSION; any other build is "dev", which never asks.
 set(DW3_LAUNCHER_VERSION "dev")
-if("$ENV{PSXSTACK_VERSION}" MATCHES "^v?([0-9]+\.[0-9]+\.[0-9]+)$")
+if("$ENV{PSXSTACK_VERSION}" MATCHES "^v?([0-9]+[.][0-9]+[.][0-9]+)$")
     set(DW3_LAUNCHER_VERSION "${CMAKE_MATCH_1}")
 endif()
 message(STATUS "launcher version: ${DW3_LAUNCHER_VERSION}")
@@ -35,9 +35,18 @@ if(WIN32)
     # (windows/: the UTF-8 code page, long paths, per-monitor DPI awareness). WinHTTP for the cloud sync, comdlg32 for
     # the file dialog. The toolchain file links everything statically and writes a PDB beside the executable.
     enable_language(RC)
-    target_sources(dw2003-launcher PRIVATE win32.c windows/dw2003-launcher.rc)
-    set_source_files_properties(windows/dw2003-launcher.rc PROPERTIES
-        OBJECT_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/windows/dw2003-launcher.manifest")
+    # The resource script is generated: the icon, the manifest and the version information (X.Y.Z of a release as four
+    # numbers and as text, else 0.0.0.0 and "dev"), which Explorer, the Start menu and game libraries read.
+    if(DW3_LAUNCHER_VERSION MATCHES "^[0-9]+[.][0-9]+[.][0-9]+$")
+        string(REPLACE "." "," DW3_RC_NUM "${DW3_LAUNCHER_VERSION},0")
+    else()
+        set(DW3_RC_NUM "0,0,0,0")
+    endif()
+    set(DW3_RC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/windows")
+    configure_file(windows/dw2003-launcher.rc.in "${CMAKE_CURRENT_BINARY_DIR}/dw2003-launcher.rc" @ONLY)
+    target_sources(dw2003-launcher PRIVATE win32.c "${CMAKE_CURRENT_BINARY_DIR}/dw2003-launcher.rc")
+    set_source_files_properties("${CMAKE_CURRENT_BINARY_DIR}/dw2003-launcher.rc" PROPERTIES
+        OBJECT_DEPENDS "${DW3_RC_DIR}/dw2003-launcher.manifest;${DW3_RC_DIR}/dw2003.ico")
     target_link_libraries(dw2003-launcher PRIVATE winhttp comdlg32)
     set_target_properties(dw2003-launcher PROPERTIES WIN32_EXECUTABLE ON)
 else()

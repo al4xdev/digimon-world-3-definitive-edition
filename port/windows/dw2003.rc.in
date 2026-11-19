@@ -1,0 +1,33 @@
+// The game's resources (the Windows build; port/CMakeLists.txt gives this to psxstack_add_game as its RC): the icon
+// the launcher shares, the application manifest as resource 1 of type RT_MANIFEST (24), which the loader reads at
+// process creation, and the version information Explorer, the Start menu and game libraries read. CMake fills in the
+// version (configure_file: the release's X.Y.Z, or 0.0.0.0 and "dev").
+#include <winver.h>
+
+1 ICON "@DW3_ICON@"
+1 24 "@DW3_MANIFEST@"
+
+1 VERSIONINFO
+FILEVERSION @DW3_RC_NUM@
+PRODUCTVERSION @DW3_RC_NUM@
+FILEOS VOS_NT_WINDOWS32
+FILETYPE VFT_APP
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904B0"
+        BEGIN
+            VALUE "CompanyName", "al4xdev"
+            VALUE "FileDescription", "Digimon World 3: Definitive Edition"
+            VALUE "FileVersion", "@DW3_GAME_VERSION@"
+            VALUE "InternalName", "dw2003"
+            VALUE "OriginalFilename", "dw2003.exe"
+            VALUE "ProductName", "Digimon World 3: Definitive Edition"
+            VALUE "ProductVersion", "@DW3_GAME_VERSION@"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0409, 0x04B0
+    END
+END
