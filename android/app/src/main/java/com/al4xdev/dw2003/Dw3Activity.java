@@ -181,14 +181,22 @@ public class Dw3Activity extends SDLActivity {
                     }
                     ok = true;
                 } catch (Throwable ignored) {}
-                if (ok && part.renameTo(out)) {
+                // A re-import replaces the image: rename does not overwrite on every storage, so the old one goes
+                // first.
+                if (ok && (!out.exists() || out.delete()) && part.renameTo(out)) {
                     anyCopied = true;
                 } else {
                     part.delete();
                 }
             }
+            final boolean copied = anyCopied;
             runOnUiThread(() -> {
                 try { dialog.dismiss(); } catch (Throwable ignored) {}
+                // Without a word the launcher's own file browser opens next, which reads as the picker not working.
+                if (!copied) {
+                    android.widget.Toast.makeText(this, "Could not copy the disc image into the app",
+                        android.widget.Toast.LENGTH_LONG).show();
+                }
             });
             nativeOnDiscPicked(anyCopied);
         }).start();
