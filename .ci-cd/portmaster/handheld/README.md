@@ -45,7 +45,7 @@ and `logs/`.
 5. **The menu starts the game.** PLAY writes `settings.json` and runs `dw2003 --config ./settings.json` behind the
    loading screen; the launcher exits with the game's status, and a quit from the menu is 0. Exit code `3` means the
    menu found no screen (or was skipped), so the launcher starts the game itself with `settings.json`. The framebuffer is
-   blanked and `pm_finish` runs either way. The menu's output is in `menu.log`.
+   blanked and `pm_finish` runs either way. The menu's output is in `log.txt`, with the device, video path and disc it found.
 6. **Logs.** `DW3_LOG` is `soft` or `heavy` when `settings.json` has that `debug.logs` value, and `off` otherwise.
    `probe.sh` runs only for `heavy`.
 7. **Input.** `DW3_PAD_REMAP=1` makes the SDL2 build apply `pad.map`. `$GPTOKEYB2` runs in the background only as a kill
