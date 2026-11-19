@@ -391,6 +391,11 @@ void cfg_load(Cfg *c) {
         }
     }
     if (f) fclose(f);
+    if (is_android && c->touch_pad &&
+        c->pad[A_CROSS].letter == 'Y' && c->pad[A_SQUARE].letter == 'X' &&
+        c->pad[A_CIRCLE].letter == 'A' && c->pad[A_TRIANGLE].letter == 'B') {
+        cfg_set_layout(c, LAYOUT_XBOX);
+    }
     path_of(path, sizeof(path), "settings.json");
     char *j = slurp(path);
     if (j) {
@@ -500,9 +505,12 @@ int cfg_save(const Cfg *c) {
     strcat(text, line);
     path_of(path, sizeof(path), "tui.state");
     rc |= write_atomic(path, text);
+    int tp_xbox = is_android && c->touch_pad && cfg_layout(c) == LAYOUT_XBOX;
+    static const char tp_xbox_letter[4] = {'Y', 'X', 'A', 'B'};
     char pm[1024] = "# game-places x\n";
     for (int i = 0; i < A_COUNT; i++) {
-        snprintf(line, sizeof(line), "%s %s %c\n", action_name[i], game_name(c->pad[i].code), c->pad[i].letter);
+        char letter = (tp_xbox && i < 4) ? tp_xbox_letter[i] : c->pad[i].letter;
+        snprintf(line, sizeof(line), "%s %s %c\n", action_name[i], game_name(c->pad[i].code), letter);
         strcat(pm, line);
     }
     path_of(path, sizeof(path), "pad.map");
