@@ -152,6 +152,13 @@ static int fb_open(void) {
         return -1;
     }
     memset(fbmap, 0, vis);
+    /* This draws at the start of the map. A double-buffered panel (the H700's, under muOS: its frontend leaves the
+     * other page up) would keep showing that one and the menu would be a black screen: put page 0 up. */
+    if (var.xoffset != 0 || var.yoffset != 0) {
+        var.xoffset = 0;
+        var.yoffset = 0;
+        (void)ioctl(fbfd, FBIOPAN_DISPLAY, &var);
+    }
     return 0;
 #else
     close(fbfd);
