@@ -18,6 +18,12 @@
 #include "loading.h"
 #include "plat.h"
 #include "ui.h"
+#include "update.h"
+
+#include <SDL3/SDL.h>
+
+/* psxstack's build stamp (port_version.c): "1.0.0" on a release, a suffix on any other build (update.h). */
+extern const char port_version[];
 
 #ifdef __ANDROID__
 extern int android_pick_disc_files(void);
@@ -38,7 +44,7 @@ enum { SAVES_SYNC, SAVES_INTERVAL, SAVES_BACKUPS, SAVES_NOW, SAVES_RESTORE, SAVE
 enum { CLOUD_REGISTER_OR_ADD, CLOUD_LINK, CLOUD_DEVICES, CLOUD_RENEW };
 #define CLOUD_ROW_Y 182
 #define CLOUD_ROW_STEP 50
-enum { DEBUG_LOGS, DEBUG_SAVE_LOGS, DEBUG_CLEAN_LOGS, DEBUG_N };
+enum { DEBUG_LOGS, DEBUG_SAVE_LOGS, DEBUG_CLEAN_LOGS, DEBUG_UPDATES, DEBUG_N };
 
 static Cfg c;
 static CloudState cloud;
@@ -372,6 +378,22 @@ static void draw_splash(void) {
     }
 }
 
+/* The notice's page opens in the browser; nothing is downloaded (update.h). 0 when there is no notice to open. */
+static int open_update_page(void) {
+    UpdateInfo up;
+    update_poll(&up);
+    if (up.state != UPDATE_AVAILABLE || !up.url[0]) return 0;
+    SDL_OpenURL(up.url);
+    return 1;
+}
+
+static void toggle_update_check(void) {
+    c.update_check = !c.update_check;
+    cfg_save(&c);
+    /* Turned on, it asks in this run already; turned off, a notice already shown stays until the next start. */
+    update_check_start(game_dir, port_version, c.update_check);
+}
+
 static void draw_home(void) {
     header_touch("ANDROID TOUCH", 0);
     static const char *const names[HI_COUNT] = {
@@ -411,6 +433,13 @@ static void draw_home(void) {
     rect(0, H - 56, W, 1, C_EDGE, 256);
     text(36, H - 36, S(hints[sel]), 13, C_NOTE);
     draw_touch_pill(486, H - 46, 126, 36, disc_path[0] ? S("PLAY") : S("CHOOSE"), RGB(18, 64, 48), C_GREEN);
+    UpdateInfo up;
+    update_poll(&up);
+    if (up.state == UPDATE_AVAILABLE) {
+        char lbl[48];
+        snprintf(lbl, sizeof(lbl), "%s %s", S("NEW"), up.latest);
+        draw_touch_pill(452, 14, 166, 36, lbl, RGB(70, 52, 12), C_GOLD);
+    }
 }
 
 static void draw_game(void) {
@@ -734,7 +763,8 @@ static void draw_debug(void) {
     row_touch(86, 44, "LOGS", log_label[c.logs], sel == DEBUG_LOGS, 0, c.logs > 0, 0, 1);
     row_touch(140, 44, "SAVE LOGS", "ZIP", sel == DEBUG_SAVE_LOGS, 0, 0, 0, 0);
     row_touch(194, 44, "CLEAN LOGS", "ASK", sel == DEBUG_CLEAN_LOGS, 0, 0, 0, 0);
-    if (status[0]) text(40, 268, status, 16, C_GREEN);
+    row_touch(248, 44, "CHECK FOR UPDATES", c.update_check ? "ON" : "OFF", sel == DEBUG_UPDATES, 0, c.update_check, 0, 1);
+    if (status[0]) text(40, 322, status, 16, C_GREEN);
     footer_touch(1, 1, "RUN");
 }
 
@@ -1219,6 +1249,7 @@ static void on_touch(int code, int x, int y) {
         else { cfg_save(&c); go(S_HOME, 0, -1); }
         return;
     }
+    if (screen == S_HOME && in_rect(x, y, 452, 14, 166, 36) && open_update_page()) return;
     if (in_rect(x, y, 486, H - 46, 126, 36)) {
         if (screen == S_HOME || screen == S_GAME || screen == S_DEBUG) {
             start_game_flow();
@@ -1358,6 +1389,8 @@ static void on_touch(int code, int x, int y) {
                     else snprintf(status, sizeof(status), "SAVE LOGS FAILED");
                 } else if (i == DEBUG_CLEAN_LOGS) {
                     go(S_CLEAN, 0, +1);
+                } else if (i == DEBUG_UPDATES) {
+                    toggle_update_check();
                 }
                 return;
             }
@@ -1484,6 +1517,7 @@ static void on_key(int code) {
         else if (screen == S_DEBUG) {
             if (sel == DEBUG_LOGS) { c.logs = (c.logs + 1) % 3; cfg_save(&c); }
             else if (sel == DEBUG_CLEAN_LOGS) go(S_CLEAN, 0, +1);
+            else if (sel == DEBUG_UPDATES) toggle_update_check();
         }
     } else if (code == btn_back() || code == K_EAST) {
         if (is_cloud_screen(screen) || screen == S_REVOKE_CONFIRM || screen == S_RENEW_CONFIRM || screen == S_CONFLICT_CONFIRM) on_back();
@@ -1513,6 +1547,7 @@ int dw3_android_launcher_run(int kind, const char *script, int *out_touch_pad, i
     find_disc();
     if (!disc_path[0]) cfg_load(&c);
     cloud_state_load(&cloud, game_dir);
+    update_check_start(game_dir, port_version, c.update_check);
 
     while (!android_done) {
         if (screen == S_SPLASH && splash_t0 >= 0 && plat_now_ms() - splash_t0 >= SPLASH_MS) {

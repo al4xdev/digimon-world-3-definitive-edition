@@ -1232,3 +1232,15 @@ int cloud_revoke_device(CloudState *st, const char *device_id, char *err, size_t
     http_resp_free(&r);
     return 0;
 }
+
+/* update.h's request: a plain GET through the same path as the cloud's (curl, or Java on Android). GitHub's API asks
+ * for its media type. */
+int launcher_http_get(const char *url, char **body_out, size_t *len_out, int *status_out) {
+    static const char *const hdrs[] = {"Accept: application/vnd.github+json"};
+    HttpResp r;
+    if (http_exec("GET", url, NULL, hdrs, 1, NULL, NULL, NULL, &r) != 0) return -1;
+    *body_out = r.body;
+    *len_out = r.body_len;
+    *status_out = r.status;
+    return 0;
+}

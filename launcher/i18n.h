@@ -318,6 +318,8 @@ static const UiTrRow ui_tr_table[] = {
     {"HEAVY", "COMPLETO", "COMPLET", "VOLL", "COMPLETO", "COMPLETO"},
     {"SAVE LOGS", "SALVAR LOGS", "SAUVER JOURNAUX", "LOGS SPEICHERN", "SALVA LOG", "GUARDAR LOGS"},
     {"CLEAN LOGS", "LIMPAR LOGS", "NETTOYER JOURNAUX", "LOGS LÖSCHEN", "PULISCI LOG", "LIMPIAR LOGS"},
+    {"CHECK FOR UPDATES", "BUSCAR ATUALIZAÇÕES", "VÉRIFIER LES MISES À JOUR", "NACH UPDATES SUCHEN", "CERCA AGGIORNAMENTI", "BUSCAR ACTUALIZACIONES"},
+    {"NEW", "NOVA", "NOUVELLE", "NEU", "NUOVA", "NUEVA"},
     {"A bug report is easier with LOGS on HEAVY and the zip attached.",
      "Para relatar um bug, coloque REGISTROS em COMPLETO e anexe o zip.",
      "Pour signaler un bug, mettez JOURNAUX sur COMPLET et joignez le zip.",

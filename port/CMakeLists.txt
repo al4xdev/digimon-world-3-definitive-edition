@@ -85,6 +85,7 @@ if(ANDROID)
         "${DW3_ROOT}/launcher/cfg.c"
         "${DW3_ROOT}/launcher/loading.c"
         "${DW3_ROOT}/launcher/cloud.c"
+        "${DW3_ROOT}/launcher/update.c"
         "${DW3_ROOT}/launcher/sha256.c"
         "${DW3_ROOT}/launcher/assets/assets.c"
         "${DW3_ROOT}/android/android_entry.c"

@@ -81,6 +81,7 @@ EOF
     fi
     docker run --rm -u "$(id -u):$(id -g)" \
         -e DW3_VERSION \
+        -e PSXSTACK_VERSION="$DW3_VERSION" \
         "${KEY_ARGS[@]}" \
         ${SDL3_ENV:+-e SDL3_ANDROID_DIR="$SDL3_ENV"} \
         -e HOME=/work/.dumps/android-home \

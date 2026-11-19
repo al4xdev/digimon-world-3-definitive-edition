@@ -33,6 +33,7 @@ typedef struct Cfg {
     int backup_max;          /* 1..100 local rotating card1.mcd snapshots */
     int sync_enabled;        /* 0 off, 1 cloud cross-play sync active */
     int sync_interval_min;   /* 0 = start/exit only, else 5, 10, 15, 20, 30 min */
+    int update_check;        /* 1: the Android launcher asks GitHub for a newer release (update.h) */
     int hud[H_COUNT];        /* evdev code of each battle action's button */
     Bind pad[A_COUNT];
 } Cfg;
