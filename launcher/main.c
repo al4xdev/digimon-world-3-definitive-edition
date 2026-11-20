@@ -17,6 +17,7 @@
 #include "cfg.h"
 #include "cloud.h"
 #include "compat.h"
+#include "i18n.h"
 #include "loading.h"
 #include "plat.h"
 #include "sha256.h"
@@ -58,7 +59,12 @@ static PairClaim pair_claim;
 static int pair_digits[6], pair_cursor, pair_waiting, pair_done;
 static long pair_last_poll_ms;
 static char pair_done_msg[96];
-static char conflict_msg[160], conflict_cloud_info[96], conflict_local_info[96];
+/* The save conflict screen lists the saves that differ: the cloud's, this device's and, when RecompLauncher started the
+ * launcher and changed its mirror (cloud.h), RecompLauncher's. conflict_acts[i] is what row i does. */
+enum { CA_CLOUD, CA_LOCAL, CA_RECOMP, CA_CANCEL };
+#define TR(s) ui_tr_lookup((s), c.lang) /* for a text that is formatted before it is drawn (draw's own text() translates the rest) */
+static char conflict_msg[160], conflict_cloud_info[96], conflict_local_info[96], conflict_recomp_info[96], conflict_recomp_sha[9];
+static int conflict_acts[4] = {CA_CLOUD, CA_LOCAL, CA_CANCEL, CA_CANCEL}, conflict_n = 3, conflict_has_cloud = 1;
 static int conflict_return_screen = S_SAVES, conflict_choice, conflict_step;
 static float confirm_pos = 0.0f;
 
@@ -194,7 +200,7 @@ static int row_target_y(int s, int idx) {
     case S_DEBUG: return 92 + idx * 48 - 4;
     case S_SAVES: return 86 + idx * 46 - 4;
     case S_CLOUD: return 206 + idx * 44 - 4;
-    case S_CONFLICT: return 194 + idx * 52 - 4;
+    case S_CONFLICT: return (conflict_n > 3 ? 186 + idx * 44 : 194 + idx * 52) - 4;
     case S_BACKUPS: return 114 + (idx - bk_scroll) * 38 - 4;
     case S_DEVICES: return 114 + (idx - dev_scroll) * 38 - 4;
     case S_BROWSE: return 114 + (idx - b_scroll) * 36 - 4;
@@ -738,7 +744,7 @@ static void draw_devices(void) {
 }
 
 static void fmt_epoch(long ts, char *out, size_t n) {
-    if (ts <= 0) { snprintf(out, n, "unknown time"); return; }
+    if (ts <= 0) { snprintf(out, n, "%s", TR("unknown time")); return; }
     time_t t = (time_t)ts;
     struct tm tm;
     localtime_r(&t, &tm);
@@ -747,72 +753,129 @@ static void fmt_epoch(long ts, char *out, size_t n) {
 
 static void go(int s, int to_sel, int dir, int focus_y);
 
-static void open_conflict_screen(int ret_screen, const char *cmsg) {
+static int cloud_usable(void) { return c.sync_enabled && cloud.registered && !cloud.revoked; }
+
+/* The conflict screen. has_cloud: the cloud's save is one of the choices (a sync found it differs from local). The
+ * RecompLauncher one is added when RecompLauncher changed its mirror (recomp_mirror_foreign). */
+static void open_conflict_ex(int ret_screen, const char *cmsg, int has_cloud) {
+    RecompMirror rm;
+    int has_recomp = recomp_active() && recomp_mirror_foreign(game_dir, &rm);
     conflict_return_screen = ret_screen;
+    conflict_has_cloud = has_cloud;
     snprintf(conflict_msg, sizeof(conflict_msg), "%s", cmsg ? cmsg : "CLOUD AND LOCAL DIFFER");
 
+    conflict_n = 0;
+    if (has_cloud) {
+        conflict_acts[conflict_n++] = CA_CLOUD;
+        conflict_acts[conflict_n++] = CA_LOCAL;
+    }
+    if (has_recomp) conflict_acts[conflict_n++] = CA_RECOMP;
+    conflict_acts[conflict_n++] = CA_CANCEL;
+
     char cts[32], lts[32], csha[9] = "--------", lsha[65] = "";
-    fmt_epoch(cloud.cloud_updated_at, cts, sizeof(cts));
-    if (cloud.cloud_sha256[0]) snprintf(csha, sizeof(csha), "%.8s", cloud.cloud_sha256);
-    snprintf(conflict_cloud_info, sizeof(conflict_cloud_info), "CLOUD: REV #%d   %s   [%s]",
-             cloud.cloud_seq, cts, csha);
+    if (has_cloud) {
+        fmt_epoch(cloud.cloud_updated_at, cts, sizeof(cts));
+        if (cloud.cloud_sha256[0]) snprintf(csha, sizeof(csha), "%.8s", cloud.cloud_sha256);
+        snprintf(conflict_cloud_info, sizeof(conflict_cloud_info), "%s: REV #%d   %s   [%s]",
+                 TR("CLOUD"), cloud.cloud_seq, cts, csha);
+    } else {
+        snprintf(conflict_cloud_info, sizeof(conflict_cloud_info), "%s: %s", TR("CLOUD"), TR("SYNC OFF"));
+    }
 
     char card_p[1024];
     snprintf(card_p, sizeof(card_p), "%s/card1.mcd", game_dir);
     struct stat st;
     if (stat(card_p, &st) == 0 && save_is_valid_mc(card_p, lsha)) {
         fmt_epoch((long)st.st_mtime, lts, sizeof(lts));
-        snprintf(conflict_local_info, sizeof(conflict_local_info), "LOCAL: card1.mcd   %s   [%.8s]", lts, lsha);
+        snprintf(conflict_local_info, sizeof(conflict_local_info), "%s: card1.mcd   %s   [%.8s]", TR("LOCAL"), lts, lsha);
     } else {
-        snprintf(conflict_local_info, sizeof(conflict_local_info), "LOCAL: no valid card1.mcd");
+        snprintf(conflict_local_info, sizeof(conflict_local_info), "%s: %s", TR("LOCAL"), TR("no valid card1.mcd"));
+    }
+
+    conflict_recomp_info[0] = 0;
+    conflict_recomp_sha[0] = 0;
+    if (has_recomp) {
+        char rts[32];
+        snprintf(conflict_recomp_sha, sizeof(conflict_recomp_sha), "%.8s", rm.sha256);
+        fmt_epoch(rm.written_at, rts, sizeof(rts));
+        snprintf(conflict_recomp_info, sizeof(conflict_recomp_info), "RECOMPLAUNCHER: %s   %s   [%.8s]",
+                 rm.device_name[0] ? rm.device_name : "?", rts, rm.sha256);
     }
 
     int fy = ret_screen == S_HOME ? H / 2 : 224 + 14;
     go(S_CONFLICT, 0, 1, fy);
 }
 
+static void open_conflict_screen(int ret_screen, const char *cmsg) {
+    open_conflict_ex(ret_screen, cmsg, 1);
+}
+
 static void draw_conflict(void) {
-    header("DIGIMON WORLD 3", "CLOUD CONFLICT");
+    int rc = conflict_recomp_info[0] != 0;
+    header("DIGIMON WORLD 3", conflict_has_cloud ? "CLOUD CONFLICT" : "SAVE CONFLICT");
     rrect(40, 74, W - 80, 102, 10, C_PANEL, 256);
     rrect_line(40, 74, W - 80, 102, 10, C_GOLD);
-    text(58, 84, "BOTH CLOUD AND LOCAL SAVES CHANGED", 17, C_GOLD);
-    text(58, 112, conflict_cloud_info, 14, C_CYAN);
-    text(58, 134, conflict_local_info, 14, C_GREEN);
-    text(58, 154, "A local backup was saved automatically.", 12, C_NOTE);
+    text(58, 84, conflict_has_cloud ? "BOTH CLOUD AND LOCAL SAVES CHANGED" : "THE RECOMPLAUNCHER SAVE DIFFERS FROM LOCAL", 17, C_GOLD);
+    text(58, rc ? 106 : 112, conflict_cloud_info, 14, C_CYAN);
+    text(58, rc ? 124 : 134, conflict_local_info, 14, C_GREEN);
+    if (rc) text(58, 142, conflict_recomp_info, 14, C_ORANGE);
+    if (conflict_has_cloud) text(58, rc ? 159 : 154, "A local backup was saved automatically.", 12, C_NOTE);
 
     int gy = (int)(cur_y >= 0 && cur_screen == S_CONFLICT ? cur_y : row_target_y(S_CONFLICT, sel));
     draw_focus(40, gy, W - 80, 38, 8, 0);
-    char rev_tag[24];
-    snprintf(rev_tag, sizeof(rev_tag), "USE REV #%d", cloud.cloud_seq);
-    row(194, "DOWNLOAD CLOUD SAVE", rev_tag, sel == 0, 0, 1, 0);
-    row(246, "UPLOAD LOCAL TO CLOUD", "OVERWRITE CLOUD", sel == 1, 0, 0, 0);
-    row(298, "CANCEL", "DO NOT SYNC", sel == 2, 0, 0, 0);
-
-    static const char *hint[3] = {
-        "Replaces card1.mcd on this device with the Cloud save.",
-        "Overwrites the Cloud save with this device's card1.mcd.",
-        "Leaves both untouched. You can sync later in SAVES & CLOUD."
-    };
+    const char *hint = "";
+    for (int i = 0; i < conflict_n; i++) {
+        int y = row_target_y(S_CONFLICT, i) + 4;
+        char tag[40];
+        switch (conflict_acts[i]) {
+        case CA_CLOUD:
+            snprintf(tag, sizeof(tag), "%s #%d", TR("USE REV"), cloud.cloud_seq);
+            row(y, "DOWNLOAD CLOUD SAVE", tag, sel == i, 0, 1, 0);
+            if (sel == i) hint = "Replaces card1.mcd on this device with the Cloud save.";
+            break;
+        case CA_LOCAL:
+            row(y, "UPLOAD LOCAL TO CLOUD", "OVERWRITE CLOUD", sel == i, 0, 0, 0);
+            if (sel == i) hint = "Overwrites the Cloud save with this device's card1.mcd.";
+            break;
+        case CA_RECOMP:
+            snprintf(tag, sizeof(tag), "[%s]", conflict_recomp_sha);
+            row(y, "USE RECOMPLAUNCHER SAVE", tag, sel == i, 0, 0, 0);
+            if (sel == i) hint = cloud_usable() ? "Replaces card1.mcd with the RecompLauncher save, and the Cloud too."
+                                                : "Replaces card1.mcd with the RecompLauncher save.";
+            break;
+        default:
+            row(y, "CANCEL", "DO NOT SYNC", sel == i, 0, 0, 0);
+            if (sel == i) hint = conflict_has_cloud ? "Leaves both untouched. You can sync later in SAVES & CLOUD."
+                                                    : "Leaves every save untouched. You will be asked again on PLAY.";
+            break;
+        }
+    }
     rect(40, 368, W - 80, 1, C_EDGE, 256);
-    text(44, 380, hint[sel], 15, C_NOTE);
+    text(44, 380, hint, 15, C_NOTE);
     foot_2("CHOOSE", "BACK");
 }
 
 static void draw_conflict_confirm(void) {
     draw_conflict();
-    int is_push = (conflict_choice == 1);
+    int act = conflict_acts[conflict_choice < conflict_n ? conflict_choice : 0];
+    int is_push = (act == CA_LOCAL);
     uint32_t accent = is_push ? C_RED : C_ORANGE;
-    const char *title = is_push ? "OVERWRITE CLOUD SAVE?" : "REPLACE LOCAL SAVE?";
+    const char *title = is_push ? "OVERWRITE CLOUD SAVE?" : act == CA_RECOMP ? "USE RECOMPLAUNCHER SAVE?" : "REPLACE LOCAL SAVE?";
     char l1[96], l2[96], l3[96], ok_lbl[32];
 
     if (is_push) {
-        snprintf(l1, sizeof(l1), "Cloud REV #%d will be replaced by this device's", cloud.cloud_seq);
-        snprintf(l2, sizeof(l2), "local card1.mcd. Other devices will pull this");
-        snprintf(l3, sizeof(l3), "save on their next sync.");
+        snprintf(l1, sizeof(l1), TR("Cloud REV #%d will be replaced by this device's"), cloud.cloud_seq);
+        snprintf(l2, sizeof(l2), "%s", TR("local card1.mcd. Other devices will pull this"));
+        snprintf(l3, sizeof(l3), "%s", TR("save on their next sync."));
+    } else if (act == CA_RECOMP) {
+        snprintf(l1, sizeof(l1), "%s", TR("This device's card1.mcd will be replaced by"));
+        snprintf(l2, sizeof(l2), "%s", TR("the RecompLauncher save. Your current local"));
+        snprintf(l3, sizeof(l3), "%s", cloud_usable() ? TR("save is backed up first; the Cloud follows.")
+                                                      : TR("save is backed up first in saves_backup/."));
     } else {
-        snprintf(l1, sizeof(l1), "This device's card1.mcd will be replaced by");
-        snprintf(l2, sizeof(l2), "Cloud REV #%d. Your current local save is", cloud.cloud_seq);
-        snprintf(l3, sizeof(l3), "safely backed up in saves_backup/ first.");
+        snprintf(l1, sizeof(l1), "%s", TR("This device's card1.mcd will be replaced by"));
+        snprintf(l2, sizeof(l2), TR("Cloud REV #%d. Your current local save is"), cloud.cloud_seq);
+        snprintf(l3, sizeof(l3), "%s", TR("safely backed up in saves_backup/ first."));
     }
 
     rect(0, 0, W, H, C_BG0, 195);
@@ -844,9 +907,9 @@ static void draw_conflict_confirm(void) {
     }
 
     if (conflict_step < 3) {
-        snprintf(ok_lbl, sizeof(ok_lbl), "CONFIRM (%d/3)", conflict_step);
+        snprintf(ok_lbl, sizeof(ok_lbl), TR("CONFIRM (%d/3)"), conflict_step);
     } else {
-        snprintf(ok_lbl, sizeof(ok_lbl), is_push ? "OVERWRITE (3/3)" : "REPLACE (3/3)");
+        snprintf(ok_lbl, sizeof(ok_lbl), "%s", is_push ? TR("OVERWRITE (3/3)") : TR("REPLACE (3/3)"));
     }
 
     /* Animated sliding [A] pill track: [A] glides left -> right with each confirmation */
@@ -1264,6 +1327,7 @@ static void start_game(void) {
         if (save_is_valid_mc(card_p, NULL)) {
             save_backup_rotate(game_dir, "card1.mcd", c.backup_max);
         }
+        int synced = 0;
         if (c.sync_enabled && cloud.registered && !cloud.revoked) {
             int conf = 0;
             int src = cloud_sync_card1(&cloud, game_dir, c.backup_max, 1, &conf, smsg, sizeof(smsg));
@@ -1271,6 +1335,15 @@ static void start_game(void) {
                 open_conflict_screen(S_HOME, smsg);
                 return;
             }
+            synced = src == 0;
+        }
+        /* RecompLauncher's mirror (cloud.h): a changed one asks first; else it follows card1.mcd */
+        if (recomp_active()) {
+            if (recomp_mirror_foreign(game_dir, NULL)) {
+                open_conflict_ex(S_HOME, NULL, synced);
+                return;
+            }
+            recomp_mirror_write(game_dir, cloud.device_id, cloud.device_name, cloud.last_seq, 0);
         }
     }
     /* What the script used to export after its menu: the game reads the player's pad map itself, and the log level
@@ -1500,7 +1573,7 @@ static void on_press(int code) {
     case S_SAVES: n = 6; break;
     case S_BACKUPS: n = bk_count; break;
     case S_CLOUD: n = cloud_n(); break;
-    case S_CONFLICT: n = 3; break;
+    case S_CONFLICT: n = conflict_n; break;
     case S_DEVICES: n = dev_count; break;
     case S_DEBUG: n = debug_n(); break;
     case S_BROWSE: n = b_count; break;
@@ -1810,10 +1883,10 @@ static void on_press(int code) {
         }
         break;
     case S_CONFLICT:
-        if (back || (ok && sel == 2)) {
+        if (back || (ok && conflict_acts[sel < conflict_n ? sel : conflict_n - 1] == CA_CANCEL)) {
             int rsel = conflict_return_screen == S_SAVES ? 3 : conflict_return_screen == S_CLOUD ? 1 : 0;
             go(conflict_return_screen, rsel, -1, H / 2);
-        } else if (ok && (sel == 0 || sel == 1)) {
+        } else if (ok) {
             conflict_choice = sel;
             conflict_step = 1;
             confirm_pos = 0.0f;
@@ -1830,11 +1903,22 @@ static void on_press(int code) {
                 conflict_step++;
             } else {
                 char res_msg[160] = "";
-                if (conflict_choice == 0) {
+                int act = conflict_acts[conflict_choice < conflict_n ? conflict_choice : 0];
+                if (act == CA_CLOUD) {
                     cloud_pull_card1(&cloud, game_dir, c.backup_max, res_msg, sizeof(res_msg));
-                } else {
+                } else if (act == CA_LOCAL) {
                     cloud_push_card1(&cloud, game_dir, c.backup_max, 1, res_msg, sizeof(res_msg));
+                } else if (act == CA_RECOMP) {
+                    /* RecompLauncher's save becomes card1.mcd and, with the cloud on, the cloud's too */
+                    if (recomp_mirror_adopt(game_dir, c.backup_max, res_msg, sizeof(res_msg)) == 0 && cloud_usable()) {
+                        char pmsg[160] = "";
+                        if (cloud_push_card1(&cloud, game_dir, c.backup_max, 1, pmsg, sizeof(pmsg)) != 0) {
+                            snprintf(res_msg, sizeof(res_msg), "%s", pmsg);
+                        }
+                    }
                 }
+                /* whichever was chosen, the mirror follows card1.mcd now (the changed one has been answered) */
+                if (recomp_active()) recomp_mirror_write(game_dir, cloud.device_id, cloud.device_name, cloud.last_seq, 1);
                 int rsel = conflict_return_screen == S_SAVES ? 3 : conflict_return_screen == S_CLOUD ? 1 : 0;
                 go(conflict_return_screen, rsel, -1, H / 2);
                 snprintf(status, sizeof(status), "%s", res_msg);
@@ -2029,6 +2113,45 @@ static int self_test(const char *root) {
     cfg_load(&b);
     check(!memcmp(&a, &b, sizeof(a)), "settings: read back as written");
     check(!strcmp(disc_path, p), "settings: the disc read back");
+    {
+        /* RecompLauncher's mirror (cloud.h): written, never offered back, a change from outside asked about (and kept
+         * until answered), then adopted into card1.mcd. */
+        static char card_a[PS1_MC_SIZE], card_b[PS1_MC_SIZE], got_card[PS1_MC_SIZE];
+        char cp[1200], mp[1200], sp[1200], err[96] = "";
+        RecompMirror rm;
+        FILE *cf;
+        memset(card_a, 0, sizeof(card_a));
+        card_a[0] = 'M'; card_a[1] = 'C';
+        memcpy(card_b, card_a, sizeof(card_b));
+        card_b[2] = 7;
+        snprintf(cp, sizeof(cp), "%s/card1.mcd", game_dir);
+        snprintf(mp, sizeof(mp), "%s/recomp/dw3-save.dw3s", game_dir);
+        snprintf(sp, sizeof(sp), "%s/recomp_mirror.state", game_dir);
+        cf = fopen(cp, "wb"); if (cf) { fwrite(card_b, 1, sizeof(card_b), cf); fclose(cf); }
+        check(recomp_mirror_write(game_dir, "dev1", "TEST", 3, 0) == 0 && access(mp, F_OK) == 0 &&
+                  !recomp_mirror_foreign(game_dir, &rm),
+              "recomp mirror: written beside the settings and not offered back");
+        /* RecompLauncher restored another device's card B into the mirror while this device holds A */
+        write_text(sp, "0000000000000000000000000000000000000000000000000000000000000000");
+        cf = fopen(cp, "wb"); if (cf) { fwrite(card_a, 1, sizeof(card_a), cf); fclose(cf); }
+        check(recomp_mirror_foreign(game_dir, &rm) == 1 && !strcmp(rm.device_id, "dev1") && rm.cloud_seq == 3,
+              "recomp mirror: a change from outside is offered, with its header");
+        check(recomp_mirror_write(game_dir, "dev1", "TEST", 3, 0) == 1 && recomp_mirror_foreign(game_dir, NULL) == 1,
+              "recomp mirror: a changed mirror is not overwritten before the player answers");
+        check(recomp_mirror_adopt(game_dir, 5, err, sizeof(err)) == 0 && !recomp_mirror_foreign(game_dir, NULL),
+              "recomp mirror: adopted, and no longer offered");
+        cf = fopen(cp, "rb");
+        check(cf && fread(got_card, 1, sizeof(got_card), cf) == sizeof(got_card) && !memcmp(got_card, card_b, sizeof(card_b)),
+              "recomp mirror: card1.mcd is the mirror's card after adopting");
+        if (cf) fclose(cf);
+        check(save_backup_list(game_dir, (SaveBackup[4]){0}, 4) >= 1, "recomp mirror: the card it replaced was backed up first");
+        unlink(mp);
+        check(!recomp_mirror_foreign(game_dir, NULL), "recomp mirror: a missing or damaged mirror is never offered");
+        remove(sp);
+        remove(cp); /* the rest of the self-test starts without a card, as before */
+        snprintf(mp, sizeof(mp), "%s/recomp", game_dir);
+        rmdir(mp);
+    }
 #ifdef DW3_TARGET_PC
     /* settings.json as RecompLauncher leaves it (recomplauncher.json's options): the launcher shows its values. */
     snprintf(q, sizeof(q), "%s/settings.json", game_dir);
@@ -2069,6 +2192,36 @@ static int self_test(const char *root) {
         drawn++;
     }
     check(drawn > 20, "screens: every screen drawn");
+    {
+        /* The conflict screen with RecompLauncher's save as the third choice, in the longest languages. */
+        static const int langs[] = {0, 1, 2, 3};
+        conflict_has_cloud = 1;
+        conflict_n = 4;
+        conflict_acts[0] = CA_CLOUD; conflict_acts[1] = CA_LOCAL; conflict_acts[2] = CA_RECOMP; conflict_acts[3] = CA_CANCEL;
+        snprintf(conflict_cloud_info, sizeof(conflict_cloud_info), "CLOUD: REV #12   2026-11-20 02:00   [33b81c84]");
+        snprintf(conflict_local_info, sizeof(conflict_local_info), "LOCAL: card1.mcd   2026-11-20 02:10   [9a0e17c2]");
+        snprintf(conflict_recomp_info, sizeof(conflict_recomp_info), "RECOMPLAUNCHER: ALEX-DESKTOP   2026-11-19 23:41   [5d41402a]");
+        snprintf(conflict_recomp_sha, sizeof(conflict_recomp_sha), "5d41402a");
+        for (size_t li = 0; li < sizeof(langs) / sizeof(langs[0]); li++) {
+            c.lang = langs[li];
+            ui_set_lang(c.lang);
+            for (int pass = 0; pass < 2; pass++) {
+                screen = pass ? S_CONFLICT_CONFIRM : S_CONFLICT;
+                sel = conflict_choice = 2;
+                conflict_step = 3;
+                confirm_pos = 2.0f;
+                cur_screen = S_CONFLICT;
+                cur_y = (float)row_target_y(S_CONFLICT, 2);
+                draw_screen();
+                snprintf(what, sizeof(what), "conflict_l%d_%s", langs[li], pass ? "confirm" : "list");
+                plat_shot(what);
+            }
+        }
+        c.lang = a.lang;
+        ui_set_lang(c.lang);
+        conflict_n = 3;
+        conflict_recomp_info[0] = 0;
+    }
     /* The game beside the launcher (the release's layout) and its mods; with a disc, 300 frames from PLAY. */
     const char *real = getenv("DW3_SELFTEST_GAME");
     if (!real) return st_fails;
@@ -2336,6 +2489,7 @@ int main(int argc, char **argv) {
                             }
                             if (save_is_valid_mc(card1_p, cur_sha) && strcmp(cur_sha, last_sha) != 0) {
                                 save_backup_rotate(game_dir, "card1.mcd", c.backup_max);
+                                if (recomp_active()) recomp_mirror_write(game_dir, cloud.device_id, cloud.device_name, cloud.last_seq, 0);
                                 if (c.sync_enabled && cloud.registered && !cloud.revoked) {
                                     snprintf(pending_sha, sizeof(pending_sha), "%s", cur_sha);
                                     syncing = sync_start() == 0;
@@ -2370,6 +2524,7 @@ int main(int argc, char **argv) {
                             fflush(game_log);
                         }
                     }
+                    if (recomp_active()) recomp_mirror_write(game_dir, cloud.device_id, cloud.device_name, cloud.last_seq, 0);
                 }
                 if (game_log) { fclose(game_log); game_log = NULL; }
                 return code;

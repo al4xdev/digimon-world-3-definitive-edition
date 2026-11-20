@@ -13,6 +13,12 @@ it always takes the latest full release (never a pre-release), picks the file fo
   (the launcher reads them back from `settings.json`), plus "Launcher menu": Show (the default: the launcher's menu)
   or Skip (`--play`: PLAY at once; the sync and backups still run, and a save conflict still asks). In
   RecompLauncher's Big Picture mode the launcher's window opens fullscreen, as the game's does.
+- `saves` in `recomplauncher.json` lists only the `recomp/` folder, never `card1.mcd`: the launcher's cloud sync is the
+  one owner of the memory card. When RecompLauncher starts the launcher (`RECOMPLAUNCHER` set) the launcher mirrors the
+  card to `recomp/dw3-save.dw3s` (a JSON header line, then the card) after the sync, on the periodic push and when the
+  game ends, so RecompLauncher's own backups and cloud carry that file. A mirror that RecompLauncher changed (a restore,
+  another device's save) is a third choice on the save conflict screen next to the cloud's save and the local one;
+  nothing is replaced without the three-step confirmation (`launcher/cloud.h`, "RecompLauncher mirror").
 - Every PC release carries a copy at its own root: [`linux/package_appimage.sh`](../linux/package_appimage.sh) (the
   AppImage) and [`windows/package_windows.sh`](../windows/package_windows.sh) (the zip) copy it, and
   [`common/check_release_contents.py`](../common/check_release_contents.py) requires it.

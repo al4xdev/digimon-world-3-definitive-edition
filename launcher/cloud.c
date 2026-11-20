@@ -312,6 +312,158 @@ int save_backup_restore(const char *game_dir, const char *backup_name, int max_k
     return 0;
 }
 
+/* ---- RecompLauncher mirror (see cloud.h) ---- */
+#define RECOMP_DIR "recomp"
+#define RECOMP_FILE "dw3-save.dw3s"
+#define RECOMP_STATE "recomp_mirror.state"
+
+int recomp_active(void) {
+    const char *e = getenv("RECOMPLAUNCHER");
+    return e && e[0] && strcmp(e, "0") != 0;
+}
+
+static void recomp_state_read(const char *game_dir, char sha[65]) {
+    char path[1100];
+    sha[0] = 0;
+    snprintf(path, sizeof(path), "%s/%s", game_dir, RECOMP_STATE);
+    size_t n = 0;
+    char *b = read_all(path, &n);
+    if (!b) return;
+    if (n >= 64) {
+        memcpy(sha, b, 64);
+        sha[64] = 0;
+        for (int i = 0; i < 64; i++) {
+            if (!isxdigit((unsigned char)sha[i])) { sha[0] = 0; break; }
+        }
+    }
+    free(b);
+}
+
+static void recomp_state_write(const char *game_dir, const char *sha) {
+    char path[1100];
+    snprintf(path, sizeof(path), "%s/%s", game_dir, RECOMP_STATE);
+    write_atomic_bytes(path, sha, 64, 0644);
+}
+
+/* A valid mirror: 1, with its header in *m and the whole file in *buf (malloc'd; *card points at the card inside it). */
+static int recomp_read(const char *game_dir, RecompMirror *m, char **buf, const char **card) {
+    char path[1100];
+    snprintf(path, sizeof(path), "%s/%s/%s", game_dir, RECOMP_DIR, RECOMP_FILE);
+    size_t len = 0;
+    char *b = read_all(path, &len);
+    if (!b) return 0;
+    char *nl = memchr(b, '\n', len < 1024 ? len : 1024);
+    if (!nl || len - (size_t)(nl - b) - 1 != PS1_MC_SIZE) { free(b); return 0; }
+    *nl = 0;
+    const char *data = nl + 1;
+    int fmt = 0, ok = jget_int(b, "format", &fmt) && fmt == 1 && (uint8_t)data[0] == 0x4d && (uint8_t)data[1] == 0x43;
+    char sha[65];
+    memset(m, 0, sizeof(*m));
+    if (ok) {
+        sha256_bytes(data, PS1_MC_SIZE, sha);
+        ok = jget_str(b, "sha256", m->sha256, sizeof(m->sha256)) && strcmp(m->sha256, sha) == 0;
+    }
+    if (!ok) { free(b); return 0; }
+    jget_str(b, "device_id", m->device_id, sizeof(m->device_id));
+    jget_str(b, "device_name", m->device_name, sizeof(m->device_name));
+    jget_long(b, "written_at", &m->written_at);
+    jget_int(b, "cloud_seq", &m->cloud_seq);
+    *buf = b;
+    *card = data;
+    return 1;
+}
+
+int recomp_mirror_write(const char *game_dir, const char *device_id, const char *device_name, int cloud_seq, int force) {
+    char card_p[1100], sha[65], state_sha[65];
+    snprintf(card_p, sizeof(card_p), "%s/card1.mcd", game_dir);
+    size_t sz = 0;
+    char *raw = read_all(card_p, &sz);
+    if (!raw || sz != PS1_MC_SIZE || (uint8_t)raw[0] != 0x4d || (uint8_t)raw[1] != 0x43) {
+        free(raw);
+        return -1;
+    }
+    sha256_bytes(raw, sz, sha);
+    recomp_state_read(game_dir, state_sha);
+
+    RecompMirror cur;
+    char *mb = NULL;
+    const char *md = NULL;
+    if (recomp_read(game_dir, &cur, &mb, &md)) {
+        free(mb);
+        if (!force) {
+            if (!strcmp(cur.sha256, sha)) {
+                if (strcmp(state_sha, sha) != 0) recomp_state_write(game_dir, sha);
+                free(raw);
+                return 0;
+            }
+            if (strcmp(cur.sha256, state_sha) != 0) { /* changed from outside: it waits for the player's choice */
+                free(raw);
+                return 1;
+            }
+        }
+    }
+
+    char eid[128], ename[96], hdr[512];
+    json_escape(device_id ? device_id : "", eid, sizeof(eid));
+    json_escape(device_name ? device_name : "", ename, sizeof(ename));
+    int hn = snprintf(hdr, sizeof(hdr),
+                      "{\"format\":1,\"sha256\":\"%s\",\"device_id\":\"%s\",\"device_name\":\"%s\",\"written_at\":%ld,\"cloud_seq\":%d}\n",
+                      sha, eid, ename, (long)time(NULL), cloud_seq);
+    if (hn <= 0 || (size_t)hn >= sizeof(hdr)) { free(raw); return -1; }
+    char *out = malloc((size_t)hn + sz);
+    if (!out) { free(raw); return -1; }
+    memcpy(out, hdr, (size_t)hn);
+    memcpy(out + hn, raw, sz);
+    free(raw);
+
+    char dir[1100], file[1200];
+    snprintf(dir, sizeof(dir), "%s/%s", game_dir, RECOMP_DIR);
+    mkdir(dir, 0755);
+    snprintf(file, sizeof(file), "%s/%s", dir, RECOMP_FILE);
+    int rc = write_atomic_bytes(file, out, (size_t)hn + sz, 0644);
+    free(out);
+    if (rc != 0) return -1;
+    recomp_state_write(game_dir, sha);
+    return 0;
+}
+
+int recomp_mirror_foreign(const char *game_dir, RecompMirror *out) {
+    RecompMirror m;
+    char *mb = NULL;
+    const char *md = NULL;
+    if (!recomp_read(game_dir, &m, &mb, &md)) return 0;
+    free(mb);
+    char state_sha[65], local_sha[65] = "", card_p[1100];
+    recomp_state_read(game_dir, state_sha);
+    snprintf(card_p, sizeof(card_p), "%s/card1.mcd", game_dir);
+    save_is_valid_mc(card_p, local_sha);
+    int foreign = strcmp(m.sha256, state_sha) != 0 && strcmp(m.sha256, local_sha) != 0;
+    if (foreign && out) *out = m;
+    return foreign;
+}
+
+int recomp_mirror_adopt(const char *game_dir, int backup_max, char *err, size_t err_n) {
+    RecompMirror m;
+    char *mb = NULL;
+    const char *md = NULL;
+    if (!recomp_read(game_dir, &m, &mb, &md)) {
+        snprintf(err, err_n, "RECOMPLAUNCHER SAVE IS CORRUPT");
+        return -1;
+    }
+    char card_p[1100];
+    snprintf(card_p, sizeof(card_p), "%s/card1.mcd", game_dir);
+    if (save_is_valid_mc(card_p, NULL)) save_backup_rotate(game_dir, "card1.mcd", backup_max);
+    int rc = write_atomic_bytes(card_p, md, PS1_MC_SIZE, 0644);
+    if (rc == 0) recomp_state_write(game_dir, m.sha256);
+    free(mb);
+    if (rc != 0) {
+        snprintf(err, err_n, "COULD NOT WRITE card1.mcd");
+        return -1;
+    }
+    snprintf(err, err_n, "RECOMPLAUNCHER SAVE APPLIED");
+    return 0;
+}
+
 /* ---- Cloud state persistence ---- */
 static const char *client_platform(int is_portmaster) {
 #ifdef __ANDROID__

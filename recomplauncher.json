@@ -50,15 +50,10 @@
     ]
   },
   "saves": [
-    "{local}/dw2003/card1.mcd",
-    "{local}/dw2003/card2.mcd",
-    "{local}/dw2003/settings.json",
-    "{config}/dw2003/card1.mcd",
-    "{config}/dw2003/card2.mcd",
-    "{config}/dw2003/settings.json",
-    "{install}/card1.mcd",
-    "{install}/card2.mcd",
-    "{install}/settings.json"
+    "{install}/recomp",
+    "{install}/usr/bin/recomp",
+    "{local}/dw2003/recomp",
+    "{config}/dw2003/recomp"
   ],
   "exit_codes": {
     "1": "It stopped before the game could run. If this is about your disc, it needs the Europe release (SLES-03936) as a raw disc image.",
