@@ -1227,7 +1227,15 @@ void wfightmn_blast(WfightmnMain *obj, WfightmnMainData *data) {
 #ifdef PC_PORT
             def_blast_started(id); /* Blast Gauge phase 1: the battle's end takes its price from this Digimon */
 #endif
+#ifdef PC_PORT
+            /* No duration timer (owner, 2026-11-20): the Blast and Chosen forms last until a KO, a switch or the battle's
+             * end, since One More made the timed return read as a bug. Without the 0x13 event nothing else ends the form. */
+            if (!def_on()) {
+                fightstg_events_start_blast(id);
+            }
+#else
             fightstg_events_start_blast(id);
+#endif
             data->wait.obj = fightstg_digivolve_create(member->digimon, 1);
             obj->base.substep++;
         }

@@ -467,7 +467,11 @@ int def_finale_igor_line(void) {
 }
 
 const unsigned char *def_finale_text(int file, int index) {
-    (void)file;
+    /* Only while the finale's phase asks for the line, and never in the item files: 190/191 are also item IDs
+     * (ITMINF 0x63, ITMNAM 0x6A), so an unscoped match put Igor's farewell into the weapon shop's list. */
+    if ((file & 0xFFFF) == 0x63 || (file & 0xFFFF) == 0x6A || def_finale_igor_line() != index) {
+        return NULL;
+    }
     if (index == FIN_MSG_IGOR_KEY) {
         return def_str_FinIgorKey;
     }

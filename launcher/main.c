@@ -2535,6 +2535,6 @@ int main(int argc, char **argv) {
         draw();
         plat_present();
     }
-    plat_release();
+    plat_quit();
     return 0;
 }
