@@ -934,6 +934,20 @@ void def_blast_boost_stats(int member, FightstgStats *out) {
     if (!def_on() || boost_off || !m->blasted || def_purify_fighting()) {
         return;
     }
+    /* The blessed Blast (the tutorial's, or the game's first): every stat at the 999 cap (owner, 2026-11-20: a +50% was
+     * too weak, and a tutorial must not be lost). */
+    if (!def_blast_chosen_mode() && (blessed_now || def_super_tutorial_battle())) {
+        for (i = 0; i < 5; i++) {
+            if (out->stats[i] < 999) {
+                out->stats[i] = 999;
+            }
+        }
+        if (!(boost_logged >> member & 1) && member >= 0 && member < 3) {
+            boost_logged |= (unsigned char)(1u << member);
+            port_log("blast: slot %d fights with the blessed Blast, every stat at 999", member);
+        }
+        return;
+    }
     pct = def_blast_boost_pct();
     if (pct > 0 && member >= 0 && member < 3 && !(boost_logged >> member & 1)) {
         boost_logged |= (unsigned char)(1u << member);
