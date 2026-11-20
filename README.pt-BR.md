@@ -2,6 +2,8 @@
 
 <p align="center"><a href="README.md">English</a> · <b>Português (Brasil)</b> · <a href="README.fr.md">Français</a> · <a href="README.de.md">Deutsch</a> · <a href="README.it.md">Italiano</a> · <a href="README.es.md">Español</a></p>
 
+<p align="center"><a href="https://dw3-definitive.pages.dev/">Site do Digimon World 3: Definitive Edition</a></p>
+
 <p align="center">
   <b>Digimon World 3, como poderia ter sido.</b><br>
   Um remaster feito por fã que roda nativamente, sem emulador, em portáteis RK3326, celulares Android e no PC.
