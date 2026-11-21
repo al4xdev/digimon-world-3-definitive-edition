@@ -374,10 +374,12 @@ keeps your best stage. A replay pays the battle's experience and Bits, but no ac
     missions, the main quest), without a whole walkthrough, plus a notice/menu of the Asuka auctions with near-direct teleport. (The owner could have brought a
     famous site's walkthrough as Markdown; the shipped texts are summaries written from the walkthrough the owner brought, not copies.) Started in a Fable session in the lab that ran out of quota before
     testing, finished in another; the backup of that WIP is in `.dumps/fable-guide-wip/` (all of it is in commit `3d3f2e8`, may go to `/tmp`).
-  - Trigger: the game's own story counter `gamestate_data.progress` (0..45, written by the stage events) plus a flag when the line asks (a key item held, `0x8000 | item`).
+  - Trigger: the game's own story counter `gamestate_data.progress` (0..45, written by the stage events) plus a flag when the line asks (a key item held, `0x8000 | item`, or a stage's own flag).
     Nothing is saved, so an old save opens on the right step. Main quest (`def_quests`, `definitive_quest.c`): one line per step with title, what to do and where to go (the map
-    name is the game's own title); key-item variants come before the plain line (the fake "8lue Card", the Blue Card, the Sepik Mask, the Agumon Suit, the TNT Chip); texts in `en.txt`
-    as `$Q<step>` and `$Q<step>T`. Missions (`def_missions`): from step 4 (when the field menu opens) while the item is missing: El Dorado ID (opens the auctions), Folder Bag (Card Battles),
+    name is the game's own title); key-item variants come before the plain line (the Sepik Mask, the Agumon Suit, the TNT Chip); texts in `en.txt`
+    as `$Q<step>` and `$Q<step>T`. Step 6 (the Blue Card, which starts at the gondola's terminal, WSTAG410's event 90) follows the Guilmon chase on the
+    stages' own flags, latest first: Asuka Inn 2F's Guilmon (`0x1C44`), the Forest Inn's (`0x1C45`), the 8lue Card from Zephyr Tower, the terminal's refusal
+    (`0x1C46`), the Guilmon in Seiryu City (`0x1C47`), the Blue Card from the Forest Inn BF, and Bulbmon only once he falls on the ride (`0x4018`): `$Q6b`..`$Q6h`. Missions (`def_missions`): from step 4 (when the field menu opens) while the item is missing: El Dorado ID (opens the auctions), Folder Bag (Card Battles),
     Tree Boots, Fishing Pole. Auctions (`def_auctions`): the 16 of the Cargo Tower are the game's `fieldstg_flag_events`; auction N runs with the story step exactly its own, flag `0x400 + N` clear, and money; any answer
     sets the flag; states: not yet, OPEN NOW, attended, lost (the step passed without going; Amaterasu's hidden shop sells the lost items); price from the game's own money table.
   - Screen GUIDE: a new field-menu entry (between SAVE and the Bestiary) in the Guardromon-network layout; Quest tab, Auctions tab (L1/R1) coloured by state; on an open auction confirming twice travels to El Dorado

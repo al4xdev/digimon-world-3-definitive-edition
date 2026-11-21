@@ -683,7 +683,7 @@ $AucWhen13: On entering Amaterasu City.
 $AucWhen14: After beating the President of MAGAMI.
 $AucWhen15: After the Vemmon show up in Asuka.
 # The main quest: a title and what to do per story step ($Q<progress>, $Q<progress>T), and the variants an owned key
-# item picks ($Q5b...). Six lines of the 14-pixel font at most, each inside the panel (DW3_GUIDE_CHECK logs a wide one).
+# item or a stage flag picks ($Q6b...). Six lines of the 14-pixel font at most, each inside the panel (DW3_GUIDE_CHECK logs a wide one).
 $Q0: Digimon Online
 $Q0T: Wait for Teddy and Ivy, then set up<1>your account at the Online Center.
 $Q1: Log in
@@ -699,13 +699,23 @@ $Q4sT: Repeating Tom says Seiryu Leader is gone,<1>and a blue door opened on the
 $Q4a: The Seiryu Leader
 $Q4aT: Train near Asuka City, then go east by<1>Wire Forest and Wind Prairie to Seiryu<1>City. Ask around for the Leader: Repeating<1>Tom, on the stairs of the city's inn,<1>hears all the news.
 $Q5: To the South Sector
-$Q5T: The gondola of East Station, past the<1>Kicking Forest, asks for a Blue Card.<1>A Guilmon has it: ask at the Asuka Inn,<1>the Forest Inn and the inn of Zephyr<1>Tower, in Seiryu City.
-$Q5b: A fake card
-$Q5bT: The 8lue Card is a fake! Tricky Guilmon<1>hides at the bottom of the Forest Inn's<1>basement.
-$Q5c: Ride the gondola
-$Q5cT: Register the Blue Card at the terminal<1>of East Station. Put your strongest<1>Digimon in front: a boss attacks on<1>the way.
-$Q6: Bulbmon
-$Q6T: Hold out against the Digimon that fell<1>on the gondola's track.
+$Q5T: Suzaku Leader waits in the South Sector,<1>past the gondola of East Station. From<1>Seiryu City, go through the Wind Prairie<1>and the Kicking Forest to East Station,<1>then walk up to the gondola's terminal.
+$Q6: The Blue Card
+$Q6T: The gondola asks for a Blue Card, and the<1>Digimon born from one have it: Guilmon.<1>Ask the Guilmon on the second floor of<1>the Asuka Inn, in Asuka City.
+$Q6b: The hungry cousin
+$Q6bT: His cousin has the card. He left for<1>Seiryu City, but he was hungry and may<1>stop to eat: ask the Guilmon at the<1>Forest Inn, off the East Wire Forest.
+$Q6c: The sleepy Guilmon
+$Q6cT: The Guilmon with the card went on to<1>Seiryu City, and he likes to nap. Find<1>Tricky Guilmon upstairs at the inn of<1>Zephyr Tower, by the beds.
+$Q6d: Register the card
+$Q6dT: Tricky Guilmon handed you a card. Take<1>it to the terminal of East Station and<1>try to register it. Something about its<1>name looks odd, though...
+$Q6e: The fake 8lue Card
+$Q6eT: The 8lue Card is a fake! A Guilmon in<1>Seiryu City knows the trickster: he<1>stands on the road by the big red<1>emblem, near the way in from the<1>Wind Prairie.
+$Q6f: The trickster's hideout
+$Q6fT: Tricky Guilmon likes it underground, in<1>a basement with ghosts. Go down the<1>stairs to the very bottom of the Forest<1>Inn's basement and talk to him.
+$Q6g: Ride the gondola
+$Q6gT: The real Blue Card at last! Register it<1>at the terminal of East Station and<1>board the gondola. Put your<1>strongest Digimon in front: a boss<1>attacks on the way.
+$Q6h: Bulbmon
+$Q6hT: Hold out against the Digimon that fell<1>on the gondola's track. Beat it and the<1>gondola goes on to South Station.
 $Q7: The Jungle Grave
 $Q7T: From South Station cross Bulk Swamp<1>and Bulk Bridge. Rest at the Swamp Inn,<1>then go south into the Jungle Grave.
 $Q8: Sepikmon's mask

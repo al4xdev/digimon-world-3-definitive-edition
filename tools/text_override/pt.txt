@@ -4447,13 +4447,23 @@ $Q4sT: Tom Repetidor diz que o Líder Seiryu<1>sumiu e uma porta azul abriu na e
 $Q4a: O Líder Seiryu
 $Q4aT: Treine perto da Cidade Asuka, vá a leste<1>pela Floresta Wire e Pradaria do Vento<1>até Cidade Seiryu. Pergunte pelo Líder:<1>Tom Repetidor, na escada da pousada,<1>sabe de todas as novidades.
 $Q5: Rumo ao Setor Sul
-$Q5T: A gôndola da Estação Leste, após a<1>Floresta Kicking, pede um Blue Card.<1>Um Guilmon o tem: pergunte na Pousada<1>Asuka, Pousada da Floresta e na pousada<1>da Torre Zephyr, em Cidade Seiryu.
-$Q5b: Cartão falso
-$Q5bT: O 8lue Card é falso! O Guilmon<1>Trapaceiro se esconde no fundo do porão<1>da Pousada da Floresta.
-$Q5c: Suba na gôndola
-$Q5cT: Registre o Blue Card no terminal da<1>Estação Leste. Ponha seu Digimon mais<1>forte na frente: um chefe ataca no<1>caminho.
-$Q6: Bulbmon
-$Q6T: Resista ao Digimon que caiu nos trilhos<1>da gôndola.
+$Q5T: O Líder Suzaku espera no Setor Sul,<1>depois da gôndola da Estação Leste. Da<1>Cidade Seiryu, passe pela Pradaria do<1>Vento e pela Floresta do Chute até a<1>Estação Leste e vá ao terminal da gôndola.
+$Q6: O Blue Card
+$Q6T: A gôndola pede um Blue Card, e quem tem<1>são os Digimon que nascem dele: os<1>Guilmon. Fale com o Guilmon no segundo<1>andar da Pousada Asuka, na Cidade Asuka.
+$Q6b: O primo faminto
+$Q6bT: O primo dele tem o cartão. Foi para a<1>Cidade Seiryu, mas estava com fome e<1>pode ter parado para comer: fale com o<1>Guilmon da Pousada da Floresta, saindo<1>da Floresta East Wire.
+$Q6c: O Guilmon dorminhoco
+$Q6cT: O Guilmon do cartão seguiu para a Cidade<1>Seiryu, e ele adora uma soneca. Ache o<1>Guilmon Astuto no andar de cima da<1>pousada da Torre Zephyr, perto das camas.
+$Q6d: Registre o cartão
+$Q6dT: O Guilmon Astuto te deu um cartão. Leve<1>ao terminal da Estação Leste e tente<1>registrar. Mas tem algo estranho no<1>nome dele...
+$Q6e: O 8lue Card falso
+$Q6eT: O 8lue Card é falso! Um Guilmon da<1>Cidade Seiryu conhece o trapaceiro: ele<1>fica na rua do grande emblema vermelho,<1>perto da entrada que vem da Pradaria<1>do Vento.
+$Q6f: A toca do trapaceiro
+$Q6fT: O Guilmon Astuto gosta de lugares<1>subterrâneos, de porão com fantasmas.<1>Desça as escadas até o fundo do porão<1>da Pousada da Floresta e fale com ele.
+$Q6g: Suba na gôndola
+$Q6gT: Enfim, o Blue Card de verdade! Registre<1>no terminal da Estação Leste e suba na<1>gôndola. Ponha seu Digimon mais forte<1>na frente: um chefe ataca no caminho.
+$Q6h: Bulbmon
+$Q6hT: Resista ao Digimon que caiu nos trilhos<1>da gôndola. Vença e a gôndola segue até<1>a Estação Sul.
 $Q7: A Tumba da Selva
 $Q7T: Da Estação Sul, cruze o Pântano Bulk e<1>a Ponte Bulk. Descanse na Pousada do<1>Pântano e vá ao sul até a Tumba da Selva.
 $Q8: Máscara de Sepikmon

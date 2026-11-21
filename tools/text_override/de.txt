@@ -615,13 +615,23 @@ $Q4sT: Repeating Tom sagt, Seiryus Leader ist<1>weg, und an der Treppe des Seiry
 $Q4a: Der Seiryu-Leader
 $Q4aT: Trainiere bei Asuka City, geh dann nach<1>Osten durch den Drahtwald und die<1>Windige Prärie bis Seiryu City. Frag<1>nach dem Leader: Repeating Tom auf der<1>Treppe des Stadt-Inns hört alle<1>Neuigkeiten.
 $Q5: Richtung Südsektor
-$Q5T: Die Gondel an der Oststation, hinter dem<1>Tretwald, verlangt eine Blaue Karte. Ein<1>Guilmon hat sie: Frag im Asuka Inn, im<1>Forest Inn und im Inn des Zephyr-Turms<1>in Seiryu City.
-$Q5b: Fälschung
-$Q5bT: Die 8lue Card ist falsch! Der tricksende<1>Guilmon versteckt sich unten im Keller<1>des Forest Inns.
-$Q5c: Mit der Gondel fahren
-$Q5cT: Registriere die Blaue Karte am Terminal<1>der Oststation. Stell dein stärkstes<1>Digimon nach vorn: Ein Boss greift<1>unterwegs an.
-$Q6: Bulbmon
-$Q6T: Halte stand gegen die Digimon, die auf<1>die Gondelschiene gefallen sind.
+$Q5T: Suzaku wartet im Südsektor, hinter der<1>Gondel der Oststation. Geh von Seiryu<1>City durch die Windige Prärie und den<1>Tretwald zur Oststation und dort zum<1>Terminal der Gondel.
+$Q6: Die Blaue Karte
+$Q6T: Die Gondel verlangt eine Blaue Karte,<1>und die Digimon, die aus ihr geboren<1>sind, haben sie: Guilmon. Frag den<1>Guilmon im Obergeschoss des Asuka Inn<1>in Asuka City.
+$Q6b: Der hungrige Cousin
+$Q6bT: Sein Cousin hat die Karte. Er ist nach<1>Seiryu City, hatte aber Hunger und hält<1>wohl zum Essen an: Frag den Guilmon<1>im Forest Inn beim Drahtwald Ost.
+$Q6c: Der Langschläfer
+$Q6cT: Der Guilmon mit der Karte ist weiter<1>nach Seiryu City, und er liebt<1>Nickerchen. Such Trick-Guilmon oben im<1>Inn des Zephyr-Turms, bei den Betten.
+$Q6d: Karte registrieren
+$Q6dT: Trick-Guilmon hat dir eine Karte<1>gegeben. Bring sie zum Terminal der<1>Oststation und versuch, sie zu<1>registrieren. Ihr Name sieht aber<1>seltsam aus...
+$Q6e: Falsche 8laue Karte
+$Q6eT: Die 8laue Karte ist falsch! Ein Guilmon<1>in Seiryu City kennt den Trickser: Er<1>steht auf der Straße beim großen roten<1>Emblem, nahe dem Eingang von der<1>Windigen Prärie.
+$Q6f: Das Trickser-Versteck
+$Q6fT: Trick-Guilmon mag es unterirdisch, in<1>einem Keller mit Geistern. Geh die<1>Treppe ganz nach unten im Keller des<1>Forest Inn und sprich mit ihm.
+$Q6g: Ab in die Gondel
+$Q6gT: Endlich die echte Blaue Karte! Registriere<1>sie am Terminal der Oststation und<1>steig in die Gondel. Stell dein<1>stärkstes Digimon nach vorn: Ein Boss<1>greift unterwegs an.
+$Q6h: Bulbmon
+$Q6hT: Halte stand gegen das Digimon, das auf<1>die Gondelschiene gefallen ist. Besiege<1>es, dann fährt die Gondel weiter zur<1>Südstation.
 $Q7: Das Dschungelgrab
 $Q7T: Von der Südstation über den Bulksumpf<1>und die Bulkbrücke. Rast im Swamp Inn,<1>dann geh nach Süden ins Dschungelgrab.
 $Q8: Sepikmons Maske

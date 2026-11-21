@@ -615,13 +615,23 @@ $Q4sT: Repeating Tom dice che il Capo di Seiryu<1>è sparito, e una porta blu si
 $Q4a: Il Capo di Seiryu
 $Q4aT: Allenati vicino ad Asuka City, poi vai a est<1>per Foresta di Fili e Prateria del Vento<1>fino a Seiryu City. Chiedi in giro del Capo:<1>Repeating Tom, sulle scale della locanda<1>della città, sa tutte le notizie.
 $Q5: Verso il Settore Sud
-$Q5T: La gondola della Stazione Est, oltre la<1>Foresta dei Calci, chiede una Carta Blu.<1>Ce l'ha un Guilmon: chiedi alle locande di<1>Asuka, della Foresta e della Torre<1>Zefiro, a Seiryu City.
-$Q5b: Una carta falsa
-$Q5bT: La Carta 8lue è falsa! Il Guilmon furbo<1>si nasconde in fondo al seminterrato della<1>Locanda della Foresta.
-$Q5c: Prendi la gondola
-$Q5cT: Registra la Carta Blu al terminale della<1>Stazione Est. Metti in testa il tuo Digimon<1>più forte: un boss attacca lungo la strada.
-$Q6: Bulbmon
-$Q6T: Resisti al Digimon caduto sul binario<1>della gondola.
+$Q5T: La governatrice di Suzaku ti aspetta nel<1>Settore Sud, oltre la gondola della<1>Stazione est. Da Città di Seiryu passa<1>per la Prateria vento e la Foresta Calci<1>fino alla Stazione est, poi vai al<1>terminale della gondola.
+$Q6: La Carta blu
+$Q6T: La gondola chiede una Carta blu, e ce<1>l'hanno i Digimon nati da essa: i<1>Guilmon. Chiedi al Guilmon al secondo<1>piano della Locanda di Asuka, a Città<1>di Asuka.
+$Q6b: Il cugino affamato
+$Q6bT: Suo cugino ha la carta. È partito per<1>Città di Seiryu, ma aveva fame e forse<1>si è fermato a mangiare: chiedi al<1>Guilmon della Locanda della foresta,<1>vicino alla Foresta fili E.
+$Q6c: Il Guilmon dormiglione
+$Q6cT: Il Guilmon con la carta è andato a Città<1>di Seiryu, e ama poltrire. Trova il<1>Guilmon bugiardo al piano di sopra della<1>locanda della Torre zefiro, vicino ai<1>letti.
+$Q6d: Registra la carta
+$Q6dT: Il Guilmon bugiardo ti ha dato una<1>carta. Portala al terminale della<1>Stazione est e prova a registrarla. Però<1>il suo nome ha qualcosa di strano...
+$Q6e: La falsa Carta 8lu
+$Q6eT: La Carta 8lu è falsa! Un Guilmon di<1>Città di Seiryu conosce l'imbroglione:<1>sta sulla strada del grande emblema<1>rosso, vicino all'ingresso dalla<1>Prateria vento.
+$Q6f: Il covo dell'imbroglione
+$Q6fT: Il Guilmon bugiardo ama stare<1>sottoterra, in un sotterraneo con<1>fantasmi. Scendi le scale fino in fondo al<1>sotterraneo della Locanda della foresta<1>e parlagli.
+$Q6g: Prendi la gondola
+$Q6gT: Finalmente la vera Carta blu! Registrala<1>al terminale della Stazione est e sali<1>sulla gondola. Metti in testa il tuo<1>Digimon più forte: un boss attacca lungo<1>la strada.
+$Q6h: Bulbmon
+$Q6hT: Resisti al Digimon caduto sul binario<1>della gondola. Battilo e la gondola<1>prosegue fino alla Stazione sud.
 $Q7: La Tomba della Giungla
 $Q7T: Dalla Stazione Sud attraversa la Palude Bulk<1>e il Ponte Bulk. Riposa alla Locanda della<1>Palude, poi scendi a sud<1>nella Tomba della Giungla.
 $Q8: Maschera Sepik

@@ -614,14 +614,24 @@ $Q4s: Le Leader disparu
 $Q4sT: Repeating Tom dit que le Leader de Seiryu<1>a disparu. Une porte bleue s'est ouverte<1>dans les escaliers de l'auberge : passe-la<1>vers la Salle Velours. Demande au<1>Sepikmon quoi chasser, puis reviens.
 $Q4a: Le Leader de Seiryu
 $Q4aT: Entraîne-toi près d'Asuka City, puis va<1>à l'est par la Forêt des Fils et la<1>Prairie du Vent jusqu'à Seiryu City.<1>Demande le Leader : Repeating Tom, dans<1>les escaliers de l'auberge, connaît<1>toutes les nouvelles.
-$Q5: Vers le secteur Sud
-$Q5T: La télécabine de la gare Est, après la<1>Forêt Kicking, demande une Carte Bleue.<1>Un Guilmon l'a : demande à l'auberge<1>d'Asuka, à l'Auberge de la Forêt et à<1>celle de la Tour Zéphyr, à Seiryu City.
-$Q5b: Fausse carte
-$Q5bT: La 8lue Card est fausse ! Le Guilmon rusé<1>se cache au fond du sous-sol de l'Auberge<1>de la Forêt.
-$Q5c: Prendre la télécabine
-$Q5cT: Enregistre la Carte Bleue au terminal de<1>la gare Est. Mets ton Digimon le plus<1>fort devant : un boss attaque en route.
-$Q6: Bulbmon
-$Q6T: Tiens bon face au Digimon tombé<1>sur la voie de la télécabine.
+$Q5: Vers le Secteur Sud
+$Q5T: Le chef de Suzaku t'attend au Secteur<1>Sud, après la télécabine de la Station<1>de l'Est. Depuis Seiryu City, passe par<1>la Prairie des Vents et la Forêt Vive<1>jusqu'à la Station de l'Est, puis va au<1>terminal de la télécabine.
+$Q6: La Carte Bleue
+$Q6T: La télécabine demande une Carte Bleue,<1>et les Digimon nés d'une telle carte en<1>ont une : les Guilmon. Demande au<1>Guilmon du premier étage de l'auberge<1>d'Asuka, à Asuka City.
+$Q6b: Le cousin affamé
+$Q6bT: Son cousin a la carte. Il est parti pour<1>Seiryu City, mais il avait faim et a pu<1>s'arrêter manger : demande au Guilmon<1>de l'Auberge Forêt, près de la Forêt<1>Fer Est.
+$Q6c: Le Guilmon dormeur
+$Q6cT: Le Guilmon à la carte a filé à Seiryu<1>City, et il adore les siestes. Trouve<1>Guilmon le Malin à l'étage de l'auberge<1>de la Tour Zéphyr, près des lits.
+$Q6d: Enregistrer la carte
+$Q6dT: Guilmon le Malin t'a donné une carte.<1>Porte-la au terminal de la Station de<1>l'Est et essaie de l'enregistrer. Son<1>nom a pourtant quelque chose de bizarre...
+$Q6e: Fausse Carte 8leue
+$Q6eT: La Carte 8leue est un faux ! Un Guilmon<1>de Seiryu City connaît l'escroc : il se<1>tient dans la rue du grand emblème<1>rouge, près de l'entrée depuis la<1>Prairie des Vents.
+$Q6f: La cachette de l'escroc
+$Q6fT: Guilmon le Malin aime les profondeurs,<1>un sous-sol hanté. Descends l'escalier<1>tout au fond du sous-sol de l'Auberge<1>Forêt et parle-lui.
+$Q6g: En télécabine
+$Q6gT: Enfin la vraie Carte Bleue ! Enregistre-<1>la au terminal de la Station de l'Est et<1>monte dans la télécabine. Mets ton<1>Digimon le plus fort devant : un boss<1>attaque en route.
+$Q6h: Bulbmon
+$Q6hT: Tiens bon face au Digimon tombé sur la<1>voie de la télécabine. Bats-le et elle<1>repart vers la Station du Sud.
 $Q7: La Tombe de la Jungle
 $Q7T: Depuis la gare Sud, traverse le Marais<1>Bulk et le Pont Bulk. Repose-toi à<1>l'auberge du marais, puis va au sud,<1>dans la Tombe de la Jungle.
 $Q8: Masque de Sepikmon

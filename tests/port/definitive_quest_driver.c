@@ -1,6 +1,6 @@
 /* tests/port/definitive_quest.py's driver for port/game/definitive_quest.c (the Guide's rules), linked with the
- * generated texts. gamestate_data, gamestate_flags (a small set of flags that are on), the price table and
- * port_script_active are stand-ins. Prints "ok name" / "FAIL name" per case; exits 1 on a failure. */
+ * generated texts. gamestate_data, gamestate_flags (a small set of flags that are on), the price table,
+ * port_script_active and records_language are stand-ins. Prints "ok name" / "FAIL name" per case; exits 1 on a failure. */
 #include <stdio.h>
 
 #include "common.h"
@@ -9,13 +9,14 @@
 
 #include "definitive.h"
 
-extern const unsigned char def_str_Q5[], def_str_Q5b[], def_str_Q5c[], def_str_Q9b[], def_str_Q12b[], def_str_Q14b[],
-    def_str_M0[];
+extern const unsigned char def_str_Q5[], def_str_Q6[], def_str_Q6b[], def_str_Q6c[], def_str_Q6d[], def_str_Q6e[],
+    def_str_Q6f[], def_str_Q6g[], def_str_Q6h[], def_str_Q9b[], def_str_Q12b[], def_str_Q14b[], def_str_M0[];
 
 GamestateData gamestate_data;
 GamestateFlags gamestate_flags;
 s32 gamestate_money_check[] = { 800, 1600, 2700, 4000, 6000, 8700, 11500, 17500, 24000, 32000 };
 int port_script_active;
+s32 records_language = 2; /* the disc's English set: the generated texts' def_lang reads it */
 int def_story_cond(int cond) { (void)cond; return 0; } /* the story hooks (definitive_story.c): none holds the story */
 int dw3_velvet_in_room(void) { return 0; }
 void port_log(const char *fmt, ...) {
@@ -72,11 +73,30 @@ int main(void) {
     check("every story step 0..45 has its main quest row", ok);
 
     on_count = 0;
-    check("step 5 without the cards: find the Blue Card", main_title(5) == def_str_Q5);
+    check("step 5: to East Station's terminal", main_title(5) == def_str_Q5);
+    /* The Blue Card (step 6): each link of the chain sets the flag the next one asks for (WSTAG240, 360, 425, 410,
+     * 420, 365, 410 again, 415), and the row follows the latest one held. */
+    check("step 6, nothing yet: the Guilmon of the Asuka Inn", main_title(6) == def_str_Q6);
+    set_on(0x1C44);
+    check("his cousin named: the Forest Inn", main_title(6) == def_str_Q6b);
+    set_on(0x1C45);
+    check("sent on to Seiryu: Zephyr Tower", main_title(6) == def_str_Q6c);
     set_on(0x8000 | 399);
-    check("only the fake 8lue Card: its row", main_title(5) == def_str_Q5b);
+    check("the 8lue Card: to the terminal", main_title(6) == def_str_Q6d);
+    set_on(0x1C46);
+    set_on(0x1C50);
+    check("refused by the terminal: the Guilmon in Seiryu City", main_title(6) == def_str_Q6e);
+    set_on(0x1C47);
+    check("the hideout told: the Forest Inn's basement", main_title(6) == def_str_Q6f);
     set_on(0x8000 | 398);
-    check("the real Blue Card: the gondola's row", main_title(5) == def_str_Q5c);
+    check("the real Blue Card: register it and ride", main_title(6) == def_str_Q6g);
+    set_on(0x4018);
+    check("Bulbmon fell on the track: the ride's row", main_title(6) == def_str_Q6h);
+    check("and step 5 never takes a step 6 row", main_title(5) == def_str_Q5);
+    on_count = 0;
+    set_on(0x8000 | 398);
+    check("the Blue Card alone at step 6 (a save from any point after it): register it",
+          main_title(6) == def_str_Q6g);
     on_count = 0;
     set_on(0x8000 | 21);
     check("step 9 with the Sepik Mask: return it", main_title(9) == def_str_Q9b);
@@ -149,6 +169,13 @@ int main(void) {
           ok && n == DEF_NOTICE_AUCTION && arg == 0 && def_quest_notice(&arg) == DEF_NOTICE_NONE);
     set_on(DEF_AUCTION_FLAG + 0);
     check("the auction attended: no notice", def_quest_notice(&arg) == DEF_NOTICE_NONE);
+    gamestate_data.progress = 6;
+    n = def_quest_notice(&arg);
+    ok = n == DEF_NOTICE_QUEST && arg == def_quest_main_index() && def_quest_notice(&arg) == DEF_NOTICE_NONE;
+    set_on(0x1C44);
+    n = def_quest_notice(&arg);
+    check("a stage flag that moves the step's row on: a notice",
+          ok && n == DEF_NOTICE_QUEST && arg == def_quest_main_index() && def_quest_main()->title == def_str_Q6b);
     set_on(0x8000 | 399);
     n = def_quest_notice(&arg);
     check("a key item that changes the step's row: a notice", n == DEF_NOTICE_QUEST && arg == def_quest_main_index());

@@ -31,8 +31,10 @@ extern s32 gamestate_money_check[];
 #define STORY(cond) (DEF_STORY_FLAG | (cond)) /* a Velvet Room story hook's condition (def_story_cond) */
 
 extern const unsigned char def_str_Q0[], def_str_Q0T[], def_str_Q1[], def_str_Q1T[], def_str_Q2[], def_str_Q2T[],
-    def_str_Q3[], def_str_Q3T[], def_str_Q4[], def_str_Q4T[], def_str_Q5[], def_str_Q5T[], def_str_Q5b[],
-    def_str_Q5bT[], def_str_Q5c[], def_str_Q5cT[], def_str_Q6[], def_str_Q6T[], def_str_Q7[], def_str_Q7T[],
+    def_str_Q3[], def_str_Q3T[], def_str_Q4[], def_str_Q4T[], def_str_Q5[], def_str_Q5T[], def_str_Q6[],
+    def_str_Q6T[], def_str_Q6b[], def_str_Q6bT[], def_str_Q6c[], def_str_Q6cT[], def_str_Q6d[], def_str_Q6dT[],
+    def_str_Q6e[], def_str_Q6eT[], def_str_Q6f[], def_str_Q6fT[], def_str_Q6g[], def_str_Q6gT[], def_str_Q6h[],
+    def_str_Q6hT[], def_str_Q7[], def_str_Q7T[],
     def_str_Q8[], def_str_Q8T[], def_str_Q9[], def_str_Q9T[], def_str_Q9b[], def_str_Q9bT[], def_str_Q10[],
     def_str_Q10T[], def_str_Q11[], def_str_Q11T[], def_str_Q12[], def_str_Q12T[], def_str_Q12b[], def_str_Q12bT[],
     def_str_Q13[], def_str_Q13T[], def_str_Q14[], def_str_Q14T[], def_str_Q14b[], def_str_Q14bT[], def_str_Q15[],
@@ -62,10 +64,18 @@ const DefQuest def_quests[] = {
     { 4, 4, STORY(DEF_STORY_COND_SEIRYU_ASK), 1, 0x230, def_str_Q4a, def_str_Q4aT }, /* ask Repeating Tom */
     { 4, 4, STORY(DEF_STORY_COND_SEIRYU), 1, 0x230, def_str_Q4s, def_str_Q4sT },     /* the Leader is missing */
     { 4, 4, ANY, 0, 0x22E, def_str_Q4, def_str_Q4T },
-    { 5, 5, ITEM(398), 1, 0x22C, def_str_Q5c, def_str_Q5cT }, /* the Blue Card */
-    { 5, 5, ITEM(399), 1, 0x224, def_str_Q5b, def_str_Q5bT }, /* only the 8lue Card */
-    { 5, 5, ANY, 0, 0x22F, def_str_Q5, def_str_Q5T },
-    { 6, 6, ANY, 0, 0x232, def_str_Q6, def_str_Q6T },
+    { 5, 5, ANY, 0, 0x22C, def_str_Q5, def_str_Q5T },
+    /* The Blue Card: step 6 begins at the gondola's terminal (WSTAG410 event 90, its first visit), so the whole Guilmon
+     * chase is step 6. Each link of the chain sets a flag the next one asks for, so the latest one held says where the
+     * player is: the rows go from the chain's end back to its start, and none of these flags is ever cleared. */
+    { 6, 6, 0x4018, 1, 0x22D, def_str_Q6h, def_str_Q6hT },    /* WSTAG415: Bulbmon fell on the track (the ride) */
+    { 6, 6, ITEM(398), 1, 0x22C, def_str_Q6g, def_str_Q6gT }, /* the Blue Card: register it */
+    { 6, 6, 0x1C47, 1, 0x224, def_str_Q6f, def_str_Q6fT },    /* WSTAG420: the hideout told, Tricky Guilmon in BF */
+    { 6, 6, 0x1C46, 1, 0x22E, def_str_Q6e, def_str_Q6eT },    /* WSTAG410: the 8lue Card refused, ask in Seiryu */
+    { 6, 6, ITEM(399), 1, 0x22C, def_str_Q6d, def_str_Q6dT }, /* the 8lue Card from Zephyr Tower: try it */
+    { 6, 6, 0x1C45, 1, 0x22F, def_str_Q6c, def_str_Q6cT },    /* WSTAG360: Forest Inn's Guilmon sends to Seiryu */
+    { 6, 6, 0x1C44, 1, 0x223, def_str_Q6b, def_str_Q6bT },    /* WSTAG240: Asuka Inn's Guilmon names his cousin */
+    { 6, 6, ANY, 0, 0x20C, def_str_Q6, def_str_Q6T },         /* the terminal wants a Blue Card: ask a Guilmon */
     { 7, 7, ANY, 0, 0x23A, def_str_Q7, def_str_Q7T },
     { 8, 8, ANY, 0, 0x227, def_str_Q8, def_str_Q8T },
     { 9, 9, ITEM(21), 1, 0x239, def_str_Q9b, def_str_Q9bT }, /* the Sepik Mask */

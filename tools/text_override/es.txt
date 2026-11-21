@@ -615,13 +615,23 @@ $Q4sT: Tom Repetitivo dice que el Líder de Seiryu<1>se fue, y una puerta azul a
 $Q4a: El Líder de Seiryu
 $Q4aT: Entrena cerca de Asuka, luego ve al este<1>por el Bosque Cable y la Pradera Viento<1>hasta Seiryu. Pregunta por el Líder: Tom<1>Repetitivo, en las escaleras de la posada,<1>lo oye todo.
 $Q5: Al Sector Sur
-$Q5T: La góndola de la Estación Este, tras el<1>Bosque Patada, pide una Tarjeta Azul.<1>Un Guilmon la tiene: pregunta en la posada<1>Asuka, en la del Bosque y en la de la Torre<1>Céfiro, en Seiryu.
-$Q5b: Tarjeta falsa
-$Q5bT: ¡La Tarjeta Azul es falsa! Un Guilmon<1>astuto se esconde en el sótano de la<1>posada del Bosque.
-$Q5c: Sube a la góndola
-$Q5cT: Registra la Tarjeta Azul en la terminal<1>de la Estación Este. Pon a tu Digimon más<1>fuerte al frente: un jefe ataca en el<1>camino.
-$Q6: Bulbmon
-$Q6T: Resiste contra el Digimon que cayó<1>sobre la vía de la góndola.
+$Q5T: El Líder Suzaku te espera en el Sector<1>Sur, tras la góndola de la Estación<1>Este. Desde Ciudad Seiryu, cruza la<1>Llanura del Viento y el Bosque de<1>Patadas hasta la Estación Este y ve a<1>la terminal de la góndola.
+$Q6: La Tarjeta Azul
+$Q6T: La góndola pide una Tarjeta Azul, y la<1>tienen los Digimon nacidos de una: los<1>Guilmon. Pregunta al Guilmon del<1>segundo piso de la Posada Asuka, en<1>Ciudad Asuka.
+$Q6b: El primo hambriento
+$Q6bT: Su primo tiene la tarjeta. Se fue a<1>Ciudad Seiryu, pero tenía hambre y<1>quizá paró a comer: pregunta al Guilmon<1>de la Posada Bosque, junto al Bosque<1>Alambre Este.
+$Q6c: El Guilmon dormilón
+$Q6cT: El Guilmon de la tarjeta siguió hacia<1>Ciudad Seiryu, y le encanta dormitar.<1>Busca al Guilmon Astuto arriba, en la<1>posada de la Torre Céfiro, junto a<1>las camas.
+$Q6d: Registra la tarjeta
+$Q6dT: El Guilmon Astuto te dio una tarjeta.<1>Llévala a la terminal de la Estación<1>Este e intenta registrarla. Aunque su<1>nombre tiene algo raro...
+$Q6e: La falsa Tarjeta 8zul
+$Q6eT: ¡La Tarjeta 8zul es falsa! Un Guilmon de<1>Ciudad Seiryu conoce al tramposo: está<1>en la calle del gran emblema rojo,<1>cerca de la entrada desde la Llanura<1>del Viento.
+$Q6f: El escondite del tramposo
+$Q6fT: Al Guilmon Astuto le gusta el subsuelo,<1>un sótano con fantasmas. Baja las<1>escaleras hasta el fondo del sótano de<1>la Posada Bosque y habla con él.
+$Q6g: Sube a la góndola
+$Q6gT: ¡Por fin la Tarjeta Azul de verdad!<1>Regístrala en la terminal de la<1>Estación Este y sube a la góndola. Pon<1>a tu Digimon más fuerte al frente: un<1>jefe ataca en el camino.
+$Q6h: Bulbmon
+$Q6hT: Resiste contra el Digimon que cayó<1>sobre la vía de la góndola. Derrótalo y<1>la góndola sigue hasta la Estación Sur.
 $Q7: La Tumba de la Selva
 $Q7T: Desde la Estación Sur cruza el Pantano Bulk<1>y el Puente Bulk. Descansa en la posada<1>del Pantano y luego ve al sur, a la Tumba.
 $Q8: Máscara Sepikmon
