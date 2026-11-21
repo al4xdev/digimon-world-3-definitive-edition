@@ -24,6 +24,7 @@
 
 extern unsigned char ststatus_map_areas[];
 extern int def_on(void);
+extern int def_super_reward(int amount);
 extern void port_log(const char *fmt, ...);
 
 static struct {
@@ -551,7 +552,7 @@ void def_super_battle_end(int result, int hp) {
     if (result == 1 || hp <= 0) {
         run.fled_who = 0;
         run.fled = 0;
-        def_super_crystal_add(hunt, def_hunt_mark_mult(1)); /* the Hunter's Mark: double */
+        def_super_crystal_add(hunt, def_super_reward(def_hunt_mark_mult(1))); /* Hunter's Mark / Demon Bell: 2x */
         run.first = hunt == st.done && st.done < DEF_SUPER_COUNT;
         if (run.first) {
             st.done++;

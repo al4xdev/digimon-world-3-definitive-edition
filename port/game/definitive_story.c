@@ -67,6 +67,9 @@ extern void *font_get_entry(void *data, s32 i);
 #define OK_CALL 5      /* TALK06's letter "a" entries (5..27 are, and no stage talks with them) */
 #define OK_AGAIN 6
 #define OK_BEATEN 7
+#define ST_PROTOCOL_FOREST 0x234
+#define ST_PROTOCOL_RUINS 0x235
+#define ST_PROTOCOL_WARN 8   /* TALK06's letter "a" entry: voice in the head before Protocol Ruins */
 #define ST_TALK01 0xCC
 #define ST_TOM_LINE 79       /* Repeating Tom, in the city's inn: "Seiryu Leader is training at the Protocol Ruins" */
 #define ST_SEIRYU_FELT 178   /* TALK01's letter "a" no stage talks with: the player's feeling after Tom's news */
@@ -109,6 +112,7 @@ static struct {
     s32 releasing;
     s32 tom_told; /* Repeating Tom's news is on screen: the player's feeling and the door come after it */
     s32 speaker;  /* the actor the balloon is on (its ID), 0: the player */
+    s32 protocol_touch, protocol_touching; /* blocked Protocol Ruins gate: voice in the head once per step */
 } story;
 
 static int oikawa_here(void);
@@ -221,7 +225,7 @@ int def_story_text_own(int base_id, int index) {
         return index == ST_SEIRYU_FELT;
     }
     if (base_id == OK_TALK06) {
-        return index == OK_CALL || index == OK_AGAIN || index == OK_BEATEN;
+        return index == OK_CALL || index == OK_AGAIN || index == OK_BEATEN || index == ST_PROTOCOL_WARN;
     }
     if (base_id == ST_TALK05) {
         return index == ST_SEPIK_REPORT || index == ST_SEPIK_CALLED || index == ST_IGOR_KEY || index == ST_IGOR_READ ||
@@ -1284,10 +1288,32 @@ static void galactic_hook(void) {
     gamestate_flags.set_flag(ST_GALACTIC_FLAG, 1);
 }
 
+static int protocol_gate_closed_now(void) {
+    return def_on() && gamestate_data.funcs.get_map() == ST_PROTOCOL_FOREST &&
+           gamestate_data.progress <= ST_SEIRYU_STEP && !def_record_story(DEF_STORY_SEIRYU_DONE);
+}
+
 /* A map event a story hook holds shut (FIELDSTG's check, through dw3_velvet_event_closed). */
 int def_story_event_closed(int type, int param) {
+    if (type == 1 && param == ST_PROTOCOL_RUINS && protocol_gate_closed_now()) {
+        story.protocol_touch = (s32)port_frames;
+        return 1;
+    }
     return def_on() && type == 8 && param == ST_GALACTIC_EVENT && gamestate_data.progress >= ST_GALACTIC_STEP &&
            gamestate_data.funcs.get_map() == ST_GALACTIC_MAP;
+}
+
+static void protocol_gate_frame(void) {
+    s32 on = protocol_gate_closed_now() && (s32)port_frames - story.protocol_touch <= 2;
+
+    if (on && !story.protocol_touching) {
+        s32 line = ST_PROTOCOL_WARN;
+
+        if (!story_talk(&line, 1)) {
+            return;
+        }
+    }
+    story.protocol_touching = on;
 }
 
 /* Step 4: Repeating Tom's news closed: the player's feeling, and the room's door opens on the inn's stairs. */
@@ -1366,6 +1392,9 @@ void def_story_frame(void) {
     }
     if (idle()) {
         seiryu_hook();
+        if (story.count == 0) {
+            protocol_gate_frame();
+        }
         if (story.count == 0) {
             def_time_gate_frame(story_talk); /* the Warp Gate held shut: Igor's voice (definitive_time_room.c) */
         }

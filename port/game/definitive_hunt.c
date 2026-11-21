@@ -34,7 +34,8 @@
 
 extern unsigned char ststatus_map_areas[];
 extern int def_on(void); /* port.h declares it under PC_PORT only; the host test builds without it */
-extern int def_super_reward(int amount); /* the same (definitive_super.c) */
+extern int def_super_reward(int amount);    /* the same (definitive_super.c) */
+extern int def_super_materials(int amount); /* 3x Hunt Materials (definitive_super.c) */
 extern void port_log(const char *fmt, ...);
 extern const unsigned char def_str_HuntGotPrefix[], def_str_HuntGotSuffix[], def_str_HuntRarePrefix[], def_str_HuntRareWord[],
     def_str_HuntSpace[], def_str_HuntHeld[];
@@ -281,7 +282,7 @@ static void common_drops(void) {
         }
         m = def_hunt_common_of(def_bestiary_index(species));
         if (m >= 0) {
-            tally[m] += def_super_reward(1); /* Super Hard: double */
+            tally[m] += def_super_materials(1); /* Super Hard: 3x materials */
         }
     }
     for (m = 0; m < DEF_HUNT_MATERIALS; m++) {
@@ -310,7 +311,7 @@ static void rare_won(int t) {
     if (t < 0 || t >= def_hunt_target_count) {
         return;
     }
-    def_record_rare_add(t, def_hunt_mark_mult(1)); /* the Hunter's Mark: double */
+    def_record_rare_add(t, def_super_reward(def_hunt_mark_mult(1))); /* Hunter's Mark / Demon Bell: 2x */
     port_log("hunt: rare %d (now %d)", t, def_record_rare(t));
     if ((line = line_new()) != NULL) {
         def_glyph_put(line, &p, DEF_HUNT_LINE_SIZE, def_str_HuntRarePrefix);
@@ -324,8 +325,9 @@ void def_hunt_skipped(void) {
 
     if (hunt.from_encounter && !hunt.rare && def_on()) {
         def_record_hunt(&region, &chain);
-        if (chain < DEF_HUNT_CHAIN_CAP) {
-            chain++;
+        chain += def_super_reward(1);
+        if (chain > DEF_HUNT_CHAIN_CAP) {
+            chain = DEF_HUNT_CHAIN_CAP;
         }
         def_record_set_hunt(region, chain);
         common_drops(); /* the Rush won it for the party: counts for the hunt chain and drops materials */

@@ -47,6 +47,10 @@ int def_super_reward(int amount) {
     return amount;
 }
 
+int def_super_materials(int amount) {
+    return amount;
+}
+
 
 /* The Hunter's Mark (definitive_market.c): not held here, a reward is as it was. */
 int def_hunt_mark_mult(int n) {

@@ -4113,7 +4113,7 @@ TALK05 62: <7>Oikawa<7>...Heh. Perdi outra.<1>Estou ficando bom<1>nisso.<2,2><3>
 TALK05 63: <7>Sepikmon<7>Uma caçada limpa.<1>Meus rastreadores<1>cantarão isso hoje.<2,2><3>Vá. A última prova<1>espera por você.<2,2>
 TALK05 64: <7>Gennai<7>Muito bem. A vigília<1>valeu a pena, afinal.<2,2><3>Volte para a sala.<1>O portão é seu.<2,2>
 TALK05 65: <7>Gennai<7>Hm... Forte o<1>suficiente. Por ora.<2,2><3>Mantenha seus<1>parceiros aquecidos,<1>criança.<2,2><3>Ainda vamos nos<1>ver de novo.<2,2>
-TALK05 77: <7>Guilmon<7>Pegue o Demon Bell.<1>Inimigos ficam mais<1>fortes e rápidos...<2,2><3>...mas pagam mais<1>Bits e dão mais<1>materiais.<2,2>
+TALK05 77: <7>Guilmon<7>Pegue o Demon Bell.<1>Inimigos mais fortes,<1>rápidos e dano direto<2,2><3>cortado pela metade!<1>Domine Weak, One More<1>e Baton Pass...<2,2><3>...por 3x materiais,<1>2x XP/Bits e 2x<1>bônus de caçada.<2,2>
 TALK05 78: <7>Guilmon<7>Vai largar o Bell?<1>Tudo bem. Tudo volta<1>ao normal.<2,2>
 TALK05 79: <7>????<7>Alguém me achou numa<1>pilha de brinquedos<1>sem uso e pôs aqui.<2,2><3>...É bem melhor que<1>a caixa.<2,2>
 TALK05 81: <7>Gennai<7>Hm hm... As formas<1>que um Blast evoca.<1>Deixe-me vê-las.<2,2>
@@ -4122,6 +4122,7 @@ TALK05 99: <7>Oikawa<7>Você veio. Igor me<1>cedeu um balcão.<1>Diz que devo a 
 TALK06 5: <7>Homem Encapuzado<7>Bulbmon era uma<1>alavanca. Você puxou<1>por mim. Obrigado.<2,2><3>Há muito tempo ando<1>por estes servidores<1>atrás de uma porta.<2,2><3>Você achou uma fácil.<1>Era azul, não era?<2,2><3>Quero ver o que faz<1>você merecer essa<1>porta.<2,2>
 TALK06 6: <7>Homem Encapuzado<7>Já voltou? Ótimo.<1>Perder é um hábito<1>que conheço bem.<2,2><3>Vamos de novo.<2,2>
 TALK06 7: <7>Homem Encapuzado<7>...Então é isso que<1>basta. Agora entendi.<2,2><3>Meu nome é Oikawa.<1>Tenho algo a vender.<2,2><3>Mas não tenho onde.<1>Sua porta azul,<1>talvez.<2,2><3>Nos encontraremos<1>atrás dela.<2,2>
+TALK06 8: <7>???<7>...Uma voz ecoa na sua<1>cabeça. Vá primeiro a<1>uma sala azul e vença<2,2><3>Ogremon no Central Park<1>antes de entrar nas<1>Ruínas Protocol.<2,2>
 TALK06 676: <7>DRI Bob<7>Ei, você viu o<1>Paildramon?<2,2><3>Estou procurando por<1>ele há séculos, mas<1>não o encontro.<2,2><3>Dizem que ele voa<1>sobre a Ponte Bulk,<1>no Setor Sul.<2,2><3>Se você o achar, eu<1>dou algo incrível...<2,2>
 TALK06 691: <7>DRI Johann<7>Estou procurando o<1>MetalGreymon...<2,2><3>Dizem que ele vaga<1>pelo Pântano Bulk,<1>no Setor Sul.<2,2><3>Se eu conseguir o<1>DDNA do Agumon, sigo<1>com minha pesquisa...<2,2><3>Ah! Se você o vir,<1>pode pegar o DDNA<1>dele?<2,2><3>Vou adicionar Agumon<1>como seu parceiro de<1>recompensa!<2,2>
 $Fire: Fogo
@@ -4704,8 +4705,8 @@ ITMINF 298: Mais Sabedoria, menos Vel.
 ITMINF 295: Muito mais Força, menos Defesa.
 ITMINF 297: Muito mais Sabedoria, menos Vel.
 ITMINF 76: Blast além do limite. Custa 10 TP
-ITMINF 67: Revive caídos: 60%, 30% de HP.
-ITMINF 70: Revive caídos: 85%, 60% de HP.
+ITMINF 67: Revive 40%, 30%HP (nerf: cura)
+ITMINF 70: Revive 65%, 60%HP (nerf: cura)
 ITMINF 46: Em batalha: revive, 100%, HP cheio
 ITMINF 26: Super Hard: inim. +fortes, 2x drop
 ITMNAM 167: Lança da Brisa

@@ -412,7 +412,7 @@ void stgtrain_session_run(StgtrainSession *obj, StgtrainSessionData *data) {
         data->trainee->end(data->trainee);
 #ifdef PC_PORT
         if (def_on()) {
-            def_train_pity_record(!pity_missed);
+            def_train_pity_record_tier(obj->main->level, !pity_missed);
         }
 #endif
         obj->base.step++;
@@ -667,7 +667,7 @@ void stgtrain_session_update(StgtrainSession *obj, StgtrainSessionData *data) {
         obj->base.next_state(obj);
 #ifdef PC_PORT
         pity_missed = 0;
-        pity_active = def_on() && def_train_pity_guaranteed();
+        pity_active = def_on() && def_train_pity_guaranteed_tier(obj->main->level);
 #endif
         stgtrain_session_create_windows(obj, data);
         obj->anims[0].duration = 10;

@@ -1941,12 +1941,12 @@ int def_train_pity_bonus_on(void) {
     return DEF_TRAIN_PITY_BONUS != 0;
 }
 
-const unsigned char *def_train_pity_label(int *palette) {
+const unsigned char *def_train_pity_label_tier(int tier, int *palette) {
     extern const unsigned char def_str_TrainPityPrefix[], def_str_TrainPityMarks[], def_str_TrainPityDigits[],
         def_str_TrainPityReady[];
     static unsigned char buf[64];
     int total = DEF_TRAIN_PITY_AFTER;
-    int count = def_train_pity_count();
+    int count = def_train_pity_count_tier(tier);
     int i, p = 0;
 
     if (!def_on() || total <= 0) {
@@ -1957,7 +1957,7 @@ const unsigned char *def_train_pity_label(int *palette) {
     }
     buf[p++] = def_str_TrainPityMarks[4];
     buf[p++] = def_str_TrainPityMarks[5];
-    if (def_train_pity_guaranteed()) {
+    if (def_train_pity_guaranteed_tier(tier)) {
         for (i = 0; def_str_TrainPityReady[i] != 0 && p < (int)sizeof(buf) - 1; i++) {
             buf[p++] = def_str_TrainPityReady[i];
         }
@@ -1978,6 +1978,10 @@ const unsigned char *def_train_pity_label(int *palette) {
     }
     buf[p] = 0;
     return buf;
+}
+
+const unsigned char *def_train_pity_label(int *palette) {
+    return def_train_pity_label_tier(0, palette);
 }
 
 /* ---- Persist Blast Gauges in the unused tail of each save slot. */

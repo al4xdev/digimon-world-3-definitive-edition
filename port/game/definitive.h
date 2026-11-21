@@ -46,29 +46,31 @@
 #define DEF_SUPER_ITEM 26         /* Super Hard: the Demon Bell, a key item (a Japanese tag slot the US disc never gives) */
 #define DEF_SUPER_HP_PCT 150      /* percent of an enemy's HP while the player holds the Bell */
 #define DEF_SUPER_SPEED_PCT 150   /* ... and of its Speed (may pass 999: the enemy then acts twice) */
-#define DEF_SUPER_REWARD_PCT 200  /* ... and of the Bits and the Hunt Materials a won battle pays */
+#define DEF_SUPER_REWARD_PCT 200  /* ... and of the Bits, XP and hunt bonuses a won battle pays */
+#define DEF_SUPER_MAT_PCT 300     /* ... and of the common Hunt Materials a won battle pays */
+#define DEF_SUPER_PLAYER_DMG_PCT 50 /* ... player direct damage % while holding the Bell (rewards Weak/One More/Baton Pass) */
 #define DEF_POISON_ENEMY_PCT 8    /* percent of max HP: the most a tick takes from an enemy (a pure precision build ticks ~15% of a boss) */
 #define DEF_SLEEP_REGEN_PCT 6     /* percent of max HP a sleeping enemy regenerates each turn */
 #define DEF_STATUS_BOSS_TURNS 2   /* turns Sleep or Confusion hold an enemy */
 #define DEF_CONFUSION_BUFF_LEVEL 2 /* Attack tier an enemy gains when its confusion ends */
 #define DEF_REVIVE_T1_ITEM 67     /* Revive Disk: the first revive tier (item ID) */
-#define DEF_REVIVE_T1_CHANCE 60   /* percent chance to revive a fallen ally, at or under its rated max HP */
+#define DEF_REVIVE_T1_CHANCE 40   /* percent chance to revive a fallen ally, at or under its rated max HP */
 #define DEF_REVIVE_T1_HP_PCT 30   /* percent of the ally's max HP it returns with */
 #define DEF_REVIVE_T1_RATED_HP 1500 /* max HP the tier is rated for: above it the chance falls in proportion */
-#define DEF_REVIVE_T1_BUY 400     /* shop price, Bits */
-#define DEF_REVIVE_T1_SELL 200
+#define DEF_REVIVE_T1_BUY 2000    /* shop price, Bits */
+#define DEF_REVIVE_T1_SELL 1000
 #define DEF_REVIVE_T2_ITEM 70     /* Life Disk: the second revive tier (item ID) */
-#define DEF_REVIVE_T2_CHANCE 85
+#define DEF_REVIVE_T2_CHANCE 65
 #define DEF_REVIVE_T2_HP_PCT 60
 #define DEF_REVIVE_T2_RATED_HP 4000
-#define DEF_REVIVE_T2_BUY 2500
-#define DEF_REVIVE_T2_SELL 1250
+#define DEF_REVIVE_T2_BUY 10000
+#define DEF_REVIVE_T2_SELL 5000
 #define DEF_REVIVE_T3_ITEM 46     /* Max Charge: the third revive tier in battle (the menu still heals) */
 #define DEF_REVIVE_T3_CHANCE 100
 #define DEF_REVIVE_T3_HP_PCT 100
 #define DEF_REVIVE_T3_RATED_HP 9999
 #define DEF_REVIVE_T3_SELL 3000
-#define DEF_REVIVE_MIN_CHANCE 20  /* percent: the chance never falls under this */
+#define DEF_REVIVE_MIN_CHANCE 15  /* percent: the chance never falls under this */
 #define DEF_MOD_TURNS_SHORT 2    /* Duration (turns) of secondary-effect stat debuffs on attacks */
 #define DEF_MOD_TURNS_BASE 3     /* Standard duration (turns) of dedicated stat buff/debuff skills & items */
 #define DEF_MOD_TURNS_LONG 4     /* Extended duration (turns) for single-target specialist buff/debuff skills */
@@ -231,6 +233,10 @@ int def_tp_add(int tp, int level, int *lost);
 #ifndef DEF_TRAIN_PITY_BONUS
 #define DEF_TRAIN_PITY_BONUS 1 /* when 1, the guaranteed training also hits its bonus round when eligible */
 #endif
+#define DEF_TRAIN_PITY_TIERS 3 /* 0: 1 TP, 1: 5 TP, 2: 10 TP */
+int def_train_pity_count_tier(int tier);
+int def_train_pity_guaranteed_tier(int tier);
+void def_train_pity_record_tier(int tier, int perfect);
 int def_train_pity_count(void);
 int def_train_pity_guaranteed(void);
 void def_train_pity_record(int perfect);
@@ -1047,6 +1053,7 @@ int def_story_sepik_line(int met);
 int def_story_igor_line(void); /* Igor's line as he is talked to (definitive_velvet.c), and when it closed */
 void def_story_igor_done(void);
 int def_story_room_intro(void); /* 1: the next entry through a door is Seiryu's, Igor alone shows the room again */
+int def_story_event_closed(int type, int param); /* 1: a story gate holds this map event shut */
 struct PortState;
 void def_story_savestate(struct PortState *s);
 
