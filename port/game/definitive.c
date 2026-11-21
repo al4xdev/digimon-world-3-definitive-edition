@@ -360,10 +360,11 @@ static const unsigned char *lookup_override_sorted(const DefTextOverride *tab, i
 }
 
 /* ---- Text overrides. font_get_entry only gets the file's buffer, so the file is found by looking the buffer
- * up in the CD module's loaded entries (no load, no side effect). Only the English sets (records_language 1, 2): the
- * other languages keep the disc's text. When Portuguese (PT-BR) is active, def_text_overrides_pt is searched first in
- * O(log N) (including DMG200..DMG900 container sub-tables), falling back to def_text_overrides and then the disc's
- * English entry. Returns the replacement entry or NULL. */
+ * up in the CD module's loaded entries (no load, no side effect). In a translated language (def_lang: Portuguese, French,
+ * German, Italian, Spanish) its table is searched first in O(log N) (including DMG200..DMG900 container sub-tables). The
+ * English sets (records_language 1, 2) then fall back to def_text_overrides and the disc's English entry; the other
+ * languages fall back to the disc's own text, and to the English only for the port's own entries. Returns the
+ * replacement entry or NULL. */
 void *def_text_override(void *data, s32 i) {
     int e, k, s;
 
@@ -414,12 +415,15 @@ void *def_text_override(void *data, s32 i) {
             extern unsigned char def_str_PlugRevive[];
             return def_str_PlugRevive; /* ITMINF 76: after the Blast quest the DV Plug is a revive item */
         }
-        if (def_is_ptbr() && def_text_override_pt_count > 0) {
-            if (!def_variant_text_hidden(base_id, i)) {
-                const unsigned char *pt = lookup_override_sorted(def_text_overrides_pt, def_text_override_pt_count,
-                                                                 match_file, i);
-                if (pt != NULL) {
-                    return (void *)pt;
+        if (def_lang() != 0) {
+            int count;
+            const DefTextOverride *tab = def_text_overrides_of(def_lang(), &count);
+
+            if (tab != NULL && count > 0 && !def_variant_text_hidden(base_id, i)) {
+                const unsigned char *tr = lookup_override_sorted(tab, count, match_file, i);
+
+                if (tr != NULL) {
+                    return (void *)tr;
                 }
             }
         }

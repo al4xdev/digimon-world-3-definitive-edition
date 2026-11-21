@@ -415,13 +415,14 @@ void def_callout_frame(void) {
     callout.tick += fightstg_battle.frames;
 }
 
-/* The accents Portuguese needs, in the letters' units around the middle of the capital they go on (x 0 there): above
+/* The accents the languages need (the letters are capitals only: no ß, it is written SS), in the letters' units around the middle of the capital they go on (x 0 there): above
  * its top (y < 0, which the lean carries right with the letter's top), the cedilla under its foot. */
-enum { ACCENT_NONE, ACCENT_ACUTE, ACCENT_GRAVE, ACCENT_CIRCUMFLEX, ACCENT_TILDE, ACCENT_CEDILLA };
+enum { ACCENT_NONE, ACCENT_ACUTE, ACCENT_GRAVE, ACCENT_CIRCUMFLEX, ACCENT_TILDE, ACCENT_CEDILLA, ACCENT_DIAERESIS };
 static const struct {
     u8 n;
     Slab s[3];
 } accents[] = {
+    [ACCENT_DIAERESIS] = { 2, { { -7, -5, -2, -4, -5, -2 }, { -7, 2, 5, -4, 2, 5 } } },
     [ACCENT_ACUTE] = { 1, { { -7, 0, 4, -3, -3, 1 } } },
     [ACCENT_GRAVE] = { 1, { { -7, -4, 0, -3, -1, 3 } } },
     [ACCENT_CIRCUMFLEX] = { 2, { { -7, -1, 2, -3, -5, -2 }, { -7, -2, 1, -3, 2, 5 } } },
@@ -441,6 +442,11 @@ static const struct {
     { 0x89, 'E', ACCENT_ACUTE }, { 0x8A, 'E', ACCENT_CIRCUMFLEX }, { 0x8D, 'I', ACCENT_ACUTE },
     { 0x93, 'O', ACCENT_ACUTE }, { 0x94, 'O', ACCENT_CIRCUMFLEX }, { 0x95, 'O', ACCENT_TILDE },
     { 0x9A, 'U', ACCENT_ACUTE },
+    /* French, German, Italian and Spanish (the title's questions, the Rush and flee prompts, the compass) */
+    { 0x84, 'A', ACCENT_DIAERESIS }, { 0x8B, 'E', ACCENT_DIAERESIS }, { 0x8C, 'I', ACCENT_GRAVE },
+    { 0x8E, 'I', ACCENT_CIRCUMFLEX }, { 0x8F, 'I', ACCENT_DIAERESIS }, { 0x91, 'N', ACCENT_TILDE },
+    { 0x92, 'O', ACCENT_GRAVE }, { 0x96, 'O', ACCENT_DIAERESIS }, { 0x99, 'U', ACCENT_GRAVE },
+    { 0x9B, 'U', ACCENT_CIRCUMFLEX }, { 0x9C, 'U', ACCENT_DIAERESIS },
 };
 
 /* The letter at `t`: its glyph (NULL: a space), its accent, and the bytes it takes. */
@@ -485,7 +491,7 @@ static POLY_F4 *poly_slab(POLY_F4 *poly, u32 *ot, const Slab *s, int pen, int x,
 
 /* Plain text in the callouts' letters, for a screen where the game's font is not there (the title): upright with the
  * letters' lean, left end at x and top at y on `layer`'s ordering table entry `depth`, `size` 8.8 of the 16-pixel
- * letters, one flat colour. Capitals, digits, ! ? % :, and the accented capitals in UTF-8 (FÁCIL, NÃO, AÇÃO); another
+ * letters, one flat colour. Capitals, digits, ! ? % :, and the accented capitals in UTF-8 (FÁCIL, NÃO, AÇÃO, FRANÇAIS, ÜBERRASCHUNG); another
  * character is a space. Returns the width drawn. As every primitive here, a later call is drawn under an earlier one.
  * With no layer it only measures. */
 int def_poly_text(GfxLayer *layer, s32 depth, int x, int y, int size, const char *text, const u8 *rgb) {

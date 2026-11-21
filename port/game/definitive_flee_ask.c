@@ -50,7 +50,8 @@ int def_flee_ask_on(void) {
 }
 
 static const char *fa_title(void) {
-    return def_is_ptbr() ? "FUGIR DA BATALHA?" : "RUN FROM THE BATTLE?";
+    return def_pick("RUN FROM THE BATTLE?", "FUGIR DA BATALHA?", "FUIR LE COMBAT?", "VOM KAMPF FLIEHEN?",
+                    "FUGGIRE DALLO SCONTRO?", "HUIR DEL COMBATE?");
 }
 
 /* "(confirm) Run     (cancel) Back": each answer's button as the symbol of the bit read (the player's own letter

@@ -163,7 +163,8 @@ static void rp_fill_row(s32 i) {
 
 /* The results' heading, in the game's language. */
 static const char *rp_title(void) {
-    return def_is_ptbr() ? "VITÓRIA FÁCIL!" : "EASY WIN!";
+    return def_pick("EASY WIN!", "VITÓRIA FÁCIL!", "VICTOIRE FACILE!", "LEICHTER SIEG!", "VITTORIA FACILE!",
+                    "VICTORIA FÁCIL!");
 }
 
 static void rp_size(void) {
@@ -333,7 +334,8 @@ static void ra_keys_open(void) {
 void def_rush_ask_frame(int waited, int total) {
     static const u8 gold[3] = { 255, 208, 64 };
     GfxLayer *layer = gfx_module.funcs.get_layer(RP_LAYER);
-    const char *title = def_is_ptbr() ? "LUTA FÁCIL! ATROPELAR?" : "EASY FIGHT! RUSH IT?";
+    const char *title = def_pick("EASY FIGHT! RUSH IT?", "LUTA FÁCIL! ATROPELAR?", "COMBAT FACILE! FONCER?",
+                                 "LEICHTER KAMPF! RUSH?", "SCONTRO FACILE! TRAVOLGERLO?", "COMBATE FÁCIL! ARROLLAR?");
     s32 w, x, y, left, bar;
 
     if (layer == NULL) {

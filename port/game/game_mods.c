@@ -153,9 +153,9 @@ static void pl_start(struct PortMod *mod) {
     int i = (int)mod->values[PL_LANGUAGE].number;
     port_mod_preset_language = 1;
     port_preset_language = pl_codes[i];
-    def_language_set(i == 1);
-    port_log("preset language: %s (records_language %d, ptbr %d), no language select screen", pl_languages[i],
-             (int)port_preset_language, i == 1);
+    def_language_set(i <= 5 ? i : 0); /* the order of pl_languages is def_lang()'s: en, pt, fr, de, it, es */
+    port_log("preset language: %s (records_language %d, def_lang %d), no language select screen", pl_languages[i],
+             (int)port_preset_language, i <= 5 ? i : 0);
 }
 
 /* ---- The party's shared experience (definitive edition; was the party_xp mod; docs/MECHANICS.md section 6):

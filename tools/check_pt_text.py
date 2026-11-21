@@ -29,6 +29,7 @@ import translate_ptbr as tp  # noqa: E402  (its font metrics only)
 TXT = ROOT / "tools/text_override"
 PAIRS = [("en.txt", "pt.txt"), ("en_story.txt", "pt_story.txt"), ("en_choices.txt", "pt_choices.txt"),
          ("en_echoes.txt", "pt_echoes.txt"), ("en_kaili.txt", "pt_kaili.txt")]
+PAIRS += [("en.txt", f"{lang}.txt") for lang in ("fr", "de", "it", "es")]  # the delta of the languages the disc already has
 PLATES = TXT / "pt_plates.txt"
 
 ENTRY = re.compile(r"^(\$\w+|[A-Za-z0-9_]+(?::\d+)? \d+|Q\d+ \S+ \d+@\d|Q\d+=\S+ (?:kaili )?\S+ \d+):\s?(.*)$")
@@ -339,7 +340,7 @@ def main():
                 if q and en_name != "en.txt" and k not in {r[0] for r in en_rows}:
                     errs.append(f"{pt_name}:{q[0][2]}: {k!r} is not in {en_name}")
             en_rows, pt_rows = paired_en, paired_pt
-            compare(pt_name, en_rows, pt_rows, plate_map, errs, warns)
+            compare(pt_name, en_rows, pt_rows, plate_map if pt_name.startswith("pt") else {}, errs, warns)  # fr/de/it/es keep the plates
             n += len(en_rows)
     print("\n".join(errs))
     if warns:

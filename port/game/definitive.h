@@ -3,6 +3,7 @@
  * The hooks' prototypes are in include/port.h (the game's units reach them through common.h). */
 #ifndef PORT_DEFINITIVE_H
 #define PORT_DEFINITIVE_H
+#include <stddef.h>
 
 /* The tunable numbers (the battle log has none). */
 #define DEF_FAMILIES 5          /* element families on the grouped screens (Water+Ice, Thunder+Machine as one each) */
@@ -182,10 +183,18 @@ extern const int def_story_echo_count;
 const unsigned char *def_story_line(int file, int index); /* the rewrite's English line for an entry, NULL: the game's */
 extern const DefTextOverride def_text_overrides[];
 extern const int def_text_override_count;
-extern const DefTextOverride def_text_overrides_pt[];
-extern const int def_text_override_pt_count;
-void def_language_set(int ptbr);
+extern const DefTextOverride *def_text_overrides_of(int lang, int *count); /* lang 1 pt, 2 fr, 3 de, 4 it, 5 es */
+void def_language_set(int lang); /* 0 en, 1 pt, 2 fr, 3 de, 4 it, 5 es */
+int def_lang(void);
 int def_is_ptbr(void);
+/* The one of six texts in the language in use (en, pt, fr, de, it, es); a NULL falls back to English. */
+static inline const char *def_pick(const char *en, const char *pt, const char *fr, const char *de, const char *it,
+                                   const char *es) {
+    const char *const t[6] = { en, pt, fr, de, it, es };
+    int l = def_lang();
+
+    return l > 0 && l < 6 && t[l] != NULL ? t[l] : en;
+}
 void def_language_kaili(int on); /* the port's own strings name Kail's friend Junior in the Kaili mode */
 
 /* The rookies' MP (port/game/definitive_mp.c). The MP is the rookie's; the forms have none of their own. */

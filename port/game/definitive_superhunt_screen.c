@@ -631,6 +631,11 @@ static void compass_draw(void) {
     /* the reading's word and its colour, cold blue to burning red; the segments lit up to the reading */
     static const char *const en[DEF_TEMP_COUNT] = { "", "COLD", "COOL", "WARM", "HOT", "BURNING!" };
     static const char *const pt[DEF_TEMP_COUNT] = { "", "FRIO", "MORNO", "QUENTE", "MUITO QUENTE", "FERVENDO!" };
+    static const char *const fr[DEF_TEMP_COUNT] = { "", "FROID", "FRAIS", "TIÈDE", "CHAUD", "BRÛLANT!" };
+    static const char *const de[DEF_TEMP_COUNT] = { "", "KALT", "KÜHL", "WARM", "HEISS", "GLÜHEND!" };
+    static const char *const it[DEF_TEMP_COUNT] = { "", "FREDDO", "FRESCO", "TIEPIDO", "CALDO", "BOLLENTE!" };
+    static const char *const es[DEF_TEMP_COUNT] = { "", "FRÍO", "FRESCO", "TIBIO", "CALIENTE", "ARDIENDO!" };
+    static const char *const *const words[6] = { en, pt, fr, de, it, es };
     static const u8 rgb[DEF_TEMP_COUNT][3] = {
         { 0, 0, 0 }, { 80, 140, 255 }, { 120, 220, 230 }, { 250, 220, 90 }, { 255, 140, 40 }, { 255, 50, 40 },
     };
@@ -654,7 +659,7 @@ static void compass_draw(void) {
         return;
     }
     layer = gfx_module.funcs.get_layer(SH_CMP_LAYER);
-    word = def_is_ptbr() ? pt[t] : en[t];
+    word = words[def_lang() < 6 ? def_lang() : 0][t];
     w = def_poly_text_width(SH_CMP_SIZE, word) + 12;
     if (w < SH_CMP_W) {
         w = SH_CMP_W;
@@ -681,7 +686,7 @@ static void compass_draw(void) {
         s32 y2 = SH_CMP_Y + SH_CMP_H + 2;
         s32 h2 = 30;
         s32 bar_w = p * 79 / 100;
-        const char *pfx = def_is_ptbr() ? "ALVO " : "POS ";
+        const char *pfx = def_pick("POS ", "ALVO ", "CIBLE ", "ZIEL ", "META ", "META ");
         int k = 0, c = p >= 90 ? 5 : p >= 75 ? 4 : p >= 50 ? 3 : p >= 25 ? 2 : 1;
 
         while (*pfx) {
