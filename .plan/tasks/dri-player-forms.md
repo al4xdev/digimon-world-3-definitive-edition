@@ -100,7 +100,10 @@ Angewomon included, Ultimates 20-35, Megas 36+):
 Not usable: **Gatomon** is in no table (only the inn's NPC). **Agunimon (468), BladeGarurumon (469), AncientGreymon (470)**
 are DNA fusion results: a `records_digimon` stub each (stats 1, no techniques, in no `blast_forms`), but the disc's model
 table (file 0x1CC) has a type A model for each (records 0, 14, 11), and their DNA attacks are plain `records_techniques`
-rows: Agunimon 0x1B0 (80 MP, power 160), BladeGarurumon 0x1B1 (480 MP, 800, kind 26), AncientGreymon 0x1B2 (0 MP, 700).
+rows (`records_techniques[id - 1]`: the table is indexed by id minus one): Agunimon 0x1B0 (80 MP, power 160), BladeGarurumon
+0x1B1 (80 MP, 160), AncientGreymon 0x1B2 (480 MP, 800, kind 26). Paildramon 0x176 (100, 500), MegaGargomon 0x178 (160, 360),
+Omnimon 0x179 (240, 850), Imperialdramon PM 0x17A (250, 580), Beelzemon 0x17B (320, 600), Diabolomon 0x17C (260, 999); Phoenixmon
+0x177 is a target-4 effect (power 0, kind 36), not damage.
 The pairs (`pair_technique`, offered when the partner named by `level_thresholds[6]` is switched in): Agunimon = Dinohumon +
 Kyubimon, Hookmon + Greymon; BladeGarurumon = Grizzmon + Growlmon; AncientGreymon = Imperialdramon-P + Diaboromon. The other
 DNA results are full forms (Paildramon 0x176 ExVeemon + Stingmon, Phoenixmon 0x177 Taomon + MagnaAngemon, MegaGargomon 0x178
@@ -173,3 +176,43 @@ original game** (some forms really are small). It is not ours: **do not fix it**
   - In battle: `fightstg_battle+0x70 + i*0x20` is enemy member i (digimon, …, +6 max_hp, +8 hp).
     The party starts at +0x10.
   - Battle messages wait for ○ (it is not a freeze).
+
+
+## Session notes, 2026-11-21 (testing, signature techniques)
+
+### Test harness (committed: tools/dri_battle_record.py)
+- `python3 tools/dri_battle_record.py N --frames 3600 --every 3 --god --name NAME` runs challenge N headless from
+  `.dumps/dri/field.state` (regenerate it after every build, see "Testing without going through the story"), mashes
+  CROSS (**the EU disc confirms with CROSS**), gives the party 30000 HP (`--god`: a 9999 hit no longer ends the show;
+  a drop is logged as an enemy hit), records every Nth frame and encodes `.dumps/dri/NAME.mp4`.
+- `agy -p "<question about the mp4's path>" --model gemini-4-hydrogen-medium --dangerously-skip-permissions` watches the
+  video and answers. A 15 s clip took ~1 min; a 90 s, 16 MB clip passed 10 minutes: record **short** clips (<= 40 s).
+- The test run does not isolate the player's config dir (`~/.local/share/dw2003`): the game ignores `DW3_CONFIG_DIR`.
+  The debug pad speaks PS1 buttons, so the player's pad.map does not matter.
+
+### Found
+- `records_techniques` is indexed by **id - 1**.
+- A form's `techniques[6]` is its signature (Nova Blast, Terra Force, Seven Heavens, Mega Crusher, Final Purification,
+  Giant Missile...). `def_dri_record` already put it in `tech_3`, but an action plan only reaches `tech_3` with action type
+  3, and the base's plan (Tyrannomon: three plain attacks) never does: the Greymon only ever said "Attack!" (seen on video).
+- Fix (in the tree, `dri_form_techniques` in definitive_dri_screen.c): the plan is BK MegaGargomon's, `{3,18,3} {2,1,48}
+  {1,0,0}`: signature every third turn, else tech_2 3 times in 8, else the attack; tech_2 is the form's strongest
+  single-hit damaging technique of slots 1-5 (slot 4 is often a buff or a heal). **Not yet confirmed on video that the
+  signature is now cast**: the clip `.dumps/dri/ch3_plan2.mp4` (Greymon, 90 s) was being read when the session stopped.
+- Every signature is single-target damage except Phoenixmon's (target 4, kind 21), Gate of Destiny / Dimension Scissors /
+  Mugenhadou style kinds (5, 6, 26...) that are untested from the enemy side.
+- The first Greymon hits did 9999 (a party at level ~6 against 48): balance is still not measured.
+
+### Open, in order
+1. Confirm the signature casts (name in the message box, animation, camera) for Greymon; then every other form of the 16
+   lines, grouped by line, short clips.
+2. Check that the odd kinds (Phoenixmon target 4, Dimension Scissors, Gate of Destiny, Mugenhadou) behave from the enemy side.
+3. Write the 16 lines into `LINES` in tools/gen_dri_challenges.py (with the `base` of every P form), the levels (24 + 15 x 8
+   passes 99), the rival texts, the rewards, the per-agent split (2 each).
+4. The DNA bosses (Agunimon, BladeGarurumon, AncientGreymon): a record each, their DNA attack as the signature, model untested.
+
+### Bug reported by the owner (PT-BR, 2026-11-21), not looked at
+The field menu in Portuguese: the level label in the party panel is garbled (reads like "N(M O" where it should say NIVEL),
+the top bar still says "B: Fechar Status" while the main menu is open, and "CARD FOLDERS" and "GUIDE" are untranslated.
+Screenshot was in the chat only. Start at the PT label table (tools/text_override/pt.txt) and the menu's font glyph for the
+accented I.

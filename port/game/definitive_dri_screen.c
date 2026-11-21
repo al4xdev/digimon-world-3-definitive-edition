@@ -974,9 +974,8 @@ int def_dri_fighting(void) {
 }
 
 /* A stage that is a player form (DefDriStage.base): the base species' disc record (with the port's table on it, so the
- * line's balance is the generator's) under the form's name, type and techniques, chosen as the purification's are
- * (def_purify_record): its attack, its fourth technique (or its last), its finisher. Asked by fightstg_enemy_get_record
- * only for an ID with no disc record, while a simulation is set up or runs. */
+ * line's balance is the generator's) under the form's name, type and techniques, and a plan of its own (below). Asked by
+ * fightstg_enemy_get_record only for an ID with no disc record, while a simulation is set up or runs. */
 /* The battle reads an enemy's cameras from its model's type B record (fightstg_camera_get_preset, _get_default); a
  * player form's is type A (12 cameras, laid out otherwise), so read as B it puts the camera nowhere and the 3D goes black.
  * The form's model stays; its cameras are the base species' (a body of the same kind). */
@@ -997,11 +996,42 @@ s32 def_enemy_camera_model(s32 model_id) {
 extern s32 fightstg_enemy_find_record(s32 id);
 extern RecordsDigimon *records_get_digimon(s32 id);
 
+/* The form's techniques as an enemy's. techniques[0] is its attack and techniques[6] its signature (Nova Blast, Terra Force,
+ * Seven Heavens...): the one a player's form had to itself until now. The base's own plan is not reused: the disc's plans
+ * for plain species (Tyrannomon's is three plain attacks) never reach tech_3, so the signature would never be cast.
+ * The plan is BK MegaGargomon's (a boss of the same rank): the signature every third turn, else tech_2 about 3 times in 8,
+ * else the attack. tech_2 is the form's strongest single-hit damaging technique of the middle slots, not slot 4 as the
+ * purification takes it (that one is often a buff, a heal or an antidote). */
+static void dri_form_techniques(FightstgEnemyRecord *r, const RecordsDigimon *form) {
+    static const FightstgEnemyAction plan[3] = { { 3, 18, 3 }, { 2, 1, 48 }, { 1, 0, 0 } };
+    int j, best = 0, best_score = 0;
+
+    r->tech = (s16)form->techniques[0];
+    r->tech_3 = (s16)form->techniques[6];
+    for (j = 1; j <= 5; j++) {
+        int id = form->techniques[j];
+        const RecordsTechnique *t = id > 0 ? &records_techniques[id - 1] : NULL;
+
+        /* target 2: one enemy of the caster; kind 1: plain damage (kind 0 and 2+ are items' and special effects') */
+        if (t != NULL && t->target == 2 && t->kind == 1 && t->power * t->hit_count > best_score) {
+            best = id;
+            best_score = t->power * t->hit_count;
+        }
+    }
+    r->tech_2 = (s16)best;
+    if (r->tech_2 == 0 && r->tech_3 != 0) { /* a form with no such technique: the signature stands for it */
+        r->tech_2 = r->tech_3;
+    }
+    if (r->tech_3 != 0) {
+        memcpy(r->actions, plan, sizeof(plan));
+    }
+}
+
 FightstgEnemyRecord *def_dri_record(s32 id) {
     static FightstgEnemyRecord made[DEF_DRI_STAGES];
     const DefDriChallenge *ch;
     FightstgEnemyRecord *recs = (FightstgEnemyRecord *)cdload_module.files.get_file(0x1CF);
-    int i, j, b;
+    int i, b;
 
     if (!(dri_sim.pending || dri_sim.fighting) || recs == NULL ||
         (ch = def_dri_challenge(dri_sim.challenge)) == NULL) {
@@ -1022,12 +1052,7 @@ FightstgEnemyRecord *def_dri_record(s32 id) {
         r->name = form->name_id;
         r->type = form->type;
         r->item = 0; /* a simulation drops nothing */
-        r->tech = (s16)form->techniques[0];
-        r->tech_2 = (s16)form->techniques[4];
-        for (j = 5; r->tech_2 == 0 && j >= 1; j--) {
-            r->tech_2 = (s16)form->techniques[j];
-        }
-        r->tech_3 = (s16)form->techniques[6];
+        dri_form_techniques(r, form);
         return r;
     }
     return NULL;
