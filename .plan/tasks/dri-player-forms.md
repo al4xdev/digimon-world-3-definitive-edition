@@ -212,8 +212,85 @@ original game** (some forms really are small). It is not ours: **do not fix it**
    passes 99), the rival texts, the rewards, the per-agent split (2 each).
 4. The DNA bosses (Agunimon, BladeGarurumon, AncientGreymon): a record each, their DNA attack as the signature, model untested.
 
-### Bug reported by the owner (PT-BR, 2026-11-21), not looked at
+### Done later on 2026-11-21 (commit fdfea8b)
+- The 16 lines are in `LINES` (tools/gen_dri_challenges.py) and the table. A line's **index** is its save slot (0..4 keep
+  0.8.5's lines and their unlock/best state) and its `$DriRival<index>` texts; its **rank** (0..15) drives levels
+  (`DEF_DRI_LEVEL_FIRST` 24 + rank x `DEF_DRI_LEVEL_GAP` 4, the last Mega at 90) and the unlock's materials. Each agent's own
+  Rookie line ranks 0..7 (Ken 0, Yang 1, Yuji 2, Bob 3, Kazuki 4, Michael 5, Johann 6, Jimmy 7), his second line 8..15 in
+  the same agent order (Beelzemon last).
+- `DefDriAgent.challenges[DEF_DRI_PER_AGENT]` (generated, easier first); the list shows only the talking agent's two
+  (`def_dri_agent_index`, `dri.list`); `def_dri_debug = 100` still lists all 16.
+- Bases chosen by resistance: the base's strong (300) family is the form's own best resistance, and a similar body where
+  one fits: Devimon/Gargoylemon, Myotismon/LadyDevimon, MaloMyotismon/VenomMyotismon, Kyubimon/Lynxmon,
+  Sakuyamon/Puppetmon, Angewomon/Persiamon, Phoenixmon/Gryphonmon, Stingmon/Snimon, Imperialdramon-F/BK Imperialdramon,
+  SkullGreymon/SkullMammothmon, Beelzemon/Ghoulmon, Dinohumon/Divermon, Marsmon/Zanbamon, MetalGarurumon/HiAndromon,
+  Grizzmon/Monzaemon, Cannondramon/Machinedramon, GranKuwagamon/H-Kabuterimon, Hookmon/Cyclonemon, GuardiAngemon/Vikemon.
+  Line 9 starts with plain Greymon until the BlueGreymon recolour exists.
+- Generator rules added: a player form's stage has MP 9999 (an enemy pays its techniques' MP; Persiamon's row had 40, less
+  than Celestial Arrow's 44); a stage's HP is never below the previous stage's grown by the level ratio (the DDNA Ultimates
+  are boss rows, a mob-based Mega came in frailer).
+- Rewards: the 7 Power families shared, by the Mega's element: Fire 3/9, Water 7/15, Ice 6/12, Wind 2/11, Bolt 1/8/14,
+  Metal 0/13, Dark 4/5/10.
+- 11 new Tamers in 6 languages (Oikawa, Rika, Kari, Ken, BlackWarGreymon, Impmon, a kendo master, Matt, a fighter, a
+  forest hunter, a pirate captain; titles only, no names); Rival0 no longer says "Momentai!" himself.
+- tests/port/definitive_dri.py passes again (its driver now stubs `records_language`, which the language switch reads).
+- The recorder (tools/dri_battle_record.py): the party fights with CIRCLE (Fight's default place, game_mods.c) and CROSS
+  now and then (the battle messages' confirm; on the menu it is Tag, so rarely); `--turns T` leaves a stage at 1 HP after
+  T turns so every stage is seen, each in its own clip; the battle log (`DW3_BATTLE_LOG`) gives every enemy action's
+  technique; `HOME` is `.dumps/dri/home`, so the player's cards and settings are never touched.
+
+### Bug reported by the owner (PT-BR, 2026-11-21): fixed in pt.txt (STATUS 1 `NV`, 11 `CARTAS`, 19 `△: Fechar Menu`, `$GuideMenu` `GUIA`), to be seen in game
 The field menu in Portuguese: the level label in the party panel is garbled (reads like "N(M O" where it should say NIVEL),
 the top bar still says "B: Fechar Status" while the main menu is open, and "CARD FOLDERS" and "GUIDE" are untranslated.
 Screenshot was in the chat only. Start at the PT label table (tools/text_override/pt.txt) and the menu's font glyph for the
 accented I.
+
+### All 16 recorded and reviewed (2026-11-21, evening)
+`.dumps/dri/r<challenge>*.mp4` (one clip per stage), `r<c>.out`, `r<c>.battle.log`; the video reviews (agy, Gemini 4
+Hydrogen) in `.dumps/dri/review/`.
+- Clean (model, HUD name, the signature cast by name with its own animation and camera, no black or garbled frame):
+  Dinohumon (Lizard Dance), Marsmon (Mugenhadou: puts to Sleep, no damage), Cannondramon (DynamoCannon), Hookmon
+  (Captain Cannon), GuardiAngemon (Golden Ripper), ExVeemon (Veelaser), Angemon (Hand of Fate), Kyubimon (Dragon Wheel).
+- Grizzmon's Maul Attack is kind 10, a counter stance: the name shows, no animation, and it strikes only when the party
+  attacks it. As the technique is; not a bug.
+- Instant KO: the disc's own MagnaAngemon (Gate of Destiny) and GranKuwagamon's Dimension Scissors knock the party's
+  member out; the game then waits on the switch menu (CROSS). The recorder now presses CROSS after 10 s with no action.
+- Recorder fixes: a stage left at 1 HP is put back to 1 if it heals, and the party gets +20000 to the hit stat
+  (modifiers[2]) once the stage's turns are seen (the party's hit roll has no floor, so a level-6 party never hit a
+  level-40 stage); `--god`'s 30000 HP overflows the HUD's digits ("3000020000"): a harness artefact.
+
+## Owner's roadmap (2026-11-21, evening; left for the night)
+In his words, translated: the DRI was meant to be **4 duels, starting at the Rookie**. Later, an **item** that forces a run
+of battles in the region, about 10 in sequence, the last one the region's rare Digimon, to speed the hunt up. So a
+sequence system past 3 helps both.
+- **Option A (his wish, try it seriously before anything else):** in the battle itself, after the 3rd enemy falls, the
+  next 3 come in, in sequence.
+- **Option B (only if A is truly blocked):** instead of the XP screen, a screen like it (copy it) that says another fight
+  follows; in the DRI the Mega would then come alone in a 2nd battle, and the transition can say the Digimon is unleashing
+  a super power.
+- **The item:** sold in the common item shops for about 1000 Bits; it starts 10 duels and the 10th is surely the region's
+  rare (its Rare Target) if it has one; with none, a text box says there is no rare Digimon in the region.
+
+Status: a research agent is reading the battle code and prototyping A in a worktree (report: `.dumps/tasks/dri-waves.md`).
+
+### Proposal for the Rookie stage of each line (for the owner's review)
+P = the player's own Rookie form on an enemy base (as the Champions), E = the disc's enemy species.
+
+| # | line (agent) | Rookie | why |
+|---|---|---|---|
+| 0 | Terriermon / Guardromon (Yang) | E Hagurumon | no Terriermon anywhere; Hagurumon -> Guardromon is the classic line |
+| 1 | Veemon (Bob) | P Veemon | |
+| 2 | Patamon (Kazuki) | P Patamon | |
+| 3 | Agumon (Johann) | P Agumon | |
+| 4 | Guilmon (Jimmy) | P Guilmon | |
+| 5 | Devimon (Kazuki) | E DemiDevimon | Myotismon's servant |
+| 6 | Renamon (Michael) | P Renamon | |
+| 7 | Angewomon (Michael) | P Patamon? | no Salamon/Gatomon; **to choose** |
+| 8 | Wormmon / Stingmon (Bob) | E Kunemon | no Wormmon; the larva Rookie |
+| 9 | Agumon, dark (Johann) | P Agumon | same as line 3 (a dark recolour later, as BlueGreymon) |
+| 10 | Impmon / Beelzemon (Jimmy) | E Goburimon? | no Impmon; an imp-like Rookie; **to choose** (or DemiDevimon) |
+| 11 | Kotemon (Ken) | P Kotemon | |
+| 12 | Musyamon (Ken) | P Kotemon? | the swordsman's Rookie; **to choose** |
+| 13 | Kumamon (Yuji) | P Kumamon | |
+| 14 | Kuwagamon (Yuji) | E Kunemon? | no Tentomon; **to choose** |
+| 15 | Monmon (Yang) | P Monmon | |

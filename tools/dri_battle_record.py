@@ -22,6 +22,10 @@ BIN = ROOT / "build/port/dw2003"
 DISC = ROOT / "iso/dw2003.cue"
 OUT = ROOT / ".dumps/dri"
 GOD_HP = 30000
+# The party's hit stat bonus once a stage is left at 1 HP: a member's modifiers[2] adds to the stat the hit roll compares
+# (fightstg_rules_get_stats, fightstg_rules_roll_hit), and the party's roll has no floor, so a low party never hits a
+# DRI stage tens of levels above it. Zero again when the next stage comes in, so its turns are seen at their real odds.
+SURE_HIT = 20000
 
 
 def sym(name):
@@ -74,6 +78,10 @@ def main():
         d, _b, _t, mx, hp, mmx, mp = struct.unpack("<7h", g.peek(FB + side_off + i * 0x20, 14))
         return d, hp, mx, mp
 
+    def sure_hit(on):
+        for i in range(3):
+            g.poke(FB + 0x10 + i * 0x20 + 0x14, struct.pack("<h", SURE_HIT if on else 0))
+
     def active():
         """The stage fighting: the first enemy member still standing (the battle brings them in in order)."""
         for i in range(3):
@@ -83,6 +91,7 @@ def main():
         return -1
 
     seen = 0  # bytes of the battle log read
+    quiet = 0  # iterations since the battle log last grew: a KO'd party member's switch menu waits for CROSS
     stages = []  # [stage index, first video frame, [technique IDs]]
     try:
         g.load_state(a.state)
@@ -105,6 +114,8 @@ def main():
                         g.poke(FB + 0x10 + i * 0x20 + 6, struct.pack("<2h", GOD_HP, GOD_HP))
             cur = active()
             if cur >= 0 and (not stages or stages[-1][0] != cur):
+                if stages:
+                    sure_hit(False)
                 stages.append([cur, n - 1, []])
                 say(f"[{it * a.every:5d}] stage {cur} fights: {member(0x70, cur)}")
             text = blog.read_text(errors="replace")
@@ -113,16 +124,21 @@ def main():
                 if m and stages:
                     stages[-1][2].append(int(m.group(1)))
                     say(f"[{it * a.every:5d}] stage {stages[-1][0]} acts: {line.strip()}")
+            quiet = 0 if len(text) != seen else quiet + 1
             seen = len(text)
-            if a.turns and stages and cur == stages[-1][0] and felled != cur and len(stages[-1][2]) >= a.turns:
+            if a.turns and stages and cur == stages[-1][0] and len(stages[-1][2]) >= a.turns:
                 _d, hp, _mx, _mp = member(0x70, cur)
-                if hp > 1:
+                if hp > 1:  # again if it healed
                     g.poke(FB + 0x70 + cur * 0x20 + 8, struct.pack("<h", 1))
+                    if felled != cur:
+                        say(f"[{it * a.every:5d}] stage {cur} left at 1 HP after {len(stages[-1][2])} turns")
                     felled = cur
-                    say(f"[{it * a.every:5d}] stage {cur} left at 1 HP after {len(stages[-1][2])} turns")
-            if it % 16 == 9:
+                sure_hit(True)
+            # an instant KO (Gate of Destiny, Dimension Scissors) opens the party's switch menu, which only CROSS (the EU
+            # confirm) answers: after 10 s with no action logged, CROSS every other step
+            if it % 16 == 9 or (quiet * a.every > 600 and it % 2 == 1):
                 g.pad(["CROSS"], 2, 2, sync=True)
-            elif it % 2 == 0:
+            elif it % 2 == 0 and quiet * a.every <= 600:  # CIRCLE backs out of the switch menu: only CROSS there
                 g.pad(["CIRCLE"], 2, 2, sync=True)
             if it % 30 == 0:
                 en = [member(0x70, i) for i in range(3)]
