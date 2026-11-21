@@ -52,6 +52,7 @@ def main():
     ap.add_argument("--god", action="store_true", help="refill the party's HP every step")
     ap.add_argument("--turns", type=int, default=0, help="fell a stage after this many of its turns (0: never)")
     ap.add_argument("--state", default=str(OUT / "field.state"))
+    ap.add_argument("--stages", type=int, default=4, help="stages to see felled before it stops (Rookie to Mega)")
     a = ap.parse_args()
     name = a.name or f"ch{a.challenge}"
     frames_dir = OUT / f"{name}_frames"
@@ -145,7 +146,8 @@ def main():
                 if en != last_enemy:
                     say(f"[{it * a.every:5d}] enemies (digimon,hp,maxhp,mp) {en}  party {[member(0x10, i) for i in range(3)]}")
                     last_enemy = en
-            if a.turns and stages and cur < 0 and len(stages) >= 3:
+            # the Mega comes in as a wave once the third member falls: the battle has no one standing in between
+            if a.turns and stages and cur < 0 and len(stages) >= a.stages:
                 say(f"[{it * a.every:5d}] every stage felled")
                 g.step(240)
                 break
@@ -160,11 +162,11 @@ def main():
     mp4 = OUT / f"{name}.mp4"
     encode(frames_dir, fps, 0, n, mp4)
     say(f"wrote {mp4} ({mp4.stat().st_size // 1024} KB, {n} frames)")
-    for k, (stage, first, acts) in enumerate(stages):
+    for k, (slot, first, acts) in enumerate(stages):  # by the order they came in: a wave takes a fallen slot
         end = stages[k + 1][1] if k + 1 < len(stages) else n
-        clip = OUT / f"{name}_s{stage}.mp4"
+        clip = OUT / f"{name}_s{k}.mp4"
         encode(frames_dir, fps, max(0, first - fps), end - max(0, first - fps), clip)
-        say(f"stage {stage}: video {first / fps:.1f}-{end / fps:.1f} s, actions {acts}; wrote {clip.name}")
+        say(f"stage {k}: video {first / fps:.1f}-{end / fps:.1f} s (enemy slot {slot}), actions {acts}; wrote {clip.name}")
 
 
 main()

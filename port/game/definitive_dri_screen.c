@@ -6,8 +6,8 @@
  * waits for a talk to end: the list opens from the question only. (It used to open once the field had been idle a while
  * after his talk; walking off and stopping later then opened it out of nowhere.) The list of simulations is in the
  * Guardromon network's layout: the agent's own challenges (DefDriAgent.challenges, two each: no agent holds them all),
- * each line's three stages by name, its best stage (or locked), and for the one under the cursor its rewards, its levels
- * and what unlocking it takes. The confirm button chooses once and acts on a second press:
+ * each line by its Rookie and its Mega, its best stage (or locked), and for the one under the cursor its four stages (level,
+ * name, reward) and what unlocking it takes. The confirm button chooses once and acts on a second press:
  * a locked challenge is unlocked (its materials handed over), an open one shows its Tamer's page (def_dri_rival: the
  * classic Tamer whose battle data it replays, and their line), whose confirm starts it.
  * The screen is a field overlay run from
@@ -15,10 +15,11 @@
  * which freezes the player, the map's events and the encounters.
  *
  * Starting a simulation sets up an existing boss battle (fieldstg_start_battle: its kind, immunities and, on a win, its
- * XP and Bits) and then gives records_state the line's stages as its three enemies, on the boss battles' scenery and
- * music. It never goes through fieldstg_encounter_start, so no Overlevel Rush, no Rare Target and no hunt chain; escape
- * stays blocked, as in any boss battle. In the battle, the native next-member entrance brings each stage in; a
- * "DIGIVOLVE!" callout marks it (def_dri_stage_enters). At the battle's end (def_log_end) the stages felled give their
+ * XP and Bits) and then gives records_state the line's first three stages as its three enemies, on the boss battles'
+ * scenery and music. It never goes through fieldstg_encounter_start, so no Overlevel Rush, no Rare Target and no hunt
+ * chain; escape stays blocked, as in any boss battle. In the battle, the native next-member entrance brings each stage in,
+ * and when the third falls the Mega comes in as a wave in a fallen member's slot (def_dri_next_wave); a "DIGIVOLVE!"
+ * callout marks each (def_dri_stage_enters). At the battle's end (def_log_end) the stages felled give their
  * tiers' accessories; a lost simulation does not end the game: wfightmn sends it back to the field (def_dri_defeat), with
  * the party's HP and MP as they were before it (a simulation hurts nobody; the items it spent stay spent). Back on the
  * field, a panel tells what the simulation gave.
@@ -53,7 +54,8 @@ extern const unsigned char def_str_DriTitle[], def_str_DriSep[], def_str_DriDash
     def_str_DriBest[], def_str_DriClear[], def_str_DriKeysUnlock[], def_str_DriKeysStart[], def_str_DriKeysConfirm[],
     def_str_DriStages[], def_str_DriNewReward[], def_str_DriNoReward[], def_str_DriOk[], def_str_EvoLv[],
     def_str_HuntSpace[], def_str_DriOf[], def_str_DriSep[], def_str_Unknown[], def_str_DriKeysFight[], def_str_DriAgent[],
-    def_str_DriGreet[], def_str_DriGreetDone[], def_str_DriAskSim[], def_str_DriAskTalk[], def_str_DriAskBye[];
+    def_str_DriGreet[], def_str_DriGreetDone[], def_str_DriAskSim[], def_str_DriAskTalk[], def_str_DriAskBye[],
+    def_str_DriThrough[];
 
 /* The layout (320x240), the Guardromon network's colours and panels: a title bar, the list, the chosen challenge's
  * table and the keys; the debrief is one panel over the field. Everything that is read is in font 1 (the 16-pixel
@@ -62,17 +64,19 @@ extern const unsigned char def_str_DriTitle[], def_str_DriSep[], def_str_DriDash
 #define DRI_LINE 17      /* a row's pitch */
 #define DRI_SMALL 15     /* a line of the info panel and the debrief */
 #define DRI_TITLE_H 23
-#define DRI_ROWS 5       /* challenges listed at once; the list scrolls past them */
+#define DRI_ROWS 3       /* challenges listed at once (an agent offers two); the tests' list of all scrolls */
 #define DRI_TOP 32       /* the list's first row */
 #define DRI_LIST_H (DRI_ROWS * DRI_LINE + 8)
-#define DRI_PIP_X 16     /* a row's three stage pips: cleared, open or locked */
+#define DRI_PIP_X 16     /* a row's four stage pips: cleared, open or locked */
 #define DRI_PIP 6
-#define DRI_NAME_X 44    /* its stages' names */
-#define DRI_INFO_Y (DRI_TOP - 5 + DRI_LIST_H + 3)
-#define DRI_INFO_H 80
-#define DRI_COL_X 58     /* the info table's first stage column (the row labels left of it) */
-#define DRI_COL_W 88
+#define DRI_NAME_X 52    /* its Rookie and Mega */
 #define DRI_HINT_Y 206
+#define DRI_INFO_Y (DRI_TOP - 5 + DRI_LIST_H + 3)
+#define DRI_INFO_H (DRI_HINT_Y - 2 - DRI_INFO_Y)
+/* The info table: a row per stage (the four names do not fit side by side), its level, name and reward. */
+#define DRI_COL_LV 10
+#define DRI_COL_NAME 56
+#define DRI_COL_RW 184
 #define DRI_DEB_Y 100    /* the debrief's panel, and the Tamer's page */
 #define DRI_DEB_H 136
 #define DRI_ASK_Y 128    /* the agent's question */
@@ -118,7 +122,7 @@ static struct {
     s32 count;
     MessageWindow *wins[DRI_WINDOWS];
     MessageWindow *answers[DRI_ASKS];
-    MessageWindow *title, *hint, *names[DRI_ROWS], *lv_label, *rw_label, *lv[DEF_DRI_STAGES], *rw[DEF_DRI_STAGES], *cost;
+    MessageWindow *title, *hint, *names[DRI_ROWS], *lv[DEF_DRI_STAGES], *nm[DEF_DRI_STAGES], *rw[DEF_DRI_STAGES], *cost;
     MessageCursor *cursor;
 } dri;
 
@@ -133,13 +137,14 @@ static struct {
     signed char fallen;   /* stages felled */
     signed char result;   /* fightstg_events.result: 1 won, 2 lost */
     signed char count;    /* accessories it gave */
-    short items[DEF_DRI_STAGES];
+    signed char wave;     /* stages past the battle's members that came in (def_dri_next_wave) */
+    short items[DEF_DRI_TIERS];
     short map;            /* the field it left from */
     short party[3];       /* the party's Digimon then, and their HP and MP (restored after a defeat) */
     short hp[3], mp[3];
 } dri_sim;
 
-static unsigned char row_name[DRI_ROWS][DRI_TEXT], info_lv[DEF_DRI_STAGES][8], info_best[DRI_TEXT], deb_name[DRI_TEXT],
+static unsigned char row_name[DRI_ROWS][DRI_TEXT], info_lv[DEF_DRI_STAGES][12], info_best[DRI_TEXT], deb_name[DRI_TEXT],
     deb_stages[DRI_TEXT], deb_reward[2 * DRI_TEXT];
 
 static void list_request(void);
@@ -158,19 +163,20 @@ static const unsigned char *item_name(int item) {
     return s != NULL ? s : def_str_Unknown;
 }
 
-/* "Tyrannomon / MetalGreymon / BK WarGreymon": the stages, by their species' names (text 0x4E). */
+static const unsigned char *stage_name(const DefDriChallenge *ch, int i) {
+    const unsigned char *name = def_species_name(ch->stages[i].digimon);
+
+    return name != NULL ? name : def_str_Unknown;
+}
+
+/* "Agumon ... BK WarGreymon": the line by its Rookie and its Mega (all four names do not fit a row). */
 static void put_line(unsigned char *buf, int size, const DefDriChallenge *ch) {
-    int p = 0, i;
+    int p = 0;
 
     buf[0] = 0;
-    for (i = 0; i < DEF_DRI_STAGES; i++) {
-        const unsigned char *name = def_species_name(ch->stages[i].digimon);
-
-        if (i > 0) {
-            def_glyph_put(buf, &p, size, def_str_DriSep);
-        }
-        def_glyph_put(buf, &p, size, name != NULL ? name : def_str_Unknown);
-    }
+    def_glyph_put(buf, &p, size, stage_name(ch, 0));
+    def_glyph_put(buf, &p, size, def_str_DriThrough);
+    def_glyph_put(buf, &p, size, stage_name(ch, DEF_DRI_STAGES - 1));
 }
 
 static void put_items(unsigned char *buf, int *p, int size, const short *items, int n) {
@@ -265,17 +271,23 @@ static void list_fill(void) {
         return;
     }
     open = def_record_dri_unlocked(sel);
-    best = open ? def_record_dri_best(sel) : 0;
-    /* the table: each stage's level and reward, green once that stage has been felled (its reward is had) */
+    best = open ? def_record_dri_best(sel) : 0; /* the best tier */
+    /* the table: each stage's level, name and reward (the Rookie's none), green once that stage has been felled */
     for (r = 0; r < DEF_DRI_STAGES; r++) {
+        int tier = r - (DEF_DRI_STAGES - DEF_DRI_TIERS), felled = def_dri_tier_stages(best) > r;
+
         p = 0;
         info_lv[r][0] = 0;
+        def_glyph_put(info_lv[r], &p, sizeof(info_lv[r]), def_str_EvoLv);
+        def_glyph_put(info_lv[r], &p, sizeof(info_lv[r]), def_str_HuntSpace);
         def_glyph_count(info_lv[r], &p, sizeof(info_lv[r]), ch->stages[r].level);
         dri.lv[r]->set_text(dri.lv[r], info_lv[r], -1);
-        dri.rw[r]->set_text(dri.rw[r], (u8 *)item_name(ch->rewards[r]), -1);
-        pal = !open ? DRI_PAL_DIM : best > r ? DRI_PAL_DONE : DRI_PAL_TEXT;
+        dri.nm[r]->set_text(dri.nm[r], (u8 *)stage_name(ch, r), -1);
+        dri.rw[r]->set_text(dri.rw[r], (u8 *)(tier >= 0 ? item_name(ch->rewards[tier]) : def_str_DriDash), -1);
+        pal = !open ? DRI_PAL_DIM : felled ? DRI_PAL_DONE : DRI_PAL_TEXT;
         dri.lv[r]->set_palette(dri.lv[r], pal);
-        dri.rw[r]->set_palette(dri.rw[r], !open ? DRI_PAL_DIM : best > r ? DRI_PAL_DONE : DRI_PAL_HOT);
+        dri.nm[r]->set_palette(dri.nm[r], pal);
+        dri.rw[r]->set_palette(dri.rw[r], !open || tier < 0 ? DRI_PAL_DIM : felled ? DRI_PAL_DONE : DRI_PAL_HOT);
     }
     if (!open) {
         const unsigned char *cost = def_dri_cost_label(sel, &pal);
@@ -285,14 +297,14 @@ static void list_fill(void) {
     } else {
         p = 0;
         info_best[0] = 0;
-        if (best >= DEF_DRI_STAGES) {
+        if (best >= DEF_DRI_TIERS) {
             def_glyph_put(info_best, &p, DRI_TEXT, def_str_DriClear);
         } else {
             def_glyph_put(info_best, &p, DRI_TEXT, def_str_DriBest);
-            put_stage(info_best, &p, DRI_TEXT, best);
+            put_stage(info_best, &p, DRI_TEXT, def_dri_tier_stages(best));
         }
         dri.cost->set_text(dri.cost, info_best, -1);
-        dri.cost->set_palette(dri.cost, best >= DEF_DRI_STAGES ? DRI_PAL_DONE : DRI_PAL_TEXT);
+        dri.cost->set_palette(dri.cost, best >= DEF_DRI_TIERS ? DRI_PAL_DONE : DRI_PAL_TEXT);
     }
     dri.hint->set_text(dri.hint, (u8 *)(dri.armed >= 0 ? def_str_DriKeysConfirm
                                         : open         ? def_str_DriKeysStart
@@ -309,17 +321,12 @@ static void list_open(void) {
     for (r = 0; r < DRI_ROWS; r++) {
         dri.names[r] = dri_window(1, DRI_NAME_X, DRI_TOP + r * DRI_LINE);
     }
-    dri.lv_label = dri_window(1, 10, DRI_INFO_Y + 6);
-    dri.lv_label->set_text(dri.lv_label, (u8 *)def_str_EvoLv, -1);
-    dri.lv_label->set_palette(dri.lv_label, DRI_PAL_DIM);
-    dri.rw_label = dri_window(1, 10, DRI_INFO_Y + 6 + DRI_SMALL);
-    dri.rw_label->set_text(dri.rw_label, (u8 *)def_str_DriReward, -1);
-    dri.rw_label->set_palette(dri.rw_label, DRI_PAL_DIM);
     for (r = 0; r < DEF_DRI_STAGES; r++) {
-        dri.lv[r] = dri_window(1, DRI_COL_X + r * DRI_COL_W, DRI_INFO_Y + 6);
-        dri.rw[r] = dri_window(1, DRI_COL_X + r * DRI_COL_W, DRI_INFO_Y + 6 + DRI_SMALL);
+        dri.lv[r] = dri_window(1, DRI_COL_LV, DRI_INFO_Y + 6 + r * DRI_SMALL);
+        dri.nm[r] = dri_window(1, DRI_COL_NAME, DRI_INFO_Y + 6 + r * DRI_SMALL);
+        dri.rw[r] = dri_window(1, DRI_COL_RW, DRI_INFO_Y + 6 + r * DRI_SMALL);
     }
-    dri.cost = dri_window(1, 10, DRI_INFO_Y + 12 + 2 * DRI_SMALL);
+    dri.cost = dri_window(1, 10, DRI_INFO_Y + 12 + DEF_DRI_STAGES * DRI_SMALL);
     dri.cost->set_page_lines(dri.cost, 2);
     dri.hint = dri_window(1, 8, DRI_HINT_Y + 3);
     dri.hint->set_page_lines(dri.hint, 2);
@@ -328,9 +335,9 @@ static void list_open(void) {
     list_fill();
 }
 
-/* A row's three pips, left to right the stages: green felled, blue open, grey while the challenge is locked. */
+/* A row's four pips, left to right the stages: green felled, blue open, grey while the challenge is locked. */
 static void list_pips(s32 r, s32 c) {
-    s32 open = def_record_dri_unlocked(c), best = open ? def_record_dri_best(c) : 0, i;
+    s32 open = def_record_dri_unlocked(c), best = open ? def_dri_tier_stages(def_record_dri_best(c)) : 0, i;
     s32 y = DRI_TOP + r * DRI_LINE + 4;
 
     for (i = 0; i < DEF_DRI_STAGES; i++) {
@@ -362,9 +369,9 @@ static void list_draw(void) {
     } else if (dri.sel >= dri.top && dri.sel < dri.top + DRI_ROWS) {
         dri_rect(5, DRI_TOP + (dri.sel - dri.top) * DRI_LINE - 3, 310, DRI_LINE - 1, 16, 32, 120);
     }
-    /* the table's lines: under its two rows, and between the labels and the stage columns */
-    dri_rect(8, DRI_INFO_Y + 7 + 2 * DRI_SMALL, 304, 1, 60, 60, 140);
-    dri_rect(DRI_COL_X - 6, DRI_INFO_Y + 5, 1, 2 * DRI_SMALL, 60, 60, 140);
+    /* the table's lines: under its stage rows, and between the levels and the names */
+    dri_rect(8, DRI_INFO_Y + 7 + DEF_DRI_STAGES * DRI_SMALL, 304, 1, 60, 60, 140);
+    dri_rect(DRI_COL_NAME - 6, DRI_INFO_Y + 5, 1, DEF_DRI_STAGES * DRI_SMALL, 60, 60, 140);
     dri_panel(0, 0, 320, DRI_TITLE_H, 1);
     dri_panel(2, DRI_TOP - 6, 316, DRI_LIST_H, 0);
     dri_panel(2, DRI_INFO_Y, 316, DRI_INFO_H, 0);
@@ -528,7 +535,7 @@ static int all_cleared(void) {
 
     list_build();
     for (r = 0; r < dri.list_n; r++) {
-        if (def_record_dri_best(dri.list[r]) < DEF_DRI_STAGES) {
+        if (def_record_dri_best(dri.list[r]) < DEF_DRI_TIERS) {
             return 0;
         }
     }
@@ -650,7 +657,7 @@ static int sim_start(int c) {
     }
     records_state.stage = DEF_DRI_STAGE;
     records_state.music = DEF_DRI_MUSIC;
-    for (i = 0; i < DEF_DRI_STAGES; i++) {
+    for (i = 0; i < DEF_DRI_MEMBERS; i++) { /* the rest come in as waves (def_dri_next_wave) */
         RecordsEnemy *e = &records_state.enemies[i];
 
         e->digimon = ch->stages[i].digimon;
@@ -673,9 +680,9 @@ static int sim_start(int c) {
             dri_sim.mp[i] = gamestate_data.digimon[id].record.stats.values[4];
         }
     }
-    port_log("dri: challenge %d started from map 0x%X (battle %d: %d, %d, %d at %d, %d, %d)", c, dri_sim.map, ch->battle,
-             ch->stages[0].digimon, ch->stages[1].digimon, ch->stages[2].digimon, ch->stages[0].level,
-             ch->stages[1].level, ch->stages[2].level);
+    port_log("dri: challenge %d started from map 0x%X (battle %d: %d, %d, %d, then %d at %d, %d, %d, %d)", c, dri_sim.map,
+             ch->battle, ch->stages[0].digimon, ch->stages[1].digimon, ch->stages[2].digimon, ch->stages[3].digimon,
+             ch->stages[0].level, ch->stages[1].level, ch->stages[2].level, ch->stages[3].level);
     return 1;
 }
 
@@ -1122,6 +1129,39 @@ FightstgEnemyRecord *def_dri_record(s32 id) {
     return NULL;
 }
 
+/* The battle's last enemy member fell (def_enemy_next_wave, from wfightmn_knockout): the next stage past the members (the
+ * Mega), set up in a fallen enemy slot as sim_start and wfightmn_init_members set a member up at the start (its record,
+ * stats and cameras are found by its species, so nothing of the one that fell there is kept), or -1 when none is left
+ * (the battle ends). The entrance that follows loads its model. The slot is the one after the member that just fell,
+ * never its own: the HUD renames the enemy and resets its HP bar only when current[1] changes (fightstg_hud_update_names,
+ * _update_hp), so a wave in the same slot kept the fallen one's name and empty bar. */
+int def_dri_next_wave(void) {
+    const DefDriChallenge *ch;
+    const DefDriStage *st;
+    int slot = (fightstg_battle.state.current[1] + 1) % 3, k = DEF_DRI_MEMBERS + dri_sim.wave;
+    FightstgMember *m = &fightstg_battle.state.members[1][slot];
+    RecordsEnemy *e = &records_state.enemies[slot];
+
+    if (!dri_sim.fighting || (ch = def_dri_challenge(dri_sim.challenge)) == NULL || k >= DEF_DRI_STAGES) {
+        return -1;
+    }
+    st = &ch->stages[k];
+    memset(m, 0, sizeof(*m));
+    m->digimon = st->digimon;
+    m->hp = m->max_hp = st->hp;
+    m->mp = m->max_mp = st->mp;
+    m->item = 0; /* a simulation drops nothing (and the results' drop draw reads every slot's) */
+    e->digimon = st->digimon;
+    e->level = st->level;
+    e->hp = st->hp;
+    e->mp = st->mp;
+    e->stat_scale = st->stat_scale;
+    dri_sim.wave++;
+    port_log("dri: challenge %d: stage %d (species %d, level %d, HP %d) comes in as a wave in enemy slot %d",
+             dri_sim.challenge, k, st->digimon, st->level, st->hp, slot);
+    return slot;
+}
+
 void def_dri_stage_enters(int member) {
     if (!dri_sim.fighting) {
         return;
@@ -1132,7 +1172,7 @@ void def_dri_stage_enters(int member) {
 }
 
 void def_dri_battle_end(int result) {
-    short items[DEF_DRI_STAGES];
+    short items[DEF_DRI_TIERS];
     int i, n, fallen = 0;
 
     if (!dri_sim.fighting) {
@@ -1146,6 +1186,7 @@ void def_dri_battle_end(int result) {
             fallen++;
         }
     }
+    fallen += dri_sim.wave; /* each wave took a fallen member's slot: the stage that fell there counts too */
     n = def_dri_award(dri_sim.challenge, fallen, items);
     for (i = 0; i < n; i++) { /* counted at once: the results screen and the field come after */
         if (items[i] > 0 && items[i] < 0x193 && gamestate_data.items[items[i]] < 99) {

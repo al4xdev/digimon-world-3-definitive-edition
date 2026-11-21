@@ -271,7 +271,18 @@ sequence system past 3 helps both.
 - **The item:** sold in the common item shops for about 1000 Bits; it starts 10 duels and the 10th is surely the region's
   rare (its Rare Target) if it has one; with none, a text box says there is no rare Digimon in the region.
 
-Status: a research agent is reading the battle code and prototyping A in a worktree (report: `.dumps/tasks/dri-waves.md`).
+Status (2026-11-21, night): **Option A works and is in.** The research agent's prototype (`.dumps/tasks/dri-waves.md`)
+fought 5 stages in one battle, a save state reloaded mid-wave included. The DRI now has 4 stages: Rookie, Champion and
+Ultimate are the battle's members; the Mega comes in as a wave when the third falls (`def_enemy_next_wave` in
+`wfightmn_knockout`'s all-down branch -> `def_dri_next_wave`: slot `(current[1] + 1) % 3`, because the HUD renames only
+when current[1] changes). The Rookie fights a level step under the Champion (the other stages keep their levels); the
+rewards stay 3 tiers, for the stages past the Rookie, so the card's 2-bit best keeps its meaning (an old save reads the
+same). The screen lists "Rookie ... Mega" with 4 pips and a row per stage. Verified: challenge 3 recorded (Agumon casts
+Pepper Breath; WarGreymon digivolves in from MetalGreymon as the wave and casts Terra Force; agy clean on both).
+- Rookies chosen for the four open rows: Angewomon line Kiwimon (a bird, toward Phoenixmon), Impmon line Goburimon,
+  Musyamon line Kotemon (Ken's own, as Johann's Agumon twice), Kuwagamon line Kunemon. Player Rookies fight on their
+  Champion's base (Patamon on Airdramon, Veemon on Devidramon...).
+- Next: the chain item (10 duels in one battle, the 10th the Rare Target) on the same hook, by an agent in a worktree.
 
 ### Proposal for the Rookie stage of each line (for the owner's review)
 P = the player's own Rookie form on an enemy base (as the Champions), E = the disc's enemy species.

@@ -2203,6 +2203,37 @@ void def_enemy_status_turn(void) {
     }
 }
 
+/* ---- Waves (Option A, owner 2026-11-21): when the battle's last enemy member falls, a mode with more to come (the DRI's
+ * Mega) sets a fallen enemy slot up again as the next one, and wfightmn_knockout brings it in with the DRI's entrance (its
+ * model is loaded then, as for any stage). The slot's port state goes with the one that fell there: a wave starts clean. */
+int def_enemy_next_wave(void) {
+    int slot, k;
+
+    if (!def_on()) {
+        return -1;
+    }
+    slot = def_dri_next_wave();
+    if (slot < 0 || slot > 2) {
+        return -1;
+    }
+    memset(resist_mod[1][slot], 0, sizeof(resist_mod[1][0]));
+    resist_turns[1][slot] = 0;
+    for (k = 0; k < 3; k++) {
+        mod_level[1][slot][k] = 0;
+        mod_turns[1][slot][k] = 0;
+    }
+    chain.staggered[slot] = 0;
+    enemy_sleep_turns[slot] = 0;
+    enemy_conf_turns[slot] = 0;
+    if (log_on()) {
+        FightstgMember *m = &fightstg_battle.state.members[1][slot];
+
+        LOG("wave enemy %d digimon %d level %d hp %d/%d mp %d scale %d", slot, m->digimon,
+            records_state.enemies[slot].level, m->hp, m->max_hp, m->mp, records_state.enemies[slot].stat_scale);
+    }
+    return slot;
+}
+
 /* ---- Revive tiers: the item revives each fallen ally with a chance that falls when its max HP outgrows the tier. */
 int def_revive_hp(int item, int max_hp) {
     int chance, pct, rated, hp;

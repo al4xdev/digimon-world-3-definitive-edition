@@ -479,6 +479,7 @@ $FleeAskNo: Volver
 $DriTitle: Simulaciones DRI
 $DriSep: " - "
 $DriDash: --
+$DriThrough: " ... "
 $DriOf: " de "
 $DriReward: "Premio "
 $DriUnlock: "Desbloq. "

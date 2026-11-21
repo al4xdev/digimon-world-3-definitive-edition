@@ -21,7 +21,7 @@ def table_ok():
     cap = int(re.search(r"#define DEF_DRI_CHALLENGES (\d+)", h).group(1))
     num = r"(-?\d+)"
     stage = r"\{ " + ", ".join([num] * 6) + r" \}"
-    rows = re.findall(r"\{ \{ " + stage + ", " + stage + ", " + stage + r" \}, (\d+), \{ (\d+), (\d+), (\d+) \}, "
+    rows = re.findall(r"\{ \{ " + ", ".join([stage] * 4) + r" \}, (\d+), \{ (\d+), (\d+), (\d+) \}, "
                       r"(-?\d+), (\d+), \{ (-?\d+), (-?\d+) \}, \{ (\d+), (\d+) \} \},", gen)
     count = int(re.search(r"def_dri_challenge_count = (\d+);", gen).group(1))
     species = {int(x) for x in re.findall(r"\{ (\d+), \{[^}]*\}, [01] \}",
@@ -35,11 +35,11 @@ def table_ok():
     ok = len(rows) == count and 0 < count <= cap
     for r in rows:
         v = [int(x) for x in r]
-        st = [v[i * 6:i * 6 + 6] for i in range(3)]
-        battle, rewards, common, common_n, rare, rare_n = v[18], v[19:22], v[22], v[23], v[24:26], v[26:28]
+        st = [v[i * 6:i * 6 + 6] for i in range(4)]
+        battle, rewards, common, common_n, rare, rare_n = v[24], v[25:28], v[28], v[29], v[30:32], v[32:34]
         # a player form (s[5], its base species, set) is not an enemy species: its base is
         ok &= all((s[5] in species if s[5] else s[0] in species) and 0 < s[1] <= 99 and 0 < s[2] <= 30000 and s[4] > 0 for s in st)
-        ok &= st[0][1] < st[1][1] < st[2][1]
+        ok &= st[0][1] < st[1][1] < st[2][1] < st[3][1]
         ok &= 0 < battle < battles and all(x in acc for x in rewards) and rewards == sorted(rewards)
         ok &= (common == -1 and common_n == 0) or (0 <= common < 16 and 0 < common_n <= 99)
         ok &= all((x == -1 and k == 0) or (0 <= x < targets and 0 < k <= 99) for x, k in zip(rare, rare_n))

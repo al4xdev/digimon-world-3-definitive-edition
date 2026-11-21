@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""The DRI Agents' Gauntlet. Each challenge is one battle whose three enemy members are the stages of an
-evolution line, Champion to Mega; the battle brings in the next member when one falls (wfightmn_knockout), so the
-"next form" comes in at its own full HP while the party keeps its state. The owner approves the list.
+"""The DRI Agents' Gauntlet. Each challenge is one battle that runs the four stages of an evolution line, Rookie to
+Mega (owner, 2026-11-21): the first three are its enemy members and the battle brings in the next when one falls
+(wfightmn_knockout); the Mega comes in as a wave in a fallen member's slot (def_dri_next_wave). So the "next form" comes
+in at its own full HP while the party keeps its state. The owner approves the list.
 
   tools/venv/bin/python tools/gen_dri_challenges.py            # write port/game/definitive_dri_table.c and the list
   tools/venv/bin/python tools/gen_dri_challenges.py --check    # exit 1 if the committed table is not the rule's
@@ -16,14 +17,15 @@ or Gallantmon, so those stages are the player's own forms fighting on an enemy s
 no Gargomon, Rapidmon or Gatomon exists at all. Each DRI Agent offers two lines (DEF_DRI_PER_AGENT). The rule for the rest,
 by a line's rank r (its place in difficulty, LINES' `rank`; the index is only its save slot):
   - its Champion fights at DEF_DRI_LEVEL_FIRST + r * DEF_DRI_LEVEL_GAP, each next stage DEF_DRI_LEVEL_STEP
-    higher; a stage's HP and stat_scale follow its species' own rows in the battle table (the game raises a species
+    higher and its Rookie DEF_DRI_LEVEL_STEP lower (the Rookie came last: the other stages kept their levels); a stage's HP and stat_scale follow its species' own rows in the battle table (the game raises a species
     that way: Tyrannomon's stat_scale is 16 at level 6, 83 at 52): between two of its levels, the line between them;
     past its lowest or highest, that row times (level ratio) ** (DEF_DRI_SCALE_EXP_PCT / 100), the growth of the game's
     own rows of one species; MP as the nearest row's; HP never past DEF_HUNT_HP_MAX (an s16);
   - a player form's stage has MP FORM_MP: an enemy pays its techniques' MP (fightstg_80086A00.c: short of it, it only
     says so), and the form's signature costs what the base's own row may not have (Persiamon's has 40);
-  - a stage never has less HP than the one before it grown by the level ratio (as above): the DDNA Ultimates are boss
-    rows, a mob base's Mega would otherwise come in frailer than them (Beelzemon on Ghoulmon after Megadramon);
+  - a stage past the Champion never has less HP than the one before it grown by the level ratio (as above): the DDNA
+    Ultimates are boss rows, a mob base's Mega would otherwise come in frailer than them (Beelzemon on Ghoulmon after
+    Megadramon); the Rookie does not raise its Champion;
   - the battle it is set up as: a kind-2 battle (escape blocked, the bosses' immunities, its XP and Bits on a win) with
     none of the line's species in it, not one wfightmn gives special rules (types 1-4) nor the final boss's, its own level
     closest to the Mega's;
@@ -33,7 +35,7 @@ by a line's rank r (its place in difficulty, LINES' `rank`; the index is only it
     the Champion, the line's own species first, then the strongest, then a second lead species (two from rank
     DEF_DRI_TWO_RARES on);
   - its rewards: the line's family of elemental "Power" accessories (records.c: "Fire Power 1", "2", "S"), tier n for the
-    n-th stage felled. No new items.
+    n-th stage felled past the Rookie. No new items.
 """
 import argparse
 import re
@@ -56,7 +58,8 @@ SPECIAL = {0x143, 0xB, 0x1E, 0x144, 325, 326}
 # its record in the game (stats, resistances; def_dri_record), under the form's name, type and techniques, with a plan
 # that casts its signature. A base is an enemy species whose strong resistance is the form's own best one (the port's
 # weakness table, definitive_enemies.c) and, where one fits, of a body like the form's (its cameras frame the form).
-FORMS = {5: "Greymon", 6: "Devimon", 20: "Angemon", 26: "SkullGreymon", 59: "Phoenixmon", 66: "Myotismon",
+FORMS = {3: "Agumon", 31: "Patamon", 145: "Veemon", 366: "Guilmon", 373: "Renamon", 383: "Kotemon", 384: "Monmon",
+         385: "Kumamon", 5: "Greymon", 6: "Devimon", 20: "Angemon", 26: "SkullGreymon", 59: "Phoenixmon", 66: "Myotismon",
          148: "Imperialdramon", 196: "MetalGarurumon", 213: "WarGreymon", 214: "Seraphimon", 230: "GranKuwagamon",
          234: "Angewomon", 259: "ExVeemon", 260: "Stingmon", 359: "Imperialdramon-F", 367: "Growlmon", 369: "Gallantmon",
          372: "MegaGargomon", 374: "Kyubimon", 376: "Sakuyamon", 377: "Beelzemon", 378: "MaloMyotismon", 386: "Dinohumon",
@@ -67,47 +70,51 @@ FORMS = {5: "Greymon", 6: "Devimon", 20: "Angemon", 26: "SkullGreymon", 59: "Pho
 # ($DriRival<index>), so the first five keep the slots they had in 0.8.5; `rank` (0..15, all different) is its place in
 # difficulty: its levels and its unlock's materials follow the rank, not the index. Every agent's own line ranks in the
 # first half and his second line in the second half, so each agent has an early and a late one. Stages as enemy species
-# IDs, Champion first, or (player form, base species); the family's three item IDs.
+# IDs, Rookie first, or (player form, base species); the family's three item IDs. A player Rookie fights on its
+# Champion's base (the same body's cameras, the line's resistances). The disc has eleven Rookie species and the party's
+# eight Rookie forms, so a line with neither its own Rookie takes the nearest in kind: Hagurumon for Guardromon, Kiwimon
+# (a bird) for the line that ends in Phoenixmon, Kunemon (the thunder larva) for both insect lines, Goburimon (an imp of
+# a Virus) for Impmon's, and Ken's Kotemon for his second line as Johann's Agumon is for his.
 LINES = [
-    dict(name="Terriermon", agent=7, rank=9, family="Metal Power", stages=(435, 434, (372, 443)), rewards=(354, 355, 356),
+    dict(name="Terriermon", agent=7, rank=9, family="Metal Power", stages=(122, 435, 434, (372, 443)), rewards=(354, 355, 356),
          note="no Gargomon nor Rapidmon: Guardromon, a machine, then Antylamon (Andiramon), the Tamers' Ultimate"),
-    dict(name="Veemon", agent=2, rank=3, family="Bolt Power", stages=((259, 135), 450, (148, 444)), rewards=(351, 352, 353),
+    dict(name="Veemon", agent=2, rank=3, family="Bolt Power", stages=((145, 135), (259, 135), 450, (148, 444)), rewards=(351, 352, 353),
          note="the player forms ExVeemon and Imperialdramon, on Devidramon's and BK Imperialdramon's records"),
-    dict(name="Patamon", agent=0, rank=4, family="Wind Power", stages=((20, 7), 452, (214, 447)), rewards=(348, 349, 350),
+    dict(name="Patamon", agent=0, rank=4, family="Wind Power", stages=((31, 7), (20, 7), 452, (214, 447)), rewards=(348, 349, 350),
          note="the player forms Angemon and Seraphimon, on Airdramon's and BK Seraphimon's records"),
-    dict(name="Agumon", agent=3, rank=6, family="Fire Power", stages=((5, 8), 449, (213, 448)), rewards=(339, 340, 341),
+    dict(name="Agumon", agent=3, rank=6, family="Fire Power", stages=((3, 8), (5, 8), 449, (213, 448)), rewards=(339, 340, 341),
          note="the player forms Greymon and WarGreymon, on Tyrannomon's and BK WarGreymon's records"),
-    dict(name="Guilmon", agent=4, rank=7, family="Dark Power", stages=((367, 69), 451, (369, 445)), rewards=(357, 358, 359),
+    dict(name="Guilmon", agent=4, rank=7, family="Dark Power", stages=((366, 69), (367, 69), 451, (369, 445)), rewards=(357, 358, 359),
          note="the player forms Growlmon and Gallantmon, on Flarerizamon's and BK WarGrowlmon's records; Dark for a "
               "Virus line (Fire is Agumon's)"),
-    dict(name="Devimon", agent=0, rank=12, family="Dark Power", stages=((6, 302), (66, 177), (378, 236)),
+    dict(name="Devimon", agent=0, rank=12, family="Dark Power", stages=(217, (6, 302), (66, 177), (378, 236)),
          rewards=(357, 358, 359),
          note="Patamon's fallen path, all player forms: Devimon on Gargoylemon, Myotismon on LadyDevimon, MaloMyotismon "
               "on VenomMyotismon (the form it rose from)"),
-    dict(name="Renamon", agent=1, rank=5, family="Ice Power", stages=((374, 327), 453, (376, 231)), rewards=(345, 346, 347),
+    dict(name="Renamon", agent=1, rank=5, family="Ice Power", stages=((373, 327), (374, 327), 453, (376, 231)), rewards=(345, 346, 347),
          note="Kyubimon on Lynxmon (a fire beast), Taomon, Sakuyamon on Puppetmon (Water, Ice, Thunder and Machine strong)"),
-    dict(name="Angewomon", agent=1, rank=13, family="Water Power", stages=((234, 437), 452, (59, 193)),
+    dict(name="Angewomon", agent=1, rank=13, family="Water Power", stages=(198, (234, 437), 452, (59, 193)),
          rewards=(342, 343, 344),
          note="no Gatomon on the disc: Angewomon on Persiamon, MagnaAngemon, Phoenixmon on Gryphonmon"),
-    dict(name="Wormmon", agent=2, rank=11, family="Bolt Power", stages=((260, 238), 450, (359, 444)),
+    dict(name="Wormmon", agent=2, rank=11, family="Bolt Power", stages=(32, (260, 238), 450, (359, 444)),
          rewards=(351, 352, 353),
          note="Stingmon on Snimon (an insect), Paildramon, Imperialdramon-F on BK Imperialdramon's record"),
-    dict(name="Agumon (dark)", agent=3, rank=14, family="Fire Power", stages=((5, 8), (26, 215), 448),
+    dict(name="Agumon (dark)", agent=3, rank=14, family="Fire Power", stages=((3, 8), (5, 8), (26, 215), 448),
          rewards=(339, 340, 341),
          note="Greymon (BlueGreymon once the recolour is done), SkullGreymon on SkullMammothmon, BK WarGreymon"),
-    dict(name="Impmon", agent=4, rank=15, family="Dark Power", stages=(69, 54, (377, 312)), rewards=(357, 358, 359),
+    dict(name="Impmon", agent=4, rank=15, family="Dark Power", stages=(80, 69, 54, (377, 312)), rewards=(357, 358, 359),
          note="no Impmon line on the disc: Flarerizamon, Megadramon, Beelzemon on Ghoulmon"),
-    dict(name="Kotemon", agent=5, rank=0, family="Wind Power", stages=((386, 241), 454, (394, 337)),
+    dict(name="Kotemon", agent=5, rank=0, family="Wind Power", stages=((383, 241), (386, 241), 454, (394, 337)),
          rewards=(348, 349, 350),
          note="Dinohumon on Divermon, Kyukimon, Marsmon on Zanbamon (a sword Mega)"),
-    dict(name="Musyamon", agent=5, rank=8, family="Ice Power", stages=(173, 178, (196, 356)), rewards=(345, 346, 347),
+    dict(name="Musyamon", agent=5, rank=8, family="Ice Power", stages=((383, 241), 173, 178, (196, 356)), rewards=(345, 346, 347),
          note="the warriors' line: Musyamon, Knightmon, MetalGarurumon on HiAndromon (Machine strong)"),
-    dict(name="Kumamon", agent=6, rank=2, family="Metal Power", stages=((388, 14), 456, (393, 115)),
+    dict(name="Kumamon", agent=6, rank=2, family="Metal Power", stages=((385, 14), (388, 14), 456, (393, 115)),
          rewards=(354, 355, 356),
          note="Grizzmon on Monzaemon (a bear), GrapLeomon, Cannondramon on Machinedramon"),
-    dict(name="Kuwagamon", agent=6, rank=10, family="Bolt Power", stages=(51, 226, (230, 60)), rewards=(351, 352, 353),
+    dict(name="Kuwagamon", agent=6, rank=10, family="Bolt Power", stages=(32, 51, 226, (230, 60)), rewards=(351, 352, 353),
          note="the insects: Kuwagamon, Okuwamon, GranKuwagamon on H-Kabuterimon (a beetle, Thunder strong)"),
-    dict(name="Monmon", agent=7, rank=1, family="Water Power", stages=((387, 134), 455, (392, 270)),
+    dict(name="Monmon", agent=7, rank=1, family="Water Power", stages=((384, 134), (387, 134), 455, (392, 270)),
          rewards=(342, 343, 344),
          note="Hookmon on Cyclonemon (a cannon arm), Armormon, GuardiAngemon on Vikemon"),
 ]
@@ -134,7 +141,7 @@ AGENTS = [  # (map, actor ID, name, Rookie)
 def constants():
     h = (ROOT / "port/game/definitive.h").read_text()
     c = {k: int(v, 0) for k, v in re.findall(r"#define (DEF_\w+)\s+(0x[0-9A-Fa-f]+|\d+)", h)}
-    for k in ("DEF_DRI_CHALLENGES", "DEF_DRI_STAGES", "DEF_DRI_LEVEL_FIRST", "DEF_DRI_LEVEL_GAP", "DEF_DRI_LEVEL_STEP",
+    for k in ("DEF_DRI_CHALLENGES", "DEF_DRI_STAGES", "DEF_DRI_MEMBERS", "DEF_DRI_TIERS", "DEF_DRI_LEVEL_FIRST", "DEF_DRI_LEVEL_GAP", "DEF_DRI_LEVEL_STEP",
               "DEF_DRI_COMMON_LO", "DEF_DRI_COMMON_HI", "DEF_DRI_RARE_OVER", "DEF_DRI_TWO_RARES", "DEF_DRI_SCALE_EXP_PCT",
               "DEF_HUNT_HP_MAX", "DEF_DRI_RIVALS", "DEF_DRI_PER_AGENT",
               "DEF_HUNT_MATERIALS"):
@@ -276,17 +283,19 @@ def table():
         stages = set(looks) | set(bases)
         assert len(looks) == c["DEF_DRI_STAGES"] and all(b in names for b in bases), line
         assert all(lk == b or (lk in FORMS and lk not in names) for lk, b in zip(looks, bases)), line
+        assert len(line["rewards"]) == c["DEF_DRI_TIERS"], line
         for item in line["rewards"]:
             assert its.get(item, {}).get("cat") == "RECORDS_ITEM_ACCESSORY", (line, item)
         rank = line["rank"]
-        first = c["DEF_DRI_LEVEL_FIRST"] + rank * c["DEF_DRI_LEVEL_GAP"]
-        levels = [first + i * c["DEF_DRI_LEVEL_STEP"] for i in range(c["DEF_DRI_STAGES"])]
+        first = c["DEF_DRI_LEVEL_FIRST"] + rank * c["DEF_DRI_LEVEL_GAP"]  # the Champion's
+        rookies = c["DEF_DRI_STAGES"] - c["DEF_DRI_TIERS"]  # stages before the Champion: the Rookie
+        levels = [first + (i - rookies) * c["DEF_DRI_LEVEL_STEP"] for i in range(c["DEF_DRI_STAGES"])]
         st = [dict(stage_of(b, lv, rows, battles, c), digimon=lk, base=0 if lk == b else b)
               for lk, b, lv in zip(looks, bases, levels)]
         for i, x in enumerate(st):
             if x["base"]:
                 x["mp"] = FORM_MP
-            if i:
+            if i > rookies:
                 grown = st[i - 1]["hp"] * (x["level"] / st[i - 1]["level"]) ** (c["DEF_DRI_SCALE_EXP_PCT"] / 100)
                 x["hp"] = min(c["DEF_HUNT_HP_MAX"], max(x["hp"], int(grown + 0.5)))
         top = levels[-1]
@@ -320,9 +329,9 @@ def rare_name(t, names):
 
 def c_text(rows_, names):
     lines = ["/* Generated by tools/gen_dri_challenges.py: the DRI Agents' Gauntlet, an evolution line's",
-             " * stages as the three enemy members of one battle, the battle it is set up as, the Synergy accessory of each",
-             " * tier, and what unlocking it takes; then the DRI Agents. Regenerate instead of editing; the owner approves",
-             " * the list. */",
+             " * four stages in one battle (the first three its enemy members, the Mega a wave), the battle it is set up as,",
+             " * the Synergy accessory of each tier, and what unlocking it takes; then the DRI Agents. Regenerate instead of",
+             " * editing; the owner approves the list. */",
              '#include "definitive.h"', "",
              "const DefDriChallenge def_dri_challenges[] = {"]
     for r in rows_:
@@ -350,11 +359,11 @@ def c_text(rows_, names):
 def write_md(rows_, names, its, battles, rows):
     mats = material_names()
     out = ["# Desafios do Gauntlet DRI (proposta para o dono)", "",
-           "Cada desafio é uma batalha só, com os três estágios da linha como os três inimigos, em ordem: quando um cai,",
-           "o próximo entra com o HP cheio e a party continua como estava. Nível do Champion: "
+           "Cada desafio é uma batalha só com os quatro estágios da linha, do Rookie ao Mega, em ordem: quando um cai,",
+           "o próximo entra com o HP cheio e a party continua como estava (o Mega entra no lugar de um caído). Nível do Champion: "
            "`DEF_DRI_LEVEL_FIRST` + rank × `DEF_DRI_LEVEL_GAP` (rank: o lugar na dificuldade); cada estágio `DEF_DRI_LEVEL_STEP` acima do anterior.",
            "HP e `stat_scale` vêm da linha da própria espécie na tabela de batalhas mais perto do nível, escalados pela",
-           "razão dos níveis. Recompensa: o acessório elemental da família, tier n no n-ésimo estágio derrubado, uma vez.",
+           "razão dos níveis. Recompensa: o acessório elemental da família, tier n no n-ésimo estágio derrubado depois do Rookie, uma vez.",
            "", "| # | rank | agente | linha | estágios (nível, HP, escala) | batalha-modelo (XP, Bits da vitória) | destravar | "
            "recompensas | nota |",
            "| --- | --- | --- | --- | --- | --- | --- | --- | --- |"]

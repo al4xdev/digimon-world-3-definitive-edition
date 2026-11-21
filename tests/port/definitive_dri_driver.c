@@ -1,5 +1,5 @@
 /* tests/port/definitive_dri.py's driver for port/game/definitive_dri.c (the DRI Gauntlet's rules), linked
- * with definitive_bestiary.c, whose second card record keeps the unlocked challenges and their best stages and whose
+ * with definitive_bestiary.c, whose second card record keeps the unlocked challenges and their best tiers and whose
  * first and second records hold the materials the unlocks take. The challenge and agent tables, def_on and the names
  * are stand-ins. Prints "ok name" / "FAIL name" per case; exits 1 on a failure. */
 #include <stdio.h>
@@ -35,12 +35,12 @@ void def_hunt_target_name(unsigned char *buf, int *p, int size, int rare) {
 
 /* Challenge 0: 15 of common 4 and one of rare 7; 1: 20 of common 5, one of rare 8 and two of rare 30; 2: rares only. */
 const DefDriChallenge def_dri_challenges[] = {
-    { { { 435, 24, 700, 9999, 14, 0 }, { 40, 27, 765, 9999, 18, 0 }, { 443, 30, 1736, 9999, 12, 0 } }, 6, { 354, 355, 356 }, 4, 15,
-      { 7, -1 }, { 1, 0 } },
-    { { { 135, 32, 909, 9999, 13, 0 }, { 450, 35, 1920, 9999, 27, 0 }, { 444, 38, 2100, 9999, 14, 0 } }, 10, { 351, 352, 353 }, 5, 20,
-      { 8, 30 }, { 1, 2 } },
-    { { { 7, 40, 1080, 9999, 65, 0 }, { 452, 43, 2304, 9999, 24, 0 }, { 447, 46, 2453, 9999, 16, 0 } }, 15, { 348, 349, 350 }, -1, 0,
-      { 2, -1 }, { 1, 0 } },
+    { { { 122, 21, 600, 336, 30, 0 }, { 435, 24, 700, 9999, 14, 0 }, { 40, 27, 765, 9999, 18, 0 }, { 443, 30, 1736, 9999, 12, 0 } },
+      6, { 354, 355, 356 }, 4, 15, { 7, -1 }, { 1, 0 } },
+    { { { 145, 29, 850, 9999, 12, 135 }, { 135, 32, 909, 9999, 13, 0 }, { 450, 35, 1920, 9999, 27, 0 }, { 444, 38, 2100, 9999, 14, 0 } },
+      10, { 351, 352, 353 }, 5, 20, { 8, 30 }, { 1, 2 } },
+    { { { 31, 37, 1000, 9999, 61, 7 }, { 7, 40, 1080, 9999, 65, 0 }, { 452, 43, 2304, 9999, 24, 0 }, { 447, 46, 2453, 9999, 16, 0 } },
+      15, { 348, 349, 350 }, -1, 0, { 2, -1 }, { 1, 0 } },
 };
 const int def_dri_challenge_count = 3;
 /* Actor 60 is a DRI Agent on map 0x210 only (challenges 0 and 1), actor 61 on any map (challenge 2). */
@@ -66,12 +66,16 @@ static int all_zero(const unsigned char *p, int n) {
 
 int main(void) {
     static unsigned char rec[DEF_BESTIARY_RECORD_SIZE], rec2[DEF_RECORD2_SIZE];
-    short items[DEF_DRI_STAGES] = { 0, 0, 0 };
+    short items[DEF_DRI_TIERS] = { 0, 0, 0 };
     int n, palette = -1, i;
 
     def_bestiary_reset();
-    check("the tier: one per stage felled, 0..3", def_dri_tier(-1) == 0 && def_dri_tier(0) == 0 && def_dri_tier(1) == 1 &&
-                                                      def_dri_tier(2) == 2 && def_dri_tier(3) == 3 && def_dri_tier(4) == 3);
+    check("the tier: one per stage felled past the Rookie, 0..3",
+          def_dri_tier(-1) == 0 && def_dri_tier(0) == 0 && def_dri_tier(1) == 0 && def_dri_tier(2) == 1 &&
+              def_dri_tier(3) == 2 && def_dri_tier(4) == 3 && def_dri_tier(5) == 3);
+    check("the stages a best tier stands for: 0, then the Rookie and as many more",
+          def_dri_tier_stages(0) == 0 && def_dri_tier_stages(1) == 2 && def_dri_tier_stages(2) == 3 &&
+              def_dri_tier_stages(3) == 4 && def_dri_tier_stages(9) == 4);
     check("the table: in range, NULL outside", def_dri_challenge(0) == &def_dri_challenges[0] && def_dri_challenge(3) == NULL &&
                                                    def_dri_challenge(-1) == NULL);
     check("a DRI Agent on its map, one on any map, nobody else",
@@ -117,21 +121,23 @@ int main(void) {
 
     /* Rewards: each tier once, the best only rises. */
     n = def_dri_award(0, 1, items);
-    check("one stage felled: tier 1's accessory, best 1", n == 1 && items[0] == 354 && def_record_dri_best(0) == 1);
-    n = def_dri_award(0, 1, items);
-    check("one stage again: nothing new", n == 0 && def_record_dri_best(0) == 1);
-    n = def_dri_award(0, 3, items);
-    check("then all three: tiers 2 and 3, best 3", n == 2 && items[0] == 355 && items[1] == 356 &&
-                                                       def_record_dri_best(0) == 3);
+    check("the Rookie alone: no tier, nothing", n == 0 && def_record_dri_best(0) == 0);
     n = def_dri_award(0, 2, items);
+    check("the Champion too: tier 1's accessory, best 1", n == 1 && items[0] == 354 && def_record_dri_best(0) == 1);
+    n = def_dri_award(0, 2, items);
+    check("the same again: nothing new", n == 0 && def_record_dri_best(0) == 1);
+    n = def_dri_award(0, 4, items);
+    check("then all four: tiers 2 and 3, best 3", n == 2 && items[0] == 355 && items[1] == 356 &&
+                                                      def_record_dri_best(0) == 3);
+    n = def_dri_award(0, 3, items);
     check("a worse run after: nothing, the best stays", n == 0 && def_record_dri_best(0) == 3);
-    n = def_dri_award(1, 3, items);
+    n = def_dri_award(1, 4, items);
     check("a first full clear: all three tiers", n == 3 && items[0] == 351 && items[1] == 352 && items[2] == 353 &&
                                                      def_record_dri_best(1) == 3);
     n = def_dri_award(2, 0, items);
     check("no stage felled: nothing", n == 0 && def_record_dri_best(2) == 0);
     def_record_dri_raise_best(2, 9);
-    check("the best is clamped to the stages", def_record_dri_best(2) == 3);
+    check("the best is clamped to the tiers", def_record_dri_best(2) == 3);
     def_record_dri_raise_best(2, 1);
     check("and never lowered", def_record_dri_best(2) == 3);
 

@@ -75,6 +75,7 @@ int def_save_flag(int f) { (void)f; return 0; }
 void def_save_flag_set(int f, int on) { (void)f; (void)on; }
 void def_dri_battle_begin(void) {}
 void def_dri_battle_end(int r) { (void)r; }
+int def_dri_next_wave(void) { return -1; } /* no wave in these battles */
 void def_dri_savestate(struct PortState *s) { (void)s; }
 void def_bm_savestate(struct PortState *s) { (void)s; }
 void def_recipe_savestate(struct PortState *s) { (void)s; }

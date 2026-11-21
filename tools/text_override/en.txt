@@ -551,6 +551,7 @@ $FleeAskNo: Back
 $DriTitle: DRI Simulations
 $DriSep: " - "
 $DriDash: --
+$DriThrough: " ... "
 # The 11-pixel font of the list, the details and the debrief has no "/", ":" or ",": " - " and " of " there.
 $DriOf: " of "
 $DriReward: "Reward "

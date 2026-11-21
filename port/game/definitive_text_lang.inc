@@ -1154,6 +1154,12 @@ static const unsigned char def_fr_str_DriDash[] = { 0x01, 0x1A, 0x01, 0x1A, 0x00
 static const unsigned char def_de_str_DriDash[] = { 0x01, 0x1A, 0x01, 0x1A, 0x00 };
 static const unsigned char def_it_str_DriDash[] = { 0x01, 0x1A, 0x01, 0x1A, 0x00 };
 static const unsigned char def_es_str_DriDash[] = { 0x01, 0x1A, 0x01, 0x1A, 0x00 };
+static const unsigned char def_en_str_DriThrough[] = { 0x01, 0x01, 0x01, 0x05, 0x01, 0x05, 0x01, 0x05, 0x01, 0x01, 0x00 };
+static const unsigned char def_pt_str_DriThrough[] = { 0x01, 0x01, 0x01, 0x05, 0x01, 0x05, 0x01, 0x05, 0x01, 0x01, 0x00 };
+static const unsigned char def_fr_str_DriThrough[] = { 0x01, 0x01, 0x01, 0x05, 0x01, 0x05, 0x01, 0x05, 0x01, 0x01, 0x00 };
+static const unsigned char def_de_str_DriThrough[] = { 0x01, 0x01, 0x01, 0x05, 0x01, 0x05, 0x01, 0x05, 0x01, 0x01, 0x00 };
+static const unsigned char def_it_str_DriThrough[] = { 0x01, 0x01, 0x01, 0x05, 0x01, 0x05, 0x01, 0x05, 0x01, 0x01, 0x00 };
+static const unsigned char def_es_str_DriThrough[] = { 0x01, 0x01, 0x01, 0x05, 0x01, 0x05, 0x01, 0x05, 0x01, 0x01, 0x00 };
 static const unsigned char def_en_str_DriOf[] = { 0x01, 0x01, 0x36, 0x2D, 0x01, 0x01, 0x00 };
 static const unsigned char def_pt_str_DriOf[] = { 0x01, 0x01, 0x2B, 0x2C, 0x01, 0x01, 0x00 };
 static const unsigned char def_fr_str_DriOf[] = { 0x01, 0x01, 0x3A, 0x3C, 0x39, 0x01, 0x01, 0x00 };
@@ -16551,6 +16557,14 @@ void def_language_set(int lang) {
     case 3: memcpy(def_str_DriDash, def_de_str_DriDash, 5); break;
     case 4: memcpy(def_str_DriDash, def_it_str_DriDash, 5); break;
     case 5: memcpy(def_str_DriDash, def_es_str_DriDash, 5); break;
+    }
+    switch (def_lang_now) {
+    case 0: memcpy(def_str_DriThrough, def_en_str_DriThrough, 11); break;
+    case 1: memcpy(def_str_DriThrough, def_pt_str_DriThrough, 11); break;
+    case 2: memcpy(def_str_DriThrough, def_fr_str_DriThrough, 11); break;
+    case 3: memcpy(def_str_DriThrough, def_de_str_DriThrough, 11); break;
+    case 4: memcpy(def_str_DriThrough, def_it_str_DriThrough, 11); break;
+    case 5: memcpy(def_str_DriThrough, def_es_str_DriThrough, 11); break;
     }
     switch (def_lang_now) {
     case 0: memcpy(def_str_DriOf, def_en_str_DriOf, 7); break;
