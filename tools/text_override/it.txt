@@ -544,7 +544,7 @@ $DriRival13: Il Pugno di Ferro
 $DriRival13Hello: Il mio partner picchia come un monte!<1>Tieniti forte e rispondi!
 $DriRival13Won: Che pugno! Sei davvero in gamba!<1>Allenamoci insieme qualche volta.
 $DriRival13Lost: La forza cresce dal basso.<1>Costruisci la tua e torna!
-$DriRival14: Il Cacciatore della Foresta
+$DriRival14: Il Cacciatore del Bosco
 $DriRival14Hello: Nella foresta sopravvivono i forti.<1>Sarai cacciatore o preda?
 $DriRival14Won: Il cacciatore eri tu fin dall'inizio!<1>La foresta si inchina a te.
 $DriRival14Lost: Preso nella ragnatela! Torna al nido,<1>diventa più forte e riprova!

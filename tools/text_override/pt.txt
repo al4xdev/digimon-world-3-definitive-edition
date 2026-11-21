@@ -1533,7 +1533,7 @@ STAREA 18: Base Submarina
 STAREA 19: Satélite Espião
 STAREA 20: Túnel Submarino
 STAREA 21: Subsolo
-STATUS 1: NÍV
+STATUS 1: NV
 STATUS 2: HP
 STATUS 3: MP
 STATUS 6: ITENS
@@ -1541,7 +1541,7 @@ STATUS 7: ORDENAR
 STATUS 8: MAPA
 STATUS 9: TÉCNICAS
 STATUS 10: STATUS
-STATUS 11: CARD FOLDERS
+STATUS 11: CARTAS
 STATUS 12: ーーーーー
 STATUS 13: ーー
 STATUS 14: ーーーー
@@ -1549,7 +1549,7 @@ STATUS 15: Mudar formação do Digimon<1>△: Voltar ao Menu
 STATUS 16: Não é possível mudar a formação<1>△: Voltar ao Menu
 STATUS 17: Trocar quem?
 STATUS 18: Trocar com quem?
-STATUS 19: △: Fechar Status
+STATUS 19: △: Fechar Menu
 STATUS 20: Qual deles?
 STATUS 21: △: Voltar ao Menu
 STATUS 22: Itens
@@ -4394,7 +4394,7 @@ $DriGreetDone: Você venceu todas as simulações - incrível!<1>Quer rodar algu
 $DriAskSim: Simulações
 $DriAskTalk: Conversar
 $DriAskBye: Sair
-$GuideMenu: GUIDE
+$GuideMenu: GUIA
 $GuideTitle: Guide
 $GuideTabQuest: Missão
 $GuideTabAuctions: Leilões

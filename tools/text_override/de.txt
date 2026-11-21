@@ -533,7 +533,7 @@ $DriRival10Hello: Mich zähmt keiner, kapiert?<1>Zeig, was du draufhast, Kleiner
 $DriRival10Won: Tss... schon gut, du bist zäh.<1>Vielleicht ist ein Partner nicht übel.
 $DriRival10Lost: Ha! Ich brauche niemanden!<1>Komm wieder, wenn du es ernst meinst!
 $DriRival11: Der Weg des Schwertes
-$DriRival11Hello: Ein wahrer Schwertkämpfer verbeugt sich.<1>Jetzt zieh dein Schwert - beginne!
+$DriRival11Hello: Ein Schwertkämpfer verbeugt sich.<1>Jetzt zieh dein Schwert - beginne!
 $DriRival11Won: Ein sauberer Treffer. Ich gebe auf.<1>Dein Training zeigt sich in jedem Zug!
 $DriRival11Lost: Eine Klinge ohne Fokus schneidet nicht.<1>Schule deinen Geist und komm wieder!
 $DriRival12: Das Kind der Freundschaft

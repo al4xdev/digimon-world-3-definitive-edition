@@ -533,7 +533,7 @@ $DriRival10Hello: Nadie me domestica, ¿entendido?<1>¡Enséñame lo que tienes,
 $DriRival10Won: Tsk... vale, eres duro.<1>Quizá tener compañero no esté mal.
 $DriRival10Lost: ¡Ja! ¡Te dije que no necesito a nadie!<1>¡Vuelve cuando vayas en serio!
 $DriRival11: El Camino de la Espada
-$DriRival11Hello: Un verdadero espadachín saluda primero.<1>Ahora desenvaina... ¡empieza!
+$DriRival11Hello: Un espadachín saluda primero.<1>Ahora desenvaina... ¡empieza!
 $DriRival11Won: Un golpe limpio. Me rindo.<1>¡Tu entrenamiento se nota en cada golpe!
 $DriRival11Lost: Una hoja sin concentración no corta.<1>¡Entrena la mente y vuelve!
 $DriRival12: El Niño de la Amistad
