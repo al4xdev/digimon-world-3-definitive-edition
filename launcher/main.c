@@ -439,13 +439,22 @@ static void draw_game(void) {
         row(90 + i * st, lab[i], v[i], i == sel, 0, on, 0);
     }
     static const char *desc[8] = {"Game text language (English, Portuguese BR, French, German, Italian, Spanish).",
-        "How fast the fast-forward button runs the game.",
+        NULL, /* the fast-forward row: its chord, below */
         "Reads the game's files faster. Movies keep normal speed. OFF, 2X, 4X, 8X or INSTANT.",
         "Dialogue boxes close on their own.",
         "Battle moves play without their animation.", "Keep the hit flinch while animations are skipped.",
         "SKIP closes battle message boxes so combat flows.", "Pick or change your .cue / .bin disc file."};
+    /* The chord that turns fast-forward on and off in the game (cfg.c writes it as the runtime's toggle binding), in the
+     * player's buttons and glyphs; the PC also holds TAB. */
+    char ff_desc[160], gsel[16], gr1[16];
+    glyph(btn_select(), gsel);
+    glyph(c.pad[A_R1].code, gr1);
+    snprintf(ff_desc, sizeof(ff_desc),
+             TR(is_pc ? "The speed. In the game, %s+%s turns it on and off (or hold TAB)."
+                      : "The speed. In the game, %s+%s turns it on and off."),
+             gsel, gr1);
     rect(40, 346, W - 80, 1, C_EDGE, 256);
-    text(44, 358, desc[sel], 16, C_NOTE);
+    text(44, 358, sel == 1 ? ff_desc : desc[sel], 16, C_NOTE);
     foot_std("CHANGE");
 }
 

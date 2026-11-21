@@ -64,7 +64,10 @@ Code cites this file as `docs/LAUNCHER.md "<heading>"`; keep the headings stable
 ### Fast-forward
 
 `fast_forward` (runtime only, no game C). Options: `hold` (binding, default `Tab`), `toggle` (binding, unbound),
-`speed` (enum `2x 3x 4x 6x 8x unlimited`, default `4x`), `mute` (bool, default true).
+`speed` (enum `2x 3x 4x 6x 8x unlimited`, default `4x`), `mute` (bool, default true). The console-first launcher
+(`launcher/cfg.c`) writes `hold` `Tab` on a PC (none on a handheld) and `toggle` the chord of the buttons chosen for
+SELECT and R1 (`[["pad:back", "pad:rightshoulder"]]` by default), which its `FAST-FORWARD` row names; Select comes
+first, since the game has no use for it and R1 alone pages its menus. The handheld's SDL2 build reads it too.
 
 While it is on (the hold binding held, or after the toggle) the pace is the nominal rate times the speed (`4x`: 200
 vsyncs a second at 50 Hz, 240 at 60; `unlimited`: no pace), the window presents at most 60 images a second (every vsync
