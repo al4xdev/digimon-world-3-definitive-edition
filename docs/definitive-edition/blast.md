@@ -5,7 +5,7 @@
 ## Blast, Purify and Chosen Evolution
 
 **Status: done and committed** (`8c0971b`; the overheat that follows the partner in `ee6fd02`). `definitive.c`,
-`definitive_purify.c`. The Blast Gauge was redesigned. Not yet seen in a real game: a full-gauge battle (see Pending).
+`definitive_purify.c`. The Blast Gauge was redesigned.
 
 ### The gauge
 
@@ -52,12 +52,6 @@
 One partner at a time, chosen with Gennai: level 45, Rookie only, one per battle, one charge (Gennai reloads it), full HP/MP,
 no curse. Megas: GuardiAngemon, Beelzemon (Kumamon), Cannondramon, WarGreymon, Imperialdramon, Gallantmon, Sakuyamon,
 Seraphimon. "Chosen needs Rookie" shows in the menu. Test: `tests/port/definitive_quest.py`, `definitive_gauges.py`.
-
-### Pending
-
-The main-story onboarding hooks (out of scope, the owner is changing the main quest on their own);
-`PF_SND_CURSE` is a provisional sound; the Chosen's break of the 999 cap is done but never seen in a real fight; a real playtest of a full-gauge battle (a normal battle with WEAK/stagger filling the
-gauge to 1000 was never seen in a real game; the rule is in the `DW3_BATTLE_LOG` lines "blast gauge hit").
 
 ### Blast: how it was designed (the owner's text and the decisions)
 

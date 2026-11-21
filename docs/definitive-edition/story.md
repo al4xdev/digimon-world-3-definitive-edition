@@ -5,7 +5,7 @@
 ## The story layer (Velvet Room in the main story)
 
 **Status: implemented and committed (`c5e58e4` dreams, choices and echoes; `9dba2cf` the Time Room gate, the Oikawa's arc and
-Act III; `91f12d2` the Oinkmon dream); only partly seen in a real game (see Pending).** `port/game/definitive_story.c`
+Act III; `91f12d2` the Oinkmon dream).** `port/game/definitive_story.c`
 (the hooks, Igor, the dreams, the rewrite's lookup), `definitive_time_room.c` and its generated `definitive_time_room_table.c`
 (`tools/gen_time_room.py`), `definitive_velvet_igor.c/.h` (Igor's head), generated `definitive_story_text.c`
 (`tools/gen_text_override.py` from `tools/text_override/en_story.txt`, `en_kaili.txt`, `pt_kaili.txt`, `en_choices.txt`,

@@ -20,7 +20,6 @@ Ivy and Kail become Junior; Smith Junior keeps his name). Portuguese swaps only 
   `edit`, `base`, `build`, `check`). Debug: `DW3_GIRLS_DUMP`, `DW3_GIRLS_NUMBERS`. Test: `tests/port/girls_power.py`.
   `girls_power_art.h` holds `GP_PASTE` (a piece of a disc frame read at run time; how 1 mirrored, 2 through the colour
   table) and `GP_ART` rows (`.` keeps the pixel, `0` empties it, `1`-`9`/`A`-`F` paint it); no disc pixel is stored there.
-- Pending: the owner's full playtest; weak spots (a one-pixel rod, a 24-wide pigtail clipping, lying frames).
 
 ### Girls Power: how it was built, decisions, and the hand-drawing workflow
 

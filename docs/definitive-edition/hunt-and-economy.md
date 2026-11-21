@@ -298,7 +298,6 @@ keeps your best stage. A replay pays the battle's experience and Bits, but no ac
   joins later may use it); footer: the player's Bits always visible, orange when the chosen replica costs more. Texts: new strings in `en.txt`/`pt.txt` and the glossary of `tools/translate_ptbr.py`; `$BMCost` and `$BMPrice` removed; elements reuse `$Fire`...`$Dark` of Inspect; a detail line wider than the
   panel goes to the log ("market: detail line ... pixels wide"); PT: ITMNAM 356-359 translated (Poder Maquina S, Poder de Trevas 1/2/S). Tests: `definitive_market.py` pass; `run.py --exe build/port-ux/dw2003` pass; EN and PT screenshots via `.dumps/tasks/market/bmshot.py` (list, swap, full materials, every replica, purchase and confirmation,
   no Cores, no Bits, no bosses; no line overflowed). The Black Market strings avoid colons ("Price 40000 Bits   Held 0", "x Buy   triangle Back").
-- Pending small items: PT names "Crest de Recuper" (ITMNAM 320, cut), "Pulse Guard" (untranslated), "Shard de Bits/Bytes" (half English); **the same colon-as-"0" defect hits about 30 other port strings**
   (`x button: ...`, `L1/R1: ...`, `Pity:`, etc.): needs its own pass or a fix of the glyph in the font.
 
 ### The DRI Gauntlet, in detail

@@ -148,7 +148,7 @@ is a page of the Sepikmon's board, there is no NPC of its own.**
 
 - Owner decisions: skins are **for the hero only** (Kail, or Junior without Girls Power); the player's Digimon keep their
   own colours (painting the team was dropped). Only rare enemies change colour. The first plan was an NPC in the
-  **existing Velvet Room**; it became the Sepikmon board's "Hero Skins" page (see Pending (1) below). **Each hunt won unlocks one skin**
+  **existing Velvet Room**; it became the Sepikmon board's "Hero Skins" page. **Each hunt won unlocks one skin**
   (a reward that does not touch Bits or XP).
 - 13 recipes, one per hunt (`DEF_SKIN_COUNT` = `DEF_SUPER_COUNT`): skin n opens when `def_super_done() >= n`, so the Ogremon
   tutorial gives the first. Skin 0 is the hero's own colours, always open. Each recipe has two parts, **hair** (the cap on
@@ -180,17 +180,14 @@ is a page of the Sepikmon's board, there is no NPC of its own.**
   and STP bit stay; no colour becomes transparent) and save.
 - Seen in game with Junior (console save, Phoenix Bay; `mem_write` on `st+1` = 13 and `skin_hero`): skin 4 olive cap, skin
   6 black cap and clothes with the same face, skin 0 back to the original.
-- **Pending:** (1) done 2026-11-17, as a page of the Sepikmon's board instead of an NPC (the owner: the hunts' master
+- **Skins page:** a page of the Sepikmon's board instead of an NPC (the owner: the hunts' master
   hands out the skins the hunts unlock): R1 on the board opens "Hero Skins", L1 goes back; the 14 listed, WORN on the
   one worn (palette 3, the active hunt's colour: the small font's green draws its O oddly), "--" and a dim name on locked ones, the info line names
   the hunt that unlocks a locked one; the confirm button wears an unlocked one (`skins_fill`, `skins_input` in
   `definitive_superhunt_screen.c`; texts `$SupSkinsTitle`, `$SupSkinWorn`, `$SupSkinFrom`, `$SupSkinOwn`,
-  `$SupSkinOriginal`, `$SupSkinSet`, `$SupSkinLocked`, `$SupKeysSkins`); seen in game; (2) done
-  2026-11-17: the hunt reward panel shows "New skin: <name>" under the crystal on a hunt's first win only
-  (`def_super_won_take(&first)`, `$SupSkin`; a hunt won again unlocks none), seen on screen; (3) done 2026-11-17: all 14 seen on Kail and Junior;
+  `$SupSkinOriginal`, `$SupSkinSet`, `$SupSkinLocked`, `$SupKeysSkins`); the hunt reward panel shows "New skin: <name>" under the crystal on a hunt's first win only
+  (`def_super_won_take(&first)`, `$SupSkin`; a hunt won again unlocks none), seen on screen; all 14 were seen on Kail and Junior:
   a state loaded in a fresh process used to lose what the hero's files were painted for, so Kail was not repainted
   (`port_girls_savestate` now keeps `gp_painted` and `gp_skinned`); a new skin shows on the next animation frame, so
-  after under a second of walking; (4) dropped by
-  the owner (2026-11-17, "not worth it"): portraits, menus (status, Digi-Lab) and the name/card screen keep the
-  unskinned hero (other images; `port_girls_tim` swaps Junior's for Kail's, without a skin). Backlog ideas: a skin price (free or one crystal), a 3D
-  preview later; Digimon skins were dropped.
+  after under a second of walking. Portraits, menus (status, Digi-Lab) and the name/card screen keep the
+  unskinned hero (other images; `port_girls_tim` swaps Junior's for Kail's, without a skin).
