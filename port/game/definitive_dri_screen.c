@@ -1033,7 +1033,6 @@ s32 def_enemy_camera_model(s32 model_id) {
 }
 
 extern s32 fightstg_enemy_find_record(s32 id);
-extern RecordsDigimon *records_get_digimon(s32 id);
 
 /* The form's techniques as an enemy's. techniques[0] is its attack and techniques[6] its signature (Nova Blast, Terra Force,
  * Seven Heavens...): the one a player's form had to itself until now. The base's own plan is not reused: the disc's plans
@@ -1041,12 +1040,28 @@ extern RecordsDigimon *records_get_digimon(s32 id);
  * The plan is BK MegaGargomon's (a boss of the same rank): the signature every third turn, else tech_2 about 3 times in 8,
  * else the attack. tech_2 is the form's strongest single-hit damaging technique of the middle slots, not slot 4 as the
  * purification takes it (that one is often a buff, a heal or an antidote). */
+/* The DNA results have no techniques of their own (stubs, def_form_record): an attack of one of their pairs' forms (the
+ * forms' plain attacks are all one record, 100 power and the same animation) and their DNA technique as the signature. */
+static const struct {
+    short form, attack, signature;
+} dri_dna[] = {
+    { 468, 0x0C, 0x1B0 }, /* Agunimon: Greymon's attack, Agunimon's DNA */
+    { 469, 0x0B, 0x1B1 }, /* BladeGarurumon: Grizzmon's, BladeGarurumon's DNA */
+    { 470, 0x32, 0x1B2 }, /* AncientGreymon: Imperialdramon-P's, AncientGreymon's DNA */
+};
+
 static void dri_form_techniques(FightstgEnemyRecord *r, const RecordsDigimon *form) {
     static const FightstgEnemyAction plan[3] = { { 3, 18, 3 }, { 2, 1, 48 }, { 1, 0, 0 } };
     int j, best = 0, best_score = 0;
 
     r->tech = (s16)form->techniques[0];
     r->tech_3 = (s16)form->techniques[6];
+    for (j = 0; r->tech == 0 && j < (int)(sizeof(dri_dna) / sizeof(dri_dna[0])); j++) {
+        if (dri_dna[j].form == form->id) {
+            r->tech = dri_dna[j].attack;
+            r->tech_3 = dri_dna[j].signature;
+        }
+    }
     for (j = 1; j <= 5; j++) {
         int id = form->techniques[j];
         const RecordsTechnique *t = id > 0 ? &records_techniques[id - 1] : NULL;
@@ -1081,9 +1096,19 @@ FightstgEnemyRecord *def_dri_record(s32 id) {
         RecordsDigimon *form;
         FightstgEnemyRecord *r = &made[i];
 
-        if (st->digimon != id || st->base == 0 || (form = records_get_digimon(id)) == NULL ||
+        if (st->digimon != id || st->base == 0 || (form = def_form_record(id)) == NULL ||
             (b = fightstg_enemy_find_record(st->base)) < 0) {
             continue;
+        }
+        if (form->techniques[0] == 0 && form->techniques[6] == 0) {
+            int j, known = 0;
+
+            for (j = 0; j < (int)(sizeof(dri_dna) / sizeof(dri_dna[0])); j++) {
+                known |= dri_dna[j].form == form->id;
+            }
+            if (!known) { /* a form with no attack at all would read records_techniques[-1] */
+                continue;
+            }
         }
         *r = recs[b];
         def_enemy_override(r);

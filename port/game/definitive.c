@@ -2035,6 +2035,23 @@ int def_rush_offer(void) {
     return 1;
 }
 
+/* records_find_digimon looks at the first 0x34 forms only; the three DNA results after them (Agunimon,
+ * BladeGarurumon, AncientGreymon: stubs with no stats nor techniques, which the game never looks up) are found here too, so
+ * the DRI Gauntlet can show them. */
+#define DEF_FORMS 0x37
+RecordsDigimon *def_form_record(int id) {
+    extern RecordsDigimon *records_get_digimon(s32 id);
+    RecordsDigimon *form = records_get_digimon(id);
+    int i;
+
+    for (i = 0x34; form == NULL && id > 0 && i < DEF_FORMS; i++) {
+        if (records_digimon[i].id == id) {
+            form = &records_digimon[i];
+        }
+    }
+    return form;
+}
+
 const unsigned char *def_species_name(int species) {
     extern void *font_get_entry(void *data, s32 i);
     FightstgEnemyRecord *recs = (FightstgEnemyRecord *)cdload_module.files.get_file(0x1CF);
@@ -2050,8 +2067,7 @@ const unsigned char *def_species_name(int species) {
         }
     }
     { /* a player form that fights as an enemy (the DRI Gauntlet's stages): its own name */
-        extern RecordsDigimon *records_get_digimon(s32 id);
-        RecordsDigimon *form = records_get_digimon(species);
+        RecordsDigimon *form = def_form_record(species);
 
         return form != NULL ? (const unsigned char *)font_get_entry(names, form->name_id) : NULL;
     }

@@ -359,6 +359,8 @@ void def_hunt_species_rares(int species, int *seen, int *total);
 const unsigned char *def_hunt_foe_name(int species, int slot);
 /* A species' name in the game's glyphs (its record's line of text 0x4E: definitive.c), NULL when not loaded. */
 const unsigned char *def_species_name(int species);
+/* A player form's record by its ID, the DNA stubs past records_find_digimon's 0x34 included; NULL: none. */
+struct RecordsDigimon *def_form_record(int id);
 /* The results screen of a Rare Target won (STFGTREP): the battle whose XP it pays DEF_HUNT_XP_MULT times
  * (-1: none pending), the rare Booster it drops when the battle left no item (0: none), 1 while a material line (the
  * commons of any won encounter, a Rare Target's rare item) has not been shown, the next one (glyph bytes, marks it
