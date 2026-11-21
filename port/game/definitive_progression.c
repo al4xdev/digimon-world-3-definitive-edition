@@ -128,3 +128,14 @@ int def_evo_skip_update(int *hold_frames, int skip_pressed) {
 int def_train_no_stat_loss_on(void) {
     return DEF_TRAIN_NO_STAT_LOSS != 0;
 }
+
+int def_form_floor(int row) {
+    /* rows 9..52 of records_digimon; Adult (9..18, 31) is left out on purpose */
+    if ((row >= 19 && row <= 30) || row == 32) {
+        return DEF_EVO_FLOOR_PERFECT;
+    }
+    if (row >= 33 && row <= 52) {
+        return DEF_EVO_FLOOR_MEGA;
+    }
+    return 0;
+}

@@ -294,6 +294,16 @@ int def_train_no_stat_loss_on(void);
                                   * a form left in the lab earns nothing (owner, 2026-11-13) */
 #define DEF_CARD_BOOST_PACKS 15  /* Booster Packs a battle's Booster Pack drop gives */
 
+/* Digivolution floors: the original paced Perfect and Mega by the slow form levels (one form level a battle), which the
+ * x14 form experience removes. So a form's stage sets the Digimon's own level it needs, whatever its learn list says:
+ * Perfect (Ultimate) DEF_EVO_FLOOR_PERFECT, Mega and its variations DEF_EVO_FLOOR_MEGA; Adult forms keep the list's own
+ * rules. `row` is a learn list's technique (records_digimon row, 1-based); 0 for a form with no floor. The stages are
+ * the owner's reading of the franchise, checked once more by a second pair of eyes (Armormon and GrapLeomon are
+ * Perfect, MetalGarurumon is Mega). */
+#define DEF_EVO_FLOOR_PERFECT 20
+#define DEF_EVO_FLOOR_MEGA 40
+int def_form_floor(int row);
+
 #define DEF_EVO_HINT_DEPTH 1     /* Digi-Lab Next Forms: forms shown one step ahead; 0 turns it off, 99 shows every form */
 
 /* The hit callouts (definitive_callout.c): the slanted word that pops over the side hit. def_callout_show starts one

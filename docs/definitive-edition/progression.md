@@ -41,6 +41,7 @@ for the last gym; the results screen tells you when a level-up lost TP to the ca
 
 - **Requirements on screen**: the Digi-Lab shows what each next form needs and how far you are, for example
   "Greymon Lv 5 (3/5)" or "Strength 180 (142/180)". No guide needed.
+- **Perfect and Mega wait for the level**: a Perfect form needs the Digimon at level 20, a Mega and its variations at 40, however fast the form levels. The Digi-Lab shows it as a "Level" line.
 - **Short animations**: a form's digivolution plays in full the first time, then a short version; hold Circle or Cross
   to skip it, even the first time.
 

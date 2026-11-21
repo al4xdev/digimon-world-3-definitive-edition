@@ -1646,6 +1646,9 @@ s32 stfgtrep_learn_technique(s32 digimon) {
         if (id <= 0) {
             continue;
         }
+        if (def_on() && gamestate_data.funcs.get_record(digimon)->stats.values[0] < def_form_floor(list[n].technique)) {
+            continue; /* definitive edition: a Perfect or a Mega waits for the Digimon's own level */
+        }
         if (list[n].stat != 0) {
             r = gamestate_data.funcs.get_record(digimon);
             if (list[n].stat < 7) {
