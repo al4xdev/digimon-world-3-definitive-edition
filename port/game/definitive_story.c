@@ -696,8 +696,51 @@ static s32 choice_top(void) {
     return 228 - choice.count * DR_ROW - 8;
 }
 
+/* The panel's rows are font 2 windows (the 11-pixel font of the name plates), which has no picture for most
+ * punctuation: `:` (01 07) and the rest came out as a stray "0" ("Sharp0 twenty minutes"; every label is
+ * "Tone: words", a few have commas, a dream's has parentheses). The missing ones borrow a picture another font already
+ * keeps in VRAM, drawn with this font's own palette row: `:` and `/` the 9-pixel font's, `,` `(` `)` the 14-pixel
+ * font's, raised so their baseline meets this font's. Checked on the panel (2026-11-21); `;` and `...` borrowed that
+ * way came out wrong, so they are left out (no label uses them). Filled once; only empty slots are touched. */
+extern FontGlyph font_glyphs_9_ext[], font_glyphs_11_ext[], font_glyphs_14_ext[];
+
+static void panel_font_fill(void) {
+    static const struct {
+        u8 code;   /* extra glyph (01 xx) */
+        u8 from;   /* 9 or 14: the font lending its picture */
+        s8 dy;     /* y offset in this font */
+    } lend[] = {
+        { 7, 9, 2 },   /* : */
+        { 15, 9, 2 },  /* / */
+        { 4, 14, -2 }, /* , */
+        { 21, 14, -2 }, /* ( */
+        { 22, 14, -2 }, /* ) */
+    };
+    static int done;
+    size_t i;
+
+    if (done) {
+        return;
+    }
+    done = 1;
+    for (i = 0; i < sizeof(lend) / sizeof(lend[0]); i++) {
+        FontGlyph *dst = &font_glyphs_11_ext[lend[i].code - 1];
+        const FontGlyph *src = &(lend[i].from == 9 ? font_glyphs_9_ext : font_glyphs_14_ext)[lend[i].code - 1];
+
+        if (dst->tpage_x != 0xFF || src->tpage_x == 0xFF) {
+            continue;
+        }
+        *dst = *src;
+        dst->clut_y = font_glyphs_11_ext[0].clut_y;
+        dst->y_offset = lend[i].dy;
+        dst->unk_A = font_glyphs_11_ext[0].unk_A;
+    }
+}
+
 static void choice_open(const unsigned char *const *labels, s32 count) {
     s32 i;
+
+    panel_font_fill();
 
     choice.count = count < DR_OPTIONS ? count : DR_OPTIONS;
     choice.sel = 0;
