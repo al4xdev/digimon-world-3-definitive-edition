@@ -268,6 +268,7 @@ void def_gauges_decode(const unsigned char in[DEF_GAUGE_SLOTS * 2], short out[DE
 #define DEF_PLUG_ITEM 76 /* the DV Plug's item ID (ITMNAM/ITMINF 76) */
 #define DEF_BLAST_TEMPT_HP_PCT 25 /* the acting Digimon's HP share at or under which a full gauge tempts */
 int def_blast_step(int partner, int level, int *advance); /* pure: the step a Blast takes, and the sequence's next */
+int def_blast_top_step(int level); /* pure: the highest step the level reaches (the last stand's Blast) */
 int def_blast_gain(int weak, int staggered, int overfinish, int extra); /* pure: the sum above */
 #define DEF_BLAST_COMMAND DEF_BLAST_COMMAND_ID /* include/port.h: the battle menu's result and FightstgCommand.command */
 

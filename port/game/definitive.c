@@ -79,6 +79,8 @@ static unsigned char boost_off; /* blast_record: the form's stats as they are, w
 static unsigned char boost_logged; /* slots whose boost the log named this battle */
 static unsigned char blessed_now;  /* this battle's Blast was the blessed one (the flag is already set by then) */
 static unsigned char plug_last_stand_used; /* global auto-revive on last Digimon KO (at most once per battle) */
+static signed char plug_last_stand_slot = -1; /* the slot it revived, until its Blast (-1: none); wfightmn sets the form
+                                                * before def_blast_form, so the Rookie is the member's base_digimon then */
 
 /* The Blast opens at the Ogremon (owner, 2026-11-18, so nobody sets it off by accident before the tutorial): in the tutorial
  * hunt's battle, and for good once that hunt is won. */
@@ -104,6 +106,7 @@ void def_log_begin(void) {
     boost_logged = 0;
     blessed_now = 0;
     plug_last_stand_used = 0;
+    plug_last_stand_slot = -1;
     def_blast_heat_begin();
     def_callout_show(DEF_CALLOUT_NONE, 0);
     def_hunt_reward_done(); /* a reward a results screen never showed does not carry over */
@@ -718,6 +721,7 @@ void def_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, overheat_sealed);
     PORT_STATE_VAR(s, boost_logged);
     PORT_STATE_VAR(s, plug_last_stand_used);
+    PORT_STATE_VAR(s, plug_last_stand_slot);
     def_dri_savestate(s); /* a battle loaded mid-DRI-simulation is still one */
     def_purify_savestate(s); /* Blast phase 2: and mid-purification */
     def_finale_savestate(s); /* Extended Final Act & Post-Credits Farewell */
@@ -821,6 +825,16 @@ int def_blast_step(int next, int level, int *advance) {
     return next - 1;
 }
 
+int def_blast_top_step(int level) {
+    static const int levels[DEF_BLAST_STEPS] = DEF_BLAST_STEP_LEVELS;
+    int k = DEF_BLAST_STEPS - 1;
+
+    while (k > 0 && level < levels[k]) {
+        k--;
+    }
+    return k;
+}
+
 int def_blast_form(int partner, int band) {
     static const unsigned char megas[DEF_BLAST_PARTNERS] = DEF_CHOSEN_MEGAS;
     const char *force = getenv("DW3_BLAST_STEP"); /* tests: this step for every Blast (the sequence stays) */
@@ -838,6 +852,13 @@ int def_blast_form(int partner, int band) {
     k = def_blast_step(def_record_blast_next(partner), level, &advance);
     if (force != NULL && force[0] != '\0') {
         k = atoi(force) % DEF_BLAST_STEPS;
+    } else if (plug_last_stand_slot >= 0 && plug_last_stand_slot == fightstg_battle.state.current[0] &&
+               fightstg_battle.state.members[0][plug_last_stand_slot].base_digimon == records_digimon[partner].id) {
+        /* The last stand (owner, 2026-11-21): the Rookie the DV Plug got back up with 1 HP and 1 MP so it can Blast takes
+         * the strongest dark form its level reaches, not the sequence's next (which can be the Champion's); the
+         * sequence is left where it was, so the Gennai quest's forms still come in turn. */
+        k = def_blast_top_step(level);
+        plug_last_stand_slot = -1;
     } else {
         def_record_blast_set_next(partner, advance);
     }
@@ -1131,6 +1152,7 @@ int def_blast_plug_last_stand(int slot) {
         return 0;
     }
     plug_last_stand_used = 1;
+    plug_last_stand_slot = (signed char)slot;
     gamestate_data.items[DEF_PLUG_ITEM]--;
     m->digimon = records_digimon[id].id;
     m->blasted = 0;
