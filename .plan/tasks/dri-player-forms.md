@@ -197,15 +197,16 @@ original game** (some forms really are small). It is not ours: **do not fix it**
   3, and the base's plan (Tyrannomon: three plain attacks) never does: the Greymon only ever said "Attack!" (seen on video).
 - Fix (in the tree, `dri_form_techniques` in definitive_dri_screen.c): the plan is BK MegaGargomon's, `{3,18,3} {2,1,48}
   {1,0,0}`: signature every third turn, else tech_2 3 times in 8, else the attack; tech_2 is the form's strongest
-  single-hit damaging technique of slots 1-5 (slot 4 is often a buff or a heal). **Not yet confirmed on video that the
-  signature is now cast**: the clip `.dumps/dri/ch3_plan2.mp4` (Greymon, 90 s) was being read when the session stopped.
+  single-hit damaging technique of slots 1-5 (slot 4 is often a buff or a heal). **Confirmed on video** (agy, 90 s clip
+  `ch3_plan2.mp4`, Greymon): 10 enemy turns = 3 plain "Attack!", 3 "Nova Blast!" (the signature) and 4 "Flame Lance!"
+  (tech_2); the named moves play their own effect and camera cut; no garbled or black frames besides the battle-entry fade.
 - Every signature is single-target damage except Phoenixmon's (target 4, kind 21), Gate of Destiny / Dimension Scissors /
   Mugenhadou style kinds (5, 6, 26...) that are untested from the enemy side.
 - The first Greymon hits did 9999 (a party at level ~6 against 48): balance is still not measured.
 
 ### Open, in order
-1. Confirm the signature casts (name in the message box, animation, camera) for Greymon; then every other form of the 16
-   lines, grouped by line, short clips.
+1. (Greymon done.) Check the signature casts (name in the message box, animation, camera) for every other form of the 16
+   lines, grouped by line, short clips (<= 40 s).
 2. Check that the odd kinds (Phoenixmon target 4, Dimension Scissors, Gate of Destiny, Mugenhadou) behave from the enemy side.
 3. Write the 16 lines into `LINES` in tools/gen_dri_challenges.py (with the `base` of every P form), the levels (24 + 15 x 8
    passes 99), the rival texts, the rewards, the per-agent split (2 each).
