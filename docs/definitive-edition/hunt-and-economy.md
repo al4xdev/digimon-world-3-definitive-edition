@@ -135,23 +135,39 @@ to them opens two tabs (L1/R1):
 Talk to a DRI Agent: until their Rookie is in your party they give their DDNA quest, at any party level (the game's
 "too busy" and "you don't need it" level window is gone), and tell where the Digimon with the DDNA is found. Once the
 Rookie has joined (at once if it was one of your starters), talking to them asks what you want: **Simulations** (the
-list), **Talk** (their own lines, as in the game, with nothing after) or **Leave**. Each replays a classic Tamer's battle data, who has a word for you before the fight and after it. Each is one battle against an evolution line's three stages,
-Champion, Ultimate and Mega: when one falls the next comes in at full HP with a **DIGIVOLVE!** callout, while your
-party keeps the HP, MP and items it has spent. There is no running away and no game over: lose and you are back on the
+list), **Talk** (their own lines, as in the game, with nothing after) or **Leave**. Each replays a classic Tamer's battle data, who has a word for you before the fight and after it. There are sixteen lines, two for each agent. Each is one battle against an evolution line's four stages,
+Rookie, Champion, Ultimate and Mega: when one falls the next comes in at full HP with a **DIGIVOLVE!** callout (the
+Mega joins the same battle once the Ultimate is down), while your party keeps the HP, MP and items it has spent. There is no running away and no game over: lose and you are back on the
 field with your HP and MP as they were before (spent items stay spent). A simulation is unlocked once, for good, by
 handing in its materials.
 
-| Line | Stages and levels | Unlock | Rewards |
-|---|---|---|---|
-| Terriermon (Guardromon) | Guardromon 24, Andromon 27, BK MegaGargomon 30 | Code Chip ×15, Guardromon Core | Metal Power 1, 2, S |
-| Veemon | Devidramon 32, Paildramon 35, BK Imperialdramon 38 | Core Crystal ×20, Paildramon Core | Bolt Power 1, 2, S |
-| Patamon | Airdramon 40, MagnaAngemon 43, BK Seraphimon 46 | Tera Prism ×25, MagnaAngemon Core, Raremon Core | Wind Power 1, 2, S |
-| Agumon | Tyrannomon 48, MetalGreymon 51, BK WarGreymon 54 | Gold Digizoid ×35, MetalGreymon Core, BK WarGreymon Core | Fire Power 1, 2, S |
-| Guilmon | Flarerizamon 56, WarGrowlmon 59, BK WarGrowlmon 62 | Obsidian Digizoid ×40, BK WarGrowlmon Core, WarGrowlmon Core | Dark Power 1, 2, S |
+The lines are listed in difficulty order. The Champion fights at level 24 + 4 for each place in that order, each next
+stage 3 levels higher, and the Rookie 3 below the Champion. Player forms (Greymon, Growlmon...) appear under their own
+names.
 
-Every stage you fell reaches a tier of the line's Power accessory (one stage: 1, two: 2, all three: S), even if you
-lose afterwards. Each tier is given once, the first time you reach it, so a first full clear gives all three; the list
-keeps your best stage. A replay pays the battle's experience and Bits, but no accessory.
+| Agent | Line | Stages and levels (Rookie to Mega) | Unlock | Rewards |
+|---|---|---|---|---|
+| Ken | Kotemon | Kotemon 21, Dinohumon 24, Kyukimon 27, Marsmon 30 | Code Chip ×15, Divermon Core | Wind Power 1, 2, S |
+| Yang | Monmon | Monmon 25, Hookmon 28, Armormon 31, GuardiAngemon 34 | Core Fragment ×15, Armormon Core | Water Power 1, 2, S |
+| Yuji | Kumamon | Kumamon 29, Grizzmon 32, GrapLeomon 35, Cannondramon 38 | Core Crystal ×20, Yanmamon Core, Phantomon Core | Metal Power 1, 2, S |
+| Bob | Veemon | Veemon 33, ExVeemon 36, Paildramon 39, Imperialdramon 42 | Giga Crystal ×20, BK Imperialdramon Core, Paildramon Core | Bolt Power 1, 2, S |
+| Kazuki | Patamon | Patamon 37, Angemon 40, MagnaAngemon 43, Seraphimon 46 | Tera Prism ×20, MagnaAngemon Core, Raremon Core | Wind Power 1, 2, S |
+| Michael | Renamon | Renamon 41, Kyubimon 44, Taomon 47, Sakuyamon 50 | Blue Digizoid ×25, Lynxmon Core, Roachmon Core | Ice Power 1, 2, S |
+| Johann | Agumon | Agumon 45, Greymon 48, MetalGreymon 51, WarGreymon 54 | Gold Digizoid ×25, MetalGreymon Core, BK WarGreymon Core | Fire Power 1, 2, S |
+| Jimmy | Guilmon | Guilmon 49, Growlmon 52, WarGrowlmon 55, Gallantmon 58 | Black Digizoid ×25, BK WarGrowlmon Core, WarGrowlmon Core | Dark Power 1, 2, S |
+| Ken | Musyamon | Kotemon 53, Musyamon 56, Knightmon 59, MetalGarurumon 62 | Obsidian Digizoid ×30, Divermon Core, Raidenmon Core | Ice Power 1, 2, S |
+| Yang | Terriermon | Hagurumon 57, Guardromon 60, Antylamon 63, MegaGargomon 66 | Obsidian Digizoid ×30, BK MegaGargomon Core, Guardromon Core | Metal Power 1, 2, S |
+| Yuji | Kuwagamon | Kunemon 61, Kuwagamon 64, Okuwamon 67, GranKuwagamon 70 | Obsidian Digizoid ×30, Okuwamon Core, Kuwagamon Core | Bolt Power 1, 2, S |
+| Bob | Wormmon | Kunemon 65, Stingmon 68, Paildramon 71, Imperialdramon-F 74 | Obsidian Digizoid ×35, BK Imperialdramon Core, Paildramon Core | Bolt Power 1, 2, S |
+| Kazuki | Devimon | DemiDevimon 69, Devimon 72, Myotismon 75, MaloMyotismon 78 | Obsidian Digizoid ×35, Raidenmon Core, MetalGreymon Core | Dark Power 1, 2, S |
+| Michael | Angewomon | Kiwimon 73, Angewomon 76, MagnaAngemon 79, Phoenixmon 82 | Obsidian Digizoid ×35, Persiamon Core, MagnaAngemon Core | Water Power 1, 2, S |
+| Johann | Agumon (dark) | Agumon 77, Greymon 80, SkullGreymon 83, BK WarGreymon 86 | Obsidian Digizoid ×40, BK WarGreymon Core, Tyrannomon Core | Fire Power 1, 2, S |
+| Jimmy | Impmon | Goburimon 81, Flarerizamon 84, Megadramon 87, Beelzemon 90 | Obsidian Digizoid ×40, Megadramon Core, Raidenmon Core | Dark Power 1, 2, S |
+
+The Rookie gives no reward. The Champion you fell gives the line's Power accessory at tier 1, the Ultimate tier 2 and
+the Mega tier S, even if you lose afterwards. Each tier is given once, the first time you reach it, so a first full
+clear gives all three; the list keeps your best stage. A replay pays the battle's experience and Bits, but no
+accessory.
 
 ## The hunt: constants and hooks
 
@@ -309,10 +325,15 @@ keeps your best stage. A replay pays the battle's experience and Bits, but no ac
   agent's Rookie has joined (`dri_rookie` reads it from his own "joined" conditions), so the hand-in talk never opens
   it; then it opens after the talk, once the field has been idle for 30 frames (max 3600). Bob's and Johann's quest
   lines name the place in `en.txt`, the other six in the story rewrite (`en_story.txt`).
-- A challenge is one boss battle whose 3 enemy members are an evolution line; `wfightmn_knockout` brings in the next at
-  full HP with a DIGIVOLVE! callout. Stage 19, music 0x60880000. Defeat returns to the field with HP/MP restored
-  (`def_dri_defeat`). Levels start at 24, +8 per challenge, +3 per stage.
-- Tamer titles: The Leader of Courage, The Child of Hope, The Heir of Miracles, The Dreamer Tamer, The Calm Tamer.
+- A challenge is one boss battle whose 3 enemy members are a line's Rookie, Champion and Ultimate; `wfightmn_knockout`
+  brings in the next at full HP with a DIGIVOLVE! callout, and when the third falls `def_dri_next_wave` (called by
+  `def_enemy_next_wave`) sets the Mega up in a fallen member's slot, so it is the same battle. Stage 19, music
+  0x60880000. Defeat returns to the field with HP/MP restored (`def_dri_defeat`). 16 lines, two per agent. Levels: the
+  Champion at `DEF_DRI_LEVEL_FIRST` (24) + `DEF_DRI_LEVEL_GAP` (4) x rank (the line's place in difficulty, 0..15), each
+  next stage `DEF_DRI_LEVEL_STEP` (3) higher, the Rookie 3 below the Champion. Rewards: tier 1 for the Champion, 2 for
+  the Ultimate, S for the Mega (the Rookie gives none), each tier the first time it is reached.
+- Tamer titles, one per line (`$DriRival<index>*`, in the order of `LINES`): the first five lines keep the slots they
+  had in 0.8.5, so saves from before still match.
 - Generator: `tools/gen_dri_challenges.py --check`; tests: `tests/port/definitive_dri.py` (+ driver).
 - Save: unlocked bits (2 bytes, low first) and best stage per challenge (2 bits each, 4 bytes) in record 2 at
   `REC2_DRI` (right after the rare items' "ever held" bits; `port/game/definitive_bestiary.c`, checked 2026-11-17). An
@@ -573,7 +594,7 @@ no value created or lost, distinct bosses, purchase and refusals, resale 0 and t
 record, new game all zero, replay) and `gen_replicas.py --check`; in game `market_ingame.py`.
 
 **Layer H (DRI), the implementation record.** There was no species-swap proof of concept: a simulation is an ordinary battle whose
-three enemies are the line's three stages in order, and the engine already does "the battle does not end, the next form enters":
+three enemies are the line's Rookie, Champion and Ultimate in order (the Mega comes as a wave, below), and the engine already does "the battle does not end, the next form enters":
 when the current enemy falls `wfightmn_knockout` (step 1) finds the first enemy member still standing, plays its entrance
 (`fightstg_entrance_create`: loads the model, a 60 frame flash with sound, the new model takes slot `0x10`) and shows the name; it
 enters with the full HP it got at the start (`wfightmn_init_members`), the party stays as it was. Models are **not** all loaded at the
@@ -585,15 +606,18 @@ Ultimates (MetalGreymon, Paildramon, WarGrowlmon, MagnaAngemon, Taomon, Kyukimon
 and Gallantmon are not; so each line's Champion is an ISO equivalent and the **Gabumon/MetalGarurumon and the Beelzemon-solo lines do not
 exist** (the PRD's plan B, "equivalent bosses from the ISO"; the original proposal also named Gallantmon). Assembly
 (`definitive_dri_screen.c`, `sim_start`): `fieldstg_start_battle` on an existing boss battle (the model: type, `blocked[]` immunities
-and, on a win, its XP and Bits), then `records_state.enemies` = the three stages, `stage` 19 and music `0x60880000`
+and, on a win, its XP and Bits), then `records_state.enemies` = the first three stages, `stage` 19 and music `0x60880000`
 (`DEF_DRI_STAGE`, `DEF_DRI_MUSIC`, those of boss battles), `blocked[11]` on (no flee), `has_prize` 0; it does not go through
 `fieldstg_encounter_start`: no Rush, no Rare Target, no hunt chain, no commons. Table (`tools/gen_dri_challenges.py`,
-`definitive_dri_table.c`, list in `.dumps/tasks/dri/desafios.md`): 5 challenges ordered by the story battle of the Mega, Champion
-level `DEF_DRI_LEVEL_FIRST` (24) + 8 per challenge, each stage +3; HP and `stat_scale` from the species' own rows in the battle table
+`definitive_dri_table.c`, list in `.dumps/tasks/dri/desafios.md`): 16 lines (two per agent) ordered by a rank, 0..15, the line's place in difficulty; Champion
+level `DEF_DRI_LEVEL_FIRST` (24) + `DEF_DRI_LEVEL_GAP` (4) x rank, each stage +3 and the Rookie 3 below the Champion; HP and `stat_scale` from the species' own rows in the battle table
 (interpolation between two of its levels; outside them the nearest row times (level ratio)^0.8, the growth of the game's own rows); MP
 from the line; model battle = the type-2 battle with none of the line's species, level nearest the Mega. Unlock: the strongest common
 whose band ends at or below the Champion's level, 15 to 40 of it (`DEF_DRI_COMMON_*`); one rare (two from the 3rd challenge,
-`DEF_DRI_TWO_RARES`) of Rare Targets up to `DEF_DRI_RARE_OVER` (5) levels above the Champion, the line's own first. Rewards are the
+`DEF_DRI_TWO_RARES`) of Rare Targets up to `DEF_DRI_RARE_OVER` (5) levels above the Champion, the line's own first. The Mega is a wave of the same battle: when the third member falls `def_dri_next_wave`, called by
+`def_enemy_next_wave` from `wfightmn_knockout`, sets it up in a fallen member's slot with the **DIGIVOLVE!** callout, and the party
+keeps its HP, MP and spent items. Rewards (tier 1 for the Champion, 2 for the Ultimate, S for the Mega, none for the Rookie, each tier
+once) are the
 game's own elemental "Power" accessories (`records.c` 339-359), no new item; items enter the inventory at the end of the battle
 (`def_log_end`), win or lose; a replay gives the model battle's XP and Bits if won. Defeat (`fightstg_events.result` 2) does not go to
 the title (`0xE00`): `def_dri_defeat` (in `wfightmn_battle_end`) returns to `gamestate_data.field_map` like fleeing, with the party's HP
@@ -601,7 +625,7 @@ and MP **as before the simulation**; on victory the result is any battle's (a fa
 map before the battle log ends, `def_dri_defeat` ends the simulation itself, and WFIGHTMN asks every frame until the map changes, so the
 answer stays 1 until the next battle or the field summary (a 0 on a later frame let the game-over `0xE00` overwrite the field). After
 the simulation a panel counts the stages felled and the new accessory ("No new reward" on a repeat), closed with one press. The screen
-follows the Guardromon-network style: title, list (best stage "2 of 3" or "--", the three species names composed at run time, grey while
+follows the Guardromon-network style: title, list (each line as "Rookie ... Mega" with four pips, best stage or "--", and for the selected line a row per stage with level, name and reward; grey while
 locked, green when complete), challenge panel (rewards by item name, levels, the cost "Unlock Code Chip 12 of 15" / "Bulbmon I 0 of 1",
 orange while short) and keys; confirm picks, a second press unlocks (pays) or starts. Fixed in the lab: the 11 px font has no `/`, `:`
 or `,` (they print as `0`), so separators are " - " and counts "12 of 15". DRI Agents: the actor ids are shared sprite types (21 is the
@@ -618,9 +642,10 @@ cleared, then `$DriAskSim` / `$DriAskTalk` / `$DriAskBye`). "Talk" closes it and
 `fieldstg_actor_talk_to` again with `dri.bypass` set, so the game runs his own talk and nothing follows it. Until 2026-11-19
 the talk was never taken and the list opened after 30 idle field frames on the same map (`def_dri_wait_step`, removed): walking
 off and stopping later opened it out of nowhere. Each simulation replays the
-battle data of a classic Tamer by title, no name: "The Leader of Courage" (Agumon line), "The Child of Hope" (Patamon), "The Heir of
-Miracles" (Veemon), "The Dreamer Tamer" (Guilmon), "The Calm Tamer" (Terriermon); choosing an open challenge shows the Tamer's page
-(title, the three stages, the line; x fights, triangle returns) and the summary shows the victory line (all three) or the defeat line;
+battle data of a classic Tamer by title, no name, one per line ("The Leader of Courage" for the Agumon line, "The Child of Hope" for
+Patamon, "The Heir of Miracles" for Veemon, "The Dreamer Tamer" for Guilmon, "The Calm Tamer" for Terriermon, and eleven more for the
+other lines, listed in `desafios.md`); choosing an open challenge shows the Tamer's page
+(title, the four stages, the line; x fights, triangle returns) and the summary shows the victory line (all four stages) or the defeat line;
 texts `$DriRival<n>*` in the order of `LINES` of `gen_dri_challenges.py`, which checks they exist; the 11 px font has no comma, colon,
 slash or apostrophe, so the lines avoid them. Fixed together: closing the summary with CIRCLE returned the field in the same frame and
 the player control saw the same press and examined what was in front (stuck, `actor_busy`); the DRI screens now return the field only when

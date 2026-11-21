@@ -241,8 +241,9 @@ solta o seu próprio **Core** para a sua coleção.
   aumentam a sua afinidade, armaduras Tank, acessórios Trade-off.
 - **O Black Market**: troque um Core por doze comuns, ou os Cores de dois chefes por uma das dezesseis **réplicas** que
   nenhuma loja vende (e, no fim da lista, uma marca que todo caçador quer).
-- **O DRI Gauntlet**: os DRI Agents reencenam batalhas clássicas de Tamers. Uma luta, três etapas, de Champion a
-  Ultimate a Mega, com um **DIGIVOLVE!** entre elas, e um acessório Power para cada etapa que você derrubar.
+- **O DRI Gauntlet**: os DRI Agents reencenam batalhas clássicas de Tamers, dezesseis linhas ao todo. Uma luta,
+  quatro etapas, de Rookie a Champion a Ultimate a Mega, com um **DIGIVOLVE!** entre elas, e um acessório Power para o
+  Champion, o Ultimate e o Mega que você derrubar.
 - **Os preços** dos equipamentos avançados subiram e o valor de revenda caiu, então um achado de sorte já não vende por
   uma fortuna e os Bits do OVERFINISH têm onde ser gastos.
 
@@ -250,18 +251,31 @@ solta o seu próprio **Core** para a sua coleção.
 <p align="center"><sub>As réplicas do Black Market: os Cores de dois chefes e os Bits, e o equipamento é seu.</sub></p>
 
 <details>
-<summary><b>As cinco linhas do DRI Gauntlet</b></summary>
+<summary><b>As dezesseis linhas do DRI Gauntlet</b></summary>
 
-| Linha | Etapas e níveis | Recompensas |
-|---|---|---|
-| Terriermon (Guardromon) | Guardromon 24, Andromon 27, BK MegaGargomon 30 | Metal Power 1, 2, S |
-| Veemon | Devidramon 32, Paildramon 35, BK Imperialdramon 38 | Bolt Power 1, 2, S |
-| Patamon | Airdramon 40, MagnaAngemon 43, BK Seraphimon 46 | Wind Power 1, 2, S |
-| Agumon | Tyrannomon 48, MetalGreymon 51, BK WarGreymon 54 | Fire Power 1, 2, S |
-| Guilmon | Flarerizamon 56, WarGrowlmon 59, BK WarGrowlmon 62 | Dark Power 1, 2, S |
+| Agente | Linha | Etapas e níveis (de Rookie a Mega) | Recompensas |
+|---|---|---|---|
+| Ken | Kotemon | Kotemon 21, Dinohumon 24, Kyukimon 27, Marsmon 30 | Wind Power 1, 2, S |
+| Yang | Monmon | Monmon 25, Hookmon 28, Armormon 31, GuardiAngemon 34 | Water Power 1, 2, S |
+| Yuji | Kumamon | Kumamon 29, Grizzmon 32, GrapLeomon 35, Cannondramon 38 | Metal Power 1, 2, S |
+| Bob | Veemon | Veemon 33, ExVeemon 36, Paildramon 39, Imperialdramon 42 | Bolt Power 1, 2, S |
+| Kazuki | Patamon | Patamon 37, Angemon 40, MagnaAngemon 43, Seraphimon 46 | Wind Power 1, 2, S |
+| Michael | Renamon | Renamon 41, Kyubimon 44, Taomon 47, Sakuyamon 50 | Ice Power 1, 2, S |
+| Johann | Agumon | Agumon 45, Greymon 48, MetalGreymon 51, WarGreymon 54 | Fire Power 1, 2, S |
+| Jimmy | Guilmon | Guilmon 49, Growlmon 52, WarGrowlmon 55, Gallantmon 58 | Dark Power 1, 2, S |
+| Ken | Musyamon | Kotemon 53, Musyamon 56, Knightmon 59, MetalGarurumon 62 | Ice Power 1, 2, S |
+| Yang | Terriermon | Hagurumon 57, Guardromon 60, Antylamon 63, MegaGargomon 66 | Metal Power 1, 2, S |
+| Yuji | Kuwagamon | Kunemon 61, Kuwagamon 64, Okuwamon 67, GranKuwagamon 70 | Bolt Power 1, 2, S |
+| Bob | Wormmon | Kunemon 65, Stingmon 68, Paildramon 71, Imperialdramon-F 74 | Bolt Power 1, 2, S |
+| Kazuki | Devimon | DemiDevimon 69, Devimon 72, Myotismon 75, MaloMyotismon 78 | Dark Power 1, 2, S |
+| Michael | Angewomon | Kiwimon 73, Angewomon 76, MagnaAngemon 79, Phoenixmon 82 | Water Power 1, 2, S |
+| Johann | Agumon (dark) | Agumon 77, Greymon 80, SkullGreymon 83, BK WarGreymon 86 | Fire Power 1, 2, S |
+| Jimmy | Impmon | Goburimon 81, Flarerizamon 84, Megadramon 87, Beelzemon 90 | Dark Power 1, 2, S |
 
-Perder não é game over: você volta ao campo como estava. Os custos de desbloqueio, as receitas da forja e todas as
-variantes estão na [referência da caçada](docs/definitive-edition/hunt-and-economy.md).
+As linhas estão da mais fácil para a mais difícil. O Rookie não dá recompensa; o Power 1 vem do Champion, o 2 do
+Ultimate e o S do Mega, cada um na primeira vez que você o alcança. Perder não é game over: você volta ao campo como
+estava, com HP e MP restaurados (os itens gastos continuam gastos). Os custos de desbloqueio, as receitas da forja e
+todas as variantes estão na [referência da caçada](docs/definitive-edition/hunt-and-economy.md).
 
 </details>
 

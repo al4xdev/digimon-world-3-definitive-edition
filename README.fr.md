@@ -245,8 +245,9 @@ chacune laisse tomber son propre **Core** pour votre collection.
   affinity, armures Tank, accessoires Trade-off.
 - **Le Black Market** : échangez un Core contre douze communs, ou les Cores de deux boss contre l'une des seize
   **répliques** qu'aucune boutique ne vend (et, tout en bas de la liste, une marque que tout chasseur convoite).
-- **Le DRI Gauntlet** : les DRI Agents rejouent des combats classiques de Tamers. Un combat, trois étapes, de Champion à
-  Ultimate puis Mega avec un **DIGIVOLVE!** entre chacune, et un accessoire Power pour chaque étape terrassée.
+- **Le DRI Gauntlet** : les DRI Agents rejouent des combats classiques de Tamers, seize lignées en tout. Un combat,
+  quatre étapes, de Rookie à Champion puis Ultimate puis Mega avec un **DIGIVOLVE!** entre chacune, et un accessoire
+  Power pour le Champion, l'Ultimate et le Mega terrassés.
 - **Les prix** de l'équipement avancé ont augmenté et la revente a baissé : une trouvaille chanceuse ne se vend plus une
   fortune, et les Bits de l'OVERFINISH ont de quoi être dépensés.
 
@@ -254,18 +255,32 @@ chacune laisse tomber son propre **Core** pour votre collection.
 <p align="center"><sub>Les répliques du Black Market : les Cores de deux boss et les Bits, et l'équipement est à vous.</sub></p>
 
 <details>
-<summary><b>Les cinq lignées du DRI Gauntlet</b></summary>
+<summary><b>Les seize lignées du DRI Gauntlet</b></summary>
 
-| Lignée | Étapes et niveaux | Récompenses |
-|---|---|---|
-| Terriermon (Guardromon) | Guardromon 24, Andromon 27, BK MegaGargomon 30 | Metal Power 1, 2, S |
-| Veemon | Devidramon 32, Paildramon 35, BK Imperialdramon 38 | Bolt Power 1, 2, S |
-| Patamon | Airdramon 40, MagnaAngemon 43, BK Seraphimon 46 | Wind Power 1, 2, S |
-| Agumon | Tyrannomon 48, MetalGreymon 51, BK WarGreymon 54 | Fire Power 1, 2, S |
-| Guilmon | Flarerizamon 56, WarGrowlmon 59, BK WarGrowlmon 62 | Dark Power 1, 2, S |
+| Agent | Lignée | Étapes et niveaux (de Rookie à Mega) | Récompenses |
+|---|---|---|---|
+| Ken | Kotemon | Kotemon 21, Dinohumon 24, Kyukimon 27, Marsmon 30 | Wind Power 1, 2, S |
+| Yang | Monmon | Monmon 25, Hookmon 28, Armormon 31, GuardiAngemon 34 | Water Power 1, 2, S |
+| Yuji | Kumamon | Kumamon 29, Grizzmon 32, GrapLeomon 35, Cannondramon 38 | Metal Power 1, 2, S |
+| Bob | Veemon | Veemon 33, ExVeemon 36, Paildramon 39, Imperialdramon 42 | Bolt Power 1, 2, S |
+| Kazuki | Patamon | Patamon 37, Angemon 40, MagnaAngemon 43, Seraphimon 46 | Wind Power 1, 2, S |
+| Michael | Renamon | Renamon 41, Kyubimon 44, Taomon 47, Sakuyamon 50 | Ice Power 1, 2, S |
+| Johann | Agumon | Agumon 45, Greymon 48, MetalGreymon 51, WarGreymon 54 | Fire Power 1, 2, S |
+| Jimmy | Guilmon | Guilmon 49, Growlmon 52, WarGrowlmon 55, Gallantmon 58 | Dark Power 1, 2, S |
+| Ken | Musyamon | Kotemon 53, Musyamon 56, Knightmon 59, MetalGarurumon 62 | Ice Power 1, 2, S |
+| Yang | Terriermon | Hagurumon 57, Guardromon 60, Antylamon 63, MegaGargomon 66 | Metal Power 1, 2, S |
+| Yuji | Kuwagamon | Kunemon 61, Kuwagamon 64, Okuwamon 67, GranKuwagamon 70 | Bolt Power 1, 2, S |
+| Bob | Wormmon | Kunemon 65, Stingmon 68, Paildramon 71, Imperialdramon-F 74 | Bolt Power 1, 2, S |
+| Kazuki | Devimon | DemiDevimon 69, Devimon 72, Myotismon 75, MaloMyotismon 78 | Dark Power 1, 2, S |
+| Michael | Angewomon | Kiwimon 73, Angewomon 76, MagnaAngemon 79, Phoenixmon 82 | Water Power 1, 2, S |
+| Johann | Agumon (dark) | Agumon 77, Greymon 80, SkullGreymon 83, BK WarGreymon 86 | Fire Power 1, 2, S |
+| Jimmy | Impmon | Goburimon 81, Flarerizamon 84, Megadramon 87, Beelzemon 90 | Dark Power 1, 2, S |
 
-Perdre n'est pas un game over : vous revenez sur le terrain comme vous étiez. Les coûts de déblocage, les recettes de
-la forge et chaque variante sont détaillés dans [la référence de la chasse](docs/definitive-edition/hunt-and-economy.md).
+Les lignées vont de la plus facile à la plus difficile. Le Rookie ne donne rien ; le Power 1 vient du Champion, le 2
+de l'Ultimate et le S du Mega, chacun la première fois que vous l'atteignez. Perdre n'est pas un game over : vous
+revenez sur le terrain comme vous étiez, PV et PM rétablis (les objets utilisés restent utilisés). Les coûts de
+déblocage, les recettes de la forge et chaque variante sont détaillés dans [la référence de la
+chasse](docs/definitive-edition/hunt-and-economy.md).
 
 </details>
 
