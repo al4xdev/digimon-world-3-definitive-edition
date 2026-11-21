@@ -927,6 +927,21 @@ s32 dw3_objective_spot(s32 region) {
         return 0;
     }
     mode = dw3_objective_modes[progress];
+    { /* the Guide's row when it names a field: one story step can hold a chase of its own (the Blue Card's Guilmon,
+       * all of step 6), which the Guide follows flag by flag and this table cannot */
+        const DefQuest *q = def_guide_active() ? def_quest_main() : NULL;
+
+        static s32 told = -1;
+
+        if (q != NULL && q->map >= 0x200 && q->map <= 0x2D6) {
+            mode = q->map;
+        }
+        if (mode != told) { /* once per change: the map screen asks every frame */
+            told = mode;
+            port_log("objective: progress %d points at map 0x%X%s", (int)progress, (unsigned)mode,
+                     q != NULL && mode == q->map ? " (the Guide's row)" : "");
+        }
+    }
     if (mode < 0x200 || mode > 0x2D6 || region != (mode >= 0x270)) {
         return 0;
     }
