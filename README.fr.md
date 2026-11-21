@@ -385,11 +385,6 @@ Ce qui reste :
 
 - **L'équilibrage général du jeu.** Jusqu'ici, il n'a été équilibré que par le calcul. Je le joue en parallèle et
   je publie des hotfixes au fur et à mesure.
-- **La Velvet Room** paraît encore mince par endroits (certains invités et certains moments ont besoin de plus à dire
-  et à faire) ; des hotfixes arrivent.
-- **Le combat final** va recevoir une extension. Elle ne change pas l'histoire, et tous les autres systèmes sont déjà
-  implémentés.
-- **L'optimisation pour d'autres plateformes et appareils**, au-delà de la XF35H et du PC sur lesquels il a été réglé.
 
 La liste détaillée des points ouverts se trouve dans [la feuille de route](docs/definitive-edition/roadmap.md).
 

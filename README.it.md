@@ -380,10 +380,6 @@ stata giocata solo poche volte, quindi aspettati qualche spigolo e hotfix freque
 
 - **Il bilanciamento generale del gioco.** Finora è stato bilanciato solo a calcolo. Lo sto giocando in parallelo e
   rilascio hotfix man mano.
-- **La Velvet Room** sembra ancora un po' scarna in certi punti (alcuni ospiti e momenti hanno bisogno di più cose da
-  dire e da fare); gli hotfix sono in arrivo.
-- **Lo scontro finale** riceverà un'estensione. Non cambia la storia, e ogni altro sistema è già implementato.
-- **L'ottimizzazione per altre piattaforme e dispositivi**, oltre all'XF35H e al PC su cui è stato calibrato.
 
 L'elenco dettagliato dei punti aperti è nella [roadmap](docs/definitive-edition/roadmap.md).
 

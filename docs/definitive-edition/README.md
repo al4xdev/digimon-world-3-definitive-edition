@@ -41,7 +41,7 @@ The figures these pages show live in [`docs/images/definitive/`](../images/defin
   `definitive_hunt.c`, `definitive_superhunt*.c`, `definitive_materials.c`, `definitive_market*.c`, `definitive_dri*.c`,
   `definitive_economy.c`, `definitive_prices.c`, `definitive_recipes.c`, `definitive_velvet.c`, `definitive_purify.c`,
   `definitive_recolor.c`, `definitive_skins.c`, `definitive_travel.c`, `definitive_evohint.c`, `definitive_callout.c`,
-  `definitive_text.c` / `definitive_text_pt.inc`, `girls_power.c`, `game_mods.c`.
+  `definitive_text.c` / `definitive_text_lang.inc`, `girls_power.c`, `game_mods.c`.
 - Rules every layer keeps: an old save opens and plays; the player's MP stays limited (Relay and technique costs are
   real); a boss is immune to status (poison, sleep and the like) but not to stat debuffs nor to elemental damage. New
   code never assumes three party members: ask `gamestate_data.funcs.get_party_member` (Hard Mode runs with two).

@@ -377,11 +377,6 @@ dele só foi jogada algumas vezes, então espere arestas e hotfixes frequentes. 
 
 - **O equilíbrio geral do jogo.** Até agora ele foi balanceado só por cálculo. Estou jogando em paralelo e lançando
   hotfixes pelo caminho.
-- **A Velvet Room** ainda parece rasa em alguns pontos (alguns convidados e momentos precisam de mais o que dizer e
-  fazer); hotfixes estão a caminho.
-- **A batalha final** vai ganhar uma extensão. Ela não muda a história, e todos os outros sistemas já estão
-  implementados.
-- **Ajustes para outras plataformas e dispositivos**, além do XF35H e do PC em que foi afinado.
 
 A lista detalhada dos itens em aberto está no [roadmap](docs/definitive-edition/roadmap.md).
 

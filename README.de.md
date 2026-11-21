@@ -382,11 +382,6 @@ Manches wurde erst ein paar Mal durchgespielt, rechne also mit Ecken und Kanten 
 
 - **Die allgemeine Spielbalance.** Bisher wurde sie nur rechnerisch ausbalanciert. Ich spiele es parallel durch und
   liefere Hotfixes nach, sobald sie fertig sind.
-- **Der Velvet Room** wirkt an manchen Stellen noch dünn (manche Gäste und Momente brauchen mehr zu sagen und zu tun);
-  Hotfixes sind unterwegs.
-- **Der Endkampf** bekommt eine Erweiterung. Sie ändert die Geschichte nicht, und jedes andere System ist bereits
-  umgesetzt.
-- **Feinabstimmung für andere Plattformen und Geräte**, über den XF35H und den PC hinaus, auf denen es abgestimmt wurde.
 
 Die ausführliche Liste der offenen Punkte steht in [der Roadmap](docs/definitive-edition/roadmap.md).
 

@@ -368,16 +368,12 @@ If you try it on another device, a report in the
 The game is playable from start to end, and every system described above is implemented. It is also young: some of
 it has only been played through a few times, so expect rough edges and frequent hotfixes. What remains:
 
-- **Translation into other languages.** The new text is written in English, and Brazilian Portuguese covers most of it; the
-  original campaign keeps the disc's French, German, Italian and Spanish, but the Definitive Edition's own text is
-  not translated into them yet.
+- **Translation review.** The new text is written in English, and Brazilian Portuguese, French, German, Italian and Spanish
+  cover the Definitive Edition's own strings (machine-assisted, not yet read in game by native speakers: expect
+  clumsy lines and a few labels too wide for their box). The rewritten story is only in English and Portuguese; in the
+  other three languages the disc's original campaign plays.
 - **Overall game balance.** So far it was balanced by calculation only. I am playing through it in parallel and
   shipping hotfixes as I go.
-- **The Velvet Room** still feels thin in some places (some guests and moments need more to say and do); hotfixes
-  are on the way.
-- **The final battle** will get an extension. It does not change the story, and every other system is already
-  implemented.
-- **Tuning for other platforms and devices**, beyond the XF35H and the PC it was tuned on.
 
 The detailed list of open items is in [the roadmap](docs/definitive-edition/roadmap.md).
 

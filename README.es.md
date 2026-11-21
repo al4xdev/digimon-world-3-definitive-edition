@@ -381,11 +381,6 @@ joven: parte de él solo se ha jugado unas pocas veces, así que cuenta con aspe
 
 - **El equilibrio general del juego.** Hasta ahora se equilibró solo por cálculo. Lo estoy jugando en paralelo y
   publicando hotfixes sobre la marcha.
-- **La Velvet Room** todavía se siente escasa en algunos puntos (algunos invitados y momentos necesitan más que decir
-  y hacer); hay hotfixes en camino.
-- **El combate final** recibirá una ampliación. No cambia la historia, y todos los demás sistemas ya están
-  implementados.
-- **El ajuste para otras plataformas y dispositivos**, más allá de la XF35H y del PC en los que se afinó.
 
 La lista detallada de puntos abiertos está en [la hoja de ruta](docs/definitive-edition/roadmap.md).
 

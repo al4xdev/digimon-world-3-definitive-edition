@@ -2,13 +2,13 @@
 
 [Technical reference index](README.md) · [Player README](../../README.md)
 
-## The owner's status (2026-11-18)
+## The owner's status (2026-11-20)
 
-What the player README's "What's left" says, in the owner's words: every system is implemented; open are the
-translation into other languages (the FR/DE/ES/IT delta below), the overall balance (tuned by calculation so far, the
-owner plays through in parallel and ships hotfixes), the Velvet Room feeling weak in some places (hotfixes), **an
-extension of the final battle** (it does not change the story), tuning on other platforms, and a full owner session on
-the Android version. The PortMaster release is in its testing phase on the PortMaster Discord.
+The player README's "What's left" now lists two items, and they are the only open ones for 1.0: **the overall balance** (tuned
+by calculation so far; the owner plays through in parallel and ships hotfixes) and **the translation review** (FR/DE/IT/ES of the
+Definitive text exist since 2026-11-20 but have not been read in game; the story rewrite is English and Portuguese only). Everything
+below is the record of ideas, checks and decisions kept for reference: none of it blocks 1.0 unless the balance or the translation
+work turns it up.
 
 ## Planned / backlog
 
@@ -20,7 +20,7 @@ Not started or only staged unless the entry says otherwise. Each entry says wher
   the toggle). Whole plan in History. On an API 34 emulator (2026-11-18, the arm64 APK under translation): disc import,
   boot, title, a new game into the field in 16:9, the touch pad, the gamepad hiding it, Back in the launcher all ran;
   the x86_64 build crashes at boot in `cdload_get_subfile` (`sound_init`), the arm64 one does not (x86_64 is not shipped).
-- **FR/DE/ES/IT delta of the Definitive text (staging 15):** about 250 lines of `en.txt` plus the `def_str_*` strings; needs per-language override files and the tool options that do not exist yet (Texts above).
+- **FR/DE/ES/IT delta of the Definitive text (staging 15):** done 2026-11-20 (`fr/de/it/es.txt`); the in-game native read and the story rewrite's translation remain.
 - **PortMaster submission:** the package is checked (`.ci-cd/portmaster/make_release.sh`, `dist/dw3.zip`) and **in its testing phase on the PortMaster Discord** (owner, 2026-11-18), not yet in the catalogue. Every CFW of the test matrix was run under emulation; real-device results on CFWs other than the XF35H's are the open part (plan 1).
 - **Telemetry Harness and Plugin Gatekeeper (staging 16):** a separate PRD v0.1 draft, unrelated to the game; the whole PRD is condensed in History.
 - **Combat ideas never done:** the Layer 6 technique candidates (Combat design record); the Super Hard rebalance by the owner.
@@ -57,7 +57,7 @@ Every item the owner wanted or planned that is not done yet, with its source pla
 **Combat balance** (`definitive-combat-prd.md`): layer 10 is the owner's, by playing; the guidance is in the Combat design record (boss HP first, then the magic clamp). Open design questions never answered: the Layer 6 technique candidates, the OVERFINISH 10% (may be lowered). (The PRD's "does the enemy get an extra action" is answered by the code: no, the chain is the player's only.)
 **Girls Power** (`girls-power-kaili-prd.md`, `girls-power-pixel-art.md`): the owner's full start-to-end playtest and redoing frames they point at (kick, fishing, ladder, lying poses, deck and Digimon name screens, anywhere else Junior might appear); weak spots listed in the Girls Power section.
 **Black Market / texts** (`black-market-ux.md`): PT names "Crest de Recuper" (ITMNAM 320, cut), "Pulse Guard", "Shard de Bits/Bytes"; the colon-as-"0" glyph defect of the 14 px font hits about 30 other port strings (a pass or a font glyph fix); the 11 px font lacks `/ : , '` and accents. The small font's green palette (4, "the bestiary's green") draws an `O` oddly (the Sepikmon board's DONE reads like "D3NE"); the owner likes the look (2026-11-17): kept, not a defect. Owner confirmations PRD 4 left open ("applied, the owner may change"): the trader (actor 42 on maps 0x20C / 0x27B, now also the Velvet Room), the 12-commons-per-rare rate, and the replica list and prices. Known limit: the replica bit clears only on the per-frame sweep (`def_bm_sweep`), so between a sale or discard and the sweep the shop pays 0 only for an ID no shop sells. The Portuguese of the forge's renamed pieces (Elemental weapons, Trade-off items 292/295/297/298) and of the eight DRI hint pages is the owner's: `pt.txt` still has the plain lines.
-**Translation** (`staging/15`): FR/IT/DE/ES delta; `ã`/`õ` glyph injection check; the `--lang` and `--only-definitive-delta` tool options.
+**Translation** (`staging/15`): FR/IT/DE/ES delta done 2026-11-20; open: the native read in game, the story rewrite in those languages, the `ã`/`õ` glyph injection check.
 **Not tested in a real game** (`handoff-definitive-pendencias.md`, `definitive-hunt-economy-dri-prd.md`): (the DRI agent talk: seen 2026-11-17 at Johann, the quest at a party level sum of 87, the hand-in talk without the list and the next one with it; still open: the list's own screen after a real agent talk); a HUNT record
 save and load on a card at a Guardromon save point; the forge requirement line on the real shop screen (and the refusal and max-buy limit, which have only unit tests); the Guide's arrival notice (the log shows it but a capture 30 frames later shows only the map title). Also from the PRDs and the DRI
 task: of the five planned DRI agent checks only Johann's (quest line at sum 87, hand-in, list on the next talk) was seen; a party level sum
