@@ -73,7 +73,45 @@ What the code needs for this (not done):
   …), so check whether there are enough for 16 or whether lines share sets.
 - Unlock: the generator's rule (commons + Rare Targets by level) must cover the new levels.
 
-Draft for Saturday (a suggestion only: **the owner decides**). P = player form, E = an enemy species of the disc:
+### The 16 lines, as settled on 2026-11-21 (P = player form with a `base`, E = enemy species of the disc)
+
+Checked against the data (DIGNAM has 250 names; records_digimon stats sums tell the tier: Champions are name ids 9-19
+Angewomon included, Ultimates 20-35, Megas 36+):
+
+| # | Agent | Line | State |
+|---|---|---|---|
+| 1 | Kazuki | Angemon P > MagnaAngemon E > Seraphimon P | built |
+| 2 | Kazuki | Devimon P > Myotismon P > MaloMyotismon P | new |
+| 3 | Michael | Kyubimon P > Taomon E > Sakuyamon P | new |
+| 4 | Michael | Angewomon P > MagnaAngemon E > Phoenixmon P | new (Rosemon is the alternative Mega) |
+| 5 | Bob | ExVeemon P > Paildramon E > Imperialdramon P | built |
+| 6 | Bob | Stingmon P > Paildramon E > Imperialdramon-F P | new |
+| 7 | Johann | Greymon P > MetalGreymon E > WarGreymon P | built |
+| 8 | Johann | BlueGreymon (Greymon recoloured) > SkullGreymon P > BK WarGreymon E | new; needs a recolour hook and a name text |
+| 9 | Jimmy | Growlmon P > WarGrowlmon E > Gallantmon P | built |
+| 10 | Jimmy | Flarerizamon E > Megadramon E > Beelzemon P | new |
+| 11 | Ken | Dinohumon P > Kyukimon E > Marsmon P | new |
+| 12 | Ken | Musyamon E > Knightmon E > MetalGarurumon P | new |
+| 13 | Yuji | Grizzmon P > GrapLeomon E > Cannondramon P | new |
+| 14 | Yuji | Kuwagamon E > Okuwamon E > GranKuwagamon P | new |
+| 15 | Yang | Hookmon P > Armormon E > GuardiAngemon P | new |
+| 16 | Yang | Guardromon E > Antylamon E > MegaGargomon P | built (was the Terriermon line) |
+
+Not usable: **Gatomon** is in no table (only the inn's NPC). **Agunimon (468), BladeGarurumon (469), AncientGreymon (470)**
+are DNA fusion results: a `records_digimon` stub each (stats 1, no techniques, in no `blast_forms`), but the disc's model
+table (file 0x1CC) has a type A model for each (records 0, 14, 11), and their DNA attacks are plain `records_techniques`
+rows: Agunimon 0x1B0 (80 MP, power 160), BladeGarurumon 0x1B1 (480 MP, 800, kind 26), AncientGreymon 0x1B2 (0 MP, 700).
+The pairs (`pair_technique`, offered when the partner named by `level_thresholds[6]` is switched in): Agunimon = Dinohumon +
+Kyubimon, Hookmon + Greymon; BladeGarurumon = Grizzmon + Growlmon; AncientGreymon = Imperialdramon-P + Diaboromon. The other
+DNA results are full forms (Paildramon 0x176 ExVeemon + Stingmon, Phoenixmon 0x177 Taomon + MagnaAngemon, MegaGargomon 0x178
+WarGrowlmon + Digitamamon, Omnimon 0x179 WarGreymon + MetalGarurumon, Imperialdramon PM 0x17A Imperialdramon + Seraphimon,
+Beelzemon 0x17B Gallantmon + MaloMyotismon, Diabolomon 0x17C BK WarGreymon + GranKuwagamon). Idea (2026-11-21): make the three
+bosses with their DNA attack as signature; a record is needed (def_dri_record style), the model's mesh and animation are
+untested. Out for now: MetalGarurumon is used (#12); Omnimon, Diaboromon, Rosemon, Imperialdramon-P.
+Rejected from a review: Dinobeemon / BlackWarGrowlmon / Kyukimon "recolours" (a recolour keeps its model's name, and BK
+WarGrowlmon already is the black one); Kabuterimon as a Champion (it is an Ultimate here).
+
+Older draft, kept for the reasoning (a suggestion only: **the owner decides**):
 - Kazuki (Patamon): Angemon P → MagnaAngemon E → Seraphimon P | the fallen path: Devimon P → Myotismon P →
   MaloMyotismon P
 - Bob (Veemon): ExVeemon P → Paildramon E → Imperialdramon P | Stingmon P → Paildramon → Imperialdramon−F/−P P
