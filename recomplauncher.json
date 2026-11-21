@@ -5,7 +5,7 @@
   "repo": "al4xdev/digimon-world-3-definitive-edition",
   "game": {
     "kind": "iso",
-    "label": "Your disc image (.bin) of Digimon World 2003 (Europe), serial SLES-03936. This recomp plays that Europe release only.",
+    "label": "Your disc image (.bin) of Digimon World 2003 (Europe), serial SLES-03936, the Redump dump: this page marks it \"Matches the verified Europe disc\". Other dumps and patched images are refused when the game starts.",
     "check": {
       "iso9660": "SLES_039.36",
       "ids": ["SLES-03936", "SLES_039.36"]
@@ -56,7 +56,7 @@
     "{config}/dw2003/recomp"
   ],
   "exit_codes": {
-    "1": "It stopped before the game could run. If this is about your disc, it needs the Europe release (SLES-03936) as a raw disc image.",
+    "1": "It stopped before the game could run. If it's the disc: the game plays only the Redump dump of the Europe release (SLES-03936), the one this page marks \"Matches the verified Europe disc\".",
     "4": "The game stopped responding.",
     "64": "A setting or a launch option was not accepted. Pick the disc again on the game's page."
   },
