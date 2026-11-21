@@ -8,6 +8,7 @@
 #include "definitive.h"
 
 int port_script_active;
+int records_language = 2; /* the texts' language switch (definitive_text_lang.inc) reads the disc's set */
 void port_log(const char *fmt, ...) {
     (void)fmt;
 }
@@ -42,8 +43,8 @@ const DefDriChallenge def_dri_challenges[] = {
       { 2, -1 }, { 1, 0 } },
 };
 const int def_dri_challenge_count = 3;
-/* Actor 60 is a DRI Agent on map 0x210 only, actor 61 on any map. */
-const DefDriAgent def_dri_agents[] = { { 0x210, 60 }, { -1, 61 } };
+/* Actor 60 is a DRI Agent on map 0x210 only (challenges 0 and 1), actor 61 on any map (challenge 2). */
+const DefDriAgent def_dri_agents[] = { { 0x210, 60, { 0, 1 } }, { -1, 61, { 2, -1 } } };
 const int def_dri_agent_count = 2;
 
 static int failures;
@@ -76,6 +77,8 @@ int main(void) {
     check("a DRI Agent on its map, one on any map, nobody else",
           def_dri_agent(0x210, 60) && !def_dri_agent(0x211, 60) && def_dri_agent(0x211, 61) && def_dri_agent(0x2A0, 61) &&
               !def_dri_agent(0x210, 62));
+    check("which DRI Agent: his index, -1 for nobody",
+          def_dri_agent_index(0x210, 60) == 0 && def_dri_agent_index(0x2A0, 61) == 1 && def_dri_agent_index(0x211, 60) == -1);
     on = 0;
     check("in a replay script no Tamer", def_dri_rival(0, DEF_DRI_RIVAL_NAME) == NULL);
     on = 1;
@@ -190,7 +193,7 @@ int main(void) {
     on = 0;
     n = def_dri_award(0, 3, items);
     check("in a replay script: no challenge, no agent, no unlock, no reward",
-          def_dri_challenge(0) == NULL && !def_dri_agent(0x211, 61) && !def_dri_can_unlock(0) && !def_dri_unlock(0) &&
+          def_dri_challenge(0) == NULL && !def_dri_agent(0x211, 61) && def_dri_agent_index(0x210, 60) == -1 && !def_dri_can_unlock(0) && !def_dri_unlock(0) &&
               n == 0 && !def_record_dri_unlocked(0) && def_record_dri_best(0) == 0 && def_record_rare(7) == 5);
     on = 1;
 

@@ -489,8 +489,8 @@ $DriKeysStart: Bouton ×: Lancer<1>Bouton △: Retour
 $DriKeysConfirm: Bouton ×: Valider<1>Bouton △: Retour
 $DriKeysFight: Bouton ×: Combattre<1>Bouton △: Retour
 $DriRival0: Le Dresseur calme
-$DriRival0Hello: Momentai ! Combattre n'est pas tout,<1>mais une simulation est un bon test !
-$DriRival0Won: Tu as lu chaque coup, bien joué !<1>Momentai ! Tu l'as mérité !
+$DriRival0Hello: Combattre n'est pas tout,<1>mais une simulation est un bon test !
+$DriRival0Won: Tu as lu chaque coup, bien joué !<1>Mon partenaire dirait : Momentai !
 $DriRival0Lost: Foncer ne sert à rien, réfléchis !<1>Reviens avec un plan !
 $DriRival1: L'Héritier des miracles
 $DriRival1Hello: Les miracles n'arrivent pas tout seuls !<1>On les forge : montre le tien !
@@ -508,6 +508,50 @@ $DriRival4: Le Dresseur rêveur
 $DriRival4Hello: J'ai dessiné mon partenaire avant de le<1>rencontrer ! Voyons ce que tes rêves<1>valent !
 $DriRival4Won: Ton lien est réel, je le sens !<1>Ne cesse jamais de rêver !
 $DriRival4Lost: Même un chemin sombre mène quelque part !<1>Tiens bon avec ton partenaire et reviens !
+$DriRival5: Le Pantin des ténèbres
+$DriRival5Hello: Je voulais juste rejoindre ce monde...<1>Les ténèbres se battent pour moi !
+$DriRival5Won: Même les ténèbres se sont inclinées...<1>Il reste peut-être de la lumière.
+$DriRival5Lost: Les ténèbres gagnent toujours...<1>Prouve-moi le contraire : reviens !
+$DriRival6: La Reine des Digimon
+$DriRival6Hello: On m'appelle la Reine des Digimon.<1>Ne m'ennuie pas, bats-toi vraiment !
+$DriRival6Won: Hmph. Pas mal... pas mal du tout.<1>Aujourd'hui, la couronne est à toi.
+$DriRival6Lost: C'est tout ? Une reine veut une rivale !<1>Entraîne-toi et reviens m'affronter.
+$DriRival7: L'Enfant de la Lumière
+$DriRival7Hello: La lumière brille plus dans le noir.<1>Voyons comment brille la tienne !
+$DriRival7Won: Ta lumière a tout illuminé !<1>Merci pour ce magnifique combat.
+$DriRival7Lost: Même une petite lumière grandit.<1>Repose-toi et brille à nouveau !
+$DriRival8: L'Enfant de la Bonté
+$DriRival8Hello: J'ai mal utilisé mon pouvoir, avant.<1>Je me bats pour protéger. Prêt ?
+$DriRival8Won: La force avec de la bonté...<1>Voilà la vraie façon de gagner.
+$DriRival8Lost: N'aie pas honte de perdre.<1>La bonté, c'est savoir se relever !
+$DriRival9: Le Guerrier sans âme
+$DriRival9Hello: Je n'ai ni Tamer ni âme.<1>Que suis-je ? Bats-toi et montre-moi !
+$DriRival9Won: C'est donc l'âme qui rend fort...<1>Je vais continuer à chercher la mienne.
+$DriRival9Lost: Ton âme ne m'a pas arrêté.<1>Trouve-en une plus forte et reviens !
+$DriRival10: Le Seigneur démon solitaire
+$DriRival10Hello: Personne ne me dresse, compris ?<1>Montre ce que tu vaux, gamin !
+$DriRival10Won: Tss... d'accord, tu es coriace.<1>Un partenaire, ce n'est pas si mal.
+$DriRival10Lost: Ha ! Je n'ai besoin de personne !<1>Reviens quand tu seras sérieux !
+$DriRival11: La Voie du sabre
+$DriRival11Hello: Un vrai sabreur salue d'abord.<1>Maintenant, dégaine... commence !
+$DriRival11Won: Un coup net. Je m'incline.<1>Ton entraînement se voit à chaque coup !
+$DriRival11Lost: Une lame sans esprit ne tranche pas.<1>Entraîne ton esprit et reviens !
+$DriRival12: L'Enfant de l'Amitié
+$DriRival12Hello: Je ne parle pas beaucoup. Mon partenaire<1>parle pour moi... avec ses crocs !
+$DriRival12Won: ...Heh. Tu es quelqu'un de bien.<1>Des amis comme toi, ça compte.
+$DriRival12Lost: Seul, on n'y arrive jamais.<1>Fais confiance à ton équipe et réessaie.
+$DriRival13: Le Poing de fer
+$DriRival13Hello: Mon partenaire cogne comme un roc !<1>Tiens bon et rends les coups !
+$DriRival13Won: Quel coup ! Tu es vraiment fort !<1>Entraînons-nous ensemble un jour.
+$DriRival13Lost: La force se bâtit depuis le sol.<1>Construis la tienne et reviens !
+$DriRival14: Le Chasseur de la forêt
+$DriRival14Hello: En forêt, seuls les forts survivent.<1>Seras-tu chasseur ou proie ?
+$DriRival14Won: Le chasseur, c'était toi !<1>La forêt s'incline devant toi.
+$DriRival14Lost: Pris dans la toile ! Retourne au nid,<1>deviens plus fort et réessaie !
+$DriRival15: Le Capitaine pirate
+$DriRival15Hello: Ohé ! Mon équipage est au complet<1>et il est prêt à se battre !
+$DriRival15Won: Mille sabords, quel combat !<1>Tu ferais un excellent capitaine !
+$DriRival15Lost: Coulé à la première vague, moussaillon !<1>Répare ton navire et repars !
 $DriStages: "Étapes vaincues "
 $DriNewReward: Nouveau
 $DriNoReward: Rien de neuf

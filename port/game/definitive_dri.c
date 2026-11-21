@@ -21,10 +21,21 @@ extern int def_on(void); /* port.h declares it under PC_PORT only; the host test
 extern void port_log(const char *fmt, ...);
 extern const unsigned char def_str_DriSep[], def_str_HuntSpace[], def_str_DriOf[], def_str_DriUnlock[];
 extern const unsigned char def_str_DriRival0[], def_str_DriRival0Hello[], def_str_DriRival0Won[], def_str_DriRival0Lost[],
-    def_str_DriRival1[], def_str_DriRival1Hello[], def_str_DriRival1Won[], def_str_DriRival1Lost[], def_str_DriRival2[],
-    def_str_DriRival2Hello[], def_str_DriRival2Won[], def_str_DriRival2Lost[], def_str_DriRival3[],
-    def_str_DriRival3Hello[], def_str_DriRival3Won[], def_str_DriRival3Lost[], def_str_DriRival4[],
-    def_str_DriRival4Hello[], def_str_DriRival4Won[], def_str_DriRival4Lost[];
+    def_str_DriRival1[], def_str_DriRival1Hello[], def_str_DriRival1Won[], def_str_DriRival1Lost[],
+    def_str_DriRival2[], def_str_DriRival2Hello[], def_str_DriRival2Won[], def_str_DriRival2Lost[],
+    def_str_DriRival3[], def_str_DriRival3Hello[], def_str_DriRival3Won[], def_str_DriRival3Lost[],
+    def_str_DriRival4[], def_str_DriRival4Hello[], def_str_DriRival4Won[], def_str_DriRival4Lost[],
+    def_str_DriRival5[], def_str_DriRival5Hello[], def_str_DriRival5Won[], def_str_DriRival5Lost[],
+    def_str_DriRival6[], def_str_DriRival6Hello[], def_str_DriRival6Won[], def_str_DriRival6Lost[],
+    def_str_DriRival7[], def_str_DriRival7Hello[], def_str_DriRival7Won[], def_str_DriRival7Lost[],
+    def_str_DriRival8[], def_str_DriRival8Hello[], def_str_DriRival8Won[], def_str_DriRival8Lost[],
+    def_str_DriRival9[], def_str_DriRival9Hello[], def_str_DriRival9Won[], def_str_DriRival9Lost[],
+    def_str_DriRival10[], def_str_DriRival10Hello[], def_str_DriRival10Won[], def_str_DriRival10Lost[],
+    def_str_DriRival11[], def_str_DriRival11Hello[], def_str_DriRival11Won[], def_str_DriRival11Lost[],
+    def_str_DriRival12[], def_str_DriRival12Hello[], def_str_DriRival12Won[], def_str_DriRival12Lost[],
+    def_str_DriRival13[], def_str_DriRival13Hello[], def_str_DriRival13Won[], def_str_DriRival13Lost[],
+    def_str_DriRival14[], def_str_DriRival14Hello[], def_str_DriRival14Won[], def_str_DriRival14Lost[],
+    def_str_DriRival15[], def_str_DriRival15Hello[], def_str_DriRival15Won[], def_str_DriRival15Lost[];
 
 const DefDriChallenge *def_dri_challenge(int c) {
     return def_on() && c >= 0 && c < def_dri_challenge_count && c < DEF_DRI_CHALLENGES ? &def_dri_challenges[c] : NULL;
@@ -34,18 +45,22 @@ int def_dri_tier(int fallen) {
     return fallen < 0 ? 0 : fallen > DEF_DRI_STAGES ? DEF_DRI_STAGES : fallen;
 }
 
-int def_dri_agent(int map, int actor) {
+int def_dri_agent_index(int map, int actor) {
     int i;
 
     if (!def_on()) {
-        return 0;
+        return -1;
     }
     for (i = 0; i < def_dri_agent_count; i++) {
         if (def_dri_agents[i].actor == actor && (def_dri_agents[i].map < 0 || def_dri_agents[i].map == map)) {
-            return 1;
+            return i;
         }
     }
-    return 0;
+    return -1;
+}
+
+int def_dri_agent(int map, int actor) {
+    return def_dri_agent_index(map, actor) >= 0;
 }
 
 /* No names: each is a classic Tamer by the title of what their partner's line stood for (en.txt). */
@@ -55,6 +70,17 @@ static const unsigned char *const rival_texts[DEF_DRI_RIVALS][4] = {
     { def_str_DriRival2, def_str_DriRival2Hello, def_str_DriRival2Won, def_str_DriRival2Lost },
     { def_str_DriRival3, def_str_DriRival3Hello, def_str_DriRival3Won, def_str_DriRival3Lost },
     { def_str_DriRival4, def_str_DriRival4Hello, def_str_DriRival4Won, def_str_DriRival4Lost },
+    { def_str_DriRival5, def_str_DriRival5Hello, def_str_DriRival5Won, def_str_DriRival5Lost },
+    { def_str_DriRival6, def_str_DriRival6Hello, def_str_DriRival6Won, def_str_DriRival6Lost },
+    { def_str_DriRival7, def_str_DriRival7Hello, def_str_DriRival7Won, def_str_DriRival7Lost },
+    { def_str_DriRival8, def_str_DriRival8Hello, def_str_DriRival8Won, def_str_DriRival8Lost },
+    { def_str_DriRival9, def_str_DriRival9Hello, def_str_DriRival9Won, def_str_DriRival9Lost },
+    { def_str_DriRival10, def_str_DriRival10Hello, def_str_DriRival10Won, def_str_DriRival10Lost },
+    { def_str_DriRival11, def_str_DriRival11Hello, def_str_DriRival11Won, def_str_DriRival11Lost },
+    { def_str_DriRival12, def_str_DriRival12Hello, def_str_DriRival12Won, def_str_DriRival12Lost },
+    { def_str_DriRival13, def_str_DriRival13Hello, def_str_DriRival13Won, def_str_DriRival13Lost },
+    { def_str_DriRival14, def_str_DriRival14Hello, def_str_DriRival14Won, def_str_DriRival14Lost },
+    { def_str_DriRival15, def_str_DriRival15Hello, def_str_DriRival15Won, def_str_DriRival15Lost },
 };
 
 const unsigned char *def_dri_rival(int c, int what) {

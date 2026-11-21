@@ -5,8 +5,9 @@
  * the simulations, his talk (the game's, run again from the hook with the network out of the way) or leaving. Nothing
  * waits for a talk to end: the list opens from the question only. (It used to open once the field had been idle a while
  * after his talk; walking off and stopping later then opened it out of nowhere.) The list of simulations is in the
- * Guardromon network's layout: each line's three stages by name, its best stage (or locked), and for the one under the
- * cursor its rewards, its levels and what unlocking it takes. The confirm button chooses once and acts on a second press:
+ * Guardromon network's layout: the agent's own challenges (DefDriAgent.challenges, two each: no agent holds them all),
+ * each line's three stages by name, its best stage (or locked), and for the one under the cursor its rewards, its levels
+ * and what unlocking it takes. The confirm button chooses once and acts on a second press:
  * a locked challenge is unlocked (its materials handed over), an open one shows its Tamer's page (def_dri_rival: the
  * classic Tamer whose battle data it replays, and their line), whose confirm starts it.
  * The screen is a field overlay run from
@@ -105,9 +106,12 @@ static struct {
     s32 ask;     /* the agent's question: the answer under the cursor */
     s32 talk;    /* "Talk" was answered: the agent's own talk once the buttons are up */
     s32 bypass;  /* that talk is under way: def_dri_talk leaves it to the game */
-    s32 sel;     /* the challenge under the cursor */
+    s32 agent;   /* the DRI Agent talked to (def_dri_agents), -1: every challenge (the tests' list) */
+    s32 list[DEF_DRI_CHALLENGES]; /* the challenges the list shows, in its order */
+    s32 list_n;
+    s32 sel;     /* the row under the cursor (an index of list) */
     s32 top;     /* the list's first row */
-    s32 armed;   /* the challenge the confirm button chose once, or -1 */
+    s32 armed;   /* the row the confirm button chose once, or -1 */
     s32 fresh;   /* the frame it opened: the pad is not read (the press that talked may still be down) */
     s32 action;
     s32 releasing; /* closed: the field goes back once the screen's buttons are up (dri_release) */
@@ -234,12 +238,17 @@ static void dri_panel(s32 x, s32 y, s32 w, s32 h, s32 band) {
 
 /* ---- The list. */
 
+/* The challenge on row `row` of the list, -1 past it. */
+static int row_challenge(int row) {
+    return row >= 0 && row < dri.list_n ? dri.list[row] : -1;
+}
+
 static void list_fill(void) {
     const DefDriChallenge *ch;
-    int r, c, p, best, pal, open;
+    int r, c, p, best, pal, open, sel = row_challenge(dri.sel);
 
     for (r = 0; r < DRI_ROWS; r++) {
-        c = dri.top + r;
+        c = row_challenge(dri.top + r);
         ch = def_dri_challenge(c);
         dri.names[r]->set_visible(dri.names[r], ch != NULL);
         if (ch == NULL) {
@@ -248,14 +257,15 @@ static void list_fill(void) {
         put_line(row_name[r], DRI_TEXT, ch);
         dri.names[r]->set_text(dri.names[r], row_name[r], -1);
         /* the chosen row is marked by its orange bar: white reads on it, orange would not */
-        dri.names[r]->set_palette(dri.names[r], c != dri.armed && !def_record_dri_unlocked(c) ? DRI_PAL_DIM : DRI_PAL_TEXT);
+        dri.names[r]->set_palette(dri.names[r],
+                                  dri.top + r != dri.armed && !def_record_dri_unlocked(c) ? DRI_PAL_DIM : DRI_PAL_TEXT);
     }
-    ch = def_dri_challenge(dri.sel);
+    ch = def_dri_challenge(sel);
     if (ch == NULL) {
         return;
     }
-    open = def_record_dri_unlocked(dri.sel);
-    best = open ? def_record_dri_best(dri.sel) : 0;
+    open = def_record_dri_unlocked(sel);
+    best = open ? def_record_dri_best(sel) : 0;
     /* the table: each stage's level and reward, green once that stage has been felled (its reward is had) */
     for (r = 0; r < DEF_DRI_STAGES; r++) {
         p = 0;
@@ -268,7 +278,7 @@ static void list_fill(void) {
         dri.rw[r]->set_palette(dri.rw[r], !open ? DRI_PAL_DIM : best > r ? DRI_PAL_DONE : DRI_PAL_HOT);
     }
     if (!open) {
-        const unsigned char *cost = def_dri_cost_label(dri.sel, &pal);
+        const unsigned char *cost = def_dri_cost_label(sel, &pal);
 
         dri.cost->set_text(dri.cost, (u8 *)cost, -1);
         dri.cost->set_palette(dri.cost, pal);
@@ -343,8 +353,8 @@ static void list_draw(void) {
 
     /* first queued, drawn last: the pips and the bars over the panels' fill */
     for (r = 0; r < DRI_ROWS; r++) {
-        if (def_dri_challenge(dri.top + r) != NULL) {
-            list_pips(r, dri.top + r);
+        if (def_dri_challenge(row_challenge(dri.top + r)) != NULL) {
+            list_pips(r, row_challenge(dri.top + r));
         }
     }
     if (dri.armed >= dri.top && dri.armed < dri.top + DRI_ROWS) {
@@ -377,8 +387,8 @@ static void list_move(int sel) {
 }
 
 static void list_input(void) {
-    int n = def_dri_challenge_count < DEF_DRI_CHALLENGES ? def_dri_challenge_count : DEF_DRI_CHALLENGES;
-    int c = dri.sel;
+    int n = dri.list_n;
+    int c = row_challenge(dri.sel);
 
     if (n <= 0) { /* an empty table: only Back */
         if (PAD_PRESSED(12) || PAD_PRESSED(13) || PAD_PRESSED(14)) {
@@ -387,18 +397,18 @@ static void list_input(void) {
         return;
     }
     if (PAD_PRESSED(4) || PAD_REPEAT(4)) {
-        list_move((c + n - 1) % n);
+        list_move((dri.sel + n - 1) % n);
         return;
     }
     if (PAD_PRESSED(6) || PAD_REPEAT(6)) {
-        list_move((c + 1) % n);
+        list_move((dri.sel + 1) % n);
         return;
     }
     if (PAD_PRESSED(13)) {
         if (!def_record_dri_unlocked(c) && !def_dri_can_unlock(c)) { /* short of its materials */
             sound_module.play(DRI_SND_BACK);
-        } else if (dri.armed != c) {
-            dri.armed = c;
+        } else if (dri.armed != dri.sel) {
+            dri.armed = dri.sel;
             sound_module.play(DRI_SND_OK);
             list_fill();
         } else if (!def_record_dri_unlocked(c)) {
@@ -476,9 +486,9 @@ static void debrief_open(void) {
 /* ---- The Tamer's page: before an open challenge starts, whose battle data it replays and their line. */
 
 static void rival_open(void) {
-    const DefDriChallenge *ch = def_dri_challenge(dri.sel);
-    const unsigned char *name = def_dri_rival(dri.sel, DEF_DRI_RIVAL_NAME);
-    const unsigned char *hello = def_dri_rival(dri.sel, DEF_DRI_RIVAL_HELLO);
+    const DefDriChallenge *ch = def_dri_challenge(row_challenge(dri.sel));
+    const unsigned char *name = def_dri_rival(row_challenge(dri.sel), DEF_DRI_RIVAL_NAME);
+    const unsigned char *hello = def_dri_rival(row_challenge(dri.sel), DEF_DRI_RIVAL_HELLO);
     MessageWindow *w;
 
     if (ch == NULL || name == NULL || hello == NULL) {
@@ -510,15 +520,19 @@ static void rival_input(void) {
 
 /* ---- The agent's question: his line, then the simulations, his own talk or leaving. */
 
-static int all_cleared(void) {
-    int c;
+static void list_build(void);
 
-    for (c = 0; c < def_dri_challenge_count && c < DEF_DRI_CHALLENGES; c++) {
-        if (def_record_dri_best(c) < DEF_DRI_STAGES) {
+/* Every challenge the agent offers is cleared (his greeting says so). */
+static int all_cleared(void) {
+    int r;
+
+    list_build();
+    for (r = 0; r < dri.list_n; r++) {
+        if (def_record_dri_best(dri.list[r]) < DEF_DRI_STAGES) {
             return 0;
         }
     }
-    return c > 0;
+    return dri.list_n > 0;
 }
 
 static void ask_fill(void) {
@@ -681,7 +695,7 @@ static void dri_finish(void) {
         return;
     }
     dri.talk = action == DRI_TALK;
-    if (action == DRI_START && sim_start(dri.sel)) {
+    if (action == DRI_START && sim_start(row_challenge(dri.sel))) {
         return; /* fieldstg_start_battle keeps the field frozen until the battle */
     }
     dri.releasing = 1;
@@ -721,10 +735,30 @@ static int dri_release(void) {
     return 1;
 }
 
+/* The agent's challenges (def_dri_agents' own), or all of them for dri.agent -1. */
+static void list_build(void) {
+    int i, c;
+
+    dri.list_n = 0;
+    if (dri.agent >= 0 && dri.agent < def_dri_agent_count) {
+        for (i = 0; i < DEF_DRI_PER_AGENT; i++) {
+            c = def_dri_agents[dri.agent].challenges[i];
+            if (def_dri_challenge(c) != NULL) {
+                dri.list[dri.list_n++] = c;
+            }
+        }
+        return;
+    }
+    for (c = 0; c < DEF_DRI_CHALLENGES && def_dri_challenge(c) != NULL; c++) {
+        dri.list[dri.list_n++] = c;
+    }
+}
+
 static void list_request(void) {
     dri.request = 1;
     dri.mode = DRI_LIST;
-    if (dri.sel < 0 || dri.sel >= def_dri_challenge_count) {
+    list_build();
+    if (dri.sel < 0 || dri.sel >= dri.list_n) {
         dri.sel = 0;
     }
     dri.top = dri.sel >= DRI_ROWS ? dri.sel - DRI_ROWS + 1 : 0;
@@ -832,9 +866,9 @@ static int dri_rookie(const FieldstgPlacedActor *placed) {
 
 int def_dri_talk(s32 map, s32 actor) {
     FieldstgActor *agent;
-    int rookie = -1;
+    int rookie = -1, who = def_dri_agent_index(map, actor);
 
-    if (!def_dri_agent(map, actor)) {
+    if (who < 0) {
         return 0;
     }
     agent = (FieldstgActor *)heap_objects.find(5, actor, 1);
@@ -854,6 +888,10 @@ int def_dri_talk(s32 map, s32 actor) {
         return 0;
     }
     port_log("dri: the DRI Agent %d of map 0x%X: the network's question", actor, map);
+    if (who != dri.agent) { /* another agent's list: from its top */
+        dri.sel = 0;
+    }
+    dri.agent = who;
     dri.request = 1;
     dri.mode = DRI_ASK;
     dri.ask = DRI_ASK_SIM;
@@ -895,6 +933,7 @@ int def_dri_frame(void) {
 
             def_dri_debug = -1;
             if (d == DEF_DRI_DEBUG_MENU) {
+                dri.agent = -1;
                 list_request();
             } else if (d == DEF_DRI_DEBUG_AGENT) {
                 dri_debug_agent();

@@ -489,8 +489,8 @@ $DriKeysStart: × Inizia<1>△ Indietro
 $DriKeysConfirm: × Conferma<1>△ Indietro
 $DriKeysFight: × Combatti<1>△ Indietro
 $DriRival0: Il Tamer Calmo
-$DriRival0Hello: Momentai! Combattere non è tutto,<1>ma una simulazione è un test giusto!
-$DriRival0Won: Hai letto ogni mossa, ben giocato!<1>Momentai! Te lo sei meritato!
+$DriRival0Hello: Combattere non è tutto,<1>ma una simulazione è un test giusto!
+$DriRival0Won: Hai letto ogni mossa, ben giocato!<1>Il mio partner direbbe: Momentai!
 $DriRival0Lost: Lanciarsi non serve mai: ragiona!<1>Torna con un piano!
 $DriRival1: L'Erede dei Miracoli
 $DriRival1Hello: I miracoli non capitano e basta!<1>Li creiamo: mostrami i tuoi!
@@ -508,6 +508,50 @@ $DriRival4: Il Tamer Sognatore
 $DriRival4Hello: Ho disegnato il compagno<1>prima di conoscerlo!<1>Vediamo cosa sanno fare i tuoi sogni!
 $DriRival4Won: Il tuo legame è reale, lo sento!<1>Non smettere mai di sognare!
 $DriRival4Lost: Anche una via oscura porta da qualche parte!<1>Tieni stretto il compagno e torna!
+$DriRival5: Il Burattino delle Tenebre
+$DriRival5Hello: Volevo solo raggiungere quel mondo...<1>Ora le tenebre combattono per me!
+$DriRival5Won: Persino le tenebre si sono inchinate...<1>Forse la luce esiste davvero.
+$DriRival5Lost: Alla fine vincono sempre le tenebre...<1>Dimostrami il contrario: torna!
+$DriRival6: La Regina dei Digimon
+$DriRival6Hello: Mi chiamano la Regina dei Digimon.<1>Non annoiarmi: combatti sul serio!
+$DriRival6Won: Hmph. Niente male... davvero niente male.<1>Oggi la corona è tua.
+$DriRival6Lost: Tutto qui? Una regina vuole una rivale!<1>Allenati di più e sfidami ancora.
+$DriRival7: La Bambina della Luce
+$DriRival7Hello: La luce brilla di più nel buio.<1>Vediamo quanto brilla la tua!
+$DriRival7Won: La tua luce ha raggiunto ogni angolo!<1>Grazie per questa bella battaglia.
+$DriRival7Lost: Anche una piccola luce può crescere.<1>Riposati un po' e torna a brillare!
+$DriRival8: Il Bambino della Gentilezza
+$DriRival8Hello: Una volta usavo male il mio potere.<1>Ora combatto per proteggere. Pronto?
+$DriRival8Won: Forza con un cuore gentile...<1>Ecco il vero modo di vincere.
+$DriRival8Lost: Non vergognarti di perdere.<1>Gentilezza è sapersi rialzare!
+$DriRival9: Il Guerriero senza Cuore
+$DriRival9Hello: Non ho un Tamer né un cuore.<1>Allora cosa sono? Combatti e mostramelo!
+$DriRival9Won: Quindi è il cuore a renderti forte...<1>Continuerò a cercare il mio.
+$DriRival9Lost: Il tuo cuore non mi ha fermato.<1>Trovane uno più forte e torna!
+$DriRival10: Il Signore Demone Solitario
+$DriRival10Hello: Nessuno mi doma, capito?<1>Fammi vedere cosa sai fare, pivello!
+$DriRival10Won: Tsk... va bene, sei tosto.<1>Forse un partner non è così male.
+$DriRival10Lost: Ah! Non mi serve nessuno!<1>Torna quando fai sul serio!
+$DriRival11: La Via della Spada
+$DriRival11Hello: Un vero spadaccino prima si inchina.<1>Ora sfodera la lama: inizia!
+$DriRival11Won: Un colpo pulito. Mi arrendo.<1>Si vede il tuo allenamento!
+$DriRival11Lost: Una lama senza concentrazione non taglia.<1>Allena la mente e torna!
+$DriRival12: Il Ragazzo dell'Amicizia
+$DriRival12Hello: Non parlo molto. Il mio partner<1>parla per me... con le zanne!
+$DriRival12Won: ...Heh. Sei a posto.<1>Amici come te valgono tanto.
+$DriRival12Lost: Da soli non funziona mai.<1>Fidati della tua squadra e riprova.
+$DriRival13: Il Pugno di Ferro
+$DriRival13Hello: Il mio partner picchia come un monte!<1>Tieniti forte e rispondi!
+$DriRival13Won: Che pugno! Sei davvero in gamba!<1>Allenamoci insieme qualche volta.
+$DriRival13Lost: La forza cresce dal basso.<1>Costruisci la tua e torna!
+$DriRival14: Il Cacciatore della Foresta
+$DriRival14Hello: Nella foresta sopravvivono i forti.<1>Sarai cacciatore o preda?
+$DriRival14Won: Il cacciatore eri tu fin dall'inizio!<1>La foresta si inchina a te.
+$DriRival14Lost: Preso nella ragnatela! Torna al nido,<1>diventa più forte e riprova!
+$DriRival15: Il Capitano Pirata
+$DriRival15Hello: Ahoy! La mia ciurma è al completo<1>ed è pronta a combattere!
+$DriRival15Won: Per mille balene, che battaglia!<1>Saresti un ottimo capitano!
+$DriRival15Lost: Affondato alla prima onda, mozzo!<1>Ripara la nave e salpa di nuovo!
 $DriStages: "Fasi superate "
 $DriNewReward: Nuovo premio
 $DriNoReward: Niente premio

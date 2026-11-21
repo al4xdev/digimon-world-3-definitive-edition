@@ -489,8 +489,8 @@ $DriKeysStart: × Taste: Start<1>△ Taste: Zurück
 $DriKeysConfirm: × Taste: Bestätigen<1>△ Taste: Zurück
 $DriKeysFight: × Taste: Kämpfen<1>△ Taste: Zurück
 $DriRival0: Der ruhige Tamer
-$DriRival0Hello: Momentai! Kämpfen ist nicht alles<1>aber eine Simulation ist ein fairer Test!
-$DriRival0Won: Du hast jeden Zug gelesen - gut gespielt!<1>Momentai! Das hast du dir verdient!
+$DriRival0Hello: Kämpfen ist nicht alles,<1>aber eine Simulation ist ein fairer Test!
+$DriRival0Won: Du hast jeden Zug gelesen - gut gespielt!<1>Mein Partner würde sagen: Momentai!
 $DriRival0Lost: Losstürmen bringt nichts - denk nach!<1>Komm mit einem Plan wieder!
 $DriRival1: Der Erbe der Wunder
 $DriRival1Hello: Wunder passieren nicht einfach!<1>Wir machen sie - zeig mir deins!
@@ -508,6 +508,50 @@ $DriRival4: Der Traum-Tamer
 $DriRival4Hello: Meinen Partner habe ich vorher gemalt!<1>Lass sehen was deine Träume schaffen!
 $DriRival4Won: Deine Bindung ist echt - ich spüre sie!<1>Hör nie auf zu träumen!
 $DriRival4Lost: Selbst ein dunkler Weg führt irgendwohin!<1>Halt zu deinem Partner und komm zurück!
+$DriRival5: Die Marionette der Finsternis
+$DriRival5Hello: Ich wollte nur in jene Welt...<1>Jetzt kämpft die Finsternis für mich!
+$DriRival5Won: Selbst die Finsternis beugt sich dir...<1>Vielleicht gibt es doch Licht.
+$DriRival5Lost: Am Ende siegt immer die Finsternis...<1>Beweis mir das Gegenteil - komm wieder!
+$DriRival6: Die Digimon-Königin
+$DriRival6Hello: Man nennt mich die Digimon-Königin.<1>Langweil mich nicht - kämpf richtig!
+$DriRival6Won: Hmpf. Nicht schlecht... gar nicht übel.<1>Heute gehört die Krone dir.
+$DriRival6Lost: Das war alles? Ich will eine Rivalin!<1>Trainier mehr und komm wieder.
+$DriRival7: Das Kind des Lichts
+$DriRival7Hello: Licht leuchtet im Dunkeln am hellsten.<1>Zeig mir, wie hell deins strahlt!
+$DriRival7Won: Dein Licht hat jeden Winkel erreicht!<1>Danke für diesen tollen Kampf.
+$DriRival7Lost: Auch ein kleines Licht kann wachsen.<1>Ruh dich aus und strahle wieder!
+$DriRival8: Das Kind der Güte
+$DriRival8Hello: Ich habe meine Kraft einst missbraucht.<1>Jetzt kämpfe ich, um zu schützen!
+$DriRival8Won: Stärke mit einem gütigen Herzen...<1>So gewinnt man wirklich.
+$DriRival8Lost: Schäm dich nicht fürs Verlieren.<1>Güte heißt, wieder aufzustehen!
+$DriRival9: Der Krieger ohne Herz
+$DriRival9Hello: Ich habe keinen Tamer und kein Herz.<1>Was bin ich dann? Kämpf und zeig es!
+$DriRival9Won: Also macht ein Herz dich stark...<1>Ich suche weiter nach meinem.
+$DriRival9Lost: Dein Herz hat mich nicht aufgehalten.<1>Finde ein stärkeres und komm wieder!
+$DriRival10: Der einsame Dämonenfürst
+$DriRival10Hello: Mich zähmt keiner, kapiert?<1>Zeig, was du draufhast, Kleiner!
+$DriRival10Won: Tss... schon gut, du bist zäh.<1>Vielleicht ist ein Partner nicht übel.
+$DriRival10Lost: Ha! Ich brauche niemanden!<1>Komm wieder, wenn du es ernst meinst!
+$DriRival11: Der Weg des Schwertes
+$DriRival11Hello: Ein wahrer Schwertkämpfer verbeugt sich.<1>Jetzt zieh dein Schwert - beginne!
+$DriRival11Won: Ein sauberer Treffer. Ich gebe auf.<1>Dein Training zeigt sich in jedem Zug!
+$DriRival11Lost: Eine Klinge ohne Fokus schneidet nicht.<1>Schule deinen Geist und komm wieder!
+$DriRival12: Das Kind der Freundschaft
+$DriRival12Hello: Ich rede nicht viel. Mein Partner<1>redet für mich - mit seinen Fängen!
+$DriRival12Won: ...Heh. Du bist in Ordnung.<1>Freunde wie dich hat man gern.
+$DriRival12Lost: Allein klappt es nie.<1>Vertrau deinem Team, dann nochmal!
+$DriRival13: Die eiserne Faust
+$DriRival13Hello: Mein Partner schlägt zu wie ein Berg!<1>Halt dich fest und schlag zurück!
+$DriRival13Won: Was für ein Schlag! Du bist echt gut!<1>Lass uns mal zusammen trainieren.
+$DriRival13Lost: Stärke wächst vom Boden auf.<1>Bau deine auf und komm wieder!
+$DriRival14: Der Jäger des Waldes
+$DriRival14Hello: Im Wald überleben nur die Starken.<1>Bist du Jäger oder Beute?
+$DriRival14Won: Du warst die ganze Zeit der Jäger!<1>Der Wald verneigt sich vor dir.
+$DriRival14Lost: Im Netz gefangen! Zurück ins Nest,<1>werde stärker und versuch es nochmal!
+$DriRival15: Der Piratenkapitän
+$DriRival15Hello: Ahoi! Jeder Kapitän braucht eine Crew,<1>und meine ist bereit zum Kampf!
+$DriRival15Won: Donnerwetter, was für ein Kampf!<1>Du wärst ein prima Kapitän!
+$DriRival15Lost: Bei der ersten Welle versenkt, Matrose!<1>Flick dein Schiff und stich in See!
 $DriStages: "Stufen geschafft "
 $DriNewReward: Neue Belohnung
 $DriNoReward: Keine Prämie

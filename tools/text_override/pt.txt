@@ -4321,8 +4321,8 @@ $DriKeysStart: Botão ×: Iniciar<1>Botão △: Voltar
 $DriKeysConfirm: Botão ×: Confirmar<1>Botão △: Voltar
 $DriKeysFight: Botão ×: Lutar<1>Botão △: Voltar
 $DriRival0: O Tamer Tranquilo
-$DriRival0Hello: Momentai! Lutar não é tudo,<1>mas uma simulação é um teste justo!
-$DriRival0Won: Leu cada jogada... mandou bem!<1>Momentai! Você mereceu!
+$DriRival0Hello: Lutar não é tudo,<1>mas uma simulação é um teste justo!
+$DriRival0Won: Leu cada jogada... mandou bem!<1>Meu parceiro diria: Momentai!
 $DriRival0Lost: Ir com pressa nunca dá certo!<1>Pense e volte com um plano!
 $DriRival1: O Herdeiro dos Milagres
 $DriRival1Hello: Milagres não caem do céu!<1>Nós os criamos... mostre o seu!
@@ -4340,6 +4340,50 @@ $DriRival4: O Tamer Sonhador
 $DriRival4Hello: Desenhei meu parceiro antes de vê-lo!<1>Vamos ver o que seus sonhos fazem!
 $DriRival4Won: Esse laço é real, dá pra sentir!<1>Nunca deixe de sonhar!
 $DriRival4Lost: Até caminho escuro dá em algum lugar!<1>Segure no seu parceiro e volte!
+$DriRival5: O Fantoche das Trevas
+$DriRival5Hello: Eu só queria chegar àquele mundo...<1>Agora as trevas lutam por mim!
+$DriRival5Won: Até as trevas se curvaram a você...<1>Talvez ainda exista luz.
+$DriRival5Lost: No fim, as trevas sempre vencem...<1>Prove que estou errado: volte!
+$DriRival6: A Rainha Digimon
+$DriRival6Hello: Me chamam de Rainha Digimon.<1>Não me entedie... lute pra valer!
+$DriRival6Won: Hmph. Nada mal... nada mal mesmo.<1>Hoje a coroa é sua.
+$DriRival6Lost: Só isso? Uma rainha precisa de rival!<1>Treine mais e me enfrente de novo.
+$DriRival7: A Criança da Luz
+$DriRival7Hello: A luz brilha mais forte no escuro.<1>Vamos ver o quanto a sua brilha!
+$DriRival7Won: Sua luz chegou a todos os cantos!<1>Obrigada por uma batalha incrível.
+$DriRival7Lost: Até uma luz pequena pode crescer.<1>Descanse um pouco e brilhe de novo!
+$DriRival8: A Criança da Bondade
+$DriRival8Hello: Já usei meu poder do jeito errado.<1>Hoje luto pra proteger. Pronto?
+$DriRival8Won: Força com um coração gentil...<1>Esse é o jeito certo de vencer.
+$DriRival8Lost: Não tenha vergonha de perder.<1>Bondade é saber se levantar!
+$DriRival9: O Guerreiro Sem Coração
+$DriRival9Hello: Não tenho Tamer nem coração.<1>Então o que eu sou? Lute e mostre!
+$DriRival9Won: Então é o coração que te faz forte...<1>Vou continuar procurando o meu.
+$DriRival9Lost: Seu coração não me deteve.<1>Ache um mais forte e volte!
+$DriRival10: O Lorde Demônio Solitário
+$DriRival10Hello: Ninguém me doma, sacou?<1>Mostra o que você tem, moleque!
+$DriRival10Won: Tsc... tá bom, você é durão.<1>Talvez um parceiro não seja ruim.
+$DriRival10Lost: Rá! Falei que não preciso de ninguém!<1>Volta quando for sério!
+$DriRival11: O Caminho da Espada
+$DriRival11Hello: Um espadachim de verdade se curva.<1>Agora saque a lâmina... comece!
+$DriRival11Won: Um golpe limpo. Eu me rendo.<1>Seu treino aparece em cada golpe!
+$DriRival11Lost: Lâmina sem foco não corta.<1>Treine a mente e volte!
+$DriRival12: A Criança da Amizade
+$DriRival12Hello: Não sou de falar. Meu parceiro<1>fala por mim... com as presas!
+$DriRival12Won: ...Heh. Você é legal.<1>Amigos como você valem a pena.
+$DriRival12Lost: Sozinho nunca dá certo.<1>Confie no seu time e tente de novo.
+$DriRival13: O Punho de Ferro
+$DriRival13Hello: Meu parceiro bate como uma montanha!<1>Segure firme e revide!
+$DriRival13Won: Que soco! Você é dos bons!<1>Vamos treinar juntos um dia.
+$DriRival13Lost: A força vem de baixo pra cima.<1>Construa a sua e volte!
+$DriRival14: O Caçador da Floresta
+$DriRival14Hello: Na floresta só os fortes sobrevivem.<1>Você vai ser caçador ou presa?
+$DriRival14Won: Você era o caçador o tempo todo!<1>A floresta se curva a você.
+$DriRival14Lost: Caiu na teia! Volte pro ninho,<1>fique mais forte e tente de novo!
+$DriRival15: O Capitão Pirata
+$DriRival15Hello: Ahoy! Minha tripulação está completa<1>e pronta pra lutar!
+$DriRival15Won: Raios me partam, que batalha!<1>Você daria um ótimo capitão!
+$DriRival15Lost: Afundou na primeira onda, marujo!<1>Remende o barco e zarpe de novo!
 $DriStages: "Fases vencidas "
 $DriNewReward: Novo prêmio
 $DriNoReward: Sem novo prêmio

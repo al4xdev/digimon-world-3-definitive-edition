@@ -565,8 +565,8 @@ $DriKeysConfirm: × button: Confirm<1>△ button: Back
 # and after less. By title, not by name. The 11-pixel font has no comma, colon, slash or apostrophe here: none is used.
 $DriKeysFight: × button: Fight<1>△ button: Back
 $DriRival0: The Calm Tamer
-$DriRival0Hello: Momentai! Fighting is not everything<1>but a simulation is a fair test!
-$DriRival0Won: You read every move - well played!<1>Momentai! You earned it!
+$DriRival0Hello: Fighting is not everything,<1>but a simulation is a fair test!
+$DriRival0Won: You read every move - well played!<1>My partner would say: Momentai!
 $DriRival0Lost: Rushing in never works - think first!<1>Come back with a plan!
 $DriRival1: The Heir of Miracles
 $DriRival1Hello: Miracles do not just happen!<1>We make them - show me yours!
@@ -584,6 +584,50 @@ $DriRival4: The Dreamer Tamer
 $DriRival4Hello: I drew my partner before I met him!<1>Let us see what your dreams can do!
 $DriRival4Won: Your bond is real - I can feel it!<1>Never stop dreaming!
 $DriRival4Lost: Even a dark path leads somewhere!<1>Hold on to your partner and come back!
+$DriRival5: The Puppet of Darkness
+$DriRival5Hello: I only wanted to reach that world...<1>Now its darkness fights for me!
+$DriRival5Won: Even the darkness bowed to you...<1>Maybe there is light after all.
+$DriRival5Lost: The darkness always wins in the end...<1>Prove me wrong - come back!
+$DriRival6: The Digimon Queen
+$DriRival6Hello: They call me the Digimon Queen.<1>Do not bore me - fight for real!
+$DriRival6Won: Hmph. Not bad... not bad at all.<1>You earned that crown today.
+$DriRival6Lost: Is that all? A queen needs a rival!<1>Train harder and face me again.
+$DriRival7: The Child of Light
+$DriRival7Hello: Light shines brightest in the dark.<1>Let us see how bright yours is!
+$DriRival7Won: Your light reached every corner!<1>Thank you for a wonderful battle.
+$DriRival7Lost: Even a small light can grow.<1>Rest a little and shine again!
+$DriRival8: The Child of Kindness
+$DriRival8Hello: I once used my power the wrong way.<1>Now I fight to protect - ready?
+$DriRival8Won: Strength with a kind heart...<1>That is the real way to win.
+$DriRival8Lost: Do not be ashamed of losing.<1>Kindness means getting back up!
+$DriRival9: The Warrior Without a Heart
+$DriRival9Hello: I have no Tamer and no heart.<1>Then what am I? Fight and show me!
+$DriRival9Won: So a heart is what makes you strong...<1>I will keep searching for mine.
+$DriRival9Lost: Your heart did not stop me.<1>Find a stronger one, then return!
+$DriRival10: The Lone Demon Lord
+$DriRival10Hello: Nobody tames me, got it?<1>Show me what you got, kid!
+$DriRival10Won: Tch... fine, you are tough.<1>Maybe a partner is not so bad.
+$DriRival10Lost: Ha! Told you, I need nobody!<1>Come back when you are serious!
+$DriRival11: The Way of the Sword
+$DriRival11Hello: A true swordsman bows first.<1>Now draw your blade - begin!
+$DriRival11Won: A clean strike. I yield.<1>Your training shows in every move!
+$DriRival11Lost: A blade with no focus cannot cut.<1>Train your mind, then return!
+$DriRival12: The Child of Friendship
+$DriRival12Hello: I do not talk much. My partner<1>does the talking - with his fangs!
+$DriRival12Won: ...Heh. You are all right.<1>Friends like you are worth having.
+$DriRival12Lost: Going it alone never works.<1>Trust your team and try again.
+$DriRival13: The Iron Fist
+$DriRival13Hello: My partner hits like a mountain!<1>Brace yourself and hit back!
+$DriRival13Won: What a punch! You are the real deal!<1>Let us train together sometime.
+$DriRival13Lost: Strength grows from the ground up.<1>Build yours, then come back!
+$DriRival14: The Forest Hunter
+$DriRival14Hello: In the forest only the strong survive.<1>Will you be the hunter or the prey?
+$DriRival14Won: You were the hunter all along!<1>The forest bows to you.
+$DriRival14Lost: Caught in the web! Back to the nest,<1>grow stronger and try again!
+$DriRival15: The Pirate Captain
+$DriRival15Hello: Ahoy! Every captain needs a crew,<1>and mine is ready to fight!
+$DriRival15Won: Blow me down, what a battle!<1>You would make a fine captain!
+$DriRival15Lost: Sunk on the first wave, matey!<1>Patch your ship and set sail again!
 $DriStages: "Stages felled "
 $DriNewReward: New reward
 $DriNoReward: No new reward

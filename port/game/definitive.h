@@ -590,14 +590,14 @@ void def_hunt_target_name(unsigned char *buf, int *p, int size, int rare);
  * time; unlocking a challenge hands over Hunt Materials once, for good. Kept in the slot's second card record. */
 #define DEF_DRI_CHALLENGES 16    /* challenges the second card record has room for: an unlocked bit and a 2-bit best stage each */
 #define DEF_DRI_STAGES 3         /* a challenge's stages: the battle's three enemy members (Champion, Ultimate, Mega) */
-#define DEF_DRI_LEVEL_FIRST 24   /* the first challenge's Champion fights at this level... */
-#define DEF_DRI_LEVEL_GAP 8      /* ...each next challenge's this many levels higher */
+#define DEF_DRI_LEVEL_FIRST 24   /* the easiest challenge's Champion fights at this level... */
+#define DEF_DRI_LEVEL_GAP 4      /* ...each next one's in difficulty this many higher (16: the last Mega at 90) */
 #define DEF_DRI_LEVEL_STEP 3     /* within a challenge, each stage fights this many levels above the one before */
 #define DEF_DRI_SCALE_EXP_PCT 80 /* past its species' own levels a stage's HP and stat_scale grow as (level ratio)^(this/100) */
 #define DEF_DRI_COMMON_LO 15     /* unlock: the first challenge's common Hunt Material, how many... */
 #define DEF_DRI_COMMON_HI 40     /* ...rising to this for the last */
 #define DEF_DRI_RARE_OVER 5      /* unlock: its rare items are Rare Targets' of at most this many levels above its Champion */
-#define DEF_DRI_TWO_RARES 2      /* from this challenge on (table order) the unlock takes two rare items, one before */
+#define DEF_DRI_TWO_RARES 2      /* from this rank on (difficulty order) the unlock takes two rare items, one before */
 #define DEF_DRI_STAGE 19         /* the simulations' battle scenery (records_state.stage: the game's boss battles') */
 #define DEF_DRI_MUSIC 0x60880000 /* and their music (the boss battles') */
 #define DEF_DRI_DEBUG_MENU 100   /* def_dri_debug's value that opens the list as a DRI Agent would (tests) */
@@ -620,9 +620,11 @@ typedef struct DefDriChallenge {
     short rare[2];                      /* and rare items (indices of def_hunt_targets), -1: none */
     unsigned char rare_n[2];
 } DefDriChallenge;
+#define DEF_DRI_PER_AGENT 2      /* challenges each DRI Agent offers (the owner's: no agent holds a pile of them) */
 typedef struct DefDriAgent {
     short map;   /* the field map, -1: any */
     short actor; /* FieldstgPlacedActor.id, the talked-to actor's base.key1 */
+    signed char challenges[DEF_DRI_PER_AGENT]; /* the ones he offers (def_dri_challenges indices), easier first */
 } DefDriAgent;
 extern const DefDriChallenge def_dri_challenges[];
 extern const int def_dri_challenge_count;
@@ -635,6 +637,7 @@ extern const int def_dri_agent_count;
 const DefDriChallenge *def_dri_challenge(int c);
 int def_dri_tier(int fallen);
 int def_dri_agent(int map, int actor);
+int def_dri_agent_index(int map, int actor); /* which of def_dri_agents, -1: none */
 int def_dri_can_unlock(int c);
 int def_dri_unlock(int c);
 int def_dri_award(int c, int fallen, short items[DEF_DRI_STAGES]);
@@ -642,7 +645,7 @@ const unsigned char *def_dri_cost_label(int c, int *palette);
 /* The Tamers the simulations replay (owner, 2026-11-13: classic characters, the old Digimon tamers, as rivals), one per
  * challenge in the table's order (gen_dri_challenges.py's LINES, which checks en.txt has them): its title, its line
  * before the fight, after a full clear and after less (glyph bytes, $DriRival<n>*); NULL past them or in a replay. */
-#define DEF_DRI_RIVALS 5       /* Tamers with texts */
+#define DEF_DRI_RIVALS 16      /* Tamers with texts */
 #define DEF_DRI_RIVAL_NAME 0
 #define DEF_DRI_RIVAL_HELLO 1
 #define DEF_DRI_RIVAL_WON 2

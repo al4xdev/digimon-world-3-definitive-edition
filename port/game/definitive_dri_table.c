@@ -5,28 +5,50 @@
 #include "definitive.h"
 
 const DefDriChallenge def_dri_challenges[] = {
-    /* 0 Terriermon line, Metal Power: Guardromon Lv24, Antylamon Lv27, MegaGargomon (as BK MegaGargomon) Lv30 */
-    { { { 435, 24, 701, 9999, 14, 0 }, { 434, 27, 805, 9999, 10, 0 }, { 372, 30, 1735, 9999, 12, 443 } }, 6, { 354, 355, 356 }, 3, 15, { 4, -1 }, { 1, 0 } },
-    /* 1 Veemon line, Bolt Power: ExVeemon (as Devidramon) Lv32, Paildramon Lv35, Imperialdramon (as BK Imperialdramon) Lv38 */
-    { { { 259, 32, 909, 9999, 13, 135 }, { 450, 35, 1920, 9999, 27, 0 }, { 148, 38, 2101, 9999, 14, 444 } }, 10, { 351, 352, 353 }, 5, 20, { 26, -1 }, { 1, 0 } },
-    /* 2 Patamon line, Wind Power: Angemon (as Airdramon) Lv40, MagnaAngemon Lv43, Seraphimon (as BK Seraphimon) Lv46 */
-    { { { 20, 40, 1080, 9999, 65, 7 }, { 452, 43, 2304, 9999, 24, 0 }, { 214, 46, 2453, 9999, 16, 447 } }, 15, { 348, 349, 350 }, 8, 25, { 24, 60 }, { 1, 1 } },
-    /* 3 Agumon line, Fire Power: Greymon (as Tyrannomon) Lv48, MetalGreymon Lv51, WarGreymon (as BK WarGreymon) Lv54 */
-    { { { 5, 48, 1272, 9999, 77, 8 }, { 449, 51, 2688, 9999, 41, 0 }, { 213, 54, 2832, 9999, 16, 448 } }, 26, { 339, 340, 341 }, 13, 35, { 40, 62 }, { 1, 1 } },
-    /* 4 Guilmon line, Dark Power: Growlmon (as Flarerizamon) Lv56, WarGrowlmon Lv59, Gallantmon (as BK WarGrowlmon) Lv62 */
-    { { { 367, 56, 1417, 9999, 21, 69 }, { 451, 59, 3072, 9999, 33, 0 }, { 369, 62, 3216, 9999, 18, 445 } }, 32, { 357, 358, 359 }, 15, 40, { 5, 20 }, { 1, 1 } },
+    /* 0 Terriermon line (rank 9), Metal Power: Guardromon Lv60, Antylamon Lv63, MegaGargomon (as BK MegaGargomon) Lv66 */
+    { { { 435, 60, 1460, 9999, 29, 0 }, { 434, 63, 1595, 9999, 20, 0 }, { 372, 66, 3401, 9999, 22, 443 } }, 303, { 354, 355, 356 }, 15, 30, { 1, 4 }, { 1, 1 } },
+    /* 1 Veemon line (rank 3), Bolt Power: ExVeemon (as Devidramon) Lv36, Paildramon Lv39, Imperialdramon (as BK Imperialdramon) Lv42 */
+    { { { 259, 36, 999, 9999, 14, 135 }, { 450, 39, 2112, 9999, 29, 0 }, { 148, 42, 2276, 9999, 15, 444 } }, 12, { 351, 352, 353 }, 7, 20, { 47, 26 }, { 1, 1 } },
+    /* 2 Patamon line (rank 4), Wind Power: Angemon (as Airdramon) Lv40, MagnaAngemon Lv43, Seraphimon (as BK Seraphimon) Lv46 */
+    { { { 20, 40, 1080, 9999, 65, 7 }, { 452, 43, 2304, 9999, 24, 0 }, { 214, 46, 2453, 9999, 16, 447 } }, 15, { 348, 349, 350 }, 8, 20, { 24, 60 }, { 1, 1 } },
+    /* 3 Agumon line (rank 6), Fire Power: Greymon (as Tyrannomon) Lv48, MetalGreymon Lv51, WarGreymon (as BK WarGreymon) Lv54 */
+    { { { 5, 48, 1272, 9999, 77, 8 }, { 449, 51, 2688, 9999, 41, 0 }, { 213, 54, 2832, 9999, 16, 448 } }, 26, { 339, 340, 341 }, 13, 25, { 40, 62 }, { 1, 1 } },
+    /* 4 Guilmon line (rank 7), Dark Power: Growlmon (as Flarerizamon) Lv52, WarGrowlmon Lv55, Gallantmon (as BK WarGrowlmon) Lv58 */
+    { { { 367, 52, 1335, 9999, 19, 69 }, { 451, 55, 2880, 9999, 31, 0 }, { 369, 58, 3024, 9999, 17, 445 } }, 29, { 357, 358, 359 }, 14, 25, { 5, 20 }, { 1, 1 } },
+    /* 5 Devimon line (rank 12), Dark Power: Devimon (as Gargoylemon) Lv72, Myotismon (as LadyDevimon) Lv75, MaloMyotismon (as VenomMyotismon) Lv78 */
+    { { { 6, 72, 1710, 9999, 28, 302 }, { 66, 75, 1838, 9999, 25, 177 }, { 378, 78, 1912, 9999, 22, 236 } }, 305, { 357, 358, 359 }, 15, 35, { 36, 40 }, { 1, 1 } },
+    /* 6 Renamon line (rank 5), Ice Power: Kyubimon (as Lynxmon) Lv44, Taomon Lv47, Sakuyamon (as Puppetmon) Lv50 */
+    { { { 374, 44, 1189, 9999, 15, 327 }, { 453, 47, 2496, 9999, 25, 0 }, { 376, 50, 2623, 9999, 15, 231 } }, 20, { 345, 346, 347 }, 11, 25, { 54, 52 }, { 1, 1 } },
+    /* 7 Angewomon line (rank 13), Water Power: Angewomon (as Persiamon) Lv76, MagnaAngemon Lv79, Phoenixmon (as Gryphonmon) Lv82 */
+    { { { 234, 76, 5821, 9999, 30, 437 }, { 452, 79, 6004, 9999, 40, 0 }, { 59, 82, 6186, 9999, 27, 193 } }, 305, { 342, 343, 344 }, 15, 35, { 25, 24 }, { 1, 1 } },
+    /* 8 Wormmon line (rank 11), Bolt Power: Stingmon (as Snimon) Lv68, Paildramon Lv71, Imperialdramon-F (as BK Imperialdramon) Lv74 */
+    { { { 260, 68, 2510, 9999, 23, 238 }, { 450, 71, 3606, 9999, 50, 0 }, { 359, 74, 3727, 9999, 24, 444 } }, 320, { 351, 352, 353 }, 15, 35, { 47, 26 }, { 1, 1 } },
+    /* 9 Agumon (dark) line (rank 14), Fire Power: Greymon (as Tyrannomon) Lv80, SkullGreymon (as SkullMammothmon) Lv83, BK WarGreymon Lv86 */
+    { { { 5, 80, 1931, 9999, 117, 8 }, { 26, 83, 3094, 9999, 25, 215 }, { 448, 86, 4284, 9999, 25, 0 } }, 305, { 339, 340, 341 }, 15, 40, { 62, 9 }, { 1, 1 } },
+    /* 10 Impmon line (rank 15), Dark Power: Flarerizamon Lv84, Megadramon Lv87, Beelzemon (as Ghoulmon) Lv90 */
+    { { { 69, 84, 1960, 9999, 28, 0 }, { 54, 87, 2038, 9999, 27, 0 }, { 377, 90, 2094, 9999, 26, 312 } }, 305, { 357, 358, 359 }, 15, 40, { 68, 36 }, { 1, 1 } },
+    /* 11 Kotemon line (rank 0), Wind Power: Dinohumon (as Divermon) Lv24, Kyukimon Lv27, Marsmon (as Zanbamon) Lv30 */
+    { { { 386, 24, 696, 9999, 16, 241 }, { 454, 27, 1539, 9999, 16, 0 }, { 394, 30, 1716, 9999, 13, 337 } }, 6, { 348, 349, 350 }, 3, 15, { 58, -1 }, { 1, 0 } },
+    /* 12 Musyamon line (rank 8), Ice Power: Musyamon Lv56, Knightmon Lv59, MetalGarurumon (as HiAndromon) Lv62 */
+    { { { 173, 56, 1387, 9999, 26, 0 }, { 178, 59, 3725, 9999, 18, 0 }, { 196, 62, 3876, 9999, 29, 356 } }, 32, { 345, 346, 347 }, 15, 30, { 36, 40 }, { 1, 1 } },
+    /* 13 Kumamon line (rank 2), Metal Power: Grizzmon (as Monzaemon) Lv32, GrapLeomon Lv35, Cannondramon (as Machinedramon) Lv38 */
+    { { { 388, 32, 888, 9999, 18, 14 }, { 456, 35, 1616, 9999, 16, 0 }, { 393, 38, 1726, 9999, 13, 115 } }, 10, { 354, 355, 356 }, 5, 20, { 48, 12 }, { 1, 1 } },
+    /* 14 Kuwagamon line (rank 10), Bolt Power: Kuwagamon Lv64, Okuwamon Lv67, GranKuwagamon (as H−Kabuterimon) Lv70 */
+    { { { 51, 64, 1632, 9999, 181, 0 }, { 226, 67, 1693, 9999, 28, 0 }, { 230, 70, 1753, 9999, 24, 60 } }, 310, { 351, 352, 353 }, 15, 30, { 49, 14 }, { 1, 1 } },
+    /* 15 Monmon line (rank 1), Water Power: Hookmon (as Cyclonemon) Lv28, Armormon Lv31, GuardiAngemon (as Vikemon) Lv34 */
+    { { { 387, 28, 792, 9999, 17, 134 }, { 455, 31, 1728, 9999, 17, 0 }, { 392, 34, 1861, 9999, 13, 270 } }, 9, { 342, 343, 344 }, 4, 15, { 27, -1 }, { 1, 0 } },
 };
-const int def_dri_challenge_count = 5;
+const int def_dri_challenge_count = 16;
 
-/* (map, actor ID); map -1: any map. */
+/* (map, actor ID; map -1: any map) and the challenges he offers, easier first. */
 const DefDriAgent def_dri_agents[] = {
-    { 0x21D, 43 },
-    { 0x21D, 44 },
-    { 0x226, 43 },
-    { 0x22B, 43 },
-    { 0x22E, 43 },
-    { 0x258, 43 },
-    { 0x258, 44 },
-    { 0x258, 163 },
+    { 0x21D, 43, { 2, 5 } }, /* Kazuki */
+    { 0x21D, 44, { 6, 7 } }, /* Michael */
+    { 0x226, 43, { 1, 8 } }, /* Bob */
+    { 0x22B, 43, { 3, 9 } }, /* Johann */
+    { 0x22E, 43, { 4, 10 } }, /* Jimmy */
+    { 0x258, 43, { 11, 12 } }, /* Ken */
+    { 0x258, 44, { 13, 14 } }, /* Yuji */
+    { 0x258, 163, { 15, 0 } }, /* Yang */
 };
 const int def_dri_agent_count = 8;
