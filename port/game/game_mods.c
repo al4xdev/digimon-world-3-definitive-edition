@@ -790,6 +790,22 @@ u8 port_face_symbol_code(int bit) {
     return 0;
 }
 
+/* The extra glyph to write in a text for the face button `bit` so that it comes out as that button's own symbol (or its
+ * pad.map letter): message.c swaps circle and triangle in the game's own text (the rotation of the face buttons for the
+ * other languages), so a text the port writes itself has to swap them first, as the battle menu does. 0: no symbol. */
+u8 port_face_text_code(int bit) {
+    u8 code = port_face_symbol_code(bit);
+
+    if (!port_script_active) {
+        if (code == 0x2F) {
+            code = 0x34;
+        } else if (code == 0x34) {
+            code = 0x2F;
+        }
+    }
+    return code;
+}
+
 /* The glyph code of the letter pad.map gives a face symbol (the extra glyph `code`), or 0 to keep the symbol. */
 s16 dw3_button_glyph(u8 code) {
     char letter = 0;

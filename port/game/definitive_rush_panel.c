@@ -312,7 +312,7 @@ static void ra_keys_open(void) {
     unsigned char *t = rush_panel.keys_text;
     int p = 0, i;
 
-    sym[1] = port_face_symbol_code(pad_state.get_button_map(0, 13));
+    sym[1] = port_face_text_code(pad_state.get_button_map(0, 13));
     if (sym[1] != 0) {
         def_glyph_put(t, &p, sizeof(rush_panel.keys_text), sym);
         def_glyph_put(t, &p, sizeof(rush_panel.keys_text), space);
@@ -321,7 +321,7 @@ static void ra_keys_open(void) {
     for (i = 0; i < 5; i++) {
         def_glyph_put(t, &p, sizeof(rush_panel.keys_text), space);
     }
-    sym[1] = port_face_symbol_code(pad_state.get_button_map(0, 14));
+    sym[1] = port_face_text_code(pad_state.get_button_map(0, 14));
     if (sym[1] != 0) {
         def_glyph_put(t, &p, sizeof(rush_panel.keys_text), sym);
         def_glyph_put(t, &p, sizeof(rush_panel.keys_text), space);

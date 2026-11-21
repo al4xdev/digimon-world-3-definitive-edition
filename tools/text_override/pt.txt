@@ -1583,7 +1583,7 @@ STATUS 51: Não
 STATUS 52: Digivolve
 STATUS 54: ーーーーーーーー
 STATUS 55: Escolher Digivolve
-STATUS 56: Nível da Skill
+STATUS 56: Nív. Skill
 STATUS 57: Battle Digivolve Ativado
 STATUS 58: Battle Digivolve Desativado
 STATUS 59: Explicação da Técnica
@@ -4500,7 +4500,7 @@ $M1T: Divermon, no Yellow Cruiser (o teto<1>amarelo do nível inferior da Cidade
 $M2: Botas-Árvore
 $M2T: O jogador Hide, no Cabo Plug, perdeu sua<1>carta Gabumon: ela fica nas prateleiras<1>do porão da Pousada Asuka. Depois, fale<1>com Debbie no Lamb Chop e ache Veemon no<1>extremo leste da Pradaria do Vento.
 $M3: Vara de Pesca
-$M3T: Tai Kong Wang, na Praia das Conchas, faz<1>uma com Lança de Bambu (Armaria de Asuka),<1>Teia de Aranha (Dokugumon, Floresta<1>Protocol) e o Pargo Vermelho preso no<1>Divermon do Lago Divermon.
+$M3T: Tai Kong Wang, na Praia das Conchas, faz<1>uma com Lança da Brisa (Armaria de Asuka),<1>Teia de Aranha (Dokugumon, Floresta<1>Protocol) e o Pargo Vermelho preso no<1>Divermon do Lago Divermon.
 $VelvetTitle: VELVET
 $TimeTitle: TIME
 $TimeTitle2: ROOM

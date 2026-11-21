@@ -1661,7 +1661,7 @@ TALK02 653: <7>DRI Michael<7>Você tem ótimos<1>Digimon.<2,2><3>Pena que nenhum
 TALK02 654: <7>Tai Kong Wang<7>Sou Tai Kong Wang,<1>pescador.<2,2>
 TALK02 655: <7>Tai Kong Wang<7>Lançar esta linha é<1>como entendo o mundo.<2,2><3>Na verdade, não. Mas<1>me deixa feliz.<2,2>
 TALK02 656: <7>Tai Kong Wang<7>Quer tentar?<2,2><3>Pra pescar, precisa<1>de vara, linha e<1>anzol.<2,2><3>Posso fazer uma vara<1>de pescar pra você.<2,2>
-TALK02 657: <7>Tai Kong Wang<7>Uma Lança de Bambu,<1>uma Teia de Aranha e<1>um Pargo Vermelho.<2,2><3>Espere um momento. Vou<1>fazer uma vara de<1>pescar pra você.<2,2>
+TALK02 657: <7>Tai Kong Wang<7>Uma Lança da Brisa,<1>uma Teia de Aranha e<1>um Pargo Vermelho.<2,2><3>Espere um momento. Vou<1>fazer uma vara de<1>pescar pra você.<2,2>
 TALK02 658: <7>Tai Kong Wang<7>Como foi? Pegou algo?<2,2><3>Não se preocupe em<1>pescar. Só relaxe.<2,2>
 TALK02 667: <7>Hide do Futebol<7>Na Pousada de Asuka?<1>Acho que sim...<2,2>
 TALK02 668: <7>Hide do Futebol<7>Pode ser que eu tenha<1>perdido na Pousada de<1>Asuka.<2,2><3>Desculpe, não lembro<1>bem.<2,2>

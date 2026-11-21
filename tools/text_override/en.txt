@@ -753,7 +753,7 @@ $M1T: Divermon, in the Yellow Cruiser (the<1>yellow roof of Asuka City's lower<1
 $M2: Tree Boots
 $M2T: Soccer Kid Hide, at Plug Cape, lost his<1>Gabumon card: it is on the shelves of<1>the Asuka Inn's basement. Then ask<1>Debbie at the Lamb Chop and find Veemon<1>at the east end of the Wind Prairie.
 $M3: Fishing Pole
-$M3T: Tai Kong Wang, at Shell Beach, makes<1>one from a Bamboo Spear (Asuka Armory),<1>a Spider Web (Dokugumon, Protocol<1>Forest) and the Red Snapper stuck in<1>the Divermon of Divermon's Lake.
+$M3T: Tai Kong Wang, at Shell Beach, makes<1>one from a Breeze Spear (Asuka Armory),<1>a Spider Web (Dokugumon, Protocol<1>Forest) and the Red Snapper stuck in<1>the Divermon of Divermon's Lake.
 # The Velvet Room's two speaking figures (port/game/definitive_velvet.c): entries 81 and 82 of the bar's talk file (map
 # 0x20F, WSTAG255) are the letter "a" in the game's own text, said by nobody. The mentor's panel (the purification) opens
 # after his line.
