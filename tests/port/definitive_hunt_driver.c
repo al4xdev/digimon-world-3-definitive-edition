@@ -15,6 +15,7 @@
 extern const unsigned char def_str_HuntRomanI[];
 
 int port_script_active;
+int records_language = 1; /* the texts' language switch (definitive_text_lang.inc) reads the disc's set */
 void port_log(const char *fmt, ...) {
     (void)fmt;
 }
