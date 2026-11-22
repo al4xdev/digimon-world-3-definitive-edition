@@ -150,7 +150,7 @@ void def_field_freeze_player(void) {
         player->voice = -1;
     }
     if (player->base.step == 2 || player->base.step == 3) {
-        player->base.set_step(player, 1);
+        ((void (*)(void *, s32))player->base.set_step)(player, 1); /* prototyped: clang (Windows, Android) refuses the bare call */
     }
 }
 
