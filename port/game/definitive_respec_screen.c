@@ -97,7 +97,9 @@ static const unsigned char *stat_name(int k) {
 }
 
 static s16 *raw(int k) {
-    return &gamestate_data.digimon[rs.who].record.stats.values[RS_FIRST + k];
+    GamestateStats *st = &gamestate_data.digimon[rs.who].record.stats;
+
+    return k < RS_LEFT ? &st->stats[k] : &st->resists[k - RS_LEFT];
 }
 
 static int joined(int i) {
