@@ -190,7 +190,7 @@ int main(void) {
     def_record_replica_set(DEF_REPLICAS - 1, 1);
     def_bestiary_record_write(rec);
     ok = memcmp(rec, "BEST", 4) == 0 && rec[0xD0] == 'X' && rec[0xD1] == '1' && rec[0xD0 + 26] == 0x01 &&
-         rec[0xD0 + 27] == 0x80;
+         rec[0xD0 + 27] == 0x00 && rec[0xD0 + 28] == 0x00 && rec[0xD0 + 29] == 0x80;
     def_bestiary_reset();
     check("reset clears the bits", !def_record_replica(0) && !def_record_replica(DEF_REPLICAS - 1));
     def_bestiary_record_read(rec);

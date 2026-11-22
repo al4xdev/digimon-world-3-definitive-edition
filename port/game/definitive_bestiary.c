@@ -25,7 +25,7 @@ static unsigned char extra_flags;
 static unsigned int extra_network;
 static unsigned char extra_region, extra_chain;
 static unsigned char extra_materials[DEF_HUNT_MATERIALS];
-static unsigned short extra_replicas; /* DEF_REPLICAS bits: two bytes of the record */
+static unsigned int extra_replicas; /* DEF_REPLICAS bits: four bytes of the record (REC_EXTRA + 26..29) */
 /* The second record: "HUNT", version, XOR checksum of the rest, a byte unused, the rare items' counts,
  * then the bits of the ones ever held (the bestiary's collection); the rest of the 0x100 is spare. */
 #define REC2_RARES 8
@@ -190,7 +190,7 @@ int def_record_replica(int r) {
 
 void def_record_replica_set(int r, int on) {
     if (r >= 0 && r < DEF_REPLICAS) {
-        extra_replicas = (unsigned short)(on ? extra_replicas | (1u << r) : extra_replicas & ~(1u << r));
+        extra_replicas = on ? extra_replicas | (1u << r) : extra_replicas & ~(1u << r);
     }
 }
 
@@ -290,8 +290,9 @@ void def_bestiary_record_write(unsigned char *out) {
         out[REC_EXTRA + 8] = extra_region;
         out[REC_EXTRA + 9] = extra_chain;
         memcpy(out + REC_EXTRA + 10, extra_materials, DEF_HUNT_MATERIALS);
-        out[REC_EXTRA + 26] = (unsigned char)extra_replicas;
-        out[REC_EXTRA + 27] = (unsigned char)(extra_replicas >> 8);
+        for (i = 0; i < 4; i++) {
+            out[REC_EXTRA + 26 + i] = (unsigned char)(extra_replicas >> (8 * i));
+        }
     }
 }
 
@@ -318,7 +319,10 @@ void def_bestiary_record_read(const unsigned char *in) {
             extra_materials[i] = in[REC_EXTRA + 10 + i] > DEF_HUNT_MATERIAL_CAP ? DEF_HUNT_MATERIAL_CAP
                                                                                : in[REC_EXTRA + 10 + i];
         }
-        extra_replicas = (unsigned short)(in[REC_EXTRA + 26] | in[REC_EXTRA + 27] << 8);
+        extra_replicas = 0;
+        for (i = 0; i < 4; i++) {
+            extra_replicas |= (unsigned int)in[REC_EXTRA + 26 + i] << (8 * i);
+        }
     }
     port_log("bestiary: the slot's record read: %d species known, flags %d, network 0x%X", known, extra_flags,
              extra_network);
