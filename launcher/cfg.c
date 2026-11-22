@@ -469,6 +469,19 @@ void cfg_load(Cfg *c) {
         }
     }
     if (f) fclose(f);
+    /* Migration (2026-11-22): the Android launcher's remap stored a row's new button without its letter, so the pad read
+     * as LAYOUT_CUSTOM and every glyph fell back to the PS1 shapes. No screen reaches LAYOUT_CUSTOM on purpose (cycling
+     * the glyphs leaves it for PS1), so a pad.map in it is that bug's: keep every button, and give the letters back from
+     * the layout most rows still match. */
+    if (cfg_layout(c) == LAYOUT_CUSTOM) {
+        int best = LAYOUT_XBOX, best_n = -1;
+        for (int l = LAYOUT_PS1; l <= LAYOUT_NINTENDO; l++) {
+            int n = 0;
+            for (int a = 0; a <= A_TRIANGLE; a++) n += c->pad[a].letter == layout_letter(l, c->pad[a].code);
+            if (n > best_n) { best = l; best_n = n; }
+        }
+        cfg_set_layout(c, best);
+    }
     path_of(path, sizeof(path), "settings.json");
     char *j = slurp(path);
     if (j) {
