@@ -30,7 +30,7 @@ struct StgdglabTechs {
 }; /* size 0xAC */
 
 #ifdef PC_PORT
-#define DEF_TECH_ICON_X 0xDA /* definitive: a technique's element picture, after its name (names start at 0x6B), before the marks */
+#define DEF_TECH_ICON_X 0x5D /* definitive: a technique's picture, where the class sprite was (names start at 0x6B) */
 #endif
 
 /* Its data block (0x5C bytes). */
@@ -369,6 +369,9 @@ void stgdglab_techs_update(StgdglabTechs *obj, StgdglabTechsData *data) {
                 tech = obj->form_record.techniques[j];
                 if (obj->form_record.techniques[j] != 0) {
                     tech &= 0x1FFF;
+#ifdef PC_PORT
+                    if (def_tech_class_sprite(tech)) /* definitive: the picture replaces the class (def_tech_icon) */
+#endif
                     spr.draw(cdload_module.get_subfile_by_id(0x02860000), records_techniques[tech - 1].element + 0x37, 0x5D, y);
                 }
             }

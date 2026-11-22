@@ -153,7 +153,7 @@ $Bestiary: Bestiary
 $BestiaryMenu: BESTIARY
 $BestiaryHint: L1/R1: Page
 $Slash: /
-SKLINF 53: Fire attack.
+SKLINF 53: Fire magic.
 SKLINF 54: Physical attack. Crit chance.
 SKLINF 55: Physical attack.
 SKLINF 56: Fire magic.
@@ -166,13 +166,13 @@ SKLINF 62: Physical attack. Crit chance.
 SKLINF 63: Physical attack. Counters.
 SKLINF 64: Fire magic.
 SKLINF 65: Fire magic.
-SKLINF 66: Thunder attack.
+SKLINF 66: Thunder magic.
 SKLINF 67: Fire magic.
-SKLINF 68: Wind attack.
+SKLINF 68: Wind magic.
 SKLINF 69: Physical attack. Drains HP.
 SKLINF 70: Physical attack.
-SKLINF 71: Thunder attack.
-SKLINF 72: Wind attack. 3 hits.
+SKLINF 71: Thunder magic.
+SKLINF 72: Wind magic. 3 hits.
 SKLINF 73: Physical attack. 3 hits.
 SKLINF 74: Physical attack. 3 hits.
 SKLINF 75: Machine magic.
@@ -182,7 +182,7 @@ SKLINF 78: Fire magic.
 SKLINF 79: Physical attack.
 SKLINF 80: Magic attack. KO chance.
 SKLINF 81: Dark magic. Foe Atk-2, 3 turns.
-SKLINF 82: Machine attack.
+SKLINF 82: Machine magic.
 SKLINF 83: Thunder magic.
 SKLINF 84: Dark magic.
 SKLINF 85: Physical attack.
@@ -195,26 +195,26 @@ SKLINF 91: Magic attack.
 SKLINF 92: Physical attack.
 SKLINF 93: Ice magic.
 SKLINF 94: Physical attack. Poison chance.
-SKLINF 95: Dark attack.
+SKLINF 95: Dark magic.
 SKLINF 96: Physical attack.
 SKLINF 97: Dark magic.
-SKLINF 98: Machine attack.
+SKLINF 98: Machine magic.
 SKLINF 99: Physical attack. KO chance.
 SKLINF 100: Revives all allies at max HP.
 SKLINF 101: Physical attack. Paralysis chance.
 SKLINF 102: Physical attack.
 SKLINF 103: Physical attack. 3 hits.
 SKLINF 104: Dark magic.
-SKLINF 105: Fire attack.
-SKLINF 106: Fire attack.
-SKLINF 107: Ice attack.
-SKLINF 108: Ice phys. Foe Atk-1, 2 turns.
-SKLINF 109: Wind attack.
-SKLINF 110: Wind attack.
-SKLINF 111: Thunder attack.
-SKLINF 112: Thunder attack.
-SKLINF 113: Machine attack.
-SKLINF 114: Machine attack.
+SKLINF 105: Fire magic.
+SKLINF 106: Fire magic.
+SKLINF 107: Ice magic.
+SKLINF 108: Ice magic. Foe Atk-1, 2 turns.
+SKLINF 109: Wind magic.
+SKLINF 110: Wind magic.
+SKLINF 111: Thunder magic.
+SKLINF 112: Thunder magic.
+SKLINF 113: Machine magic.
+SKLINF 114: Machine magic.
 SKLINF 115: Physical attack. Poison chance.
 SKLINF 116: Physical attack. Poison chance.
 SKLINF 117: Physical attack. Paralysis chance.
@@ -232,9 +232,9 @@ SKLINF 128: Physical attack. Steals an item.
 SKLINF 131: Physical. Foe Def-1, 2 turns.
 SKLINF 132: Physical. Foe Atk-1, 2 turns.
 SKLINF 133: Physical attack.
-SKLINF 134: Mach phys. Foe Atk-2, 3 turns.
+SKLINF 134: Mach magic. Foe Atk-2, 3 turns.
 SKLINF 135: Physical attack.
-SKLINF 136: Mach phys. Foe Def-2, 3 turns.
+SKLINF 136: Mach magic. Foe Def-2, 3 turns.
 SKLINF 137: Fire magic.
 SKLINF 138: Fire magic.
 SKLINF 139: Fire magic.

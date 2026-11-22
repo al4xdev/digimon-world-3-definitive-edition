@@ -36,7 +36,7 @@ typedef struct StstatusFormsPageData {
 } StstatusFormsPageData; /* size 0x90 */
 
 #ifdef PC_PORT
-#define DEF_TECH_ICON_X 0x12A /* a technique's element picture, after its name (names start at 0xC4) */
+#define DEF_TECH_ICON_X 0xB6 /* a technique's picture, where the class sprite was (names start at 0xC4) */
 #endif
 
 /* The forms page (ststatus_create_forms_page, size 0xFC): a member's forms, the stats and techniques of one. */
@@ -408,6 +408,9 @@ void ststatus_forms_draw(StstatusFormsPage *obj) {
                 for (i = 0; i < 6; i++) {
                     tech = rec.techniques[i] & 0x1FFF;
                     if (tech != 0) {
+#ifdef PC_PORT
+                        if (def_tech_class_sprite(tech)) /* definitive: the picture replaces the class (def_tech_icon) */
+#endif
                         spr.draw(cdload_module.get_subfile_by_id(0x02860000), records_techniques[tech - 1].element + 0x37, 0xB6,
                                    obj->stats_y.value + 0x88 + i * 0xE);
                     }
@@ -417,6 +420,9 @@ void ststatus_forms_draw(StstatusFormsPage *obj) {
                 for (i = 0; i < 6; i++) {
                     tech = form->techniques[i + 1];
                     if (tech > 0) {
+#ifdef PC_PORT
+                        if (def_tech_class_sprite(tech)) /* definitive: the picture replaces the class (def_tech_icon) */
+#endif
                         spr.draw(cdload_module.get_subfile_by_id(0x02860000), records_techniques[tech - 1].element + 0x37, 0xB6,
                                    obj->stats_y.value + 0x88 + i * 0xE);
                     }

@@ -50,7 +50,7 @@ rien qu'à vous. Vous pouvez jouer **Kail**. Et votre ancienne sauvegarde foncti
 <td width="50%" valign="top">
 
 **⚔️ Des combats où l'on réfléchit**<br>
-Sept éléments répartis en cinq familles. Touchez une faiblesse, étourdissez, gagnez une action de plus, enchaînez.
+Sept éléments répartis en cinq familles, portés par la seule magie. Touchez une faiblesse, étourdissez, gagnez une action de plus, enchaînez.
 
 </td>
 <td width="50%" valign="top">
@@ -141,7 +141,14 @@ Chaque ennemi a des faiblesses et des résistances réparties sur **cinq famille
 Thunder + Machine et Dark. Les éléments associés partagent toujours la même valeur : une famille est donc faible,
 neutre ou résistante dans son ensemble.
 
-- **Touchez une faiblesse** avec une technique élémentaire : un **WEAK!** en biais, l'ennemi est **étourdi** et vous
+**Seule la magie porte un élément.** Le physique est purement physique : une technique physique ou une attaque normale
+ne touche jamais une faiblesse et ne donne jamais de ONE MORE ; contre un ennemi étourdi, elle reçoit le bonus fixe de «
+n'importe quel autre coup » ci-dessous (+0.2). Si vous connaissez le jeu d'origine, ses coups physiques élémentaires
+(Hot Head et compagnie) sont ici de la magie élémentaire. Les listes de techniques le montrent d'un coup d'œil : là où
+le jeu dessinait ses marques rouge (physique) et bleue (magie), vous voyez désormais un poing pour un coup physique et
+l'image de l'élément pour la magie.
+
+- **Touchez une faiblesse** avec de la magie élémentaire : un **WEAK!** en biais, l'ennemi est **étourdi** et vous
   gagnez une action **ONE MORE**. Chaque famille faible rapporte une fois par tour, si bien que deux faiblesses
   enchaînent plusieurs actions de suite.
 - **Tant qu'il est étourdi** : touchez une autre faiblesse, changez de partenaire avec un **Baton Pass** gratuit en
@@ -163,8 +170,7 @@ neutre ou résistante dans son ensemble.
 
 **Connaître son ennemi.** Rien n'est caché, mais il faut le découvrir. **Inspect** (`L2`) affiche les cinq familles de
 l'ennemi à mesure que vous les apprenez, `???` d'ici là ; **Libra** les révèle toutes d'un coup ; le **Bestiary**
-garde ce que vous avez appris sur chaque espèce, avec ses Hunt Materials. Chaque liste de techniques indique l'élément
-de chaque technique, et chaque description a été réécrite d'après ce que la technique fait vraiment (« Magie de feu.
+garde ce que vous avez appris sur chaque espèce, avec ses Hunt Materials. Chaque liste de techniques marque chaque technique (un poing, ou son élément), et chaque description a été réécrite d'après ce que la technique fait vraiment (« Magie de feu.
 Chance d'endormir. »).
 
 **Vos statistiques ont changé de métier.** Les anciennes statistiques de « tolérance » élémentaire de votre Digimon

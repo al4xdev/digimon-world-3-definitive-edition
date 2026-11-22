@@ -423,6 +423,10 @@ const unsigned char *def_family_icon(int f, int second);
 const unsigned char *def_family_name(int f);
 const unsigned char *def_inspect_family_state(const short *resists, int f, int *palette);
 int def_tech_element(int tech);
+/* A technique's picture where the game drew its class: the fist (physical), its element or the Spirit picture (magic),
+ * empty for healing and support; and whether the game's class sprite is still drawn for it (def_tech_class_sprite). */
+const unsigned char *def_tech_picture(int tech);
+int def_tech_class_sprite(int tech);
 struct MessageWindow;
 void def_tech_icon(struct MessageWindow *w, int tech, int palette);
 struct FightstgEnemyRecord;

@@ -50,7 +50,7 @@ pousadas conforme a história avança, com convidados, sonhos e uma escolha ou o
 <td width="50%" valign="top">
 
 **⚔️ Lutas em que você pensa**<br>
-Sete elementos em cinco famílias. Acerte uma fraqueza, atordoe, ganhe mais uma ação e encadeie.
+Sete elementos em cinco famílias, só na magia. Acerte uma fraqueza, atordoe, ganhe mais uma ação e encadeie.
 
 </td>
 <td width="50%" valign="top">
@@ -140,7 +140,13 @@ Todo inimigo tem fraquezas e resistências em **cinco famílias de elementos**: 
 Thunder + Machine e Dark. Elementos pareados sempre compartilham o mesmo valor, então uma família inteira é fraca,
 neutra ou resistente de uma vez.
 
-- **Acerte uma fraqueza** com uma técnica elemental: um **WEAK!** inclinado, o inimigo **fica atordoado** e você ganha
+**Só a magia tem elemento.** Físico é só físico: uma técnica física ou um ataque normal nunca acerta fraqueza nem dá ONE
+MORE; contra um inimigo atordoado, ele recebe o bônus fixo de "qualquer outro golpe" logo abaixo (+0.2). Se você conhece
+o jogo original, os golpes físicos elementais de lá (Hot Head e afins) aqui são magia elemental. As listas de técnicas
+mostram isso de relance: onde o jogo desenhava as marcas vermelha (físico) e azul (magia), agora aparece um soco para
+golpe físico e o desenho do elemento para magia.
+
+- **Acerte uma fraqueza** com magia elemental: um **WEAK!** inclinado, o inimigo **fica atordoado** e você ganha
   **ONE MORE** ação. Cada família fraca rende uma vez por rodada, então duas fraquezas encadeiam várias ações seguidas.
 - **Enquanto ele está atordoado**: acerte outra fraqueza, troque de parceiro com um **Baton Pass** gratuito e mantenha
   o seu turno (uma vez por rodada), ou desfira qualquer outro golpe por um bônus que encerra o atordoamento.
@@ -161,8 +167,7 @@ neutra ou resistente de uma vez.
 
 **Conheça o seu inimigo.** Nada fica escondido, mas você precisa descobrir. O **Inspect** (`L2`) mostra as cinco
 famílias do inimigo conforme você as descobre, `???` até lá; o **Libra** revela todas de uma vez; o **Bestiary**
-guarda o que você aprendeu sobre cada espécie, com os seus Hunt Materials. Toda lista de técnicas mostra o elemento de
-cada técnica, e cada descrição foi reescrita a partir do que a técnica realmente faz ("Magia de fogo. Chance de
+guarda o que você aprendeu sobre cada espécie, com os seus Hunt Materials. Toda lista de técnicas marca cada técnica (um soco, ou o seu elemento), e cada descrição foi reescrita a partir do que a técnica realmente faz ("Magia de fogo. Chance de
 sono.").
 
 **Os seus atributos mudaram de função.** Os antigos atributos de "tolerância" elemental do seu Digimon viraram

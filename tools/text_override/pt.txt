@@ -4751,7 +4751,7 @@ ITMNAM 298: Gema do Sábio
 ITMNAM 295: Anel da Fúria
 ITMNAM 297: Anel do Sábio
 ITMNAM 26: Demon Bell
-SKLINF 53: Ataque de Fogo.
+SKLINF 53: Magia de Fogo.
 SKLINF 54: Ataque físico. Chance de crítico.
 SKLINF 55: Ataque físico.
 SKLINF 56: Magia de Fogo.
@@ -4764,13 +4764,13 @@ SKLINF 62: Ataque físico. Chance de crítico.
 SKLINF 63: Ataque físico. Contra-ataca.
 SKLINF 64: Magia de Fogo.
 SKLINF 65: Magia de Fogo.
-SKLINF 66: Ataque de Trovão.
+SKLINF 66: Magia de Trovão.
 SKLINF 67: Magia de Fogo.
-SKLINF 68: Ataque de Vento.
+SKLINF 68: Magia de Vento.
 SKLINF 69: Ataque físico. Drena HP.
 SKLINF 70: Ataque físico.
-SKLINF 71: Ataque de Trovão.
-SKLINF 72: Ataque de Vento. 3 golpes.
+SKLINF 71: Magia de Trovão.
+SKLINF 72: Magia de Vento. 3 acertos.
 SKLINF 73: Ataque físico. 3 golpes.
 SKLINF 74: Ataque físico. 3 golpes.
 SKLINF 75: Magia de Máquina.
@@ -4780,7 +4780,7 @@ SKLINF 78: Magia de Fogo.
 SKLINF 79: Ataque físico.
 SKLINF 80: Ataque mágico. Chance de KO.
 SKLINF 81: Magia de Trevas. Atq-2, 3 turnos.
-SKLINF 82: Ataque de Máquina.
+SKLINF 82: Magia de Máquina.
 SKLINF 83: Magia de Trovão.
 SKLINF 84: Magia de Trevas.
 SKLINF 85: Ataque físico.
@@ -4793,26 +4793,26 @@ SKLINF 91: Ataque Mágico.
 SKLINF 92: Ataque Físico.
 SKLINF 93: Magia de Gelo.
 SKLINF 94: Atq Físico. Chance de Veneno.
-SKLINF 95: Ataque de Trevas.
+SKLINF 95: Magia de Trevas.
 SKLINF 96: Ataque Físico.
 SKLINF 97: Magia de Trevas.
-SKLINF 98: Ataque de Máquina.
+SKLINF 98: Magia de Máquina.
 SKLINF 99: Atq Físico. Chance de KO.
 SKLINF 100: Revive aliados com HP máximo.
 SKLINF 101: Atq Físico. Chance de Paralisia.
 SKLINF 102: Ataque Físico.
 SKLINF 103: Atq Físico. 3 acertos.
 SKLINF 104: Magia de Trevas.
-SKLINF 105: Ataque de Fogo.
-SKLINF 106: Ataque de Fogo.
-SKLINF 107: Ataque de Gelo.
-SKLINF 108: Gelo fís. Alvo Atq-1, 2 turnos.
-SKLINF 109: Ataque de Vento.
-SKLINF 110: Ataque de Vento.
-SKLINF 111: Ataque de Trovão.
-SKLINF 112: Ataque de Trovão.
-SKLINF 113: Ataque de Máquina.
-SKLINF 114: Ataque de Máquina.
+SKLINF 105: Magia de Fogo.
+SKLINF 106: Magia de Fogo.
+SKLINF 107: Magia de Gelo.
+SKLINF 108: Gelo mág. Alvo Atq-1, 2 turnos.
+SKLINF 109: Magia de Vento.
+SKLINF 110: Magia de Vento.
+SKLINF 111: Magia de Trovão.
+SKLINF 112: Magia de Trovão.
+SKLINF 113: Magia de Máquina.
+SKLINF 114: Magia de Máquina.
 SKLINF 115: Atq Físico. Chance de Veneno.
 SKLINF 116: Atq Físico. Chance de Veneno.
 SKLINF 117: Atq Físico. Chance de Paralisia.
@@ -4830,9 +4830,9 @@ SKLINF 128: Atq Físico. Rouba um item.
 SKLINF 131: Físico. Alvo Def-1, 2 turnos.
 SKLINF 132: Físico. Alvo Atq-1, 2 turnos.
 SKLINF 133: Ataque Físico.
-SKLINF 134: Máq. fís. Alvo Atq-2, 3 turnos.
+SKLINF 134: Máq. mág. Alvo Atq-2, 3 turnos.
 SKLINF 135: Ataque Físico.
-SKLINF 136: Máq. fís. Alvo Def-2, 3 turnos.
+SKLINF 136: Máq. mág. Alvo Def-2, 3 turnos.
 SKLINF 137: Magia de Fogo.
 SKLINF 138: Magia de Fogo.
 SKLINF 139: Magia de Fogo.

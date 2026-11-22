@@ -28,7 +28,13 @@ at the moment of the hit, so a debuff that takes a neutral family to 80 or less 
 
 ### Stagger and One More
 
-Hitting a weakness with an elemental technique **staggers** the enemy (it takes its tired pose) and gives you **one
+**Only magic carries an element.** Every elemental physical technique the player can learn became magic, its power
+recalibrated to the magic table (MP costs unchanged), so a physical technique or a basic attack is purely physical.
+The technique lists show it where the game drew its red (physical) and blue (magic) class marks: a fist for a physical
+technique, the element's picture for elemental magic, the Spirit picture for magic with no element; healing and support
+keep the game's mark. An enemy using one of these techniques casts it as magic too.
+
+Hitting a weakness with elemental magic **staggers** the enemy (it takes its tired pose) and gives you **one
 more** action. Each weak family gives its extra action once per round (a round starts with each normal action; an
 extra one does not start a new round), so two weaknesses can chain into several actions in a row, but Ice after Water
 gives none. Hitting a weakness again keeps the enemy staggered. Any other blow ends it, and still gets the stagger

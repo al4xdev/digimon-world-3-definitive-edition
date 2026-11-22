@@ -4695,6 +4695,9 @@ void fightstg_status_draw_techs(FightstgStatus *obj) {
     for (i = 0; i < 6; i++) {
         id = obj->techniques[i] & 0x1FFF;
         if (id != 0) {
+#ifdef PC_PORT
+            if (def_tech_class_sprite(id)) /* definitive: the picture replaces the class (def_tech_icon) */
+#endif
             sprite.draw(bank, records_techniques[id - 1].element + 0x37, 0x18, i * 14 + 0x51);
         }
     }
@@ -4721,10 +4724,9 @@ void fightstg_status_show_techs(FightstgStatus *obj, FightstgStatusData *data) {
         data->tech_windows[i] = message_create_window(0x1005, 1, 0x26, i * 14 + 0x51);
         id = obj->techniques[i];
 #ifdef PC_PORT
-        /* the element's picture after the name, where the technique menu puts it (FIGHTSTG_TECH_ELEM_X, this list's
-         * names start 4 pixels earlier) */
+        /* the technique's picture where the class sprite was (def_tech_icon) */
         if (def_on()) {
-            data->elem_icons[i] = message_create_window(0x1005, 1, 0x8A, i * 14 + 0x51);
+            data->elem_icons[i] = message_create_window(0x1005, 1, 0x18, i * 14 + 0x51);
             def_tech_icon(data->elem_icons[i], id & 0x1FFF, 0);
         }
 #endif
@@ -5149,7 +5151,7 @@ typedef struct FightstgTechMenuData {
 #endif
 } FightstgTechMenuData; /* size 0x40 */
 #ifdef PC_PORT
-#define FIGHTSTG_TECH_ELEM_X 0x8E      /* a row's picture: after the longest name, inside the panel's frame */
+#define FIGHTSTG_TECH_ELEM_X 0x1D      /* a row's picture: where the class sprite was (def_tech_icon) */
 #define FIGHTSTG_TECH_ELEM_INFO_X 0xB4 /* the description box's: left of the cost, on its line */
 
 /* The element of technique `id` (0: none shown) in the windows `icon` and, when given, `name`. */
@@ -5160,7 +5162,7 @@ static void fightstg_tech_menu_set_element(MessageWindow *icon, MessageWindow *n
     if (icon == NULL) {
         return;
     }
-    icon->set_text(icon, (u8 *)(e >= 0 ? def_element_icon(e) : empty), -1);
+    icon->set_text(icon, (u8 *)def_tech_picture(id), -1);
     icon->set_palette(icon, palette);
     if (name != NULL) {
         name->set_text(name, (u8 *)(e >= 0 ? def_inspect_element(e) : empty), -1);
@@ -5187,6 +5189,9 @@ void fightstg_tech_menu_draw(FightstgTechMenu *obj) {
             if (id == 0) {
                 break;
             }
+#ifdef PC_PORT
+            if (def_tech_class_sprite(id)) /* definitive: the picture replaces the class (def_tech_icon) */
+#endif
             sprite.draw(bank, records_techniques[id - 1].element + 0x37, 0x1D, i * 14 + 0x45);
         }
     }

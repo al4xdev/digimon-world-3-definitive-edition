@@ -576,18 +576,45 @@ int def_tech_element(int tech) {
     return stat >= 2 && stat <= 8 ? stat - 2 : -1;
 }
 
-/* A technique's element picture in window `w` (hidden text when it has none), for the screens that list a form's
- * techniques (Digi-Lab, the status pages, the battle's Tag and digivolve previews): the same picture the technique
- * menu shows at the row's end. `tech` carries the record's flag bits; `palette` is the row's (the picture is coloured,
- * but a greyed row greys it as the technique menu does). */
-void def_tech_icon(struct MessageWindow *w, int tech, int palette) {
-    static const unsigned char empty[1] = { 0 };
-    int e = def_tech_element(tech & 0x1FFF);
+/* A technique's picture where the game drew its class (red physical, blue magic; owner, 2026-11-22): a physical blow is
+ * physical only, so it shows the fist (the Strength picture, glyph 01 25); magic shows its element, or the Spirit
+ * picture (01 27: Spirit is the magic attack) when it has none. Healing and support techniques keep the game's own
+ * class picture: empty text here, and def_tech_class_sprite says to draw it. */
+const unsigned char *def_tech_picture(int tech) {
+    static const unsigned char fist[3] = { 1, 0x25, 0 }, spirit[3] = { 1, 0x27, 0 }, empty[1] = { 0 };
+    int e, cls;
 
+    if (tech < 1) {
+        return empty;
+    }
+    cls = records_techniques[tech - 1].element;
+    e = def_tech_element(tech);
+    if (cls == 2) {
+        return fist;
+    }
+    if (cls == 3) {
+        return e >= 0 ? def_element_icon(e) : spirit;
+    }
+    return empty;
+}
+
+/* 1 when the game's class sprite (records_techniques[].element + 0x37 of 0x02860000) is drawn for `tech`: always
+ * outside the definitive edition, and there only for the classes def_tech_picture leaves to it. */
+int def_tech_class_sprite(int tech) {
+    int cls = tech >= 1 ? records_techniques[tech - 1].element : 0;
+
+    return !def_on() || (cls != 2 && cls != 3);
+}
+
+/* A technique's picture (def_tech_picture) in window `w`, for the screens that list a form's techniques (Digi-Lab, the
+ * status pages, the battle's technique menu and its Tag and digivolve previews), placed where the class sprite was.
+ * `tech` carries the record's flag bits; `palette` is the row's (the picture is coloured, but a greyed row greys it as
+ * the technique menu does). */
+void def_tech_icon(struct MessageWindow *w, int tech, int palette) {
     if (w == NULL) {
         return;
     }
-    w->set_text(w, (unsigned char *)(e >= 0 ? def_element_icon(e) : empty), -1);
+    w->set_text(w, (unsigned char *)def_tech_picture(tech & 0x1FFF), -1);
     w->set_palette(w, palette);
 }
 
@@ -1519,7 +1546,7 @@ static void patch_techniques(void) {
     /* The technique rework: damaging attacks with secondary debuffs (E=0) */
     records_techniques[81 - 1].mp_cost = 84;           /* Grisly Wing: Atk-2, 3 turns */
     records_techniques[81 - 1].effect_power = 40;
-    records_techniques[108 - 1].mp_cost = 38;          /* Cold Slash: Ice phys + Atk-1, 2 turns */
+    records_techniques[108 - 1].mp_cost = 38;          /* Cold Slash: Ice (magic, below) + Atk-1, 2 turns */
     records_techniques[108 - 1].kind = 26;
     records_techniques[108 - 1].effect_power = 28;
     records_techniques[131 - 1].mp_cost = 32;          /* Armor Pierce (ex-Bug Buster): phys + Def-1, 2 turns */
@@ -1529,12 +1556,12 @@ static void patch_techniques(void) {
     records_techniques[132 - 1].power = 110;
     records_techniques[132 - 1].kind = 26;
     records_techniques[132 - 1].effect_power = 28;
-    records_techniques[134 - 1].mp_cost = 50;          /* Siege Salvo (ex-Dino Buster): Machine phys + Atk-2, 3 turns */
+    records_techniques[134 - 1].mp_cost = 50;          /* Siege Salvo (ex-Dino Buster): Machine (magic, below) + Atk-2, 3 turns */
     records_techniques[134 - 1].defense_stat = 7;
     records_techniques[134 - 1].element_power = 48;
     records_techniques[134 - 1].kind = 26;
     records_techniques[134 - 1].effect_power = 36;
-    records_techniques[136 - 1].mp_cost = 64;          /* Fortress Salvo (ex-Devil Buster): Machine phys + Def-2, 3 turns */
+    records_techniques[136 - 1].mp_cost = 64;          /* Fortress Salvo (ex-Devil Buster): Machine (magic, below) + Def-2, 3 turns */
     records_techniques[136 - 1].power = 320;
     records_techniques[136 - 1].defense_stat = 7;
     records_techniques[136 - 1].element_power = 64;
@@ -1559,6 +1586,27 @@ static void patch_techniques(void) {
     records_techniques[195 - 1].anim_effect = 37;
     records_techniques[195 - 1].hit_sound = 49;
     records_techniques[195 - 1].anim_script = 16;
+
+    /* Only magic carries an element (owner, 2026-11-22): the player's elemental physical techniques become magic, so a
+     * physical blow is purely physical and WEAK!/One More come from magic alone. The power is recalibrated to the magic
+     * table (the median power per MP of the player's elemental magic, by MP band: x5 up to 60 MP, x5.5 up to 100, x3.15
+     * past it), since the magic formula is clamped to 0.5x..2x of the power while the physical one scales with
+     * Strength / Defense; less for a technique with a debuff, per hit for the 3-hit Wind one. MP costs stay. */
+    {
+        static const struct {
+            short tech, power;
+        } to_magic[] = {
+            { 53, 100 },  { 66, 200 },  { 68, 210 },  { 71, 220 },  { 72, 150 },  { 82, 430 },  { 95, 440 },
+            { 98, 630 },  { 105, 90 },  { 106, 160 }, { 107, 90 },  { 108, 140 }, { 109, 90 },  { 110, 240 },
+            { 111, 90 },  { 112, 160 }, { 113, 130 }, { 114, 240 }, { 134, 190 }, { 136, 270 }, { 376, 500 },
+        };
+        size_t k;
+
+        for (k = 0; k < sizeof(to_magic) / sizeof(to_magic[0]); k++) {
+            records_techniques[to_magic[k].tech - 1].element = 3;
+            records_techniques[to_magic[k].tech - 1].power = (u16)to_magic[k].power;
+        }
+    }
 
     /* The technique rework: MP adjustments on support / heal / charge / field skills (all E=0) */
     records_techniques[188 - 1].mp_cost = 175;         /* Final Heal */

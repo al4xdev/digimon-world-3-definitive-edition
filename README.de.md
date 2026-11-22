@@ -50,7 +50,7 @@ Entscheidung ganz für dich. Du kannst als **Kail** spielen. Und dein alter Spie
 <td width="50%" valign="top">
 
 **⚔️ Kämpfe, bei denen man mitdenkt**<br>
-Sieben Elemente in fünf Familien. Triff eine Schwäche, bring den Gegner ins Wanken, erhalte eine weitere Aktion, verkette sie.
+Sieben Elemente in fünf Familien, getragen allein von Magie. Triff eine Schwäche, bring den Gegner ins Wanken, erhalte eine weitere Aktion, verkette sie.
 
 </td>
 <td width="50%" valign="top">
@@ -140,7 +140,13 @@ Jeder Gegner hat Schwächen und Resistenzen über **fünf Elementfamilien** hinw
 Thunder + Machine und Dark. Gepaarte Elemente teilen sich immer denselben Wert, eine Familie ist also als Ganzes
 schwach, neutral oder resistent.
 
-- **Triff eine Schwäche** mit einer Elementtechnik: ein schräges **WEAK!**, der Gegner **gerät ins Wanken**, und du
+**Nur Magie trägt ein Element.** Physisch ist rein physisch: Eine physische Technik oder ein normaler Angriff trifft nie
+eine Schwäche und bringt nie ONE MORE; gegen einen wankenden Gegner erhält er den festen Bonus für "irgendeinen anderen
+Schlag" weiter unten (+0.2). Wenn du das Originalspiel kennst: Seine elementaren physischen Angriffe (Hot Head und Co.)
+sind hier Elementmagie. Die Techniklisten zeigen es auf einen Blick: Wo das Spiel seine roten (physisch) und blauen
+(Magie) Marken zeichnete, siehst du jetzt eine Faust für einen physischen Schlag und das Bild des Elements für Magie.
+
+- **Triff eine Schwäche** mit Elementmagie: ein schräges **WEAK!**, der Gegner **gerät ins Wanken**, und du
   erhältst eine **ONE MORE**-Aktion. Jede schwache Familie zahlt einmal pro Runde aus, zwei Schwächen verketten sich
   also zu mehreren Aktionen hintereinander.
 - **Solange er wankt**: Triff eine weitere Schwäche, wechsle mit einem kostenlosen **Baton Pass** den Partner und
@@ -163,8 +169,7 @@ schwach, neutral oder resistent.
 
 **Kenne deinen Gegner.** Nichts ist verborgen, aber du musst es herausfinden. **Inspect** (`L2`) zeigt die fünf
 Familien des Gegners, sobald du sie erfährst, bis dahin `???`; **Libra** deckt alle auf einmal auf; das **Bestiary**
-bewahrt auf, was du über jede Art gelernt hast, samt ihren Hunt Materials. Jede Technikliste zeigt das Element jeder
-Technik, und jede Beschreibung wurde danach neu geschrieben, was die Technik wirklich tut ("Feuermagie. Chance auf
+bewahrt auf, was du über jede Art gelernt hast, samt ihren Hunt Materials. Jede Technikliste markiert jede Technik (eine Faust oder ihr Element), und jede Beschreibung wurde danach neu geschrieben, was die Technik wirklich tut ("Feuermagie. Chance auf
 Schlaf.").
 
 **Deine Werte haben neue Aufgaben.** Die alten elementaren "Toleranz"-Werte deines Digimon sind zur **Affinity**

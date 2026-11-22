@@ -133,7 +133,7 @@ $Bestiary: Bestiaire
 $BestiaryMenu: BESTIAIRE
 $BestiaryHint: L1/R1: Page
 $Slash: /
-SKLINF 53: Attaque Feu.
+SKLINF 53: Magie Feu.
 SKLINF 54: Attaque. Chance de critique.
 SKLINF 55: Attaque physique.
 SKLINF 56: Magie Feu.
@@ -146,13 +146,13 @@ SKLINF 62: Attaque. Chance de critique.
 SKLINF 63: Attaque. Contre-attaque.
 SKLINF 64: Magie Feu.
 SKLINF 65: Magie Feu.
-SKLINF 66: Attaque Tonnerre.
+SKLINF 66: Magie Tonnerre.
 SKLINF 67: Magie Feu.
-SKLINF 68: Attaque Vent.
+SKLINF 68: Magie Vent.
 SKLINF 69: Attaque. Absorbe les HP.
 SKLINF 70: Attaque physique.
-SKLINF 71: Attaque Tonnerre.
-SKLINF 72: Attaque Vent. 3 coups.
+SKLINF 71: Magie Tonnerre.
+SKLINF 72: Magie Vent. 3 coups.
 SKLINF 73: Attaque physique. 3 coups.
 SKLINF 74: Attaque physique. 3 coups.
 SKLINF 75: Magie Machine.
@@ -162,7 +162,7 @@ SKLINF 78: Magie Feu.
 SKLINF 79: Attaque physique.
 SKLINF 80: Attaque magique. Chance de KO.
 SKLINF 81: Ténèbres. Atq ennemi -2, 3 tours.
-SKLINF 82: Attaque Machine.
+SKLINF 82: Magie Machine.
 SKLINF 83: Magie Tonnerre.
 SKLINF 84: Magie Ténèbres.
 SKLINF 85: Attaque physique.
@@ -175,26 +175,26 @@ SKLINF 91: Attaque magique.
 SKLINF 92: Attaque physique.
 SKLINF 93: Magie Glace.
 SKLINF 94: Attaque. Chance de poison.
-SKLINF 95: Attaque Ténèbres.
+SKLINF 95: Magie Ténèbres.
 SKLINF 96: Attaque physique.
 SKLINF 97: Magie Ténèbres.
-SKLINF 98: Attaque Machine.
+SKLINF 98: Magie Machine.
 SKLINF 99: Attaque. Chance de KO.
 SKLINF 100: Ranime les alliés, HP max.
 SKLINF 101: Attaque. Chance de paralysie.
 SKLINF 102: Attaque physique.
 SKLINF 103: Attaque physique. 3 coups.
 SKLINF 104: Magie Ténèbres.
-SKLINF 105: Attaque Feu.
-SKLINF 106: Attaque Feu.
-SKLINF 107: Attaque Glace.
-SKLINF 108: Glace phys. Ennemi Atq-1, 2 tours.
-SKLINF 109: Attaque Vent.
-SKLINF 110: Attaque Vent.
-SKLINF 111: Attaque Tonnerre.
-SKLINF 112: Attaque Tonnerre.
-SKLINF 113: Attaque Machine.
-SKLINF 114: Attaque Machine.
+SKLINF 105: Magie Feu.
+SKLINF 106: Magie Feu.
+SKLINF 107: Magie Glace.
+SKLINF 108: Glace magie. Ennemi Atq-1, 2 t.
+SKLINF 109: Magie Vent.
+SKLINF 110: Magie Vent.
+SKLINF 111: Magie Tonnerre.
+SKLINF 112: Magie Tonnerre.
+SKLINF 113: Magie Machine.
+SKLINF 114: Magie Machine.
 SKLINF 115: Attaque. Chance de poison.
 SKLINF 116: Attaque. Chance de poison.
 SKLINF 117: Attaque. Chance de paralysie.
@@ -212,9 +212,9 @@ SKLINF 128: Attaque. Vole un objet.
 SKLINF 131: Physique. Ennemi Déf-1, 2 tours.
 SKLINF 132: Physique. Ennemi Atq-1, 2 tours.
 SKLINF 133: Attaque physique.
-SKLINF 134: Machine phys. Ennemi Atq-2, 3 t.
+SKLINF 134: Machine magie. Ennemi Atq-2, 3 t.
 SKLINF 135: Attaque physique.
-SKLINF 136: Machine phys. Ennemi Déf-2, 3 t.
+SKLINF 136: Machine magie. Ennemi Déf-2, 3 t.
 SKLINF 137: Magie Feu.
 SKLINF 138: Magie Feu.
 SKLINF 139: Magie Feu.

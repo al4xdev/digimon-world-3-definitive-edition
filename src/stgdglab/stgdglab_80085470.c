@@ -33,7 +33,7 @@ struct StgdglabFormset {
 }; /* size 0x100 */
 
 #ifdef PC_PORT
-#define DEF_TECH_ICON_X 0x12A /* definitive: a technique's element picture, after its name (names start at 0xC2) */
+#define DEF_TECH_ICON_X 0xB4 /* definitive: a technique's picture, where the class sprite was (names start at 0xC2) */
 #endif
 
 /* Its data block (0xA0 bytes). */
@@ -455,6 +455,9 @@ void stgdglab_formset_update(StgdglabFormset *obj, StgdglabFormsetData *data) {
         gamestate_data.funcs.get_form(obj->digimon, obj->forms[(obj->first_row + obj->cursor_row) * 2 + obj->cursor_column], &form);
         for (i = 0; i < 6; i++) {
             if (form.techniques[i] != 0) {
+#ifdef PC_PORT
+                if (def_tech_class_sprite((form.techniques[i] & 0x1FFF))) /* definitive: the picture replaces the class (def_tech_icon) */
+#endif
                 spr.draw(cdload_module.get_subfile_by_id(0x02860000), records_techniques[(form.techniques[i] & 0x1FFF) - 1].element + 0x37,
                            0xB4, i * 14 + 0x8B);
             }

@@ -49,7 +49,7 @@ your own. You can play as **Kail**. And your old save still works.
 <td width="50%" valign="top">
 
 **⚔️ Fights you think through**<br>
-Seven elements in five families. Hit a weakness, stagger, earn one more action, chain it.
+Seven elements in five families, carried by magic alone. Hit a weakness, stagger, earn one more action, chain it.
 
 </td>
 <td width="50%" valign="top">
@@ -139,7 +139,13 @@ Every enemy has weaknesses and resistances across **five element families**: Fir
 Thunder + Machine, and Dark. Paired elements always share their value, so a family is either weak, neutral or
 resisted as a whole.
 
-- **Hit a weakness** with an elemental technique: a slanted **WEAK!**, the enemy **staggers**, and you get
+**Only magic carries an element.** Physical is purely physical: a physical technique or a basic attack never hits a
+weakness and never earns ONE MORE; against a staggered enemy it gets the flat bonus of "any other blow" below (+0.2). If
+you know the original game, its elemental physical moves (Hot Head and the like) are elemental magic here. The technique
+lists say it at a glance: where the game drew its red (physical) and blue (magic) marks, you now see a fist for a
+physical blow and the element's picture for magic.
+
+- **Hit a weakness** with elemental magic: a slanted **WEAK!**, the enemy **staggers**, and you get
   **ONE MORE** action. Each weak family pays out once per round, so two weaknesses chain into several actions in a row.
 - **While it is staggered**: hit another weakness, switch partners with a free **Baton Pass** and keep your turn
   (once a round), or land any other blow for a bonus that ends the stagger.
@@ -159,7 +165,7 @@ resisted as a whole.
 
 **Knowing your enemy.** Nothing is hidden, but you have to find it out. **Inspect** (`L2`) shows the enemy's five
 families as you learn them, `???` until then; **Libra** reveals them all at once; the **Bestiary** keeps what you have
-learnt about every species, with its Hunt Materials. Every technique list shows each technique's element, and every
+learnt about every species, with its Hunt Materials. Every technique list marks each technique (a fist, or its element), and every
 description was rewritten from what the technique really does ("Fire magic. Sleep chance.").
 
 **Your stats changed jobs.** Your Digimon's old elemental "tolerance" stats became **affinity**: they no longer

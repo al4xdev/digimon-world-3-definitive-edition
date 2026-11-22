@@ -14,7 +14,7 @@
  * shows its stat bonuses and its techniques. Created by the menu and two of the lab's screens. */
 
 #ifdef PC_PORT
-#define DEF_TECH_ICON_X 0x12A /* definitive: a technique's element picture, after its name (names start at 0xC2) */
+#define DEF_TECH_ICON_X 0xB4 /* definitive: a technique's picture, where the class sprite was (names start at 0xC2) */
 #endif
 
 /* Its data block (0x70 bytes). */
@@ -308,6 +308,9 @@ void stgdglab_forms_draw(StgdglabForms *obj, StgdglabFormsData *data) {
         gamestate_data.funcs.get_form(obj->digimon, obj->forms[obj->first_form + obj->cursor], &form);
         for (i = 0; i < 6; i++) {
             if (form.techniques[i] != 0) {
+#ifdef PC_PORT
+                if (def_tech_class_sprite((form.techniques[i] & 0x1FFF))) /* definitive: the picture replaces the class (def_tech_icon) */
+#endif
                 spr.draw(cdload_module.get_subfile_by_id(0x02860000), records_techniques[(form.techniques[i] & 0x1FFF) - 1].element + 0x37,
                            0xB4, i * 14 + 0x8B);
             }

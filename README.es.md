@@ -50,7 +50,7 @@ jugar como **Kail**. Y tu partida guardada de antes sigue funcionando.
 <td width="50%" valign="top">
 
 **⚔️ Combates para pensar**<br>
-Siete elementos en cinco familias. Golpea una debilidad, aturde, consigue una acción más y encadénalo.
+Siete elementos en cinco familias, y solo la magia los lleva. Golpea una debilidad, aturde, consigue una acción más y encadénalo.
 
 </td>
 <td width="50%" valign="top">
@@ -140,7 +140,13 @@ Cada enemigo tiene debilidades y resistencias repartidas en **cinco familias de 
 Thunder + Machine y Dark. Los elementos emparejados siempre comparten el mismo valor, así que una familia es débil,
 neutra o resistente en su conjunto.
 
-- **Golpea una debilidad** con una técnica elemental: un **WEAK!** inclinado, el enemigo queda **aturdido** y ganas una
+**Solo la magia tiene elemento.** Lo físico es solo físico: una técnica física o un ataque normal nunca golpea una
+debilidad ni da ONE MORE; contra un enemigo aturdido recibe el bonus fijo de "cualquier otro golpe" de abajo (+0.2). Si
+conoces el juego original, sus golpes físicos elementales (Hot Head y similares) aquí son magia elemental. Las listas de
+técnicas lo muestran de un vistazo: donde el juego dibujaba sus marcas roja (físico) y azul (magia), ahora ves un puño
+para un golpe físico y el dibujo del elemento para la magia.
+
+- **Golpea una debilidad** con magia elemental: un **WEAK!** inclinado, el enemigo queda **aturdido** y ganas una
   acción **ONE MORE**. Cada familia débil rinde una vez por ronda, así que dos debilidades encadenan varias acciones
   seguidas.
 - **Mientras está aturdido**: golpea otra debilidad, cambia de compañero con un **Baton Pass** gratuito y conserva tu
@@ -162,8 +168,7 @@ neutra o resistente en su conjunto.
 
 **Conoce a tu enemigo.** Nada está oculto, pero tienes que descubrirlo. **Inspect** (`L2`) muestra las cinco familias
 del enemigo a medida que las vas conociendo, `???` hasta entonces; **Libra** las revela todas de golpe; el **Bestiary**
-guarda lo que has aprendido de cada especie, con sus Hunt Materials. Cada lista de técnicas muestra el elemento de
-cada técnica, y cada descripción se reescribió a partir de lo que la técnica hace de verdad ("Magia de fuego.
+guarda lo que has aprendido de cada especie, con sus Hunt Materials. Cada lista de técnicas marca cada técnica (un puño, o su elemento), y cada descripción se reescribió a partir de lo que la técnica hace de verdad ("Magia de fuego.
 Probabilidad de sueño.").
 
 **Tus estadísticas han cambiado de oficio.** Las antiguas estadísticas de "tolerancia" elemental de tu Digimon son

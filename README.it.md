@@ -50,7 +50,7 @@ tue. Puoi giocare come **Kail**. E il tuo vecchio salvataggio funziona ancora.
 <td width="50%" valign="top">
 
 **⚔️ Scontri su cui ragionare**<br>
-Sette elementi in cinque famiglie. Colpisci un punto debole, stordisci, ottieni un'azione in più, concatena.
+Sette elementi in cinque famiglie, portati solo dalla magia. Colpisci un punto debole, stordisci, ottieni un'azione in più, concatena.
 
 </td>
 <td width="50%" valign="top">
@@ -140,7 +140,13 @@ Ogni nemico ha debolezze e resistenze su **cinque famiglie di elementi**: Fire, 
 Thunder + Machine e Dark. Gli elementi in coppia condividono sempre lo stesso valore, quindi una famiglia è debole,
 neutra o resistente nel suo insieme.
 
-- **Colpisci un punto debole** con una tecnica elementale: un **WEAK!** inclinato, il nemico è **stordito** e ottieni
+**Solo la magia ha un elemento.** Il fisico è solo fisico: una tecnica fisica o un attacco normale non colpisce mai un
+punto debole e non dà mai ONE MORE; contro un nemico stordito riceve il bonus fisso di "un altro colpo qualsiasi" qui
+sotto (+0.2). Se conosci il gioco originale, i suoi colpi fisici elementali (Hot Head e simili) qui sono magia
+elementale. Gli elenchi delle tecniche lo mostrano a colpo d'occhio: dove il gioco disegnava i segni rosso (fisico) e
+blu (magia), ora vedi un pugno per un colpo fisico e l'immagine dell'elemento per la magia.
+
+- **Colpisci un punto debole** con la magia elementale: un **WEAK!** inclinato, il nemico è **stordito** e ottieni
   un'azione **ONE MORE**. Ogni famiglia debole paga una volta per round, quindi due debolezze concatenano diverse
   azioni di fila.
 - **Finché è stordito**: colpisci un'altra debolezza, cambia partner con un **Baton Pass** gratuito mantenendo il tuo
@@ -162,8 +168,7 @@ neutra o resistente nel suo insieme.
 
 **Conosci il tuo nemico.** Nulla è nascosto, ma devi scoprirlo. **Inspect** (`L2`) mostra le cinque famiglie del
 nemico man mano che le impari, `???` fino ad allora; **Libra** le rivela tutte in un colpo; il **Bestiary** conserva
-ciò che hai imparato su ogni specie, con i suoi Hunt Materials. Ogni elenco di tecniche mostra l'elemento di ciascuna
-tecnica, e ogni descrizione è stata riscritta in base a ciò che la tecnica fa davvero ("Magia di fuoco. Probabilità di
+ciò che hai imparato su ogni specie, con i suoi Hunt Materials. Ogni elenco di tecniche segna ciascuna tecnica (un pugno, o il suo elemento), e ogni descrizione è stata riscritta in base a ciò che la tecnica fa davvero ("Magia di fuoco. Probabilità di
 sonno.").
 
 **Le tue statistiche hanno cambiato mestiere.** Le vecchie statistiche di "tolleranza" elementale del tuo Digimon sono
