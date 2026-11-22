@@ -996,7 +996,11 @@ int def_story_event_dialog(s32 msg, s32 *actor) {
     const DefStoryChoice *c;
     const DefStoryLine *l;
 
-    if (!story_layer_on() || text == 0) {
+    /* Only on the disc's English sets (records_language 1, 2: English and the Portuguese built on it), as
+     * def_text_override serves def_story_line: in French, German, Italian or Spanish the balloon keeps the disc's own
+     * line, so a choice (labels in English) would hold the scene for an answer nothing shows, and a `>hero` move would
+     * put the disc's line in the hero's mouth. No story logic reads these answers; the dreams are separate. */
+    if (!story_layer_on() || text == 0 || (records_language != 1 && records_language != 2)) {
         return 0;
     }
     /* event_text is the event's file and table with the language added to the file (fieldstg_event_start) */
