@@ -656,7 +656,7 @@ $Q12bT: Triff Kail oben an der Leiter im<1>Untergrundweg.
 $Q13: Teddy suchen
 $Q13T: Als Agumon verkleidet betrittst du das<1>Admin-Center über die Hauptlobby. Kail<1>ist im zweiten Stock, bei dem<1>Masterraum.
 $Q14: Das Digi-Ei der Aufrichtigkeit
-$Q14T: Submarimon erreicht den Westsektor. Nami<1>in der Phoenixbucht sah ein Wappen<1>hinter dem Schrein im Biossumpf. Um die<1>Wand zu brechen, frag Sepikmon, dann<1>bring einen TNT-Ball (Triceramon,<1>Tyrannental) zu Baronmon in den<1>Protocol-Ruinen.
+$Q14T: Submarimon erreicht den Westsektor. Nami in<1>der Phoenixbucht sah ein Wappen hinter dem<1>Schrein im Biossumpf. Um die Wand zu<1>brechen, frag Sepikmon, dann bring einen<1>TNT-Ball (Triceramon, Tyrannental) zu<1>Baronmon in den Protocol-Ruinen.
 $Q14b: Hinter dem Schrein
 $Q14bT: Benutze den TNT-Chip hinter dem Schrein<1>im Biossumpf und hol das Digi-Ei aus dem<1>Inneren.
 $Q15: Das Byakko-Abzeichen
@@ -692,7 +692,7 @@ $Q28T: Vom Dock am Muschelstrand nimm<1>Submarimon zur Phoenixbucht und besiege<
 $Q29: Das Digi-Ei des Wissens
 $Q29T: Vom Dock hinter der Zhu-Que-Halle tauche<1>zum Zhu-Que-UG-See und klettere bis zu<1>seiner Spitze.
 $Q30: Das Genbu-Abzeichen
-$Q30T: Zurück auf dem Asuka-Server, durch das<1>Bug-Labyrinth, ruf Digmon am Loch des<1>Plug-Kaps. Überquere die<1>Schaltkreisplatine nach Norden zum<1>Schuhberg und klettere über Schnee- und<1>Frostberg nach Genbu City. Dessen Leader<1>wartet am Kampftor.
+$Q30T: Zurück auf dem Asuka-Server, durch das<1>Bug-Labyrinth, ruf Digmon am Loch des<1>Plug-Kaps. Überquere die Schaltkreisplatine<1>nach Norden zum Schuhberg und klettere über<1>Schnee- und Frostberg nach Genbu City.<1>Dessen Leader wartet am Kampftor.
 $Q31: Die Matrix-Kammer
 $Q31T: Westlich vom Schuhberg geh durch die<1>Kulon-Mine zur Kulon-Grube und<1>durchquere die Eis-, Feuer- und Dunkel-<1>Verliese. Zeig die vier Abzeichen in der<1>Kammer.
 $Q32: 180 Sekunden
@@ -755,7 +755,7 @@ TALK05 65: <7>Gennai<7>Hm... Stark genug.<1>Vorerst.<2,2><3>Halt deine Partner<1
 TALK06 5: <7>Hooded Man<7>Bulbmon war ein Hebel.<1>Du hast ihn für mich<1>umgelegt. Danke.<2,2><3>Ich suche seit Jahren<1>eine Tür in Servern.<2,2><3>Du fandest sie leicht.<1>Eine blaue, oder?<2,2><3>Lass sehen, ob du<1>diese Tür wert bist.<2,2>
 TALK06 6: <7>Hooded Man<7>Schon zurück? Gut.<1>Verlieren kenne ich.<2,2><3>Los, noch einmal.<2,2>
 TALK06 7: <7>Hooded Man<7>...Also so ist das.<1>Jetzt sehe ich es.<2,2><3>Ich bin Oikawa.<1>Ich habe Ware, aber<1>keinen Laden.<2,2><3>Vielleicht deine blaue<1>Tür. Wir treffen uns<1>hinter ihr.<2,2>
-TALK06 8: <7>???<7>...Eine Stimme hallt in<1>dir. Betritt erst einen<1>blauen Raum und besiege<2,2><3>Ogremon im Central Park,<1>bevor du den Protocol-<1>Wald betrittst.<2,2>
+TALK06 8: <7>???<7>...Eine Stimme hallt<1>in dir. Betritt erst<1>einen blauen Raum und<2,2><3>besiege Ogremon im<1>Central Park, bevor du<2,2><3>den Protocol-Wald<1>betrittst.<2,2>
 TALK05 99: <7>Oikawa<7>Du bist gekommen.<1>Igor lässt mich hier<1>einen Tresen führen.<2,2><3>Ich schulde dir was,<1>sagt er. Ich verkaufe,<1>was das Spiel nie gab.<2,2><3>Seltene Kristalle.<1>Bits im Voraus.<2,2><3>Keine Fragen.<1>Keine Rückgabe.<2,2>
 TALK03 311: <7>Igor<7>Halt, mein Gast.<1>Hinter diesem Tor:<1>kein Weg zurück.<2,2><3>Deine Partner tragen<1>den Fluch, und Gennais<1>Weg blieb unvollendet.<2,2><3>Geh ihn zuerst...<1>Oder beweise: Deine<1>Macht reicht aus.<2,2><3>Die blaue Tür links<1>öffnet den Zeitraum.<2,2>
 TALK03 312: <7>Igor<7>Halt, mein Gast.<1>Hinter diesem Tor:<1>kein Weg zurück.<2,2><3>Vorher lass die Zeit<1>kurz stillstehen.<2,2><3>Die blaue Tür links<1>führt zum Zeitraum.<2,2><3>Besteh die Prüfungen,<1>dann ist das Tor frei.<2,2>
