@@ -173,7 +173,7 @@ static s16 enemy_resist(const RecordsDigimon *f, int e) {
 }
 
 static void purify_form_techniques(FightstgEnemyRecord *r, const RecordsDigimon *f) {
-    static const FightstgEnemyAction plan[3] = { { 3, 18, 2 }, { 2, 1, 48 }, { 1, 0, 0 } };
+    static const FightstgEnemyAction plan[3] = { { 3, 1, 76 }, { 2, 1, 48 }, { 1, 0, 0 } };
     int i, best = 0, best_score = 0;
 
     r->tech = (s16)(f->techniques[0] != 0 ? f->techniques[0] : f->techniques[6]);
