@@ -8412,6 +8412,29 @@ void fightstg_action_run(u8 side, s32 id) {
             fightstg_action.hits[0] = fightstg_rules.roll_special_hit(side, id);
             fightstg_action.strikes++;
             fightstg_action.damage = fightstg_rules.get_special_damage(side, id);
+#ifdef PC_PORT
+            /* A physical blow the definitive edition casts as magic (def_tech_was_physical) keeps the accessories'
+             * on-hit chances the physical branch above gives it. Not the multi-hit: fightstg_action_hit_again rolls
+             * the physical formula, so a second hit would land at physical damage. */
+            if (side == 0 && rec->kind < 2 && rec->anim_script != 0xB && rec->anim_script != 0xC &&
+                fightstg_action.hits[0] != 0 && def_tech_was_physical(id)) {
+                if (fightstg_rules.stats[0].poison_chance != 0) {
+                    fightstg_action_try_poison();
+                }
+                if (fightstg_rules.stats[0].paralysis_chance != 0) {
+                    fightstg_action_try_paralysis();
+                }
+                if (fightstg_rules.stats[0].confusion_chance != 0) {
+                    fightstg_action_try_confusion();
+                }
+                if (fightstg_rules.stats[0].knockout_chance != 0) {
+                    fightstg_action_try_knockout();
+                }
+                if (fightstg_rules.stats[0].drain_chance != 0) {
+                    fightstg_action_try_drain();
+                }
+            }
+#endif
             if (rec->kind >= 2) {
                 if (rec->kind == 9) {
                     fightstg_action_hit_again();

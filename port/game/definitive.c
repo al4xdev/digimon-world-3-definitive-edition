@@ -1233,8 +1233,10 @@ int def_blast_plug_last_stand(int slot) {
     FightstgMember *m;
     s32 id;
 
-    if (!def_on() || def_purify_fighting() || !blast_unlocked() || plug_last_stand_used ||
-        gamestate_data.items[DEF_PLUG_ITEM] <= 0 || slot < 0 || slot >= 3) {
+    /* Not in the finale's Phase 2 either: that defeat is the script's (def_finale_damage makes sure of it), so a
+     * revive there only spends the Plug for one more turn. A DRI duel keeps it: 1 HP can still turn a duel. */
+    if (!def_on() || def_purify_fighting() || def_finale_phase() == DEF_FINALE_PHASE2_DARK_LOSS || !blast_unlocked() ||
+        plug_last_stand_used || gamestate_data.items[DEF_PLUG_ITEM] <= 0 || slot < 0 || slot >= 3) {
         return 0;
     }
     m = &fightstg_battle.state.members[0][slot];
@@ -1633,6 +1635,31 @@ const unsigned char *def_message(int i) {
 }
 
 /* The records the techniques and Digimon forms change (written with the MP rows, every time: the reset restores the table). */
+/* The player's elemental physical techniques that patch_techniques makes magic, with their magic power. */
+static const struct {
+    short tech, power;
+} to_magic[] = {
+    { 53, 100 },  { 66, 200 },  { 68, 210 },  { 71, 220 },  { 72, 150 },  { 82, 430 },  { 95, 440 },
+    { 98, 630 },  { 105, 90 },  { 106, 160 }, { 107, 90 },  { 108, 140 }, { 109, 90 },  { 110, 240 },
+    { 111, 90 },  { 112, 160 }, { 113, 130 }, { 114, 240 }, { 134, 190 }, { 136, 270 }, { 376, 500 },
+};
+
+/* 1 for a technique the game had as a physical blow and the definitive edition casts as magic (to_magic): the battle
+ * still gives it the accessories' on-hit chances a physical blow has (fightstg_action_run). */
+int def_tech_was_physical(int tech) {
+    size_t k;
+
+    if (!def_on()) {
+        return 0;
+    }
+    for (k = 0; k < sizeof(to_magic) / sizeof(to_magic[0]); k++) {
+        if (to_magic[k].tech == tech) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
 static void patch_techniques(void) {
     int i;
 
@@ -1689,13 +1716,6 @@ static void patch_techniques(void) {
      * past it), since the magic formula is clamped to 0.5x..2x of the power while the physical one scales with
      * Strength / Defense; less for a technique with a debuff, per hit for the 3-hit Wind one. MP costs stay. */
     {
-        static const struct {
-            short tech, power;
-        } to_magic[] = {
-            { 53, 100 },  { 66, 200 },  { 68, 210 },  { 71, 220 },  { 72, 150 },  { 82, 430 },  { 95, 440 },
-            { 98, 630 },  { 105, 90 },  { 106, 160 }, { 107, 90 },  { 108, 140 }, { 109, 90 },  { 110, 240 },
-            { 111, 90 },  { 112, 160 }, { 113, 130 }, { 114, 240 }, { 134, 190 }, { 136, 270 }, { 376, 500 },
-        };
         size_t k;
 
         for (k = 0; k < sizeof(to_magic) / sizeof(to_magic[0]); k++) {

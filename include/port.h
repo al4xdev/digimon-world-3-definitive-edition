@@ -428,6 +428,8 @@ int def_tech_element(int tech);
  * empty for healing and support; and whether the game's class sprite is still drawn for it (def_tech_class_sprite). */
 const unsigned char *def_tech_picture(int tech);
 int def_tech_class_sprite(int tech);
+/* A technique the game had as a physical blow, cast as magic in the definitive edition (port/game/definitive.c). */
+int def_tech_was_physical(int tech);
 struct MessageWindow;
 void def_tech_icon(struct MessageWindow *w, int tech, int palette);
 struct FightstgEnemyRecord;
