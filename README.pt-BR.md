@@ -152,8 +152,8 @@ golpe físico e o desenho do elemento para magia.
   o seu turno (uma vez por rodada), ou desfira qualquer outro golpe por um bônus que encerra o atordoamento.
 - **OVERFINISH**: nocauteie um inimigo com um golpe que dá mais uma ação e ele continua caído para recebê-la. Cada
   golpe nele rende Bits.
-- **Você abre a luta**, a não ser que seja emboscado. Um lado muito mais rápido age duas vezes, e o HUD avisa
-  ("Enemy x2").
+- **Você abre a luta**, a não ser que seja emboscado. Um inimigo duas vezes mais rápido age duas vezes, e o HUD
+  avisa ("Enemy x2"); o seu lado precisa de quatro vezes a velocidade dele, então suas ações extras vêm do One More.
 - **Você também ouve**: um som diferente para fraqueza, para golpe neutro e para golpe resistido.
 
 <table>
@@ -224,8 +224,8 @@ exemplo prático, está na [referência de combate](docs/definitive-edition/comb
   A animação de digivolução toca completa uma vez e depois em versão curta; segure um botão para pulá-la.
 - **Card boosters caem de 15 em 15**, então montar um deck não exige uma segunda jogada completa.
 - **Hard Mode**, escolhido em New Game: o seu grupo tem dois Digimon em vez de três, durante o jogo inteiro.
-- **Super Hard**, a qualquer momento: leve o Demon Bell da Velvet Room e os inimigos ganham 50% mais HP e velocidade,
-  mas pagam o dobro de Bits e de materiais. Devolva-o para desligar.
+- **Super Hard**, a qualquer momento: leve o Demon Bell da Velvet Room e os inimigos ganham 50% mais velocidade e batem
+  25% mais forte, e os seus golpes causam metade, mas pagam o dobro de Bits e de materiais. Devolva-o para desligar.
 
 ## A caçada
 

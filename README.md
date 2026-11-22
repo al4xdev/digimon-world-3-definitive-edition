@@ -151,7 +151,8 @@ physical blow and the element's picture for magic.
   (once a round), or land any other blow for a bonus that ends the stagger.
 - **OVERFINISH**: knock an enemy out with a blow that earns one more action and it stays down for it. Every hit on it
   pays Bits.
-- **You open the fight** unless you are ambushed. A much faster side acts twice, and the HUD says so ("Enemy x2").
+- **You open the fight** unless you are ambushed. An enemy twice as fast acts twice, and the HUD says so ("Enemy x2");
+  your own side needs four times its speed, so your extra actions come from One More.
 - **You hear it, too**: a different sound for a weakness, a neutral hit and a resisted one.
 
 <table>
@@ -221,8 +222,8 @@ example, is in [the combat reference](docs/definitive-edition/combat.md).
   The digivolution animation plays in full once, then short; hold a button to skip it.
 - **Card boosters drop 15 at a time**, so building a deck does not take a second playthrough.
 - **Hard Mode**, chosen on New Game: your party is two Digimon instead of three, for the whole game.
-- **Super Hard**, any time: carry the Demon Bell from the Velvet Room and enemies get 50% more HP and speed, but pay
-  double Bits and materials. Hand it back to turn it off.
+- **Super Hard**, any time: carry the Demon Bell from the Velvet Room and enemies get 50% more speed and hit 25% harder
+  while your blows deal half, but pay double Bits and materials. Hand it back to turn it off.
 
 ## The hunt
 

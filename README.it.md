@@ -153,8 +153,8 @@ blu (magia), ora vedi un pugno per un colpo fisico e l'immagine dell'elemento pe
   turno (una volta per round), oppure assesta un altro colpo qualsiasi per un bonus che pone fine allo stordimento.
 - **OVERFINISH**: manda KO un nemico con un colpo che dà un'azione in più, e lui resta a terra per subirla. Ogni colpo
   che lo raggiunge paga Bits.
-- **Sei tu ad aprire lo scontro**, a meno che tu non venga colto di sorpresa. Una parte molto più veloce agisce due
-  volte, e l'HUD te lo dice ("Enemy x2").
+- **Sei tu ad aprire lo scontro**, a meno che tu non venga colto di sorpresa. Un nemico due volte più veloce agisce due
+  volte, e l'HUD te lo dice ("Enemy x2"); la tua parte ha bisogno di quattro volte la sua velocità, quindi le tue azioni extra vengono dal One More.
 - **Lo senti anche**: un suono diverso per una debolezza, un colpo neutro e un colpo resistito.
 
 <table>
@@ -228,7 +228,7 @@ esempio svolto, è nel [riferimento sul combattimento](docs/definitive-edition/c
 - **I card booster cadono a 15 alla volta**, così costruire un mazzo non richiede una seconda partita completa.
 - **Hard Mode**, scelta a New Game: il tuo gruppo è di due Digimon invece di tre, per tutto il gioco.
 - **Super Hard**, in qualsiasi momento: porta con te il Demon Bell della Velvet Room e i nemici ottengono il 50% in più
-  di HP e velocità, ma pagano il doppio di Bits e materiali. Riconsegnalo per disattivarla.
+  di velocità e colpiscono il 25% più forte, e i tuoi colpi fanno metà danno, ma pagano il doppio di Bits e materiali. Riconsegnalo per disattivarla.
 
 ## La caccia
 

@@ -154,8 +154,8 @@ sind hier Elementmagie. Die Techniklisten zeigen es auf einen Blick: Wo das Spie
   beendet.
 - **OVERFINISH**: Besiege einen Gegner mit einem Schlag, der eine weitere Aktion bringt, und er bleibt dafür am Boden.
   Jeder Treffer auf ihn zahlt Bits.
-- **Du eröffnest den Kampf**, es sei denn, du wirst überfallen. Eine deutlich schnellere Seite handelt zweimal, und
-  das HUD sagt es dir ("Enemy x2").
+- **Du eröffnest den Kampf**, es sei denn, du wirst überfallen. Ein doppelt so schneller Gegner handelt zweimal, und
+  das HUD sagt es dir ("Enemy x2"); deine Seite braucht das Vierfache seines Tempos, deine Extra-Aktionen kommen also von One More.
 - **Du hörst es auch**: ein anderer Klang für eine Schwäche, einen neutralen und einen resistierten Treffer.
 
 <table>
@@ -227,8 +227,8 @@ Berechnung, Schritt für Schritt mit einem durchgerechneten Beispiel, steht in [
   sie zu überspringen.
 - **Card Booster fallen zu je 15**, sodass der Deckbau keinen zweiten Durchlauf braucht.
 - **Hard Mode**, bei New Game gewählt: Dein Team besteht aus zwei Digimon statt drei, für das ganze Spiel.
-- **Super Hard**, jederzeit: Trage den Demon Bell aus dem Velvet Room bei dir, und Gegner erhalten 50% mehr HP und
-  Tempo, zahlen dafür aber doppelt so viele Bits und Materialien. Gib ihn zurück, um es auszuschalten.
+- **Super Hard**, jederzeit: Trage den Demon Bell aus dem Velvet Room bei dir, und Gegner erhalten 50% mehr Tempo und
+  treffen 25% härter, während deine Treffer nur halb so viel Schaden machen, zahlen dafür aber doppelt so viele Bits und Materialien. Gib ihn zurück, um es auszuschalten.
 
 ## Die Jagd
 

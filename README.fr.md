@@ -155,8 +155,8 @@ l'image de l'élément pour la magie.
   gardant votre tour (une fois par tour), ou portez n'importe quel autre coup pour un bonus qui met fin à l'étourdissement.
 - **OVERFINISH** : mettez un ennemi K.O. avec un coup qui offre une action de plus, et il reste à terre pour la
   subir. Chaque coup porté rapporte des Bits.
-- **C'est vous qui ouvrez le combat**, sauf embuscade. Un camp bien plus rapide agit deux fois, et le HUD vous
-  le dit (« Enemy x2 »).
+- **C'est vous qui ouvrez le combat**, sauf embuscade. Un ennemi deux fois plus rapide agit deux fois, et le HUD
+  vous le dit (« Enemy x2 ») ; votre camp doit être quatre fois plus rapide, vos actions en plus viennent donc du One More.
 - **Cela s'entend aussi** : un son différent pour une faiblesse, un coup neutre et un coup résisté.
 
 <table>
@@ -229,8 +229,8 @@ avec un exemple, se trouve dans [la référence du combat](docs/definitive-editi
   L'animation de digivolution est jouée en entier une fois, puis en version courte ; maintenez un bouton pour la passer.
 - **Les card boosters tombent par lots de 15**, si bien que constituer un deck n'exige pas une seconde partie.
 - **Hard Mode**, choisi à la New Game : votre équipe compte deux Digimon au lieu de trois, pour tout le jeu.
-- **Super Hard**, à tout moment : portez le Demon Bell de la Velvet Room et les ennemis gagnent 50% de HP et de vitesse
-  en plus, mais paient le double en Bits et en matériaux. Rendez-le pour désactiver le mode.
+- **Super Hard**, à tout moment : portez le Demon Bell de la Velvet Room et les ennemis gagnent 50% de vitesse et frappent
+  25% plus fort, et vos coups font moitié moins, mais ils paient le double en Bits et en matériaux. Rendez-le pour désactiver le mode.
 
 ## La chasse
 

@@ -1,8 +1,8 @@
 /* Super Hard Mode: the Demon Bell, a key item the Velvet Room's red Digimon hands over (and takes back).
  *
  * The mode is nothing but the bag: while the player holds the Bell (item DEF_SUPER_ITEM, one of the Japanese region
- * tags the US disc never hands out, renamed in tools/text_override), every enemy has more HP and more Speed, and a
- * won battle pays more Bits and more Hunt Materials. Speed is a signed short that the fight's formulas read freely, so
+ * tags the US disc never hands out, renamed in tools/text_override), every enemy has more Speed and hits harder, the
+ * party's blows deal half, and a won battle pays more Bits and more Hunt Materials. Speed is a signed short that the fight's formulas read freely, so
  * it may pass the party's 999 cap: that is how an enemy gets a second action before the party's turn (the Inspect's
  * "Enemy x2"). Taking the Bell back (the NPC again) ends the mode, and the bag already goes to the memory card, so
  * there is no flag of ours to save.
@@ -54,8 +54,12 @@ int def_super_materials(int amount) {
 int def_super_bell_damage(int side, int damage) {
     int scaled;
 
-    if (side != 0 || damage <= 0 || !def_super_on() || def_finale_golden_mode()) {
+    if (damage <= 0 || !def_super_on() || def_finale_golden_mode()) {
         return damage;
+    }
+    if (side != 0) {
+        scaled = scale(damage, DEF_SUPER_ENEMY_DMG_PCT);
+        return scaled > 9999 ? 9999 : scaled; /* the game's damage cap */
     }
     scaled = scale(damage, DEF_SUPER_PLAYER_DMG_PCT);
     return scaled < 1 ? 1 : scaled;

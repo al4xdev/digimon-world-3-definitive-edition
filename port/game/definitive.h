@@ -45,11 +45,13 @@
 #define DEF_POISON_PREC_DIV 4     /* Precision divided by this feeds poison damage */
 #define DEF_POISON_SPIRIT_DIV 4   /* Spirit divided by this feeds poison damage */
 #define DEF_SUPER_ITEM 26         /* Super Hard: the Demon Bell, a key item (a Japanese tag slot the US disc never gives) */
-#define DEF_SUPER_HP_PCT 150      /* percent of an enemy's HP while the player holds the Bell */
+#define DEF_SUPER_HP_PCT 100      /* percent of an enemy's HP while the player holds the Bell (100: the halved
+                                  * player damage already doubles it, and HP has a cap; owner, 2026-11-22) */
 #define DEF_SUPER_SPEED_PCT 150   /* ... and of its Speed (may pass 999: the enemy then acts twice) */
 #define DEF_SUPER_REWARD_PCT 200  /* ... and of the Bits, XP and hunt bonuses a won battle pays */
 #define DEF_SUPER_MAT_PCT 300     /* ... and of the common Hunt Materials a won battle pays */
 #define DEF_SUPER_PLAYER_DMG_PCT 50 /* ... player direct damage % while holding the Bell (rewards Weak/One More/Baton Pass) */
+#define DEF_SUPER_ENEMY_DMG_PCT 125 /* ... enemy direct damage % while holding the Bell (a broken chain costs more) */
 #define DEF_POISON_ENEMY_PCT 8    /* percent of max HP: the most a tick takes from an enemy (a pure precision build ticks ~15% of a boss) */
 #define DEF_SLEEP_REGEN_PCT 6     /* percent of max HP a sleeping enemy regenerates each turn */
 #define DEF_STATUS_BOSS_TURNS 2   /* turns Sleep or Confusion hold an enemy */

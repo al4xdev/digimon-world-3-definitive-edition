@@ -153,8 +153,8 @@ para un golpe físico y el dibujo del elemento para la magia.
   turno (una vez por ronda), o asesta cualquier otro golpe para un bonus que pone fin al aturdimiento.
 - **OVERFINISH**: derriba a un enemigo con un golpe que da una acción más y se queda en el suelo para recibirla. Cada
   golpe que reciba paga Bits.
-- **Tú abres el combate**, salvo que te tiendan una emboscada. Un bando mucho más rápido actúa dos veces, y el HUD te
-  lo dice ("Enemy x2").
+- **Tú abres el combate**, salvo que te tiendan una emboscada. Un enemigo el doble de rápido actúa dos veces, y el HUD te
+  lo dice ("Enemy x2"); tu bando necesita cuatro veces su velocidad, así que tus acciones extra vienen del One More.
 - **También se oye**: un sonido distinto para una debilidad, un golpe neutro y uno resistido.
 
 <table>
@@ -227,7 +227,7 @@ ejemplo resuelto, está en [la referencia de combate](docs/definitive-edition/co
 - **Los card boosters caen de 15 en 15**, así que montar un mazo no exige una segunda partida completa.
 - **Hard Mode**, elegido en New Game: tu grupo es de dos Digimon en lugar de tres, durante todo el juego.
 - **Super Hard**, en cualquier momento: lleva contigo el Demon Bell de la Velvet Room y los enemigos tendrán un 50% más
-  de HP y velocidad, pero pagarán el doble en Bits y materiales. Devuélvelo para desactivarlo.
+  de velocidad y pegarán un 25% más fuerte, y tus golpes harán la mitad, pero pagarán el doble en Bits y materiales. Devuélvelo para desactivarlo.
 
 ## La caza
 
