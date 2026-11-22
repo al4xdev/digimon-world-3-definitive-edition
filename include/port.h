@@ -349,6 +349,7 @@ int def_blast_tempt(void);           /* a full gauge at a critical moment: the b
 void port_log(const char *fmt, ...); /* psxstack/port_runtime.h's, for the game's sources */
 const unsigned char *def_blast_tempt_label(void);
 const unsigned char *def_chosen_refusal(void); /* why a grey Blast press refuses (Blast after Ogremon, or Chosen), or NULL */
+const unsigned char *def_battle_menu_notice(void); /* one-shot notice shown when the battle menu opens, or NULL */
 int def_blast_plug(void);           /* the DV Plug was used: 1 when it set the Blast off (the port's rule) */
 int def_blast_plug_revive(int slot); /* after the quest: the HP the Plug revives fallen slot `slot` with, 0 if none */
 int def_blast_plug_last_stand(int slot); /* global: auto-revives the last fallen Digimon (1 HP/MP, full Blast gauge, once/battle) */

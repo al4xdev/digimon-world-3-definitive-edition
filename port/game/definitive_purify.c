@@ -12,7 +12,7 @@
  *    screen and no field in between, so nothing heals. Each form fights with the stats it had the first time, less
  *    DEF_PURIFY_SIM_PCT, and its species' techniques. A form felled is purified for good; a lost wave sends the party
  *    back to the field (no game over, its HP and MP as before the simulator) and the rest wait for the next try.
- *  - DONE, once all ten are purified: every partner's TP the DV Plug took comes back (up to the game's 99), each form
+ *  - DONE, once all ten are purified: every partner's TP the Blast took comes back (up to the game's 99), each form
  *    leaves its partner DEF_CHOSEN_BUFF_PCT of the best its strongest stat ever was (past 999, into the form's next
  *    strongest stat, and so on), and the Blast is gone: its button is the Chosen Evolution (definitive.c). Gennai's
  *    panel then picks the one partner who may take it (any time) and restores its charge.

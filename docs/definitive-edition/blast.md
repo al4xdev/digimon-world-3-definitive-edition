@@ -16,7 +16,7 @@
 - Price: HP and MP at 1 after the battle, and -25% Power/Guard/Speed through `GamestateStats.penalties` (cleared only by an
   inn's `inn_heal_party`).
 - The 5 dark forms per partner come from the game's `RecordsDigimon.blast_forms`. They advance in order with step levels
-  {1, 15, 25, 35, 45} and repeat the last reached when the level is too low. `DW3_BLAST_STEP` forces a step in tests
+  {1, 10, 25, 35, 40} and repeat the last reached when the level is too low. `DW3_BLAST_STEP` forces a step in tests
   (`DW3_BLAST_FORM` forced a form; old). Forms are painted dark (see Recolour).
 - **Overheat** (Blast and Chosen alike): when the form ends the Digimon is back in Rookie and sealed from digivolving for 3 of its own turns.
   The turns left are saved with the partner (high nibble of its `REC2_BLAST` byte) and follow it into the next battles, which it starts
@@ -84,21 +84,21 @@ panel states the rule under the partners: Rookie form only, and the Mega past 99
   `plug_test.py`, `.dumps/tasks/blast/tempt_test.py` (full + low HP tempts; full + full HP and empty + low HP do not).
 - **The price** is `GamestateStats.penalties` = 25% of Power, Guard and Speed (`def_blast_started` in `wfightmn_blast`; `def_blast_price` after the HP/MP write-back at
   the battle's end). The original never writes that field; only `inn_heal_party` zeroes it and the status screens already mark a penalised status; no new save field.
-  A second Blast before an inn does not deepen it. **DV Plug** (`def_blast_plug`, effect 0x4C of `fightstg_8008D3B4.c`): one use fills the gauge, takes
-  `DEF_BLAST_PLUG_TP` = 10 TP (it takes whatever the Digimon has if it has less) and calls the game's event 0x12; text "Blast past its limit. Costs 10 TP" / "Blast além do limite. Custa 10 TP".
+  A second Blast before an inn does not deepen it. **DV Plug** (`def_blast_plug`, effect 0x4C of `fightstg_8008D3B4.c`): one use fills the gauge and calls the game's event 0x12; it costs no TP
+  (the TP is the Blast's, see above); text "Fill Blast; revives last fallen." and its Last Stand notice (`$PlugLastStand`).
 - **Activation details:** menu action 8 (the choice 7 -> command 7, `DEF_BLAST_COMMAND_ID`, step 0x13, spends the turn like the DV); dark star icon (`01 36`) under L1;
   greyed and refused otherwise; `tests/port/mods.py` expects "R2: refused 7" with an empty gauge. The launcher (C, desktop and Android) has the BLAST row (`H_BLAST`, `bm_blast`,
   default R2; on Android the screen's rows went from 27 to 25 px to fit); the psxstack one reads `mod.json`.
 - **Gain rule** (`def_action_resolved` -> `blast_add`, pure `def_blast_gain`; numbers `DEF_BLAST_*`): per blow that lands, WEAK +150, stagger +100, OVERFINISH +200, a blow in an
   extra action +100, summed; item and flee cool -100 (`def_blast_command`); taking damage does not fill; nothing fires by itself (`def_blast_auto`). Temptation threshold
   `DEF_BLAST_TEMPT_HP_PCT` (25), `def_member_knockout` flags a partner fallen in this battle.
-- **The owner's redesign, kept as written (2026-11-17, afternoon):** forms from the game's `blast_forms`, in sequence per partner (form 1 level 1, 2 level 15, 3 level 25, 4 level 35,
-  5 level 45, else repeat the last reached; after the 5th back to the start). **Recording:** the **first** status of each form (the Digimon transformed the first time: stats, HP, MP;
+- **The owner's redesign, kept as written (2026-11-17, afternoon):** forms from the game's `blast_forms`, in sequence per partner (form 1 level 1, 2 level 10, 3 level 25, 4 level 35,
+  5 level 40; originally 15 and 45, moved to 10 and 40 in 0.8.12, else repeat the last reached; after the 5th back to the start). **Recording:** the **first** status of each form (the Digimon transformed the first time: stats, HP, MP;
   the species gives the techniques) and the **best** status it ever had; it needed a third card record (the second did not fit). **The quest:** 10 = 10 distinct partner+form pairs (the same
   species on two partners counts twice, so two partners with all 5 close it: works on Hard Mode); 1) the old man of the room introduces himself as **Gennai** (really Myotismon in disguise),
   only shows how many forms you released and tells you to master them, no quest; 2) at 10 he **charges the Bits** (the fee), reveals he tricked you and that your Digimon is cursed; black screen
   and a sound; the real old man appears, he is Gennai, the other was Myotismon, and he believes you are a DigiDestined; 3) Gennai opens the **simulator**: the 10 forms in sequence (waves of
-  3 chained, no results screen between), each with the **first recorded status - 10%** and the species' techniques; 4) winning: **all TP** from the DV Plug back; **a permanent buff per
+  3 chained, no results screen between), each with the **first recorded status - 10%** and the species' techniques; 4) winning: **all TP** the Blast took back; **a permanent buff per
   purified form: +10% of the best status that form had** (in the attribute where it was strongest, for the partner that took it; what passes 999 goes to the next strongest attribute,
   and so on); Blast **disappears**, replaced by the **Chosen Evolution**. **Chosen:** one Digimon at a time chosen with Gennai (can change with him anytime); needs the quest done **and level 45**;
   the form is the partner's standard Mega, **Kumamon -> Beelzemon**; only from the **Rookie** form (a warning in any other evolution); **one per battle**; **one charge** (after use only

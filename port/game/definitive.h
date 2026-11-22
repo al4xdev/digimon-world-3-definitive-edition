@@ -270,10 +270,11 @@ void def_gauges_decode(const unsigned char in[DEF_GAUGE_SLOTS * 2], short out[DE
  * (DEF_BLAST_STEP_LEVELS), else the last one it reached; after the fifth it starts over. Painted dark as they come in
  * (definitive_recolor.c's DEF_RECOLOR_DARK). */
 #define DEF_BLAST_STEPS 5
-#define DEF_BLAST_STEP_LEVELS { 1, 15, 25, 35, 45 }
+#define DEF_BLAST_STEP_LEVELS { 1, 10, 25, 35, 40 }
 /* The DV Plug (item 76), the cursed catalyst: one use fills the acting Digimon's gauge and sets the Blast off at once
- * (the game's gauge-full event), and takes this many TP (GamestateStats.values[1]; all it has when it has fewer). */
-#define DEF_BLAST_PLUG_TP 10
+ * (the game's gauge-full event). The Plug itself costs no TP: the Blast does. Every non-blessed Blast activation takes
+ * this many TP (GamestateStats.values[1]; all it has when it has fewer), and R2 needs that much unless it is blessed. */
+#define DEF_BLAST_PLUG_TP 10 /* the Blast's TP cost (the name is from when the Plug paid it) */
 #define DEF_PLUG_ITEM 76 /* the DV Plug's item ID (ITMNAM/ITMINF 76) */
 #define DEF_BLAST_TEMPT_HP_PCT 25 /* the acting Digimon's HP share at or under which a full gauge tempts */
 int def_blast_step(int partner, int level, int *advance); /* pure: the step a Blast takes, and the sequence's next */
@@ -979,7 +980,7 @@ void def_record_dri_unlock(int c);
 int def_record_dri_best(int c);
 void def_record_dri_raise_best(int c, int stage);
 /* The Blast Gauge (owner's redesign, 2026-11-17), in the same second record: each partner's next step in its sequence of
- * dark forms, the TP the DV Plug took from each partner (0..DEF_BLAST_PARTNERS-1) that the quest gives back (adding a
+ * dark forms, the TP the Blast took from each partner (0..DEF_BLAST_PARTNERS-1) that the quest gives back (adding a
  * negative amount pays it back), the quest's stage, its forms purified (a bit per entry), the Chosen Evolution's
  * partner (-1: none) and its charge. */
 #define DEF_BLAST_PARTNERS 8 /* the partners (gamestate_data.digimon) */

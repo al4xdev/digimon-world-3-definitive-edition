@@ -20,6 +20,7 @@ $ChosenNoCharge: Il tuo Digivice è scarico.<1>Va' da Gennai per<1>ricaricarlo.
 $ChosenNoLevel: L'Evoluzione Scelta<1>richiede il livello 45.
 $ChosenUsed: Evoluzione Scelta già<1>usata in questa battaglia.
 $PlugRevive: Rianima: forma Rookie, 1 HP e 1 MP
+$PlugLastStand: DV Plug attivo! Rianimato a<1>1 HP / 1 MP con barra<1>Blast piena.
 $TomNews: <7>Repeating Tom<7>Hai sentito? Hai<1>sentito? Il Capo di<1>Seiryu è sparito!<2,2><3>È uscito di notte<1>dalla città e<1>non è più tornato.<2,2><3>Nessuno sa dove sia.<1>Nessuno! Hai sentito?<2,2>
 TALK01 178: <7><9><7>Sparito...?<2,2><3>Il mio compagno<1>trema. Qui c'è<1>qualcosa che non va.<2,2><3>Come vento gelido<1>da una porta che<1>non ho mai aperto...<2,2><3>...Eccola! Sulle<1>scale. Una porta blu<1>che prima non c'era.<2,2>
 $TomGone: <7>Repeating Tom<7>Il Capo di Seiryu è<1>sparito, ve lo dico!<2,2><3>E quella porta blu<1>sulle scale? Prima<1>non c'era!<2,2>
@@ -761,7 +762,7 @@ TALK06 8: <7>???<7>...Una voce riecheggia<1>in te. Entra prima in<1>una sala blu
 TALK05 99: <7>Oikawa<7>Sei venuto. Igor mi fa<1>tenere un banco qui.<2,2><3>Dice che ti devo<1>un favore.<2,2><3>Quel che vendo non<1>dovrebbe esistere.<1>Cristalli. Rari.<2,2><3>Bits in anticipo.<1>Niente domande,<1>niente rimborsi.<2,2>
 TALK03 311: <7>Igor<7>Fermati, mio ospite.<1>Oltre quel cancello<1>non c'è ritorno.<2,2><3>I compagni portano<1>ancora la maledizione.<1>La via di Gennai<2,2><3>non è finita.<1>Percorrila prima,<1>oppure prova che basti<2,2><3>la tua forza.<1>La porta blu alla tua<2,2><3>sinistra apre la<1>Time Room.<2,2>
 TALK03 312: <7>Igor<7>Fermati, mio ospite.<1>Oltre quel cancello<1>non c'è ritorno.<2,2><3>Prima di passarlo,<1>lascia che il tempo<1>si fermi un poco.<2,2><3>La porta blu alla tua<1>sinistra apre la<1>Time Room. Supera le<2,2><3>sue prove. Il cancello<1>sarà tuo.<2,2>
-ITMINF 76: Blast oltre il limite. Costa 10 TP
+ITMINF 76: Blast max; rianima ultimo alleato
 $VelvetTitle: VELVET
 $TimeTitle: TIME
 $TimeTitle2: ROOM

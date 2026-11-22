@@ -20,6 +20,7 @@ $ChosenNoCharge: Votre Digivice est vide.<1>Allez voir Gennai pour<1>le recharge
 $ChosenNoLevel: L'Évolution Chosen exige<1>le niveau 45.
 $ChosenUsed: Évolution Chosen déjà<1>utilisée ce combat.
 $PlugRevive: Revive: forme Rookie, 1 HP et 1 MP
+$PlugLastStand: DV Plug activé ! Ranimé à<1>1 HP / 1 MP avec jauge<1>Blast pleine.
 $TomNews: <7>Repeating Tom<7>Vous avez entendu ?<1>Le Leader de Seiryu<1>a disparu !<2,2><3>Il a quitté la ville<1>hier soir et n'est<1>jamais revenu.<2,2><3>Personne ne sait où.<1>Personne ! Vous avez<1>entendu ?<2,2>
 TALK01 178: <7><9><7>Disparu...?<2,2><3>Mon partenaire<1>tremble. Quelque chose<1>cloche ici.<2,2><3>Comme un vent froid<1>venu d'une porte<1>jamais ouverte...<2,2><3>...Là ! Dans les<1>escaliers. Une porte<1>bleue, jamais vue.<2,2>
 $TomGone: <7>Repeating Tom<7>Seiryu Leader a<1>disparu ! Disparu, je<1>vous dis !<2,2><3>Et cette porte bleue<1>dans les escaliers ?<1>Jamais là avant !<2,2>
@@ -761,7 +762,7 @@ TALK06 8: <7>???<7>...Une voix résonne en<1>toi. Entre d'abord<1>dans une salle
 TALK05 99: <7>Oikawa<7>Vous voilà. Igor me<1>laisse un comptoir.<1>Je vous dois, dit-il.<2,2><3>Ce que je vends,<1>le jeu ne devait pas<1>le donner.<2,2><3>Des cristaux rares.<2,2><3>Bits d'avance.<1>Pas de questions,<1>pas de remboursement.<2,2>
 TALK03 311: <7>Igor<7>Halte, mon hôte. Passé<1>cette grille,<1>aucun retour possible.<2,2><3>Vos partenaires<1>sont maudits, et la<1>voie de Gennai<2,2><3>n'a pas été menée<1>à son terme. Faites-la<1>d'abord... ou prouvez<2,2><3>que votre pouvoir<1>suffit. La porte bleue<1>à votre gauche mène<2,2><3>à la Salle du Temps.<2,2>
 TALK03 312: <7>Igor<7>Halte, mon hôte. Passé<1>cette grille,<1>aucun retour possible.<2,2><3>Avant de la franchir,<1>laissez le temps<1>s'arrêter un instant.<2,2><3>La porte bleue à votre<1>gauche ouvre la Salle<1>du Temps. Passez ses<2,2><3>épreuves, et la grille<1>vous sera ouverte.<2,2>
-ITMINF 76: Blast hors limite. Coûte 10 TP
+ITMINF 76: Jauge Blast; ranime dernier allié.
 $VelvetTitle: VELOURS
 $TimeTitle: SALLE
 $TimeTitle2: TEMPS

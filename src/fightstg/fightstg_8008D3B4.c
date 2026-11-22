@@ -978,7 +978,7 @@ void fightstg_item_update(FightstgItem *obj, FightstgMessage **data) {
                             }
                         }
                     }
-                    /* Blast Gauge phase 1: the DV Plug is the cursed catalyst, one use sets the Blast off (and costs TP) */
+                    /* Blast Gauge phase 1: the DV Plug is the cursed catalyst, one use sets the Blast off (the Blast, not the Plug, costs TP) */
                     blasted = def_blast_plug();
                     if (revived_any || blasted) {
                         *data = fightstg_message_create();
@@ -4236,9 +4236,8 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
             -1);
         obj->tempt = def_blast_tempt() || def_finale_blast_only();
         data->notice = message_create_window(0x1005, 1, FIGHTSTG_INSPECT_X - wide_pad, FIGHTSTG_INSPECT_Y);
-        obj->notice = 0;
         data->notice->set_page_lines(data->notice, FIGHTSTG_NOTICE_LINES); /* a window pages two lines by default */
-        data->notice->set_text(data->notice, (u8 *)fightstg_inspect_empty, -1);
+        fightstg_battle_menu_notice_set(obj, data, def_battle_menu_notice());
         data->tempt = message_create_window(0x1005, 1, FIGHTSTG_TEMPT_X - wide_pad, FIGHTSTG_TEMPT_Y); /* the 14-pixel
                                                                                        * font: the 9-pixel one
                                                                                        * reads badly over the arena */

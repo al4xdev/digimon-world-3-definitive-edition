@@ -20,6 +20,7 @@ $ChosenNoCharge: Tu Digivice no tiene<1>energía. Ve con Gennai<1>para recargarl
 $ChosenNoLevel: La Evolución Elegida<1>requiere NV 45.
 $ChosenUsed: La Evolución Elegida ya<1>se usó en esta batalla.
 $PlugRevive: Revive: forma Rookie, 1 PV y 1 PM
+$PlugLastStand: ¡DV Plug activado! Revivido<1>con 1 PV / 1 PM y barra<1>Blast llena.
 $TomNews: <7>Repeating Tom<7>¿Lo has oído? ¿Lo has<1>oído? ¡El Líder de<1>Seiryu se ha ido!<2,2><3>Salió anoche de la<1>ciudad y nunca<1>volvió.<2,2><3>Nadie sabe adónde.<1>¡Nadie! ¿Lo has oído?<2,2>
 TALK01 178: <7><9><7>¿Se fue...?<2,2><3>Mi compañero<1>tiembla. Algo va<1>mal aquí.<2,2><3>Como un viento frío<1>tras una puerta que<1>nunca abrí...<2,2><3>...¡Ahí! En las<1>escaleras. Una puerta<1>azul que no estaba.<2,2>
 $TomGone: <7>Repeating Tom<7>¡El Líder de Seiryu<1>se ha ido! ¡Se fue,<1>os digo!<2,2><3>¿Y esa puerta azul<1>de las escaleras?<1>¡Antes no estaba!<2,2>
@@ -761,7 +762,7 @@ TALK06 8: <7>???<7>...Una voz resuena en<1>ti. Entra primero a<1>una sala azul y
 TALK05 99: <7>Oikawa<7>Viniste. Igor me dejó<1>tener un mostrador.<1>Dice que te debo algo.<2,2><3>Lo que vendo, el juego<1>nunca pensó dar.<1>Cristales raros.<2,2><3>Bits por adelantado.<1>Sin preguntas ni<1>devoluciones.<2,2>
 TALK03 311: <7>Igor<7>Alto, mi invitado.<1>Tras esa puerta no hay<1>camino de vuelta.<2,2><3>Tus compañeros siguen<1>malditos, y el camino<1>de Gennai no terminó.<2,2><3>Recórrelo primero...<1>o demuestra que tu<1>poder basta.<2,2><3>La puerta azul a tu<1>izquierda abre la<1>Sala del Tiempo.<2,2>
 TALK03 312: <7>Igor<7>Alto, mi invitado.<1>Tras esa puerta no hay<1>camino de vuelta.<2,2><3>Antes de cruzarla,<1>deja que el tiempo<1>se pare un rato.<2,2><3>La puerta azul a tu<1>izquierda abre la<1>Sala del Tiempo.<2,2><3>Supera sus pruebas<1>y la puerta será tuya.<2,2>
-ITMINF 76: Blast al límite. Cuesta 10 TP
+ITMINF 76: Llena Blast; revive último caído.
 $VelvetTitle: VELVET
 $TimeTitle: TIEMPO
 $TimeTitle2: SALA

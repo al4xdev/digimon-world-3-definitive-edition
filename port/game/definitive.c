@@ -80,6 +80,7 @@ static unsigned char boost_off; /* blast_record: the form's stats as they are, w
 static unsigned char boost_logged; /* slots whose boost the log named this battle */
 static unsigned char blessed_now;  /* this battle's Blast was the blessed one (the flag is already set by then) */
 static unsigned char plug_last_stand_used; /* global auto-revive on last Digimon KO (at most once per battle) */
+static unsigned char plug_last_stand_notice; /* 1 until the next battle menu shows the Last Stand notice */
 static signed char plug_last_stand_slot = -1; /* the slot it revived, until its Blast (-1: none); wfightmn sets the form
                                                 * before def_blast_form, so the Rookie is the member's base_digimon then */
 
@@ -107,6 +108,7 @@ void def_log_begin(void) {
     boost_logged = 0;
     blessed_now = 0;
     plug_last_stand_used = 0;
+    plug_last_stand_notice = 0;
     plug_last_stand_slot = -1;
     def_blast_heat_begin();
     def_callout_show(DEF_CALLOUT_NONE, 0);
@@ -1274,6 +1276,7 @@ int def_blast_plug_last_stand(int slot) {
         return 0;
     }
     plug_last_stand_used = 1;
+    plug_last_stand_notice = 1;
     plug_last_stand_slot = (signed char)slot;
     gamestate_data.items[DEF_PLUG_ITEM]--;
     m->digimon = records_digimon[id].id;
@@ -1406,6 +1409,16 @@ const unsigned char *def_chosen_refusal(void) {
 const unsigned char *def_blast_tempt_label(void) {
     extern const unsigned char def_str_BlastTempt[];
     return def_str_BlastTempt;
+}
+
+const unsigned char *def_battle_menu_notice(void) {
+    extern const unsigned char def_str_PlugLastStand[];
+
+    if (plug_last_stand_notice) {
+        plug_last_stand_notice = 0;
+        return def_str_PlugLastStand;
+    }
+    return NULL;
 }
 
 void def_blast_command(s32 command) {

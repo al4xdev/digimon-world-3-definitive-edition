@@ -200,15 +200,15 @@ int main(void) {
     reset_battle();
     { /* the Blast's forms in sequence (owner's redesign): the next one when the level has it, else the last reached */
         int a1, a2, a3, a4, a5, a6;
-        int k1 = def_blast_step(0, 1, &a1), k2 = def_blast_step(1, 14, &a2), k3 = def_blast_step(1, 15, &a3),
-            k4 = def_blast_step(4, 45, &a4), k5 = def_blast_step(4, 44, &a5), k6 = def_blast_step(9, 30, &a6);
-        check("blast sequence: 1st at level 1, stays at 14, 2nd at 15, 5th at 45 wraps, 4th under 45, bad next is 0",
+        int k1 = def_blast_step(0, 1, &a1), k2 = def_blast_step(1, 9, &a2), k3 = def_blast_step(1, 10, &a3),
+            k4 = def_blast_step(4, 40, &a4), k5 = def_blast_step(4, 39, &a5), k6 = def_blast_step(9, 30, &a6);
+        check("blast sequence: 1st at level 1, stays at 9, 2nd at 10, 5th at 40 wraps, 4th under 40, bad next is 0",
               k1 == 0 && a1 == 1 && k2 == 0 && a2 == 1 && k3 == 1 && a3 == 2 && k4 == 4 && a4 == 0 && k5 == 3 &&
                   a5 == 4 && k6 == 0 && a6 == 1);
     }
-    check("blast top step: the highest the level reaches (1: 0, 14: 0, 15: 1, 34: 2, 35: 3, 45: 4, 99: 4)",
-          def_blast_top_step(1) == 0 && def_blast_top_step(14) == 0 && def_blast_top_step(15) == 1 &&
-              def_blast_top_step(34) == 2 && def_blast_top_step(35) == 3 && def_blast_top_step(45) == 4 &&
+    check("blast top step: the highest the level reaches (1: 0, 9: 0, 10: 1, 34: 2, 35: 3, 40: 4, 99: 4)",
+          def_blast_top_step(1) == 0 && def_blast_top_step(9) == 0 && def_blast_top_step(10) == 1 &&
+              def_blast_top_step(34) == 2 && def_blast_top_step(35) == 3 && def_blast_top_step(40) == 4 &&
               def_blast_top_step(99) == 4);
     { /* the DV Plug's last stand (owner, 2026-11-21): the revived Rookie's Blast is the strongest its level reaches,
        * where the sequence (def_record_blast_next, 0 here) would give the first, the Champion's; a later Blast is
@@ -230,8 +230,8 @@ int main(void) {
         m->digimon = 99;
         top = def_blast_form(0, 0);
         again = def_blast_form(0, 0);
-        check("last stand: the Blast takes the level's top form (level 40: the 4th), then the sequence again",
-              first == 40 && m->base_digimon == 3 && top == 43 && again == 40);
+        check("last stand: the Blast takes the level's top form (level 40: the 5th), then the sequence again",
+              first == 40 && m->base_digimon == 3 && top == 44 && again == 40);
         reset_battle();
         super_done_stub = 0;
     }

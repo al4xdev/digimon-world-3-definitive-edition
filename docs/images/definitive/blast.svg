@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="716" viewBox="0 0 900 716" role="img" aria-labelledby="title desc">
 <title id="title">Blast, the cursed evolution</title>
-<desc id="desc">The Blast arc. It opens at the Ogremon hunt, where Igor's DV Plug sets it off at once, and the first Blast is blessed. 1: fill the gauge with risky offence: WEAK +150, a staggered target +100, an extra action +100, OVERFINISH +200, summed per blow; an item or a try to run takes 100. 2: at 1000, Blast with R2. 3: the partner takes one of its five dark forms, opened at levels 1, 15, 25, 35 and 45. 4: the price: HP and MP at 1 after the battle, -25% Power, Guard and Speed until an inn, and an overheat that keeps it in Rookie, unable to digivolve, for 3 of its turns, into the next battles. 5: release ten dark forms and "Gennai" has a word for you: a familiar face, or is it? Purify them all for your TP back and +10% of each form's best stat. 6: the Chosen Evolution: no curse, one partner, its Mega: GuardiAngemon, Beelzemon, Cannondramon, WarGreymon, Imperialdramon, Gallantmon, Sakuyamon or Seraphimon.</desc>
+<desc id="desc">The Blast arc. It opens at the Ogremon hunt, where Igor's DV Plug sets it off at once, and the first Blast is blessed. 1: fill the gauge with risky offence: WEAK +150, a staggered target +100, an extra action +100, OVERFINISH +200, summed per blow; an item or a try to run takes 100. 2: at 1000, Blast with R2. 3: the partner takes one of its five dark forms, opened at levels 1, 10, 25, 35 and 40. 4: the price: HP and MP at 1 after the battle, -25% Power, Guard and Speed until an inn, and an overheat that keeps it in Rookie, unable to digivolve, for 3 of its turns, into the next battles. 5: release ten dark forms and "Gennai" has a word for you: a familiar face, or is it? Purify them all for your TP back and +10% of each form's best stat. 6: the Chosen Evolution: no curse, one partner, its Mega: GuardiAngemon, Beelzemon, Cannondramon, WarGreymon, Imperialdramon, Gallantmon, Sakuyamon or Seraphimon.</desc>
 <defs>
 <style>text{font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,&quot;Liberation Sans&quot;,sans-serif}
 .cx{transform-box:fill-box;transform-origin:center}
@@ -141,7 +141,7 @@
 <circle cx="401" cy="418" r="19" fill="#262438" stroke="#4a4478" stroke-width="1.5"/>
 <g class="an f1"><circle cx="401" cy="418" r="19" fill="#6d5fd6" fill-opacity=".35" stroke="#9085e9" stroke-width="1.5"/></g>
 <use href="#i-dark" x="391" y="408" width="20" height="20" color="#a58bf5"/>
-<text x="401" y="458" font-size="13.5" fill="#c3c2b7" font-weight="600" text-anchor="middle">Lv 15</text>
+<text x="401" y="458" font-size="13.5" fill="#c3c2b7" font-weight="600" text-anchor="middle">Lv 10</text>
 <circle cx="450" cy="418" r="19" fill="#262438" stroke="#4a4478" stroke-width="1.5"/>
 <g class="an f2"><circle cx="450" cy="418" r="19" fill="#6d5fd6" fill-opacity=".35" stroke="#9085e9" stroke-width="1.5"/></g>
 <use href="#i-dark" x="440" y="408" width="20" height="20" color="#a58bf5"/>
@@ -153,7 +153,7 @@
 <circle cx="548" cy="418" r="19" fill="#262438" stroke="#4a4478" stroke-width="1.5"/>
 <g class="an f4"><circle cx="548" cy="418" r="19" fill="#6d5fd6" fill-opacity=".35" stroke="#9085e9" stroke-width="1.5"/></g>
 <use href="#i-dark" x="538" y="408" width="20" height="20" color="#a58bf5"/>
-<text x="548" y="458" font-size="13.5" fill="#c3c2b7" font-weight="600" text-anchor="middle">Lv 45</text>
+<text x="548" y="458" font-size="13.5" fill="#c3c2b7" font-weight="600" text-anchor="middle">Lv 40</text>
 <circle cx="626" cy="326" r="12" fill="#f08a89"/><text x="626" y="331" font-size="14.5" fill="#14161c" font-weight="800" text-anchor="middle">4</text>
 <text x="648" y="332" font-size="17.5" fill="#f0efec" font-weight="700">The price</text>
 <use href="#u-heat" x="622" y="349" width="16" height="16" color="#f08a89"/>

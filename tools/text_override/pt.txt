@@ -4163,6 +4163,7 @@ $ChosenNoCharge: Seu Digivice está sem<1>energia. Vá até o Gennai<1>para reca
 $ChosenNoLevel: A Chosen Evolution exige<1>nível 45.
 $ChosenUsed: A Chosen Evolution já foi<1>usada nesta batalha.
 $PlugRevive: Revive: forma Rookie, 1 HP e 1 MP
+$PlugLastStand: DV Plug ativou! Revivido com<1>1 HP / 1 MP e Blast Gauge<1>cheio.
 $TomNews: <7>Tom Repetitivo<7>Você soube? Você<1>soube? O Líder de<1>Seiryu sumiu!<2,2><3>Saiu da cidade ontem<1>à noite e nunca mais<1>voltou.<2,2><3>Ninguém sabe onde<1>está. Ninguém! Você<1>soube?<2,2>
 $TomGone: <7>Tom Repetitivo<7>O Líder de Seiryu<1>sumiu! Sumiu mesmo!<2,2><3>E aquela porta azul<1>na escada? Nunca<1>esteve ali antes!<2,2>
 $OpenIvy1: <7>Ivy:<7>Junior? Junior!<1>Alô? Terra chamando<1>Junior!<2,2>
@@ -4730,7 +4731,7 @@ ITMINF 292: Mais Força, menos Defesa.
 ITMINF 298: Mais Sabedoria, menos Vel.
 ITMINF 295: Muito mais Força, menos Defesa.
 ITMINF 297: Muito mais Sabedoria, menos Vel.
-ITMINF 76: Blast além do limite. Custa 10 TP
+ITMINF 76: Enche Blast; revive último caído.
 ITMINF 67: Revive 40%, 30%HP (nerf: cura)
 ITMINF 70: Revive 65%, 60%HP (nerf: cura)
 ITMINF 46: Em batalha: revive, 100%, HP cheio

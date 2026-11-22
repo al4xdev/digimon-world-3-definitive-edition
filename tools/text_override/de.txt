@@ -20,6 +20,7 @@ $ChosenNoCharge: Dein Digivice ist leer.<1>Lade es bei Gennai<1>wieder auf.
 $ChosenNoLevel: Die Chosen-Evolution<1>braucht Level 45.
 $ChosenUsed: Chosen-Evolution in diesem<1>Kampf schon benutzt.
 $PlugRevive: Belebt: Rookie-Form, 1 HP, 1 MP
+$PlugLastStand: DV Plug aktiv! Belebt mit<1>1 HP / 1 MP und voller<1>Blast-Leiste.
 $TomNews: <7>Repeating Tom<7>Habt ihr's schon?<1>Seiryus Leader ist<1>verschwunden!<2,2><3>Er ging letzte Nacht<1>aus der Stadt, kam<1>nie zurück.<2,2><3>Keiner! Habt ihr's<1>gehört?<2,2>
 TALK01 178: <7><9><7>Verschwunden...?<2,2><3>Mein Partner<1>zittert. Hier stimmt<1>etwas nicht.<2,2><3>Wie ein kalter Wind<1>hinter einer Tür,<1>die ich nie öffnete...<2,2><3>...Da! Auf der<1>Treppe. Eine blaue<1>Tür, die nie da war.<2,2>
 $TomGone: <7>Repeating Tom<7>Seiryus Leader ist<1>weg! Weg, sage ich!<2,2><3>Und die blaue Tür<1>auf der Treppe?<1>War nie da!<2,2>
@@ -761,7 +762,7 @@ TALK06 8: <7>???<7>...Eine Stimme hallt<1>in dir. Betritt erst<1>einen blauen Ra
 TALK05 99: <7>Oikawa<7>Du bist gekommen.<1>Igor lässt mich hier<1>einen Tresen führen.<2,2><3>Ich schulde dir was,<1>sagt er. Ich verkaufe,<1>was das Spiel nie gab.<2,2><3>Seltene Kristalle.<1>Bits im Voraus.<2,2><3>Keine Fragen.<1>Keine Rückgabe.<2,2>
 TALK03 311: <7>Igor<7>Halt, mein Gast.<1>Hinter diesem Tor:<1>kein Weg zurück.<2,2><3>Deine Partner tragen<1>den Fluch, und Gennais<1>Weg blieb unvollendet.<2,2><3>Geh ihn zuerst...<1>Oder beweise: Deine<1>Macht reicht aus.<2,2><3>Die blaue Tür links<1>öffnet den Zeitraum.<2,2>
 TALK03 312: <7>Igor<7>Halt, mein Gast.<1>Hinter diesem Tor:<1>kein Weg zurück.<2,2><3>Vorher lass die Zeit<1>kurz stillstehen.<2,2><3>Die blaue Tür links<1>führt zum Zeitraum.<2,2><3>Besteh die Prüfungen,<1>dann ist das Tor frei.<2,2>
-ITMINF 76: Blast über dem Limit. Kostet 10 TP
+ITMINF 76: Blast voll; belebt letzten Partner
 $VelvetTitle: SAMT
 $TimeTitle: ZEIT
 $TimeTitle2: RAUM

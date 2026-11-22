@@ -26,6 +26,7 @@ $ChosenUsed: Chosen Evolution was already<1>used in this battle.
 # After the Blast quest the DV Plug revives the fallen in their Rookie form (def_blast_plug_revive): its item
 # description (ITMINF 76) gives way to this one (34 characters at most, the item window's).
 $PlugRevive: Revive: Rookie form, 1 HP and 1 MP
+$PlugLastStand: DV Plug triggered! Revived at<1>1 HP / 1 MP with full<1>Blast Gauge.
 # The Velvet Room in the main story (port/game/definitive_story.c). Step 4: talked to
 # on the stairs of Seiryu's inn, Repeating Tom says the Leader is gone ($TomNews, for his own TALK01 79) and the player
 # feels something (TALK01 178); the room's door opens on those stairs. Through it Igor alone shows the room again
@@ -859,9 +860,9 @@ TALK06 8: <7>???<7>...A voice echoes in your<1>head. Enter a blue room<1>first, 
 TALK05 99: <7>Oikawa<7>You came. Igor let me<1>keep a counter here.<1>He says I owe you.<2,2><3>What I sell, the game<1>never meant to give.<1>Crystals. Rare ones.<2,2><3>Bits up front. No<1>questions, no refunds.<2,2>
 TALK03 311: <7>Igor<7>Stop, my guest. Past<1>that gate, no road<1>leads back.<2,2><3>Your partners still<1>carry the curse, and<1>Gennai's road is not<2,2><3>walked to its end.<1>Walk it first... or<1>prove your own power<2,2><3>is enough. The blue<1>door to your left<1>opens the Time Room.<2,2>
 TALK03 312: <7>Igor<7>Stop, my guest. Past<1>that gate, no road<1>leads back.<2,2><3>Before you cross it,<1>let time stand still<1>a while.<2,2><3>The blue door to your<1>left opens on the<1>Time Room. Pass its<2,2><3>trials, and the gate<1>is yours.<2,2>
-# Blast Gauge phase 1 (port/game/definitive.c def_blast_plug): the DV Plug is the cursed catalyst, its description warns
-# of the price (34 characters at most, the item window's).
-ITMINF 76: Blast past its limit. Costs 10 TP
+# Blast Gauge phase 1 (port/game/definitive.c def_blast_plug): the DV Plug is the cursed catalyst, its description names its two
+# effects, fill the Blast and revive (34 characters at most, the item window's).
+ITMINF 76: Fill Blast; revives last fallen.
 # The Velvet Room's map title (port/game/definitive_velvet.c): the bar's own name gives way to the room's when the map is
 # the room. One line, the name plate's.
 $VelvetTitle: VELVET
