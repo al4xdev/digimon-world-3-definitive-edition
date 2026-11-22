@@ -213,6 +213,24 @@ void def_finale_stage_enters(void) {
     }
 }
 
+/* Phase 2 scripted defeat: Dark Galacticmon's Limit Break hits hard enough to overwhelm even a Lv99 / 9999 HP party
+ * (magic damage is otherwise clamped to 2x technique power). */
+int def_finale_phase2_damage(int side, int value) {
+    if (!def_on() || side == 0 || value <= 0 || fn.phase != DEF_FINALE_PHASE2_DARK_LOSS) {
+        return value;
+    }
+    {
+        FightstgMember *pm = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
+        s32 floor = pm->max_hp * 55 / 100;
+        s32 scaled = value * 4;
+
+        if (scaled < floor) {
+            scaled = floor;
+        }
+        return scaled > 9999 ? 9999 : scaled;
+    }
+}
+
 /* Raises Dark Galacticmon's stats to ~2000 (Limit Break) in Phase 2 and Phase 4. */
 void def_finale_enemy_stats(short stats[5]) {
     int i;
@@ -240,6 +258,9 @@ int def_finale_defeat(void) {
 
     if (!def_on()) {
         return 0;
+    }
+    if (fn.phase == DEF_FINALE_PHASE3_VELVET && fn.need_velvet_pull) {
+        return 1; /* wfightmn_battle_end case 2 runs every fade frame: keep holding off 0xE00 Game Over */
     }
     if (fn.phase == DEF_FINALE_PHASE2_DARK_LOSS) {
         /* Scripted loss: heal party to 1 HP, return briefly to 0x2DF, then pull into Last Velvet Room. */
@@ -295,6 +316,9 @@ int def_finale_victory(void) {
         fn.super_chosen_on = 0;
         port_log("finale: Phase 4 victory! DEF_STORY_FINALE_DONE set -> proceeding to normal credits");
         return 1;
+    }
+    if (fn.phase == DEF_FINALE_PHASE3_VELVET && fn.need_velvet_pull) {
+        return 2; /* keep returning to field on subsequent fade frames of wfightmn_battle_end */
     }
     if (fn.phase == DEF_FINALE_PHASE2_DARK_LOSS) {
         /* If player somehow beat Phase 2 Dark Galacticmon anyway, still transition into Phase 3 cleanly. */

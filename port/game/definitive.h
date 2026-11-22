@@ -1044,7 +1044,8 @@ enum {
     DEF_STORY_COND_SEIRYU = 1, /* step 4: the Leader is missing, the Ogremon hunt not reported */
     DEF_STORY_COND_SEIRYU_ASK, /* step 4, before Repeating Tom's news: ask around Seiryu City */
     DEF_STORY_COND_MARKET,     /* the Oikawa beaten, the Black Market not opened yet: to the Velvet Room */
-    DEF_STORY_COND_OIKAWA      /* step 27, the Oikawa not beaten: he bars the Bug Maze Pit's hall */
+    DEF_STORY_COND_OIKAWA,     /* step 27, the Oikawa not beaten: he bars the Bug Maze Pit's hall */
+    DEF_STORY_COND_TIME        /* step 40, the Time Room's trials not passed: the blue door above the Master Room's stairs */
 };
 #define DEF_STORY_FLAG 0xF000 /* a quest row's flag at or past it is a story condition (game flags stay below) */
 int def_story_cond(int cond);
@@ -1086,6 +1087,7 @@ int def_finale_victory(void);
 int def_finale_enemy_dark(void);
 int def_finale_party_gold(void);
 void def_finale_enemy_stats(short stats[5]);
+int def_finale_phase2_damage(int side, int value);
 int def_finale_blast_only(void);
 int def_finale_golden_mode(void);
 int def_finale_trigger_super_chosen(void);

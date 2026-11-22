@@ -127,6 +127,7 @@ void def_flee_ask_reset(void) {}
 void def_flee_ask_savestate(struct PortState *s) { (void)s; }
 void def_finale_battle_begin(void) {}
 int def_finale_golden_mode(void) { return 0; }
+int def_finale_phase2_damage(int side, int value) { (void)side; return value; }
 int def_finale_enemy_dark(void) { return 0; }
 void def_finale_savestate(struct PortState *s) { (void)s; }
 RecordsDigimon *records_get_digimon(s32 id) { (void)id; return NULL; }

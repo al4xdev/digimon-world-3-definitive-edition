@@ -352,6 +352,7 @@ static s32 log_damage(u8 side, s32 id, s32 value, const char *what) {
 
     classify(side, id);
     value = guard_damage(side, value);
+    value = def_finale_phase2_damage(side, value);
     if (log_on()) {
         target = &fightstg_battle.state.members[side == 0][fightstg_battle.state.current[side == 0]];
         LOG("damage %s side %d tech %d value %d target_hp %d -> %d", what, side != 0, id, value, target->hp,
