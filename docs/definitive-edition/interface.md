@@ -27,7 +27,7 @@
 - **The Blast Gauge is saved** (eight s16 values in the slot's tail) and is now the game's Blast button; see
   [Blast, Purify and Chosen Evolution](blast.md#blast-purify-and-chosen-evolution).
 - **Battle text that does not stop the fight**: message boxes skip by default (`BATTLE TEXT: SKIP`) without waiting for a button.
-- **Overlevel Rush**: when your strongest Digimon is 8 or more levels above every enemy of a random battle, the game
+- **Overlevel Rush**: when your strongest Digimon is 3 or more levels above every enemy of a random battle, the game
   offers to skip it, at the top of the screen while you keep walking (confirm takes it, back or five seconds fights).
   Take it and the rewards a win by your lead Digimon would give (experience, Bits, the drop and Hunt Materials) are
   yours at once: a panel slides in at the top of the screen and lists them for three seconds while you keep walking

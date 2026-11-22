@@ -365,7 +365,7 @@ cheveux et les vêtements de votre héros.
 
 - **GUIDE** : l'étape actuelle de la quête principale, les missions annexes ouvertes et les seize enchères d'Asuka,
   avec un saut direct vers une enchère ouverte. Une bannière glisse à l'écran quand un objectif change.
-- **Overlevel Rush** : quand votre Digimon le plus fort a 8 niveaux ou plus d'avance sur tous les ennemis d'un combat
+- **Overlevel Rush** : quand votre Digimon le plus fort a 3 niveaux ou plus d'avance sur tous les ennemis d'un combat
   aléatoire, le jeu propose de l'expédier pendant que vous continuez à marcher, et les récompenses glissent en haut de l'écran.
 - **Un texte de combat qui n'interrompt pas le combat**, un marqueur d'objectif sur la carte, l'avance rapide, des
   glyphes de boutons adaptés à votre manette (Xbox, Nintendo, PS1) et un remappage complet.

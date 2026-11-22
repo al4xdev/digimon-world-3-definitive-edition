@@ -359,7 +359,7 @@ ropa de tu héroe.
 
 - **GUIDE**: el paso actual de la misión principal, las misiones secundarias abiertas y las dieciséis subastas de
   Asuka, con un salto directo a una abierta. Un banner se desliza cuando cambia un objetivo.
-- **Overlevel Rush**: cuando tu Digimon más fuerte tiene 8 o más niveles por encima de todos los enemigos de un
+- **Overlevel Rush**: cuando tu Digimon más fuerte tiene 3 o más niveles por encima de todos los enemigos de un
   combate aleatorio, el juego te ofrece saltártelo mientras sigues caminando, y las recompensas se deslizan en la parte
   superior de la pantalla.
 - **Texto de combate que no detiene la pelea**, un marcador de objetivo en el mapa, avance rápido, glifos de botones

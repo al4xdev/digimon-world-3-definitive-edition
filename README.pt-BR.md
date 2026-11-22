@@ -356,7 +356,7 @@ história acompanha a troca. Treze **skins de herói** das caçadas Super Rare r
 
 - **GUIDE**: o passo atual da missão principal, as missões secundárias abertas e todos os dezesseis leilões da Asuka,
   com um atalho direto para um que esteja aberto. Um banner desliza na tela quando um objetivo muda.
-- **Overlevel Rush**: quando o seu Digimon mais forte está 8 ou mais níveis acima de todos os inimigos de uma batalha
+- **Overlevel Rush**: quando o seu Digimon mais forte está 3 ou mais níveis acima de todos os inimigos de uma batalha
   aleatória, o jogo oferece pular a luta enquanto você continua andando, e as recompensas deslizam no alto da tela.
 - **Texto de batalha que não interrompe a luta**, um marcador de objetivo no mapa, avanço rápido, glifos de botões que
   combinam com o seu controle (Xbox, Nintendo, PS1) e remapeamento completo.

@@ -359,7 +359,7 @@ segue lo scambio. Tredici **skin da eroe** delle cacce Super Rare ricolorano i c
 
 - **GUIDE**: il passo attuale della missione principale, le missioni secondarie aperte e tutte e sedici le aste di
   Asuka, con un salto diretto a una aperta. Un banner scorre quando un obiettivo cambia.
-- **Overlevel Rush**: quando il tuo Digimon più forte ha 8 o più livelli sopra tutti i nemici di una battaglia casuale,
+- **Overlevel Rush**: quando il tuo Digimon più forte ha 3 o più livelli sopra tutti i nemici di una battaglia casuale,
   il gioco ti offre di saltarla mentre continui a camminare, e le ricompense scorrono in alto sullo schermo.
 - **Testo di battaglia che non ferma lo scontro**, un indicatore di obiettivo sulla mappa, avanzamento rapido, glifi dei
   tasti che corrispondono al tuo pad (Xbox, Nintendo, PS1) e rimappatura completa.

@@ -352,7 +352,7 @@ swap. Thirteen **hero skins** from the Super Rare hunts recolour your hero's hai
 
 - **GUIDE**: your current main quest step, the open side missions and all sixteen Asuka auctions, with a jump straight
   to an open one. A banner slides in when an objective changes.
-- **Overlevel Rush**: when your strongest Digimon is 8 or more levels above every enemy of a random battle, the game offers to skip it
+- **Overlevel Rush**: when your strongest Digimon is 3 or more levels above every enemy of a random battle, the game offers to skip it
   while you keep walking, and the rewards slide in at the top of the screen.
 - **Battle text that does not stop the fight**, a map objective marker, fast-forward, button glyphs that match your
   pad (Xbox, Nintendo, PS1) and full remapping.

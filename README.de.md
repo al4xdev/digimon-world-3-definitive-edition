@@ -362,7 +362,7 @@ und Kleidung deines Helden um.
 
 - **GUIDE**: dein aktueller Hauptquest-Schritt, die offenen Nebenmissionen und alle sechzehn Asuka-Auktionen, mit einem
   Sprung direkt zu einer offenen. Ein Banner gleitet ein, wenn sich ein Ziel ändert.
-- **Overlevel Rush**: Wenn dein stärkstes Digimon 8 oder mehr Level über jedem Gegner eines Zufallskampfs liegt, bietet
+- **Overlevel Rush**: Wenn dein stärkstes Digimon 3 oder mehr Level über jedem Gegner eines Zufallskampfs liegt, bietet
   das Spiel an, ihn zu überspringen, während du weiterläufst, und die Belohnungen gleiten oben im Bild ein.
 - **Kampftext, der den Kampf nicht anhält**, eine Zielmarkierung auf der Karte, Vorspulen, Tastensymbole passend zu
   deinem Controller (Xbox, Nintendo, PS1) und vollständige Tastenbelegung.
