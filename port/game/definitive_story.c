@@ -1304,7 +1304,8 @@ int def_story_event_closed(int type, int param) {
 }
 
 static void protocol_gate_frame(void) {
-    s32 on = protocol_gate_closed_now() && (s32)port_frames - story.protocol_touch <= 2;
+    s32 on = protocol_gate_closed_now() && story.protocol_touch > 0 &&
+             (s32)port_frames - story.protocol_touch <= 2;
 
     if (on && !story.protocol_touching) {
         s32 line = ST_PROTOCOL_WARN;

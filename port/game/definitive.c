@@ -721,7 +721,6 @@ void def_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, overheat_sealed);
     PORT_STATE_VAR(s, boost_logged);
     PORT_STATE_VAR(s, plug_last_stand_used);
-    PORT_STATE_VAR(s, plug_last_stand_slot);
     def_dri_savestate(s); /* a battle loaded mid-DRI-simulation is still one */
     def_purify_savestate(s); /* Blast phase 2: and mid-purification */
     def_finale_savestate(s); /* Extended Final Act & Post-Credits Farewell */
@@ -738,6 +737,7 @@ void def_savestate(struct PortState *s) {
     def_callout_savestate(s);
     def_story_savestate(s); /* the story hooks' talk, with the field's heap it lives in */
     def_time_savestate(s);  /* the Time Room's run */
+    PORT_STATE_VAR(s, plug_last_stand_slot); /* appended at tail so 0.8.5 savestates keep earlier layout */
 }
 
 static int target_slot(void) {

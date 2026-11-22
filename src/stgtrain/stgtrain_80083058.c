@@ -844,7 +844,9 @@ void stgtrain_main_run(StgtrainMain *obj, StgtrainMainData *data) {
             }
         } else if (data->level_menu->base.state == OBJECT_STATE_DONE) {
             data->level_menu->base.state = OBJECT_STATE_END;
+#ifdef PC_PORT
             stgtrain_main_show_tp(obj, data, 1);
+#endif
             obj->base.step = 10;
         }
         break;
