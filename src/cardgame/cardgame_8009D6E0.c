@@ -60,7 +60,14 @@ typedef struct CardgameOpponent {
     /* 0xCC */ s32 prize;     /* index in cardgame_prize_items */
 } CardgameOpponent; /* size 0xD0 */
 
+#ifdef PC_PORT
+/* The definition's own type on the host: read as a word, a u8 return leaves the register's upper bits undefined (the
+ * PS1's lbu zero-extended it). Windows' clang returns the byte in %al over an address in %rax, so the card script's
+ * terminating 0 read as non-zero and the effects ran on into the next cards' data. */
+u8 cardgame_get_card_data(s32 card, u32 field, s32 i);
+#else
 s32 cardgame_get_card_data(s32 card, u32 field, s32 i); /* defined returning u8; callers use the full word */
+#endif
 
 void cardgame_game_reset_cpu_deck(CardgameGame *game, CardgameGameData *data);
 void cardgame_game_update_display(CardgameGame *game, CardgameGameData *data);

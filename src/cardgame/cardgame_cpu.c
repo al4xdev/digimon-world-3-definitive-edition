@@ -10,7 +10,14 @@ s32 cardgame_cpu_get_score(CardgameGame *game, s32 side, s32 mask);
 s32 cardgame_mark_selectable_cards(CardgameGame *game, CardgameBoard *board, s32 arg2, s32 arg3, s32 arg4);
 s32 cardgame_mark_selectable_slots(CardgameGame *game, CardgameBoard *board, s32 arg2, s32 mask);
 s32 cardgame_is_card_playable(CardgameGame *game, s32 card);
+#ifdef PC_PORT
+/* The definition's own type on the host: read as a word, a u8 return leaves the register's upper bits undefined (the
+ * PS1's lbu zero-extended it). Windows' clang returns the byte in %al over an address in %rax, so the card script's
+ * terminating 0 read as non-zero and the effects ran on into the next cards' data. */
+u8 cardgame_get_card_data(s32 card, u32 field, s32 i);
+#else
 s32 cardgame_get_card_data(s32 card, u32 field, s32 i); /* defined returning u8; callers use the full word */
+#endif
 
 s32 cardgame_cpu_can_use_effect(CardgameGame *game, CardgameBoard *board, s32 card) {
     CardPicture pic;
