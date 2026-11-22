@@ -11,7 +11,8 @@ $Neutral: -
 $Unknown: ???
 $Twice: Ennemi x2
 $BlastTempt: Blast appelle...
-$ChosenRookie: Chosen exige Rookie
+$BlastNoGauge: Remplissez la jauge Blast<1>(faiblesses, étourdissements,<1>One More, OVERFINISH).
+$BlastOverheated: Trop en surchauffe pour<1>lancer le Blast maintenant.
 $ChosenNoRookie: Il faut être en forme Rookie<1>(de base) pour déclencher<1>l'Évolution Chosen.
 $ChosenNoPartner: Ce partenaire n'a pas<1>d'Évolution Chosen.
 $ChosenNoCharge: Votre Digivice est vide.<1>Allez voir Gennai pour<1>le recharger.

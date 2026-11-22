@@ -1354,26 +1354,28 @@ int def_blast_tempt(void) {
            (blast_fallen || m->hp * 100 <= m->max_hp * DEF_BLAST_TEMPT_HP_PCT);
 }
 
-/* After the quest, the line over the cross says why the Chosen Digimon cannot take it: not in its Rookie form. */
-int def_blast_hint(void) {
-    FightstgMember *m = blast_member();
-    s32 id = gamestate_data.funcs.get_party_member(fightstg_battle.state.current[0]);
-
-    return chosen_could() && m->digimon != (s16)records_digimon[id].id;
-}
-
-/* After the quest, why the Blast button refuses the Chosen Evolution: the box a press on the grey button opens (the
- * battle menu), NULL when there is nothing to tell (it is ready, or the Digimon cannot act: KO, a status, a
- * purification, the finale's own rules). The order is what the player fixes first: the partner, then this battle's
- * one use, the Digivice's charge (Gennai's), the level, and last the form, which a Rookie just has to go back to. */
+/* Why the grey Blast button refuses (the box a press on it opens in the battle menu), NULL when there is nothing to
+ * tell (it is ready, before/during the Ogremon tutorial, KO, stunned, purification, or the finale's own rules). */
 const unsigned char *def_chosen_refusal(void) {
     extern const unsigned char def_str_ChosenNoPartner[], def_str_ChosenUsed[], def_str_ChosenNoCharge[],
-        def_str_ChosenNoLevel[], def_str_ChosenNoRookie[];
+        def_str_ChosenNoLevel[], def_str_ChosenNoRookie[], def_str_BlastNoGauge[], def_str_BlastOverheated[];
     FightstgMember *m = blast_member();
     s32 id = gamestate_data.funcs.get_party_member(fightstg_battle.state.current[0]);
 
-    if (!def_blast_chosen_mode() || def_finale_active() || id < 0 || def_blast_ready() || m->hp <= 0 ||
-        (m->status & (8 | 0x20)) || def_purify_fighting()) {
+    if (def_finale_active() || id < 0 || id >= DEF_GAUGE_SLOTS || def_blast_ready() || m->hp <= 0 ||
+        (m->status & 8) || def_purify_fighting()) {
+        return NULL;
+    }
+    if (!def_blast_chosen_mode()) {
+        if (def_super_done() <= DEF_SUPER_TUTORIAL || m->blasted) {
+            return NULL;
+        }
+        if (m->status & 0x20) {
+            return def_str_BlastOverheated;
+        }
+        return records_state.gauges[id] < DEF_GAUGE_MAX ? def_str_BlastNoGauge : NULL;
+    }
+    if (m->status & 0x20) {
         return NULL;
     }
     if (id != def_record_chosen()) {
@@ -1388,12 +1390,12 @@ const unsigned char *def_chosen_refusal(void) {
     if (gamestate_data.funcs.get_record(id)->stats.values[0] < DEF_CHOSEN_LEVEL) {
         return def_str_ChosenNoLevel;
     }
-    return def_str_ChosenNoRookie; /* every other condition holds: only the form is left (def_blast_hint) */
+    return def_str_ChosenNoRookie;
 }
 
 const unsigned char *def_blast_tempt_label(void) {
-    extern const unsigned char def_str_BlastTempt[], def_str_ChosenRookie[];
-    return def_blast_chosen_mode() ? def_str_ChosenRookie : def_str_BlastTempt;
+    extern const unsigned char def_str_BlastTempt[];
+    return def_str_BlastTempt;
 }
 
 void def_blast_command(s32 command) {

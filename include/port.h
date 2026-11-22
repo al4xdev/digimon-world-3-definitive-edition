@@ -347,9 +347,8 @@ int def_blast_auto(void);            /* 1: the game's own gauge (filled by damag
 int def_blast_form(int partner, int band); /* the form's records_digimon row (1-based): the sequence's, or the Chosen */
 int def_blast_tempt(void);           /* a full gauge at a critical moment: the battle menu tempts */
 void port_log(const char *fmt, ...); /* psxstack/port_runtime.h's, for the game's sources */
-int def_blast_hint(void);            /* after the quest: the Chosen Digimon is not in its Rookie form (the line says so) */
 const unsigned char *def_blast_tempt_label(void);
-const unsigned char *def_chosen_refusal(void); /* after the quest: why Blast refuses the Chosen Evolution, or NULL */
+const unsigned char *def_chosen_refusal(void); /* why a grey Blast press refuses (Blast after Ogremon, or Chosen), or NULL */
 int def_blast_plug(void);           /* the DV Plug was used: 1 when it set the Blast off (the port's rule) */
 int def_blast_plug_revive(int slot); /* after the quest: the HP the Plug revives fallen slot `slot` with, 0 if none */
 int def_blast_plug_last_stand(int slot); /* global: auto-revives the last fallen Digimon (1 HP/MP, full Blast gauge, once/battle) */

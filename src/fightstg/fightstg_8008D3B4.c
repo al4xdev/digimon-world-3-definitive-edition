@@ -4242,9 +4242,8 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
         data->tempt = message_create_window(0x1005, 1, FIGHTSTG_TEMPT_X - wide_pad, FIGHTSTG_TEMPT_Y); /* the 14-pixel
                                                                                        * font: the 9-pixel one
                                                                                        * reads badly over the arena */
-        /* the line says the temptation, or after the quest that the Chosen Evolution takes the Rookie form */
         data->tempt->set_text(data->tempt,
-                              (u8 *)(obj->tempt || def_blast_hint() ? def_blast_tempt_label() : fightstg_inspect_empty), -1);
+                              (u8 *)(obj->tempt ? def_blast_tempt_label() : fightstg_inspect_empty), -1);
         if (obj->tempt) {
             port_log("battle menu: the Blast tempts");
         }
