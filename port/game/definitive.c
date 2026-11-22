@@ -347,6 +347,16 @@ static s32 guard_damage(u8 side, s32 value) {
     return value > 0 ? value : 1;
 }
 
+s32 def_counter_damage(u8 side, s32 value) {
+    if (!def_on() || value <= 0) {
+        return value;
+    }
+    value = guard_damage(side, value);
+    value = def_finale_damage(side, value);
+    value = def_super_bell_damage(side, value);
+    return value;
+}
+
 static s32 log_damage(u8 side, s32 id, s32 value, const char *what) {
     FightstgMember *target;
 
@@ -820,6 +830,7 @@ void def_savestate(struct PortState *s) {
     def_story_savestate(s); /* the story hooks' talk, with the field's heap it lives in */
     def_time_savestate(s);  /* the Time Room's run */
     PORT_STATE_VAR(s, plug_last_stand_slot); /* appended at tail so 0.8.5 savestates keep earlier layout */
+    PORT_STATE_VAR(s, guard_hit);
 }
 
 static int target_slot(void) {
@@ -1012,6 +1023,9 @@ void def_blast_started(s32 id) {
 }
 
 int def_blast_dark(void) {
+    if (def_finale_phase() == DEF_FINALE_PHASE4_SUPER_CHOSEN) {
+        return 0;
+    }
     return def_on() && !def_blast_chosen_mode() && blast_member()->blasted;
 }
 
@@ -1031,11 +1045,6 @@ void def_blast_boost_stats(int member, FightstgStats *out) {
     int pct, i, v;
 
     if (def_finale_golden_mode()) {
-        for (i = 0; i < 5; i++) {
-            if (out->stats[i] < 1650) {
-                out->stats[i] = 1650;
-            }
-        }
         return;
     }
     if (!def_on() || boost_off || !m->blasted || def_purify_fighting()) {
@@ -1357,6 +1366,10 @@ void def_action_resolved(u8 side, s32 id, s32 value) {
     if (!def_on() || side != 0) {
         return;
     }
+    if (value <= 0) {
+        guard_hit = 0;
+        hit_class = 0;
+    }
     overfinish_hit = 0; /* every party blow decides it afresh */
     if (value > 0 && fightstg_battle.state.members[1][target].hp <= 0) { /* it was already down: an OVERFINISH */
         overfinish_hit = 1;
@@ -1617,7 +1630,6 @@ static void patch_techniques(void) {
     records_techniques[134 - 1].kind = 26;
     records_techniques[134 - 1].effect_power = 36;
     records_techniques[136 - 1].mp_cost = 64;          /* Fortress Salvo (ex-Devil Buster): Machine (magic, below) + Def-2, 3 turns */
-    records_techniques[136 - 1].power = 320;
     records_techniques[136 - 1].defense_stat = 7;
     records_techniques[136 - 1].element_power = 64;
     records_techniques[136 - 1].kind = 27;

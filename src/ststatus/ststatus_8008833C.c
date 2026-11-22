@@ -325,6 +325,11 @@ void ststatus_forms_move_stats(StstatusFormsPage *obj, StstatusFormsPageData *da
     }
     for (i = 0; i < 6; i++) {
         data->techniques[i]->set_pos(data->techniques[i], 0xC4, i * 0xE + (s16)(obj->stats_y.value + 0x88));
+#ifdef PC_PORT
+        if (data->elem_icons[i] != NULL) {
+            data->elem_icons[i]->set_pos(data->elem_icons[i], DEF_TECH_ICON_X, i * 0xE + (s16)(obj->stats_y.value + 0x88));
+        }
+#endif
     }
 }
 

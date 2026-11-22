@@ -1334,6 +1334,9 @@ void fightstg_counter_update(FightstgCounter *obj, FightstgMessage **data) {
         obj->hit = fightstg_rules.roll_hit(obj->side, obj->tech);
         if (obj->hit != 0) {
             obj->damage = fightstg_rules.get_counter_damage(obj->side, obj->tech, obj->damage_taken);
+#ifdef PC_PORT
+            obj->damage = def_counter_damage(obj->side, obj->damage);
+#endif
             if (fightstg_battle.state.type != 0) {
                 obj->damage = wfightmn_cap_damage(obj->side, obj->damage, 0);
             }
@@ -2790,7 +2793,7 @@ FightstgCameraSetting *fightstg_camera_get_preset(FightstgCamera *obj, s32 slot,
     if (list != NULL) {
         id = list->get_model_id(list, slot);
 #ifdef PC_PORT
-        if (slot & 0xF0) { /* an enemy's cameras are a type B record's: a player form fighting as one borrows its stand-in's */
+        if ((slot & 0xF0) && id != 0) { /* an enemy's cameras are a type B record's: a player form fighting as one borrows its stand-in's */
             id = def_enemy_camera_model(id);
         }
 #endif
@@ -9295,6 +9298,11 @@ s32 fightstg_rules_roll_hit(u8 side, s32 id) {
     rec = &records_techniques[id - 1];
     if (side == 0) {
         if (fightstg_battle.state.type == 6) {
+#ifdef PC_PORT
+            if (def_finale_golden_mode()) {
+                return 1;
+            }
+#endif
             return (pad_random.next() & 0x7F) >= 0x2B;
         }
         diff = stats->stats[4] + stats->accuracy - target->stats[4];
@@ -9334,6 +9342,11 @@ s32 fightstg_rules_roll_special_hit(u8 side, s32 id) {
     target = &fightstg_rules.stats[1];
     rec = &records_techniques[id - 1];
     if (side == 0 && fightstg_battle.state.type == 6) {
+#ifdef PC_PORT
+        if (def_finale_golden_mode()) {
+            return 1;
+        }
+#endif
         return (pad_random.next() & 0x7F) >= 0x2B;
     }
     diff = stats->stats[3] - target->stats[3];

@@ -380,6 +380,9 @@ void wfightmn_main_update(WfightmnMain *obj, WfightmnMainData *data) {
                 } else {
                     leader = records_digimon[id].id;
                 }
+#ifdef PC_PORT
+                def_finale_battle_prepare(&leader);
+#endif
                 data->slots->add(data->slots, 0, leader, 1);
                 data->slots->reset_pos(data->slots, 0);
                 data->slots->add(data->slots, 0x10, records_state.enemies[0].digimon, 1);

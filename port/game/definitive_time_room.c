@@ -647,6 +647,10 @@ int def_time_text_own(int base_id, int index) {
     return base_id == TM_TALK03 && (index == TM_WARN_DARK || index == TM_WARN);
 }
 
+void def_time_reset(void) {
+    memset(&tm, 0, sizeof(tm));
+}
+
 void def_time_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, tm);
     PORT_STATE_VAR(s, tm_npc);   /* its talks point at tm_talks, in the same binary */

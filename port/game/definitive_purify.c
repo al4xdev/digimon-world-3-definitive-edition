@@ -173,23 +173,16 @@ static s16 enemy_resist(const RecordsDigimon *f, int e) {
 }
 
 static void purify_form_techniques(FightstgEnemyRecord *r, const RecordsDigimon *f) {
-    static const FightstgEnemyAction plan[3] = { { 3, 2, 3 }, { 2, 1, 96 }, { 1, 1, 256 } };
+    static const FightstgEnemyAction plan[3] = { { 3, 18, 2 }, { 2, 1, 48 }, { 1, 0, 0 } };
     int i, best = 0, best_score = 0;
 
     r->tech = (s16)(f->techniques[0] != 0 ? f->techniques[0] : f->techniques[6]);
     r->tech_3 = (s16)f->techniques[6];
-    for (i = 1; i < 6; i++) {
+    for (i = 1; i <= 5; i++) {
         int id = f->techniques[i];
-        const RecordsTechnique *t;
+        const RecordsTechnique *t = id > 0 ? &records_techniques[id - 1] : NULL;
 
-        if (id < 1) {
-            continue;
-        }
-        t = &records_techniques[id - 1];
-        if ((t->element != 2 && t->element != 3) || t->hit_count != 1 || t->kind > 8) {
-            continue;
-        }
-        if (t->power * t->hit_count > best_score) {
+        if (t != NULL && t->target == 2 && t->kind == 1 && t->power * t->hit_count > best_score) {
             best = id;
             best_score = t->power * t->hit_count;
         }
@@ -1055,6 +1048,11 @@ int def_purify_frame(void) {
     }
     pf_draw();
     return 1;
+}
+
+void def_purify_reset(void) {
+    memset(&pf_run, 0, sizeof(pf_run));
+    memset(&pf, 0, sizeof(pf));
 }
 
 void def_purify_savestate(struct PortState *s) {

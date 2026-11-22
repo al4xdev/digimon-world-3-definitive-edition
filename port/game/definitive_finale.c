@@ -140,6 +140,26 @@ int def_finale_pipimon_active(void) {
     return def_on() && def_record_story(DEF_STORY_IGOR_GONE);
 }
 
+/* Runs in wfightmn_main_update BEFORE slots->add / wfightmn_init_members so Phase 4 loads Dark Galacticmon (467)
+ * and the lead partner's base Rookie model/HUD instead of battle 0x144's default Snatchmon (442) + shown_form. */
+void def_finale_battle_prepare(s32 *leader) {
+    s32 lead;
+
+    if (!def_on() || fn.phase != DEF_FINALE_PHASE4_SUPER_CHOSEN) {
+        return;
+    }
+    lead = fn.lead_member;
+    if (leader != NULL && lead >= 0 && lead < 8) {
+        *leader = records_digimon[lead].id;
+    }
+    memset(&records_state.enemies[0], 0, sizeof(records_state.enemies));
+    records_state.enemies[0].digimon = FIN_GALACTIC_3;
+    records_state.enemies[0].level = 70;
+    records_state.enemies[0].hp = FIN_DARK_HP_P4;
+    records_state.enemies[0].mp = 9999;
+    records_state.enemies[0].stat_scale = 16;
+}
+
 /* Called at battle start (def_log_begin). Detects classic Galacticmon (Phase 1) and configures Phase 4 rematch. */
 void def_finale_battle_begin(void) {
     s32 eid;
@@ -275,7 +295,7 @@ void def_finale_enemy_stats(short stats[5]) {
         }
     }
     /* In Phase 4: let the player's Rookie act first before Super Chosen Evolution triggers;
-     * once Golden Imperialdramon-P is out (Speed 1650), keep boss Speed moderate for clean cinematic turns. */
+     * once Golden Imperialdramon-P is out (2500 stats), keep boss Speed moderate for clean cinematic turns. */
     if (fn.phase == DEF_FINALE_PHASE4_SUPER_CHOSEN) {
         stats[4] = fn.super_chosen_on ? 950 : 1;
     }
@@ -339,6 +359,16 @@ int def_finale_victory(void) {
         return 0;
     }
     if (fn.phase == DEF_FINALE_PHASE4_SUPER_CHOSEN) {
+        s32 lead = fn.lead_member;
+        FightstgMember *pm = &fightstg_battle.state.members[0][0];
+
+        if (lead >= 0 && lead < 8) {
+            GamestateStats *st = &gamestate_data.digimon[lead].record.stats;
+            pm->hp = st->values[3];
+            pm->mp = st->values[5];
+            pm->blasted = 0;
+            def_record_set_heat(lead, 0);
+        }
         restore_saved_party();
         def_record_set_story(DEF_STORY_FINALE_DONE);
         fn.phase = DEF_FINALE_NONE;
@@ -774,6 +804,11 @@ int dw3_velvet_pipimon_art(FieldstgActor *actor, u32 *ot, s32 x, s32 y) {
         gfx_module.funcs.set_packet(poly + 1);
     }
     return 1; /* replaces Igor's body & head completely */
+}
+
+void def_finale_reset(void) {
+    memset(&fn, 0, sizeof(fn));
+    fn_dialog = NULL;
 }
 
 void def_finale_savestate(struct PortState *s) {

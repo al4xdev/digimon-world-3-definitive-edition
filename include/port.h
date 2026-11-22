@@ -435,6 +435,9 @@ const unsigned char *def_bestiary_family_state(struct FightstgEnemyRecord *rec, 
 /* The hit sounds: the sound that tells a hit on a weakness, a neutral one or a resisted one (the player's elemental
  * techniques), played where the hit's own sound plays (fightstg_script_run_sound). */
 void def_hit_feedback(void);
+s32 def_counter_damage(u8 side, s32 value);
+void def_finale_battle_prepare(s32 *leader);
+int def_finale_golden_mode(void);
 /* OVERFINISH: the Bits earned by the blows that hit an enemy already knocked out in the battle just won; given once. */
 s32 def_overfinish_take_bits(void);
 /* Hard Mode (two Digimon in the party): New Game's choice and its use by the new game's reset; the third slot emptied

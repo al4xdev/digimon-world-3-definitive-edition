@@ -1198,6 +1198,9 @@ int dw3_velvet_event_closed(s32 type, s32 param) {
     if (def_time_on() && def_time_challenger() != NULL) {
         return type == 8; /* a trial's area: none of its own events (its exits lead back to the room) */
     }
+    if (vl_room && type == 1 && param == 0x200 && def_finale_velvet_active()) {
+        return 1; /* Phase 3 Last Velvet Room: bottom door stays shut so the player takes the upper door to the Blue Room */
+    }
     return vl_room && type == 1 && param == 0x20A && !def_time_side_door_open() && !def_finale_top_door_open();
 }
 
@@ -1397,6 +1400,21 @@ void dw3_velvet_stage_setup(void) {
     port_log("velvet: the room of map 0x%X (from map 0x%X), return_pos %d,%d dir %d entry %d", VL_MAP, vl_from,
              fieldstg_stage.return_pos.x >> 8, fieldstg_stage.return_pos.y >> 8, fieldstg_stage.return_dir,
              gamestate_data.funcs.get_map_entry());
+}
+
+void dw3_velvet_reset(void) {
+    vl_room = 0;
+    vl_from = 0;
+    vl_shop_greet = 0;
+    vl_shop_last = 0;
+    vl_shop_said = 0;
+    vl_shop_phase = 0;
+    vl_mentor_phase = 0;
+    vl_sepik_phase = 0;
+    vl_pulled = 0;
+    vl_igor_phase = 0;
+    vl_scene = 0;
+    vl_armed = 0;
 }
 
 /* A save state carries the room with the game's RAM it runs in: the map is the room or the bar by vl_room, and the

@@ -1079,6 +1079,7 @@ enum {
 };
 int def_finale_phase(void);
 int def_finale_active(void);
+void def_finale_battle_prepare(int *leader);
 void def_finale_battle_begin(void);
 int def_finale_on_galacticmon_ko(void);
 void def_finale_stage_enters(void);
@@ -1103,6 +1104,7 @@ int def_finale_igor_line(void);
 void def_finale_igor_done(void);
 int def_finale_field_frame(void);
 void def_finale_draw_blue_room(void);
+void def_finale_reset(void);
 void def_finale_savestate(struct PortState *s);
 /* The slot's third record (memcard.c part 7, DEF_RECORD3_AT + slot * DEF_RECORD3_SIZE, the card file's last free bytes):
  * the quest's dark forms, the first DEF_BLAST_QUEST_FORMS partner+form pairs a Blast called up, each with the stats it
@@ -1162,12 +1164,13 @@ struct FieldstgActor;
 struct FieldstgPlacedActor **def_time_room_actors(void); /* the Time Room's figures (NULL-ended) */
 struct FieldstgPlacedActor *def_time_challenger(void);   /* the trial's challenger, NULL outside a trial */
 int def_time_talk(struct FieldstgActor *actor);          /* the line of a figure talked to, 0: not the Time Room's */
-int def_time_guarded(int species);      /* the trial's guarded challenger (its last member): the party's blows are halved until it is staggered */
+int def_time_guarded(int species);      /* the trial's guarded challenger (its last member): takes DEF_GUARD_PCT (30%) until staggered */
 int def_time_side_door_open(void);      /* the room's upper door leads to the trials */
 void def_time_frame(void);              /* each field frame while the room runs */
 int def_time_warp_closed(int type, int param); /* the Warp Gate held shut until the trials are passed */
 void def_time_battle_begin(void);
 void def_time_battle_end(int result);
+void def_time_reset(void);
 void def_time_savestate(struct PortState *s);
 int def_time_text_own(int base_id, int index);
 void def_time_gate_frame(int (*say)(const int *messages, int n)); /* the shut gate's warning (def_story_frame) */
@@ -1185,7 +1188,10 @@ void def_purify_battle_begin(void);
 void def_purify_battle_end(int result);
 void def_purify_offer(void);
 struct PortState;
+void def_purify_reset(void);
 void def_purify_savestate(struct PortState *s);
+void def_dri_reset(void);
+void dw3_velvet_reset(void);
 /* 1 when the screen and the card record are in use: never in a replay script (shared with the emulator), unless
  * DW3_DEFINITIVE is set, as the rest of the layers (DW3_BESTIARY: this layer alone). */
 int def_bestiary_active(void);

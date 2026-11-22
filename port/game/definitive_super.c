@@ -54,7 +54,7 @@ int def_super_materials(int amount) {
 int def_super_bell_damage(int side, int damage) {
     int scaled;
 
-    if (side != 0 || damage <= 0 || !def_super_on()) {
+    if (side != 0 || damage <= 0 || !def_super_on() || def_finale_golden_mode()) {
         return damage;
     }
     scaled = scale(damage, DEF_SUPER_PLAYER_DMG_PCT);

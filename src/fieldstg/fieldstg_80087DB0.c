@@ -2980,7 +2980,10 @@ void fieldstg_camera_update(FieldstgCamera *obj) {
         case 0:
 #ifdef PC_PORT
             if (obj->actor == NULL) {
-                break;
+                obj->actor = (FieldstgActor *)heap_objects.find(5, obj->actor_id, -1);
+                if (obj->actor == NULL) {
+                    return;
+                }
             }
 #endif
             obj->center.x = obj->actor->pixel_pos.x;

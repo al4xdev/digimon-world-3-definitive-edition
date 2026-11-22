@@ -1239,6 +1239,11 @@ int def_dri_defeat(void) {
     return 1;
 }
 
+void def_dri_reset(void) {
+    memset(&dri_sim, 0, sizeof(dri_sim));
+    memset(&dri, 0, sizeof(dri));
+}
+
 void def_dri_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, dri_sim);
     /* The list's screen points into the field's heap and at the texts below: all of it goes with the heap. */

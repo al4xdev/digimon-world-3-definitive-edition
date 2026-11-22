@@ -144,6 +144,11 @@ void def_bestiary_reset(void) {
     blast_reset();
     def_super_reset();
     def_skin_reset();
+    def_finale_reset();
+    def_purify_reset();
+    def_dri_reset();
+    dw3_velvet_reset();
+    def_time_reset();
 }
 
 unsigned int def_network_mask(void) {

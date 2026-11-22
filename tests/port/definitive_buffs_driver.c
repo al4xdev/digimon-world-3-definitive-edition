@@ -62,10 +62,11 @@ void port_log(const char *fmt, ...) { (void)fmt; }
 void port_girls_refresh(void) {}
 static s32 dummy_sound_play(s32 id) { (void)id; return 0; }
 static s32 stub_phys_damage = 0;
+static s32 stub_magic_damage = 0;
 static int last_callout = -1;
 static int time_guarded_stub = 0;
 s32 fightstg_rules_get_damage(u8 side, s32 id) { (void)side; (void)id; return stub_phys_damage; }
-s32 fightstg_rules_get_special_damage(u8 side, s32 id) { (void)side; (void)id; return 0; }
+s32 fightstg_rules_get_special_damage(u8 side, s32 id) { (void)side; (void)id; return stub_magic_damage; }
 void *font_get_entry(void *d, s32 i) { (void)d; (void)i; return NULL; }
 s32 wfightmn_update_idle_anim(u8 side, s32 amount) { (void)side; (void)amount; return 0; }
 
@@ -125,9 +126,11 @@ void def_time_savestate(struct PortState *s) { (void)s; }
 int def_time_guarded(int species) { (void)species; return time_guarded_stub; }
 void def_flee_ask_reset(void) {}
 void def_flee_ask_savestate(struct PortState *s) { (void)s; }
+int def_finale_phase(void) { return 0; }
 void def_finale_battle_begin(void) {}
 int def_finale_golden_mode(void) { return 0; }
 int def_finale_damage(int side, int value) { (void)side; return value; }
+int def_super_bell_damage(int side, int damage) { (void)side; return damage; }
 int def_purify_next_wave(void) { return -1; }
 int def_finale_enemy_dark(void) { return 0; }
 void def_finale_savestate(struct PortState *s) { (void)s; }
@@ -433,15 +436,28 @@ int main(void) {
         def_hit_feedback();
         check("guard: def_log_action clears guard_hit for non-damaging skills", last_callout != DEF_CALLOUT_GUARDED);
 
-        /* Weakness hit on guarded Datamon: still guarded on the opening blow, but callout is WEAK! */
+        /* Weakness magic hit on guarded Datamon: still guarded on the opening blow, but callout is WEAK! */
         fightstg_rules.stats[1].resists[0] = 60; /* Fire weakness */
+        stub_magic_damage = 1000;
         last_callout = -1;
-        dmg = def_get_damage(0, 56);
+        dmg = def_get_special_damage(0, 56);
         def_hit_feedback();
-        check("guard: weakness hit on guarded boss shows WEAK! (not GUARDED)",
+        check("guard: magic weakness hit on guarded boss takes 30% and shows WEAK! (not GUARDED)",
               dmg == 300 && last_callout == DEF_CALLOUT_WEAK);
 
-        /* Stagger opens Guard: next blow deals 100% and no GUARDED callout */
+        /* Missed attack clears guard_hit & hit_class */
+        last_callout = -1;
+        dmg = def_get_damage(0, 55);
+        def_action_resolved(0, 55, 0);
+        def_hit_feedback();
+        check("guard: miss clears guard_hit and hit_class (no GUARDED callout)", last_callout == -1);
+
+        /* Counter damage also respects Boss Guard */
+        dmg = def_counter_damage(0, 1000);
+        check("guard: counter damage on guarded boss takes 30%", dmg == 300);
+
+        /* Re-arm magic weakness hit and resolve so Stagger opens Guard */
+        dmg = def_get_special_damage(0, 56);
         def_action_resolved(0, 56, dmg);
         last_callout = -1;
         dmg = def_get_damage(0, 55);

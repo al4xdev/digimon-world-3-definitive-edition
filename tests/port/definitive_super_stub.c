@@ -44,3 +44,14 @@ void def_skin_record_write(unsigned char *out) {
 void def_skin_record_read(const unsigned char *in) {
     (void)in;
 }
+
+void def_finale_reset(void) {
+}
+void def_purify_reset(void) {
+}
+void def_dri_reset(void) {
+}
+void dw3_velvet_reset(void) {
+}
+void def_time_reset(void) {
+}
