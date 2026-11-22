@@ -507,6 +507,13 @@ struct FightstgEnemyRecord *def_purify_record(s32 id);
 struct FightstgEnemyRecord *def_dri_record(s32 id);
 /* The model whose cameras an enemy slot reads (type B records only): a DRI stage's player form, its base species'. */
 s32 def_enemy_camera_model(s32 model_id);
+/* A player form fighting as an enemy (a DRI simulator, the Blast's purification) plays animations authored for the
+ * party's row of the arena: the two rows exchange places for the length of one such animation
+ * (port/game/definitive_anim.c). */
+struct FightstgSlots;
+s32 def_form_anim_swap_begin(struct FightstgSlots *slots, s32 side, s32 model_id, s32 script);
+void def_form_anim_swap_end(struct FightstgSlots *slots);
+s32 def_form_anim_rows_exchanged(void);
 int def_purify_frame(void);
 int def_superhunt_frame(void);
 int def_purify_stage_enters(int member);

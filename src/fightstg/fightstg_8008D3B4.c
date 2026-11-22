@@ -7187,7 +7187,13 @@ void fightstg_jump_update(FightstgJump *obj) {
             }
             break;
         }
+#ifdef PC_PORT
+        /* The disc's slot 0x10, or slot 0 while the rows are exchanged (definitive_anim.c): the leader standing in the
+         * enemy's row. */
+        if (def_form_anim_rows_exchanged() ? obj->params->id == 0 : obj->params->id == 0x10) {
+#else
         if (obj->params->id == 0x10) {
+#endif
             obj->z_offset = -obj->z_offset;
         }
         obj->time = fightstg_battle.frames * obj->speed;

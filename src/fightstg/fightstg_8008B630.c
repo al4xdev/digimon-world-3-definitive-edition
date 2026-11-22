@@ -77,6 +77,13 @@ void fightstg_attack_update();
 
 /* The slot of role `role` in a script: 1-3 = slots 0-2, 4-6 = slots 0x10-0x12, else the script's own. */
 s32 fightstg_script_get_slot(FightstgScript *obj, s32 role) {
+#ifdef PC_PORT
+    /* The rows are exchanged for this script (definitive_anim.c): roles 1-6 name a side, not a slot of the original
+     * layout, so the script's "my side's members" and "the other side's" are the other side's and its own now. */
+    if (obj->unk_84 != 0 && role >= 1 && role <= 6) {
+        return (role <= 3 ? role - 1 : 0x10 + role - 4) ^ 0x10;
+    }
+#endif
     switch (role) {
     case 0:
     default:
@@ -265,7 +272,13 @@ s32 fightstg_script_run_model(FightstgScript *obj, FightstgScriptData *data) {
 
         pos.vx = params->start_pos.x;
         pos.vy = params->start_pos.y;
+#ifdef PC_PORT
+        /* The disc's side test, inverted while the rows are exchanged (definitive_anim.c): then each model stands in
+         * the other side's row, the caster's script and the target's reaction alike. */
+        if (((slot & 0xF0) != 0) != (def_form_anim_rows_exchanged() != 0)) {
+#else
         if (slot & 0xF0) {
+#endif
             pos.vz = params->start_pos.z - 0x2800;
         } else {
             pos.vz = params->start_pos.z + 0x2800;
@@ -605,6 +618,11 @@ void fightstg_script_update(FightstgScript *obj, FightstgScriptData *data) {
                     break;
                 }
             }
+            /* A player form fighting as an enemy: its animation is authored for the party's row (definitive_anim.c).
+             * Only for a script that plays: battle_animations' cut above ends it, or reuses this object for the
+             * target's reaction (step 0 again, with this side and script changed), and a swap made before it would
+             * be lost with unk_84 and never undone. */
+            obj->unk_84 = def_form_anim_swap_begin(slots, obj->side, obj->model_id, obj->script);
 #endif
             if (obj->script != 12) {
                 obj->base.next_state(obj);
@@ -689,6 +707,12 @@ void fightstg_script_update(FightstgScript *obj, FightstgScriptData *data) {
         break;
     case OBJECT_STATE_DONE:
     case OBJECT_STATE_END:
+#ifdef PC_PORT
+        if (obj->unk_84 != 0) { /* the script that had the rows exchanged (INIT): put both sides back */
+            def_form_anim_swap_end(obj->slots);
+            obj->unk_84 = 0;
+        }
+#endif
         break;
     }
 }

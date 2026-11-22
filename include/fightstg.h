@@ -209,7 +209,7 @@ typedef struct FightstgScript {
     /* 0x78 */ s32 model_id; /* model ID */
     /* 0x7C */ s32 slot;
     /* 0x80 */ s32 file; /* script file's sub-file ID */
-    /* 0x84 */ s32 unk_84;
+    /* 0x84 */ s32 unk_84; /* PC_PORT: 1 while this script runs with the rows exchanged (definitive_anim.c) */
     /* 0x88 */ FightstgSlots *slots;
     /* 0x8C */ s16 *next; /* next command */
     /* 0x90 */ s32 child;
