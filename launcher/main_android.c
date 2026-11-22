@@ -1465,11 +1465,12 @@ static void on_key(int code) {
     if (screen == S_SPLASH) { go(S_HOME, 0, +1); return; }
     if (screen == S_LOADING) { load_press(code); return; }
     if (capture) {
-        /* As the desktop launcher's (main.c, on_press): only a face button or a shoulder binds, the d-pad cancels, and the
-         * row's letter follows its new button. Without the letter cfg_layout() reads the pad as LAYOUT_CUSTOM, and
-         * every row's glyph falls back to the PS1 shapes: one remap looked like it had broken all the others. */
-        static const int valid[] = {K_SOUTH, K_EAST, K_WEST, K_NORTH, K_L1, K_R1, K_L2, K_R2};
-        if (code == K_START || code == K_SELECT || code == K_UP || code == K_DOWN) { capture = 0; return; }
+        /* As the desktop launcher's (main.c, on_press): a face button, a shoulder, Start or Select binds, the d-pad
+         * cancels (as Android's Back does, on_back), and the row's letter follows its new button. Without the letter
+         * cfg_layout() reads the pad as LAYOUT_CUSTOM, and every row's glyph falls back to the PS1 shapes: one remap
+         * looked like it had broken all the others. */
+        static const int valid[] = {K_SOUTH, K_EAST, K_WEST, K_NORTH, K_L1, K_R1, K_L2, K_R2, K_START, K_SELECT};
+        if (code == K_UP || code == K_DOWN) { capture = 0; return; }
         for (unsigned i = 0; i < sizeof(valid) / sizeof(valid[0]); i++) {
             if (valid[i] != code) continue;
             if (screen == S_CONTROLS && sel > 0) {
