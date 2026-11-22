@@ -1034,6 +1034,16 @@ void def_blast_started(s32 id) {
         def_record_set_story(DEF_STORY_BLAST_FIRST);
         port_log("blast: digimon %d took the blessed Blast", (int)id);
     } else {
+        GamestateRecord *r = gamestate_data.funcs.get_record(id);
+        int cost = (r != NULL && r->stats.values[1] > 0)
+                       ? (r->stats.values[1] < DEF_BLAST_PLUG_TP ? r->stats.values[1] : DEF_BLAST_PLUG_TP)
+                       : 0;
+
+        if (cost > 0) {
+            r->stats.values[1] -= (s16)cost;
+            def_record_blast_owe(id, cost); /* Gennai's quest gives it back */
+            port_log("blast: digimon %d paid %d TP (%d left)", (int)id, cost, r->stats.values[1]);
+        }
         blast_cursed |= 1u << id;
     }
     blast_record(id, blast_step_taken == 0xFF ? -1 : blast_step_taken);
@@ -1287,8 +1297,6 @@ int def_blast_plug_last_stand(int slot) {
 int def_blast_plug(void) {
     FightstgMember *m = blast_member();
     s32 id = gamestate_data.funcs.get_party_member(fightstg_battle.state.current[0]);
-    GamestateRecord *r;
-    int cost;
 
     /* after the quest the Plug is a revive item instead (def_blast_plug_revive, through the game's item 0x46 path) */
     if (!def_on() || id < 0 || id >= DEF_GAUGE_SLOTS || m->hp <= 0 || def_purify_fighting() ||
@@ -1299,16 +1307,11 @@ int def_blast_plug(void) {
     if (m->blasted || (m->status & (8 | 0x20))) {
         return 0;
     }
-    r = gamestate_data.funcs.get_record(id);
-    /* Igor's Plug is clean for the blessed Blast: no TP taken, nothing for the quest to give back */
-    cost = blast_blessed() ? 0 : r->stats.values[1] < DEF_BLAST_PLUG_TP ? r->stats.values[1] : DEF_BLAST_PLUG_TP;
-    r->stats.values[1] -= (s16)cost;
-    def_record_blast_owe(id, cost); /* the quest gives it back */
     records_state.gauges[id] = DEF_GAUGE_MAX;
-    fightstg_events_add_gauge_full(); /* the game's own trigger: wfightmn_blast runs next */
-    port_log("blast: the DV Plug sets digimon %d off, %d TP taken (%d left)", (int)id, cost, r->stats.values[1]);
+    fightstg_events_add_gauge_full(); /* wfightmn_blast -> def_blast_started takes the TP and records the form */
+    port_log("blast: the DV Plug fills gauge for digimon %d", (int)id);
     if (log_on()) {
-        LOG("blast plug digimon %d tp -%d", (int)id, cost);
+        LOG("blast plug digimon %d", (int)id);
     }
     return 1;
 }
@@ -1341,7 +1344,8 @@ int def_blast_ready(void) {
         return 0;
     }
     return def_on() && id >= 0 && id < DEF_GAUGE_SLOTS && records_state.gauges[id] >= DEF_GAUGE_MAX && !m->blasted &&
-           m->hp > 0 && !(m->status & (8 | 0x20)) && !def_purify_fighting();
+           m->hp > 0 && !(m->status & (8 | 0x20)) && !def_purify_fighting() &&
+           (blast_blessed() || gamestate_data.funcs.get_record(id)->stats.values[1] >= DEF_BLAST_PLUG_TP);
 }
 
 /* The temptation (owner's brief: "the temptation to use it at critical moments"): the gauge is full and the moment is
@@ -1358,7 +1362,8 @@ int def_blast_tempt(void) {
  * tell (it is ready, before/during the Ogremon tutorial, KO, stunned, purification, or the finale's own rules). */
 const unsigned char *def_chosen_refusal(void) {
     extern const unsigned char def_str_ChosenNoPartner[], def_str_ChosenUsed[], def_str_ChosenNoCharge[],
-        def_str_ChosenNoLevel[], def_str_ChosenNoRookie[], def_str_BlastNoGauge[], def_str_BlastOverheated[];
+        def_str_ChosenNoLevel[], def_str_ChosenNoRookie[], def_str_BlastNoGauge[], def_str_BlastOverheated[],
+        def_str_BlastNoTp[];
     FightstgMember *m = blast_member();
     s32 id = gamestate_data.funcs.get_party_member(fightstg_battle.state.current[0]);
 
@@ -1373,7 +1378,12 @@ const unsigned char *def_chosen_refusal(void) {
         if (m->status & 0x20) {
             return def_str_BlastOverheated;
         }
-        return records_state.gauges[id] < DEF_GAUGE_MAX ? def_str_BlastNoGauge : NULL;
+        if (records_state.gauges[id] < DEF_GAUGE_MAX) {
+            return def_str_BlastNoGauge;
+        }
+        return (!blast_blessed() && gamestate_data.funcs.get_record(id)->stats.values[1] < DEF_BLAST_PLUG_TP)
+                   ? def_str_BlastNoTp
+                   : NULL;
     }
     if (m->status & 0x20) {
         return NULL;

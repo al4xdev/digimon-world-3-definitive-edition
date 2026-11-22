@@ -29,7 +29,10 @@
   are saved (`blast_boost`, record 2). The Chosen Evolution has `DEF_CHOSEN_BOOST_PCT` (50)% from the start.
 - **The 999 cap** (done): the Blast's boost stops at 999 (a stat already past it keeps its value); only the Chosen boost
   (+50%) goes up to 9999 (`def_blast_boost_stats`, the bound keeps the damage formulas in range). Not yet seen in a real fight.
-- **DV Plug** (item 76): fills the gauge and triggers at once, costs 10 TP (`DEF_BLAST_PLUG_TP`); after the quest it revives to
+- **Blast TP cost** (`def_blast_started` / `def_blast_ready`): every non-blessed Blast costs 10 TP (`DEF_BLAST_PLUG_TP`,
+  refunded up to 99 at the end of Gennai's quest), so `R2` requires 10 TP (unless blessed).
+- **DV Plug** (item 76): fills the gauge and triggers at once (or revives the last fallen partner at 1 HP / 1 MP with
+  a full gauge in Last Stand); after the quest it revives to
   Rookie at 1 HP / 1 MP: it goes through the game's revive path (item 0x46, `fightstg_8008D3B4.c`), which revives every fallen
   partner, each as its Rookie with the Blast flag off (`def_blast_plug_revive`; a partner still overheated stays sealed); its
   description is then `$PlugRevive` instead of `ITMINF` 76 ("Revive: Rookie form, 1 HP and 1 MP" / "Revive em Rookie com 1 HP

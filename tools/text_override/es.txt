@@ -13,6 +13,7 @@ $Twice: Enemigo x2
 $BlastTempt: Blast llama...
 $BlastNoGauge: Llena la barra Blast primero<1>(debilidades, aturdimientos,<1>One More, OVERFINISH).
 $BlastOverheated: Demasiado sobrecalentado<1>para usar Blast ahora.
+$BlastNoTp: Blast requiere 10 TP.
 $ChosenNoRookie: Debes estar en tu forma<1>Rookie (base) para activar<1>la Evolución Elegida.
 $ChosenNoPartner: Este compañero no tiene<1>Evolución Elegida.
 $ChosenNoCharge: Tu Digivice no tiene<1>energía. Ve con Gennai<1>para recargarlo.
