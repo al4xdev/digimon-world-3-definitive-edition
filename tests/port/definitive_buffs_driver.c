@@ -93,6 +93,7 @@ void def_callout_savestate(struct PortState *s) { (void)s; }
 void fightstg_events_add_gauge_full(void) {}
 void fightstg_events_add_revert(void) {}
 void def_superhunt_screen_savestate(struct PortState *s) { (void)s; }
+void def_respec_savestate(struct PortState *s) { (void)s; }
 void def_recolor_savestate(struct PortState *s) { (void)s; }
 void def_skin_savestate(struct PortState *s) { (void)s; }
 void def_story_savestate(struct PortState *s) { (void)s; }

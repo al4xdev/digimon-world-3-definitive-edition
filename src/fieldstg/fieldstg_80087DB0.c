@@ -1837,9 +1837,9 @@ void fieldstg_manager_update(FieldstgManager *obj, FieldstgManagerData *data) {
             if (dw3_travel_frame()) {
                 break; /* the Guardromon's SAVE / TELEPORT screen owns the field */
             }
-            if (def_bm_frame() || def_dri_frame() || def_purify_frame() || def_superhunt_frame()) {
-                break; /* the Black Market's, a DRI Agent's, the mentor's or the Sepikmon's screen owns the field (the
-                        * hunts' also draw the compass) */
+            if (def_bm_frame() || def_dri_frame() || def_purify_frame() || def_superhunt_frame() || def_respec_frame()) {
+                break; /* the Black Market's, a DRI Agent's, the mentor's, the Sepikmon's or the pig's screen owns the
+                        * field (the hunts' also draw the compass) */
             }
             if (def_guide_frame()) {
                 break; /* the Guide, asked for by the field menu's entry */

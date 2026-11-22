@@ -520,6 +520,11 @@ void def_super_reset(void);
 void def_super_savestate(struct PortState *s);
 /* Sepikmon's board, the compass and Seiryu City's call to the Velvet Room (definitive_superhunt_screen.c). */
 void def_superhunt_board_offer(void);       /* his line is over: the board opens on the next idle frame */
+#define DEF_RESPEC_PRICE 100000 /* Bits the Velvet Room's pig asks to move stat points (definitive_respec_screen.c) */
+#define DEF_RESPEC_POINTS 100   /* raw points one swap moves from one stat to another of the same partner */
+void def_respec_offer(void);    /* the pig's line is over: his board opens on the field's next frame */
+int def_respec_frame(void);     /* the field's idle step: 1 while his board owns the field */
+void def_respec_savestate(struct PortState *s);
 int def_superhunt_frame(void);              /* the field's idle step: 1 while the board or a panel owns the field */
 void def_superhunt_screen_savestate(struct PortState *s);
 /* The rare foes' palette swap (definitive_recolor.c): the kinds, and its save-state part (the hooks are in port.h). */

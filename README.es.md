@@ -310,7 +310,7 @@ La sala **crece con la historia**. Sus invitados van llegando uno a uno:
 | **Gennai** | la misión del Blast y la Chosen Evolution |
 | **Guilmon** | guarda el Demon Bell, Super Hard a demanda |
 | **Etemon** | al piano. Ya ha oído esta música en otro juego |
-| **El cerdo** | un actor que el juego incluyó y nunca usó, por fin sobre el escenario |
+| **El cerdo** | un actor que el juego incluyó y nunca usó, por fin sobre el escenario; mueve 100 puntos de un atributo (o Afinidad) de un compañero a otro por 100.000 Bits |
 | **Oikawa** | tras el mostrador, cuando te lo hayas ganado: el Black Market |
 
 La sala tiene su propio arreglo de la música, y una **red de Guardromon** une las posadas: guarda la partida o

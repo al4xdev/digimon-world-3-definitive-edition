@@ -311,7 +311,7 @@ La stanza **cresce con la storia**. I suoi ospiti arrivano uno alla volta:
 | **Gennai** | la missione del Blast e la Chosen Evolution |
 | **Guilmon** | custodisce il Demon Bell, Super Hard su richiesta |
 | **Etemon** | al pianoforte. Ha già sentito questa musica in un altro gioco |
-| **Il maiale** | un attore che il gioco includeva e non ha mai usato, finalmente sul palco |
+| **Il maiale** | un attore che il gioco includeva e non ha mai usato, finalmente sul palco; sposta 100 punti da una statistica (o Affinità) di un partner a un'altra per 100.000 Bits |
 | **Oikawa** | dietro il bancone, quando te lo sarai guadagnato: il Black Market |
 
 La stanza ha un suo arrangiamento della musica, e una **rete di Guardromon** collega le locande: salva o teletrasportati

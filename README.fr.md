@@ -314,7 +314,7 @@ La pièce **grandit avec l'histoire**. Ses invités arrivent un à un :
 | **Gennai** | la quête du Blast et la Chosen Evolution |
 | **Guilmon** | garde le Demon Bell, le Super Hard à la demande |
 | **Etemon** | au piano. Il a déjà entendu cette musique dans un autre jeu |
-| **Le cochon** | un acteur que le jeu avait livré sans jamais l'employer, enfin sur scène |
+| **Le cochon** | un acteur que le jeu avait livré sans jamais l'employer, enfin sur scène ; transfère 100 points d'une stat (ou Affinité) d'un partenaire à une autre pour 100 000 Bits |
 | **Oikawa** | derrière le comptoir, quand vous l'aurez mérité : le Black Market |
 
 La pièce a son propre arrangement de la musique, et un **réseau de Guardromon** relie les auberges : sauvegardez ou

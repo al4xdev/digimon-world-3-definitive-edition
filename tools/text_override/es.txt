@@ -851,7 +851,7 @@ $SupSkinOriginal: Tus colores originales.
 $SupSkinSet: Listo. Camina para verlo.
 $SupSkinLocked: Gana antes su caza.
 $SupKeysSkins: × botón: Ponerlo<1>△ botón: Salir   L1: Cazas
-TALK05 79: <7>????<7>Alguien me halló en<1>un montón de juguetes<1>viejos y me puso aquí.<2,2><3>...Mejor que la caja.<2,2>
+TALK05 79: <7>????<7>Alguien me halló en<1>un montón de juguetes<1>viejos y me puso aquí.<2,2><3>...Mejor que la caja.<2,2><3>Por 100.000 Bits<1>muevo 100 puntos<1>de un valor a otro.<2,2>
 TALK05 8: <7>Oikawa<7>No preguntes cómo lo<1>conseguí...<2,2><3>En el Mundo Digital,<1>hasta datos desechados<1>valen algo...<2,2><3>...para quien sepa<1>usarlos.<2,2>
 TALK05 9: <7>Oikawa<7>¿Tú también buscas<1>un poder que no<1>debería existir?<2,2><3>Pues mira rápido.<1>No me gusta llamar<1>la atención.<2,2>
 TALK05 12: <7>Oikawa<7>Úsalo con cuidado.<1>Ese poder cobra<1>un precio...<2,2><3>...a quien lo carga.<1>Lo sé bien.<2,2>
@@ -940,3 +940,19 @@ ITMINF 356: Sube Afinidad de Máquina (+200).
 ITMINF 357: Sube Afinidad de Oscuridad (+60).
 ITMINF 358: Sube Afinidad de Oscuridad (+120).
 ITMINF 359: Sube Afinidad de Oscuridad (+200).
+# The pig's stat swap (port/game/definitive_respec_screen.c): after his line (TALK05 79) his board moves 100 raw
+# points of one stat of a partner to another of the same partner for 100,000 Bits.
+$RsTitle: Cambio de valores
+$RsKeysFrom: × botón: Quitar 100 de aquí   △ botón: Salir<1>L1/R1: Digimon
+$RsKeysTo: × botón: Dar 100 a este<1>△ botón: Volver
+$RsKeysPay: × botón: Pagar 100.000 Bits<1>△ botón: Volver
+$RsPrice: "Precio 100.000 Bits   Tienes "
+$RsBits: " Bits"
+$RsArrow: " -> "
+$RsSp: " "
+$RsGap: "   "
+$RsDone: Hecho: 100 puntos movidos.
+$RsNoBits: Faltan Bits.
+$RsLow: Necesita 101 o más para dar 100.
+$RsFull: Eso pasaría de 999.
+$RsSame: Elige otro valor.

@@ -308,7 +308,7 @@ A sala **cresce com a história**. Os convidados chegam um a um:
 | **Gennai** | a missão do Blast e a Chosen Evolution |
 | **Guilmon** | guarda o Demon Bell, o Super Hard sob demanda |
 | **Etemon** | ao piano. Ele já ouviu esta música em outro jogo |
-| **O porco** | um ator que o jogo trouxe e nunca usou, finalmente no palco |
+| **O porco** | um ator que o jogo trouxe e nunca usou, finalmente no palco; move 100 pontos de um status (ou Afinidade) de um parceiro para outro por 100.000 Bits |
 | **Oikawa** | atrás do balcão, quando você tiver merecido: o Black Market |
 
 A sala tem o seu próprio arranjo da música, e uma **rede de Guardromons** liga as pousadas: salve ou teleporte-se

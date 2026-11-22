@@ -306,7 +306,7 @@ The room **grows with the story**. Its guests arrive one by one:
 | **Gennai** | the Blast quest and the Chosen Evolution |
 | **Guilmon** | keeps the Demon Bell, Super Hard on demand |
 | **Etemon** | at the piano. He has heard this music in another game |
-| **The pig** | an actor the game shipped and never used, at last on stage |
+| **The pig** | an actor the game shipped and never used, at last on stage; moves 100 points from one stat (or Affinity) of a partner to another for 100,000 Bits |
 | **Oikawa** | behind the counter, once you have earned it: the Black Market |
 
 The room has its own arrangement of the music, and a **Guardromon network** ties the inns together: save or teleport

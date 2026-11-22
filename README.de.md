@@ -312,7 +312,7 @@ Der Raum **wächst mit der Geschichte**. Seine Gäste treffen nach und nach ein:
 | **Gennai** | die Blast-Quest und die Chosen Evolution |
 | **Guilmon** | verwahrt den Demon Bell, Super Hard auf Wunsch |
 | **Etemon** | am Klavier. Er hat diese Musik schon in einem anderen Spiel gehört |
-| **Das Schwein** | ein Darsteller, den das Spiel mitlieferte und nie einsetzte, endlich auf der Bühne |
+| **Das Schwein** | ein Darsteller, den das Spiel mitlieferte und nie einsetzte, endlich auf der Bühne; verschiebt 100 Punkte von einem Wert (oder einer Affinität) eines Partners auf einen anderen für 100.000 Bits |
 | **Oikawa** | hinter dem Tresen, sobald du es dir verdient hast: der Black Market |
 
 Der Raum hat sein eigenes Arrangement der Musik, und ein **Guardromon-Netzwerk** verbindet die Gasthäuser: Speichere

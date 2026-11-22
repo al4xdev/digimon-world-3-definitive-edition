@@ -851,7 +851,7 @@ $SupSkinOriginal: Vos propres couleurs.
 $SupSkinSet: Fait. Marchez pour la voir.
 $SupSkinLocked: Gagnez sa chasse.
 $SupKeysSkins: × Porter   △ Partir   L1: Chasses
-TALK05 79: <7>????<7>On m'a trouvé dans un<1>tas de jouets inutiles<1>et l'on m'a mis ici.<2,2><3>...Mieux que la boîte.<2,2>
+TALK05 79: <7>????<7>On m'a trouvé dans un<1>tas de jouets inutiles<1>et l'on m'a mis ici.<2,2><3>...Mieux que la boîte.<2,2><3>Pour 100 000 Bits, je<1>déplace 100 points<1>d'une stat à l'autre.<2,2>
 TALK05 8: <7>Oikawa<7>Ne demandez pas<1>comment je l'ai eu...<2,2><3>Dans le Monde Digital,<1>même les rebuts<1>ont une valeur...<2,2><3>...pour qui sait<1>s'en servir.<2,2>
 TALK05 9: <7>Oikawa<7>Vous aussi cherchez un<1>pouvoir qui ne devrait<1>pas exister ?<2,2><3>Alors faites vite.<1>Je n'aime pas attirer<1>l'attention.<2,2>
 TALK05 12: <7>Oikawa<7>Usez-en avec prudence.<1>Ce genre de pouvoir<1>exige un prix...<2,2><3>...payé par celui<1>qui le porte.<2,2><3>Je le sais bien assez.<2,2>
@@ -940,3 +940,19 @@ ITMINF 356: Monte Affinité Machine (+200).
 ITMINF 357: Monte Affinité Ténèbres (+60).
 ITMINF 358: Monte Affinité Ténèbres (+120).
 ITMINF 359: Monte Affinité Ténèbres (+200).
+# The pig's stat swap (port/game/definitive_respec_screen.c): after his line (TALK05 79) his board moves 100 raw
+# points of one stat of a partner to another of the same partner for 100,000 Bits.
+$RsTitle: Échange de stats
+$RsKeysFrom: × Prendre 100 ici   △ Partir<1>L1/R1: Digimon
+$RsKeysTo: × Donner 100 ici<1>△ Retour
+$RsKeysPay: × Payer 100 000 Bits<1>△ Retour
+$RsPrice: "Prix 100 000 Bits   Vous avez "
+$RsBits: " Bits"
+$RsArrow: " -> "
+$RsSp: " "
+$RsGap: "   "
+$RsDone: Fait : 100 points déplacés.
+$RsNoBits: Pas assez de Bits.
+$RsLow: Il faut 101 ou plus pour en donner 100.
+$RsFull: Cela dépasserait 999.
+$RsSame: Choisissez une autre stat.
