@@ -8699,6 +8699,9 @@ FightstgStats *fightstg_rules_get_stats(u8 side, s32 first, s32 member) {
                 out->stats[i] = 1;
             }
         }
+#ifdef PC_PORT
+        def_finale_party_stats(out->stats); /* Extended Final Act: Golden Imperialdramon-P Limit Break (2500) */
+#endif
         p = &stats.values[12];
         for (i = 0; i < 7; i++) {
             if (p[i] > 0) {

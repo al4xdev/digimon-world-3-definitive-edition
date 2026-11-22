@@ -1398,7 +1398,8 @@ void wfightmn_knockout(WfightmnMain *obj, WfightmnMainData *data) {
                     obj->base.substep = 7;
                     obj->msg_args[0] = found;
                     obj->msg_args[1] = fightstg_battle.state.current[1];
-                    data->wait.obj = fightstg_digivolve_create_enemy(fightstg_battle.state.members[1][found].digimon, 0);
+                    data->wait.obj = fightstg_digivolve_create_enemy(fightstg_battle.state.members[1][found].digimon,
+                                                                     def_purify_fighting() ? 1 : 0);
                     break;
                 }
                 if (ev->args[0] == 0 && def_blast_plug_last_stand(fightstg_battle.state.current[0])) {

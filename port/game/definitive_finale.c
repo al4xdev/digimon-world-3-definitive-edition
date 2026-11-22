@@ -64,7 +64,7 @@ extern const unsigned char def_str_PipimonBack[];
 #define FIN_DARK_HP_P4 18000
 #define FIN_DARK_STAT_P2 2100
 #define FIN_DARK_STAT_P4 1950
-#define FIN_GOLD_STAT 1650
+#define FIN_GOLD_STAT 2500
 #define FIN_BLINK_FRAMES 24
 #define FIN_BOND_COUNT 6 /* 5 individual allies + 1 gathered finale line */
 #define FIN_CHAIN_MAX 12
@@ -213,13 +213,12 @@ void def_finale_stage_enters(void) {
     }
 }
 
-/* Phase 2 scripted defeat: Dark Galacticmon's Limit Break hits hard enough to overwhelm even a Lv99 / 9999 HP party
- * (magic damage is otherwise clamped to 2x technique power). */
-int def_finale_phase2_damage(int side, int value) {
-    if (!def_on() || side == 0 || value <= 0 || fn.phase != DEF_FINALE_PHASE2_DARK_LOSS) {
+/* Phase 2 scripted defeat & Phase 4 Golden Paladin Mode cinematic damage calibration. */
+int def_finale_damage(int side, int value) {
+    if (!def_on() || value <= 0) {
         return value;
     }
-    {
+    if (fn.phase == DEF_FINALE_PHASE2_DARK_LOSS && side != 0) {
         FightstgMember *pm = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
         s32 floor = pm->max_hp * 55 / 100;
         s32 scaled = value * 4;
@@ -228,6 +227,36 @@ int def_finale_phase2_damage(int side, int value) {
             scaled = floor;
         }
         return scaled > 9999 ? 9999 : scaled;
+    }
+    if (fn.phase == DEF_FINALE_PHASE4_SUPER_CHOSEN && fn.super_chosen_on) {
+        if (side == 0) {
+            s32 scaled = value * 3;
+            if (scaled < 5500) {
+                scaled = 5500;
+            }
+            return scaled > 9999 ? 9999 : scaled;
+        } else {
+            s32 scaled = value / 2;
+            if (scaled > 1200) {
+                scaled = 1200;
+            }
+            return scaled > 0 ? scaled : 1;
+        }
+    }
+    return value;
+}
+
+/* Raises Golden Imperialdramon Paladin Mode's stats to FIN_GOLD_STAT (2500) in Phase 4. */
+void def_finale_party_stats(short stats[5]) {
+    int i;
+
+    if (!def_finale_golden_mode()) {
+        return;
+    }
+    for (i = 0; i < 5; i++) {
+        if (stats[i] < FIN_GOLD_STAT) {
+            stats[i] = FIN_GOLD_STAT;
+        }
     }
 }
 

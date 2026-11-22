@@ -1027,7 +1027,7 @@ int def_dri_fighting(void) {
  * The form's model stays; its cameras are the base species' (a body of the same kind). */
 s32 def_enemy_camera_model(s32 model_id) {
     const DefDriChallenge *ch;
-    int i;
+    int i, c;
 
     if ((dri_sim.pending || dri_sim.fighting) && (ch = def_dri_challenge(dri_sim.challenge)) != NULL) {
         for (i = 0; i < DEF_DRI_STAGES; i++) {
@@ -1035,6 +1035,17 @@ s32 def_enemy_camera_model(s32 model_id) {
                 return ch->stages[i].base;
             }
         }
+    }
+    if (def_purify_fighting()) {
+        for (c = 0; c < def_dri_challenge_count; c++) {
+            ch = def_dri_challenge(c);
+            for (i = 0; ch != NULL && i < DEF_DRI_STAGES; i++) {
+                if (ch->stages[i].digimon == model_id && ch->stages[i].base != 0) {
+                    return ch->stages[i].base;
+                }
+            }
+        }
+        return 448; /* BK WarGreymon: Type B bipedal Mega with valid battle cameras */
     }
     return model_id;
 }

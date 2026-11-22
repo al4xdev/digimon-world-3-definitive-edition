@@ -106,6 +106,7 @@ static struct {
     unsigned short felled; /* purified in this run */
     short tp_back;
     short map;
+    short level;          /* party level when the simulator began (for wave spawns) */
     short entries[3];     /* this wave's entries */
     short party[3], hp[3], mp[3]; /* the party before the simulator (restored after a defeat) */
 } pf_run;
@@ -171,54 +172,139 @@ static s16 enemy_resist(const RecordsDigimon *f, int e) {
     return (s16)(100 + f->resists[e] / 4);
 }
 
+static void purify_form_techniques(FightstgEnemyRecord *r, const RecordsDigimon *f) {
+    static const FightstgEnemyAction plan[3] = { { 3, 2, 3 }, { 2, 1, 96 }, { 1, 1, 256 } };
+    int i, best = 0, best_score = 0;
+
+    r->tech = (s16)(f->techniques[0] != 0 ? f->techniques[0] : f->techniques[6]);
+    r->tech_3 = (s16)f->techniques[6];
+    for (i = 1; i < 6; i++) {
+        int id = f->techniques[i];
+        const RecordsTechnique *t;
+
+        if (id < 1) {
+            continue;
+        }
+        t = &records_techniques[id - 1];
+        if ((t->element != 2 && t->element != 3) || t->hit_count != 1 || t->kind > 8) {
+            continue;
+        }
+        if (t->power * t->hit_count > best_score) {
+            best = id;
+            best_score = t->power * t->hit_count;
+        }
+    }
+    r->tech_2 = (s16)(best != 0 ? best : r->tech_3);
+    if (r->tech_3 != 0) {
+        memcpy(r->actions, plan, sizeof(plan));
+    }
+}
+
 FightstgEnemyRecord *def_purify_record(s32 id) {
-    static const FightstgEnemyAction plan[3] = { { 1, 1, 40 }, { 2, 1, 40 }, { 3, 5, 140 } }; /* BK WarGreymon's */
-    int i, j;
+    int pass, i, j, cur = fightstg_battle.state.current[1];
 
     if (!def_on() || !(pf_run.pending || pf_run.fighting)) {
         return NULL;
     }
-    for (i = 0; i < pf_run.count; i++) {
-        const DefBlastEntry *e = def_record_blast_entry(pf_run.entries[i]);
-        const RecordsDigimon *f = row_record(entry_row(pf_run.entries[i]));
-        FightstgEnemyRecord *r = &pf_records[i];
+    for (pass = 0; pass < 2; pass++) {
+        for (i = 0; i < pf_run.count; i++) {
+            const DefBlastEntry *e;
+            const RecordsDigimon *f;
+            FightstgEnemyRecord *r = &pf_records[i];
 
-        if (e == NULL || f->id != id) {
-            continue;
-        }
-        memset(r, 0, sizeof(*r));
-        r->id = (s16)id;
-        r->name = f->name_id;
-        r->tech = (s16)f->techniques[0]; /* the form's attack */
-        r->tech_2 = (s16)f->techniques[4];
-        for (j = 5; r->tech_2 == 0 && j >= 1; j--) { /* a form short of its fourth technique: its last one */
-            r->tech_2 = (s16)f->techniques[j];
-        }
-        r->tech_3 = (s16)f->techniques[6]; /* its finisher */
-        for (j = 0; j < 5; j++) { /* the stats it had the first time, less the simulator's share */
-            int v = e->stats[j] * DEF_PURIFY_SIM_PCT / 100;
+            if (pass == 0 && i != cur) {
+                continue;
+            }
+            if (pf_run.entries[i] < 0) {
+                continue;
+            }
+            e = def_record_blast_entry(pf_run.entries[i]);
+            f = row_record(entry_row(pf_run.entries[i]));
+            if (e == NULL || f->id != id) {
+                continue;
+            }
+            memset(r, 0, sizeof(*r));
+            r->id = (s16)id;
+            r->name = f->name_id;
+            purify_form_techniques(r, f);
+            for (j = 0; j < 5; j++) { /* the stats it had the first time, less the simulator's share */
+                int v = e->stats[j] * DEF_PURIFY_SIM_PCT / 100;
 
-            r->stats[j] = (s16)(v < 1 ? 1 : v);
-        }
-        for (j = 0; j < 7; j++) {
-            r->resists[j] = enemy_resist(f, j);
-        }
-        for (j = 0; j < 5; j++) {
-            int v = 50 + f->status_resists[j];
+                r->stats[j] = (s16)(v < 1 ? 1 : v);
+            }
+            for (j = 0; j < 7; j++) {
+                r->resists[j] = enemy_resist(f, j);
+            }
+            for (j = 0; j < 5; j++) {
+                int v = 50 + f->status_resists[j];
 
-            r->resists[7 + j] = (s16)(v > 99 ? 99 : v);
+                r->resists[7 + j] = (s16)(v > 99 ? 99 : v);
+            }
+            r->type = f->type;
+            r->unk_3E[0] = 1;
+            r->counter_action = 1;
+            return r;
         }
-        r->type = f->type;
-        memcpy(r->actions, plan, sizeof(plan));
-        r->unk_3E[0] = 1;
-        r->counter_action = 1;
-        return r;
     }
     return NULL;
 }
 
 int def_purify_fighting(void) {
     return def_on() && (pf_run.pending || pf_run.fighting);
+}
+
+/* Continuous single-battle waves (matching DRI's wave flow): when all active enemy slots fall, purify them and bring
+ * the next queued dark form into (current[1] + 1) % 3 without reloading the field. */
+int def_purify_next_wave(void) {
+    extern int def_super_hp(int hp);
+    int i, k, next_idx = -1, slot, hp;
+    const DefBlastEntry *be;
+    FightstgMember *m;
+    RecordsEnemy *e;
+
+    if (!pf_run.fighting) {
+        return -1;
+    }
+    for (i = 0; i < pf_run.count; i++) {
+        m = &fightstg_battle.state.members[1][i];
+        k = pf_run.entries[i];
+        if (k >= 0 && m->digimon != 0 && m->hp <= 0) {
+            def_record_blast_purify(k);
+            pf_run.felled |= (unsigned short)(1u << k);
+            pf_run.queue &= (unsigned short)~(1u << k);
+            pf_run.entries[i] = -1;
+        }
+    }
+    for (i = 0; i < DEF_BLAST_QUEST_FORMS; i++) {
+        if (((pf_run.queue >> i) & 1) && entry_row(i) != 0) {
+            next_idx = i;
+            break;
+        }
+    }
+    if (next_idx < 0) {
+        return -1;
+    }
+    slot = (fightstg_battle.state.current[1] + 1) % 3;
+    if (slot >= pf_run.count) {
+        pf_run.count = (signed char)(slot + 1);
+    }
+    pf_run.entries[slot] = (short)next_idx;
+    be = def_record_blast_entry(next_idx);
+    hp = be != NULL ? be->hp * DEF_PURIFY_SIM_PCT / 100 : 100;
+    hp = hp < 1 ? 1 : hp > 9999 ? 9999 : hp;
+    m = &fightstg_battle.state.members[1][slot];
+    e = &records_state.enemies[slot];
+    memset(m, 0, sizeof(*m));
+    m->digimon = row_record(entry_row(next_idx))->id;
+    m->hp = m->max_hp = (s16)def_super_hp(hp);
+    m->mp = m->max_mp = 9999;
+    e->digimon = m->digimon;
+    e->level = pf_run.level > 0 ? pf_run.level : 1;
+    e->hp = (s16)hp;
+    e->mp = 9999;
+    e->stat_scale = 16;
+    port_log("purify: entry %d (species %d, HP %d) enters in slot %d", next_idx, m->digimon, m->hp, slot);
+    return slot;
 }
 
 /* ---- The waves. */
@@ -245,7 +331,9 @@ static int wave_start(void) {
     }
     records_state.stage = DEF_DRI_STAGE;
     records_state.music = DEF_DRI_MUSIC;
+    pf_run.level = (short)level;
     pf_run.count = 0;
+    pf_run.entries[0] = pf_run.entries[1] = pf_run.entries[2] = -1;
     for (i = 0; i < DEF_BLAST_QUEST_FORMS && pf_run.count < DEF_PURIFY_WAVE; i++) {
         int row = entry_row(i), dup = 0;
 
@@ -389,16 +477,14 @@ void def_purify_battle_end(int result) {
         FightstgMember *m = &fightstg_battle.state.members[1][i];
 
         k = pf_run.entries[i];
-        if (m->digimon != 0 && m->hp <= 0) {
+        if (k >= 0 && m->digimon != 0 && m->hp <= 0) {
             def_record_blast_purify(k);
             pf_run.felled |= (unsigned short)(1u << k);
+            pf_run.queue &= (unsigned short)~(1u << k);
         }
     }
     if (result == 1) {
         pf_run.won = 1;
-        for (i = 0; i < pf_run.count; i++) {
-            pf_run.queue &= (unsigned short)~(1u << pf_run.entries[i]);
-        }
         if (pf_run.queue != 0) {
             pf_run.next = 1;
         } else if ((def_record_blast_purified() & all_entries()) == all_entries()) {
