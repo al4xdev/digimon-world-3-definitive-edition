@@ -49,6 +49,7 @@
 #include "definitive.h"
 #include "port.h"
 #include "port_runtime.h"
+#include "psxstack/platform.h"
 
 extern int def_on(void);
 extern void *fieldstg_dialog_create_talk(FieldstgActor *actor, s32 message);
@@ -586,6 +587,7 @@ static void igor_read(int first) {
 #define DR_SND_MOVE 0x8004513E
 #define DR_SND_OK 0x8004503C
 #define DR_SND_BACK 0x800450BD
+#define DR_CONFIRM_COOLDOWN_NS 350000000LL /* 350ms real-time cooldown after 1st confirm */
 enum { DR_ASK = 1, DR_CHOOSE, DR_REPLY };
 
 typedef struct {
@@ -720,6 +722,7 @@ static struct {
     s32 armed;    /* it takes a press once the one that closed the last balloon is let go */
     s32 pending;  /* 1 after first confirm: a second confirm takes it, back cancels */
     s32 answered; /* the row taken + 1, 0 not yet (read and cleared by the panel's owner) */
+    long long pending_ns;
     MessageWindow *wins[DR_OPTIONS];
 } choice;
 
@@ -829,9 +832,13 @@ static void choice_frame(void) {
             return;
         }
         if (PAD_PRESSED(13)) {
-            sound_module.play(DR_SND_OK);
-            choice.answered = choice.sel + 1;
-            choice_close();
+            long long now = port_clock_ns();
+
+            if (now - choice.pending_ns >= DR_CONFIRM_COOLDOWN_NS || now < choice.pending_ns) {
+                sound_module.play(DR_SND_OK);
+                choice.answered = choice.sel + 1;
+                choice_close();
+            }
         }
         return;
     }
@@ -844,6 +851,7 @@ static void choice_frame(void) {
     }
     if (PAD_PRESSED(13)) {
         choice.pending = 1;
+        choice.pending_ns = port_clock_ns();
         sound_module.play(DR_SND_OK);
     }
 }
