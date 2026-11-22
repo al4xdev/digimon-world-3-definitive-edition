@@ -4139,6 +4139,11 @@ $Unknown: ???
 $Twice: Inimigo x2
 $BlastTempt: Blast chama...
 $ChosenRookie: Chosen exige Rookie
+$ChosenNoRookie: Você precisa estar na forma<1>base (Rookie) para ativar<1>a Chosen Evolution.
+$ChosenNoPartner: Este parceiro não possui<1>Chosen Evolution disponível.
+$ChosenNoCharge: Seu Digivice está sem<1>energia. Vá até o Gennai<1>para recarregá-lo.
+$ChosenNoLevel: A Chosen Evolution exige<1>nível 45.
+$ChosenUsed: A Chosen Evolution já foi<1>usada nesta batalha.
 $PlugRevive: Revive: forma Rookie, 1 HP e 1 MP
 $TomNews: <7>Tom Repetitivo<7>Você soube? Você<1>soube? O Líder de<1>Seiryu sumiu!<2,2><3>Saiu da cidade ontem<1>à noite e nunca mais<1>voltou.<2,2><3>Ninguém sabe onde<1>está. Ninguém! Você<1>soube?<2,2>
 $TomGone: <7>Tom Repetitivo<7>O Líder de Seiryu<1>sumiu! Sumiu mesmo!<2,2><3>E aquela porta azul<1>na escada? Nunca<1>esteve ali antes!<2,2>
@@ -4580,6 +4585,7 @@ $PfLost: As trevas resistem. Volte<1>quando se preparar.
 $PfTpBack: "TP devolvido "
 $PfChosenTitle: Chosen Evolution
 $PfCharged: Seu brasão recarregou. Escolha o único<1>parceiro que vai usá-lo. Requer nível 45.
+$PfChosenGuide: Ative na forma base Rookie. Na Mega os<1>atributos passam do limite de 999.
 $PfKeysChoose: Botão ×: Escolher   Botão △: Sair
 $PfLv: " Nv "
 $PfChosenMark: "   Chosen"

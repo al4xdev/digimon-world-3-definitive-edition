@@ -49,7 +49,7 @@ extern void *font_get_entry(void *data, s32 i);
 extern const unsigned char def_str_PfDomTitle[], def_str_PfDominated[], def_str_PfDominate[], def_str_PfDemand[],
     def_str_PfFee[], def_str_PfHeld[], def_str_PfKeysPay[], def_str_PfNoBits[], def_str_PfSimTitle[], def_str_PfPurified[],
     def_str_PfKeysFight[], def_str_PfKeysOk[], def_str_PfKeysNext[], def_str_PfDone[], def_str_PfLost[],
-    def_str_PfTpBack[], def_str_PfChosenTitle[], def_str_PfCharged[], def_str_PfKeysChoose[], def_str_PfLv[],
+    def_str_PfTpBack[], def_str_PfChosenTitle[], def_str_PfCharged[], def_str_PfChosenGuide[], def_str_PfKeysChoose[], def_str_PfLv[],
     def_str_PfChosenMark[], def_str_PfNameGennai[], def_str_PfNameMyotismon[], def_str_PfStory0[], def_str_PfStory1[],
     def_str_PfStory2[], def_str_PfStory3[], def_str_PfStory4[], def_str_PfStory5[], def_str_DriSep[], def_str_DriOf[],
     def_str_HuntSpace[], def_str_Unknown[], def_str_PfBoostOffer[], def_str_PfBoost[], def_str_PfBoostTo[],
@@ -741,6 +741,7 @@ static void chosen_open(void) {
         pf_text(2, 54 + i * 18, t,
                 id == def_record_chosen() ? PF_PAL_DONE : level >= DEF_CHOSEN_LEVEL ? PF_PAL_TEXT : PF_PAL_DIM, 1);
     }
+    pf_text(2, 114, def_str_PfChosenGuide, PF_PAL_TEXT, 2); /* the rule: from the Rookie form, its Mega past 999 */
     pf_text(1, 148, def_str_PfKeysChoose, PF_PAL_TEXT, 1);
 }
 

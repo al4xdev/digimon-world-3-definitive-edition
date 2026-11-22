@@ -12,6 +12,11 @@ $Unknown: ???
 $Twice: Enemigo x2
 $BlastTempt: Blast llama...
 $ChosenRookie: Chosen exige Rookie
+$ChosenNoRookie: Debes estar en tu forma<1>Rookie (base) para activar<1>la Evolución Elegida.
+$ChosenNoPartner: Este compañero no tiene<1>Evolución Elegida.
+$ChosenNoCharge: Tu Digivice no tiene<1>energía. Ve con Gennai<1>para recargarlo.
+$ChosenNoLevel: La Evolución Elegida<1>requiere NV 45.
+$ChosenUsed: La Evolución Elegida ya<1>se usó en esta batalla.
 $PlugRevive: Revive: forma Rookie, 1 PV y 1 PM
 $TomNews: <7>Repeating Tom<7>¿Lo has oído? ¿Lo has<1>oído? ¡El Líder de<1>Seiryu se ha ido!<2,2><3>Salió anoche de la<1>ciudad y nunca<1>volvió.<2,2><3>Nadie sabe adónde.<1>¡Nadie! ¿Lo has oído?<2,2>
 TALK01 178: <7><9><7>¿Se fue...?<2,2><3>Mi compañero<1>tiembla. Algo va<1>mal aquí.<2,2><3>Como un viento frío<1>tras una puerta que<1>nunca abrí...<2,2><3>...¡Ahí! En las<1>escaleras. Una puerta<1>azul que no estaba.<2,2>
@@ -776,6 +781,7 @@ $PfLost: La oscuridad resiste. Vuelve<1>cuando te decidas.
 $PfTpBack: "TP devuelto "
 $PfChosenTitle: Evolución Elegida
 $PfCharged: Tu emblema se recargó. Elige al único<1>compañero que puede tomarlo. Necesita NV 45.
+$PfChosenGuide: Solo desde la forma base Rookie. En su<1>forma Mega los atributos superan 999.
 $PfKeysChoose: × botón: Elegir   △ botón: Salir
 $PfLv: " NV "
 $PfChosenMark: "   Chosen"

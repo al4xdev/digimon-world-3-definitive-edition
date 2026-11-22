@@ -3740,6 +3740,7 @@ typedef struct FightstgBattleMenuData {
     MessageWindow *inspect_title;     /* the panel's title: the enemy's name */
     MessageWindow *tempt;             /* the Blast's temptation (def_blast_tempt), above the cross; empty otherwise */
     MessageWindow *limit_break;       /* "LIMIT BREAK" badge when Chosen Evolution or Dark Galacticmon exceeds 999 */
+    MessageWindow *notice;            /* why the grey Blast refuses the Chosen Evolution (def_chosen_refusal); empty */
 } FightstgBattleMenuData; /* only pointers: the block is run and scanned as objects */
 
 /* The menu's object: FightstgCommandMenu's own fields, then what the animation needs (never in the data block). The
@@ -3771,6 +3772,7 @@ typedef struct FightstgBattleMenu {
     s32 inspect; /* the Inspect panel is open */
     s32 tag_free; /* the Tag button shows the free swap's picture (an enemy is open and the window's swap is unspent) */
     s32 tempt;    /* a full gauge at a critical moment: the Blast button pulses red (def_blast_tempt) */
+    s32 notice;   /* the refusal's box is open (in the Inspect panel's place: one or the other) */
 } FightstgBattleMenu;
 
 #define FIGHTSTG_BMENU_SLIDE 8
@@ -4075,6 +4077,8 @@ static void fightstg_battle_menu_paint(FightstgBattleMenuData *data, s32 i, u8 p
 #define FIGHTSTG_TEMPT_X 4   /* the Blast's temptation: above the cross's left wing, left of the gauges */
 #define FIGHTSTG_TEMPT_Y 150
 #define FIGHTSTG_TEMPT_PULSE 8 /* ticks lit, then as many dark */
+#define FIGHTSTG_NOTICE_W 200    /* the refusal's box: the Inspect panel's corner, wider (its lines are sentences) */
+#define FIGHTSTG_NOTICE_LINES 3
 static const u8 fightstg_inspect_empty[1] = { 0 };
 
 static void fightstg_battle_menu_inspect_set(FightstgBattleMenuData *data, s32 open) {
@@ -4125,6 +4129,25 @@ static void fightstg_battle_menu_inspect_frame(void) {
     fightstg_battle_menu_quad(x + w - 1, y + 1, 1, h - 2, 1, 40, 110, 220);
     fightstg_battle_menu_quad(x + 3, FIGHTSTG_INSPECT_ROW_Y - 2, w - 6, 1, 1, 30, 70, 150);
     fightstg_battle_menu_quad(x, y, w, h, 2, 190, 180, 130); /* added last: the layer draws it first, under the lines */
+}
+
+/* The refusal's box: the Inspect panel's backdrop and frame, without the title's line. */
+static void fightstg_battle_menu_notice_frame(void) {
+    s32 x = FIGHTSTG_INSPECT_X - port_video_widescreen_pad() - 4;
+    s32 y = FIGHTSTG_INSPECT_Y - 3;
+    s32 w = FIGHTSTG_NOTICE_W;
+    s32 h = FIGHTSTG_INSPECT_LINE * FIGHTSTG_NOTICE_LINES + 8;
+
+    fightstg_battle_menu_quad(x, y, w, 1, 1, 40, 110, 220);
+    fightstg_battle_menu_quad(x, y + h - 1, w, 1, 1, 40, 110, 220);
+    fightstg_battle_menu_quad(x, y + 1, 1, h - 2, 1, 40, 110, 220);
+    fightstg_battle_menu_quad(x + w - 1, y + 1, 1, h - 2, 1, 40, 110, 220);
+    fightstg_battle_menu_quad(x, y, w, h, 2, 190, 180, 130);
+}
+
+static void fightstg_battle_menu_notice_set(FightstgBattleMenu *obj, FightstgBattleMenuData *data, const u8 *text) {
+    obj->notice = text != NULL;
+    data->notice->set_text(data->notice, (u8 *)(text != NULL ? text : fightstg_inspect_empty), -1);
 }
 
 void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData *data) {
@@ -4212,6 +4235,10 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
                                                                             : fightstg_inspect_empty),
             -1);
         obj->tempt = def_blast_tempt() || def_finale_blast_only();
+        data->notice = message_create_window(0x1005, 1, FIGHTSTG_INSPECT_X - wide_pad, FIGHTSTG_INSPECT_Y);
+        obj->notice = 0;
+        data->notice->set_page_lines(data->notice, FIGHTSTG_NOTICE_LINES); /* a window pages two lines by default */
+        data->notice->set_text(data->notice, (u8 *)fightstg_inspect_empty, -1);
         data->tempt = message_create_window(0x1005, 1, FIGHTSTG_TEMPT_X - wide_pad, FIGHTSTG_TEMPT_Y); /* the 14-pixel
                                                                                        * font: the 9-pixel one
                                                                                        * reads badly over the arena */
@@ -4259,6 +4286,8 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
         }
         if (obj->inspect) {
             fightstg_battle_menu_inspect_frame();
+        } else if (obj->notice) {
+            fightstg_battle_menu_notice_frame();
         }
         if (obj->press >= 0) {
             /* The choice is given when the nudge is done; the original gives it at once. */
@@ -4274,6 +4303,7 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
             sound_module.play(0x4001C);
             obj->inspect = !obj->inspect;
             fightstg_battle_menu_inspect_set(data, obj->inspect);
+            fightstg_battle_menu_notice_set(obj, data, NULL);
         }
         for (i = 0; i < FIGHTSTG_BMENU_ACTIONS; i++) {
             extern int port_script_active;
@@ -4283,6 +4313,7 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
                 if (i == FIGHTSTG_BMENU_INSPECT) { /* Inspect: opens or closes the panel, the menu stays and no turn is spent */
                     obj->inspect = !obj->inspect;
                     fightstg_battle_menu_inspect_set(data, obj->inspect);
+                    fightstg_battle_menu_notice_set(obj, data, NULL);
                     break;
                 }
                 if (obj->inspect) {
@@ -4294,8 +4325,11 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
                     port_battle_menu_chosen(i, port_battle_menu_bit(i), 1);
                     obj->refused = i;
                     obj->refused_age = 0;
+                    /* after the quest a refused Blast says why (the short line over the cross only names the form) */
+                    fightstg_battle_menu_notice_set(obj, data, i == FIGHTSTG_BMENU_BLAST ? def_chosen_refusal() : NULL);
                     break;
                 }
+                fightstg_battle_menu_notice_set(obj, data, NULL);
                 port_battle_menu_chosen(i, port_battle_menu_bit(i), 0);
                 obj->press = i;
                 obj->press_age = 0;

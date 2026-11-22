@@ -14,6 +14,13 @@ $Twice: Enemy x2
 # Blast Gauge phase 1: the battle menu's temptation (a full gauge at a critical moment), above the cross.
 $BlastTempt: Blast calls...
 $ChosenRookie: Chosen needs Rookie
+# After the quest, why a press on the grey Blast button refuses the Chosen Evolution (def_chosen_refusal):
+# a box in the Inspect panel's place, three lines at most.
+$ChosenNoRookie: You must be in your Rookie<1>(base) form to trigger<1>Chosen Evolution.
+$ChosenNoPartner: This partner cannot<1>trigger Chosen Evolution.
+$ChosenNoCharge: Your Digivice is out of<1>energy. Visit Gennai to<1>recharge it.
+$ChosenNoLevel: Chosen Evolution needs<1>level 45.
+$ChosenUsed: Chosen Evolution was already<1>used in this battle.
 # After the Blast quest the DV Plug revives the fallen in their Rookie form (def_blast_plug_revive): its item
 # description (ITMINF 76) gives way to this one (34 characters at most, the item window's).
 $PlugRevive: Revive: Rookie form, 1 HP and 1 MP
@@ -879,6 +886,8 @@ $PfLost: The darkness holds. Come back<1>when you are ready.
 $PfTpBack: "TP given back "
 $PfChosenTitle: Chosen Evolution
 $PfCharged: Your crest is charged again. Pick the one<1>partner who may take it. It needs level 45.
+# Gennai's Chosen panel, under the partners: the rule. Its small font has no comma nor parentheses.
+$PfChosenGuide: Trigger it from the base Rookie form. Its<1>Mega's stats can break the 999 limit.
 $PfKeysChoose: × button: Choose   △ button: Leave
 $PfLv: " Lv "
 $PfChosenMark: "   Chosen"

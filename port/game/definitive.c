@@ -1341,6 +1341,35 @@ int def_blast_hint(void) {
     return chosen_could() && m->digimon != (s16)records_digimon[id].id;
 }
 
+/* After the quest, why the Blast button refuses the Chosen Evolution: the box a press on the grey button opens (the
+ * battle menu), NULL when there is nothing to tell (it is ready, or the Digimon cannot act: KO, a status, a
+ * purification, the finale's own rules). The order is what the player fixes first: the partner, then this battle's
+ * one use, the Digivice's charge (Gennai's), the level, and last the form, which a Rookie just has to go back to. */
+const unsigned char *def_chosen_refusal(void) {
+    extern const unsigned char def_str_ChosenNoPartner[], def_str_ChosenUsed[], def_str_ChosenNoCharge[],
+        def_str_ChosenNoLevel[], def_str_ChosenNoRookie[];
+    FightstgMember *m = blast_member();
+    s32 id = gamestate_data.funcs.get_party_member(fightstg_battle.state.current[0]);
+
+    if (!def_blast_chosen_mode() || def_finale_active() || id < 0 || def_blast_ready() || m->hp <= 0 ||
+        (m->status & (8 | 0x20)) || def_purify_fighting()) {
+        return NULL;
+    }
+    if (id != def_record_chosen()) {
+        return def_str_ChosenNoPartner;
+    }
+    if (chosen_used || m->blasted) {
+        return def_str_ChosenUsed;
+    }
+    if (!def_record_chosen_charge()) {
+        return def_str_ChosenNoCharge;
+    }
+    if (gamestate_data.funcs.get_record(id)->stats.values[0] < DEF_CHOSEN_LEVEL) {
+        return def_str_ChosenNoLevel;
+    }
+    return def_str_ChosenNoRookie; /* every other condition holds: only the form is left (def_blast_hint) */
+}
+
 const unsigned char *def_blast_tempt_label(void) {
     extern const unsigned char def_str_BlastTempt[], def_str_ChosenRookie[];
     return def_blast_chosen_mode() ? def_str_ChosenRookie : def_str_BlastTempt;

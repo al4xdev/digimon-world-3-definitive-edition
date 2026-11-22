@@ -12,6 +12,11 @@ $Unknown: ???
 $Twice: Ennemi x2
 $BlastTempt: Blast appelle...
 $ChosenRookie: Chosen exige Rookie
+$ChosenNoRookie: Il faut être en forme Rookie<1>(de base) pour déclencher<1>l'Évolution Chosen.
+$ChosenNoPartner: Ce partenaire n'a pas<1>d'Évolution Chosen.
+$ChosenNoCharge: Votre Digivice est vide.<1>Allez voir Gennai pour<1>le recharger.
+$ChosenNoLevel: L'Évolution Chosen exige<1>le niveau 45.
+$ChosenUsed: Évolution Chosen déjà<1>utilisée ce combat.
 $PlugRevive: Revive: forme Rookie, 1 HP et 1 MP
 $TomNews: <7>Repeating Tom<7>Vous avez entendu ?<1>Le Leader de Seiryu<1>a disparu !<2,2><3>Il a quitté la ville<1>hier soir et n'est<1>jamais revenu.<2,2><3>Personne ne sait où.<1>Personne ! Vous avez<1>entendu ?<2,2>
 TALK01 178: <7><9><7>Disparu...?<2,2><3>Mon partenaire<1>tremble. Quelque chose<1>cloche ici.<2,2><3>Comme un vent froid<1>venu d'une porte<1>jamais ouverte...<2,2><3>...Là ! Dans les<1>escaliers. Une porte<1>bleue, jamais vue.<2,2>
@@ -776,6 +781,7 @@ $PfLost: Les ténèbres tiennent. Revenez<1>quand vous serez prêt.
 $PfTpBack: "TP rendus "
 $PfChosenTitle: Évolution Chosen
 $PfCharged: Votre blason est rechargé. Choisissez le seul<1>partenaire qui peut le prendre. Niveau 45 requis.
+$PfChosenGuide: Seulement depuis la forme de base Rookie.<1>Sa forme Mega dépasse la limite de 999.
 $PfKeysChoose: × Choisir   △ Partir
 $PfLv: " Nv "
 $PfChosenMark: "   Élu"

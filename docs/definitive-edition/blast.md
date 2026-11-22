@@ -51,7 +51,11 @@
 
 One partner at a time, chosen with Gennai: level 45, Rookie only, one per battle, one charge (Gennai reloads it), full HP/MP,
 no curse. Megas: GuardiAngemon, Beelzemon (Kumamon), Cannondramon, WarGreymon, Imperialdramon, Gallantmon, Sakuyamon,
-Seraphimon. "Chosen needs Rookie" shows in the menu. Test: `tests/port/definitive_quest.py`, `definitive_gauges.py`.
+Seraphimon. "Chosen needs Rookie" shows in the menu. A press on the grey Blast button opens a box in the Inspect panel's
+place saying why (`def_chosen_refusal`, checked in this order): another partner is the Chosen one, it was already used this
+battle, the Digivice is out of charge (Gennai), the level is under 45, or the Digimon is not in its Rookie form. Gennai's
+panel states the rule under the partners: Rookie form only, and the Mega past 999 (Limit Break). Test:
+`tests/port/definitive_quest.py`, `definitive_gauges.py`.
 
 ### Blast: how it was designed (the owner's text and the decisions)
 
