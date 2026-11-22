@@ -791,7 +791,7 @@ ITMINF 314: Mais resistente a confusão.
 ITMINF 315: Mais resistente a KO.
 ITMINF 316: Pode atacar duas vezes.
 ITMINF 317: Aumenta ataques críticos.
-ITMINF 318: Contra−ataca automaticamente.
+ITMINF 318: Contra−ataca com 1% de dano.
 ITMINF 319: Inimigos fogem com menos frequência.
 ITMINF 320: HP é recuperado lentamente.
 ITMINF 321: Ganha mais EXP em batalhas.
@@ -812,27 +812,27 @@ ITMINF 335: Fuga um pouco mais fácil.
 ITMINF 336: Fuga mais fácil.
 ITMINF 337: Treino um pouco mais fácil.
 ITMINF 338: Treino muito mais fácil.
-ITMINF 339: Adiciona Fogo fraco aos ataques.
-ITMINF 340: Adiciona Fogo aos ataques.
-ITMINF 341: Adiciona Fogo forte aos ataques.
-ITMINF 342: Adiciona Água fraca aos ataques.
-ITMINF 343: Adiciona Água aos ataques.
-ITMINF 344: Adiciona Água forte aos ataques.
-ITMINF 345: Adiciona Gelo fraco aos ataques.
-ITMINF 346: Adiciona Gelo aos ataques.
-ITMINF 347: Adiciona Gelo forte aos ataques.
-ITMINF 348: Adiciona Vento fraco aos ataques.
-ITMINF 349: Adiciona Vento aos ataques.
-ITMINF 350: Adiciona Vento forte aos ataques.
-ITMINF 351: Adiciona Trovão fraco aos ataques.
-ITMINF 352: Adiciona Trovão aos ataques.
-ITMINF 353: Adiciona Trovão forte aos ataques.
-ITMINF 354: Adiciona Máquina fraca aos ataques.
-ITMINF 355: Adiciona Máquina aos ataques.
-ITMINF 356: Adiciona Máquina forte aos ataques.
-ITMINF 357: Adiciona Trevas fraca aos ataques.
-ITMINF 358: Adiciona Trevas aos ataques.
-ITMINF 359: Adiciona Trevas forte aos ataques.
+ITMINF 339: Afinidade de Fogo +60.
+ITMINF 340: Afinidade de Fogo +120.
+ITMINF 341: Afinidade de Fogo +200.
+ITMINF 342: Afinidade de Água +60.
+ITMINF 343: Afinidade de Água +120.
+ITMINF 344: Afinidade de Água +200.
+ITMINF 345: Afinidade de Gelo +60.
+ITMINF 346: Afinidade de Gelo +120.
+ITMINF 347: Afinidade de Gelo +200.
+ITMINF 348: Afinidade de Vento +60.
+ITMINF 349: Afinidade de Vento +120.
+ITMINF 350: Afinidade de Vento +200.
+ITMINF 351: Afinidade de Trovão +60.
+ITMINF 352: Afinidade de Trovão +120.
+ITMINF 353: Afinidade de Trovão +200.
+ITMINF 354: Afinidade de Máquina +60.
+ITMINF 355: Afinidade de Máquina +120.
+ITMINF 356: Afinidade de Máquina +200.
+ITMINF 357: Afinidade de Trevas +60.
+ITMINF 358: Afinidade de Trevas +120.
+ITMINF 359: Afinidade de Trevas +200.
 ITMINF 360: digital DNA do Monmon.
 ITMINF 361: Pacote com 6 battle cards.
 ITMINF 362: Pacote com 6 battle cards.

@@ -8793,7 +8793,11 @@ FightstgStats *fightstg_rules_get_stats(u8 side, s32 first, s32 member) {
         }
         p = &digimon->equipment[4];
         for (i = 0; i < 2; i++) {
-            if (p[i] >= 0x153 && p[i] <= 0x167) {
+            if (p[i] >= 0x153 && p[i] <= 0x167
+#ifdef PC_PORT
+                && !def_on()
+#endif
+            ) {
                 item = records_funcs.get_item(p[i])->data;
                 if (p[i] < 0x156) {
                     out->attack_element = 2;
@@ -9113,6 +9117,14 @@ s32 fightstg_rules_get_counter_damage(u8 side, s32 id, s32 amount) {
         fightstg_rules.stats[0].multi_hit = 0;
         ret = fightstg_rules_scale_damage(side, id, amount);
         fightstg_rules.stats[0].multi_hit = saved;
+#ifdef PC_PORT
+        if (def_on() && ret > 0) {
+            ret = ret / 100;
+            if (ret < 1) {
+                ret = 1;
+            }
+        }
+#endif
         return ret;
     }
     rec = &records_techniques[id - 1];

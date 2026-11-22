@@ -907,3 +907,27 @@ $FinSuperEvo: <7>Super Chosen Evolution<7>Les liens de tous vos<1>partenaires r�
 $FinIgorBye: <7>Igor<7>Ah... vous avez fait<1>un long chemin.<2,2><3>Ce pouvoir est à vous.<1>Il vous servira<1>bien à l'avenir.<2,2><3>Je sens votre coeur<1>capable d'éveiller<1>bien d'autres liens.<2,2><3>Quant à moi, je pars.<1>Vers une prison, une<1>limousine...<2,2><3>...ou peut-être un<1>ascenseur. Difficile<1>à dire.<2,2><3>Car pour moi, passé,<1>présent, avenir,<1>et même les lieux...<2,2><3>...tout passe au même<1>instant.<2,2><3>Un cher petit ami<1>veillera sur vos liens<1>ici désormais. Adieu.<2,2>
 $PipimonMeet: <7>Pipimon<7>Pipi ! Salut !<1>M. Igor m'a demandé<1>de veiller ici !<2,2><3>Je suis Pipimon !<1>Voyons les liens ADN<1>de vos partenaires !<2,2>
 $PipimonBack: <7>Pipimon<7>Pipi ! Bon retour !<1>Voyons les liens ADN<1>de vos partenaires !<2,2>
+
+# Counter Crest (1% damage) and Elemental Powers (Affinity).
+ITMINF 318: Contre-attaque à 1% des dégâts.
+ITMINF 339: Monte Affinité Feu (+60).
+ITMINF 340: Monte Affinité Feu (+120).
+ITMINF 341: Monte Affinité Feu (+200).
+ITMINF 342: Monte Affinité Eau (+60).
+ITMINF 343: Monte Affinité Eau (+120).
+ITMINF 344: Monte Affinité Eau (+200).
+ITMINF 345: Monte Affinité Glace (+60).
+ITMINF 346: Monte Affinité Glace (+120).
+ITMINF 347: Monte Affinité Glace (+200).
+ITMINF 348: Monte Affinité Vent (+60).
+ITMINF 349: Monte Affinité Vent (+120).
+ITMINF 350: Monte Affinité Vent (+200).
+ITMINF 351: Monte Affinité Foudre (+60).
+ITMINF 352: Monte Affinité Foudre (+120).
+ITMINF 353: Monte Affinité Foudre (+200).
+ITMINF 354: Monte Affinité Machine (+60).
+ITMINF 355: Monte Affinité Machine (+120).
+ITMINF 356: Monte Affinité Machine (+200).
+ITMINF 357: Monte Affinité Ténèbres (+60).
+ITMINF 358: Monte Affinité Ténèbres (+120).
+ITMINF 359: Monte Affinité Ténèbres (+200).

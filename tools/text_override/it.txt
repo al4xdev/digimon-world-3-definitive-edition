@@ -907,3 +907,27 @@ $FinSuperEvo: <7>Super Chosen Evolution<7>Tutti i legami<1>dei tuoi compagni<1>r
 $FinIgorBye: <7>Igor<7>Ah... hai percorso<1>molta strada, ospite.<2,2><3>Questo potere è ora<1>tuo. Ti servirà bene<1>in futuro.<2,2><3>Sento che il cuore<1>può risvegliarne<1>molti.<2,2><3>Altri legami verranno.<2,2><3>E io devo andare.<1>In una prigione, una<1>limousine...<2,2><3>...o forse un<1>ascensore. È difficile<1>dirlo.<2,2><3>Per me passato,<1>presente, futuro e<1>perfino i luoghi...<2,2><3>...tutto scorre nello<1>stesso istante.<2,2><3>Una cara piccola amica<1>si occuperà dei tuoi<1>legami qui ora. Addio.<2,2>
 $PipimonMeet: <7>Pipimon<7>Pipi! Ciao! Il signor<1>Igor mi ha chiesto di<1>sorvegliare la stanza!<2,2><3>Sono Pipimon! Vediamo<1>che legami di DNA<1>hanno i tuoi compagni!<2,2>
 $PipimonBack: <7>Pipimon<7>Pipi! Bentornato!<1>Controlliamo i legami<1>DNA dei tuoi compagni!<2,2>
+
+# Counter Crest (1% damage) and Elemental Powers (Affinity).
+ITMINF 318: Contrattacca per l'1% dei danni.
+ITMINF 339: Aumenta Affinità Fuoco (+60).
+ITMINF 340: Aumenta Affinità Fuoco (+120).
+ITMINF 341: Aumenta Affinità Fuoco (+200).
+ITMINF 342: Aumenta Affinità Acqua (+60).
+ITMINF 343: Aumenta Affinità Acqua (+120).
+ITMINF 344: Aumenta Affinità Acqua (+200).
+ITMINF 345: Aumenta Affinità Ghiaccio (+60).
+ITMINF 346: Aumenta Affinità Ghiaccio (+120).
+ITMINF 347: Aumenta Affinità Ghiaccio (+200).
+ITMINF 348: Aumenta Affinità Vento (+60).
+ITMINF 349: Aumenta Affinità Vento (+120).
+ITMINF 350: Aumenta Affinità Vento (+200).
+ITMINF 351: Aumenta Affinità Tuono (+60).
+ITMINF 352: Aumenta Affinità Tuono (+120).
+ITMINF 353: Aumenta Affinità Tuono (+200).
+ITMINF 354: Aumenta Affinità Macchina (+60).
+ITMINF 355: Aumenta Affinità Macchina (+120).
+ITMINF 356: Aumenta Affinità Macchina (+200).
+ITMINF 357: Aumenta Affinità Oscurità (+60).
+ITMINF 358: Aumenta Affinità Oscurità (+120).
+ITMINF 359: Aumenta Affinità Oscurità (+200).

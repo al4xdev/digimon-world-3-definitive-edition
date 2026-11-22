@@ -907,3 +907,27 @@ $FinSuperEvo: <7>Super Chosen Evolution<7>Los lazos de tus<1>compañeros resuena
 $FinIgorBye: <7>Igor<7>Ah... has recorrido<1>un largo trecho,<1>mi invitado.<2,2><3>Este poder es tuyo.<1>Te servirá bien en el<1>futuro.<2,2><3>Siento que tu corazón<1>aún puede despertar<1>muchos lazos más.<2,2><3>Yo debo irme.<1>A una prisión, una<1>limusina...<2,2><3>...o quizá un<1>ascensor. Es difícil<1>decirlo.<2,2><3>Pues para mí, pasado,<1>presente, futuro,<1>y hasta los lugares...<2,2><3>...todo pasa a la<1>vez, en el mismo<1>instante.<2,2><3>Un pequeño amigo<1>cuidará tus lazos.<1>¡Adiós!<2,2>
 $PipimonMeet: <7>Pipimon<7>¡Pipi! ¡Hola! Señor<1>Igor me pidió vigilar<1>esta sala!<2,2><3>¡Soy Pipimon! ¡A ver<1>qué lazos de ADN<1>tienen tus compañeros!<2,2>
 $PipimonBack: <7>Pipimon<7>¡Pipi! ¡Hola de nuevo!<1>¡Revisemos tus lazos<2,2><3>de ADN con tus<1>compañeros!<2,2>
+
+# Counter Crest (1% damage) and Elemental Powers (Affinity).
+ITMINF 318: Contraataca con 1% de daño.
+ITMINF 339: Sube Afinidad de Fuego (+60).
+ITMINF 340: Sube Afinidad de Fuego (+120).
+ITMINF 341: Sube Afinidad de Fuego (+200).
+ITMINF 342: Sube Afinidad de Agua (+60).
+ITMINF 343: Sube Afinidad de Agua (+120).
+ITMINF 344: Sube Afinidad de Agua (+200).
+ITMINF 345: Sube Afinidad de Hielo (+60).
+ITMINF 346: Sube Afinidad de Hielo (+120).
+ITMINF 347: Sube Afinidad de Hielo (+200).
+ITMINF 348: Sube Afinidad de Viento (+60).
+ITMINF 349: Sube Afinidad de Viento (+120).
+ITMINF 350: Sube Afinidad de Viento (+200).
+ITMINF 351: Sube Afinidad de Trueno (+60).
+ITMINF 352: Sube Afinidad de Trueno (+120).
+ITMINF 353: Sube Afinidad de Trueno (+200).
+ITMINF 354: Sube Afinidad de Máquina (+60).
+ITMINF 355: Sube Afinidad de Máquina (+120).
+ITMINF 356: Sube Afinidad de Máquina (+200).
+ITMINF 357: Sube Afinidad de Oscuridad (+60).
+ITMINF 358: Sube Afinidad de Oscuridad (+120).
+ITMINF 359: Sube Afinidad de Oscuridad (+200).

@@ -1045,3 +1045,27 @@ $FinSuperEvo: <7>Super Chosen Evolution<7>All of your partners'<1>bonds resonate
 $FinIgorBye: <7>Igor<7>Ah... you have walked<1>far, my guest.<2,2><3>This power belongs to<1>you now. It will serve<1>you well in the future.<2,2><3>I sense your heart can<1>still awaken many more<1>bonds yet to come.<2,2><3>As for me, I must go.<1>To a prison, a<1>limousine...<2,2><3>...or perhaps an<1>elevator. It is hard<1>to say.<2,2><3>For to me, past,<1>present, future, and<1>even places...<2,2><3>...all pass at the<1>very same time.<2,2><3>A dear little friend<1>will tend to your<1>bonds here now. Farewell.<2,2>
 $PipimonMeet: <7>Pipimon<7>Pipi! Hi there! Mr.<1>Igor asked me to watch<1>over this room!<2,2><3>I'm Pipimon! Let's see<1>what DNA bonds your<1>partners have!<2,2>
 $PipimonBack: <7>Pipimon<7>Pipi! Welcome back!<1>Let's check your<1>partners' DNA bonds!<2,2>
+
+# Counter Crest (1% damage) and Elemental Powers (Affinity).
+ITMINF 318: Auto-counters for 1% damage.
+ITMINF 339: Raises Fire Affinity (+60).
+ITMINF 340: Raises Fire Affinity (+120).
+ITMINF 341: Raises Fire Affinity (+200).
+ITMINF 342: Raises Water Affinity (+60).
+ITMINF 343: Raises Water Affinity (+120).
+ITMINF 344: Raises Water Affinity (+200).
+ITMINF 345: Raises Ice Affinity (+60).
+ITMINF 346: Raises Ice Affinity (+120).
+ITMINF 347: Raises Ice Affinity (+200).
+ITMINF 348: Raises Wind Affinity (+60).
+ITMINF 349: Raises Wind Affinity (+120).
+ITMINF 350: Raises Wind Affinity (+200).
+ITMINF 351: Raises Thunder Affinity (+60).
+ITMINF 352: Raises Thunder Affinity (+120).
+ITMINF 353: Raises Thunder Affinity (+200).
+ITMINF 354: Raises Machine Affinity (+60).
+ITMINF 355: Raises Machine Affinity (+120).
+ITMINF 356: Raises Machine Affinity (+200).
+ITMINF 357: Raises Dark Affinity (+60).
+ITMINF 358: Raises Dark Affinity (+120).
+ITMINF 359: Raises Dark Affinity (+200).

@@ -56,11 +56,37 @@ static void apply(const DefEquipVariant *v) {
     }
 }
 
+static void patch_elemental_powers(void) {
+    static const u8 elem_stat[7] = {
+        RECORDS_BONUS_FIRE,    RECORDS_BONUS_WATER,   RECORDS_BONUS_ICE,  RECORDS_BONUS_WIND,
+        RECORDS_BONUS_THUNDER, RECORDS_BONUS_MACHINE, RECORDS_BONUS_DARK,
+    };
+    static const s16 tier_val[3] = { 60, 120, 200 };
+    int e, t;
+
+    for (e = 0; e < 7; e++) {
+        for (t = 0; t < 3; t++) {
+            RecordsItem *it = records_get_item(339 + e * 3 + t);
+
+            if (it != NULL && it->data != NULL && it->category == RECORDS_ITEM_ACCESSORY) {
+                RecordsAccessory *a = it->data;
+
+                a->bonus_stat = elem_stat[e];
+                a->bonus_value = tier_val[t];
+            }
+        }
+    }
+}
+
 void def_variants_hook(void) {
     static int logged;
     int i;
 
-    if (!DEF_EQUIP_ON || !def_on()) {
+    if (!def_on()) {
+        return;
+    }
+    patch_elemental_powers();
+    if (!DEF_EQUIP_ON) {
         return;
     }
     for (i = 0; i < def_equip_variant_count; i++) {

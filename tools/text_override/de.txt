@@ -907,3 +907,27 @@ $FinSuperEvo: <7>Super Chosen Evolution<7>Alle Bindungen deiner<1>Partner schwin
 $FinIgorBye: <7>Igor<7>Ah... du bist weit<1>gegangen, mein Gast.<2,2><3>Diese Macht ist<1>nun dein. Sie wird dir<1>gut dienen.<2,2><3>Ich spüre: Dein Herz<1>kann viele Bande<1>noch erwecken.<2,2><3>Ich selbst muss gehen.<1>Ins Gefängnis, in eine<1>Limousine...<2,2><3>...oder einen Aufzug.<1>Schwer zu sagen.<2,2><3>Für mich fließt alles:<1>Zeit, Gegenwart und<1>Zukunft und Orte...<2,2><3>...alles geschieht<1>zur selben Zeit.<2,2><3>Ein kleiner Freund<1>pflegt deine Bande.<1>Lebt wohl.<2,2>
 $PipimonMeet: <7>Pipimon<7>Pipi! Hallo! Igor bat<1>mich, dieses Zimmer<1>zu hüten!<2,2><3>Ich bin Pipimon!<1>Welche DNA-Bande<1>haben deine Partner?<2,2>
 $PipimonBack: <7>Pipimon<7>Pipi! Willkommen<1>zurück! Prüfen wir<1>deine DNA-Bande?<2,2>
+
+# Counter Crest (1% damage) and Elemental Powers (Affinity).
+ITMINF 318: Kontert für 1% Schaden.
+ITMINF 339: Erhöht Feuer-Affinität (+60).
+ITMINF 340: Erhöht Feuer-Affinität (+120).
+ITMINF 341: Erhöht Feuer-Affinität (+200).
+ITMINF 342: Erhöht Wasser-Affinität (+60).
+ITMINF 343: Erhöht Wasser-Affinität (+120).
+ITMINF 344: Erhöht Wasser-Affinität (+200).
+ITMINF 345: Erhöht Eis-Affinität (+60).
+ITMINF 346: Erhöht Eis-Affinität (+120).
+ITMINF 347: Erhöht Eis-Affinität (+200).
+ITMINF 348: Erhöht Wind-Affinität (+60).
+ITMINF 349: Erhöht Wind-Affinität (+120).
+ITMINF 350: Erhöht Wind-Affinität (+200).
+ITMINF 351: Erhöht Donner-Affinität (+60).
+ITMINF 352: Erhöht Donner-Affinität (+120).
+ITMINF 353: Erhöht Donner-Affinität (+200).
+ITMINF 354: Erhöht Maschine-Affinität (+60).
+ITMINF 355: Erhöht Maschine-Affinität (+120).
+ITMINF 356: Erhöht Maschine-Affinität (+200).
+ITMINF 357: Erhöht Dunkel-Affinität (+60).
+ITMINF 358: Erhöht Dunkel-Affinität (+120).
+ITMINF 359: Erhöht Dunkel-Affinität (+200).
