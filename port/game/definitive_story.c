@@ -133,6 +133,27 @@ static FieldstgActor *player_ready(void) {
     return player;
 }
 
+/* Stops the player where it stands, as the game's own talk does (fieldstg_actor_talk_to): event_running alone only
+ * stops the pad control, while the walk and run states keep moving the actor by its speed every frame
+ * (fieldstg_actor_run_state), so a talk opened by stepping on something (a held gate) had the player run on under
+ * the dialog. Ladders, jumps and the other special states are left to finish. */
+void def_field_freeze_player(void) {
+    FieldstgActor *player = (FieldstgActor *)heap_objects.find(5, -1, 0);
+
+    if (player == NULL) {
+        return;
+    }
+    player->speed = 0;
+    player->vertical_speed = 0;
+    if (player->voice != -1) {
+        sound_module.key_off(0xA0045F4A, player->voice);
+        player->voice = -1;
+    }
+    if (player->base.step == 2 || player->base.step == 3) {
+        player->base.set_step(player, 1);
+    }
+}
+
 /* Starts a story talk of `n` messages of the current stage's talk file, on `speaker` (an actor ID, 0 the player),
  * whatever holds the field. */
 static void story_begin(const s32 *messages, int n, s32 speaker) {
@@ -143,6 +164,7 @@ static void story_begin(const s32 *messages, int n, s32 speaker) {
     story.dialog = NULL;
     story.map = gamestate_data.funcs.get_map();
     fieldstg_stage.event_running = 1;
+    def_field_freeze_player();
 }
 
 /* Starts a story talk on the player when the field is free: 1 when it began. */

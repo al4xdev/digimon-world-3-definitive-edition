@@ -1054,6 +1054,7 @@ const unsigned char *def_story_text(int file, int index);
 int def_story_sepik_line(int met);
 int def_story_igor_line(void); /* Igor's line as he is talked to (definitive_velvet.c), and when it closed */
 void def_story_igor_done(void);
+void def_field_freeze_player(void); /* the player stops dead under a port talk (speed 0, standing) */
 int def_story_room_intro(void); /* 1: the next entry through a door is Seiryu's, Igor alone shows the room again */
 int def_story_event_closed(int type, int param); /* 1: a story gate holds this map event shut */
 struct PortState;

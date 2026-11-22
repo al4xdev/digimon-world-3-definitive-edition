@@ -691,6 +691,9 @@ int def_finale_field_frame(void) {
 
     /* Phase 3 Blue Room: Sequence of Bonds (blink black -> companion line x5 -> gathered together -> Phase 4). */
     if (fn.phase == DEF_FINALE_PHASE3_BLUE_ROOM && map == 0x20F) {
+        if (!fieldstg_stage.event_running) {
+            def_field_freeze_player(); /* walked in through the door: stop the run the lock alone would keep */
+        }
         fieldstg_stage.event_running = 1;
         if (fn.blue_sub == 0) {
             if (fn.blue_timer > 0) {

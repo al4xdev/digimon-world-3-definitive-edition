@@ -181,6 +181,12 @@ the Oikawa's) goes through `def_time_set_battle`, which sets the scenery and mus
 them as the last battle had them, garbage right after a load, which crashed FIGHTSTG (`stage < 0` keeps them for a caller
 that set them).
 
+**A story talk stops the player** (`def_field_freeze_player`, from `story_begin`, and the Blue Room's lock): `event_running`
+alone stops only the pad control, while the walk and run states (2, 3) keep moving the actor by its `speed` every frame, so
+a talk set off by stepping on something (the held Warp Gate, the Protocol Ruins) had the player run on under the dialog.
+It does what the game's own talk does (`fieldstg_actor_talk_to`): speed and vertical speed 0, the footsteps' voice off,
+and a walking or running player set standing.
+
 **The Guide's story conditions** (`definitive_quest.c`): a quest row whose flag is `STORY(cond)` (`DEF_STORY_FLAG` 0xF000 |
 cond) asks `def_story_cond` instead of a game flag: `DEF_STORY_COND_SEIRYU_ASK` (step 4, map 0x230, "The Seiryu Leader": ask
 Repeating Tom), `_SEIRYU` (step 4, map 0x230, "The missing Leader"), `_OIKAWA` (step 27, map 0x245, "The hooded man" bars the
