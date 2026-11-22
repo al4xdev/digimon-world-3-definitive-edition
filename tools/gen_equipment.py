@@ -166,8 +166,9 @@ def set_items():
 
 # Items outside the variants whose text the port rewrites on purpose (not equipment, so not this rule's): the revive
 # items' tiers (46, 67, 70), the Demon Bell (26, Super Hard), the Hunter's Mark (27, DEF_HUNT_MARK_ITEM, the Black
-# Market's key item) and the DV Plug (76, the Blast's cursed catalyst).
-OTHER_TEXTS = {26, 27, 46, 67, 70, 76}
+# Market's key item), the DV Plug (76, the Blast's cursed catalyst), the Counter Crest (318, its 1% counter) and the
+# Elemental Powers turned Affinity (339-359) (bd5e2c1).
+OTHER_TEXTS = {26, 27, 46, 67, 70, 76, 318} | set(range(339, 360))
 
 
 def texts():

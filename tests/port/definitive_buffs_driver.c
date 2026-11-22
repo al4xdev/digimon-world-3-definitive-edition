@@ -127,6 +127,7 @@ int def_time_guarded(int species) { (void)species; return time_guarded_stub; }
 void def_flee_ask_reset(void) {}
 void def_flee_ask_savestate(struct PortState *s) { (void)s; }
 int def_finale_phase(void) { return 0; }
+int def_finale_active(void) { return 0; }
 void def_finale_battle_begin(void) {}
 int def_finale_golden_mode(void) { return 0; }
 int def_finale_damage(int side, int value) { (void)side; return value; }
