@@ -67,9 +67,10 @@ extern void *font_get_entry(void *data, s32 i);
 #define OK_CALL 5      /* TALK06's letter "a" entries (5..27 are, and no stage talks with them) */
 #define OK_AGAIN 6
 #define OK_BEATEN 7
-#define ST_PROTOCOL_FOREST 0x234
-#define ST_PROTOCOL_RUINS 0x235
-#define ST_PROTOCOL_WARN 8   /* TALK06's letter "a" entry: voice in the head before Protocol Ruins */
+#define ST_EAST_WIRE 0x222
+#define ST_PROTOCOL_FOREST 0x225
+#define ST_PROTOCOL_RUINS 0x226
+#define ST_PROTOCOL_WARN 8   /* TALK06's letter "a" entry: voice in the head before Protocol Forest/Ruins */
 #define ST_TALK01 0xCC
 #define ST_TOM_LINE 79       /* Repeating Tom, in the city's inn: "Seiryu Leader is training at the Protocol Ruins" */
 #define ST_SEIRYU_FELT 178   /* TALK01's letter "a" no stage talks with: the player's feeling after Tom's news */
@@ -1289,18 +1290,25 @@ static void galactic_hook(void) {
 }
 
 static int protocol_gate_closed_now(void) {
-    return def_on() && gamestate_data.funcs.get_map() == ST_PROTOCOL_FOREST &&
+    s32 map = gamestate_data.funcs.get_map();
+
+    return def_on() && (map == ST_EAST_WIRE || map == ST_PROTOCOL_FOREST) &&
            gamestate_data.progress <= ST_SEIRYU_STEP && !def_record_story(DEF_STORY_SEIRYU_DONE);
 }
 
 /* A map event a story hook holds shut (FIELDSTG's check, through dw3_velvet_event_closed). */
 int def_story_event_closed(int type, int param) {
-    if (type == 1 && param == ST_PROTOCOL_RUINS && protocol_gate_closed_now()) {
+    s32 map = gamestate_data.funcs.get_map();
+
+    if (type == 1 &&
+        ((map == ST_EAST_WIRE && param == ST_PROTOCOL_FOREST) ||
+         (map == ST_PROTOCOL_FOREST && param == ST_PROTOCOL_RUINS)) &&
+        protocol_gate_closed_now()) {
         story.protocol_touch = (s32)port_frames;
         return 1;
     }
     return def_on() && type == 8 && param == ST_GALACTIC_EVENT && gamestate_data.progress >= ST_GALACTIC_STEP &&
-           gamestate_data.funcs.get_map() == ST_GALACTIC_MAP;
+           map == ST_GALACTIC_MAP;
 }
 
 static void protocol_gate_frame(void) {
