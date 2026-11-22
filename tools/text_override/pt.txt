@@ -4122,7 +4122,7 @@ TALK05 99: <7>Oikawa<7>Você veio. Igor me<1>cedeu um balcão.<1>Diz que devo a 
 TALK06 5: <7>Homem Encapuzado<7>Bulbmon era uma<1>alavanca. Você puxou<1>por mim. Obrigado.<2,2><3>Há muito tempo ando<1>por estes servidores<1>atrás de uma porta.<2,2><3>Você achou uma fácil.<1>Era azul, não era?<2,2><3>Quero ver o que faz<1>você merecer essa<1>porta.<2,2>
 TALK06 6: <7>Homem Encapuzado<7>Já voltou? Ótimo.<1>Perder é um hábito<1>que conheço bem.<2,2><3>Vamos de novo.<2,2>
 TALK06 7: <7>Homem Encapuzado<7>...Então é isso que<1>basta. Agora entendi.<2,2><3>Meu nome é Oikawa.<1>Tenho algo a vender.<2,2><3>Mas não tenho onde.<1>Sua porta azul,<1>talvez.<2,2><3>Nos encontraremos<1>atrás dela.<2,2>
-TALK06 8: <7>???<7>...Uma voz ecoa na sua<1>cabeça. Vá primeiro a<1>uma sala azul e vença<2,2><3>Ogremon no Central Park<1>antes de entrar nas<1>Ruínas Protocol.<2,2>
+TALK06 8: <7>???<7>...Uma voz ecoa na sua<1>cabeça. Vá primeiro a<1>uma sala azul e vença<2,2><3>Ogremon em Central<1>Park antes de entrar<1>nas Ruínas Protocol.<2,2>
 TALK06 676: <7>DRI Bob<7>Ei, você viu o<1>Paildramon?<2,2><3>Estou procurando por<1>ele há séculos, mas<1>não o encontro.<2,2><3>Dizem que ele voa<1>sobre a Ponte Bulk,<1>no Setor Sul.<2,2><3>Se você o achar, eu<1>dou algo incrível...<2,2>
 TALK06 691: <7>DRI Johann<7>Estou procurando o<1>MetalGreymon...<2,2><3>Dizem que ele vaga<1>pelo Pântano Bulk,<1>no Setor Sul.<2,2><3>Se eu conseguir o<1>DDNA do Agumon, sigo<1>com minha pesquisa...<2,2><3>Ah! Se você o vir,<1>pode pegar o DDNA<1>dele?<2,2><3>Vou adicionar Agumon<1>como seu parceiro de<1>recompensa!<2,2>
 $Fire: Fogo
@@ -4394,7 +4394,7 @@ $DriAgent: Agente da DRI
 $DriGreet: A rede de simulação da DRI está online.<1>Quer colocar sua equipe à prova?
 $DriGreetDone: Você venceu todas as simulações - incrível!<1>Quer rodar alguma de novo?
 $DriAskSim: Simulações
-$DriAskTalk: Conversar
+$DriAskTalk: Falar
 $DriAskBye: Sair
 $GuideMenu: GUIA
 $GuideTitle: Guide
@@ -4986,8 +4986,8 @@ $FinBond2: <7>Teddy<7>Mesmo preso na rede,<1>eu sabia que você não<1>ia parar 
 $FinBond3: <7>Kail<7>Você salvou o Kurt e<1>nunca virou as costas<1>para ninguém.<2,2><3>Todos nós acreditamos<1>em você. Mostra do que<1>um Tamer é capaz!<2,2>
 $FinBond4: <7>Sepikmon<7>Os ventos de todos os<1>setores respondem ao<1>seu chamado, Tamer.<2,2><3>Nenhuma presa resiste<1>a um coração que se<1>recusa a ceder.<2,2>
 $FinBond5: <7>Gennai<7>Nem os dados mais<1>sombrios apagam a luz<1>que vocês forjaram.<2,2><3>Que todos os laços<1>virem uma só chama.<1>Levante-se!<2,2>
-$FinBondAll: <7>Todos<7>Você não está sozinho!<1>Estamos todos aqui<1>com você!<2,2><3>Você consegue! Leve a<1>nossa força e quebre<1>todos os limites!<2,2>
-$FinSuperEvo: <7>Super Chosen Evolution<7>Todos os laços dos seus<1>parceiros ressoam juntos!<2,2><3>Além de todo limite...<1>SUPER CHOSEN EVOLUTION!<2,2>
-$FinIgorBye: <7>Igor<7>Ah... você caminhou<1>longe, meu convidado.<2,2><3>Esse poder pertence a<1>você agora. Ele será<1>útil no futuro.<2,2><3>Sinto que o seu coração<1>ainda poderá despertar<1>mais vínculos.<2,2><3>Quanto a mim, preciso<1>ir para uma prisão,<1>uma limusine...<2,2><3>...ou talvez um<1>elevador. É difícil<1>dizer.<2,2><3>Pois para mim, passado,<1>presente, futuro e até<1>mesmo os locais...<2,2><3>...se passam todos ao<1>mesmo tempo.<2,2><3>Um pequeno amigo vai<1>cuidar dos seus laços<1>aqui agora. Adeus.<2,2>
-$PipimonMeet: <7>Pipimon<7>Pipi! Olá! O Sr. Igor<1>me pediu para cuidar<1>desta sala!<2,2><3>Eu sou o Pipimon! Vamos<1>ver os laços de DNA<1>dos seus parceiros!<2,2>
+$FinBondAll: <7>Everyone<7>Você não está sozinho!<1>Estamos todos aqui<1>com você!<2,2><3>Você consegue! Leve a<1>nossa força e quebre<1>todos os limites!<2,2>
+$FinSuperEvo: <7>Super Chosen Evolution<7>Todos os laços de seus<1>parceiros ressoam!<2,2><3>Além de todo limite...<1>SUPER CHOSEN!<2,2>
+$FinIgorBye: <7>Igor<7>Ah... você caminhou<1>longe, meu convidado.<2,2><3>Esse poder pertence a<1>você agora. Ele será<1>útil no futuro.<2,2><3>Sinto que seu coração<1>ainda poderá despertar<1>mais vínculos.<2,2><3>Quanto a mim, preciso<1>ir para uma prisão,<1>uma limusine...<2,2><3>...ou talvez um<1>elevador. É difícil<1>dizer.<2,2><3>Para mim, passado,<1>presente, futuro e até<1>mesmo os locais...<2,2><3>...se passam todos ao<1>mesmo tempo.<2,2><3>Um pequeno amigo vai<1>cuidar dos seus laços<1>aqui agora. Adeus.<2,2>
+$PipimonMeet: <7>Pipimon<7>Pipi! Olá! O Sr. Igor<1>me pediu para cuidar<1>desta sala!<2,2><3>Sou Pipimon! Vamos<1>ver os laços de DNA<1>dos seus parceiros!<2,2>
 $PipimonBack: <7>Pipimon<7>Pipi! Bem-vindo de<1>volta! Vamos ver os<1>laços de DNA!<2,2>

@@ -320,15 +320,17 @@ static void rare_won(int t) {
     }
 }
 
+static int advance_chain(int chain) {
+    chain += def_super_reward(1);
+    return chain > DEF_HUNT_CHAIN_CAP ? DEF_HUNT_CHAIN_CAP : chain;
+}
+
 void def_hunt_skipped(void) {
     int region, chain;
 
     if (hunt.from_encounter && !hunt.rare && def_on()) {
         def_record_hunt(&region, &chain);
-        chain += def_super_reward(1);
-        if (chain > DEF_HUNT_CHAIN_CAP) {
-            chain = DEF_HUNT_CHAIN_CAP;
-        }
+        chain = advance_chain(chain);
         def_record_set_hunt(region, chain);
         common_drops(); /* the Rush won it for the party: counts for the hunt chain and drops materials */
     }
@@ -352,9 +354,7 @@ void def_hunt_battle_end(int result) {
                 rare_won(hunt.target);
             }
         } else if (result == 1) {
-            if (chain < DEF_HUNT_CHAIN_CAP) {
-                chain++;
-            }
+            chain = advance_chain(chain);
             common_drops();
         }
         def_record_set_hunt(region, chain);

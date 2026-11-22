@@ -1136,6 +1136,7 @@ FightstgEnemyRecord *def_dri_record(s32 id) {
  * never its own: the HUD renames the enemy and resets its HP bar only when current[1] changes (fightstg_hud_update_names,
  * _update_hp), so a wave in the same slot kept the fallen one's name and empty bar. */
 int def_dri_next_wave(void) {
+    extern int def_super_hp(int hp);
     const DefDriChallenge *ch;
     const DefDriStage *st;
     int slot = (fightstg_battle.state.current[1] + 1) % 3, k = DEF_DRI_MEMBERS + dri_sim.wave;
@@ -1148,7 +1149,7 @@ int def_dri_next_wave(void) {
     st = &ch->stages[k];
     memset(m, 0, sizeof(*m));
     m->digimon = st->digimon;
-    m->hp = m->max_hp = st->hp;
+    m->hp = m->max_hp = (s16)def_super_hp(st->hp);
     m->mp = m->max_mp = st->mp;
     m->item = 0; /* a simulation drops nothing (and the results' drop draw reads every slot's) */
     e->digimon = st->digimon;
