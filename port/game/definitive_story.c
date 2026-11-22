@@ -585,6 +585,7 @@ static void igor_read(int first) {
 #define DR_PAL_HOT 3
 #define DR_SND_MOVE 0x8004513E
 #define DR_SND_OK 0x8004503C
+#define DR_SND_BACK 0x800450BD
 enum { DR_ASK = 1, DR_CHOOSE, DR_REPLY };
 
 typedef struct {
@@ -717,6 +718,7 @@ static struct {
     s32 open;     /* 1 while up */
     s32 sel, count;
     s32 armed;    /* it takes a press once the one that closed the last balloon is let go */
+    s32 pending;  /* 1 after first confirm: a second confirm takes it, back cancels */
     s32 answered; /* the row taken + 1, 0 not yet (read and cleared by the panel's owner) */
     MessageWindow *wins[DR_OPTIONS];
 } choice;
@@ -774,6 +776,7 @@ static void choice_open(const unsigned char *const *labels, s32 count) {
     choice.count = count < DR_OPTIONS ? count : DR_OPTIONS;
     choice.sel = 0;
     choice.armed = 0;
+    choice.pending = 0;
     choice.answered = 0;
     choice.open = 1;
     for (i = 0; i < choice.count; i++) {
@@ -796,6 +799,7 @@ static void choice_close(void) {
             choice.wins[i] = NULL;
         }
     }
+    choice.pending = 0;
     choice.open = 0;
 }
 
@@ -806,11 +810,29 @@ static void choice_frame(void) {
     for (i = 0; i < choice.count; i++) {
         heap_objects.try_run((Object *)choice.wins[i]);
     }
-    dream_rect(14, top + 3 + choice.sel * DR_ROW, 292, 16, 20, 30, 90); /* the row under the cursor */
+    if (choice.pending) {
+        dream_rect(14, top + 3 + choice.sel * DR_ROW, 4, 16, 220, 200, 80); /* armed marker */
+        dream_rect(14, top + 3 + choice.sel * DR_ROW, 292, 16, 40, 80, 175); /* the row armed to confirm */
+    } else {
+        dream_rect(14, top + 3 + choice.sel * DR_ROW, 292, 16, 20, 30, 90); /* the row under the cursor */
+    }
     dream_rect(9, top + 1, 302, choice.count * DR_ROW + 6, 4, 6, 30);
     dream_rect(8, top, 304, choice.count * DR_ROW + 8, 90, 120, 220); /* the room's blue */
     if (!choice.armed) {
         choice.armed = !(pad_state.get_held(0) & ST_KEYS);
+        return;
+    }
+    if (choice.pending) {
+        if (PAD_PRESSED(14)) {
+            choice.pending = 0;
+            sound_module.play(DR_SND_BACK);
+            return;
+        }
+        if (PAD_PRESSED(13)) {
+            sound_module.play(DR_SND_OK);
+            choice.answered = choice.sel + 1;
+            choice_close();
+        }
         return;
     }
     if (PAD_PRESSED(4) || PAD_PRESSED(6)) {
@@ -821,9 +843,8 @@ static void choice_frame(void) {
         return;
     }
     if (PAD_PRESSED(13)) {
+        choice.pending = 1;
         sound_module.play(DR_SND_OK);
-        choice.answered = choice.sel + 1;
-        choice_close();
     }
 }
 
