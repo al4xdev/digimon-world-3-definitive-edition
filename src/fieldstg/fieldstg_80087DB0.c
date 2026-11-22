@@ -2978,6 +2978,11 @@ void fieldstg_camera_update(FieldstgCamera *obj) {
     case OBJECT_STATE_RUN:
         switch (obj->base.step) {
         case 0:
+#ifdef PC_PORT
+            if (obj->actor == NULL) {
+                break;
+            }
+#endif
             obj->center.x = obj->actor->pixel_pos.x;
             obj->center.y = obj->actor->pixel_pos.y - (obj->actor->height >> 8);
             if ((obj->base.substep == 0) & (obj->snap == 0)) {

@@ -175,10 +175,12 @@ void def_finale_battle_begin(void) {
         port_log("finale: Phase 4 rematch vs Dark Galacticmon (lead %d, Rookie form, Blast locked)", lead);
         return;
     }
-    if (!def_record_story(DEF_STORY_FINALE_DONE) && fightstg_battle.state.type == 6 && is_galacticmon_species(eid)) {
+    if (!def_record_story(DEF_STORY_FINALE_DONE) &&
+        (fightstg_battle.state.type == 4 || fightstg_battle.state.type == 6) && is_galacticmon_species(eid)) {
         fn.phase = DEF_FINALE_PHASE1_CLASSIC;
         fn.super_chosen_on = 0;
-        port_log("finale: Phase 1 classic Galacticmon battle started (species %d)", eid);
+        port_log("finale: Phase 1 classic Galacticmon battle started (species %d, type %d)", eid,
+                 fightstg_battle.state.type);
     }
 }
 
