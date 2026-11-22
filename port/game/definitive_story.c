@@ -137,15 +137,15 @@ static FieldstgActor *player_ready(void) {
 /* Stops the player where it stands, as the game's own talk does (fieldstg_actor_talk_to): event_running alone only
  * stops the pad control, while the walk and run states keep moving the actor by its speed every frame
  * (fieldstg_actor_run_state), so a talk opened by stepping on something (a held gate) had the player run on under
- * the dialog. Ladders, jumps and the other special states are left to finish. */
+ * the dialog. Setting step 1 stops movement without touching player->speed (which is only initialized once on actor
+ * creation, so zeroing it would leave the player running in place at speed 0 after the talk). Ladders, jumps and
+ * the other special states are left to finish. */
 void def_field_freeze_player(void) {
     FieldstgActor *player = (FieldstgActor *)heap_objects.find(5, -1, 0);
 
     if (player == NULL) {
         return;
     }
-    player->speed = 0;
-    player->vertical_speed = 0;
     if (player->voice != -1) {
         sound_module.key_off(0xA0045F4A, player->voice);
         player->voice = -1;
