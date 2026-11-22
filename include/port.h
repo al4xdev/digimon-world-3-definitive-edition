@@ -576,6 +576,7 @@ void def_enemy_override(struct FightstgEnemyRecord *rec);
 /* "Enemy acts twice": 1 when the enemy acts twice before our next turn (call with the command menu open, never
  * mid-calculation), and the label shown then. */
 int def_enemy_acts_twice(void);
+void def_turn_speeds(int side, int *own, int *other); /* the turn delay's speeds: a faster party's lead is square-rooted */
 const unsigned char *def_twice_label(void);
 s32 def_get_damage(u8 side, s32 id);
 s32 def_get_special_damage(u8 side, s32 id);

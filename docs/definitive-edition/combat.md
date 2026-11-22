@@ -47,8 +47,10 @@ lends a basic attack, never staggers.
   Every hit on it then shows **OVERFINISH!** and pays Bits worth 10% of its damage, added to the battle's.
 - **You hear and see how a technique landed**: a slanted **WEAK!** or **RESIST!** over the enemy, and a distinct
   sound for a weakness, a neutral hit and a resisted one.
-- **You open the fight** unless you are ambushed. Speed no longer decides who starts; a much faster side acts twice,
-  and the HUD shows "Enemy x2" when it is the enemy.
+- **You open the fight** unless you are ambushed. Speed no longer decides who starts. An enemy twice as fast as your
+  active Digimon acts twice (the disc's rule), and the HUD shows "Enemy x2"; a faster party counts only the square root
+  of its lead, so it needs four times the enemy's speed to act twice every time (`def_turn_speeds`, in
+  `fightstg_events_get_delay`; owner, 2026-11-22): the party's extra actions are One More's and Baton Pass's.
 
 <p align="center"><img src="../images/definitive/stagger.svg" width="800" alt="Hit a weakness: WEAK!, the enemy staggers, ONE MORE! Then hit a weakness again, Baton Pass, or any other blow, which gets the bonus and ends the stagger."></p>
 

@@ -524,6 +524,24 @@ void *def_text_override(void *data, s32 i) {
 extern const unsigned char def_str_Fire[], def_str_Water[], def_str_Ice[], def_str_Wind[], def_str_Thunder[],
     def_str_Machine[], def_str_Dark[], def_str_Weak[], def_str_Resist[], def_str_Neutral[];
 
+/* Turn order by Speed, asymmetric: a faster party counts only the square root of its lead (4x the enemy's Speed to
+ * act twice every time, where the disc needs 2x), so the party's extra actions come from One More and Baton Pass; a
+ * faster enemy keeps the disc's rule, its answer to having no One More. Both delays of a pair read the same speeds,
+ * so def_enemy_acts_twice stays right. side is the acting one's (0 the party, 0x10 the enemy). */
+void def_turn_speeds(int side, int *own, int *other) {
+    int *party = side == 0 ? own : other, *enemy = side == 0 ? other : own;
+    int product, root = 999, i;
+
+    if (!def_on() || *party <= *enemy || *enemy <= 0) {
+        return;
+    }
+    product = *party * *enemy;
+    for (i = 0; i < 10; i++) {
+        root = (root + product / root) / 2;
+    }
+    *party = root; /* the geometric mean: the lead p/e becomes sqrt(p/e) */
+}
+
 /* "Enemy acts twice": with the command menu open, E the time left to the enemy's turn, Pe the delay its next
  * turn would take and P the one ours would (fightstg_events.get_delay kind 0: no draw, but it rewrites
  * fightstg_rules.stats, so only here, with the menu open and nothing being calculated), the enemy acts again before

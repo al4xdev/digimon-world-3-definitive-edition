@@ -7604,6 +7604,19 @@ s32 fightstg_events_get_delay(u8 side, s32 kind) {
         FightstgStats *own = fightstg_rules.get_stats(side, 1, fightstg_battle.state.current[enemy]);
         FightstgStats *other = fightstg_rules.get_stats(0x10 - side, 0, fightstg_battle.state.current[1 - enemy]);
         s32 root = 999;
+#ifdef PC_PORT
+        s32 own_speed = own->stats[4];
+        s32 other_speed = other->stats[4];
+        s32 product;
+        s32 i;
+
+        def_turn_speeds(side, &own_speed, &other_speed);
+        product = own_speed * other_speed;
+        for (i = 0; i < 10; i++) {
+            root = (root + product / root) / 2;
+        }
+        value = fightstg_events_delay_formulas[kind].base * other_speed / root;
+#else
         s32 product = own->stats[4] * other->stats[4];
         s32 i;
 
@@ -7611,6 +7624,7 @@ s32 fightstg_events_get_delay(u8 side, s32 kind) {
             root = (root + product / root) / 2;
         }
         value = fightstg_events_delay_formulas[kind].base * other->stats[4] / root;
+#endif
         break;
     }
     }
