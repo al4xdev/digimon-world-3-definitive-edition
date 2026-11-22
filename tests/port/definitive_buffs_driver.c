@@ -60,12 +60,16 @@ static FightstgStats *stub_get_stats(u8 side, s32 first, s32 member) {
 void port_hud_arm(void) {}
 void port_log(const char *fmt, ...) { (void)fmt; }
 void port_girls_refresh(void) {}
-s32 fightstg_rules_get_damage(u8 side, s32 id) { (void)side; (void)id; return 0; }
+static s32 dummy_sound_play(s32 id) { (void)id; return 0; }
+static s32 stub_phys_damage = 0;
+static int last_callout = -1;
+static int time_guarded_stub = 0;
+s32 fightstg_rules_get_damage(u8 side, s32 id) { (void)side; (void)id; return stub_phys_damage; }
 s32 fightstg_rules_get_special_damage(u8 side, s32 id) { (void)side; (void)id; return 0; }
 void *font_get_entry(void *d, s32 i) { (void)d; (void)i; return NULL; }
 s32 wfightmn_update_idle_anim(u8 side, s32 amount) { (void)side; (void)amount; return 0; }
 
-void def_callout_show(int kind, int side) { (void)kind; (void)side; }
+void def_callout_show(int kind, int side) { (void)side; last_callout = kind; }
 void def_bestiary_reset(void) {}
 void def_bestiary_discover(int i, int m) { (void)i; (void)m; }
 int def_bestiary_known(int i) { (void)i; return 0; }
@@ -118,6 +122,7 @@ void def_story_battle_end(int r) { (void)r; }
 void def_time_battle_begin(void) {}
 void def_time_battle_end(int r) { (void)r; }
 void def_time_savestate(struct PortState *s) { (void)s; }
+int def_time_guarded(int species) { (void)species; return time_guarded_stub; }
 void def_flee_ask_reset(void) {}
 void def_flee_ask_savestate(struct PortState *s) { (void)s; }
 void def_finale_battle_begin(void) {}
@@ -388,6 +393,79 @@ int main(void) {
           records_digimon[18].techniques[4] == 200 && records_digimon[18].technique_levels[3] == 45 &&
           records_digimon[31].techniques[4] == 194 && records_digimon[31].technique_levels[3] == 40 &&
           records_digimon[48].techniques[1] == 152 && records_digimon[48].techniques[3] == 199);
+
+    /* 10. Boss Guard (DEF_GUARD_PCT = 30% until staggered, GUARDED callout on non-weakness) */
+    {
+        s32 dmg;
+
+        reset_battle();
+        sound_module.play = dummy_sound_play;
+        stub_phys_damage = 1000;
+        fightstg_action.side = 0;
+        records_techniques[55 - 1].element = 2; /* physical, no element */
+        records_techniques[55 - 1].defense_stat = 0;
+        records_techniques[56 - 1].element = 3; /* Fire magic */
+        records_techniques[56 - 1].defense_stat = 2;
+
+        /* Regular enemy: not guarded */
+        records_state.battle = 10;
+        fightstg_battle.state.members[1][0].digimon = 100;
+        fightstg_rules.stats[1].resists[0] = 100;
+        last_callout = -1;
+        dmg = def_get_damage(0, 55);
+        def_hit_feedback();
+        check("guard: regular enemy takes 100% damage and no GUARDED callout", dmg == 1000 && last_callout != DEF_CALLOUT_GUARDED);
+
+        /* Campaign guarded boss (Datamon 313/141): physical hit cut to 30% + GUARDED */
+        records_state.battle = 313;
+        fightstg_battle.state.members[1][0].digimon = 141;
+        last_callout = -1;
+        dmg = def_get_damage(0, 55);
+        def_hit_feedback();
+        check("guard: Datamon (313/141) takes 30% before stagger + GUARDED callout",
+              dmg == 300 && last_callout == DEF_CALLOUT_GUARDED);
+
+        /* Next turn non-damaging action clears guard_hit */
+        last_callout = -1;
+        def_log_action(0, 4, 205);
+        def_hit_feedback();
+        check("guard: def_log_action clears guard_hit for non-damaging skills", last_callout != DEF_CALLOUT_GUARDED);
+
+        /* Weakness hit on guarded Datamon: still guarded on the opening blow, but callout is WEAK! */
+        fightstg_rules.stats[1].resists[0] = 60; /* Fire weakness */
+        last_callout = -1;
+        dmg = def_get_damage(0, 56);
+        def_hit_feedback();
+        check("guard: weakness hit on guarded boss shows WEAK! (not GUARDED)",
+              dmg == 300 && last_callout == DEF_CALLOUT_WEAK);
+
+        /* Stagger opens Guard: next blow deals 100% and no GUARDED callout */
+        def_action_resolved(0, 56, dmg);
+        last_callout = -1;
+        dmg = def_get_damage(0, 55);
+        def_hit_feedback();
+        check("guard: staggered boss takes 100% damage and no GUARDED callout",
+              dmg == 1000 && last_callout != DEF_CALLOUT_GUARDED);
+
+        /* Time Room guarded boss: guarded when time_guarded_stub == 1, never on final boss (type 6) */
+        reset_battle();
+        records_state.battle = 10;
+        fightstg_battle.state.members[1][0].digimon = 200;
+        time_guarded_stub = 1;
+        last_callout = -1;
+        dmg = def_get_damage(0, 55);
+        def_hit_feedback();
+        check("guard: Time Room last challenger takes 30% + GUARDED",
+              dmg == 300 && last_callout == DEF_CALLOUT_GUARDED);
+        fightstg_battle.state.type = 6;
+        last_callout = -1;
+        dmg = def_get_damage(0, 55);
+        def_hit_feedback();
+        check("guard: final boss (type 6) is never guarded",
+              dmg == 1000 && last_callout != DEF_CALLOUT_GUARDED);
+        time_guarded_stub = 0;
+        stub_phys_damage = 0;
+    }
 
     return failures ? 1 : 0;
 }

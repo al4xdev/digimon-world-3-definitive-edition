@@ -222,6 +222,11 @@ FieldstgPlacedActor *def_time_challenger(void) {
     return def_time_on() && tm.round > 0 ? &tm_npc : NULL;
 }
 
+/* The trial's guarded challenger: the last of its three members (the one that comes in last). Only inside a trial. */
+int def_time_guarded(int species) {
+    return def_time_on() && tm.round > 0 && species == def_time_trials[trial_of(tm.round)].stages[DEF_DRI_MEMBERS - 1].digimon;
+}
+
 int def_time_side_door_open(void) {
     return def_time_on() && !def_record_story(DEF_STORY_GATE_PASSED);
 }

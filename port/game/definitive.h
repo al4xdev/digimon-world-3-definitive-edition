@@ -38,6 +38,7 @@
 #define DEF_DEBUFF_LV2_PCT 25    /* Tier -2 stat debuff: -25% of base stat */
 #define DEF_DEBUFF_LV3_PCT 35    /* Tier -3 stat debuff: -35% of base stat */
 #define DEF_BOSS_STATUS_PCT 60    /* percent of a status' chance that remains on a boss that the original made immune */
+#define DEF_GUARD_PCT 30          /* percent of the party's damage a guarded boss takes until a stagger opens it (definitive.c guard_damage) */
 #define DEF_STAGGER_STATUS_BONUS 24 /* out of 128: flat bonus (after x1.5) when the target is staggered */
 #define DEF_BOSS_STATUS_CAP 100    /* out of 128 (~78%): no status is surer than this on a boss, stagger or not */
 #define DEF_POISON_WIND_DIV 6     /* Wind affinity (0..300) divided by this feeds poison damage */
@@ -316,7 +317,7 @@ int def_form_floor(int row);
 /* The hit callouts (definitive_callout.c): the slanted word that pops over the side hit. def_callout_show starts one
  * (0 clears it) over `side`'s acting member (0 party, 1 enemy); def_callout_frame runs once per battle frame. */
 enum { DEF_CALLOUT_NONE, DEF_CALLOUT_WEAK, DEF_CALLOUT_RESIST, DEF_CALLOUT_OVERFINISH, DEF_CALLOUT_RARE, DEF_CALLOUT_EVOLVE,
-       DEF_CALLOUT_COUNT };
+       DEF_CALLOUT_GUARDED, DEF_CALLOUT_COUNT };
 void def_callout_show(int kind, int side);
 void def_callout_frame(void);
 
@@ -1158,6 +1159,7 @@ struct FieldstgActor;
 struct FieldstgPlacedActor **def_time_room_actors(void); /* the Time Room's figures (NULL-ended) */
 struct FieldstgPlacedActor *def_time_challenger(void);   /* the trial's challenger, NULL outside a trial */
 int def_time_talk(struct FieldstgActor *actor);          /* the line of a figure talked to, 0: not the Time Room's */
+int def_time_guarded(int species);      /* the trial's guarded challenger (its last member): the party's blows are halved until it is staggered */
 int def_time_side_door_open(void);      /* the room's upper door leads to the trials */
 void def_time_frame(void);              /* each field frame while the room runs */
 int def_time_warp_closed(int type, int param); /* the Warp Gate held shut until the trials are passed */

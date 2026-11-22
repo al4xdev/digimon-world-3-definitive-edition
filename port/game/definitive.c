@@ -32,6 +32,7 @@ static struct {
  * into the kill: such a blow shows the OVERFINISH! callout and its damage pays Bits with the battle's
  * (DEF_OVERFINISH_BITS_PCT). `overfinish_hit`: the blow being shown is one; `overfinish_damage`: the battle's total. */
 static int overfinish_hit;
+static int guard_hit; /* the blow being shown was cut by a boss's Guard (guard_damage); not saved: every blow resets it */
 static s32 overfinish_damage;
 static DefChain chain; /* stagger, window, free swap (definitive_mask.c) */
 static short resist_mod[2][3][7]; /* per side (0 party, 1 enemy) and slot, what Resist Down took off each element */
@@ -120,6 +121,7 @@ void def_log_begin(void) {
         def_callout_show(DEF_CALLOUT_RARE, 1); /* a Rare Target; a Super Rare too */
     }
     overfinish_hit = 0;
+    guard_hit = 0;
     overfinish_damage = 0;
     memset(resist_mod, 0, sizeof(resist_mod));
     memset(resist_turns, 0, sizeof(resist_turns));
@@ -162,6 +164,9 @@ void def_log_turn(int side) {
 void def_log_action(int side, int kind, int arg) {
     int tech = -1;
 
+    if (side == 0) {
+        guard_hit = 0;
+    }
     if (!log_on()) {
         return;
     }
@@ -284,6 +289,11 @@ void def_hit_feedback(void) {
         def_callout_show(DEF_CALLOUT_OVERFINISH, 1);
         return;
     }
+    if (guard_hit && hit_class != 1) { /* a weakness is the word that matters: it is what opens the Guard */
+        sound_module.play(DEF_SND_RESISTED);
+        def_callout_show(DEF_CALLOUT_GUARDED, 1);
+        return;
+    }
     if (hit_class == 0) {
         return;
     }
@@ -294,10 +304,54 @@ void def_hit_feedback(void) {
     }
 }
 
+/* The Guard: some bosses take only DEF_GUARD_PCT of the party's blows until a stagger opens them (the weakness that
+ * staggers is what the player has to find; the blow that opens it is still guarded, the stagger being set after the
+ * damage). A campaign boss is a one-enemy battle of the list below (species checked too, so a hunt or a duel that
+ * borrows its battle is not guarded); the Time Room's trials guard their last challenger. Never the final boss. */
+static int enemy_guarded(void) {
+    static const struct { s16 battle, species; } guarded[] = {
+        { 313, 141 }, /* Datamon, Lv34 */
+        { 15, 444 },  /* BK Imperialdramon, Lv46 */
+        { 31, 448 },  /* BK WarGreymon, Lv53 */
+    };
+    int slot = fightstg_battle.state.current[1];
+    s32 species = fightstg_battle.state.members[1][slot].digimon;
+    unsigned int i;
+
+    if (fightstg_battle.state.type == 6 || chain.staggered[slot % 3]) {
+        return 0;
+    }
+    if (def_time_guarded(species)) {
+        return 1;
+    }
+    for (i = 0; i < sizeof(guarded) / sizeof(guarded[0]); i++) {
+        if (records_state.battle == guarded[i].battle && species == guarded[i].species) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+static s32 guard_damage(u8 side, s32 value) {
+    if (side == 0) {
+        guard_hit = 0; /* every blow of the party decides it afresh */
+    }
+    if (!def_on() || side != 0 || value <= 0 || !enemy_guarded()) {
+        return value;
+    }
+    guard_hit = 1;
+    if (log_on()) {
+        LOG("guard: %d -> %d", (int)value, (int)(value * DEF_GUARD_PCT / 100 > 0 ? value * DEF_GUARD_PCT / 100 : 1));
+    }
+    value = value * DEF_GUARD_PCT / 100;
+    return value > 0 ? value : 1;
+}
+
 static s32 log_damage(u8 side, s32 id, s32 value, const char *what) {
     FightstgMember *target;
 
     classify(side, id);
+    value = guard_damage(side, value);
     if (log_on()) {
         target = &fightstg_battle.state.members[side == 0][fightstg_battle.state.current[side == 0]];
         LOG("damage %s side %d tech %d value %d target_hp %d -> %d", what, side != 0, id, value, target->hp,

@@ -121,6 +121,9 @@ static const Style styles[DEF_CALLOUT_COUNT] = {
     /* A DRI simulation's next stage comes in (definitive_dri_screen.c, def_dri_stage_enters). */
     [DEF_CALLOUT_EVOLVE] = { "DIGIVOLVE!", { 255, 255, 255 }, { 200, 255, 220 }, { 24, 200, 96 }, { 0, 48, 16 }, 0, 256, 300,
                              10, 60, 10 },
+    /* A guarded boss took the blow at its reduced share: it did not go through (slam), until a stagger opens it. */
+    [DEF_CALLOUT_GUARDED] = { "GUARDED", { 255, 244, 220 }, { 255, 196, 96 }, { 214, 112, 0 }, { 56, 24, 0 }, 1, 232, 270, 7,
+                              36, 8 },
 };
 
 static struct {
