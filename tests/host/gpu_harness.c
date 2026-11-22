@@ -242,14 +242,15 @@ int main(void) {
 #ifdef GPU_HW
         } else if (strcmp(cmd, "H") == 0) {
             static u16 hw[1024 * 512];
-            const u16 *sw = psyq_gpu_vram();
+            const u16 *vram = psyq_gpu_vram();
+            int stride = psyq_gpu_vram_stride(); /* the software rows are padded (gpu.c VRAM_PAD); the readback's are not */
             int i, n = 0, first = -1;
 
             if (!render_gpu_read_vram(hw)) {
                 puts("readback failed");
             } else {
                 for (i = 0; i < 1024 * 512; i++) {
-                    if (hw[i] != sw[i]) {
+                    if (hw[i] != vram[(i / 1024) * stride + i % 1024]) {
                         first = first < 0 ? i : first;
                         n++;
                     }
@@ -257,7 +258,8 @@ int main(void) {
                 if (n == 0) {
                     puts("ok");
                 } else {
-                    printf("diff %d %d %d %04x %04x\n", n, first % 1024, first / 1024, sw[first], hw[first]);
+                    printf("diff %d %d %d %04x %04x\n", n, first % 1024, first / 1024,
+                           vram[(first / 1024) * stride + first % 1024], hw[first]);
                     render_gpu_raster_resync();
                 }
             }
