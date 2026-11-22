@@ -9,8 +9,7 @@ the game, and how the Definitive Edition is put together. The player's overview 
   save bytes, tests and pitfalls, one page per subject (its "Pages" table lists them), and how the definitive layers
   work. Read its "How the definitive layers work" first.
 - Design and numbers: combat in [`combat.md`](definitive-edition/combat.md); progression, buffs and comfort in
-  [`progression.md`](definitive-edition/progression.md) and [`interface.md`](definitive-edition/interface.md); what is
-  left in [`roadmap.md`](definitive-edition/roadmap.md); the closed plans and their post-mortems in
+  [`progression.md`](definitive-edition/progression.md) and [`interface.md`](definitive-edition/interface.md); the closed plans and their post-mortems in
   [`history.md`](definitive-edition/history.md).
 - Every tunable number is a constant in [`port/game/definitive.h`](../port/game/definitive.h). The edition is always on:
   there is no option to turn it off.

@@ -400,8 +400,12 @@ joven: parte de él solo se ha jugado unas pocas veces, así que cuenta con aspe
 
 - **El equilibrio general del juego.** Hasta ahora se equilibró solo por cálculo. Lo estoy jugando en paralelo y
   publicando hotfixes sobre la marcha.
+- **Ataques especiales aún en ajuste.** Los ataques especiales/de firma de algunas formas en el DRI Gauntlet y en el
+  simulador de purificación de la Evolución Elegida.
+- **Aún en playtest.** La Evolución Elegida y algunos combates secretos del final del juego.
 
-La lista detallada de puntos abiertos está en [la hoja de ruta](docs/definitive-edition/roadmap.md).
+No hay nada más planeado: de aquí en adelante el trabajo son hotfixes. Los errores van al
+[issue tracker](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues).
 
 ## Bajo el capó
 

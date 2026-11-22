@@ -402,8 +402,12 @@ Manches wurde erst ein paar Mal durchgespielt, rechne also mit Ecken und Kanten 
 
 - **Die allgemeine Spielbalance.** Bisher wurde sie nur rechnerisch ausbalanciert. Ich spiele es parallel durch und
   liefere Hotfixes nach, sobald sie fertig sind.
+- **Spezialangriffe werden noch abgestimmt.** Die Spezial-/Signaturangriffe einiger Formen im DRI Gauntlet und im
+  Läuterungssimulator der Auserwählten Evolution.
+- **Noch im Playtest.** Die Auserwählte Evolution und einige geheime Endgame-Kämpfe.
 
-Die ausführliche Liste der offenen Punkte steht in [der Roadmap](docs/definitive-edition/roadmap.md).
+Sonst ist nichts geplant: ab jetzt besteht die Arbeit aus Hotfixes. Fehler gehören in den
+[Issue Tracker](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues).
 
 ## Unter der Haube
 

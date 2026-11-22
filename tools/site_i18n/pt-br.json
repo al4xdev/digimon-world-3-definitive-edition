@@ -238,9 +238,7 @@
  "8707fb52f8": "Sim. Um save existente abre e funciona. Para dar a ele as novas tabelas de MP e TP, rode uma vez o script incluído tools/convert_save_mp.py no arquivo do seu memory card; ele guarda um backup.",
  "ce686ded6e": "Sem rodeios sobre o que falta",
  "11c3e8f358": "O jogo é jogável do começo ao fim e todos os sistemas acima estão implementados. Ele também é jovem: espere arestas e hotfixes frequentes.",
- "9ba6146090": "<b>Traduções.</b> O texto novo está em inglês, e o português do Brasil cobre a maior parte dele. Francês, alemão, italiano e espanhol ainda não estão prontos.",
  "ef462b02cd": "<b>Equilíbrio.</b> Balanceado só por cálculo até agora, e ajustado por hotfix durante uma jogada paralela.",
- "ad08187c49": "<b>A Velvet Room</b> ainda parece rasa em alguns pontos: mais o que dizer e fazer está a caminho.",
  "bae91670ca": "<b>Outros dispositivos.</b> Ajustado no XF35H e no PC. Relatos de outros hardwares ajudam muito.",
  "4a06c0d089": "Digimon World 3: Definitive Edition",
  "d1d816cbc2": "Construído sobre a <a href=\"https://github.com/gascarcella/dw2003recomp\">decompilação do Digimon World 2003</a> e o port dela para PC. O trabalho próprio do projeto está sob a licença MIT; o jogo continua sendo propriedade da sua publisher.",
@@ -321,5 +319,8 @@
  "js:dev.sync": "CLOUD SYNC",
  "js:dev.synced": "SALVO · 3 DISPOSITIVOS",
  "js:dev.continue": "CONTINUAR?",
- "js:dev.noEmu": "NATIVO · SEM EMULADOR"
+ "js:dev.noEmu": "NATIVO · SEM EMULADOR",
+ "3f8464268a": "<b>Traduções.</b> O texto próprio da Definitive Edition está nos seis idiomas, mas ainda não foi lido no jogo por falantes nativos. A história reescrita existe só em inglês e português.",
+ "69a1e34995": "<b>Ataques especiais.</b> Ainda em ajuste em algumas formas no DRI Gauntlet e no simulador de purificação da Evolução Escolhida.",
+ "7b02ac0aaa": "<b>Playtest.</b> A Evolução Escolhida e algumas batalhas secretas do fim do jogo ainda estão sendo refinadas."
 }

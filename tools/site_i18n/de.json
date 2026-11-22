@@ -238,9 +238,7 @@
  "8707fb52f8": "Ja. Ein vorhandener Spielstand lässt sich öffnen und spielen. Um ihm die neuen MP- und TP-Tabellen zu geben, führe das mitgelieferte Skript tools/convert_save_mp.py einmal auf deiner Memory-Card-Datei aus; es legt ein Backup an.",
  "ce686ded6e": "Ehrlich zu dem, was noch fehlt",
  "11c3e8f358": "Das Spiel ist von Anfang bis Ende spielbar, und jedes oben beschriebene System ist umgesetzt. Es ist aber auch jung: Rechne mit Ecken und Kanten und häufigen Hotfixes.",
- "9ba6146090": "<b>Übersetzungen.</b> Der neue Text liegt auf Englisch vor, und Brasilianisches Portugiesisch deckt das meiste davon ab. Deutsch, Französisch, Italienisch und Spanisch sind für die neuen Inhalte noch nicht fertig.",
  "ef462b02cd": "<b>Spielbalance.</b> Bisher rechnerisch ausbalanciert und per Hotfix nachjustiert, während ich es parallel durchspiele.",
- "ad08187c49": "<b>Der Velvet Room</b> wirkt an manchen Stellen noch dünn: Mehr zu sagen und zu tun ist unterwegs.",
  "bae91670ca": "<b>Andere Geräte.</b> Abgestimmt auf dem XF35H und dem PC. Berichte von anderer Hardware helfen sehr.",
  "4a06c0d089": "Digimon World 3: Definitive Edition",
  "d1d816cbc2": "Gebaut auf der <a href=\"https://github.com/gascarcella/dw2003recomp\">Dekompilierung von Digimon World 2003</a> und ihrem PC-Port. Die eigene Arbeit des Projekts steht unter der MIT-Lizenz; das Spiel bleibt Eigentum seines Publishers.",
@@ -321,5 +319,8 @@
  "js:dev.sync": "CLOUD SYNC",
  "js:dev.synced": "GESPEICHERT · 3 GERÄTE",
  "js:dev.continue": "WEITER?",
- "js:dev.noEmu": "NATIV · KEIN EMULATOR"
+ "js:dev.noEmu": "NATIV · KEIN EMULATOR",
+ "3f8464268a": "<b>Übersetzungen.</b> Der eigene Text der Definitive Edition liegt in allen sechs Sprachen vor, wurde aber noch nicht von Muttersprachlern im Spiel gelesen. Die neu geschriebene Story gibt es nur auf Englisch und Portugiesisch.",
+ "69a1e34995": "<b>Spezialangriffe.</b> Werden bei einigen Formen im DRI Gauntlet und im Läuterungssimulator der Auserwählten Evolution noch abgestimmt.",
+ "7b02ac0aaa": "<b>Playtest.</b> Die Auserwählte Evolution und einige geheime Endgame-Kämpfe werden noch verfeinert."
 }

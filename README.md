@@ -394,8 +394,12 @@ it has only been played through a few times, so expect rough edges and frequent 
   other three languages the disc's original campaign plays.
 - **Overall game balance.** So far it was balanced by calculation only. I am playing through it in parallel and
   shipping hotfixes as I go.
+- **Special attacks still being tuned.** A few forms' special/signature attacks in the DRI Gauntlet and the Chosen
+  Evolution purification simulator.
+- **Still being playtested.** Chosen Evolution and a few secret endgame battles.
 
-The detailed list of open items is in [the roadmap](docs/definitive-edition/roadmap.md).
+Nothing else is planned: from here on the work is hotfixes. Bugs go to the
+[issue tracker](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues).
 
 ## Under the hood
 

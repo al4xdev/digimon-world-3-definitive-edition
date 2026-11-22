@@ -238,9 +238,7 @@
  "8707fb52f8": "Sì. Un salvataggio esistente si apre e funziona. Per dargli le nuove tabelle di MP e TP, esegui una volta lo script incluso tools/convert_save_mp.py sul file della tua memory card; ne conserva un backup.",
  "ce686ded6e": "Sinceri su ciò che manca",
  "11c3e8f358": "Il gioco è giocabile dall'inizio alla fine e ogni sistema descritto sopra è implementato. È anche giovane: aspettati qualche spigolo e hotfix frequenti.",
- "9ba6146090": "<b>Traduzioni.</b> Il nuovo testo è in inglese e il portoghese brasiliano ne copre la maggior parte. Francese, tedesco, italiano e spagnolo non sono ancora pronti.",
  "ef462b02cd": "<b>Bilanciamento.</b> Finora bilanciato solo a calcolo, e rifinito con hotfix durante una partita in parallelo.",
- "ad08187c49": "<b>La Velvet Room</b> sembra ancora un po' scarna in certi punti: più cose da dire e da fare sono in arrivo.",
  "bae91670ca": "<b>Altri dispositivi.</b> Ottimizzato su XF35H e PC. Le segnalazioni da altro hardware aiutano molto.",
  "4a06c0d089": "Digimon World 3: Definitive Edition",
  "d1d816cbc2": "Si basa sulla <a href=\"https://github.com/gascarcella/dw2003recomp\">decompilazione di Digimon World 2003</a> e sul suo port per PC. Il lavoro proprio del progetto è sotto licenza MIT; il gioco resta di proprietà del suo publisher.",
@@ -321,5 +319,8 @@
  "js:dev.sync": "CLOUD SYNC",
  "js:dev.synced": "SALVATO · 3 DISPOSITIVI",
  "js:dev.continue": "CONTINUE?",
- "js:dev.noEmu": "NATIVO · SENZA EMULATORE"
+ "js:dev.noEmu": "NATIVO · SENZA EMULATORE",
+ "3f8464268a": "<b>Traduzioni.</b> Il testo proprio della Definitive Edition è in tutte e sei le lingue, ma non è ancora stato letto in gioco da madrelingua. La storia riscritta esiste solo in inglese e portoghese.",
+ "69a1e34995": "<b>Attacchi speciali.</b> Ancora in regolazione per alcune forme nel DRI Gauntlet e nel simulatore di purificazione dell'Evoluzione Scelta.",
+ "7b02ac0aaa": "<b>Playtest.</b> L'Evoluzione Scelta e alcune battaglie segrete di fine gioco sono ancora in rifinitura."
 }

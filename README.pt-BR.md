@@ -396,8 +396,12 @@ dele só foi jogada algumas vezes, então espere arestas e hotfixes frequentes. 
 
 - **O equilíbrio geral do jogo.** Até agora ele foi balanceado só por cálculo. Estou jogando em paralelo e lançando
   hotfixes pelo caminho.
+- **Ataques especiais ainda em ajuste.** Os ataques especiais/de assinatura de algumas formas no DRI Gauntlet e no
+  simulador de purificação da Evolução Escolhida.
+- **Ainda em playtest.** A Evolução Escolhida e algumas batalhas secretas do fim do jogo.
 
-A lista detalhada dos itens em aberto está no [roadmap](docs/definitive-edition/roadmap.md).
+Nada mais está planejado: daqui em diante o trabalho são hotfixes. Bugs vão para o
+[issue tracker](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues).
 
 ## Por baixo do capô
 

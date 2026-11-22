@@ -238,9 +238,7 @@
  "8707fb52f8": "Sí. Una partida existente se abre y se juega. Para darle las nuevas tablas de MP y TP, ejecuta una vez el script incluido tools/convert_save_mp.py sobre el archivo de tu memory card; guarda una copia de seguridad.",
  "ce686ded6e": "Sinceros con lo que falta",
  "11c3e8f358": "El juego se puede jugar de principio a fin y todos los sistemas descritos arriba están implementados. También es joven: cuenta con asperezas y hotfixes frecuentes.",
- "9ba6146090": "<b>Traducciones.</b> El texto nuevo está en inglés, y el portugués de Brasil cubre la mayor parte. El francés, el alemán, el italiano y el español todavía no están hechos.",
  "ef462b02cd": "<b>Equilibrio.</b> Hasta ahora se equilibró por cálculo, y se ajusta con hotfixes durante una partida en paralelo.",
- "ad08187c49": "<b>La Velvet Room</b> todavía se siente escasa en algunos puntos: hay más que decir y hacer en camino.",
  "bae91670ca": "<b>Otros dispositivos.</b> Ajustado en la XF35H y en PC. Los informes de otro hardware ayudan muchísimo.",
  "4a06c0d089": "Digimon World 3: Definitive Edition",
  "d1d816cbc2": "Construido sobre la <a href=\"https://github.com/gascarcella/dw2003recomp\">descompilación de Digimon World 2003</a> y su port para PC. El trabajo propio del proyecto está bajo la licencia MIT; el juego sigue siendo propiedad de su publisher.",
@@ -321,5 +319,8 @@
  "js:dev.sync": "CLOUD SYNC",
  "js:dev.synced": "GUARDADO · 3 DISPOSITIVOS",
  "js:dev.continue": "¿CONTINUAR?",
- "js:dev.noEmu": "NATIVO · SIN EMULADOR"
+ "js:dev.noEmu": "NATIVO · SIN EMULADOR",
+ "3f8464268a": "<b>Traducciones.</b> El texto propio de la Definitive Edition está en los seis idiomas, pero aún no lo han leído en el juego hablantes nativos. La historia reescrita solo existe en inglés y portugués.",
+ "69a1e34995": "<b>Ataques especiales.</b> Aún en ajuste para algunas formas en el DRI Gauntlet y en el simulador de purificación de la Evolución Elegida.",
+ "7b02ac0aaa": "<b>Playtest.</b> La Evolución Elegida y algunos combates secretos del final del juego aún se están puliendo."
 }

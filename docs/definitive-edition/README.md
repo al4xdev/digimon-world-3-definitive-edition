@@ -24,7 +24,6 @@ matching, performance, the GPU work) stay in [`docs/`](../README.md).
 | [Save format](save-format.md) | the memory card records the edition adds |
 | [Building, running, mods, tools, tests, debugging](port-and-tools.md) | command line options, environment variables, `port/mods/`, `tools/`, the tests, the MCP |
 | [Platforms](platforms.md) | the launcher, cloud sync, handhelds, Android, PortMaster, performance |
-| [What is left](roadmap.md) | the two open items: balance and translation review |
 | [History and decisions log](history.md) | closed plans and their post-mortems, the PortMaster CFW research, muOS, Android, the rebalance brief |
 
 The figures these pages show live in [`docs/images/definitive/`](../images/definitive/README.md).

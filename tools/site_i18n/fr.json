@@ -238,9 +238,7 @@
  "8707fb52f8": "Oui. Une sauvegarde existante s'ouvre et se joue. Pour lui donner les nouvelles tables de MP et de TP, lancez une fois le script tools/convert_save_mp.py fourni sur le fichier de votre memory card ; une copie de secours est conservée.",
  "ce686ded6e": "Franc sur ce qu'il reste à faire",
  "11c3e8f358": "Le jeu est jouable du début à la fin et chaque système décrit plus haut est implémenté. Il est aussi tout jeune : attendez-vous à des aspérités et à des hotfixes fréquents.",
- "9ba6146090": "<b>Traductions.</b> Le nouveau texte est en anglais, et le portugais brésilien en couvre la majeure partie. Le français, l'allemand, l'italien et l'espagnol ne sont pas encore faits.",
  "ef462b02cd": "<b>L'équilibrage.</b> Jusqu'ici équilibré par le calcul, et ajusté par hotfix au fil d'une partie en parallèle.",
- "ad08187c49": "<b>La Velvet Room</b> paraît encore mince par endroits : plus à dire et à faire arrive bientôt.",
  "bae91670ca": "<b>Les autres appareils.</b> Réglé sur la XF35H et le PC. Les retours sur d'autres machines aident beaucoup.",
  "4a06c0d089": "Digimon World 3: Definitive Edition",
  "d1d816cbc2": "Construit sur la <a href=\"https://github.com/gascarcella/dw2003recomp\">décompilation de Digimon World 2003</a> et son port PC. Le travail propre au projet est sous licence MIT ; le jeu reste la propriété de son éditeur.",
@@ -321,5 +319,8 @@
  "js:dev.sync": "CLOUD SYNC",
  "js:dev.synced": "SAUVEGARDÉ · 3 APPAREILS",
  "js:dev.continue": "CONTINUER ?",
- "js:dev.noEmu": "NATIF · SANS ÉMULATEUR"
+ "js:dev.noEmu": "NATIF · SANS ÉMULATEUR",
+ "3f8464268a": "<b>Traductions.</b> Le texte propre à la Definitive Edition existe dans les six langues, mais n'a pas encore été relu en jeu par des natifs. L'histoire réécrite n'existe qu'en anglais et en portugais.",
+ "69a1e34995": "<b>Attaques spéciales.</b> Encore en réglage pour quelques formes dans le DRI Gauntlet et le simulateur de purification de l'Évolution Choisie.",
+ "7b02ac0aaa": "<b>Playtest.</b> L'Évolution Choisie et quelques combats secrets de fin de jeu sont encore en cours d'affinage."
 }
