@@ -47,6 +47,18 @@ static void sd_start(struct PortMod *mod) {
     }
 }
 
+/* The Android touch pad's fast-forward button (android/touch_pad.c): on until tapped again. The touch pad's fingers are
+ * not inputs the fast_forward mod's bindings see, so it asks through port_fast_forward_request, which skip_dialogues
+ * also sets every vsync: both ask through sd_frame below, and the button asks itself when it is tapped (for a player
+ * with skip_dialogues off, whose sd_frame does not run). */
+int dw3_touch_fast_forward;
+
+void dw3_touch_fast_forward_set(int on) {
+    dw3_touch_fast_forward = on != 0;
+    port_log("touch pad: fast-forward %s at frame %ld", on ? "on" : "off", port_frames);
+    port_fast_forward_request(dw3_touch_fast_forward);
+}
+
 static void sd_frame(struct PortMod *mod) {
     const PortOverlay *field = port_overlay_current(1);
     int on;
@@ -59,8 +71,9 @@ static void sd_frame(struct PortMod *mod) {
         port_log("skip dialogues: %s at frame %ld", on ? "on" : "off", port_frames);
     }
     /* fieldstg_stage is FIELDSTG's: valid only while FIELDSTG is the tier-1 overlay */
-    port_fast_forward_request(on && mod->values[SD_FF_WAITS].number != 0 && field != NULL &&
-                              strcmp(field->name, "FIELDSTG") == 0 && fieldstg_stage.event_running != 0);
+    port_fast_forward_request(dw3_touch_fast_forward ||
+                              (on && mod->values[SD_FF_WAITS].number != 0 && field != NULL &&
+                               strcmp(field->name, "FIELDSTG") == 0 && fieldstg_stage.event_running != 0));
 }
 
 /* The window's title while it is on. */

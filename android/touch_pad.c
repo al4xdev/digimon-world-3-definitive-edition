@@ -43,6 +43,7 @@
 #define PAD_SQUARE (1u << 15)
 
 extern void port_input_set_touch_bits(uint16_t bits);
+extern void dw3_touch_fast_forward_set(int on); /* port/game/game_mods.c */
 
 #define MAX_TOUCH_FINGERS 8
 #define TP_LAYOUT_FILE "touch_layout.cfg"
@@ -54,6 +55,7 @@ enum {
     ROLE_PILL,
     ROLE_TOGGLE,
     ROLE_EDIT,     /* the corner button that opens the editor */
+    ROLE_FF,       /* the corner button that toggles fast-forward */
     ROLE_DRAG,     /* editor: a finger moving a group */
     ROLE_EDIT_UI   /* editor: a finger on one of its buttons */
 };
@@ -118,12 +120,14 @@ typedef struct {
     TpBtn btns[N_BTNS];
     float tog_cx, tog_cy, corner_r; /* hide button, top left */
     float edit_cx, edit_cy;         /* editor button, top right */
+    float ff_cx, ff_cy;             /* fast-forward button, left of the editor's */
     TpUiBtn ui[N_UI];
 } TpLayout;
 
 static int tp_enabled = -1;
 static int tp_collapsed = 0;
 static int tp_editing = 0;
+static int tp_ff = 0; /* fast-forward asked by the corner button */
 static int tp_sel_group = G_DPAD; /* the editor's group that - and + size */
 static TpGroup tp_groups[N_GROUPS];
 /* A gamepad being connected hides the pad (the picture is left clean); the next finger on the screen shows it
@@ -300,6 +304,8 @@ static void tp_compute_layout(int w, int h, TpLayout *L) {
     L->tog_cy = m * 0.6f + L->corner_r;
     L->edit_cx = fw - m - L->corner_r;
     L->edit_cy = L->tog_cy;
+    L->ff_cx = L->edit_cx - L->corner_r * 2.6f;
+    L->ff_cy = L->tog_cy;
 
     /* The editor's buttons, a row in the middle of the screen */
     {
@@ -601,6 +607,11 @@ void port_touch_event(const void *sdl_event) {
             tp_recompute();
             return;
         }
+        if (tp_hit_corner(&L, L.ff_cx, L.ff_cy, px, py, 10.0f)) {
+            f->role = ROLE_FF;
+            tp_recompute();
+            return;
+        }
 
         /* D-pad capture */
         float ddx = px - L.dpad_cx;
@@ -656,6 +667,10 @@ void port_touch_event(const void *sdl_event) {
                     tp_dirty = 1;
                 } else if (up && f->role == ROLE_EDIT && tp_hit_corner(&L, L.edit_cx, L.edit_cy, px, py, 24.0f)) {
                     tp_editing = 1;
+                    tp_dirty = 1;
+                } else if (up && f->role == ROLE_FF && tp_hit_corner(&L, L.ff_cx, L.ff_cy, px, py, 24.0f)) {
+                    tp_ff = !tp_ff;
+                    dw3_touch_fast_forward_set(tp_ff);
                     tp_dirty = 1;
                 } else if (up && f->role == ROLE_EDIT_UI && tp_hit_ui(&L, px, py) == f->locked_btn) {
                     tp_edit_button(f->locked_btn);
@@ -977,6 +992,17 @@ static void draw_edit_button(uint32_t *buf, int w, int h, const TpLayout *L) {
     }
 }
 
+/* The fast-forward button: two chevrons (>>), lit while it is on (the controller's Select + R1, the PC's Tab). */
+static void draw_ff_button(uint32_t *buf, int w, int h, const TpLayout *L) {
+    float cx = L->ff_cx, cy = L->ff_cy, r = L->corner_r, t = r * 0.12f, a = r * 0.32f;
+    aa_circle_panel(buf, w, h, cx, cy, r, 0, 215, 190, tp_ff, 0.75f);
+    for (int s = -1; s <= 1; s += 2) {
+        float x = cx + s * r * 0.2f;
+        aa_line(buf, w, h, x - a * 0.6f, cy - a, x + a * 0.4f, cy, t, 220, 245, 240, 220);
+        aa_line(buf, w, h, x + a * 0.4f, cy, x - a * 0.6f, cy + a, t, 220, 245, 240, 220);
+    }
+}
+
 int port_touch_draw_rgba(uint32_t *rgba, int w, int h, const int game_rect[4]) {
     tp_ensure_init();
     if (!tp_enabled || w <= 0 || h <= 0) {
@@ -1027,6 +1053,7 @@ int port_touch_draw_rgba(uint32_t *rgba, int w, int h, const int game_rect[4]) {
         return 1;
     }
     draw_edit_button(rgba, w, h, &L);
+    draw_ff_button(rgba, w, h, &L);
 
     if (tp_editing) {
         /* The editor: the chosen group lit behind, the others dimmed, and its buttons in the middle. */
