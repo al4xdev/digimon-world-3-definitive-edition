@@ -691,6 +691,7 @@ int def_finale_field_frame(void) {
 
     /* Phase 3 Blue Room: Sequence of Bonds (blink black -> companion line x5 -> gathered together -> Phase 4). */
     if (fn.phase == DEF_FINALE_PHASE3_BLUE_ROOM && map == 0x20F) {
+        fieldstg_stage.event_running = 1;
         if (fn.blue_sub == 0) {
             if (fn.blue_timer > 0) {
                 fn.blue_timer -= gfx_module.funcs.get_frame_ticks();
@@ -722,6 +723,8 @@ int def_finale_field_frame(void) {
                     gamestate_data.party[2] = -1;
                     fn.phase = DEF_FINALE_PHASE4_SUPER_CHOSEN;
                     fn.super_chosen_on = 0;
+                    fieldstg_stage.event_running = 0;
+                    dw3_velvet_reset();
                     port_log("finale: Bonds complete -> launching Phase 4 rematch (lead %d)", fn.lead_member);
                     fieldstg_goto_map(FIN_GALACTIC_MAP, -1, 0x24700, 0x18C00, 0);
                     return 1;
