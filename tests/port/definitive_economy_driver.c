@@ -8,6 +8,7 @@
 
 #include "definitive.h"
 
+int records_language = 1; /* the texts' language switch (definitive_text_lang.inc) reads the disc's set */
 static int on = 1;
 int def_on(void) {
     return on;

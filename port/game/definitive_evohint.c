@@ -148,6 +148,32 @@ static void eh_collect(s32 d) {
             }
             e->met += q->have >= q->need;
         }
+        /* the stage's level floor (def_form_floor): the list's own level need is raised to it, or added as a "Level N" */
+        if (def_on() && def_form_floor(e->row) > 0) {
+            s32 fl = def_form_floor(e->row);
+            s32 have = r->stats.values[0];
+            EvoReq *lv = NULL;
+
+            for (k = 0; k < e->count; k++) {
+                if (e->reqs[k].kind == 2) {
+                    lv = &e->reqs[k];
+                }
+            }
+            if (lv != NULL) {
+                if (lv->need < fl) {
+                    e->met -= lv->have >= lv->need;
+                    lv->need = fl;
+                    e->met += lv->have >= lv->need;
+                }
+            } else if (e->count < 3) {
+                lv = &e->reqs[e->count++];
+                lv->kind = 2;
+                lv->what = 7;
+                lv->need = fl;
+                lv->have = have;
+                e->met += lv->have >= lv->need;
+            }
+        }
         /* one step ahead: a form whose required forms are not all owned yet is two steps away (DEF_EVO_HINT_DEPTH 1);
          * 99 shows the whole list */
         if (!owned_all && DEF_EVO_HINT_DEPTH < 2) {

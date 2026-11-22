@@ -153,9 +153,9 @@ static void pl_start(struct PortMod *mod) {
     int i = (int)mod->values[PL_LANGUAGE].number;
     port_mod_preset_language = 1;
     port_preset_language = pl_codes[i];
-    def_language_set(i == 1);
-    port_log("preset language: %s (records_language %d, ptbr %d), no language select screen", pl_languages[i],
-             (int)port_preset_language, i == 1);
+    def_language_set(i <= 5 ? i : 0); /* the order of pl_languages is def_lang()'s: en, pt, fr, de, it, es */
+    port_log("preset language: %s (records_language %d, def_lang %d), no language select screen", pl_languages[i],
+             (int)port_preset_language, i <= 5 ? i : 0);
 }
 
 /* ---- The party's shared experience (definitive edition; was the party_xp mod; docs/MECHANICS.md section 6):
@@ -790,6 +790,22 @@ u8 port_face_symbol_code(int bit) {
     return 0;
 }
 
+/* The extra glyph to write in a text for the face button `bit` so that it comes out as that button's own symbol (or its
+ * pad.map letter): message.c swaps circle and triangle in the game's own text (the rotation of the face buttons for the
+ * other languages), so a text the port writes itself has to swap them first, as the battle menu does. 0: no symbol. */
+u8 port_face_text_code(int bit) {
+    u8 code = port_face_symbol_code(bit);
+
+    if (!port_script_active) {
+        if (code == 0x2F) {
+            code = 0x34;
+        } else if (code == 0x34) {
+            code = 0x2F;
+        }
+    }
+    return code;
+}
+
 /* The glyph code of the letter pad.map gives a face symbol (the extra glyph `code`), or 0 to keep the symbol. */
 s16 dw3_button_glyph(u8 code) {
     char letter = 0;
@@ -911,6 +927,21 @@ s32 dw3_objective_spot(s32 region) {
         return 0;
     }
     mode = dw3_objective_modes[progress];
+    { /* the Guide's row when it names a field: one story step can hold a chase of its own (the Blue Card's Guilmon,
+       * all of step 6), which the Guide follows flag by flag and this table cannot */
+        const DefQuest *q = def_guide_active() ? def_quest_main() : NULL;
+
+        static s32 told = -1;
+
+        if (q != NULL && q->map >= 0x200 && q->map <= 0x2D6) {
+            mode = q->map;
+        }
+        if (mode != told) { /* once per change: the map screen asks every frame */
+            told = mode;
+            port_log("objective: progress %d points at map 0x%X%s", (int)progress, (unsigned)mode,
+                     q != NULL && mode == q->map ? " (the Guide's row)" : "");
+        }
+    }
     if (mode < 0x200 || mode > 0x2D6 || region != (mode >= 0x270)) {
         return 0;
     }

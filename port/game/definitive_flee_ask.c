@@ -22,7 +22,7 @@
 
 extern int def_on(void);
 extern void port_log(const char *fmt, ...);
-extern u8 port_face_symbol_code(int bit);
+extern u8 port_face_text_code(int bit);
 extern const unsigned char def_str_FleeAskYes[], def_str_FleeAskNo[];
 
 #define FA_LAYER 0x1005  /* the battle HUD's layer (the names and HP windows): offset (0, 0), over the 3D */
@@ -50,7 +50,8 @@ int def_flee_ask_on(void) {
 }
 
 static const char *fa_title(void) {
-    return def_is_ptbr() ? "FUGIR DA BATALHA?" : "RUN FROM THE BATTLE?";
+    return def_pick("RUN FROM THE BATTLE?", "FUGIR DA BATALHA?", "FUIR LE COMBAT?", "VOM KAMPF FLIEHEN?",
+                    "FUGGIRE DALLO SCONTRO?", "HUIR DEL COMBATE?");
 }
 
 /* "(confirm) Run     (cancel) Back": each answer's button as the symbol of the bit read (the player's own letter
@@ -63,7 +64,7 @@ static void fa_keys_open(void) {
     MessageWindow *w;
 
     t[0] = 0;
-    sym[1] = port_face_symbol_code(pad_state.get_button_map(0, 13));
+    sym[1] = port_face_text_code(pad_state.get_button_map(0, 13));
     if (sym[1] != 0) {
         def_glyph_put(t, &p, sizeof(flee_ask.keys_text), sym);
         def_glyph_put(t, &p, sizeof(flee_ask.keys_text), space);
@@ -72,7 +73,7 @@ static void fa_keys_open(void) {
     for (i = 0; i < 5; i++) {
         def_glyph_put(t, &p, sizeof(flee_ask.keys_text), space);
     }
-    sym[1] = port_face_symbol_code(pad_state.get_button_map(0, 14));
+    sym[1] = port_face_text_code(pad_state.get_button_map(0, 14));
     if (sym[1] != 0) {
         def_glyph_put(t, &p, sizeof(flee_ask.keys_text), sym);
         def_glyph_put(t, &p, sizeof(flee_ask.keys_text), space);

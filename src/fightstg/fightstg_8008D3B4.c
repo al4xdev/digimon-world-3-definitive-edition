@@ -8386,6 +8386,7 @@ void fightstg_action_run(u8 side, s32 id) {
     }
 #ifdef PC_PORT
     fightstg_action.damage = def_super_damage(side, fightstg_action.damage); /* a Super Rare takes half (the hunt's rhythm) */
+    fightstg_action.damage = def_super_bell_damage(side, fightstg_action.damage); /* Demon Bell: halved direct damage */
 #endif
 }
 

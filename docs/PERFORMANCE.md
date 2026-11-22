@@ -13,7 +13,6 @@ The design notes behind the GPU numbers are in [`gpu/`](gpu/README.md); the audi
 - [Where gles loses](#where-gles-loses)
 - [What the handheld work changed](#what-the-handheld-work-changed)
 - [Tried and rejected](#tried-and-rejected)
-- [Open items](#open-items)
 - [Measuring](#measuring)
 
 ## The budget
@@ -135,25 +134,6 @@ budget. A battle ran at 19 fps with it on, which looked like a regression and wa
 | `glBufferSubData` into a reused vertex buffer | 105 us of stall per draw, 60 ms a frame in 2D; the orphaning `glBufferData` stays |
 | Reading the `gles` target back as RGB565 | 28 ms a frame; a RGBA8 `glReadPixels` plus the 8-to-5-bit conversion costs 1.7-2.0 ms |
 | NEON for the SPU's voice interpolation | the interpolation is only 0.3 ms of the mix, so it would not have paid |
-
-## Open items
-
-In the order of what they would cost to try:
-
-1. **The gles present** (~3.2 ms a frame, the renderer's largest remaining cost): let fb0 take the format the target
-   already has, or deliver the picture through a KMS plane the frontend lends. The second is close to the 17 ms swap this
-   design exists to avoid.
-2. **The audio's last 0.6 ms** (target 2.5 ms, now 3.0-3.3): what is left is the voice loop itself (2.3 ms), which would
-   need the voices processed in parallel.
-3. **The scene's background**: a battle draws ~74k flat pixels, about one screen, and the arena is most of it. Weighing it
-   needs a filter by texture page, not by polygon size.
-4. **A decoded texture cache**: texture rows decoded into compact blocks that fit the L1, so the vertical walk stops
-   paying for the micro-TLB. The synthetic benchmark puts it at 14.6 ns a pixel against ~56 today. It attacks the memory
-   limit itself and is the riskiest change.
-5. **The game's own C at `-O0`** (~6-8 ms by the software split): a retry has to go module by module, after the undefined
-   behaviour is found.
-6. **The 0.7% VRAM difference of `gles`**: copy the software rasteriser's triangle edge rule (a half-pixel bias in clip
-   space) and see whether it closes the gap.
 
 ## Measuring
 

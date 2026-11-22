@@ -130,18 +130,38 @@ static const StdwtitlQuestion stdwtitl_q_difficulty = {
     "CHOOSE YOUR FATE!", { "EASY", "HARD" }, { { "3 DIGIMON", "THE CLASSIC PARTY" }, { "2 DIGIMON", "NO THIRD WHEEL" } },
     { "AWW! WANT A BLANKET TOO?", "NOW WE ARE TALKING!" }, { { 96, 200, 255 }, { 255, 88, 64 } },
 };
-static const StdwtitlQuestion stdwtitl_q_difficulty_pt = {
-    "ESCOLHA SEU DESTINO!", { "FÁCIL", "DIFÍCIL" }, { { "3 DIGIMON", "O TIME CLÁSSICO" }, { "2 DIGIMON", "MODO DUPLA" } },
-    { "QUER UM COBERTOR TAMBÉM?", "AGORA SIM!" }, { { 96, 200, 255 }, { 255, 88, 64 } },
+#define Q_COLOURS_DIFF { { 96, 200, 255 }, { 255, 88, 64 } }
+#define Q_COLOURS_HERO { { 255, 128, 184 }, { 104, 168, 255 } }
+/* The other languages (def_lang 1..5: pt, fr, de, it, es). The letters are capitals without an apostrophe or ¿ ¡ (the
+ * callout font has neither; ß is written SS). */
+static const StdwtitlQuestion stdwtitl_q_difficulty_l[5] = {
+    { "ESCOLHA SEU DESTINO!", { "FÁCIL", "DIFÍCIL" }, { { "3 DIGIMON", "O TIME CLÁSSICO" }, { "2 DIGIMON", "MODO DUPLA" } },
+      { "QUER UM COBERTOR TAMBÉM?", "AGORA SIM!" }, Q_COLOURS_DIFF },
+    { "CHOISIS TON DESTIN!", { "FACILE", "DIFFICILE" }, { { "3 DIGIMON", "ÉQUIPE CLASSIQUE" }, { "2 DIGIMON", "EN DUO" } },
+      { "ET UNE COUVERTURE AUSSI?", "ENFIN DU SÉRIEUX!" }, Q_COLOURS_DIFF },
+    { "WÄHLE DEIN SCHICKSAL!", { "LEICHT", "SCHWER" }, { { "3 DIGIMON", "DAS KLASSISCHE TEAM" }, { "2 DIGIMON", "NUR ZU ZWEIT" } },
+      { "AUCH NOCH EINE DECKE?", "JETZT WIRD ES ERNST!" }, Q_COLOURS_DIFF },
+    { "SCEGLI IL TUO DESTINO!", { "FACILE", "DIFFICILE" }, { { "3 DIGIMON", "LA SQUADRA CLASSICA" }, { "2 DIGIMON", "IN DUE" } },
+      { "VUOI ANCHE UNA COPERTA?", "ORA CI SIAMO!" }, Q_COLOURS_DIFF },
+    { "ELIGE TU DESTINO!", { "FÁCIL", "DIFÍCIL" }, { { "3 DIGIMON", "EL EQUIPO CLÁSICO" }, { "2 DIGIMON", "SOLO DOS" } },
+      { "QUIERES UNA MANTITA?", "AHORA SÍ!" }, Q_COLOURS_DIFF },
 };
 /* Girls Power (port/game/girls_power.c): who the hero is. Kail first: the question exists for her. */
 static const StdwtitlQuestion stdwtitl_q_hero = {
     "CHOOSE YOUR HERO!", { "KAIL", "JUNIOR" }, { { "GIRLS POWER", "A NEW HEROINE" }, { "THE ORIGINAL", "AS IN 2003" } },
-    { "GIRLS RULE THE WORLD!", "OLD SCHOOL IS GOLD!" }, { { 255, 128, 184 }, { 104, 168, 255 } },
+    { "GIRLS RULE THE WORLD!", "OLD SCHOOL IS GOLD!" }, Q_COLOURS_HERO,
 };
-static const StdwtitlQuestion stdwtitl_q_hero_pt = {
-    "ESCOLHA SEU HERÓI!", { "KAIL", "JUNIOR" }, { { "GAROTAS NO PODER", "UMA NOVA HEROÍNA" }, { "O CLÁSSICO", "COMO EM 2003" } },
-    { "AS GAROTAS MANDAM!", "RAIZ É OUTRO NÍVEL!" }, { { 255, 128, 184 }, { 104, 168, 255 } },
+static const StdwtitlQuestion stdwtitl_q_hero_l[5] = {
+    { "ESCOLHA SEU HERÓI!", { "KAIL", "JUNIOR" }, { { "GAROTAS NO PODER", "UMA NOVA HEROÍNA" }, { "O CLÁSSICO", "COMO EM 2003" } },
+      { "AS GAROTAS MANDAM!", "RAIZ É OUTRO NÍVEL!" }, Q_COLOURS_HERO },
+    { "CHOISIS TON HÉROS!", { "KAIL", "JUNIOR" }, { { "GIRLS POWER", "UNE NOUVELLE HÉROÏNE" }, { "LE CLASSIQUE", "COMME EN 2003" } },
+      { "LES FILLES FONT LA LOI!", "LA VIEILLE ÉCOLE FAIT LOI!" }, Q_COLOURS_HERO },
+    { "WÄHLE DEINEN HELDEN!", { "KAIL", "JUNIOR" }, { { "GIRLS POWER", "EINE NEUE HELDIN" }, { "DAS ORIGINAL", "WIE 2003" } },
+      { "MÄDELS REGIEREN DIE WELT!", "ALTE SCHULE IST GOLD!" }, Q_COLOURS_HERO },
+    { "SCEGLI IL TUO EROE!", { "KAIL", "JUNIOR" }, { { "GIRLS POWER", "UNA NUOVA EROINA" }, { "IL CLASSICO", "COME NEL 2003" } },
+      { "LE RAGAZZE COMANDANO!", "LA VECCHIA SCUOLA VINCE!" }, Q_COLOURS_HERO },
+    { "ELIGE A TU HÉROE!", { "KAIL", "JUNIOR" }, { { "GIRLS POWER", "UNA NUEVA HEROÍNA" }, { "EL ORIGINAL", "COMO EN 2003" } },
+      { "LAS CHICAS MANDAN!", "LO CLÁSICO ES ORO!" }, Q_COLOURS_HERO },
 };
 static s32 hero_cursor; /* 0 Kail, 1 Junior */
 
@@ -152,11 +172,11 @@ static s32 stdwtitl_question(StdwtitlMenu *obj, const StdwtitlQuestion *q, s32 *
                     title[3] = { 255, 212, 72 };
     s32 i, k;
 
-    if (def_is_ptbr()) {
+    if (def_lang() > 0 && def_lang() <= 5) {
         if (q == &stdwtitl_q_difficulty) {
-            q = &stdwtitl_q_difficulty_pt;
+            q = &stdwtitl_q_difficulty_l[def_lang() - 1];
         } else if (q == &stdwtitl_q_hero) {
-            q = &stdwtitl_q_hero_pt;
+            q = &stdwtitl_q_hero_l[def_lang() - 1];
         }
     }
 

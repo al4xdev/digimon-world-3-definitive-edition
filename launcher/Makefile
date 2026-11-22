@@ -7,7 +7,8 @@ TARGET ?= pc
 ifeq ($(TARGET),portmaster)
 CFLAGS += -DDW3_TARGET_PORTMASTER
 else
-CFLAGS += -DDW3_TARGET_PC -DDW3_LAUNCHER_VERSION=\"dev\"
+DW3_STAMP := $(shell git describe --tags --match "v[0-9]*.[0-9]*.[0-9]*" --always --dirty 2>/dev/null || echo dev)
+CFLAGS += -DDW3_TARGET_PC -DDW3_LAUNCHER_VERSION=\"dev\" -DDW3_LAUNCHER_STAMP=\"$(DW3_STAMP)\"
 endif
 ifeq ($(SDL),1)
 CFLAGS += -DHAVE_SDL2 $(shell pkg-config --cflags sdl2)

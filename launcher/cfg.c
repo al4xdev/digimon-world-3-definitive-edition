@@ -535,7 +535,8 @@ static int write_settings(const Cfg *c) {
         "  \"video\": { \"window\": true, \"scale\": %d, \"fullscreen\": %s, \"fill\": %s, \"refresh\": %d, \"renderer\": \"%s\", \"filter\": \"%s\" },\n"
         "  \"audio\": { \"mute\": false },\n  \"memcard1\": \"card1.mcd\",\n  \"memcard2\": \"card2.mcd\",\n"
         "  \"watchdog\": 0,\n  \"debug\": { \"logs\": \"%s\" },\n  \"mods\": {\n"
-        "    \"fast_forward\": { \"enabled\": %s, \"speed\": \"%s\", \"mute\": true, \"hold\": \"\", \"toggle\": \"\" },\n"
+        "    \"fast_forward\": { \"enabled\": %s, \"speed\": \"%s\", \"mute\": true, \"hold\": \"%s\", "
+        "\"toggle\": [[\"pad:%s\", \"pad:%s\"]] },\n"
         "    \"fast_loading\": { \"enabled\": %s, \"speed\": \"%s\" },\n"
         "    \"skip_dialogues\": { \"enabled\": %s, \"fast_forward_waits\": false },\n"
         "    \"battle_animations\": { \"enabled\": %s, \"hit_reaction\": %s },\n"
@@ -547,6 +548,10 @@ static int write_settings(const Cfg *c) {
         "    \"led_bar\": { \"enabled\": %s }\n  },\n%s  \"input\": { \"gamepad\": %s }\n}\n",
         disc_esc, vscale, vfull ? "true" : "false", vfill ? "true" : "false", c->hz, renderer, vfilt,
         log_names[c->logs], c->ff ? "true" : "false", ff_names[c->ff ? c->ff : 3],
+        /* Hold Tab on a PC keyboard; SELECT + R1 (the player's buttons for them) turns it on and off on
+         * every build: the runtime's toggle binding, a chord, so neither button reaches the game once both are down.
+         * Select first: the game has no use for it, while R1 alone pages its menus. */
+        is_pc ? "Tab" : "", code_name(c->pad[A_SELECT].code), code_name(c->pad[A_R1].code),
         c->load ? "true" : "false", load_names[c->load ? c->load : 3],
         c->skip ? "true" : "false", c->battles ? "true" : "false", c->battles && c->hit ? "true" : "false",
         btext_names[c->btext], lang_names[c->lang < 0 || c->lang > 7 ? 0 : c->lang], vw ? "true" : "false",

@@ -1122,6 +1122,7 @@ void stfgtrep_main_update(StfgtrepMain *obj, StfgtrepMainData *data) {
                 exp = stfgtrep_rewards[def_hunt_reward_battle()].exp * DEF_HUNT_XP_MULT;
                 exp = n == 2 ? exp * 6 / 10 : n == 3 ? exp / 3 : exp;
             }
+            exp = def_super_reward(exp); /* Super Hard: 2x XP */
 #endif
             for (i = 0; i < obj->member_count; i++) {
                 if (records_battle_results.members[i].took_part != 0) {
@@ -1238,6 +1239,7 @@ void def_rush_apply_quiet(DefRushSummary *out) {
         exp = stfgtrep_rewards[def_hunt_reward_battle()].exp * DEF_HUNT_XP_MULT;
         exp = n == 2 ? exp * 6 / 10 : n == 3 ? exp / 3 : exp;
     }
+    exp = def_super_reward(exp); /* Super Hard: 2x XP */
     for (i = 0; i < member_count; i++) {
         panels[i].slot = i;
         if (records_battle_results.members[i].took_part != 0) {
@@ -1646,6 +1648,11 @@ s32 stfgtrep_learn_technique(s32 digimon) {
         if (id <= 0) {
             continue;
         }
+#ifdef PC_PORT
+        if (def_on() && gamestate_data.funcs.get_record(digimon)->stats.values[0] < def_form_floor(list[n].technique)) {
+            continue; /* definitive edition: a Perfect or a Mega waits for the Digimon's own level */
+        }
+#endif
         if (list[n].stat != 0) {
             r = gamestate_data.funcs.get_record(digimon);
             if (list[n].stat < 7) {

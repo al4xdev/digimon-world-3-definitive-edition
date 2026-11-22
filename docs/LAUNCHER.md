@@ -14,7 +14,8 @@ one launcher, the C99 `launcher/`, with the same screens and options everywhere;
   controls), `settings.json` (the game's, written by the launcher; its VIDEO, GAME and DEBUG LOGS values are read
   back, so what RecompLauncher changed shows in the launcher), the memory cards, `logs/`. `--self-test DIR` checks the
   rule, the files' round trip, settings.json's read-back and every screen, headless; with `DW3_SELFTEST_GAME=beside`
-  and `DW3_SELFTEST_DISC` also the game started from PLAY for 300 frames (its status channel, card and log).
+  also PLAY with an image the game refuses (the disc screen), and with `DW3_SELFTEST_DISC` the game started from
+  PLAY for 300 frames (its status channel, card and log).
   The update notice: once in 12 hours (cached in `update.cache` beside the settings) the launcher asks GitHub for the latest
   full release and, when it is newer than this build, says so on HOME and offers its page in DEBUG (`CHECK FOR UPDATES`
   turns it off; a build that is not a release, `dev`, never asks; nothing is downloaded or installed).
@@ -43,7 +44,13 @@ Code cites this file as `docs/LAUNCHER.md "<heading>"`; keep the headings stable
   passed, the runtime loads the launcher's usual `settings.json` (portable.txt beside the executable, else the
   per-user folder) and puts crash reports and data mods beside it. A start without that variable is unchanged.
 - The disc check is the game's description's: `port/game/game.json` names the unpatched EU disc (SLES-03936) by its
-  SHA-1 and size; the launcher and the game both check against it.
+  SHA-1 and size, and the game checks it when it starts. The launcher does not hash the disc itself: it reads a
+  refusal from the game's output (`port: fatal: disc:`) and shows the disc screen (`S_DISC`: which image the game
+  plays and where to pick it, in gold rather than the error screen's red) instead of COULD NOT START. A refused
+  disc is the check doing its job, not a crash. RecompLauncher only marks the Redump dump as verified
+  (`recomplauncher.json` `dumps`, its "Matches the verified Europe disc"); another dump of the European disc passes
+  its own check (`check`: the serial) and is refused by the game, so its label and its exit code 1 text name that
+  badge.
 - The environment variables keep their names (`DW3_SELFTEST_*`, `DW3_PORT_*`): the description's `env_prefix` is
   `DW3`.
 - Texture packs are data mods in the settings directory's `mods/` (psxstack `docs/LAUNCHER.md` "Data mods"; the
@@ -57,7 +64,10 @@ Code cites this file as `docs/LAUNCHER.md "<heading>"`; keep the headings stable
 ### Fast-forward
 
 `fast_forward` (runtime only, no game C). Options: `hold` (binding, default `Tab`), `toggle` (binding, unbound),
-`speed` (enum `2x 3x 4x 6x 8x unlimited`, default `4x`), `mute` (bool, default true).
+`speed` (enum `2x 3x 4x 6x 8x unlimited`, default `4x`), `mute` (bool, default true). The console-first launcher
+(`launcher/cfg.c`) writes `hold` `Tab` on a PC (none on a handheld) and `toggle` the chord of the buttons chosen for
+SELECT and R1 (`[["pad:back", "pad:rightshoulder"]]` by default), which its `FAST-FORWARD` row names; Select comes
+first, since the game has no use for it and R1 alone pages its menus. The handheld's SDL2 build reads it too.
 
 While it is on (the hold binding held, or after the toggle) the pace is the nominal rate times the speed (`4x`: 200
 vsyncs a second at 50 Hz, 240 at 60; `unlimited`: no pace), the window presents at most 60 images a second (every vsync

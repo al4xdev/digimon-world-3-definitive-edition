@@ -348,6 +348,7 @@
 <7>Tricky Guilmon<7> => <7>Guilmon Astuto<7>
 <7>Trooper <7> => <7>Soldado <7>
 <7>Trooper<7> => <7>Soldado<7>
+<7>Everyone<7> => <7>Todos<7>
 <7>Uncle Carlos<7> => <7>Tio Carlos<7>
 <7>Vacationing Mami<7> => <7>Mami de Férias<7>
 <7>Veemon<7> => <7>Veemon<7>

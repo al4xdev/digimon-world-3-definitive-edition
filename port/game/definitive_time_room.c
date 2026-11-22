@@ -315,7 +315,7 @@ int def_time_set_battle(const DefTimeTrial *t, int stage, int music, short *part
         records_state.stage = stage;
         records_state.music = music;
     }
-    for (i = 0; i < DEF_DRI_STAGES; i++) {
+    for (i = 0; i < DEF_DRI_MEMBERS; i++) {
         RecordsEnemy *e = &records_state.enemies[i];
 
         e->digimon = t->stages[i].digimon;

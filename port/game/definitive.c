@@ -79,6 +79,8 @@ static unsigned char boost_off; /* blast_record: the form's stats as they are, w
 static unsigned char boost_logged; /* slots whose boost the log named this battle */
 static unsigned char blessed_now;  /* this battle's Blast was the blessed one (the flag is already set by then) */
 static unsigned char plug_last_stand_used; /* global auto-revive on last Digimon KO (at most once per battle) */
+static signed char plug_last_stand_slot = -1; /* the slot it revived, until its Blast (-1: none); wfightmn sets the form
+                                                * before def_blast_form, so the Rookie is the member's base_digimon then */
 
 /* The Blast opens at the Ogremon (owner, 2026-11-18, so nobody sets it off by accident before the tutorial): in the tutorial
  * hunt's battle, and for good once that hunt is won. */
@@ -104,6 +106,7 @@ void def_log_begin(void) {
     boost_logged = 0;
     blessed_now = 0;
     plug_last_stand_used = 0;
+    plug_last_stand_slot = -1;
     def_blast_heat_begin();
     def_callout_show(DEF_CALLOUT_NONE, 0);
     def_hunt_reward_done(); /* a reward a results screen never showed does not carry over */
@@ -360,10 +363,11 @@ static const unsigned char *lookup_override_sorted(const DefTextOverride *tab, i
 }
 
 /* ---- Text overrides. font_get_entry only gets the file's buffer, so the file is found by looking the buffer
- * up in the CD module's loaded entries (no load, no side effect). Only the English sets (records_language 1, 2): the
- * other languages keep the disc's text. When Portuguese (PT-BR) is active, def_text_overrides_pt is searched first in
- * O(log N) (including DMG200..DMG900 container sub-tables), falling back to def_text_overrides and then the disc's
- * English entry. Returns the replacement entry or NULL. */
+ * up in the CD module's loaded entries (no load, no side effect). In a translated language (def_lang: Portuguese, French,
+ * German, Italian, Spanish) its table is searched first in O(log N) (including DMG200..DMG900 container sub-tables). The
+ * English sets (records_language 1, 2) then fall back to def_text_overrides and the disc's English entry; the other
+ * languages fall back to the disc's own text, and to the English only for the port's own entries. Returns the
+ * replacement entry or NULL. */
 void *def_text_override(void *data, s32 i) {
     int e, k, s;
 
@@ -414,12 +418,15 @@ void *def_text_override(void *data, s32 i) {
             extern unsigned char def_str_PlugRevive[];
             return def_str_PlugRevive; /* ITMINF 76: after the Blast quest the DV Plug is a revive item */
         }
-        if (def_is_ptbr() && def_text_override_pt_count > 0) {
-            if (!def_variant_text_hidden(base_id, i)) {
-                const unsigned char *pt = lookup_override_sorted(def_text_overrides_pt, def_text_override_pt_count,
-                                                                 match_file, i);
-                if (pt != NULL) {
-                    return (void *)pt;
+        if (def_lang() != 0) {
+            int count;
+            const DefTextOverride *tab = def_text_overrides_of(def_lang(), &count);
+
+            if (tab != NULL && count > 0 && !def_variant_text_hidden(base_id, i)) {
+                const unsigned char *tr = lookup_override_sorted(tab, count, match_file, i);
+
+                if (tr != NULL) {
+                    return (void *)tr;
                 }
             }
         }
@@ -730,6 +737,7 @@ void def_savestate(struct PortState *s) {
     def_callout_savestate(s);
     def_story_savestate(s); /* the story hooks' talk, with the field's heap it lives in */
     def_time_savestate(s);  /* the Time Room's run */
+    PORT_STATE_VAR(s, plug_last_stand_slot); /* appended at tail so 0.8.5 savestates keep earlier layout */
 }
 
 static int target_slot(void) {
@@ -817,6 +825,16 @@ int def_blast_step(int next, int level, int *advance) {
     return next - 1;
 }
 
+int def_blast_top_step(int level) {
+    static const int levels[DEF_BLAST_STEPS] = DEF_BLAST_STEP_LEVELS;
+    int k = DEF_BLAST_STEPS - 1;
+
+    while (k > 0 && level < levels[k]) {
+        k--;
+    }
+    return k;
+}
+
 int def_blast_form(int partner, int band) {
     static const unsigned char megas[DEF_BLAST_PARTNERS] = DEF_CHOSEN_MEGAS;
     const char *force = getenv("DW3_BLAST_STEP"); /* tests: this step for every Blast (the sequence stays) */
@@ -834,6 +852,13 @@ int def_blast_form(int partner, int band) {
     k = def_blast_step(def_record_blast_next(partner), level, &advance);
     if (force != NULL && force[0] != '\0') {
         k = atoi(force) % DEF_BLAST_STEPS;
+    } else if (plug_last_stand_slot >= 0 && plug_last_stand_slot == fightstg_battle.state.current[0] &&
+               fightstg_battle.state.members[0][plug_last_stand_slot].base_digimon == records_digimon[partner].id) {
+        /* The last stand (owner, 2026-11-21): the Rookie the DV Plug got back up with 1 HP and 1 MP so it can Blast takes
+         * the strongest dark form its level reaches, not the sequence's next (which can be the Champion's); the
+         * sequence is left where it was, so the Gennai quest's forms still come in turn. */
+        k = def_blast_top_step(level);
+        plug_last_stand_slot = -1;
     } else {
         def_record_blast_set_next(partner, advance);
     }
@@ -1127,6 +1152,7 @@ int def_blast_plug_last_stand(int slot) {
         return 0;
     }
     plug_last_stand_used = 1;
+    plug_last_stand_slot = (signed char)slot;
     gamestate_data.items[DEF_PLUG_ITEM]--;
     m->digimon = records_digimon[id].id;
     m->blasted = 0;
@@ -1915,12 +1941,12 @@ int def_train_pity_bonus_on(void) {
     return DEF_TRAIN_PITY_BONUS != 0;
 }
 
-const unsigned char *def_train_pity_label(int *palette) {
+const unsigned char *def_train_pity_label_tier(int tier, int *palette) {
     extern const unsigned char def_str_TrainPityPrefix[], def_str_TrainPityMarks[], def_str_TrainPityDigits[],
         def_str_TrainPityReady[];
     static unsigned char buf[64];
     int total = DEF_TRAIN_PITY_AFTER;
-    int count = def_train_pity_count();
+    int count = def_train_pity_count_tier(tier);
     int i, p = 0;
 
     if (!def_on() || total <= 0) {
@@ -1931,7 +1957,7 @@ const unsigned char *def_train_pity_label(int *palette) {
     }
     buf[p++] = def_str_TrainPityMarks[4];
     buf[p++] = def_str_TrainPityMarks[5];
-    if (def_train_pity_guaranteed()) {
+    if (def_train_pity_guaranteed_tier(tier)) {
         for (i = 0; def_str_TrainPityReady[i] != 0 && p < (int)sizeof(buf) - 1; i++) {
             buf[p++] = def_str_TrainPityReady[i];
         }
@@ -1952,6 +1978,10 @@ const unsigned char *def_train_pity_label(int *palette) {
     }
     buf[p] = 0;
     return buf;
+}
+
+const unsigned char *def_train_pity_label(int *palette) {
+    return def_train_pity_label_tier(0, palette);
 }
 
 /* ---- Persist Blast Gauges in the unused tail of each save slot. */
@@ -2031,6 +2061,23 @@ int def_rush_offer(void) {
     return 1;
 }
 
+/* records_find_digimon looks at the first 0x34 forms only; the three DNA results after them (Agunimon,
+ * BladeGarurumon, AncientGreymon: stubs with no stats nor techniques, which the game never looks up) are found here too, so
+ * the DRI Gauntlet can show them. */
+#define DEF_FORMS 0x37
+RecordsDigimon *def_form_record(int id) {
+    extern RecordsDigimon *records_get_digimon(s32 id);
+    RecordsDigimon *form = records_get_digimon(id);
+    int i;
+
+    for (i = 0x34; form == NULL && id > 0 && i < DEF_FORMS; i++) {
+        if (records_digimon[i].id == id) {
+            form = &records_digimon[i];
+        }
+    }
+    return form;
+}
+
 const unsigned char *def_species_name(int species) {
     extern void *font_get_entry(void *data, s32 i);
     FightstgEnemyRecord *recs = (FightstgEnemyRecord *)cdload_module.files.get_file(0x1CF);
@@ -2046,8 +2093,7 @@ const unsigned char *def_species_name(int species) {
         }
     }
     { /* a player form that fights as an enemy (the DRI Gauntlet's stages): its own name */
-        extern RecordsDigimon *records_get_digimon(s32 id);
-        RecordsDigimon *form = records_get_digimon(species);
+        RecordsDigimon *form = def_form_record(species);
 
         return form != NULL ? (const unsigned char *)font_get_entry(names, form->name_id) : NULL;
     }
@@ -2159,6 +2205,37 @@ void def_enemy_status_turn(void) {
         enemy_conf_turns[slot] = 0;
         def_mod_apply(1, slot, 0, DEF_CONFUSION_BUFF_LEVEL, DEF_MOD_TURNS_BASE, 0);
     }
+}
+
+/* ---- Waves (Option A, owner 2026-11-21): when the battle's last enemy member falls, a mode with more to come (the DRI's
+ * Mega) sets a fallen enemy slot up again as the next one, and wfightmn_knockout brings it in with the DRI's entrance (its
+ * model is loaded then, as for any stage). The slot's port state goes with the one that fell there: a wave starts clean. */
+int def_enemy_next_wave(void) {
+    int slot, k;
+
+    if (!def_on()) {
+        return -1;
+    }
+    slot = def_dri_next_wave();
+    if (slot < 0 || slot > 2) {
+        return -1;
+    }
+    memset(resist_mod[1][slot], 0, sizeof(resist_mod[1][0]));
+    resist_turns[1][slot] = 0;
+    for (k = 0; k < 3; k++) {
+        mod_level[1][slot][k] = 0;
+        mod_turns[1][slot][k] = 0;
+    }
+    chain.staggered[slot] = 0;
+    enemy_sleep_turns[slot] = 0;
+    enemy_conf_turns[slot] = 0;
+    if (log_on()) {
+        FightstgMember *m = &fightstg_battle.state.members[1][slot];
+
+        LOG("wave enemy %d digimon %d level %d hp %d/%d mp %d scale %d", slot, m->digimon,
+            records_state.enemies[slot].level, m->hp, m->max_hp, m->mp, records_state.enemies[slot].stat_scale);
+    }
+    return slot;
 }
 
 /* ---- Revive tiers: the item revives each fallen ally with a chance that falls when its max HP outgrows the tier. */

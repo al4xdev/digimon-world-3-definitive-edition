@@ -59,7 +59,9 @@ The one-off meters (`DW3_PRESENT_LOG`, `DW3_GPU_LOG`, `DW3_PHASE`) are commented
 
 - `settings.json`: the mods and `input.gamepad`; `video.renderer` is `gles` or `software`. The handheld build is the
   `PSXSTACK_SDL2` one, whose input (`psxstack/runtime/input.c`) has a fixed button map and does not read
-  `input.gamepad`; the file still carries the mapping for the SDL3 builds.
+  `input.gamepad`; the file still carries the mapping for the SDL3 builds. The hotkeys are read on both:
+  `mods.fast_forward.toggle` is the chord of the buttons chosen for SELECT and R1 (`launcher/cfg.c`), shown on the
+  `FAST-FORWARD` row.
 - The menu writes `settings.json` when PLAY is pressed, not only when a console action runs, because the game reads the
   file once, at its start.
 - `pad.map`: one line per PS1 button, `<button> <gamepad input> <letter>`. The name is what the game calls the action

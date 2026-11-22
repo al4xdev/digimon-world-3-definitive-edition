@@ -28,7 +28,7 @@
 enum {
     S_SPLASH, S_HOME, S_GAME, S_VIDEO, S_HUD, S_CONTROLS, S_SAVES, S_BACKUPS, S_BACKUP_CONFIRM,
     S_CLOUD, S_PAIR_HOST, S_PAIR_ENTER, S_DEVICES, S_REVOKE_CONFIRM, S_CONFLICT, S_CONFLICT_CONFIRM,
-    S_DEBUG, S_BROWSE, S_LED, S_LED1, S_LED2, S_RESET, S_CLEAN, S_LOADING, S_ERROR
+    S_DEBUG, S_BROWSE, S_LED, S_LED1, S_LED2, S_RESET, S_CLEAN, S_LOADING, S_DISC, S_ERROR
 };
 enum { HI_PLAY, HI_GAME, HI_VIDEO, HI_HUD, HI_CONTROLS, HI_SAVES, HI_LED, HI_DEBUG, HI_RESET, HI_COUNT };
 
@@ -45,6 +45,18 @@ static int launch_fd = -1, status_fd = -1; /* the game's output and its status p
 static long launch_t0, splash_t0 = -1;
 static FILE *game_log;
 static char launch_stage[64] = "CHECKING THE DISC";
+
+/* The game refused the disc (its "port: fatal: disc:" line, psxstack runtime/disc.c): the check doing its job, not a
+ * crash, so S_DISC says what it wants instead of the red COULD NOT START. DISC_BAD_IMAGE: another dump or a patched
+ * image ("is not an accepted"); DISC_BAD_FILE: the file could not be opened or read. */
+enum { DISC_OK, DISC_BAD_IMAGE, DISC_BAD_FILE };
+static int disc_bad;
+static int fatal_seen; /* the game printed its fatal line: that stays the reason shown, not the crash report's path after it */
+
+static int disc_fatal_kind(const char *line) {
+    if (!strstr(line, "port: fatal: disc:")) return DISC_OK;
+    return strstr(line, " is not an accepted ") ? DISC_BAD_IMAGE : DISC_BAD_FILE;
+}
 
 /* Saves & Cloud UI state */
 #define LIST_VIS 7
@@ -427,13 +439,22 @@ static void draw_game(void) {
         row(90 + i * st, lab[i], v[i], i == sel, 0, on, 0);
     }
     static const char *desc[8] = {"Game text language (English, Portuguese BR, French, German, Italian, Spanish).",
-        "How fast the fast-forward button runs the game.",
+        NULL, /* the fast-forward row: its chord, below */
         "Reads the game's files faster. Movies keep normal speed. OFF, 2X, 4X, 8X or INSTANT.",
         "Dialogue boxes close on their own.",
         "Battle moves play without their animation.", "Keep the hit flinch while animations are skipped.",
         "SKIP closes battle message boxes so combat flows.", "Pick or change your .cue / .bin disc file."};
+    /* The chord that turns fast-forward on and off in the game (cfg.c writes it as the runtime's toggle binding), in the
+     * player's buttons and glyphs; the PC also holds TAB. */
+    char ff_desc[160], gsel[16], gr1[16];
+    glyph(btn_select(), gsel);
+    glyph(c.pad[A_R1].code, gr1);
+    snprintf(ff_desc, sizeof(ff_desc),
+             TR(is_pc ? "The speed. In the game, %s+%s turns it on and off (or hold TAB)."
+                      : "The speed. In the game, %s+%s turns it on and off."),
+             gsel, gr1);
     rect(40, 346, W - 80, 1, C_EDGE, 256);
-    text(44, 358, desc[sel], 16, C_NOTE);
+    text(44, 358, sel == 1 ? ff_desc : desc[sel], 16, C_NOTE);
     foot_std("CHANGE");
 }
 
@@ -950,6 +971,13 @@ static void draw_debug(void) {
 #endif
     if (status[0]) text(64, 350, status, 16, C_GREEN);
     text(64, 380, "A bug report is easier with LOGS on HEAVY and the zip attached.", 15, C_NOTE);
+#ifdef DW3_LAUNCHER_STAMP
+    {
+        char bld[96];
+        snprintf(bld, sizeof(bld), "BUILD: %s", DW3_LAUNCHER_STAMP);
+        text(64, 404, bld, 14, strstr(DW3_LAUNCHER_STAMP, "-dirty") ? C_GOLD : C_NOTE);
+    }
+#endif
     foot_std("RUN");
 }
 
@@ -1013,6 +1041,52 @@ static void draw_error(void) {
     foot_std("OK");
 }
 
+/* One line of S_DISC; *right keeps the rightmost edge drawn, for the self-test's check that every language fits. */
+static int disc_line(int x, int y, const char *s, int size, uint32_t col, int *right) {
+    int r = x + text_w(s, size);
+    if (r > *right) *right = r;
+    text(x, y, s, size, col);
+    return y + (size >= 20 ? 38 : 22);
+}
+
+/* S_DISC: the game refused the disc. What it plays and where to pick it, in gold and cyan rather than the error's red,
+ * so a player with another dump of the right game does not read it as a bug. Returns the rightmost edge drawn. */
+static int draw_disc(void) {
+    static const char *const image[] = {
+        "Nothing broke: the game checks your disc before it starts.",
+        "It plays one exact image: the Redump dump of",
+        "Digimon World 2003 (Europe), SLES-03936, as .bin + .cue.",
+        "Patched or differently ripped images don't pass.",
+    };
+    const int img = disc_bad != DISC_BAD_FILE, rl = recomp_active();
+    const char *next = img ? (rl ? "In RecompLauncher, the game's page marks the right one:"
+                              : is_portmaster ? "Put that image in game/ and press PLAY again."
+                                              : "Choose that image and press PLAY again.")
+                           : (rl ? "Choose the disc again on the game's page in RecompLauncher."
+                              : is_portmaster ? "Check the image in game/ and press PLAY again."
+                                              : "Choose the disc again and press PLAY.");
+    int y = 120, right = 0;
+    header("DIGIMON WORLD 3", "CHECK YOUR DISC");
+    rrect(50, 104, W - 100, 208, 12, C_PANEL, 256);
+    rrect_line(50, 104, W - 100, 208, 12, C_GOLD);
+    y = disc_line(76, y, img ? "NOT THE VERIFIED DISC IMAGE" : "THE DISC FILE COULD NOT BE READ", 20, C_GOLD, &right);
+    if (img) {
+        for (size_t i = 0; i < sizeof(image) / sizeof(image[0]); i++) y = disc_line(76, y, image[i], 14, C_TEXT, &right);
+    } else {
+        y = disc_line(76, y, "It may have been moved or renamed, or its drive unplugged.", 14, C_TEXT, &right);
+    }
+    y = disc_line(76, y + 12, next, 14, C_CYAN, &right);
+    /* RecompLauncher's own badge, in its words (not in the launcher's table, so never translated) */
+    if (img && rl) disc_line(96, y, "\"Matches the verified Europe disc\"", 14, C_GREEN, &right);
+    if (!img && last_err[0]) {
+        char el[72];
+        snprintf(el, sizeof(el), "%.62s%s", last_err, strlen(last_err) > 62 ? "..." : "");
+        text(76, y + 8, el, 13, C_NOTE);
+    }
+    foot_2(rl || is_portmaster ? "OK" : "CHOOSE DISC", "BACK");
+    return right;
+}
+
 static void draw_screen(void) {
     switch (screen) {
     case S_SPLASH: draw_splash(); break;
@@ -1051,6 +1125,7 @@ static void draw_screen(void) {
         modal("CLEAN LOGS AND DUMPS?", "Delete logs/, crash-*.txt, menu.log, log.txt and the", "old dw3-logs-*.zip? The cards, settings, pad map",
               "and the disc are never touched.", "YES, CLEAN", "NO, KEEP", C_ORANGE); break;
     case S_LOADING: draw_loading(); break;
+    case S_DISC: draw_disc(); break;
     case S_ERROR: draw_error(); break;
     }
 }
@@ -1320,6 +1395,8 @@ static void start_game(void) {
         return;
     }
     last_err[0] = 0;
+    disc_bad = DISC_OK;
+    fatal_seen = 0;
     cfg_save(&c);
     {
         char card_p[1024], smsg[128] = "";
@@ -1417,6 +1494,17 @@ static void start_game(void) {
 
 static int status_said_start; /* the runtime's own "start" arrived (the self-test checks the status channel) */
 
+/* One line of the game's output: the loading screen's stage, the error screen's reason and a refused disc. */
+static void game_output_line(const char *line) {
+    if (line[0] && !fatal_seen) snprintf(last_err, sizeof(last_err), "%.159s", line);
+    if (strstr(line, "port: fatal:")) {
+        fatal_seen = 1;
+        if (disc_fatal_kind(line) != DISC_OK) disc_bad = disc_fatal_kind(line);
+    }
+    if (strstr(line, "port: disc")) snprintf(launch_stage, sizeof(launch_stage), "VERIFYING THE DISC");
+    if (strstr(line, "port: start:")) { launch_started = 1; snprintf(launch_stage, sizeof(launch_stage), "STARTING"); }
+}
+
 /* Reads what the game prints: the status channel tells us even when DW3_LOG=off. */
 static void pump_game(void) {
     char buf[512];
@@ -1442,9 +1530,7 @@ static void pump_game(void) {
             if (buf[i] == '\n' || ln == (int)sizeof(line) - 1) {
                 line[ln] = 0;
                 ln = 0;
-                if (line[0]) snprintf(last_err, sizeof(last_err), "%.159s", line);
-                if (strstr(line, "port: disc")) snprintf(launch_stage, sizeof(launch_stage), "VERIFYING THE DISC");
-                if (strstr(line, "port: start:")) { launch_started = 1; snprintf(launch_stage, sizeof(launch_stage), "STARTING"); }
+                game_output_line(line);
             } else line[ln++] = buf[i];
         }
     }
@@ -1478,7 +1564,7 @@ static void pump_game(void) {
             return;
         }
         snprintf(msg, sizeof(msg), "%s", why);
-        screen = S_ERROR;
+        screen = disc_bad != DISC_OK ? S_DISC : S_ERROR;
     }
 }
 
@@ -2000,6 +2086,19 @@ static void on_press(int code) {
         if (back) { start_trans(-1, 188 + 14); screen = S_DEBUG; }
         if (ok) { snprintf(status, sizeof(status), "REMOVED %d FILES", logs_clean()); start_trans(-1, 188 + 14); screen = S_DEBUG; }
         break;
+    case S_DISC:
+        /* RecompLauncher writes the disc into settings.json on every start, and PortMaster's is game/: picking one
+         * here only on a PC run of its own */
+        if (ok && !recomp_active() && !is_portmaster) {
+            browse_start_dir(b_dir, sizeof(b_dir));
+            browse_load(b_dir);
+            start_trans(1, H / 2);
+            screen = S_BROWSE;
+            cur_screen = S_BROWSE;
+        } else if (ok || back) {
+            go(S_HOME, 0, -1, H / 2);
+        }
+        break;
     case S_ERROR:
         if (ok || back) go(S_HOME, 0, -1, H / 2);
         break;
@@ -2073,6 +2172,19 @@ static int count_mods(const char *dir) {
     }
     if (d) closedir(d);
     return n;
+}
+
+/* Pumps the game started from PLAY until it ends (two minutes at most). */
+static void selftest_wait_game(void) {
+    for (int i = 0; i < 120000 / 10 && launch_pid > 0; i++) {
+        pump_game();
+        if (launch_pid > 0) plat_poll(&(Ev){0}, 10);
+#ifdef _WIN32
+        if (launch_pid > 0) w32_wait(&wproc, 10);
+#else
+        if (launch_pid > 0) poll(NULL, 0, 10);
+#endif
+    }
 }
 
 static int self_test(const char *root) {
@@ -2222,6 +2334,73 @@ static int self_test(const char *root) {
         conflict_n = 3;
         conflict_recomp_info[0] = 0;
     }
+    {
+        /* A refused disc, from a player's 0.8.5 run on Windows (another dump of the European disc, picked in
+         * RecompLauncher): S_DISC, with the game's reason kept over the crash report's path printed after it. */
+        static const char *const run[] = {
+            "port: version 0.8.5 (0688217d87ea8e9036bafb530852dd6c42ee1efb)",
+            "port: fatal: disc: E:\\Emulator&Rom\\PSX\\ROM\\DMW 2003.iso is not an accepted Digimon World 2003 disc: "
+            "SHA-1 0864298f35d7c6088e06786a89898f9ea68b96f8, expected 457cb233349ba841e03b33d8060f8fbcadd45cb3 "
+            "(Europe (SLES-03936), unpatched) (--no-disc-check runs it anyway)",
+            "port: crash report: C:\\Users\\player\\AppData\\Roaming\\dw2003\\crashes/crash-20261121-013708.txt",
+            "port: exit 1 after 0 frame(s): fatal error",
+        };
+        disc_bad = DISC_OK;
+        fatal_seen = 0;
+        last_err[0] = 0;
+        for (size_t i = 0; i < sizeof(run) / sizeof(run[0]); i++) game_output_line(run[i]);
+        check(disc_bad == DISC_BAD_IMAGE && !strncmp(last_err, "port: fatal: disc:", 18),
+              "refused disc: another dump goes to the disc screen, with the game's own reason");
+        disc_bad = DISC_OK;
+        fatal_seen = 0;
+        game_output_line("port: fatal: disc: cannot open E:\\DMW 2003.bin: No such file or directory");
+        check(disc_bad == DISC_BAD_FILE, "refused disc: a file that cannot be opened goes there too");
+        disc_bad = DISC_OK;
+        fatal_seen = 0;
+        game_output_line("port: fatal: settings: something else");
+        check(disc_bad == DISC_OK && fatal_seen, "refused disc: any other fatal error stays on the error screen");
+
+        /* Every language fits the panel (16 px inside its right edge), for both reasons and each way the launcher
+         * runs: its own (CHOOSE DISC), under RecompLauncher, on PortMaster. */
+        const char *rl_env = getenv("RECOMPLAUNCHER");
+        char rl_saved[64];
+        snprintf(rl_saved, sizeof(rl_saved), "%s", rl_env ? rl_env : "0");
+        const int pm_saved = is_portmaster;
+        int fits = 1;
+        char worst[96] = "";
+        screen = S_DISC;
+        snprintf(last_err, sizeof(last_err), "port: fatal: disc: cannot open E:\\DMW 2003.bin: No such file");
+        for (int lang = 0; lang < 6; lang++) {
+            c.lang = lang;
+            ui_set_lang(c.lang);
+            for (int kind = DISC_BAD_IMAGE; kind <= DISC_BAD_FILE; kind++) {
+                for (int mode = 0; mode < 3; mode++) {
+                    static const char *const modes[] = {"pc", "recomp", "portmaster"};
+                    disc_bad = kind;
+                    setenv("RECOMPLAUNCHER", mode == 1 ? "1" : "0", 1);
+                    is_portmaster = mode == 2;
+                    int right = draw_disc();
+                    snprintf(what, sizeof(what), "disc_l%d_%s_%s", lang, kind == DISC_BAD_IMAGE ? "image" : "file",
+                             modes[mode]);
+                    plat_shot(what);
+                    if (right > W - 50 - 16) {
+                        fits = 0;
+                        snprintf(worst, sizeof(worst), "%.64s reaches x %d", what, right);
+                    }
+                }
+            }
+        }
+        setenv("RECOMPLAUNCHER", rl_saved, 1);
+        is_portmaster = pm_saved;
+        c.lang = a.lang;
+        ui_set_lang(c.lang);
+        disc_bad = DISC_OK;
+        fatal_seen = 0;
+        last_err[0] = 0;
+        snprintf(what, sizeof(what), "refused disc: every language fits the disc screen%s%s", worst[0] ? ": " : "",
+                 worst);
+        check(fits, what);
+    }
     /* The game beside the launcher (the release's layout) and its mods; with a disc, 300 frames from PLAY. */
     const char *real = getenv("DW3_SELFTEST_GAME");
     if (!real) return st_fails;
@@ -2232,9 +2411,7 @@ static int self_test(const char *root) {
     snprintf(q, sizeof(q), "%s/mods", exe_dir);
     snprintf(what, sizeof(what), "the mods beside the game: %s", q);
     check(count_mods(q) > 0, what);
-    const char *disc = getenv("DW3_SELFTEST_DISC");
-    if (!disc || !exe_ok(bin)) return st_fails;
-    snprintf(disc_path, sizeof(disc_path), "%s", disc);
+    if (!exe_ok(bin)) return st_fails;
     c = a;
     c.fullscreen = 0;
     c.logs = 2;
@@ -2244,19 +2421,32 @@ static int self_test(const char *root) {
     const char *vd = getenv("DW3_SELFTEST_VIDEO_DRIVER"); /* Wine drops SDL_VIDEO_DRIVER from the environment */
     setenv("SDL_VIDEO_DRIVER", vd && vd[0] ? vd : "offscreen", 1);
     setenv("SDL_AUDIO_DRIVER", "dummy", 1);
+    {
+        /* PLAY with an image the game refuses (16 zero sectors), no disc needed: the game's own check and output,
+         * read back as the disc screen, not the error screen. */
+        static const char zero[2352];
+        snprintf(p, sizeof(p), "%s/not-the-disc.bin", root);
+        FILE *f = fopen(p, "wb");
+        for (int i = 0; f && i < 16; i++) fwrite(zero, 1, sizeof(zero), f);
+        if (f) fclose(f);
+        snprintf(disc_path, sizeof(disc_path), "%s", p);
+        screen = S_HOME;
+        quit_flag = 0;
+        start_game();
+        selftest_wait_game();
+        snprintf(what, sizeof(what), "PLAY with an image the game refuses ends on the disc screen: %s; %s", msg,
+                 last_err);
+        check(launch_pid < 0 && screen == S_DISC && disc_bad == DISC_BAD_IMAGE && quit_flag == 0, what);
+    }
+    const char *disc = getenv("DW3_SELFTEST_DISC");
+    if (!disc) return st_fails;
+    snprintf(disc_path, sizeof(disc_path), "%s", disc);
     screen = S_HOME;
     quit_flag = 0;
+    msg[0] = 0;
     start_game();
     check(screen == S_LOADING && launch_pid > 0, "the game starts from PLAY");
-    for (int i = 0; i < 120000 / 10 && launch_pid > 0; i++) {
-        pump_game();
-        if (launch_pid > 0) plat_poll(&(Ev){0}, 10);
-#ifdef _WIN32
-        if (launch_pid > 0) w32_wait(&wproc, 10);
-#else
-        if (launch_pid > 0) poll(NULL, 0, 10);
-#endif
-    }
+    selftest_wait_game();
     check(status_said_start, "the game's status channel said start (DW3_STATUS_FD)");
     snprintf(what, sizeof(what), "the game ran 300 frames and ended normally: %s%s%s", msg, last_err[0] ? "; " : "",
              last_err);

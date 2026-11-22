@@ -766,6 +766,11 @@ static void draw_debug(void) {
     row_touch(194, 44, "CLEAN LOGS", "ASK", sel == DEBUG_CLEAN_LOGS, 0, 0, 0, 0);
     row_touch(248, 44, "CHECK FOR UPDATES", c.update_check ? "ON" : "OFF", sel == DEBUG_UPDATES, 0, c.update_check, 0, 1);
     if (status[0]) text(40, 322, status, 16, C_GREEN);
+    {
+        char bld[96];
+        snprintf(bld, sizeof(bld), "BUILD: %s", port_version);
+        text(40, 356, bld, 15, strstr(port_version, "-dirty") ? C_GOLD : C_NOTE);
+    }
     footer_touch(1, 1, "RUN");
 }
 

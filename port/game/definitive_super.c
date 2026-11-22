@@ -47,6 +47,20 @@ int def_super_reward(int amount) {
     return def_super_on() ? scale(amount, DEF_SUPER_REWARD_PCT) : amount;
 }
 
+int def_super_materials(int amount) {
+    return def_super_on() ? scale(amount, DEF_SUPER_MAT_PCT) : amount;
+}
+
+int def_super_bell_damage(int side, int damage) {
+    int scaled;
+
+    if (side != 0 || damage <= 0 || !def_super_on()) {
+        return damage;
+    }
+    scaled = scale(damage, DEF_SUPER_PLAYER_DMG_PCT);
+    return scaled < 1 ? 1 : scaled;
+}
+
 /* The Bell changes hands: 1 when the player now holds it (the NPC gave it), 0 when it was taken back. */
 int def_super_toggle(void) {
     int on = !(gamestate_data.items[DEF_SUPER_ITEM] > 0);

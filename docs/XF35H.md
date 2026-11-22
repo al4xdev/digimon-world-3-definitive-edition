@@ -138,18 +138,6 @@ bar"): one message per change of reading.
   process does it (`ledd`) and everyone else talks to that process.
 - **Rumble:** free through SDL, no shell involved.
 
-## Open items
-
-- **A blue that nobody asked for.** During an alternation of 1 and 17 the bar was seen breathing blue, and the daemon's
-  own log proves no blue byte was written. It happened right after a block that had dropped and raised `vcc-led`, so the
-  first byte after power-up is the suspect. Cheap mitigation if it recurs: write the mode twice when the rail was just
-  raised.
-- Mode 25 passes the binary's range check and the script does not expose it; never exercised.
-- `init`'s `4`/`8` argument (bar length?) was read, not exercised.
-- No custom colour or pattern exists: the MCU takes mode bytes only. Anything finer needs the protocol
-  captured (`cat -v /dev/ttyS2` while ES switches mode, or `strace -e write /usr/bin/mcu_led`).
-- The `times` argument: the binary repeats the byte (1..9) and whether the MCU does anything with a repeat is untested.
-
 ## Inspecting the vendor binary
 
 The vendor scripts and binaries on the device are `/usr/bin/mcu_led_ctrl.sh` and `/usr/bin/mcu_led`.

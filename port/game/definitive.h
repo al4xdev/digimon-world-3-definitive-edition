@@ -3,6 +3,7 @@
  * The hooks' prototypes are in include/port.h (the game's units reach them through common.h). */
 #ifndef PORT_DEFINITIVE_H
 #define PORT_DEFINITIVE_H
+#include <stddef.h>
 
 /* The tunable numbers (the battle log has none). */
 #define DEF_FAMILIES 5          /* element families on the grouped screens (Water+Ice, Thunder+Machine as one each) */
@@ -45,29 +46,31 @@
 #define DEF_SUPER_ITEM 26         /* Super Hard: the Demon Bell, a key item (a Japanese tag slot the US disc never gives) */
 #define DEF_SUPER_HP_PCT 150      /* percent of an enemy's HP while the player holds the Bell */
 #define DEF_SUPER_SPEED_PCT 150   /* ... and of its Speed (may pass 999: the enemy then acts twice) */
-#define DEF_SUPER_REWARD_PCT 200  /* ... and of the Bits and the Hunt Materials a won battle pays */
+#define DEF_SUPER_REWARD_PCT 200  /* ... and of the Bits, XP and hunt bonuses a won battle pays */
+#define DEF_SUPER_MAT_PCT 300     /* ... and of the common Hunt Materials a won battle pays */
+#define DEF_SUPER_PLAYER_DMG_PCT 50 /* ... player direct damage % while holding the Bell (rewards Weak/One More/Baton Pass) */
 #define DEF_POISON_ENEMY_PCT 8    /* percent of max HP: the most a tick takes from an enemy (a pure precision build ticks ~15% of a boss) */
 #define DEF_SLEEP_REGEN_PCT 6     /* percent of max HP a sleeping enemy regenerates each turn */
 #define DEF_STATUS_BOSS_TURNS 2   /* turns Sleep or Confusion hold an enemy */
 #define DEF_CONFUSION_BUFF_LEVEL 2 /* Attack tier an enemy gains when its confusion ends */
 #define DEF_REVIVE_T1_ITEM 67     /* Revive Disk: the first revive tier (item ID) */
-#define DEF_REVIVE_T1_CHANCE 60   /* percent chance to revive a fallen ally, at or under its rated max HP */
+#define DEF_REVIVE_T1_CHANCE 40   /* percent chance to revive a fallen ally, at or under its rated max HP */
 #define DEF_REVIVE_T1_HP_PCT 30   /* percent of the ally's max HP it returns with */
 #define DEF_REVIVE_T1_RATED_HP 1500 /* max HP the tier is rated for: above it the chance falls in proportion */
-#define DEF_REVIVE_T1_BUY 400     /* shop price, Bits */
-#define DEF_REVIVE_T1_SELL 200
+#define DEF_REVIVE_T1_BUY 2000    /* shop price, Bits */
+#define DEF_REVIVE_T1_SELL 1000
 #define DEF_REVIVE_T2_ITEM 70     /* Life Disk: the second revive tier (item ID) */
-#define DEF_REVIVE_T2_CHANCE 85
+#define DEF_REVIVE_T2_CHANCE 65
 #define DEF_REVIVE_T2_HP_PCT 60
 #define DEF_REVIVE_T2_RATED_HP 4000
-#define DEF_REVIVE_T2_BUY 2500
-#define DEF_REVIVE_T2_SELL 1250
+#define DEF_REVIVE_T2_BUY 10000
+#define DEF_REVIVE_T2_SELL 5000
 #define DEF_REVIVE_T3_ITEM 46     /* Max Charge: the third revive tier in battle (the menu still heals) */
 #define DEF_REVIVE_T3_CHANCE 100
 #define DEF_REVIVE_T3_HP_PCT 100
 #define DEF_REVIVE_T3_RATED_HP 9999
 #define DEF_REVIVE_T3_SELL 3000
-#define DEF_REVIVE_MIN_CHANCE 20  /* percent: the chance never falls under this */
+#define DEF_REVIVE_MIN_CHANCE 15  /* percent: the chance never falls under this */
 #define DEF_MOD_TURNS_SHORT 2    /* Duration (turns) of secondary-effect stat debuffs on attacks */
 #define DEF_MOD_TURNS_BASE 3     /* Standard duration (turns) of dedicated stat buff/debuff skills & items */
 #define DEF_MOD_TURNS_LONG 4     /* Extended duration (turns) for single-target specialist buff/debuff skills */
@@ -182,10 +185,18 @@ extern const int def_story_echo_count;
 const unsigned char *def_story_line(int file, int index); /* the rewrite's English line for an entry, NULL: the game's */
 extern const DefTextOverride def_text_overrides[];
 extern const int def_text_override_count;
-extern const DefTextOverride def_text_overrides_pt[];
-extern const int def_text_override_pt_count;
-void def_language_set(int ptbr);
+extern const DefTextOverride *def_text_overrides_of(int lang, int *count); /* lang 1 pt, 2 fr, 3 de, 4 it, 5 es */
+void def_language_set(int lang); /* 0 en, 1 pt, 2 fr, 3 de, 4 it, 5 es */
+int def_lang(void);
 int def_is_ptbr(void);
+/* The one of six texts in the language in use (en, pt, fr, de, it, es); a NULL falls back to English. */
+static inline const char *def_pick(const char *en, const char *pt, const char *fr, const char *de, const char *it,
+                                   const char *es) {
+    const char *const t[6] = { en, pt, fr, de, it, es };
+    int l = def_lang();
+
+    return l > 0 && l < 6 && t[l] != NULL ? t[l] : en;
+}
 void def_language_kaili(int on); /* the port's own strings name Kail's friend Junior in the Kaili mode */
 
 /* The rookies' MP (port/game/definitive_mp.c). The MP is the rookie's; the forms have none of their own. */
@@ -222,6 +233,10 @@ int def_tp_add(int tp, int level, int *lost);
 #ifndef DEF_TRAIN_PITY_BONUS
 #define DEF_TRAIN_PITY_BONUS 1 /* when 1, the guaranteed training also hits its bonus round when eligible */
 #endif
+#define DEF_TRAIN_PITY_TIERS 3 /* 0: 1 TP, 1: 5 TP, 2: 10 TP */
+int def_train_pity_count_tier(int tier);
+int def_train_pity_guaranteed_tier(int tier);
+void def_train_pity_record_tier(int tier, int perfect);
 int def_train_pity_count(void);
 int def_train_pity_guaranteed(void);
 void def_train_pity_record(int perfect);
@@ -259,6 +274,7 @@ void def_gauges_decode(const unsigned char in[DEF_GAUGE_SLOTS * 2], short out[DE
 #define DEF_PLUG_ITEM 76 /* the DV Plug's item ID (ITMNAM/ITMINF 76) */
 #define DEF_BLAST_TEMPT_HP_PCT 25 /* the acting Digimon's HP share at or under which a full gauge tempts */
 int def_blast_step(int partner, int level, int *advance); /* pure: the step a Blast takes, and the sequence's next */
+int def_blast_top_step(int level); /* pure: the highest step the level reaches (the last stand's Blast) */
 int def_blast_gain(int weak, int staggered, int overfinish, int extra); /* pure: the sum above */
 #define DEF_BLAST_COMMAND DEF_BLAST_COMMAND_ID /* include/port.h: the battle menu's result and FightstgCommand.command */
 
@@ -284,6 +300,16 @@ int def_train_no_stat_loss_on(void);
 #define DEF_XP_ALL_FORMS 1       /* the three chosen forms of every party member earn form experience, fought or not;
                                   * a form left in the lab earns nothing (owner, 2026-11-13) */
 #define DEF_CARD_BOOST_PACKS 15  /* Booster Packs a battle's Booster Pack drop gives */
+
+/* Digivolution floors: the original paced Perfect and Mega by the slow form levels (one form level a battle), which the
+ * x14 form experience removes. So a form's stage sets the Digimon's own level it needs, whatever its learn list says:
+ * Perfect (Ultimate) DEF_EVO_FLOOR_PERFECT, Mega and its variations DEF_EVO_FLOOR_MEGA; Adult forms keep the list's own
+ * rules. `row` is a learn list's technique (records_digimon row, 1-based); 0 for a form with no floor. The stages are
+ * the owner's reading of the franchise, checked once more by a second pair of eyes (Armormon and GrapLeomon are
+ * Perfect, MetalGarurumon is Mega). */
+#define DEF_EVO_FLOOR_PERFECT 20
+#define DEF_EVO_FLOOR_MEGA 40
+int def_form_floor(int row);
 
 #define DEF_EVO_HINT_DEPTH 1     /* Digi-Lab Next Forms: forms shown one step ahead; 0 turns it off, 99 shows every form */
 
@@ -340,6 +366,8 @@ void def_hunt_species_rares(int species, int *seen, int *total);
 const unsigned char *def_hunt_foe_name(int species, int slot);
 /* A species' name in the game's glyphs (its record's line of text 0x4E: definitive.c), NULL when not loaded. */
 const unsigned char *def_species_name(int species);
+/* A player form's record by its ID, the DNA stubs past records_find_digimon's 0x34 included; NULL: none. */
+struct RecordsDigimon *def_form_record(int id);
 /* The results screen of a Rare Target won (STFGTREP): the battle whose XP it pays DEF_HUNT_XP_MULT times
  * (-1: none pending), the rare Booster it drops when the battle left no item (0: none), 1 while a material line (the
  * commons of any won encounter, a Rare Target's rare item) has not been shown, the next one (glyph bytes, marks it
@@ -565,20 +593,24 @@ void def_hunt_target_name(unsigned char *buf, int *p, int size, int rare);
 
 /* The DRI Agents' Gauntlet (definitive_dri.c the rules, definitive_dri_screen.c the screen and the
  * battle; the table is definitive_dri_table.c, generated by tools/gen_dri_challenges.py). A challenge is one ordinary
- * battle whose three enemy members are an evolution line's stages, Champion to Mega: when one falls the battle brings
- * the next in at its own full HP while the party keeps its HP, MP and spent items (wfightmn_knockout). Stage n felled
- * reaches tier n of the line's Synergy accessory (the game's elemental "Power" accessories), each tier given the first
- * time; unlocking a challenge hands over Hunt Materials once, for good. Kept in the slot's second card record. */
-#define DEF_DRI_CHALLENGES 16    /* challenges the second card record has room for: an unlocked bit and a 2-bit best stage each */
-#define DEF_DRI_STAGES 3         /* a challenge's stages: the battle's three enemy members (Champion, Ultimate, Mega) */
-#define DEF_DRI_LEVEL_FIRST 24   /* the first challenge's Champion fights at this level... */
-#define DEF_DRI_LEVEL_GAP 8      /* ...each next challenge's this many levels higher */
+ * battle that runs an evolution line's four stages, Rookie to Mega (owner, 2026-11-21: four duels from the Rookie): the
+ * first three are the battle's enemy members, and when one falls the battle brings the next in at its own full HP while
+ * the party keeps its HP, MP and spent items (wfightmn_knockout); when the third falls, the Mega comes in as a wave in a
+ * fallen member's slot (def_enemy_next_wave), so the battle goes on. The n-th stage felled past the Rookie reaches tier
+ * n of the line's Synergy accessory (the game's elemental "Power" accessories), each tier given the first time;
+ * unlocking a challenge hands over Hunt Materials once, for good. Kept in the slot's second card record. */
+#define DEF_DRI_CHALLENGES 16    /* challenges the second card record has room for: an unlocked bit and a 2-bit best tier each */
+#define DEF_DRI_STAGES 4         /* a challenge's stages: Rookie, Champion, Ultimate, Mega */
+#define DEF_DRI_MEMBERS 3        /* the first stages, the battle's enemy members; the rest come in as waves */
+#define DEF_DRI_TIERS 3          /* reward tiers: the stages past the Rookie (the card keeps the best tier, 0..3, in 2 bits) */
+#define DEF_DRI_LEVEL_FIRST 24   /* the easiest challenge's Champion fights at this level (its Rookie a step under)... */
+#define DEF_DRI_LEVEL_GAP 4      /* ...each next one's in difficulty this many higher (16: the last Mega at 90) */
 #define DEF_DRI_LEVEL_STEP 3     /* within a challenge, each stage fights this many levels above the one before */
 #define DEF_DRI_SCALE_EXP_PCT 80 /* past its species' own levels a stage's HP and stat_scale grow as (level ratio)^(this/100) */
 #define DEF_DRI_COMMON_LO 15     /* unlock: the first challenge's common Hunt Material, how many... */
 #define DEF_DRI_COMMON_HI 40     /* ...rising to this for the last */
 #define DEF_DRI_RARE_OVER 5      /* unlock: its rare items are Rare Targets' of at most this many levels above its Champion */
-#define DEF_DRI_TWO_RARES 2      /* from this challenge on (table order) the unlock takes two rare items, one before */
+#define DEF_DRI_TWO_RARES 2      /* from this rank on (difficulty order) the unlock takes two rare items, one before */
 #define DEF_DRI_STAGE 19         /* the simulations' battle scenery (records_state.stage: the game's boss battles') */
 #define DEF_DRI_MUSIC 0x60880000 /* and their music (the boss battles') */
 #define DEF_DRI_DEBUG_MENU 100   /* def_dri_debug's value that opens the list as a DRI Agent would (tests) */
@@ -593,37 +625,41 @@ typedef struct DefDriStage {
                        * species' record lends it its stats, resistances and battle plan (def_dri_record) */
 } DefDriStage;
 typedef struct DefDriChallenge {
-    DefDriStage stages[DEF_DRI_STAGES]; /* the battle's enemy members in order: Champion, Ultimate, Mega */
+    DefDriStage stages[DEF_DRI_STAGES]; /* in order: Rookie, Champion, Ultimate (the enemy members), Mega (a wave) */
     short battle;                       /* the battle it is set up as: an existing boss battle (kind, immunities, XP, Bits) */
-    short rewards[DEF_DRI_STAGES];      /* the Synergy accessory of each tier (item IDs): n stages felled reach tier n */
+    short rewards[DEF_DRI_TIERS];       /* the Synergy accessory of each tier (item IDs): def_dri_tier */
     signed char common;                 /* unlock: a common Hunt Material (0..DEF_HUNT_MATERIALS-1), -1: none */
     unsigned char common_n;             /* how many */
     short rare[2];                      /* and rare items (indices of def_hunt_targets), -1: none */
     unsigned char rare_n[2];
 } DefDriChallenge;
+#define DEF_DRI_PER_AGENT 2      /* challenges each DRI Agent offers (the owner's: no agent holds a pile of them) */
 typedef struct DefDriAgent {
     short map;   /* the field map, -1: any */
     short actor; /* FieldstgPlacedActor.id, the talked-to actor's base.key1 */
+    signed char challenges[DEF_DRI_PER_AGENT]; /* the ones he offers (def_dri_challenges indices), easier first */
 } DefDriAgent;
 extern const DefDriChallenge def_dri_challenges[];
 extern const int def_dri_challenge_count;
 extern const DefDriAgent def_dri_agents[];
 extern const int def_dri_agent_count;
 /* The rules (definitive_dri.c; under def_on() 0 there is no challenge): challenge `c` (NULL outside the table), the tier
- * `fallen` stages reach, whether `map`'s actor `actor` is a DRI Agent, whether its materials are there (and it is still
+ * `fallen` stages reach (the Rookie's reaches none), the stages a best tier stands for, whether `map`'s actor `actor` is a DRI Agent, whether its materials are there (and it is still
  * locked), unlocking it (takes them; 0 when it cannot), the accessories `fallen` stages newly earn (tiers above the best,
  * written to `items`; the best rises, never falls) and the unlock's line (glyph bytes; `palette` 3 while short). */
 const DefDriChallenge *def_dri_challenge(int c);
 int def_dri_tier(int fallen);
+int def_dri_tier_stages(int tier);
 int def_dri_agent(int map, int actor);
+int def_dri_agent_index(int map, int actor); /* which of def_dri_agents, -1: none */
 int def_dri_can_unlock(int c);
 int def_dri_unlock(int c);
-int def_dri_award(int c, int fallen, short items[DEF_DRI_STAGES]);
+int def_dri_award(int c, int fallen, short items[DEF_DRI_TIERS]);
 const unsigned char *def_dri_cost_label(int c, int *palette);
 /* The Tamers the simulations replay (owner, 2026-11-13: classic characters, the old Digimon tamers, as rivals), one per
  * challenge in the table's order (gen_dri_challenges.py's LINES, which checks en.txt has them): its title, its line
  * before the fight, after a full clear and after less (glyph bytes, $DriRival<n>*); NULL past them or in a replay. */
-#define DEF_DRI_RIVALS 5       /* Tamers with texts */
+#define DEF_DRI_RIVALS 16      /* Tamers with texts */
 #define DEF_DRI_RIVAL_NAME 0
 #define DEF_DRI_RIVAL_HELLO 1
 #define DEF_DRI_RIVAL_WON 2
@@ -640,6 +676,11 @@ void def_dri_battle_begin(void);
 int def_dri_fighting(void);
 void def_dri_battle_end(int result);
 void def_dri_stage_enters(int member);
+int def_dri_next_wave(void); /* the Mega: set up in a fallen enemy slot (its index), -1: none (def_enemy_next_wave) */
+/* Waves (Option A, owner 2026-11-21): the battle's last enemy member fell; a mode with more to come set a fallen enemy
+ * slot up again as the next one (its index: wfightmn_knockout brings it in with the DRI's entrance), -1: the battle ends
+ * as usual. */
+int def_enemy_next_wave(void);
 int def_dri_defeat(void);
 extern int def_dri_debug;
 struct PortState;
@@ -1012,6 +1053,7 @@ int def_story_sepik_line(int met);
 int def_story_igor_line(void); /* Igor's line as he is talked to (definitive_velvet.c), and when it closed */
 void def_story_igor_done(void);
 int def_story_room_intro(void); /* 1: the next entry through a door is Seiryu's, Igor alone shows the room again */
+int def_story_event_closed(int type, int param); /* 1: a story gate holds this map event shut */
 struct PortState;
 void def_story_savestate(struct PortState *s);
 
@@ -1100,7 +1142,7 @@ unsigned char *def_record3_buffer(void);
 #define DEF_TIME_TRIALS 4 /* Oikawa, Sepikmon, Gennai, and Myotismon in the old man's shape (before Gennai came) */
 #define DEF_TIME_ROUNDS 3 /* trials won in a row to pass */
 typedef struct DefTimeTrial {
-    DefDriStage stages[DEF_DRI_STAGES]; /* the enemy members, in the order they come in */
+    DefDriStage stages[DEF_DRI_MEMBERS]; /* the enemy members, in the order they come in */
     short battle;                       /* the boss battle it is set up as (kind, immunities) */
 } DefTimeTrial;
 extern const DefTimeTrial def_time_trials[DEF_TIME_TRIALS];

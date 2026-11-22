@@ -1634,7 +1634,7 @@ TALK02 653: <7>DRI Michael<7>You have fine Digimon.<2,2><3>A pity none of them i
 TALK02 654: <7>Tai Kong Wang<7>I'm Tai Kong Wang,<1>fisherman.<2,2>
 TALK02 655: <7>Tai Kong Wang<7>Casting this line is<1>how I understand the<1>world.<2,2><3>Not really. But it<1>makes me happy.<2,2>
 TALK02 656: <7>Tai Kong Wang<7>Want to try?<2,2><3>To fish you need a<1>pole, a line and a<1>hook.<2,2><3>I can make you a<1>fishing pole.<2,2>
-TALK02 657: <7>Tai Kong Wong<7>A Bamboo Spear, a<1>Spider Web and a Red<1>Snapper.<2,2><3>Wait a moment. I'll<1>make you a fishing<1>pole.<2,2>
+TALK02 657: <7>Tai Kong Wong<7>A Breeze Spear, a<1>Spider Web and a Red<1>Snapper.<2,2><3>Wait a moment. I'll<1>make you a fishing<1>pole.<2,2>
 TALK02 658: <7>Tai Kong Wong<7>How was it? Catch<1>anything?<2,2><3>Don't worry about<1>catching. Just relax.<2,2>
 TALK02 667: <7>Soccer Kid Hide<7>In Asuka Inn? I<1>think...<2,2>
 TALK02 668: <7>Soccer Kid Hide<7>I might have lost it<1>in Asuka Inn.<2,2><3>Sorry, I don't<1>remember well.<2,2>

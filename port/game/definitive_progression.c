@@ -42,30 +42,53 @@ int def_tp_add(int tp, int level, int *lost) {
     return tp + gain;
 }
 
-/* ---- Training pity (RAM-only, shared across Digimon). ---- */
-static int train_pity = 0;
+/* ---- Training pity (RAM-only, per TP tier so 1 TP cannot charge 5/10 TP). ---- */
+static int train_pity[DEF_TRAIN_PITY_TIERS];
 
-int def_train_pity_count(void) {
-    if (DEF_TRAIN_PITY_AFTER <= 0) {
+static int valid_tier(int tier) {
+    return tier >= 0 && tier < DEF_TRAIN_PITY_TIERS;
+}
+
+int def_train_pity_count_tier(int tier) {
+    if (DEF_TRAIN_PITY_AFTER <= 0 || !valid_tier(tier)) {
         return 0;
     }
-    return train_pity > DEF_TRAIN_PITY_AFTER ? DEF_TRAIN_PITY_AFTER : train_pity;
+    return train_pity[tier] > DEF_TRAIN_PITY_AFTER ? DEF_TRAIN_PITY_AFTER : train_pity[tier];
+}
+
+int def_train_pity_guaranteed_tier(int tier) {
+    return DEF_TRAIN_PITY_AFTER > 0 && valid_tier(tier) && train_pity[tier] >= DEF_TRAIN_PITY_AFTER;
+}
+
+void def_train_pity_record_tier(int tier, int perfect) {
+    if (!valid_tier(tier)) {
+        return;
+    }
+    if (DEF_TRAIN_PITY_AFTER <= 0 || perfect || train_pity[tier] >= DEF_TRAIN_PITY_AFTER) {
+        train_pity[tier] = 0;
+        return;
+    }
+    train_pity[tier]++;
+}
+
+int def_train_pity_count(void) {
+    return def_train_pity_count_tier(0);
 }
 
 int def_train_pity_guaranteed(void) {
-    return DEF_TRAIN_PITY_AFTER > 0 && train_pity >= DEF_TRAIN_PITY_AFTER;
+    return def_train_pity_guaranteed_tier(0);
 }
 
 void def_train_pity_record(int perfect) {
-    if (DEF_TRAIN_PITY_AFTER <= 0 || perfect || train_pity >= DEF_TRAIN_PITY_AFTER) {
-        train_pity = 0;
-        return;
-    }
-    train_pity++;
+    def_train_pity_record_tier(0, perfect);
 }
 
 void def_train_pity_reset(void) {
-    train_pity = 0;
+    int i;
+
+    for (i = 0; i < DEF_TRAIN_PITY_TIERS; i++) {
+        train_pity[i] = 0;
+    }
 }
 
 /* ---- Blast Gauge slot serialization (0..DEF_GAUGE_MAX). ---- */
@@ -127,4 +150,15 @@ int def_evo_skip_update(int *hold_frames, int skip_pressed) {
 
 int def_train_no_stat_loss_on(void) {
     return DEF_TRAIN_NO_STAT_LOSS != 0;
+}
+
+int def_form_floor(int row) {
+    /* rows 9..52 of records_digimon; Adult (9..18, 31) is left out on purpose */
+    if ((row >= 19 && row <= 30) || row == 32) {
+        return DEF_EVO_FLOOR_PERFECT;
+    }
+    if (row >= 33 && row <= 52) {
+        return DEF_EVO_FLOOR_MEGA;
+    }
+    return 0;
 }

@@ -181,6 +181,7 @@ int port_battle_menu_pressed(int action);
 char port_battle_menu_letter(int action);
 int port_battle_menu_symbol_bit(int action); /* the PS1 button pad.map puts at the action's place (its symbol) */
 u8 port_face_symbol_code(int bit); /* the extra glyph of a face button's symbol; 0 for a shoulder or trigger */
+u8 port_face_text_code(int bit); /* the same, as a text the port writes has to spell it (message.c swaps circle and triangle) */
 void port_battle_menu_chosen(int action, int bit, int refused); /* logs a press on the menu (tests/port/mods.py) */
 /* battle_menu's remember_cursor and buffer_input (port/game/game_mods.c, "battle_menu's two helpers"):
  * port_mod_bm_remember: the technique and item menus open on the member's last choice (port_bm_recall/_remember: kind 0
@@ -310,6 +311,8 @@ int def_super_on(void);
 int def_super_hp(int hp);
 int def_super_speed(int speed);
 int def_super_reward(int amount);
+int def_super_materials(int amount);
+int def_super_bell_damage(int side, int damage);
 int def_super_toggle(void);
 int def_wake_on_hit(unsigned char side);
 void def_enemy_status_turn(void);
@@ -559,8 +562,11 @@ int def_enemy_acts_twice(void);
 const unsigned char *def_twice_label(void);
 s32 def_get_damage(u8 side, s32 id);
 s32 def_get_special_damage(u8 side, s32 id);
-int def_train_pity_guaranteed(void);
+int def_train_pity_guaranteed_tier(int tier);
 int def_train_pity_bonus_on(void);
+void def_train_pity_record_tier(int tier, int perfect);
+const unsigned char *def_train_pity_label_tier(int tier, int *palette);
+int def_train_pity_guaranteed(void);
 void def_train_pity_record(int perfect);
 const unsigned char *def_train_pity_label(int *palette);
 void def_gauges_slot_write(void *slot_save);

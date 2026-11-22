@@ -53,6 +53,9 @@ const DefSuperRare def_super_rares[DEF_SUPER_COUNT] = {
 };
 
 static int failures;
+int def_super_reward(int amount) {
+    return amount;
+}
 static void check(const char *name, int ok) {
     if (!ok) {
         failures++;

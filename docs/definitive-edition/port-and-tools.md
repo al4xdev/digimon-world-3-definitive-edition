@@ -68,7 +68,7 @@ the HUD section above.
 The `port` layer runs, in order: `run.py`, `settings.py`, `render_gpu.py`, `render_filters.py`, `textures.py`,
 `tests/host/gpu_hw_replay.py`, `hz60.py`, `battle.py`, `text_override.py`, `definitive.py`, `definitive_buffs.py`,
 `definitive_mp.py`, `definitive_bestiary.py`, `definitive_hunt.py`, `definitive_superhunt.py`, `definitive_skins.py`,
-`definitive_tp.py`, `definitive_pity.py`, `definitive_gauges.py`, `definitive_evo_anim.py`, `definitive_train_loss.py`,
+`definitive_tp.py`, `definitive_pity.py`, `definitive_gauges.py`, `definitive_evo_anim.py`, `definitive_train_loss.py`, `definitive_form_floor.py`,
 `girls_power.py`, `vram.py`, `subpixel_jitter.py`, `debug.py`, `savestate.py`, `crash.py`, `field.py`.
 `definitive_dri.py`, `definitive_market.py`, `definitive_economy.py`, `definitive_variants.py`, `definitive_quest.py` and
 `definitive_rush.py` also exist but are **not registered in `scripts/test.sh`** (checked 2026-11-17): run them by hand

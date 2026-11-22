@@ -98,6 +98,7 @@ int def_finale_trigger_super_chosen(void);
 int def_finale_dna_chain_next(int *out_partner_id, int *out_result_id);
 int def_finale_on_galacticmon_ko(void);
 void def_finale_stage_enters(void);
+int def_enemy_next_wave(void);
 #endif
 void fightstg_events_add_boost_end(void);
 Fade *fightstg_fade_create(void);
@@ -1389,6 +1390,15 @@ void wfightmn_knockout(WfightmnMain *obj, WfightmnMainData *data) {
                     obj->msg_args[0] = 1;
                     obj->msg_args[1] = fightstg_battle.state.current[1];
                     data->wait.obj = fightstg_digivolve_create_enemy(fightstg_battle.state.members[1][1].digimon, 1);
+                    break;
+                }
+                /* Waves: the last enemy member fell but the battle has more to come (the DRI's Mega); a fallen slot was
+                 * set up again as the next one (any species: the entrance loads it) and comes in as a DRI stage does */
+                if (ev->args[0] != 0 && (found = def_enemy_next_wave()) >= 0) {
+                    obj->base.substep = 7;
+                    obj->msg_args[0] = found;
+                    obj->msg_args[1] = fightstg_battle.state.current[1];
+                    data->wait.obj = fightstg_digivolve_create_enemy(fightstg_battle.state.members[1][found].digimon, 0);
                     break;
                 }
                 if (ev->args[0] == 0 && def_blast_plug_last_stand(fightstg_battle.state.current[0])) {

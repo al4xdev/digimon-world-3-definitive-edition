@@ -1,0 +1,909 @@
+$Fire: Feu
+$Water: Eau
+$Ice: Gel
+$Wind: Vent
+$Thunder: Tonnerre
+$Machine: Machine
+$Dark: Noir
+$Weak: Weak
+$Resist: Resist
+$Neutral: -
+$Unknown: ???
+$Twice: Ennemi x2
+$BlastTempt: Blast appelle...
+$ChosenRookie: Chosen exige Rookie
+$PlugRevive: Revive: forme Rookie, 1 HP et 1 MP
+$TomNews: <7>Repeating Tom<7>Vous avez entendu ?<1>Le Leader de Seiryu<1>a disparu !<2,2><3>Il a quitté la ville<1>hier soir et n'est<1>jamais revenu.<2,2><3>Personne ne sait où.<1>Personne ! Vous avez<1>entendu ?<2,2>
+TALK01 178: <7><9><7>Disparu...?<2,2><3>Mon partenaire<1>tremble. Quelque chose<1>cloche ici.<2,2><3>Comme un vent froid<1>venu d'une porte<1>jamais ouverte...<2,2><3>...Là ! Dans les<1>escaliers. Une porte<1>bleue, jamais vue.<2,2>
+$TomGone: <7>Repeating Tom<7>Seiryu Leader a<1>disparu ! Disparu, je<1>vous dis !<2,2><3>Et cette porte bleue<1>dans les escaliers ?<1>Jamais là avant !<2,2>
+TALK05 17: <7>Sepikmon<7>Toi aussi, Dresseur,<1>tu as senti le froid<1>dans le vent.<2,2><3>Je suis Sepikmon,<1>maître des chasses.<1>Les zones s'agitent.<2,2><3>Ton Leader a filé<1>après une ombre. Elle<1>était petite au début.<2,2><3>Ogremon terrorise<1>Central Park, près<1>d'Asuka. Chasse-le.<2,2><3>La boussole indique<1>si la piste chauffe.<1>Puis reviens.<2,2>
+TALK05 16: <7>Sepikmon<7>Ogremon est dompté.<1>Le froid du vent<1>a disparu.<2,2><3>Et ton Leader ? Mes<1>pisteurs l'ont vu près<1>des Ruines Protocol.<2,2><3>Il poursuivait la même<1>ombre et s'est arrêté<1>pour s'entraîner. Va !<2,2>
+TALK05 18: <7>Igor<7>Ah... Bienvenue, mon<1>hôte. Ne crains rien.<1>Ton corps t'attend.<2,2><3>La Salle Velours.<1>Elle se tient entre<1>le fil et le rêve.<2,2><3>Je suis Igor. Je<1>veille sur ceux au<1>carrefour. Comme toi.<2,2><3>Trois paquets, et tu<1>aimes chaque Digimon<1>qu'ils contiennent.<2,2><3>Quel beau tourment.<2,2><3>Sache : aucun lien<1>n'est perdu. Deux<1>formes ne font qu'une.<2,2><3>Prends cette clé.<1>Le moment venu, une<1>porte bleue s'ouvrira.<2,2><3>Va, maintenant.<1>Tes amis attendent.<1>Nous nous reverrons...<2,2>
+TALK05 19: <7>Igor<7>Bon retour, mon hôte.<1>Vos liens restent<1>faibles.<2,2>
+TALK05 20: <7>Igor<7>Bon retour, mon hôte.<1>Oui... vous avez senti<1>le froid, vous aussi.<2,2><3>La clé donnée<1>a trouvé sa porte.<1>La salle est à vous.<2,2><3>Elle grandira avec<1>votre route. Des<1>invités viendront.<2,2><3>Un dernier cadeau :<1>un DV Plug. Dehors,<1>un catalyseur maudit.<2,2><3>Celui-ci est pur. Il<1>ne coûte aucun TP<1>et brûle plus fort.<2,2><3>Utilisez-le sur<1>l'Ogremon, quand il<1>devient trop fort.<2,2><3>Chaque invité vient<1>quand l'histoire veut.<1>Un attend déjà.<2,2><3>Il sait où est parti<1>votre Leader.<1>Écoutez-le bien...<2,2>
+$OpenIvy1: <7>Ivy:<7>Junior ? Junior !<1>Allô ? Terre à<1>Junior !<2,2>
+$OpenTeddy: <7>Teddy<7>Planté là, les yeux<1>grands ouverts pendant<1>une minute entière.<2,2><3>Sans même cligner.<1>C'est glauque...<2,2>
+$OpenJunior: <7>Junior:<7>Hein ? J'étais dans<1>une salle bleue.<1>Un homme en costard.<2,2><3>Il m'a donné une clé.<2,2>
+$OpenIvy2: <7>Ivy:<7>Une clé ? Tu rêvais<1>debout, on dirait !<2,2>
+$IgorMeet: <7>Igor<7>Ah... un invité qui a<1>trouvé ma porte seul.<2,2><3>Je suis Igor.<1>Ici, je lis les liens<1>entre partenaires.<2,2>
+$IgorBack: <7>Igor<7>Bon retour à la<1>Salle Velours. Lisons<1>vos liens.<2,2>
+$IgorPage: <3>
+$IgorCould: " peut devenir<1>"
+$IgorBorn: , né de<1>deux formes :<2,2><3>
+$IgorLv: " Nv"
+$IgorLine: <1>
+$IgorBoth: Les deux sont prêts.
+$IgorOne: Un seul est prêt.
+$IgorNone: Aucun n'est prêt.
+$IgorEnd: <2,2>
+$IgorBye: <3>Le reste vous appartient<1>de parcourir, mon hôte.<2,2>
+$DrIgor: <7>Igor<7>
+$Dr1Ask: Ah... Le Game Master<1>a désigné un coupable,<1>et tout le monde applaudit.<2,2><3>Les yeux ne voient<1>souvent que l'ombre<1>sur le mur.<2,2><3>Tous les masques<1>n'appartiennent pas<1>au vrai coupable.<2,2><3>Ne haïssez pas ce<1>qu'on vous dit de haïr.<2,2><3>...Mais je vois que vous<1>irez quand même.<1>Dites-moi.<2,2>
+$Dr1Op1: Je vais chasser Lucky Mouse.
+$Dr1Op2: Qu'il le prouve.
+$Dr1Op3: ...(Ne rien dire, continuer.)
+$Dr1Re1: Alors allez-y. La chasse<1>enseigne aussi... à ceux<1>qui savent perdre.<2,2><3>Quand le masque tombera,<1>souvenez-vous de cette<1>salle.<2,2>
+$Dr1Re2: Une preuve... Oui. Mais méfiez-vous<1>de qui vous la tend<1>toute faite.<2,2><3>Allez. La porte reste<1>ouverte pour vous.<2,2>
+$Dr1Re3: Le silence est aussi une<1>réponse. Allez...<2,2><3>Un jour, ce que vous<1>ne voulez pas entendre<1>parlera plus fort.<2,2>
+$Dr2Ask: Vous avez franchi le pont<1>entre les serveurs. L'air<1>est lourd.<2,2><3>Ici, ceux qui jouaient<1>errent en Oinkmon,<1>sans voix.<2,2><3>Au-delà de ce seuil,<1>pas de retour facile.<2,2><3>La ruine d'un monde<1>repose sur les épaules<1>d'un seul enfant...<2,2><3>Choisissez-vous de porter<1>ce fardeau de votre<1>propre volonté ?<2,2>
+$Dr2Op1: Oui. De ma propre volonté.
+$Dr2Op2: Je n'ai pas choisi. J'irai.
+$Dr2Op3: J'ai peur... mais j'irai.
+$Dr2Re1: De votre propre volonté...<1>Alors ce fardeau est<1>aussi votre force.<2,2><3>Je garderai ces<1>paroles. Un jour, vous<1>en aurez besoin.<2,2>
+$Dr2Re2: Peu choisissent leur<1>fardeau. Mais ceux qui<1>le portent...<2,2><3>...le choisissent encore<1>à chaque pas. Allez.<1>Je me souviendrai.<2,2>
+$Dr2Re3: La peur est honnête. Qui marche<1>avec elle sait ce qu'il<1>protège.<2,2><3>Je garderai cela. Un jour<1>vous et votre peur<1>vous affronterez.<2,2>
+$Dr3Rc1: Vous souvenez-vous ?<1>Ce fardeau, vous l'avez<1>choisi.<2,2>
+$Dr3Rc2: Vous souvenez-vous ?<1>Vous disiez : rien choisi.<1>Pourtant, vous êtes allé.<2,2>
+$Dr3Rc3: Vous souvenez-vous ?<1>Vous aviez peur<1>et vous êtes allé.<2,2>
+$Dr3Ask: Même le plus brillant espoir<1>peut vaciller devant<1>l'inévitable.<2,2><3>Le destin semble scellé<1>au-dessus des étoiles.<2,2><3>Dites-moi, jeune<1>voyageur : accepterez-vous<1>la défaite et vous<2,2><3>arrêter ici... ou forgerez-vous<1>un miracle au bord<1>de l'abîme ?<2,2>
+$Dr3Op1: Forger un miracle.
+$Dr3Op2: Je n'abandonne pas.
+$Dr3Op3: ...Je ne sais plus.
+$Dr3Re1: Soit. Un miracle ne tombe<1>pas du ciel :<1>il se forge.<2,2><3>Vous en avez déjà forgé<1>un dans la Salle du Temps.<1>Forgez-le encore.<2,2>
+$Dr3Re2: Têtu... La même obstination<1>qui vous a mené jusqu'à<1>ma porte.<2,2><3>Elle vous a porté dans<1>la Salle du Temps. Qu'elle<1>vous porte encore.<2,2>
+$Dr3Re3: Ne pas savoir, c'est là que<1>commence chaque choix.<1>Pourtant vous êtes encore là.<2,2><3>La Salle du Temps vous<1>connaissait avant que vous<1>ne vous connaissiez. Croyez-y.<2,2>
+$Dr4Rc1: Vous souvenez-vous ? On vous a dit<1>de chasser Lucky Mouse,<1>et vous l'avez fait.<2,2><3>Regardez où le masque<1>est tombé.<2,2>
+$Dr4Rc2: Vous souvenez-vous ?<1>Une preuve, un jour.<1>La voici.<2,2><3>Elle est écrite<1>sur chaque visage,<1>sauf le vôtre.<2,2>
+$Dr4Rc3: Vous souvenez-vous ?<1>Vous n'avez rien dit<1>et continué.<2,2><3>Le silence<1>grandit, bruyant.<2,2>
+$Dr4Ask: Ceux qui marchaient avec<1>vous sont maintenant enracinés<1>dans la terre en Oinkmon.<2,2><3>Vos amis. Les dresseurs<1>qui riaient sur les<1>places. Tous,<2,2><3>sans nom ni voix.<2,2><3>Vous seul avez<1>gardé votre forme.<1>La solitude est<1>un étrange cadeau.<2,2><3>Elle montre sur quoi<1>l'on s'appuie quand<1>personne ne regarde.<2,2><3>Dites-moi, mon hôte.<1>Seul comme vous l'êtes,<1>qu'est-ce qui vous porte ?<2,2>
+$Dr4Op1: Eux. Je les ramènerai.
+$Dr4Op2: Mes partenaires. Ça suffit.
+$Dr4Op3: Rien. Je continue.
+$Dr4Re1: Alors vous marchez pour<1>ceux qui ne le peuvent pas.<1>Un pas lourd, mais sûr.<2,2><3>Quelque part, une machine<1>se souvient encore de leur<1>vraie forme. Trouvez-la.<2,2>
+$Dr4Re2: Un lien n'a pas besoin<1>de foule.<1>Restez proches.<2,2><3>Ils vous tiennent<1>tout aussi fort.<1>Ne l'oubliez jamais.<2,2>
+$Dr4Re3: Continuer sans rien a sa<1>propre force. Une force<1>solitaire.<2,2><3>Mais personne qui s'assoit<1>dans cette salle n'est<1>vraiment seul. Souvenez-vous.<2,2>
+$IgorBlank: <3>Vos chemins ne sont<1>pas encore écrits.<1>Revenez plus tard.<2,2>
+$BatonPass: Baton Pass
+STATUS 92: Défense Feu augmentée de <5,1>.
+STATUS 93: Défense Eau augmentée de <5,1>.
+STATUS 94: Défense Glace augmentée de <5,1>.
+STATUS 95: Défense Vent augmentée de <5,1>.
+STATUS 96: Défense Tonnerre augmentée de <5,1>.
+STATUS 97: Défense Machine augmentée de <5,1>.
+STATUS 98: Défense Ténèbres augmentée de <5,1>.
+TRAINI 29: Défense Feu
+TRAINI 30: Défense Eau
+TRAINI 31: Défense Glace
+TRAINI 32: Défense Vent
+TRAINI 33: Défense Tonn.
+TRAINI 34: Défense Mach.
+TRAINI 35: Défense Ténèbres
+TRAINI 36: S Défense Feu
+TRAINI 37: S Défense Eau
+TRAINI 38: S Défense Glace
+TRAINI 39: S Défense Vent
+TRAINI 40: S Défense Tonn.
+TRAINI 41: S Défense Mach.
+TRAINI 42: S Défense Ténèbres
+TRAINI 85: Défense Feu
+TRAINI 86: Défense Eau
+TRAINI 87: Défense Glace
+TRAINI 88: Défense Vent
+TRAINI 89: Défense Tonnerre
+TRAINI 90: Défense Machine
+TRAINI 91: Défense Ténèbres
+TRAINI 99: Résultats :<1>Défense Feu augmentée de <5,1> !<2,2>
+TRAINI 100: Résultats :<1>Défense Eau augmentée de <5,1> !<2,2>
+TRAINI 101: Résultats :<1>Défense Glace augmentée de <5,1> !<2,2>
+TRAINI 102: Résultats :<1>Défense Vent augmentée de <5,1> !<2,2>
+TRAINI 103: Résultats :<1>Défense Tonnerre augmentée de <5,1> !<2,2>
+TRAINI 104: Résultats :<1>Défense Machine augmentée de <5,1> !<2,2>
+TRAINI 105: Résultats :<1>Défense Ténèbres augmentée de <5,1> !<2,2>
+TRAINI 106: Résultats :<2,2><3>Défense Feu augmentée de <5,1> !<1>MP max augmenté de <5,2> !<2,2>
+TRAINI 107: Résultats :<1>Défense Eau augmentée de <5,1> !<2,2>
+TRAINI 108: Résultats :<1>Défense Glace augmentée de <5,1> !<2,2>
+TRAINI 109: Résultats :<1>Défense Vent augmentée de <5,1> !<2,2>
+TRAINI 110: Résultats :<1>Défense Tonnerre augmentée de <5,1> !<2,2>
+TRAINI 111: Résultats :<2,2><3>Défense Machine augmentée de <5,1> !<1>HP max augmenté de <5,2> !<2,2>
+TRAINI 112: Résultats :<1>Défense Ténèbres augmentée de <5,1> !<2,2>
+SKLNAM 131: Perce-Armure
+SKLNAM 132: Tir Suppressif
+SKLNAM 134: Salve de Siège
+SKLNAM 136: Salve Rempart
+SKLNAM 194: Sceau Puissant
+SKLNAM 195: Fleur Sapante
+SKLNAM 202: Libra
+SKLNAM 203: Relay
+SKLNAM 207: Resist Down
+$MsgLibra: Faiblesses révélées !
+$MsgRelay: Prochain échange gratuit !
+$MsgBreak: Résistance réduite !
+$MsgPlugLastStand: Ranimé par DV Plug ! Blast monte !
+$Bestiary: Bestiaire
+$BestiaryMenu: BESTIAIRE
+$BestiaryHint: L1/R1: Page
+$Slash: /
+SKLINF 53: Attaque Feu.
+SKLINF 54: Attaque. Chance de critique.
+SKLINF 55: Attaque physique.
+SKLINF 56: Magie Feu.
+SKLINF 57: Attaque physique.
+SKLINF 58: Magie Feu.
+SKLINF 59: Magie Glace.
+SKLINF 60: Magie Vent.
+SKLINF 61: Attaque physique. 4 coups.
+SKLINF 62: Attaque. Chance de critique.
+SKLINF 63: Attaque. Contre-attaque.
+SKLINF 64: Magie Feu.
+SKLINF 65: Magie Feu.
+SKLINF 66: Attaque Tonnerre.
+SKLINF 67: Magie Feu.
+SKLINF 68: Attaque Vent.
+SKLINF 69: Attaque. Absorbe les HP.
+SKLINF 70: Attaque physique.
+SKLINF 71: Attaque Tonnerre.
+SKLINF 72: Attaque Vent. 3 coups.
+SKLINF 73: Attaque physique. 3 coups.
+SKLINF 74: Attaque physique. 3 coups.
+SKLINF 75: Magie Machine.
+SKLINF 76: Magie Machine.
+SKLINF 77: Attaque physique. 3 coups.
+SKLINF 78: Magie Feu.
+SKLINF 79: Attaque physique.
+SKLINF 80: Attaque magique. Chance de KO.
+SKLINF 81: Ténèbres. Atq ennemi -2, 3 tours.
+SKLINF 82: Attaque Machine.
+SKLINF 83: Magie Tonnerre.
+SKLINF 84: Magie Ténèbres.
+SKLINF 85: Attaque physique.
+SKLINF 86: Attaque physique.
+SKLINF 87: Attaque. Chance de sommeil.
+SKLINF 88: Attaque physique.
+SKLINF 89: Attaque physique.
+SKLINF 90: Attaque. Contre-attaque.
+SKLINF 91: Attaque magique.
+SKLINF 92: Attaque physique.
+SKLINF 93: Magie Glace.
+SKLINF 94: Attaque. Chance de poison.
+SKLINF 95: Attaque Ténèbres.
+SKLINF 96: Attaque physique.
+SKLINF 97: Magie Ténèbres.
+SKLINF 98: Attaque Machine.
+SKLINF 99: Attaque. Chance de KO.
+SKLINF 100: Ranime les alliés, HP max.
+SKLINF 101: Attaque. Chance de paralysie.
+SKLINF 102: Attaque physique.
+SKLINF 103: Attaque physique. 3 coups.
+SKLINF 104: Magie Ténèbres.
+SKLINF 105: Attaque Feu.
+SKLINF 106: Attaque Feu.
+SKLINF 107: Attaque Glace.
+SKLINF 108: Glace phys. Ennemi Atq-1, 2 tours.
+SKLINF 109: Attaque Vent.
+SKLINF 110: Attaque Vent.
+SKLINF 111: Attaque Tonnerre.
+SKLINF 112: Attaque Tonnerre.
+SKLINF 113: Attaque Machine.
+SKLINF 114: Attaque Machine.
+SKLINF 115: Attaque. Chance de poison.
+SKLINF 116: Attaque. Chance de poison.
+SKLINF 117: Attaque. Chance de paralysie.
+SKLINF 118: Attaque. Chance de paralysie.
+SKLINF 119: Attaque. Chance de confusion.
+SKLINF 120: Attaque. Chance de confusion.
+SKLINF 121: Attaque. Contre-attaque.
+SKLINF 122: Attaque. Contre-attaque.
+SKLINF 123: Attaque physique. 3 coups.
+SKLINF 124: Attaque physique. 3 coups.
+SKLINF 125: Attaque. Chance de critique.
+SKLINF 126: Attaque. Chance de critique.
+SKLINF 127: Attaque. Vole un objet.
+SKLINF 128: Attaque. Vole un objet.
+SKLINF 131: Physique. Ennemi Déf-1, 2 tours.
+SKLINF 132: Physique. Ennemi Atq-1, 2 tours.
+SKLINF 133: Attaque physique.
+SKLINF 134: Machine phys. Ennemi Atq-2, 3 t.
+SKLINF 135: Attaque physique.
+SKLINF 136: Machine phys. Ennemi Déf-2, 3 t.
+SKLINF 137: Magie Feu.
+SKLINF 138: Magie Feu.
+SKLINF 139: Magie Feu.
+SKLINF 140: Magie Feu.
+SKLINF 141: Magie Feu. 3 coups.
+SKLINF 142: Magie Feu. 3 coups.
+SKLINF 143: Magie Feu. 3 coups.
+SKLINF 144: Magie Feu. 3 coups.
+SKLINF 145: Magie Eau.
+SKLINF 147: Magie Eau.
+SKLINF 149: Magie Glace.
+SKLINF 150: Magie Glace.
+SKLINF 151: Magie Glace.
+SKLINF 152: Magie Glace.
+SKLINF 153: Magie Vent.
+SKLINF 154: Magie Vent.
+SKLINF 155: Magie Vent.
+SKLINF 156: Magie Tonnerre.
+SKLINF 157: Magie Tonnerre.
+SKLINF 158: Magie Tonnerre.
+SKLINF 159: Magie Tonnerre.
+SKLINF 160: Magie Machine.
+SKLINF 161: Magie Machine.
+SKLINF 162: Magie Machine.
+SKLINF 163: Magie Machine.
+SKLINF 164: Magie Ténèbres.
+SKLINF 165: Magie Ténèbres.
+SKLINF 166: Magie Ténèbres.
+SKLINF 167: Magie Ténèbres.
+SKLINF 168: Magie Ténèbres. 3 coups.
+SKLINF 169: Magie Ténèbres. 3 coups.
+SKLINF 170: Magie Ténèbres. 3 coups.
+SKLINF 171: Magie Ténèbres. 3 coups.
+SKLINF 172: Magie. Chance de poison.
+SKLINF 173: Magie. Chance de poison.
+SKLINF 174: Magie. Chance de paralysie.
+SKLINF 175: Magie. Chance de paralysie.
+SKLINF 176: Magie. Chance de confusion.
+SKLINF 177: Magie. Chance de confusion.
+SKLINF 178: Magie. Chance de sommeil.
+SKLINF 179: Magie. Chance de sommeil.
+SKLINF 180: Magie. Chance de KO.
+SKLINF 181: Magie. Chance de KO.
+SKLINF 182: Magie. Absorbe les HP.
+SKLINF 183: Magie. Absorbe les HP.
+SKLINF 184: Restaure quelques HP.
+SKLINF 185: Restaure beaucoup de HP.
+SKLINF 186: Restaure presque tous les HP.
+SKLINF 187: Restaure beaucoup de HP alliés.
+SKLINF 188: Restaure presq. tous HP alliés.
+SKLINF 189: Restaure peu à peu les HP.
+SKLINF 190: Soigne le poison sur toi.
+SKLINF 191: Soigne le poison des alliés.
+SKLINF 192: Soigne la paralysie sur toi.
+SKLINF 193: Soigne la paralysie des alliés.
+SKLINF 194: Ennemi Atq-2 (phys/mag), 3 tours.
+SKLINF 195: Ennemi Atq-3 (phys/mag), 3 tours.
+SKLINF 196: Soigne tous les maux sur toi.
+SKLINF 197: Soigne tous les maux des alliés.
+SKLINF 198: Atq+2 (phys/mag), 4 tours.
+SKLINF 199: Alliés Atq+3 (phys/mag), 3 tours.
+SKLINF 200: Déf+2 contre tous dégâts, 4 tours.
+SKLINF 201: Alliés Déf+3 contre tous, 3 tours.
+SKLINF 202: Révèle les faiblesses ennemies.
+SKLINF 203: Relay : prochain échange gratuit.
+SKLINF 205: Ennemi Déf-2 tous dégâts, 3 tours.
+SKLINF 206: Ennemi Déf-3 tous dégâts, 3 tours.
+SKLINF 207: Ennemi : Resist élém. -1, 3 tours.
+SKLINF 208: Ennemi : 2 Resist -2, 3 tours.
+SKLINF 209: Prochaine attaque plus forte.
+SKLINF 210: Prochaine attaque : dégâts max.
+$LevelTpFull: <5,1><1>Niveau <5,2> ! TP plein, entraîne !<2,2>
+$TrainPityPrefix: Pitié :
+$TrainPityMarks: +- /
+$TrainPityDigits: 0123456789
+$TrainPityReady: Suivant 100% !
+$EvoOpen: □ Évolutions
+$EvoTitle: Évolutions
+$EvoKeys: ↑↓ Forme   L1/R1 Partenaire   △ Retour
+$EvoLv: Nv
+$EvoLevel: Niveau
+$EvoReady: Prêt
+$EvoReadyLine: Apprend au prochain niveau.
+$EvoMissing: manquant
+$EvoNone: Rien à portée pour l'instant.
+$EvoNoneHint: Faites monter formes et stats.
+$EvoStr: Force
+$EvoDef: Défense
+$EvoSpi: Esprit
+$EvoWis: Sagesse
+$EvoSpd: Vitesse
+$EvoCha: Charisme
+$Guardromon: GUARDROMON
+$Save: SAUVER
+$Teleport: TÉLÉPORT
+$TravelKeys: Bouton ×: Choisir<1>Bouton △: Retour
+$TravelKeys2: Bouton ×: Voyager<1>Bouton △: Retour
+$HuntGotPrefix: Matériau :<1>
+$HuntGotSuffix: <2,2>
+$HuntMat0: Éclat de Bit
+$HuntMat1: Éclat de Byte
+$HuntMat2: Puce data
+$HuntMat3: Puce de code
+$HuntMat4: Fragment de noyau
+$HuntMat5: Cristal de noyau
+$HuntMat6: Mégacristal
+$HuntMat7: Gigacristal
+$HuntMat8: Téraprisme
+$HuntMat9: Pétaprisme
+$HuntMat10: Digizoïde chrome
+$HuntMat11: Digizoïde bleu
+$HuntMat12: Digizoïde rouge
+$HuntMat13: Digizoïde or
+$HuntMat14: Digizoïde noir
+$HuntMat15: Digizoïde obsidien
+$HuntDrops: Chasse
+$HuntHeld: x
+$HuntRarePrefix: Matériau rare :<1>
+$HuntRareWord: Noyau
+$HuntSpace: " "
+$HuntRomanI: I
+$HuntRomanV: V
+$HuntRomanX: X
+$HuntRareLabel: Noyaux rares
+$RecipeMissing: Matériaux insuffisants.
+$RecipeSep: ", "
+$BMTitle: MARCHÉ NOIR
+$BMTabTrade: Échange
+$BMTabReplica: Répliques
+$BMHeadCores: Vos noyaux rares
+$BMHeadMats: Obtenir 12 de quel matériau ?
+$BMHeadReplicas: Répliques légendaires
+$BMGive: "Donne : "
+$BMGet: "Gain : "
+$BMHeld: "   Stock : "
+$BMTakes: "Prend : "
+$BMBits: " Bits"
+$BMCoreTrade: Échangez-en un contre 12 matériaux au choix.
+$BMCoreForge: Les boutiques forgent du matériel.
+$BMCoreKeep: Répliques : chacune ses noyaux.
+$BMNone: Vous n'avez aucun noyau rare à échanger.
+$BMNoneWhere: Les ennemis forts en lâchent : voir le Bestiaire.
+$BMKindWeapon: Arme
+$BMKindTwo: Deux mains
+$BMKindArmor: Armure
+$BMKindAcc: Accessoire
+$BMStat1: Force
+$BMStat2: Défense
+$BMStat3: Esprit
+$BMStat4: Sagesse
+$BMStat5: Vitesse
+$BMStat6: Charisme
+$BMPlus: +
+$BMMinus: -
+$BMWears: "Portable par : "
+$BMWearsAll: Tous vos Digimon peuvent le porter.
+$BMWearsNone: Aucun de vos Digimon ne peut le porter.
+$BMTraded: Échangé.
+$BMBought: Acheté. Une réplique se revend 0 Bits.
+$BMArmed: Une réplique se revend 0 Bits. L'acheter ?
+$BMNoRoom: Pas de place : un matériau en tient 99.
+$BMNoBits: Bits insuffisants.
+$BMBagFull: Vous ne pouvez plus en porter.
+$BMOwned: Vous possédez déjà la Marque.
+$BMKeysTrade: ↑↓ Choisir   L1/R1 Onglet<1>× Échanger   △ Retour
+$BMKeysPick: ↑↓ Matériau<1>× Échanger   △ Retour
+$BMKeysReplica: ↑↓ Choisir   L1/R1 Onglet<1>× Acheter   △ Retour
+$BMKeysArmed: × Acheter<1>△ Retour
+ITMNAM 167: Lance Brise
+ITMINF 167: Rapide. Boost, moins de puissance.
+ITMNAM 168: Pique Rapide
+ITMINF 168: Rapide. Boost, moins de puissance.
+ITMNAM 159: Épée Vive
+ITMINF 159: Rapide. Boost, moins de puissance.
+ITMNAM 160: Sabre Rafale
+ITMINF 160: Rapide. Boost, moins de puissance.
+ITMNAM 161: Épée Zéphyr
+ITMINF 161: Rapide. Boost, moins de puissance.
+ITMNAM 162: Lame Rapide
+ITMINF 162: Rapide. Boost, moins de puissance.
+ITMNAM 99: Hayatemaru
+ITMINF 99: Rapide. Boost, moins de puissance.
+ITMNAM 165: Lame Sonique
+ITMINF 165: Rapide. Boost, moins de puissance.
+ITMNAM 166: Épée Éclair
+ITMINF 166: Rapide. Boost, moins de puissance.
+ITMNAM 215: Bandeau Braise
+ITMINF 215: Défense Feu +, coups WEAK!
+ITMNAM 216: Visière Givre
+ITMINF 216: Déf. Eau/Glace pour coups WEAK!
+ITMNAM 238: Casque Rafale
+ITMINF 238: Défense Vent +, coups WEAK!
+ITMNAM 229: Couronne Volt
+ITMINF 229: Défense Tonn./Mach. +.
+ITMNAM 219: Casquette Marée
+ITMINF 219: Déf. Eau/Glace pour coups WEAK!
+ITMNAM 241: Casque Circuit
+ITMINF 241: Défense Tonn./Mach. +.
+ITMNAM 223: Lunettes Ombre
+ITMINF 223: Défense Ténèbres +, coups WEAK!
+ITMNAM 234: Couronne Brasier
+ITMINF 234: Défense Feu +, coups WEAK!
+ITMNAM 235: Couronne Tempête
+ITMINF 235: Défense Vent +, coups WEAK!
+ITMNAM 157: Dague Braise
+ITMINF 157: Défense Feu, moins de puissance.
+ITMNAM 158: Mizuchimaru
+ITMINF 158: Eau/Glace, moins de puissance.
+ITMNAM 169: Conte Sylphe
+ITMINF 169: Défense Vent, moins de puissance.
+ITMNAM 145: Croc Volt
+ITMINF 145: Tonn./Mach. +, moins de puissance.
+ITMNAM 122: Fusil Ombre
+ITMINF 122: Déf. Ténèbres, moins de puissance.
+ITMNAM 111: Gant Brasier
+ITMINF 111: Défense Feu, moins de puissance.
+ITMNAM 212: Corne Marée
+ITMINF 212: Eau/Glace, moins de puissance.
+ITMNAM 174: Lance Tempête
+ITMINF 174: Défense Vent, moins de puissance.
+ITMNAM 115: Poing Raijin
+ITMINF 115: Tonn./Mach. +, moins de puissance.
+ITMNAM 127: Canon Suijin
+ITMINF 127: Eau/Glace, moins de puissance.
+ITMNAM 249: Manteau ouaté
+ITMINF 249: Garde et Esprit +, moins de Boost.
+ITMNAM 250: Combi matelassée
+ITMINF 250: Garde et Esprit +, moins de Boost.
+ITMNAM 277: Bouclier lourd
+ITMINF 277: Garde et Esprit +, moins de Boost.
+ITMNAM 252: Armure rempart
+ITMINF 252: Garde et Esprit +, moins de Boost.
+ITMNAM 266: Cotte rempart
+ITMINF 266: Garde et Esprit +, moins de Boost.
+ITMNAM 280: Bouclier tour
+ITMINF 280: Garde et Esprit +, moins de Boost.
+ITMNAM 259: Gilet forteresse
+ITMINF 259: Garde et Esprit +, moins de Boost.
+ITMNAM 290: Mur égide
+ITMINF 290: Garde et Esprit +, moins de Boost.
+ITMNAM 291: Bouclier titan
+ITMINF 291: Garde et Esprit +, moins de Boost.
+ITMNAM 292: Gemme furie
+ITMINF 292: Puissance +, moins de Garde.
+ITMNAM 298: Gemme sage
+ITMINF 298: Sagesse +, moins de Boost.
+ITMNAM 295: Anneau furie
+ITMINF 295: Puissance ++, moins de Garde.
+ITMNAM 297: Anneau sage
+ITMINF 297: Sagesse ++, moins de Boost.
+$RushPlus:
+$RushExp: " EXP"
+$RushLvUp: "  NIV SUP!"
+$RushNewTech: NOUV. TECH!
+$RushTpFull: TP PLEIN!
+$RushBits: " Bits"
+$RushTimes: " x"
+$RushAskYes: Accélérer
+$RushAskNo: Lutte
+$FleeAskYes: Fuir
+$FleeAskNo: Retour
+$DriTitle: Simulations DRI
+$DriSep: " - "
+$DriDash: --
+$DriThrough: " ... "
+$DriOf: " sur "
+$DriReward: "Récompense "
+$DriUnlock: "Débloquer "
+$DriBest: "Meilleur "
+$DriClear: Toutes les étapes faites
+$DriKeysUnlock: Bouton ×: Débloquer<1>Bouton △: Retour
+$DriKeysStart: Bouton ×: Lancer<1>Bouton △: Retour
+$DriKeysConfirm: Bouton ×: Valider<1>Bouton △: Retour
+$DriKeysFight: Bouton ×: Combattre<1>Bouton △: Retour
+$DriRival0: Le Dresseur calme
+$DriRival0Hello: Combattre n'est pas tout,<1>mais une simulation est un bon test !
+$DriRival0Won: Tu as lu chaque coup, bien joué !<1>Mon partenaire dirait : Momentai !
+$DriRival0Lost: Foncer ne sert à rien, réfléchis !<1>Reviens avec un plan !
+$DriRival1: L'Héritier des miracles
+$DriRival1Hello: Les miracles n'arrivent pas tout seuls !<1>On les forge : montre le tien !
+$DriRival1Won: Ça, c'était un miracle !<1>Tu as le cran d'un vrai chef !
+$DriRival1Lost: N'abandonne pas ! Les miracles<1>viennent à ceux qui persistent !
+$DriRival2: L'Enfant de l'espoir
+$DriRival2Hello: Tant qu'il y a de l'espoir<1>on ne perd jamais ! C'est parti !
+$DriRival2Won: Ton espoir brille plus que le mien !<1>Garde cette lumière !
+$DriRival2Lost: L'espoir ne se perd pas, il attend !<1>Réessaie quand tu seras prêt !
+$DriRival3: Le Chef du courage
+$DriRival3Hello: Le courage, c'est avancer malgré la peur !<1>Partenaire, pleine puissance ! C'est parti !
+$DriRival3Won: Tu as un vrai courage !<1>Le Monde Digital est en de bonnes mains !
+$DriRival3Lost: Avoir peur, ça va. Abandonner, non !<1>Relève-toi et reviens à la charge !
+$DriRival4: Le Dresseur rêveur
+$DriRival4Hello: J'ai dessiné mon partenaire avant de le<1>rencontrer ! Voyons ce que tes rêves<1>valent !
+$DriRival4Won: Ton lien est réel, je le sens !<1>Ne cesse jamais de rêver !
+$DriRival4Lost: Même un chemin sombre mène quelque part !<1>Tiens bon avec ton partenaire et reviens !
+$DriRival5: Le Pantin des ténèbres
+$DriRival5Hello: Je voulais juste rejoindre ce monde...<1>Les ténèbres se battent pour moi !
+$DriRival5Won: Même les ténèbres se sont inclinées...<1>Il reste peut-être de la lumière.
+$DriRival5Lost: Les ténèbres gagnent toujours...<1>Prouve-moi le contraire : reviens !
+$DriRival6: La Reine des Digimon
+$DriRival6Hello: On m'appelle la Reine des Digimon.<1>Ne m'ennuie pas, bats-toi vraiment !
+$DriRival6Won: Hmph. Pas mal... pas mal du tout.<1>Aujourd'hui, la couronne est à toi.
+$DriRival6Lost: C'est tout ? Une reine veut une rivale !<1>Entraîne-toi et reviens m'affronter.
+$DriRival7: L'Enfant de la Lumière
+$DriRival7Hello: La lumière brille plus dans le noir.<1>Voyons comment brille la tienne !
+$DriRival7Won: Ta lumière a tout illuminé !<1>Merci pour ce magnifique combat.
+$DriRival7Lost: Même une petite lumière grandit.<1>Repose-toi et brille à nouveau !
+$DriRival8: L'Enfant de la Bonté
+$DriRival8Hello: J'ai mal utilisé mon pouvoir, avant.<1>Je me bats pour protéger. Prêt ?
+$DriRival8Won: La force avec de la bonté...<1>Voilà la vraie façon de gagner.
+$DriRival8Lost: N'aie pas honte de perdre.<1>La bonté, c'est savoir se relever !
+$DriRival9: Le Guerrier sans âme
+$DriRival9Hello: Je n'ai ni Tamer ni âme.<1>Que suis-je ? Bats-toi et montre-moi !
+$DriRival9Won: C'est donc l'âme qui rend fort...<1>Je vais continuer à chercher la mienne.
+$DriRival9Lost: Ton âme ne m'a pas arrêté.<1>Trouve-en une plus forte et reviens !
+$DriRival10: Le Seigneur démon solitaire
+$DriRival10Hello: Personne ne me dresse, compris ?<1>Montre ce que tu vaux, gamin !
+$DriRival10Won: Tss... d'accord, tu es coriace.<1>Un partenaire, ce n'est pas si mal.
+$DriRival10Lost: Ha ! Je n'ai besoin de personne !<1>Reviens quand tu seras sérieux !
+$DriRival11: La Voie du sabre
+$DriRival11Hello: Un vrai sabreur salue d'abord.<1>Maintenant, dégaine... commence !
+$DriRival11Won: Un coup net. Je m'incline.<1>Ton entraînement se voit à chaque coup !
+$DriRival11Lost: Une lame sans esprit ne tranche pas.<1>Entraîne ton esprit et reviens !
+$DriRival12: L'Enfant de l'Amitié
+$DriRival12Hello: Je ne parle pas beaucoup. Mon partenaire<1>parle pour moi... avec ses crocs !
+$DriRival12Won: ...Heh. Tu es quelqu'un de bien.<1>Des amis comme toi, ça compte.
+$DriRival12Lost: Seul, on n'y arrive jamais.<1>Fais confiance à ton équipe et réessaie.
+$DriRival13: Le Poing de fer
+$DriRival13Hello: Mon partenaire cogne comme un roc !<1>Tiens bon et rends les coups !
+$DriRival13Won: Quel coup ! Tu es vraiment fort !<1>Entraînons-nous ensemble un jour.
+$DriRival13Lost: La force se bâtit depuis le sol.<1>Construis la tienne et reviens !
+$DriRival14: Le Chasseur de la forêt
+$DriRival14Hello: En forêt, seuls les forts survivent.<1>Seras-tu chasseur ou proie ?
+$DriRival14Won: Le chasseur, c'était toi !<1>La forêt s'incline devant toi.
+$DriRival14Lost: Pris dans la toile ! Retourne au nid,<1>deviens plus fort et réessaie !
+$DriRival15: Le Capitaine pirate
+$DriRival15Hello: Ohé ! Mon équipage est au complet<1>et il est prêt à se battre !
+$DriRival15Won: Mille sabords, quel combat !<1>Tu ferais un excellent capitaine !
+$DriRival15Lost: Coulé à la première vague, moussaillon !<1>Répare ton navire et repars !
+$DriStages: "Étapes vaincues "
+$DriNewReward: Nouveau
+$DriNoReward: Rien de neuf
+$DriOk: Bouton ×: OK
+$DriAgent: Agent DRI
+$DriGreet: Le réseau de simulations DRI est en ligne.<1>Veux-tu tester ton équipe ?
+$DriGreetDone: Tu as fini toutes les simulations, bravo !<1>Veux-tu en relancer une ?
+$DriAskSim: Simulations
+$DriAskTalk: Parler
+$DriAskBye: Partir
+$GuideMenu: GUIDE
+$GuideTitle: Guide
+$GuideTabQuest: Quête
+$GuideTabAuctions: Enchères
+$GuideMain: Histoire
+$GuideGoTo: "Aller à : "
+$GuideSep: " - "
+$GuideKeysQuest: L1/R1: Enchères<1>△ Retour
+$GuideKeysAuctions: L1/R1: Quête<1>△ Retour
+$GuideKeysTravel: × Aller à El Dorado<1>△ Retour
+$GuideKeysTravel2: × Confirmer le trajet<1>△ Retour
+$GuideBit: " BIT"
+$AucOpen: OUVERT
+$AucDone: Terminée
+$AucMissed: Ratée
+$AucSoon: Bientôt
+$AucOpenHint: À la Tour Cargo : descendre l'échelle<1>d'El Dorado, puis le Tunnel de l'Eau.
+$AucMissedHint: Une boutique cachée à Amaterasu City vend<1>les objets des enchères ratées.
+$AucDoneHint: Cette enchère est terminée.
+$NoticeQuest: NOUVEL OBJECTIF
+$NoticeAuction: ENCHÈRE OUVERTE
+$AucWhen0: Après avoir gagné l'Insigne Seiryu.
+$AucWhen1: En cherchant le masque de Sepikmon.
+$AucWhen2: En cherchant l'entrée du<1>Centre Admin.
+$AucWhen3: En sortant du Centre Admin.
+$AucWhen4: Après l'évasion de Byakko City.
+$AucWhen5: En libérant Asuka City.
+$AucWhen6: Une fois Asuka City libérée.
+$AucWhen7: Après le séisme près de Suzaku City.
+$AucWhen8: Après avoir vaincu le Chef de Qing Long.
+$AucWhen9: Avec le Digi-Oeuf du Savoir.
+$AucWhen10: Après avoir gagné l'Insigne Genbu.
+$AucWhen11: Quand Lisa entend parler de la Résistance.
+$AucWhen12: Après avoir vaincu le Chef de Xuan Wu.
+$AucWhen13: En entrant dans Amaterasu City.
+$AucWhen14: Après avoir vaincu le président de MAGAMI.
+$AucWhen15: Quand les Vemmon arrivent à Asuka.
+$Q0: Digimon Online
+$Q0T: Attends Teddy et Ivy, puis crée<1>ton compte au Centre en ligne.
+$Q1: Connexion
+$Q1T: Prends la Capsule et connecte-toi au<1>serveur Asuka.
+$Q2: Ton Digimon partenaire
+$Q2T: Parle à l'agente du Service Dresseur<1>au comptoir du hall principal.
+$Q3: Premiers pas
+$Q3T: Quitte le hall. Le dresseur Genji veut<1>un combat Digimon dehors.
+$Q4: L'Insigne Seiryu
+$Q4T: Entraîne-toi près d'Asuka City, puis va<1>à l'est par la Forêt des Fils et la<1>Prairie du Vent jusqu'à Seiryu City. Son<1>Leader s'entraîne aux Ruines Protocol et<1>ne combat que celui qui a battu<1>MasterTyrannomon (Vallée Tyranno).
+$Q4s: Le Leader disparu
+$Q4sT: Repeating Tom dit que le Leader de Seiryu<1>a disparu. Une porte bleue s'est ouverte<1>dans les escaliers de l'auberge : passe-la<1>vers la Salle Velours. Demande au<1>Sepikmon quoi chasser, puis reviens.
+$Q4a: Le Leader de Seiryu
+$Q4aT: Entraîne-toi près d'Asuka City, puis va<1>à l'est par la Forêt des Fils et la<1>Prairie du Vent jusqu'à Seiryu City.<1>Demande le Leader : Repeating Tom, dans<1>les escaliers de l'auberge, connaît<1>toutes les nouvelles.
+$Q5: Vers le Secteur Sud
+$Q5T: Le chef de Suzaku t'attend au Secteur<1>Sud, après la télécabine de la Station<1>de l'Est. Depuis Seiryu City, passe par<1>la Prairie des Vents et la Forêt Vive<1>jusqu'à la Station de l'Est, puis va au<1>terminal de la télécabine.
+$Q6: La Carte Bleue
+$Q6T: La télécabine demande une Carte Bleue,<1>et les Digimon nés d'une telle carte en<1>ont une : les Guilmon. Demande au<1>Guilmon du premier étage de l'auberge<1>d'Asuka, à Asuka City.
+$Q6b: Le cousin affamé
+$Q6bT: Son cousin a la carte. Il est parti pour<1>Seiryu City, mais il avait faim et a pu<1>s'arrêter manger : demande au Guilmon<1>de l'Auberge Forêt, près de la Forêt<1>Fer Est.
+$Q6c: Le Guilmon dormeur
+$Q6cT: Le Guilmon à la carte a filé à Seiryu<1>City, et il adore les siestes. Trouve<1>Guilmon le Malin à l'étage de l'auberge<1>de la Tour Zéphyr, près des lits.
+$Q6d: Enregistrer la carte
+$Q6dT: Guilmon le Malin t'a donné une carte.<1>Porte-la au terminal de la Station de<1>l'Est et essaie de l'enregistrer. Son<1>nom a pourtant quelque chose de bizarre...
+$Q6e: Fausse Carte 8leue
+$Q6eT: La Carte 8leue est un faux ! Un Guilmon<1>de Seiryu City connaît l'escroc : il se<1>tient dans la rue du grand emblème<1>rouge, près de l'entrée depuis la<1>Prairie des Vents.
+$Q6f: La cachette de l'escroc
+$Q6fT: Guilmon le Malin aime les profondeurs,<1>un sous-sol hanté. Descends l'escalier<1>tout au fond du sous-sol de l'Auberge<1>Forêt et parle-lui.
+$Q6g: En télécabine
+$Q6gT: Enfin la vraie Carte Bleue ! Enregistre-<1>la au terminal de la Station de l'Est et<1>monte dans la télécabine. Mets ton<1>Digimon le plus fort devant : un boss<1>attaque en route.
+$Q6h: Bulbmon
+$Q6hT: Tiens bon face au Digimon tombé sur la<1>voie de la télécabine. Bats-le et elle<1>repart vers la Station du Sud.
+$Q7: La Tombe de la Jungle
+$Q7T: Depuis la gare Sud, traverse le Marais<1>Bulk et le Pont Bulk. Repose-toi à<1>l'auberge du marais, puis va au sud,<1>dans la Tombe de la Jungle.
+$Q8: Masque de Sepikmon
+$Q8T: Zanbamon est imbattable. Sepikmon, dans la<1>Maison du Chaman, aide qui retrouve son<1>masque. Suis la piste : Kail dans le Marais<1>Bulk, Seiryu City, Baronmon aux Ruines<1>Protocol, Asuka City, son pont, puis le<1>Lac du Divermon.
+$Q9: Voleur de masque
+$Q9T: Etemon a le masque. Il attend près de<1>l'arbre à l'étage inférieur d'Asuka City<1>: poursuis-le par le Passage souterrain<1>jusqu'aux égouts d'Asuka.
+$Q9b: Rendre le masque
+$Q9bT: Rapporte le Masque Sepik à Sepikmon,<1>dans la Maison du Chaman, Marais Tranquille.
+$Q10: L'Insigne Suzaku
+$Q10T: Montre l'Herbe Puante à Zanbamon dans la<1>Tombe de la Jungle, traverse la Baie du<1>Phénix et défie le Leader du Hall Suzaku.
+$Q11: Une pause
+$Q11T: Quitte le Hall Suzaku : Kail t'attend.<1>Écoute ensuite le Game Master dans le<1>hall principal d'Asuka City.
+$Q12: Dans le Centre Admin
+$Q12T: Seuls le personnel et les Digimon entrent.<1>Demande à Master John au Lamb Chop, parle à<1>Kail, puis découvre qui a déguisé le vieux<1>couple du parc en Agumon : cherche dans<1>les égouts d'Asuka.
+$Q12b: Deux Agumon
+$Q12bT: Retrouve Kail en haut de l'échelle du<1>passage souterrain.
+$Q13: Recherche de Teddy
+$Q13T: Déguisé en Agumon, entre dans le Centre<1>Admin par le hall principal. Kail est au<1>deuxième étage, près de la Master Room.
+$Q14: Le Digi-Oeuf de la Sincérité
+$Q14T: Submarimon peut atteindre le Secteur Ouest.<1>Nami, dans la Baie du Phénix, a vu un blason<1>derrière le sanctuaire du Marais Bios. Pour<1>briser son mur, demande à Sepikmon, puis<1>apporte une Boule TNT (Triceramon, Vallée<1>Tyranno) à Baronmon aux Ruines Protocol.
+$Q14b: Derrière le sanctuaire
+$Q14bT: Utilise la Puce TNT derrière le<1>sanctuaire du Marais Bios et prends le<1>Digi-Oeuf à l'intérieur.
+$Q15: L'Insigne Byakko
+$Q15T: Au quai du Cap Sud, après la Jungle<1>Éther, appelle Submarimon et traverse<1>vers le Secteur Ouest. Va au nord par le<1>Désert du Bruit jusqu'à Byakko City et<1>défie son Leader.
+$Q16: Le vrai Leader
+$Q16T: Un piège ! Sors par le trou dans le mur.<1>Depuis le Désert du Bruit, va à l'ouest vers<1>le Désert S Bruit et le Désert Mobius :<1>haut gauche, bas gauche, puis encore,<1>jusqu'à la Tour du Mirage.
+$Q17: Usine Dum Dum
+$Q17T: Au nord-ouest de la Vallée Bullet se<1>dresse l'Usine Dum Dum. Poursuis Numemon<1>dans les salles des conduits, puis<1>affronte HiAndromon dans la salle<1>d'opération.
+$Q18: Sous les escaliers
+$Q18T: Suis Numemon dans les Escaliers secrets<1>et traverse les égouts.
+$Q19: Lucky Mouse
+$Q19T: Écoute Lucky Mouse dans la Salle secrète,<1>et tiens l'A.o.A. à distance.
+$Q20: Pass du personnel
+$Q20T: Les portes d'Asuka City sont fermées.<1>Depuis le quai du pont d'Asuka,<1>Submarimon mène aux égouts d'Asuka :<1>bats Datamon dans la salle de contrôle.<1>Il demande un Pass du personnel : vois<1>Kurt, puis trouve Keith et Nick au Lac<1>UG de Suzaku (quai de Suzaku City).
+$Q21: Ouvrir la porte
+$Q21T: Montre le Pass du personnel à Datamon<1>dans la salle de contrôle des égouts<1>d'Asuka.
+$Q22: Libérer Asuka City
+$Q22T: Entre dans le Centre Admin par la porte<1>des égouts d'Asuka et monte à la Master<1>Room, au deuxième étage. Ses tableaux<1>forment MONSTER. Bats le Game Master.
+$Q23: Asuka est libre
+$Q23T: Retrouve Teddy dans le hall principal.
+$Q24: Une route vers Amaterasu
+$Q24T: Byakko City est libre aussi. Demande à<1>son Leader au Dôme Byakko, puis au<1>général de l'A.o.A. dans la Grotte<1>souterraine.
+$Q25: Le séisme
+$Q25T: Bulbmon a fait passer l'A.o.A. entre les<1>serveurs. Prends Submarimon jusqu'au Cap Sud<1>et demande à Patamon dans le Hall Suzaku.
+$Q26: Le labyrinthe Bug
+$Q26T: Le Leader est allé dans la Catacombe,<1>après le sanctuaire de la Jungle Éther.<1>Entre par le trou qu'elle garde, trouve<1>l'échelle cachée et bats Bulbmon dans la<1>Fosse du labyrinthe Bug.
+$Q27o: L'homme masqué
+$Q27oT: Un homme encapuchonné bloque la sortie<1>du labyrinthe Bug, dans son hall. Parle-<1>lui et bats-le avec ses trois Digimon :<1>Arukenimon, Mummymon et VenomMyotismon.<1>Une défaite ne coûte rien : il attend un<1>autre essai.
+$Q27: Qing Long City
+$Q27T: Ici, c'est le serveur Amaterasu. Reste loin<1>d'Amaterasu City et de son Knightmon.<1>Va à l'est par le Lac du Divermon et la<1>Prairie du Vent, et bats le Chef de la<1>Tour Qing Long.
+$Q28: Zhu Que City
+$Q28T: Depuis le quai de Shell Beach, prends<1>Submarimon jusqu'à la Baie du Phénix et bats<1>le Chef du Hall Zhu Que.
+$Q29: Le Digi-Oeuf du Savoir
+$Q29T: Depuis le quai derrière le Hall Zhu Que,<1>plonge dans le Lac UG Zhu Que et monte<1>jusqu'à son sommet.
+$Q30: L'Insigne Genbu
+$Q30T: De retour au serveur Asuka par le<1>labyrinthe Bug, appelle Digmon au trou<1>du Cap Plug. Traverse le Circuit au nord<1>jusqu'au Mont Boot et monte par le Mont<1>Neige et Gel jusqu'à Genbu City. Son<1>Leader attend à la Porte de Combat.
+$Q31: La Chambre Matrix
+$Q31T: À l'ouest du Mont Boot, descends la Mine<1>Kulon jusqu'à la Fosse Kulon et traverse<1>les Donjons Glace, Feu et Ténèbres.<1>Montre les quatre insignes dans la Salle<1>de la Chambre.
+$Q32: 180 secondes
+$Q32T: Arrête le Juggernaut à Magasta. Un Soldat<1>Mech garde le panneau au fond du B2F.<1>Les combats arrêtent le chrono.
+$Q33: Rends compte à Lisa
+$Q33T: Le Juggernaut est lancé. Préviens Lisa dans<1>la Master Room d'Asuka City.
+$Q34: La Résistance
+$Q34T: Le trou à l'ouest de Central Park mène à la<1>Tombe de la Jungle d'Amaterasu. Trouve la<1>Résistance dans la Tour du Mirage du Secteur<1>Ouest. Bai Hu City est fermée : demande de<1>l'aide à Lisa, puis bats son Chef.
+$Q35: Le dernier Pass ID
+$Q35T: Prends Submarimon depuis Badland Nord E<1>jusqu'au Cap Plug, puis Digmon vers le<1>nord. Le Chef de Xuan Wu City attend à<1>la Porte de combat.
+$Q36: La porte principale
+$Q36T: Avec les quatre Pass ID, traverse le pont de<1>Central Park jusqu'à Amaterasu City.
+$Q37: Le quartier général
+$Q37T: Traverse le Centre Admin d'Amaterasu City<1>jusqu'à la Master Room, et bats le président<1>de MAGAMI.
+$Q38: Des Oinkmon partout
+$Q38T: Lisa et Nick attendent près du pont.<1>Keith, dans la Tour Qing Long, a besoin<1>de vent : réveille Airdramon dans la<1>Tour des Vents de Seiryu City, près du<1>trou de la Forêt Kicking. Puis vois Kurt<1>dans la salle de connexion et regarde<1>dans la Master Room d'Asuka.
+$Q39: Vemmon
+$Q39T: Kail est sur le pont de Central Park.<1>Fais des provisions, puis entre dans le QG<1>par la Master Room d'Amaterasu City.
+$Q40: Sans retour
+$Q40T: Lord Megadeath attend sur Gunslinger.<1>Sauvegarde et fais des provisions avant<1>de franchir la porte : personne ne revient.
+$Q41: Gunslinger
+$Q41T: Les téléporteurs verts mènent aux panneaux<1>de contrôle qui dégagent la voie.<1>Atteins la salle de contrôle.
+$Q43: Le dernier combat
+$Q43T: Arrête Lord Megadeath et ce qu'il a créé.
+$Q45: Jeu libre
+$Q45T: Le monde est sauf. Les agents DRI, les<1>tournois et les maîtres des cartes<1>sont toujours là-dehors.
+$M0: Pass El Dorado
+$M0T: Ponchomon, à El Dorado (le toit bleu<1>d'Asuka City), le donne au second échange<1>avec une équipe de 210 Charisme. Il ouvre<1>les enchères de la Tour Cargo.
+$M4: Le marché noir
+$M4T: L'homme encapuchonné du labyrinthe Bug<1>commerce désormais dans l'ombre. Entre<1>dans la Salle Velours par une porte<1>bleue d'auberge : il tient le Marché<1>noir derrière le comptoir.
+$M1: Sac à dossiers
+$M1T: Divermon, dans le Yellow Cruiser (le<1>toit jaune de l'étage inférieur d'Asuka<1>City), donne le sac dont les combats de<1>cartes ont besoin.
+$M2: Bottes Arbre
+$M2T: Soccer Kid Hide, au Cap Plug, a perdu sa<1>carte Gabumon : elle est sur les<1>étagères du sous-sol de l'auberge<1>d'Asuka. Demande ensuite à Debbie au<1>Lamb Chop et trouve Veemon à l'extrémité<1>est de la Prairie du Vent.
+$M3: Canne à pêche
+$M3T: Tai Kong Wang, à Shell Beach, en<1>fabrique une avec une Lance Brise<1>(Armurerie d'Asuka), une Toile<1>d'araignée (Dokugumon, Forêt Protocol)<1>et le Red Snapper coincé dans le<1>Divermon du Lac du Divermon.
+TALK05 81: <7>Gennai<7>Hm hm... Les formes<1>qu'un Blast appelle.<1>Voyons-les.<2,2>
+TALK05 82: <7>Etemon<7>Hé hé hé ! Cet air...<1>je l'ai déjà entendu<1>dans un autre jeu !<2,2><3>Ne le dites à personne<1>que j'ai dit ça !<2,2>
+TALK05 47: <7>Igor<7>Bienvenue, mon hôte.<1>Ici, l'horloge dort.<1>Pas un battement.<2,2><3>Vous portez ce fardeau<1>de votre volonté.<2,2><3>Pesons-le donc.<1>Passez la porte haute.<1>Trois épreuves.<2,2><3>Oikawa, le Sepikmon<1>et le vieil homme.<1>L'un après l'autre.<2,2><3>Reculez ou tombez,<1>et le temps revient<1>à la première.<2,2><3>Il n'y a pas de prix.<1>Seulement la vérité<2,2><3>de ce que vous êtes<1>devenu.<2,2>
+TALK05 48: <7>Igor<7>Bienvenue, mon hôte.<1>Ici, l'horloge dort.<1>Pas un battement.<2,2><3>Vous m'avez dit ne pas<1>avoir choisi la route.<1>Pourtant vous voilà.<2,2><3>Voyons ce que la route<1>a fait de vous.<1>Passez la porte haute<2,2><3>Trois épreuves :<1>Oikawa, le Sepikmon<1>et le vieil homme.<2,2><3>Reculez ou tombez,<1>et le temps revient<1>à la première.<2,2><3>Il n'y a pas de prix.<1>Seulement la vérité<2,2><3>de ce que vous êtes<1>devenu.<2,2>
+TALK05 49: <7>Igor<7>Bienvenue, mon hôte.<1>Ici, l'horloge dort.<1>Pas un battement.<2,2><3>Vous aviez peur<1>et vous avez continué.<1>Est-elle là aussi ?<2,2><3>Parfait. Emportez-la.<1>Passez la porte haute.<1>Trois épreuves :<2,2><3>Oikawa, le Sepikmon<1>et le vieil homme.<1>L'un après l'autre.<2,2><3>Reculez ou tombez,<1>et le temps revient<1>à la première.<2,2><3>Il n'y a pas de prix.<1>Seulement la vérité<2,2><3>de ce que vous êtes<1>devenu.<2,2>
+TALK05 50: <7>Igor<7>Bienvenue, mon hôte.<1>Ici, l'horloge dort.<1>Pas un battement.<2,2><3>Derrière la porte,<1>aucun retour possible.<1>Faisons une pause.<2,2><3>Passez la porte haute.<1>Trois épreuves :<1>Oikawa, le Sepikmon<2,2><3>et le vieil homme.<1>Reculez ou tombez :<1>le temps recule.<2,2><3>Il n'y a pas de prix.<1>Seulement la vérité<2,2><3>de ce que vous êtes<1>devenu.<2,2>
+TALK05 51: <7>Igor<7>Le temps attendra<1>aussi longtemps que<1>vous voudrez.<2,2><3>Il n'a nulle part<1>où aller.<1>La porte haute,<2,2><3>quand vous serez prêt.<2,2>
+TALK05 52: <7>Igor<7>Le temps a reculé,<1>mon hôte. Les épreuves<1>repartent au début.<2,2><3>Reposez-vous. Ici,<1>l'horloge s'est tue.<1>Personne ne compte.<2,2>
+TALK05 53: <7>Igor<7>Trois épreuves, trois<1>réponses. La porte<1>extérieure s'ouvrira.<2,2><3>Quoi qu'il attende,<1>vous l'avez choisi.<1>Allez, mon hôte.<2,2>
+TALK05 54: <7>Gennai<7>Une pièce où l'horloge<1>s'arrête. Mes vieux<1>os s'en réjouissent.<2,2><3>Je serai votre<1>dernière épreuve.<1>Ne vous retenez pas.<2,2>
+TALK05 55: <7>Gennai<7>Hm hm... Ici, le temps<1>dort. Quel repos !<2,2><3>Je serai votre<1>dernière épreuve.<1>Partenaires prêts ?<2,2>
+TALK05 56: <7>Sepikmon<7>L'horloge s'arrête,<1>mes pisteurs vibrent<1>encore. Étrange lieu.<2,2><3>Là-haut, ce que je<1>traquais vous attend.<1>Montrez le chasseur<2,2><3>que vous êtes devenu.<2,2>
+TALK05 57: <7>Oikawa<7>Perdu bien des fois.<1>Ici, au moins,<2,2><3>l'horloge ne peut<1>pas se moquer de moi.<1>Je passe en premier.<2,2><3>Pas de pitié.<2,2>
+TALK05 58: <7>Oikawa<7>J'ai passé ma vie<1>à chercher un monde<1>comme celui-ci.<2,2><3>Je ne trouve plus<1>la sortie. Drôle,<1>n'est-ce pas ?<2,2><3>Ces deux-là ne m'ont<1>jamais quitté. Ni<1>cette obscurité.<2,2><3>Montrez ce que porte<1>un Élu.<2,2>
+TALK05 59: <7>Sepikmon<7>Chaque bête envoyée,<1>je l'avais chassée<1>avant.<2,2><3>Mes meilleures prises.<1>Aujourd'hui, elles<1>vous traquent.<2,2><3>Méfiez-vous du vent.<2,2>
+TALK05 60: <7>Gennai<7>Jadis, je veillais<1>sur des enfants comme<1>toi. Sans relâche.<2,2><3>Ces trois-là ont<1>veillé avec moi.<1>Valait-il la peine ?<2,2><3>...<2,2>
+TALK05 61: <7>Gennai<7>Hm hm... On m'appelle<1>Gennai. Laissez-moi<1>vous montrer...<2,2><3>Ce qui vit dans<1>l'ombre en vous.<2,2>
+TALK05 62: <7>Oikawa<7>...Heh. Encore perdu.<1>Je m'y fais.<2,2><3>Allez. Le suivant<1>ne sera pas si doux.<2,2>
+TALK05 63: <7>Sepikmon<7>Une chasse propre. Mes<1>pisteurs chanteront ça<1>ce soir.<2,2><3>Allez. La dernière<1>épreuve vous attend.<2,2>
+TALK05 64: <7>Gennai<7>Bien joué. La veille<1>en valait finalement<1>la peine.<2,2><3>Retournez à la salle.<1>La porte est à vous.<2,2>
+TALK05 65: <7>Gennai<7>Hm... Assez fort.<1>Pour l'instant.<2,2><3>Gardez vos partenaires<1>au chaud, enfant. Nous<1>nous reverrons.<2,2>
+TALK06 5: <7>Hooded Man<7>Bulbmon, un levier.<1>Vous l'avez actionné<1>pour moi. Merci.<2,2><3>J'ai parcouru ces<1>serveurs longtemps,<1>à la recherche d'une<2,2><3>porte. Vous l'avez<1>trouvée sans peine.<1>Une bleue, non ?<2,2><3>Voyons ce qui fait<1>votre valeur pour<1>cette porte.<2,2>
+TALK06 6: <7>Hooded Man<7>Déjà de retour ? Bien.<1>Perdre, je connais<1>trop bien.<2,2><3>Recommençons.<2,2>
+TALK06 7: <7>Hooded Man<7>...Voilà donc ce qu'il<1>faut. Je vois.<2,2><3>Je m'appelle Oikawa.<1>J'ai quelque chose à<1>vendre, et nulle part<2,2><3>où le vendre.<2,2><3>Votre porte bleue,<1>peut-être.<1>On s'y verra.<2,2>
+TALK05 99: <7>Oikawa<7>Vous voilà. Igor me<1>laisse un comptoir.<1>Je vous dois, dit-il.<2,2><3>Ce que je vends,<1>le jeu ne devait pas<1>le donner.<2,2><3>Des cristaux rares.<2,2><3>Bits d'avance.<1>Pas de questions,<1>pas de remboursement.<2,2>
+TALK03 311: <7>Igor<7>Halte, mon hôte. Passé<1>cette grille,<1>aucun retour possible.<2,2><3>Vos partenaires<1>sont maudits, et la<1>voie de Gennai<2,2><3>n'a pas été menée<1>à son terme. Faites-la<1>d'abord... ou prouvez<2,2><3>que votre pouvoir<1>suffit. La porte bleue<1>à votre gauche mène<2,2><3>à la Salle du Temps.<2,2>
+TALK03 312: <7>Igor<7>Halte, mon hôte. Passé<1>cette grille,<1>aucun retour possible.<2,2><3>Avant de la franchir,<1>laissez le temps<1>s'arrêter un instant.<2,2><3>La porte bleue à votre<1>gauche ouvre la Salle<1>du Temps. Passez ses<2,2><3>épreuves, et la grille<1>vous sera ouverte.<2,2>
+ITMINF 76: Blast hors limite. Coûte 10 TP
+$VelvetTitle: VELOURS
+$TimeTitle: SALLE
+$TimeTitle2: TEMPS
+$PfDomTitle: Formes sombres
+$PfDominated: "Formes prises "
+$PfDominate: Chaque Blast en appelle une. Dominez-les<1>toutes et amenez-moi les dix.
+$PfDemand: Dix ! Parfait. Pour mon aide, je prends<1>des frais modestes.
+$PfFee: "Frais "
+$PfHeld: " Bits, possédés "
+$PfKeysPay: × Payer   △ Partir
+$PfNoBits: Bits insuffisants.
+$PfSimTitle: Simulateur de Gennai
+$PfPurified: "Purifiées "
+$PfKeysFight: × Affronter   △ Partir
+$PfKeysOk: × OK
+$PfKeysNext: × Suivant
+$PfDone: Les formes vaincues sont purifiées.
+$PfLost: Les ténèbres tiennent. Revenez<1>quand vous serez prêt.
+$PfTpBack: "TP rendus "
+$PfChosenTitle: Évolution Chosen
+$PfCharged: Votre blason est rechargé. Choisissez le seul<1>partenaire qui peut le prendre. Niveau 45 requis.
+$PfKeysChoose: × Choisir   △ Partir
+$PfLv: " Nv "
+$PfChosenMark: "   Élu"
+$PfNameGennai: Gennai
+$PfNameMyotismon: Myotismon
+$PfBoostOffer: Chaque forme prise nourrit le Blast.<1>Contre des Bits, je le renforce. Hé.
+$PfBoost: "Boost +"
+$PfBoostTo: "% vers +"
+$PfBoostFor: "% pour "
+$PfBits: " Bits"
+$PfPct: %
+$PfKeysBuy: × Acheter   △ Partir
+$PfKeysBuyNext: × Acheter   △ Suivant
+$PfStory0: Hm hm hm... Dix formes sombres. Toutes<1>vivaient dans vos partenaires.<1>Bien joué. Mieux que prévu.
+$PfStory1: Imbécile ! Je suis Myotismon !<1>Chaque Blast nourrissait la malédiction<1>que j'ai jetée sur vos Digimon. Ils sont à moi...<1>et vos Bits aussi !
+$PfStory2: ...Doucement. L'ombre a disparu.<1>Je suis Gennai, le vrai.<1>Le vieil homme était Myotismon<1>sous mes traits.
+$PfStory3: Mais je crois que vous êtes un DigiDestined.<1>Mon simulateur peut purifier vos partenaires.<1>Vainquez les dix formes sombres qu'il contient.
+$PfStory4: Les dix formes sont purifiées. Chacune a laissé<1>sa force à vos partenaires. Et les TP<1>volés par la malédiction vous sont rendus.
+$PfStory5: Le Blast a disparu. À sa place, l'Évolution Chosen.<1>Un partenaire en forme Rookie, niveau 45,<1>devient son Mega. Une fois par combat.<1>Puis revenez me voir.
+$VelvetTitle2: SERVEUR
+TALK05 14: <7>Sepikmon<7>Un Dresseur enfin !<1>Je suis Sepikmon,<1>maître des chasses.<2,2><3>Des forts rôdent<1>dans les secteurs.<1>Je les piste.<2,2><3>Vous les chassez.<2,2><3>Ogremon tyrannise<1>Central Park, près<1>d'Asuka City.<2,2><3>En chemin, la boussole<1>indique la chaleur<1>de la piste. Allez !<2,2>
+TALK05 15: <7>Sepikmon<7>La piste est fraîche.<1>Quelle proie<1>aujourd'hui ?<2,2>
+$SupTitle: Chasses de Sepikmon
+$SupNew: NOUV.
+$SupOn: CHASSE
+$SupDone: FAIT
+$SupLocked: --
+$SupLv: "Nv "
+$SupWhere: "Quelque part dans "
+$SupOf: " - "
+$SupSec0: le secteur Nord
+$SupSec1: le secteur Est
+$SupSec2: le secteur Centre
+$SupSec3: le secteur Ouest
+$SupSec4: le secteur Sud
+$SupSrv0: Serveur Asuka
+$SupSrv1: Serveur Amaterasu
+$SupTutWhere: Dans Central Park, près d'Asuka City
+$SupHp: "HP restants "
+$SupSlash: " sur "
+$SupFled: "   Fui "
+$SupHeld: "Cristaux possédés "
+$SupPrice: "   Vendu "
+$SupBits: " Bits"
+$SupKeysStart: × Chasser   □ Vendre un cristal<1>△ Partir   R1: Tenues
+$SupKeysCancel: × Annuler la chasse<1>△ Partir   R1: Tenues
+$SupKeysConfirm: × Annuler (soigne)<1>△ Retour
+$SupKeysLocked: □ Vendre un cristal<1>△ Partir   R1: Tenues
+$SupBusy: Terminez ou annulez d'abord votre chasse.
+$SupStarted: La chasse commence. Suivez la boussole !
+$SupTutGiven: Votre première chasse commence. Suivez la boussole !
+$SupCancelled: Chasse annulée. La cible a guéri.
+$SupSold: "Vendu pour "
+$SupFledTarget: <7><9><7>Zut, il s'est enfui !<1>À la prochaine,<1>il sera plus fort !<2,2>
+$SupFledPlayer: <7><9><7>Trop fort pour moi...<1>Je dois me replier !<1>Plus dur la prochaine.<2,2>
+$SupNoCrystal: Aucun cristal de lui à vendre.
+$SupLockedMsg: Terminez la chasse ci-dessus pour l'ouvrir.
+$SupCrystalPre:
+$SupCrystalPost: " Cristal"
+$SupGot: "Récompense : "
+$SupSkin: "Tenue : "
+$SupSkinsTitle: Tenues
+$SupSkinWorn: PORTÉE
+$SupSkinFrom: "Gagnez la chasse pour "
+$SupSkinOwn: À vous, d'une chasse gagnée.
+$SupSkinOriginal: Vos propres couleurs.
+$SupSkinSet: Fait. Marchez pour la voir.
+$SupSkinLocked: Gagnez sa chasse.
+$SupKeysSkins: × Porter   △ Partir   L1: Chasses
+TALK05 79: <7>????<7>On m'a trouvé dans un<1>tas de jouets inutiles<1>et l'on m'a mis ici.<2,2><3>...Mieux que la boîte.<2,2>
+TALK05 8: <7>Oikawa<7>Ne demandez pas<1>comment je l'ai eu...<2,2><3>Dans le Monde Digital,<1>même les rebuts<1>ont une valeur...<2,2><3>...pour qui sait<1>s'en servir.<2,2>
+TALK05 9: <7>Oikawa<7>Vous aussi cherchez un<1>pouvoir qui ne devrait<1>pas exister ?<2,2><3>Alors faites vite.<1>Je n'aime pas attirer<1>l'attention.<2,2>
+TALK05 12: <7>Oikawa<7>Usez-en avec prudence.<1>Ce genre de pouvoir<1>exige un prix...<2,2><3>...payé par celui<1>qui le porte.<2,2><3>Je le sais bien assez.<2,2>
+TALK05 13: <7>Oikawa<7>Peut-être est-ce mieux<1>ainsi.<2,2><3>Tous ne sont pas prêts<1>à franchir la ligne.<2,2>
+ITMINF 67: Ranime : 60%, 30% de HP.
+ITMINF 70: Ranime : 85%, 60% de HP.
+ITMINF 46: En combat : ranime, 100%, HP max.
+TALK05 77: <7>Guilmon<7>Prenez la Cloche<1>Démon. Ennemis plus<1>forts...<2,2><3>...et plus rapides.<1>Ils rapportent plus<1>de Bits, de matériaux.<2,2>
+TALK05 78: <7>Guilmon<7>Renoncer à la Cloche ?<1>Très bien.<1>Tout redevient normal.<2,2>
+ITMNAM 26: Cloche Démon
+ITMINF 26: Super Hard: ennemis +, 2x butin.
+$MaterialsMenu: MATÉRIAUX
+$Materials: Matériaux
+$MatCommon: Matériau
+$MatRare: Noyau rare
+$MatCrystal: Cristal de chasse
+$MatCut: "."
+$Skin0: Original
+$Skin1: Cheveux noirs
+$Skin2: Cheveux verts
+$Skin3: Tenue blanche
+$Skin4: Cheveux or
+$Skin5: Tenue rouge
+$Skin6: Tout noir
+$Skin7: Cheveux violets
+$Skin8: Tenue marine
+$Skin9: Cheveux gris
+$Skin10: Océan
+$Skin11: Soleil
+$Skin12: Couleurs folles
+$Skin13: Argent et noir
+TALK06 676: <7>DRI Bob<7>Dites, vous avez vu<1>Paildramon ?<2,2><3>Je le cherche depuis<1>une éternité, mais<1>je ne le trouve pas.<2,2><3>On dit qu'il vole au<1>dessus du Pont Bulk,<1>Secteur Sud.<2,2><3>Si vous le trouvez,<1>je vous donnerai<1>un bon cadeau...<2,2>
+TALK06 691: <7>DRI Johann<7>Je cherche<1>MetalGreymon...<2,2><3>On dit qu'il rôde<1>dans le Marais Bulk,<1>dans le Secteur Sud.<2,2><3>Si j'obtiens l'ADN<1>d'Agumon, je pourrai<1>continuer mes travaux.<2,2><3>Oh ! Si vous le voyez,<1>pouvez-vous en tirer<1>l'ADN ?<2,2><3>Je vous donnerai<1>Agumon en partenaire<1>en récompense !<2,2>
+$GrLore: Le réseau Guardian ouvre un noeud<1>seulement à un dresseur venu<1>jusqu'à lui. Mon poste est<1>maintenant dans vos données :<1>téléportez-vous ici.
+$GrNode0: C'est dangereux d'y aller seul !<1>Prenez ce point de sauvegarde.
+$GrNode1: Un Guardromon sauvage est apparu !<1>Vous avez utilisé SAVE. C'est super<1>efficace.
+$GrNode2: Désolé, dresseur. Votre princesse<1>est dans une autre tour. Mais<1>vos données sont dans celle-ci.
+$GrNode3: Chaque marais de RPG empoisonne<1>vous. Celui-ci n'a qu'un<1>lit très confortable.
+$GrNode4: Hé ! Écoutez ! ...attendez, mauvais<1>jeu. Sauvegardez souvent. C'est<1>tout le conseil.
+$GrNode5: Gloire au soleil ! Je suis un<1>feu de camp aux meilleures<1>manières. Pas besoin de braises.
+$GrNode6: Le gâteau est un mensonge.<1>L'oasis est réelle.<1>Buvez, puis sauvegardez.
+$GrNode7: C'est la vraie salle ?<1>Un mirage ? Un éboulement ?<1>Sauvegardez quand même.
+$GrNode8: Une grande ville !<1>Parlez deux fois aux PNJ.<1>Ouvrez chaque tonneau.
+$GrNode9: On ne marche pas simplement<1>dans les montagnes. D'abord,<1>on sauvegarde à l'auberge.
+$GrNode10: J'étais un dresseur comme vous.<1>Puis j'ai pris un Trojan<1>dans le genou.
+$GrNode11: C'est la Matrice.<1>Pilule bleue : sauvegarder.<1>Pilule rouge : continuer.
+$GrNode12: Lent et régulier gagne la course.<1>Sauf si une carapace bleue<1>apparaît. Sauvegardez d'abord.
+TALK01 3: <7>Guardromon<7>Officier Guardromon<1>de secours, en ligne.<2,2><3>Sauvegarder, ou<1>téléporter vers un<1>noeud déjà vu ?<2,2><3>Parlez-moi.<2,2>
+TALK05 395: <7>Guardromon<7>Réseau Guardian : tout<1>est vert. Besoin de<1>sauver ou téléporter ?<2,2><3>Approchez-vous.<2,2><3>Nous partageons nos<1>noeuds avec les<1>dresseurs.<2,2>
+TALK06 361: <7>Guardromon<7>Un autre dresseur !<1>Mon tampon est prêt.<2,2><3>Sauvegardez ici, ou<1>téléportez-vous<1>vers un noeud déjà vu.<2,2>
+ITMNAM 27: Marque Chasseur
+ITMINF 27: Rares : 2x noyaux, cristaux.
+$LimitBreak: LIMIT BREAK
+$FinIgorKey: <7>Igor<7>Bon retour, mon hôte.<1>L'ombre a révélé<1>sa vraie forme.<2,2><3>Puis-je garder<1>la Clé Velours<1>un instant ?<2,2><3>...Regardez bien.<1>Elle est chaude.<1>Elle a changé.<2,2><3>Cette clé n'appartient<1>plus seulement à<1>la Salle Velours.<2,2><3>Vos liens l'ont<1>remodelée.<1>Reprenez-la.<2,2><3>Ouvrez la porte<1>au-dessus.<2,2>
+$FinBond1: <7>Ivy<7>Hé, Junior !<1>Ne nous lâche pas<1>maintenant.<2,2><3>Qui était là<1>dès le premier jour ?<1>Va finir ça !<2,2>
+$FinBond2: <7>Teddy<7>Même piégé, je savais<1>que tu ne lâcherais<1>jamais.<2,2><3>Tes partenaires<1>sont à tes côtés<1>à cet instant !<2,2>
+$FinBond3: <7>Kail<7>Tu as sauvé Kurt.<1>Tu n'as jamais tourné<1>le dos à personne.<2,2><3>Nous croyons<1>tous en toi.<1>Montre à ce monstre<2,2><3>ce que sait faire<1>un vrai Dresseur !<2,2>
+$FinBond4: <7>Sepikmon<7>Les vents de chaque<1>secteur répond à ton<1>appel, Dresseur.<2,2><3>Aucune proie n'échappe<1>à un coeur qui refuse<1>de plier.<2,2>
+$FinBond5: <7>Gennai<7>Même le noir le plus<1>profond n'efface pas<1>la lumière forgée.<2,2><3>Que chaque lien<1>devienne une flamme.<1>Debout !<2,2>
+$FinBondAll: <7>Everyone<7>Vous n'êtes pas seul !<1>Nous sommes tous là,<1>avec vous !<2,2><3>Vous pouvez le faire !<1>Prenez notre force et<1>percez !<2,2>
+$FinSuperEvo: <7>Super Chosen Evolution<7>Les liens de tous vos<1>partenaires résonnent<1>comme un seul !<2,2><3>Au-delà de toute<1>limite...<1>SUPER ÉVOLUTION !<2,2>
+$FinIgorBye: <7>Igor<7>Ah... vous avez fait<1>un long chemin.<2,2><3>Ce pouvoir est à vous.<1>Il vous servira<1>bien à l'avenir.<2,2><3>Je sens votre coeur<1>capable d'éveiller<1>bien d'autres liens.<2,2><3>Quant à moi, je pars.<1>Vers une prison, une<1>limousine...<2,2><3>...ou peut-être un<1>ascenseur. Difficile<1>à dire.<2,2><3>Car pour moi, passé,<1>présent, avenir,<1>et même les lieux...<2,2><3>...tout passe au même<1>instant.<2,2><3>Un cher petit ami<1>veillera sur vos liens<1>ici désormais. Adieu.<2,2>
+$PipimonMeet: <7>Pipimon<7>Pipi ! Salut !<1>M. Igor m'a demandé<1>de veiller ici !<2,2><3>Je suis Pipimon !<1>Voyons les liens ADN<1>de vos partenaires !<2,2>
+$PipimonBack: <7>Pipimon<7>Pipi ! Bon retour !<1>Voyons les liens ADN<1>de vos partenaires !<2,2>

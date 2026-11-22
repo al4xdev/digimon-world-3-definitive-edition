@@ -24,7 +24,7 @@ matching, performance, the GPU work) stay in [`docs/`](../README.md).
 | [Save format](save-format.md) | the memory card records the edition adds |
 | [Building, running, mods, tools, tests, debugging](port-and-tools.md) | command line options, environment variables, `port/mods/`, `tools/`, the tests, the MCP |
 | [Platforms](platforms.md) | the launcher, cloud sync, handhelds, Android, PortMaster, performance |
-| [Planned work and open decisions](roadmap.md) | the backlog and every pending item with its source plan |
+| [What is left](roadmap.md) | the two open items: balance and translation review |
 | [History and decisions log](history.md) | closed plans and their post-mortems, the PortMaster CFW research, muOS, Android, the rebalance brief |
 
 The figures these pages show live in [`docs/images/definitive/`](../images/definitive/README.md).
@@ -41,7 +41,7 @@ The figures these pages show live in [`docs/images/definitive/`](../images/defin
   `definitive_hunt.c`, `definitive_superhunt*.c`, `definitive_materials.c`, `definitive_market*.c`, `definitive_dri*.c`,
   `definitive_economy.c`, `definitive_prices.c`, `definitive_recipes.c`, `definitive_velvet.c`, `definitive_purify.c`,
   `definitive_recolor.c`, `definitive_skins.c`, `definitive_travel.c`, `definitive_evohint.c`, `definitive_callout.c`,
-  `definitive_text.c` / `definitive_text_pt.inc`, `girls_power.c`, `game_mods.c`.
+  `definitive_text.c` / `definitive_text_lang.inc`, `girls_power.c`, `game_mods.c`.
 - Rules every layer keeps: an old save opens and plays; the player's MP stays limited (Relay and technique costs are
   real); a boss is immune to status (poison, sleep and the like) but not to stat debuffs nor to elemental damage. New
   code never assumes three party members: ask `gamestate_data.funcs.get_party_member` (Hard Mode runs with two).

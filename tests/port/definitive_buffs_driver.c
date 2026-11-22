@@ -32,6 +32,10 @@ int port_script_active = 0;
 static s16 base_stats[2][3][5]; /* [side][member][stat] = { atk, def, spi, wis, spd } */
 static s32 party_ids[3] = { 0, 1, 2 };
 
+static GamestateRecord *stub_get_record(s32 i) {
+    return &gamestate_data.digimon[i].record;
+}
+
 static s32 stub_get_party_member(s32 slot) {
     return (slot >= 0 && slot < 3) ? party_ids[slot] : -1;
 }
@@ -71,6 +75,7 @@ int def_save_flag(int f) { (void)f; return 0; }
 void def_save_flag_set(int f, int on) { (void)f; (void)on; }
 void def_dri_battle_begin(void) {}
 void def_dri_battle_end(int r) { (void)r; }
+int def_dri_next_wave(void) { return -1; } /* no wave in these battles */
 void def_dri_savestate(struct PortState *s) { (void)s; }
 void def_bm_savestate(struct PortState *s) { (void)s; }
 void def_recipe_savestate(struct PortState *s) { (void)s; }
@@ -120,7 +125,8 @@ int def_finale_golden_mode(void) { return 0; }
 int def_finale_enemy_dark(void) { return 0; }
 void def_finale_savestate(struct PortState *s) { (void)s; }
 RecordsDigimon *records_get_digimon(s32 id) { (void)id; return NULL; }
-int def_super_done(void) { return 0; }
+static int super_done_stub; /* > DEF_SUPER_TUTORIAL: the Blast is unlocked (the last stand's check) */
+int def_super_done(void) { return super_done_stub; }
 void def_super_blast_note(void) {}
 int def_record_chosen_charge(void) { return 0; }
 void def_record_set_chosen_charge(int c) { (void)c; }
@@ -158,6 +164,7 @@ static void reset_battle(void) {
     memset(records_digimon, 0, sizeof(records_digimon));
     memset(records_techniques, 0, sizeof(records_techniques));
     gamestate_data.funcs.get_party_member = stub_get_party_member;
+    gamestate_data.funcs.get_record = stub_get_record;
     fightstg_rules.get_stats = stub_get_stats;
     for (s = 0; s < 2; s++) {
         for (m = 0; m < 3; m++) {
@@ -186,6 +193,35 @@ int main(void) {
         check("blast sequence: 1st at level 1, stays at 14, 2nd at 15, 5th at 45 wraps, 4th under 45, bad next is 0",
               k1 == 0 && a1 == 1 && k2 == 0 && a2 == 1 && k3 == 1 && a3 == 2 && k4 == 4 && a4 == 0 && k5 == 3 &&
                   a5 == 4 && k6 == 0 && a6 == 1);
+    }
+    check("blast top step: the highest the level reaches (1: 0, 14: 0, 15: 1, 34: 2, 35: 3, 45: 4, 99: 4)",
+          def_blast_top_step(1) == 0 && def_blast_top_step(14) == 0 && def_blast_top_step(15) == 1 &&
+              def_blast_top_step(34) == 2 && def_blast_top_step(35) == 3 && def_blast_top_step(45) == 4 &&
+              def_blast_top_step(99) == 4);
+    { /* the DV Plug's last stand (owner, 2026-11-21): the revived Rookie's Blast is the strongest its level reaches,
+       * where the sequence (def_record_blast_next, 0 here) would give the first, the Champion's; a later Blast is
+       * the sequence's again */
+        FightstgMember *m = &fightstg_battle.state.members[0][0];
+        int k, first, top, again;
+
+        for (k = 0; k < DEF_BLAST_STEPS; k++) {
+            records_digimon[0].blast_forms[k] = (u8)(40 + k);
+        }
+        records_digimon[0].id = 3;
+        gamestate_data.digimon[0].record.stats.values[0] = 40;
+        gamestate_data.items[DEF_PLUG_ITEM] = 1;
+        super_done_stub = DEF_SUPER_TUTORIAL + 1;
+        first = def_blast_form(0, 0); /* before any last stand: the sequence */
+        m->hp = 0;
+        check("last stand: the DV Plug revives the fallen last partner", def_blast_plug_last_stand(0) == 1 && m->hp == 1);
+        m->base_digimon = m->digimon; /* what wfightmn does before def_blast_form */
+        m->digimon = 99;
+        top = def_blast_form(0, 0);
+        again = def_blast_form(0, 0);
+        check("last stand: the Blast takes the level's top form (level 40: the 4th), then the sequence again",
+              first == 40 && m->base_digimon == 3 && top == 43 && again == 40);
+        reset_battle();
+        super_done_stub = 0;
     }
     check("overlevel: DEF_OVERLEVEL_GAP == 3", DEF_OVERLEVEL_GAP == 3);
     gamestate_data.digimon[0].record.stats.values[0] = 20;

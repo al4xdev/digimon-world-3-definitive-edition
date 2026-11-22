@@ -49,5 +49,18 @@ int main(void) {
     def_train_pity_reset();
     check("after reset: count", def_train_pity_count(), 0);
 
+    /* Per-tier isolation: 1 TP misses (tier 0) must not arm 5 TP (tier 1) or 10 TP (tier 2). */
+    def_train_pity_record_tier(0, 0);
+    def_train_pity_record_tier(0, 0);
+    def_train_pity_record_tier(0, 0);
+    check("tier 0 guaranteed after 3 misses", def_train_pity_guaranteed_tier(0), 1);
+    check("tier 1 unaffected by tier 0", def_train_pity_count_tier(1), 0);
+    check("tier 1 not guaranteed", def_train_pity_guaranteed_tier(1), 0);
+    check("tier 2 unaffected by tier 0", def_train_pity_count_tier(2), 0);
+    check("tier 2 not guaranteed", def_train_pity_guaranteed_tier(2), 0);
+    def_train_pity_record_tier(2, 0);
+    check("tier 2 count independent", def_train_pity_count_tier(2), 1);
+    def_train_pity_reset();
+
     return failures ? 1 : 0;
 }

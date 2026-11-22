@@ -15,6 +15,7 @@
 extern const unsigned char def_str_HuntRomanI[];
 
 int port_script_active;
+int records_language = 1; /* the texts' language switch (definitive_text_lang.inc) reads the disc's set */
 void port_log(const char *fmt, ...) {
     (void)fmt;
 }
@@ -43,6 +44,10 @@ int def_super_in_region(int region) {
 
 /* Super Hard off (definitive_super.c): a material's count is the game's. */
 int def_super_reward(int amount) {
+    return amount;
+}
+
+int def_super_materials(int amount) {
     return amount;
 }
 

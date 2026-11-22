@@ -1533,7 +1533,7 @@ STAREA 18: Base Submarina
 STAREA 19: Satélite Espião
 STAREA 20: Túnel Submarino
 STAREA 21: Subsolo
-STATUS 1: NÍV
+STATUS 1: NV
 STATUS 2: HP
 STATUS 3: MP
 STATUS 6: ITENS
@@ -1541,7 +1541,7 @@ STATUS 7: ORDENAR
 STATUS 8: MAPA
 STATUS 9: TÉCNICAS
 STATUS 10: STATUS
-STATUS 11: CARD FOLDERS
+STATUS 11: CARTAS
 STATUS 12: ーーーーー
 STATUS 13: ーー
 STATUS 14: ーーーー
@@ -1549,7 +1549,7 @@ STATUS 15: Mudar formação do Digimon<1>△: Voltar ao Menu
 STATUS 16: Não é possível mudar a formação<1>△: Voltar ao Menu
 STATUS 17: Trocar quem?
 STATUS 18: Trocar com quem?
-STATUS 19: △: Fechar Status
+STATUS 19: △: Fechar Menu
 STATUS 20: Qual deles?
 STATUS 21: △: Voltar ao Menu
 STATUS 22: Itens
@@ -1583,7 +1583,7 @@ STATUS 51: Não
 STATUS 52: Digivolve
 STATUS 54: ーーーーーーーー
 STATUS 55: Escolher Digivolve
-STATUS 56: Nível da Skill
+STATUS 56: Nív. Skill
 STATUS 57: Battle Digivolve Ativado
 STATUS 58: Battle Digivolve Desativado
 STATUS 59: Explicação da Técnica
@@ -1765,7 +1765,7 @@ TALK00 47: <7>Divermon<7>Bem−vindo ao Yellow <1>Cruiser, o paraíso <1>de um C
 TALK00 52: <7>Guide<7>Bem−vindo. Eu explicarei<1>o básico de Digimon<1>Online.<2,2><3>Sobre qual tema você <1>gostaria de aprender?<2,2>
 TALK00 53: <7>Guide<7>...Estou com medo,<1>mas este é o meu<1>trabalho.<2,2><3>Bem−vindo. Eu explicarei<1>o básico de Digimon<1>Online.<2,2><3>Sobre qual tema você<1>gostaria de aprender?<2,2>
 TALK00 54: <7>Guide<7>Oinkoink?<1>Oink oi−nk?<2,2>
-TALK00 99: <7>Divermon<7>Hã? Oh, um novo <1>cliente...<2,2>
+TALK00 99: <7>Divermon<7>Hã? Opa, pintou<1>freguês novo...<2,2>
 TALK00 100: <7>Divermon<7>Boosters contêm <1>cards que podem ajudar <1>a melhorar seu deck.<2,2><3>Quando conseguir um <1>booster, traga aqui.<2,2><3>Nós, Divermon da<1>Cidade, abrimos<1>boosters.<2,2>
 TALK00 101: <7>Gau, Meio−período<7>Desculpe, você não pode<1>passar daqui...<2,2>
 TALK00 102: <7>Guia<7>Este é o balcão de <1>Ajuda do Digimon <1>Online.<2,2>
@@ -1773,52 +1773,52 @@ TALK00 103: <7>Serviço do Tamer<7>Bem−vindo. Aqui você<1>pode ver dicas de c
 TALK00 105: <7>Tamer Genji<7>Ho ho ho.<1>Você cresceu <1>e ficou bem forte.<2,2>
 TALK00 106: <7>Tamer Genji<7>Oh, eu ouvi falar.<1>Você tem feito <1>um ótimo trabalho!<2,2>
 TALK00 107: <7>Tamer Genji<7>Oink, oink!<1>Oink oink!<2,2>
-TALK00 109: <7>Tamer Genji<7>Mas, você ainda <1>não é bom o suficiente.<1>Volte mais tarde!<2,2>
+TALK00 109: <7>Tamer Genji<7>Mas ainda falta<1>feijão com arroz!<1>Volte mais tarde!<2,2>
 TALK00 110: <7>Tamer Genji<7>Bem, então, vamos <1>ver o quão bom <1>você é com cards.<2,2>
 TALK00 111: <7>Tamer Genji<7>Vamos ver o quão <1>bem você treinou <1>seu Digimon.<2,2>
-TALK00 112: <7>Tamer Nacky<7>Ahhh, eu perdi <1>de novo...<2,2>
+TALK00 112: <7>Tamer Nacky<7>Aaaah, tomei um baile<1>de novo...<2,2>
 TALK00 113: <7>Tamer Nacky<7>...Hmm...<1>Eu não consigo vencer <1>de jeito nenhum...<2,2>
 TALK00 114: <7>Tamer Nacky<7>Não estou indo tão <1>bem, então vou <1>fazer uma pausa.<2,2>
 TALK00 115: <7>Tamer Nacky<7>Você aceita uma <1>Card Battle comigo?<2,2><3>Está tudo bem.<1>Eu não sou tão <1>bom assim...<2,2>
 TALK00 116: <7>Tamer Nacky<7>Você aceita uma <1>Card Battle comigo?<2,2><3>Preciso aprender <1>lutando contra uma <1>pessoa forte.<2,2>
-TALK00 117: <7>Tamer Wong<7>Card Battle é <1>o melhor!<2,2><3>Este é o <1>maior jogo.<2,2>
+TALK00 117: <7>Tamer Wong<7>Card Battle é show<1>de bola!<2,2><3>Esse jogo é<1>o bicho!<2,2>
 TALK00 118: <7>Tamer Wong<7>Card Battle é <1>o máximo!<2,2><3>Eu perco a noção <1>do tempo toda vez <1>que eu jogo.<2,2>
-TALK00 119: <7>Tamer Wong<7>Mas eu ainda não estou<1>em um nível onde posso<1>lutar com você.<2,2><3>Da próxima vez eu <1>estarei pronto <1>para você.<2,2>
-TALK00 120: <7>Tamer Wong<7>Então vamos lá.<1>Eu vou acabar <1>acabando com você.<2,2>
+TALK00 119: <7>Tamer Wong<7>Mas ainda tô verde<1>pra bater de frente<1>com você.<2,2><3>Da próxima eu<1>venho pronto<1>pra virar!<2,2>
+TALK00 120: <7>Tamer Wong<7>Então manda ver!<1>Vou te passar<1>o rodo!<2,2>
 TALK00 121: <7>Tamer Wong<7>Sinto−me honrado em <1>poder duelar com <1>alguém como você...<2,2><3>Vamos!<1>Mostre−me o <1>que você tem!<2,2>
-TALK00 122: <7>Tamer Steve<7>Eu sou o Steve.<1>O Tamer mais <1>inteligente que existe!<2,2>
+TALK00 122: <7>Tamer Steve<7>Eu sou o Steve!<1>O Tamer mais crânio<1>que existe!<2,2>
 TALK00 123: <7>Tamer Steve<7>Eu sou o Steve...<1>O melhor Tamer <1>da Cidade de Asuka!<2,2>
-TALK00 124: <7>Tamer Steve<7>O quê, você <1>vai lutar <1>contra mim?<2,2><3>Ha ha ha!<1>Isso é tão engraçado <1>que eu esqueci de rir.<2,2>
+TALK00 124: <7>Tamer Steve<7>O quê? Vai<1>encarar a fera<1>aqui?!<2,2><3>Ha ha ha!<1>Conta outra que<1>essa foi boa!<2,2>
 TALK00 125: <7>Tamer Steve<7>Então vamos <1>Card Battle.<2,2><3>Isso deve ser <1>fácil o suficiente.<2,2>
-TALK00 126: <7>Tamer Steve<7>Então vamos <1>Card Battle.<2,2><3>Não existe ninguém <1>que possa me vencer!<2,2>
-TALK00 127: <7>Tamer Genji<7>Ho ho ho.<1>Você ainda não <1>é bom o suficiente.<2,2><3>Volte quando <1>achar que está <1>pronto.<2,2>
+TALK00 126: <7>Tamer Steve<7>Então bora pro<1>Card Battle!<2,2><3>Ninguém aqui é páreo<1>pra minha pessoa!<2,2>
+TALK00 127: <7>Tamer Genji<7>Ho ho ho!<1>Ainda tá meio<1>verde, viu!<2,2><3>Volta quando<1>estiver nos<1>trinques!<2,2>
 TALK00 128: <7>Tamer Genji<7>Ho ho ho.<1>Você é bem <1>bom.<2,2><3>Estou ansioso <1>pelo nosso <1>próximo encontro.<2,2>
-TALK00 129: <7>Tamer Genji<7>Ho ho ho.<1>Eu acredito em você.<2,2><3>Um dia você <1>será o <1>World Champ!<2,2>
-TALK00 130: <7>Tamer Genji<7>Você ficou <1>muito acima <1>de mim!<2,2>
-TALK00 131: <7>Tamer Genji<7>Mas eu não vou perder<1>para vocês, jovens!<1>ainda!<2,2><3>Vamos lutar em uma<1>Card Battle!<2,2>
+TALK00 129: <7>Tamer Genji<7>Ho ho ho!<1>Boto fé em você!<2,2><3>Ainda vai levar<1>a taça de<1>World Champ!<2,2>
+TALK00 130: <7>Tamer Genji<7>Você já me<1>deixou comendo<1>poeira!<2,2>
+TALK00 131: <7>Tamer Genji<7>Mas não vou entregar<1>os pontos pra<1>molecada ainda!<2,2><3>Bora lutar numa<1>Card Battle!<2,2>
 TALK00 132: <7>Tamer Nacky<7>...Hmm...<1>Eu não consigo vencer <1>de jeito nenhum...<2,2>
 TALK00 133: <7>Tamer Nacky<7>...oink.<1>Oink...<2,2>
-TALK00 135: <7>Tamer Nacky<7>O quê, eu venci?<2,2><3>Eu consegui!<1>Obrigado, obrigada,<1>obrigada, obrigada!<2,2>
-TALK00 136: <7>Tamer Nacky<7>Ahhh, eu perdi<1>de novo...<2,2><3>Eu simplesmente não<1>tenho o dom<1>para isso.<2,2>
+TALK00 135: <7>Tamer Nacky<7>O quê, eu ganhei?!<2,2><3>Mandei bem!<1>Valeu, obrigada,<1>obrigada demais!<2,2>
+TALK00 136: <7>Tamer Nacky<7>Putz, rodei<1>de novo...<2,2><3>Nascer sem jeito<1>pra coisa é<1>fogo mesmo!<2,2>
 TALK00 138: <7>Item Freak Ken<7>Este é um clube<1>secreto onde os<1>item freaks se reúnem.<2,2>
 TALK00 139: <7>Item Freak Ken<7>Oinkoinkoink!<1>Oiiiink!<2,2>
 TALK00 141: <7>Tamer Wong<7>Card Battle é <1>o máximo!<2,2><3>Eu perco a noção <1>do tempo toda vez <1>que eu jogo.<2,2>
 TALK00 143: <7>Tamer Wong<7>Oink, oink!<2,2>
 TALK00 145: <7>Tamer Wong<7>Obrigado por<1>me deixar vencer.<2,2><3>Acho que eu fui <1>apenas sortudo.<2,2>
-TALK00 146: <7>Tamer Wong<7>Uau, você é <1>muito bom. Foi<1>uma ótima lição.<2,2>
-TALK00 147: <7>Tamer Steve<7>Eu sou o Steve.<1>Até a A.o.A<1>fugiu de mim!<2,2>
+TALK00 146: <7>Tamer Wong<7>Caramba, você<1>manda muito!<1>Valeu a aula!<2,2>
+TALK00 147: <7>Tamer Steve<7>Eu sou o Steve!<1>Até a A.o.A tremeu<1>na base comigo!<2,2>
 TALK00 148: <7>Tamer Steve<7>Oink, Steve!<1>Oink, oink, oink!<2,2>
-TALK00 150: <7>Tamer Steve<7>Ha ha ha, você<1>viu como eu te dei<1>uma surra?<2,2><3>Bem, apenas meu rival<1>Bill é bom o suficiente<1>para lutar comigo!<2,2>
-TALK00 151: <7>Tamer Steve<7>Ah, cara!<1>Por que eu perdi?<2,2><3>Eu vou ser <1>ridicularizado pelo<1>Bill de novo!<2,2>
+TALK00 150: <7>Tamer Steve<7>Ha ha ha! Viu só<1>que lavada eu<1>te dei?<2,2><3>Só o meu rival Bill<1>dá conta do recado<1>comigo!<2,2>
+TALK00 151: <7>Tamer Steve<7>Pô, sacanagem!<1>Por que perdi?!<2,2><3>O Bill vai tirar<1>onda da minha<1>cara de novo!<2,2>
 TALK00 152: <7>Tamer Gloria<7>...tome essa!<1>...e essa!<2,2><3>Digimon Online<1>é o melhor!<2,2>
-TALK00 153: <7>Tamer Gloria<7>...tome essa!<1>...e essa!<2,2><3>Jogar de graça<1>é o melhor!<2,2>
+TALK00 153: <7>Tamer Gloria<7>...toma essa!<1>...e mais essa!<2,2><3>Jogar na faixa<1>é bom demais!<2,2>
 TALK00 154: <7>Tamer Gloria<7>...tome essa!<1>...e essa!<2,2><3>Está tudo bem<1>desde que a A.o.A<1>foi pega!<2,2>
 TALK00 155: <7>Tamer Gloria<7>...oink!<1>..oink, oink!<2,2>
 TALK00 157: <7>Tamer Gloria<7>Oh, a próxima<1>batalha está<1>começando!<2,2><3>Desculpe, talvez<1>da próxima vez!<2,2>
-TALK00 158: <7>Tamer Gloria<7>OK, então,<1>Card Battle!<2,2><3>Prepare−se.<1>Eu não vou <1>perder!<2,2>
+TALK00 158: <7>Tamer Gloria<7>Fechou, então!<1>Card Battle!<2,2><3>Se segura!<1>Eu não vou<1>dar mole!<2,2>
 TALK00 159: <7>Tamer Gloria<7>Ei, você é <1>muito bom.<2,2><3>Bem, vamos acabar<1>logo com esta<1>luta!<2,2>
-TALK00 160: <7>Tamer Gloria<7>Eeei, eu venci!<2,2><3>Mas não fique triste...<1>Se você praticar, <1>você vai melhorar!<2,2>
-TALK00 161: <7>Tamer Gloria<7>O quê, eu perdi?!<2,2><3>Foi apenas<1>sorte, só isso.<2,2>
+TALK00 160: <7>Tamer Gloria<7>Eeei, eu venci!<2,2><3>Esquenta não...<1>Com treino você<1>chega lá!<2,2>
+TALK00 161: <7>Tamer Gloria<7>Quê?! Eu perdi?!<2,2><3>Foi pura sorte!<1>Não se acha não!<2,2>
 TALK00 162: <7>Rapper Mike<7>E aí, parça!<1>Mostre seu legit<1>El Dorado ID!<2,2><3>Apenas membros do<1>clube que são top<1>podem entrar!<2,2>
 TALK00 163: <7>Rapper Mike<7>E aí, parça. Apenas<1>membros legit do clube<1>podem passar!<2,2><3>Caras com Digimon<1>feios não podem<1>entrar!<2,2>
 TALK00 164: <7>Rapper Mike<7>El Dorado é onde os<1>mais brabos se reúnem.<2,2><3>É a Cidade do Ouro onde<1>você consegue itens<1>raros!<2,2>
@@ -1840,7 +1840,7 @@ TALK00 673: <7>Masato<7>Oink,<1>oioioioink!<2,2>
 TALK00 677: <7>Divermon<7>...o quê? Você<1>quer abrir um<1>Booster?<2,2><3>OK. Espere um<1>segundo.<2,2>
 TALK00 719: <7>Maniac Jack<7>Oioinkkk!<1>Oioioi, oink!<2,2>
 TALK00 1050: <7>Tamer Genji<7>Ho ho ho. Olhe só.. <1>Você parece estar <1>indo bem.<2,2>
-TALK00 1051: <7>Tamer Nacky<7>Ah, que pena.<1>Eu perdi de novo...<2,2>
+TALK00 1051: <7>Tamer Nacky<7>Que azar!<1>Dancei de novo...<2,2>
 TALK00 1052: <7>Tamer Wong<7>Card Battle é <1>o melhor!<2,2><3>Este é o melhor <1>jogo de agora!<2,2>
 TALK00 1053: <7>Tamer Steve<7>Eu sou o Steve.<1>O Tamer mais <1>inteligente que existe!<2,2>
 TALK00 1054: <7>Tamer Gloria<7>...tome!<1>...tome isto!<2,2><3>Digimon Online é <1>simplesmente o <1>melhor!<2,2>
@@ -1877,14 +1877,14 @@ TALK01 213: <7>Tamer Chris<7>Eu finalmente <1>entrei no Digimon<1>Online.<2,2><3
 TALK01 214: <7>Tamer Chris<7>Agora eu posso<1>jogar de graça!<2,2><3>Seria um<1>desperdício se eu<1>não lutasse!<2,2>
 TALK01 215: <7>Tamer Chris<7>Você não precisa <1>se preocupar com <1>a A.o.A.<2,2><3>Então jogue e <1>aproveite isso<1>enquanto dura.<2,2>
 TALK01 216: <7>Tamer Chris<7>Oiiink,<1>oi, oi, oi!<2,2>
-TALK01 218: <7>Tamer Chris<7>Você é tão <1>fraco. Que perda <1>de tempo.<2,2><3>Da próxima vez<1>eu vou simplesmente<1>te pular.<2,2>
+TALK01 218: <7>Tamer Chris<7>Que moleza!<1>Perda de tempo<1>total!<2,2><3>Da próxima vez<1>eu passo reto<1>por você!<2,2>
 TALK01 219: <7>Tamer Chris<7>Muito bem então!<1>Card Battle!<2,2>
 TALK01 220: <7>Tamer Chris<7>Muito bem então!<1>Digimon Battle!<2,2>
 TALK01 221: <7>Tamer Chris<7>Você é muito <1>boa.<2,2><3>Como você ficou <1>tão boa assim?<2,2>
-TALK01 222: <7>Tamer Chris<7>Você é muito <1>incrível.<2,2><3>Eu não sou digno<1>nem de engraixar <1>seus sapatos.<2,2>
-TALK01 223: <7>Tamer Chris<7>Ei, eu acabei <1>de ganhar uma <1>nova card.<2,2><3>Eu não vou perder<1>desta vez!<2,2>
+TALK01 222: <7>Tamer Chris<7>Você manda<1>muito bem!<2,2><3>Não sirvo nem<1>pra amarrar<1>seu cadarço!<2,2>
+TALK01 223: <7>Tamer Chris<7>Ó, acabei de<1>descolar uma<1>card nova!<2,2><3>Desta vez não<1>tem chororô!<2,2>
 TALK01 224: <7>Tamer Chris<7>Oh sim!<1>É mais divertido<1>quando se vence!<2,2>
-TALK01 225: <7>Tamer Chris<7>Ah man, eu perdi.<2,2><3>Vamos lutar de novo!<2,2>
+TALK01 225: <7>Tamer Chris<7>Puxa vida, dancei!<2,2><3>Bora mais uma!<2,2>
 TALK01 226: <7>Tamer Alice<7>...o quê...?<1>...você quer...<1>...lutar comigo...?<2,2>
 TALK01 227: <7>Tamer Alice<7>...você...<1>...quer lutar...<1>...comigo...?<2,2>
 TALK01 228: <7>Tamer Alice<7>...A.o.A acabou...<1>...acabou...?<2,2><3>...então você...<1>...quer lutar...<1>...comigo de novo...?<2,2>
@@ -1892,10 +1892,10 @@ TALK01 229: <7>Tamer Alice<7>...oinc...<1>...oinc, oi...<2,2>
 TALK01 231: <7>Tamer Alice<7>...me desculpe...<1>...eu não quero...<1>...lutar com você...<2,2>
 TALK01 232: <7>Tamer Alice<7>...se for...<1>...Card Battle...<2,2>
 TALK01 233: <7>Tamer Alice<7>...se for...<1>...Digimon Battle...<2,2>
-TALK01 234: <7>Tamer Alice<7>...eu recuso... ...eu<1>não quero... ...perder<1>de você de novo...<2,2>
+TALK01 234: <7>Tamer Alice<7>...tô fora... ...não<1>quero... ...levar<1>outro coro seu...<2,2>
 TALK01 235: <7>Tamer Alice<7>...não...<1>...você é...<1>...muito forte...<2,2>
 TALK01 236: <7>Tamer Alice<7>...vamos...<1>...Card Battle...<2,2>
-TALK01 237: <7>Tamer Alice<7>...eu venci...<1>...você é péssimo...<2,2>
+TALK01 237: <7>Tamer Alice<7>...eu venci...<1>...que papelão...<2,2>
 TALK01 238: <7>Tamer Alice<7>...eu perdi...<1>...você é boa...<2,2>
 TALK01 242: <7>Gargomon<7>Kaboom! Este <1>é o Armory.<2,2>
 TALK01 243: <7>Wizardmon<7>Bem−vindo, esta é<1>a Item Shop!<2,2>
@@ -1921,25 +1921,25 @@ TALK01 319: <7>Guarda da DO<7>...oink,<1>oioioink, oink!<2,2>
 TALK01 320: <7><9><7>Hã? Está <1>bloqueado por algo...<2,2>
 TALK01 322: <7>Oficial de Salvamento?<7>Sinto muito, você <1>não pode salvar aqui.<2,2><3>Se quiser <1>salvar, por favor, vá<1>para outro lugar.<2,2>
 TALK01 323: <7>Oficial Digimon?<7>Trocar Digimon?<2,2><3>Desculpe, não podemos <1>fazer isso <1>agora.<2,2>
-TALK01 324: <7>Armazém?<7>Não temos <1>armas para te <1>vender!<2,2><3>Estamos ocupados <1>agora. <1>Vá embora!<2,2>
-TALK01 325: <7>Armazém?<7>Estamos fechados por <1>hoje. Não estamos <1>vendendo nada!<2,2>
-TALK01 326: <7>Recepção da Pousada?<7>Esta é a recepção!<2,2><3>Mas você não pode <1>ficar aqui!<1>Vá embora!<2,2>
+TALK01 324: <7>Armazém?<7>Sem arma<1>nenhuma pra<1>te vender!<2,2><3>Tamo na<1>correria!<1>Vaza daqui!<2,2>
+TALK01 325: <7>Armazém?<7>Fechou a birosca<1>por hoje! Não tem<1>nada à venda!<2,2>
+TALK01 326: <7>Recepção da Pousada?<7>Aqui é a recepção!<2,2><3>Mas não pode<1>ficar aqui!<1>Circulando!<2,2>
 TALK01 330: <7>Maya<7>Oiink,<1>oink, ooinkk!<2,2>
 TALK01 335: <7>Vovó Plum<7>Oink, oink,<1>oiiiink!<2,2>
 TALK01 339: <7>Ryan Energético<7>...oink, oink,<1>oooink!<2,2>
 TALK01 352: <7>Líder Genbu<7>Oinc, oinc,<1>oioink, oinc!<2,2>
 TALK01 372: <7>Divermon<7>Hmm? Você não <1>tem um Card <1>Folder?<2,2><3>Vá buscar um em <1>Asuka City no Yellow <1>Cruiser.<2,2>
-TALK02 1: <7>Tamer Haruka<7>Ah ha ha ha!<1>Eu sou a melhor <1>tamer mulher!<2,2><3>Ninguém neste <1>server pode me <1>derrotar!<2,2>
+TALK02 1: <7>Tamer Haruka<7>Oh ho ho ho!<1>Eu sou a rainha<1>do pedaço aqui!<2,2><3>Ninguém neste<1>server derruba<1>a minha banca!<2,2>
 TALK02 2: <7>Tamer Haruka<7>Ah ha ha ha!<1>Eu sou a melhor <1>tamer mulher!<2,2><3>Eu posso enfrentar <1>a A.o.A a <1>qualquer momento!<2,2>
 TALK02 3: <7>Tamer Haruka<7>O−ink, ink!<1>O, o, o, oink!<2,2>
-TALK02 5: <7>Tamer Haruka<7>Claro, você não <1>tem chance contra <1>mim!<2,2><3>Você deveria treinar <1>mais, pelo menos <1>para me entreter!<2,2>
+TALK02 5: <7>Tamer Haruka<7>Zero chance<1>contra mim,<1>criatura!<2,2><3>Vai comer mais<1>feijão antes de<1>me encarar!<2,2>
 TALK02 6: <7>Tamer Haruka<7>Agradeça por <1>poder duelar <1>comigo.<2,2>
-TALK02 7: <7>Tamer Haruka<7>Claro, da última vez <1>eu deixei você <1>vencer.<2,2><3>Não tem como <1>você fazer isso <1>sozinho!<2,2>
+TALK02 7: <7>Tamer Haruka<7>Da outra vez<1>eu dei colher<1>de chá, tá?<2,2><3>Sem chance de<1>você ganhar<1>na raça!<2,2>
 TALK02 8: <7>Tamer Haruka<7>Eu posso derrotar <1>seu Digimon <1>tão facilmente!<2,2>
 TALK02 9: <7>Tamer Haruka<7>É uma pena <1>que você não <1>esteja indo bem.<2,2><3>Vamos lutar de novo em<1>um futuro próximo. Ah<1>ha ha ha!<2,2>
 TALK02 10: <7>Tamer Haruka<7>Pobre tolo por <1>me desafiar!<2,2><3>Mas você deveria <1>ser grato por <1>ter essa chance!<2,2>
-TALK02 11: <7>Tamer Haruka<7>Ah ha ha ha!<1>Você não vence <1>minhas habilidades!<2,2><3>Você não está nem <1>perto do meu nível.<2,2>
-TALK02 12: <7>Tamer Haruka<7>Bem, tudo bem <1>deixar os outros <1>vencerem às vezes.<2,2><3>É o verdadeiro indicador<1>de um campeão. Ah ha<1>ha ha!<2,2>
+TALK02 11: <7>Tamer Haruka<7>Oh ho ho ho!<1>Nem cheira as<1>minhas jogadas!<2,2><3>Ficou no<1>chinelo!<2,2>
+TALK02 12: <7>Tamer Haruka<7>Deixar ganhar<1>às vezes faz parte<1>da humildade!<2,2><3>Coisa de quem tá<1>no topo!<1>Oh ho ho ho!<2,2>
 TALK02 15: <7>Tamer Poemy<7>Oinnk,<1>oooooink!<2,2>
 TALK02 21: <7>Tamer Poemy<7>Oh, grande Herói!<2,2><3>Estou honrada em<1>apenas conhecê−lo!<2,2>
 TALK02 28: <7>Goalie Hitoshi<7>Oink?<1>ooink, ooink!!<2,2>
@@ -1947,26 +1947,26 @@ TALK02 29: <7>Defenseman Naoki<7>Oink, ooioink!<1>ooink, ooink!!<2,2>
 TALK02 41: <7>Tamer Mitch<7>Ufa, obrigado!<1>Eu me sinto ótimo!<2,2>
 TALK02 42: <7>Tamer Mitch<7>Eu nunca conheci<1>alguém tão bom <1>quanto você!<2,2><3>Você deve ser o<1>Server <1>Champ!<2,2>
 TALK02 43: <7>Tamer Mitch<7>Ufa, obrigado!<1>Eu me sinto ótimo!<2,2>
-TALK02 44: <7>Tamer Mitch<7>Uau, você é bom!<1>Estou impressionado!<2,2><3>Eu entrego meus<1>sonhos de ser o<1>Server Champ!<2,2><3>Eu te dou a Wild<1>Aura, então use−a<1>com sabedoria!<2,2>
+TALK02 44: <7>Tamer Mitch<7>Você é fera!<1>Tiro o chapéu!<2,2><3>Passo a faixa<1>de Server Champ<1>pra você!<2,2><3>Toma a Wild<1>Aura e usa com<1>sabedoria!<2,2>
 TALK02 45: <7>Tamer Mitch<7>Eu nunca conheci<1>alguém tão bom <1>quanto você!<2,2><3>Você deve ser o<1>Server <1>Champ!<2,2>
 TALK02 49: <7>Tamer Natsumi<7>Oin, oink!<1>Oi, oink!<2,2>
 TALK02 52: <7>Tamer Natsumi<7>Ei, vamos de<1>Card Battle!<2,2><3>Eu amo!<2,2>
 TALK02 53: <7>Tamer Natsumi<7>Ei, vamos de<1>Digimon Battle!<2,2><3>Eu sou muito boa!<2,2>
 TALK02 54: <7>Tamer Natsumi<7>Eu vou perder se <1>duelarem comigo.<2,2><3>Então eu passo<1>desta vez!<2,2>
 TALK02 55: <7>Tamer Natsumi<7>Você é forte.<1>Eu sei que não<1>serei capaz de vencer.<2,2><3>Então talvez na<1>próxima!<2,2>
-TALK02 56: <7>Tamer Natsumi<7>Sim! Eu venci!<2,2><3>Eu brinco com você<1>a qualquer hora!<2,2>
-TALK02 57: <7>Tamer Natsumi<7>O quê! <1>Eu perdi?!<2,2><3>Que droga!<1>Eu vou te vencer<1>da próxima vez!<2,2>
-TALK02 106: <7>Tamer Natsumi<7>Ei você, você <1>parece bem <1>forte!<2,2><3>Venha fazer um Card<1>Battle comigo<1>por um tempo!<2,2>
+TALK02 56: <7>Tamer Natsumi<7>Aê! Ganhei!<2,2><3>Quando quiser<1>outro baile, chama!<2,2>
+TALK02 57: <7>Tamer Natsumi<7>Quê?!<1>Eu perdi?!<2,2><3>Poxa vida!<1>Na próxima eu<1>viro esse jogo!<2,2>
+TALK02 106: <7>Tamer Natsumi<7>Ei, você tem<1>cara de quem<1>dá trabalho!<2,2><3>Bora tirar um<1>Card Battle<1>rapidinho!<2,2>
 TALK02 108: <7>Tamer Mitch<7>Eu estou tão <1>empolgado!<2,2>
-TALK02 109: <7>Tamer Mitch<7>Que os fortes <1>lutem comigo!<2,2>
-TALK02 110: <7>Tamer Mitch<7>Puxa, isso é <1>uma droga!<2,2><3>Eu queria ter lutado<1>contra o A.o.A também!<2,2>
+TALK02 109: <7>Tamer Mitch<7>Quem tiver peito,<1>que venha encarar!<2,2>
+TALK02 110: <7>Tamer Mitch<7>Que saco,<1>bicho!<2,2><3>Queria ter descido<1>a mão na A.o.A!<2,2>
 TALK02 111: <7>Tamer Mitch<7>Oioionk!<1>Oin, oinnnk!<2,2>
-TALK02 112: <7>Tamer Mitch<7>...o quê?<1>Você quer lutar<1>comigo?<2,2><3>Desculpe, não escolho<1>os menores.<2,2>
+TALK02 112: <7>Tamer Mitch<7>...hã?<1>Quer tirar onda<1>comigo?<2,2><3>Foi mal, não bato<1>em peso−pena!<2,2>
 TALK02 113: <7>Tamer Mitch<7>Tudo bem, eu vou de<1>Card Battle <1>com você!<2,2><3>Vamos ver quem<1>é o melhor dos<1>melhores.<2,2>
 TALK02 116: <7>Tamer Mitch<7>Eu serei o Server<1>Champ na <1>próxima!<2,2>
 TALK02 117: <7>Tamer Mitch<7>Ei você, vamos de <1>Digimon Battle!<2,2><3>Agora vamos<1>começar!<2,2>
 TALK02 118: <7>Tamer Mitch<7>Eu preciso pesquisar<1>a batalha Digimon <1>primeiro!<2,2><3>Desculpe, não posso <1>lutar agora.<1>Até logo!!<2,2>
-TALK02 119: <7>Tamer Mitch<7>Para fazer isso, eu vou<1>vencer você <1>em um duelo!<2,2><3>Eu não sou como os<1>outros caras!<2,2>
+TALK02 119: <7>Tamer Mitch<7>Vou te mandar<1>pra lona nesse<1>duelo!<2,2><3>Não sou café com<1>leite, não!<2,2>
 TALK02 205: <7>Tamer Nakano<7>Hmm, entendi.<1>Com este combo...<2,2><3>Eu coleciono dados <1>de card e analiso.<2,2>
 TALK02 206: <7>Tamer Nakano<7>Eu coleciono cards<1>e os analiso.<2,2><3>Estou criando <1>o guia de estratégia <1>definitivo!<2,2>
 TALK02 207: <7>Tamer Nakano<7>Puxa, estou em <1>apuros.<2,2><3>Eu não consegui <1>dados por causa <1>da A.o.A.<2,2>
@@ -1984,7 +1984,7 @@ TALK02 218: <7>Tamer Nakano<7>Muito obrigado.<1>Eu coletei dados <1>importantes 
 TALK02 219: <7>Tamer Nakano<7>Você é forte!<1>Eu coletei <1>todo tipo de dados.<2,2><3>Muito obrigado.<1>Por favor, <1>volte sempre.<2,2>
 TALK02 233: <7>SIGN<7>Norte: Asuka City<1>Leste: Seiryu City<2,2>
 TALK02 260: <7>Tia Teresa<7>Ooooink, oink!<1>Oinnnk, oinnk!<2,2>
-TALK02 328: <7>MetalEtemon<7>Invincible não é <1>ótimo?<2,2><3>Agora sim você é <1>um bom tamer!<2,2>
+TALK02 328: <7>MetalEtemon<7>Invincible não<1>é um show?!<2,2><3>Agora sim você<1>tá no estilo, baby!<2,2>
 TALK02 329: <7>MetalEtemon<7>Ei, isso é <1>Destruction. <1>Grande weapon!<2,2>
 TALK02 330: <7>MetalEtemon<7>Traga a Belial Fang <1>se você tiver <1>Destruction!<2,2><3>Então eu a transformarei<1>em uma weapon mais<1>poderosa!<2,2>
 TALK02 331: <7>MetalEtemon<7>Eu a transformarei em<1>uma weapon muito mais<1>poderosa!<2,2><3>Dê−me Destruction <1>e Belial Fang.<2,2><3>...OK, lá vamos nós!<1>Revestimento <1>de Kulon Digizoite!<2,2><3>Aqui está! <1>Uma Invincible!<2,2><3>Você vai ser um <1>tamer muito <1>estiloso agora!<2,2>
@@ -1992,28 +1992,28 @@ TALK02 360: <7>Guardromon<7>ACESSANDO<1>MATRIX DRIVE.<2,2>
 TALK02 363: <7>Gatomon<7>...Bem−vindo<1>à minha Pousada!<2,2><3>Por favor, aproveite<1>para descansar.<2,2>
 TALK02 365: <7><9><7>Sim! Eu consegui um <1>Power Charge!<2,2>
 TALK02 368: <7>Tamer Shingo<7>Ser World Champ <1>é o sonho de todos.<1>Eu serei um!<2,2>
-TALK02 369: <7>Tamer Shingo<7>Eu decidi!<1>Eu serei o<1>World Champ!<2,2>
+TALK02 369: <7>Tamer Shingo<7>Bati o martelo!<1>Eu serei o<1>World Champ!<2,2>
 TALK02 370: <7>Tamer Shingo<7>Oink oinnk,<1>oink, oink!<2,2>
-TALK02 372: <7>Tamer Shingo<7>Eu não tenho<1>tempo para<1>tipos como você.<2,2><3>Eu tenho que <1>lutar contra <1>oponentes mais fortes!<2,2>
+TALK02 372: <7>Tamer Shingo<7>Tô sem tempo<1>pra café com<1>leite.<2,2><3>Só encaro<1>barra−pesada<1>daqui pra frente!<2,2>
 TALK02 373: <7>Tamer Shingo<7>Eu vou te derrotar<1>em um duelo primeiro!<2,2>
 TALK02 374: <7>Tamer Shingo<7>Agora mesmo<1>estou treinando.<2,2><3>Desculpe, mas vamos<1>lutar em outro <1>momento!<2,2>
 TALK02 375: <7>Tamer Shingo<7>Então, primeiro eu<1>vou te derrotar em<1>uma batalha!<2,2><3>É melhor você se<1>preparar!<2,2>
 TALK02 376: <7>Tamer Shingo<7>Para fazer isso eu <1>tenho que derrotar<1>você.<2,2><3>Apenas observe!<1>Eu vou<1>vencer algum dia<2,2>
 TALK02 377: <7>Tamer Shingo<7>Então, vamos lutar.<2,2><3>...prepare−se. Eu vou vencer!<2,2>
-TALK02 378: <7>Tamer Shingo<7>Ha ha ha, viu<1>do que eu sou capaz?<2,2><3>Eu serei o Server<1>Champ em um <1>vapt−vupt!<2,2>
-TALK02 379: <7>Tamer Shingo<7>Droga, eu não posso<1>acreditar que perdi<1>para você.<2,2><3>Eu não vou esquecer<1>isso. Eu vou vencer<1>da próxima vez!<2,2>
+TALK02 378: <7>Tamer Shingo<7>Ha ha ha! Viu o<1>poder do pai aqui?<2,2><3>Logo mais sou<1>Server Champ num<1>vapt−vupt!<2,2>
+TALK02 379: <7>Tamer Shingo<7>Ah não! Não engulo<1>ter perdido<1>pra você.<2,2><3>Anota aí: na<1>próxima eu dou<1>o troco!<2,2>
 TALK02 380: <7>Tamer Makoto<7>Eu fiz uma <1>promessa para a<1>Kimmy.<2,2><3>Eu vou ser o <1>Server Champ!<2,2>
 TALK02 381: <7>Tamer Makoto<7>A Kimmy prometeu <1>para mim!<2,2><3>Ela vai brincar <1>comigo se eu for o <1>Server Champ!<2,2>
 TALK02 382: <7>Tamer Makoto<7>Oi, oink,<1>oioioioink!<2,2>
 TALK02 384: <7>Tamer Makoto<7>Mas eu estou<1>preocupado.<2,2><3>A Kimmy pode estar<1>interessada em <1>outro garoto.<2,2>
-TALK02 385: <7>Tamer Makoto<7>Então você pode duelar<1>comigo e <1>perder de propósito?<2,2>
-TALK02 386: <7>Tamer Makoto<7>Eu não quero <1>lutar com você.<2,2><3>Porque se eu perder<1>o duelo, a Kimmy <1>vai me odiar...<2,2>
+TALK02 385: <7>Tamer Makoto<7>Quebra esse galho:<1>duela e entrega<1>o jogo pra mim?<2,2>
+TALK02 386: <7>Tamer Makoto<7>Tô fora dessa<1>briga!<2,2><3>Se eu tomar coro,<1>a Kimmy vai me<1>odiar...<2,2>
 TALK02 387: <7>Tamer Makoto<7>Então você pode duelar<1>comigo e <1>perder de propósito?<2,2>
 TALK02 388: <7>Tamer Makoto<7>...então, vamos <1>lutar outro dia.<2,2><3>Se eu perder agora<1>a Kimmy realmente <1>vai me odiar...<2,2>
 TALK02 389: <7>Tamer Makoto<7>Então eu não posso<1>perder!<2,2><3>Eu vou vencer <1>não importa o quê!<2,2>
 TALK02 390: <7>Tamer Makoto<7>Ufa, eu venci!<2,2><3>Eu queria que a Kimmy<1>tivesse visto <1>essa partida!<2,2>
-TALK02 391: <7>Tamer Makoto<7>Droga, eu perdi.<2,2><3>Por favor! Não <1>diga nada sobre <1>isso para a Kimmy!<2,2>
-TALK02 392: <7>Tamer Brown<7>Eu talvez esteja <1>ficando velho <1>demais para isso...<2,2><3>Eu estou exausto <1>só de chegar <1>aqui.<2,2>
+TALK02 391: <7>Tamer Makoto<7>Putz grila, rodei!<2,2><3>Pelo amor! Bico<1>calado com a<1>Kimmy, hein!<2,2>
+TALK02 392: <7>Tamer Brown<7>Tô ficando<1>enferrujado pra<1>essas coisas...<2,2><3>Só de chegar<1>aqui já tô só<1>o bagaço!<2,2>
 TALK02 393: <7>Tamer Brown<7>Estou ficando velho.<2,2><3>Eu descansei um <1>bom tempo, mas ainda <1>estou cansado.<2,2>
 TALK02 394: <7>Tamer Brown<7>Oink, oink<1>oink, oink.<2,2>
 TALK02 396: <7>Tamer Brown<7>Você realmente <1>não deveria se <1>esforçar tanto.<2,2><3>Você deveria <1>ter cuidado também.<2,2>
@@ -2021,7 +2021,7 @@ TALK02 397: <7>Tamer Brown<7>Mas eu ainda sou um<1>tamer ativo.<1>Ho ho ho<2,2><
 TALK02 398: <7>Tamer Brown<7>Sinto muito, mas <1>não vamos lutar <1>agora.<2,2><3>Eu estarei melhor <1>pela manhã...<2,2>
 TALK02 399: <7>Tamer Brown<7>Eu ainda sou um tamer <1>ativo, no entanto.<1>Ho ho ho ho.<2,2><3>Você quer <1>batalhar comigo?<2,2>
 TALK02 400: <7>Tamer Brown<7>Quando eu era jovem <1>eu era impulsivo <1>como você.<2,2><3>Isso me traz <1>tantas <1>lembranças...<2,2>
-TALK02 401: <7>Tamer Brown<7>Eu não vou <1>deixar vocês, seus <1>travessos, me vencerem.<2,2><3>Experiência é <1>a chave para o <1>duelo!<2,2>
+TALK02 401: <7>Tamer Brown<7>Molecada atrevida<1>não me derruba<1>não!<2,2><3>Cabelo branco<1>também dá caldo<1>no duelo!<2,2>
 TALK02 402: <7>Tamer Brown<7>Ho ho ho ho.<1>Eu ainda não sou <1>tão ruim, sou?<2,2><3>Eu lutarei com você <1>a qualquer hora.<2,2>
 TALK02 403: <7>Tamer Brown<7>Ho ho ho ho.<1>Acho que as coisas <1>mudaram.<2,2><3>Olhar para você <1>traz <1>lembranças...<2,2>
 TALK02 404: <7>Tamer Pierre<7>Bonjour monsieur.<1>Você está tres bien se <1>chegou até aqui.<2,2>
@@ -2035,32 +2035,32 @@ TALK02 412: <7>Tamer Pierre<7>Monsieur, suas <1>habilidades são <1>c’est magn
 TALK02 413: <7>Tamer Pierre<7>Então monsieur, <1>que tal uma <1>Card Battle?<2,2><3>Elegantemente, s’il <1>vous plait.<2,2>
 TALK02 414: <7>Tamer Pierre<7>Oh, eu venci.<1>Merci beaucoup.<2,2><3>Eu antecipo nosso<1>próximo encontro.<1>Au revoir.<2,2>
 TALK02 415: <7>Tamer Pierre<7>Non, non, non.<1>Eu perdi desta vez.<2,2><3>Bem, por favor lute<1>comigo de novo da<1>próxima vez, au revoir.<2,2>
-TALK02 416: <7>Tamer Mitaka<7>Ta−da! Justiça <1>Tamer Mitaka <1>ao resgate!<2,2><3>Nenhum mal deverá <1>me derrotar.<2,2>
+TALK02 416: <7>Tamer Mitaka<7>Tchan−ran! Tamer<1>da Justiça Mitaka<1>na área!<2,2><3>Mal nenhum me<1>bota pra correr!<2,2>
 TALK02 417: <7>Tamer Mitaka<7>Ta−da! Justiça <1>Tamer Mitaka <1>ao resgate!<2,2><3>O grupo maligno<1>A.o.A não é páreo <1>para mim!<2,2>
 TALK02 418: <7>Tamer Mitaka<7>Oiiink!<1>Oink, oink!<2,2>
 TALK02 419: <7>Tamer Mitaka<7>...e então?<1>Como foi?<2,2><3>Super−heróis <1>não são incríveis?!<2,2>
-TALK02 420: <7>Tamer Mitaka<7>Receba meu ataque<1>de Punição<1>de Duelo!<2,2><3>...Hya!<2,2>
+TALK02 420: <7>Tamer Mitaka<7>Tome meu golpe:<1>Punição do<1>Duelo!<2,2><3>...Iááá!<2,2>
 TALK02 421: <7>Tamer Mitaka<7>Ta−da! Justiça <1>Tamer Mitaka <1>ao resgate!<2,2><3>Desculpe, mas <1>você é o número<1>dois em Asuka!<2,2>
 TALK02 422: <7>Tamer Mitaka<7>Embora eu possa <1>perecer, eu irei<1>derrotá−lo!<2,2>
-TALK02 423: <7>Tamer Mitaka<7>...e então?<1>Como foi isso?<2,2><3>Eu estive <1>praticando no<1>espelho!<2,2>
+TALK02 423: <7>Tamer Mitaka<7>...e aí? Curtiu<1>a entrada?!<2,2><3>Passei horas<1>ensaiando no<1>espelho!<2,2>
 TALK02 424: <7>Tamer Mitaka<7>Porque eu sou o <1>número um <1>cardmaster!<2,2><3>Então prepare−se,<1>tamer maligno!<2,2>
-TALK02 425: <7>Tamer Mitaka<7>HAHAHA.<1>O bem sempre<1>triunfa!<2,2><3>Todo o mal será <1>derrotado <1>um dia!<2,2>
+TALK02 425: <7>Tamer Mitaka<7>HA HA HA!<1>A justiça<1>não falha!<2,2><3>Os maus sempre<1>dançam no<1>final!<2,2>
 TALK02 426: <7>Tamer Mitaka<7>Oh, me desculpe,<1>isso é tudo<1>imaginação.<2,2><3>Eu queria brincar de<1>super−herói por<1>um pouco. Ha ha...<2,2>
 TALK02 427: <7>Tamer Mitaka<7>HAHAHA.<1>O bem sempre<1>triunfa!<2,2><3>Todo o mal será <1>derrotado <1>um dia!<2,2>
-TALK02 428: <7>Tamer Mitaka<7>Oh, me desculpe,<1>eu estive<1>fingindo.<2,2><3>Eu te dou este <1>Darkness Gale,<1>então...<2,2><3>Por favor me perdoe,<1>ok?<1>...Ha ha...<2,2>
+TALK02 428: <7>Tamer Mitaka<7>Foi mal, eu tava<1>só fazendo<1>teatro!<2,2><3>Toma essa<1>Darkness Gale<1>de consolo...<2,2><3>Não fica de mal<1>não, tá?<1>...Ha ha...<2,2>
 TALK02 429: <7>Tamer Mitaka<7>Oh, me desculpe,<1>isso é tudo<1>imaginação.<2,2><3>Eu queria brincar de<1>super−herói por<1>um pouco. Ha ha...<2,2>
 TALK02 430: <7>Agumon<7>O quê, você realmente <1>foi à torre?<2,2><3>Bem então, eu <1>vou também!<2,2>
-TALK02 441: <7>Agumon<7>Eu fui até a metade,<1>mas fiquei cansado e<1>voltei...<2,2><3>Eu vou tentar <1>de novo quando não <1>estiver com fome!<2,2>
+TALK02 441: <7>Agumon<7>Fui até a metade,<1>mas bateu a<1>preguiça...<2,2><3>Vou de novo<1>depois de bater<1>um rango!<2,2>
 TALK02 442: <7>Agumon<7>Eu finalmente cheguei <1>à torre!<2,2><3>Mas não havia <1>muita gente...<1>Meio solitário.<2,2>
-TALK02 443: <7>Agumon<7>Guilmon é tão <1>malvado!<2,2><3>Ele comeu todos os <1>lanches!<2,2>
+TALK02 443: <7>Agumon<7>O Guilmon é<1>um fominha!<2,2><3>Comeu todo<1>o rango!<2,2>
 TALK02 444: <7>Agumon<7>Guilmon prometeu que <1>nós dividiríamos toda <1>a comida!<2,2><3>Agora não vamos mais <1>brigar!<2,2>
 TALK02 445: <7>Agumon<7>Olhe o que <1>a A.o.A fez!<2,2><3>Vá dar uma <1>lição para eles!<2,2>
 TALK02 447: <7>Guilmon<7>Eu fui ao Deserto <1>Mobius, mas é <1>perigoso!<2,2><3>Você se perde <1>em todo aquele <1>nada.<2,2>
 TALK02 448: <7>Guilmon<7>Eu fui ao Deserto <1>Mobius, mas é <1>perigoso!<2,2><3>Você se perde <1>em todo aquele <1>nada.<2,2>
 TALK02 449: <7>Guilmon<7>A Fábrica Dum Dum <1>fica além do <1>Vale Bullet!<2,2>
-TALK02 450: <7>Guilmon<7>Eca! Acho que <1>não dá para <1>comer areia.<2,2>
+TALK02 450: <7>Guilmon<7>Eca! Areia não<1>desce nem com<1>guaraná!<2,2>
 TALK02 451: <7>Guilmon<7>Muita gente está <1>indo para a Cidade <1>Byakko!<2,2><3>O Líder Byakko estava<1>com eles. Eu me<1>pergunto o que está<2,2><3>acontecendo.<2,2>
-TALK02 452: <7>Guilmon<7>Sinto muito mesmo, <1>Agumon!<2,2><3>Eu estava com <1>tanta fome...<2,2>
+TALK02 452: <7>Guilmon<7>Foi mal mesmo,<1>Agumon!<2,2><3>A barriga tava<1>roncando alto...<2,2>
 TALK02 453: <7>Guilmon<7>Eu não vou fazer <1>nada sem <1>perguntar!<2,2><3>Agumon é meu <1>amigo, e nós <1>seremos amigos.<2,2>
 TALK02 454: <7>Guilmon<7>O que está <1>acontecendo?<2,2><3>Estou com medo!<2,2>
 TALK02 456: <7>MetalEtemon<7>Invincible é tudo ok...<2,2><3>Mas um grande Tamer <1>deveria ao menos <1>ter Eternally!<2,2>
@@ -2083,7 +2083,7 @@ TALK02 472: <7>MetalEtemon<7>Ei, como vai a <1>Muramasa?!<2,2><3>Você é o <1>T
 TALK02 473: <7>MetalEtemon<7>Ei, você conseguiu a <1>Muramasa!<2,2><3>Você tem a maior <1>peça!<2,2>
 TALK02 474: <7>MetalEtemon<7>Se você tiver a <1>Masamune, traga a <1>Fuujin Blade!<2,2><3>Então eu a transformarei<1>em Muramasa!<2,2>
 TALK02 475: <7>MetalEtemon<7>Certo, eu vou criar a <1>Muramasa para você! <2,2><3>Entregue−me a Masamune<1>e a Fuujin Blade!<2,2><3>Lá vamos nós!<1>Revestimento de <1>Kulon Digizoite!<2,2><3>Aqui está! Uma <1>Muramasa!<2,2><3>Você é o <1>Tamer mais forte agora!<2,2>
-TALK02 476: <7>MetalEtemon<7>Heh, heh, heh!<1>Como vão as coisas?!<2,2><3>Desculpe, mas eu <1>não posso fazer mais <1>nada.<2,2><3>Você terá que confiar em<1>seus próprios poderes<1>agora!<2,2>
+TALK02 476: <7>MetalEtemon<7>Heh, heh, heh!<1>Tudo em cima?!<2,2><3>Foi mal, acabou<1>meu estoque de<1>milagres.<2,2><3>Agora é contigo<1>na raça e na<1>coragem!<2,2>
 TALK02 502: <7>Book Worm Ruri<7>Oinc, oinnn.<1>Oink...<2,2>
 TALK02 516: <7>Ice Witch<7>Oooink,<1>oi, oinnnk!<2,2>
 TALK02 520: <7>Fire Knight<7>Ooink,<1>oink, oink!<2,2>
@@ -2111,11 +2111,11 @@ TALK02 665: <7>Tamer Pierre<7>Bonjour monsieur.<1>Você está tres bien se <1>ch
 TALK02 666: <7>Tamer Mitaka<7>Ta−da! Justiça <1>Tamer Mitaka <1>ao resgate!<2,2><3>Nenhum mal deverá <1>me derrotar.<2,2>
 TALK02 672: <7>Soccer Kid Hide<7>Oink, ooioink,<1>ooink, ooink!<2,2>
 TALK02 727: <7>Gargomon<7>Kaboom!<1>Esta é a<1>Armory.<2,2>
-TALK02 728: <7>MetalEtemon<7>Ei! Eu sou na verdade<1>um ferreiro de armas<1>genial!<2,2><3>Mas vocês não têm <1>gosto nenhum...<2,2><3>Voltem quando tiverem <1>armaduras melhores!<2,2>
+TALK02 728: <7>MetalEtemon<7>Ei! Eu sou um<1>ferreiro de mão<1>cheia, viu!<2,2><3>Mas vocês tão<1>sem estilo...<2,2><3>Voltem com<1>armaduras de peso!<2,2>
 TALK02 767: <7>Kurt<7>Oin, oink!<1>Oioink,<1>oioinoink!<2,2>
 TALK02 770: <7>Kurt<7>Oin, oink!<1>Oioink,<1>oioinoink!<2,2>
 TALK02 771: <7>Kurt<7>Oin, oinnk!<1>Oooin, oink!<2,2>
-TALK02 778: <7>Flamedramon<7>Bem−vindo. Este é o<1>Legendary <1>Gym!<2,2><3>Eu vou treinar <1>você pesado, então<1>prepare−se!<2,2>
+TALK02 778: <7>Flamedramon<7>Chega mais!<1>Aqui é o<1>Legendary Gym!<2,2><3>O treino é punk,<1>então segura<1>o tranco!<2,2>
 TALK02 780: <7>Chamber Clark<7>Você gostaria de <1>usar o Chamber <1>System?<2,2><3>Por favor, mostre−me as<1>4 Leader Badges.<2,2><3>Oh? Você não tem <1>todas as Leader <1>Badges ainda.<2,2><3>Sinto muito, mas o <1>sistema não vai <1>iniciar sem elas.<2,2>
 TALK02 781: <7>Chamber Clark<7>Você gostaria de <1>usar o Chamber <1>System?<2,2><3>Por favor, mostre−me <1>as 4 Leader <1>Badges.<2,2>
 TALK02 782: <7>Chamber Clark<7>Devido à falta de <1>energia...<2,2><3>...a Matrix <1>Chamber não pode<1>ser usada.<2,2><3>Peço desculpas pelo <1>inconveniente.<2,2>
@@ -2139,7 +2139,7 @@ TALK03 47: <7>Tamer Bill<7>Oin, oio 1!<1>Oin 1, oioink!<2,2>
 TALK03 48: <7>Tamer Hillary<7>Oin, oionk!<1>Oink, oioink!<2,2>
 TALK03 49: <7>Tamer Marina<7>Oioion, oink!<1>Oioin, oiooinnk!<2,2>
 TALK03 50: <7>Tamer Albert<7>...oin?<1>Oioink?!<1>Oooin, oink!<2,2>
-TALK03 51: <7>Information<7>Ooink, oink,<1>oooink!<2,2><3>Oops, eu ainda tenho <1>aquele hábito de quando <1>eu era um Oinkmon!<2,2>
+TALK03 51: <7>Information<7>Ooink, oink,<1>oooink!<2,2><3>Opa! Ainda tô<1>com o cacoete de<1>Oinkmon, que mico!<2,2>
 TALK03 52: <7>Information<7>Ooink, oink,<1>oooink!<2,2>
 TALK03 53: <7>Information<7>Ooink, oink,<1>oooink!<2,2>
 TALK03 55: <7>Guide<7>Estou feliz que todos <1>voltaram!<2,2><3>Eu só quero voltar para<1>o Mundo Real agora!<2,2>
@@ -2269,8 +2269,8 @@ TALK03 373: <7>Grandpa Butter<7>Ooink...,<1>ooink.<1>Oooin oink!<2,2>
 TALK03 375: <7>Shizuka<7>Oink, oink!<1>Oiooink,<1>ooooink!<2,2>
 TALK03 378: <7>DO Guard<7>Oink, oink!<1>Oionoink, oinkkk!<2,2>
 TALK03 380: <7>DO Guard<7>Oioiooink!<1>Oioin, oininok!<2,2>
-TALK03 414: <7>Tamer Bill<7>Eu me pergunto se o<1>Steve em Asuka está<1>bem.<2,2><3>Ele não consegue fazer <1>nada sem <1>mim.<2,2>
-TALK03 415: <7>Tamer Hillary<7>Ei, você pode <1>dizer isso a ele também?<2,2><3>Se ele continuar assim, <1>ele vai virar um <1>Oinkmon de novo!<2,2>
+TALK03 414: <7>Tamer Bill<7>Será que o Steve<1>lá em Asuka<1>tá inteiro?<2,2><3>Aquele lá não<1>dá um passo<1>sem mim!<2,2>
+TALK03 415: <7>Tamer Hillary<7>Dá um toque<1>nele também!<2,2><3>Desse jeito vai<1>virar Oinkmon<1>de novo!<2,2>
 TALK03 416: <7>Tamer Marina<7>Eu voltei ao normal <1>agora.<1>Eu vou jogar!<2,2>
 TALK03 417: <7>Tamer Albert<7>Você é o Tamer <1>que venceu o <1>A.o.A!<2,2><3>Obrigado! <1>Eu estou muito <1>grato!<2,2>
 TALK03 418: <7>Guardromon<7>ACESSANDO<1>MATRIX DRIVE.<2,2>
@@ -2282,11 +2282,11 @@ TALK03 423: <7>Divermon<7>...o quê? Você <1>quer abrir o<1>Booster?<2,2><3>OK.
 TALK03 424: <7>Wizardmon<7>Bem−vindo, esta é<1>a Item Shop!<2,2>
 TALK03 425: <7>Wizardmon<7>Bem−vindo, este <1>é o Mercado <1>Negro!<2,2>
 TALK03 426: <7>Gargomon<7>Kaboom! Este <1>é o Armory.<2,2>
-TALK03 427: <7>BK WarGreymon<7>Eu sou BK WarGreymon!<2,2><3>Bem−vindo, <1>corajoso Tamer!<1>Lute comigo!<2,2>
+TALK03 427: <7>BK WarGreymon<7>Eu sou BK WarGreymon!<2,2><3>Se tem sangue<1>nos olhos, Tamer,<1>venha encarar!<2,2>
 TALK03 428: <7>Arena Reception<7>Estou tão feliz <1>que voltamos ao <1>normal!<2,2><3>Obrigada! Devemos <1>tudo a <1>você!<2,2>
 TALK03 430: <7>Arena Reception<7>...Oink,<1>ooink!<2,2>
 TALK03 431: <7>DO Guard<7>Oooink, oinink,<1>ooink, oink!<2,2>
-TALK03 442: <7>Sr. Wedge<7>Ufa! Sinto−me um <1>novo homem!<2,2><3>OK, de volta ao<1>trabalho!<2,2><3>Temos bons itens lá no<1>fundo também, então de<1>um olhada!<2,2>
+TALK03 442: <7>Sr. Wedge<7>Ufa! Tô inteiro<1>de novo!<2,2><3>Bora voltar<1>pro batente!<2,2><3>Tem coisa fina<1>lá no fundo, dá<1>uma espiada!<2,2>
 TALK03 502: <7>Ponchomon<7>Hola amigo!<2,2><3>Este é o paraíso <1>dos maníacos por Itens,<1>El Dorado!<2,2>
 TALK03 504: <7><9><7>Eba! Eu consegui<1>8500 BIT!<2,2>
 TALK03 505: <7>Teddy<7>Oi, oiooink!<1>Oooin, oink!<2,2>
@@ -2344,10 +2344,10 @@ TALK04 384: <7><9><7>Eba! Eu consegui <1>1600 BITS!<2,2>
 TALK04 385: <7><9><7>Eba! Eu consegui <1>o Golden Ticket!<2,2>
 TALK04 718: <7>Gatomon<7>Bem−vindo à minha<1>Estalagem!<2,2><3>Por favor, relaxe e <1>descanse.<2,2>
 TALK04 719: <7>Guardromon<7>ACESSANDO<1>MATRIX DRIVE.<2,2>
-TALK04 728: <7>Panjamon<7>Este é o gym de<1>treinamento! Eu não vou<1>ser legal com você!<2,2>
-TALK04 750: <7>Shadramon<7>Sha sha sha!<1>Não me agradeça.<2,2><3>Eu só fiz o que<1>um cara mau faria!<2,2>
+TALK04 728: <7>Panjamon<7>Aqui é o gym de<1>treinamento! Nada<1>de moleza aqui!<2,2>
+TALK04 750: <7>Shadramon<7>Sha sha sha!<1>Nem agradeça!<2,2><3>Fiz o que um<1>malvadão faria!<2,2>
 TALK04 751: <7>Shadramon<7>Eu sou Shadramon!<1>Um cara mau <1>lógico!<2,2>
-TALK04 752: <7>Shadramon<7>Oh, você tem a <1>Old Claw.<2,2><3>Por que você a guarda?<1>Vão rir de <1>você!<2,2><3>Pegue a Saber Fang.<1>Eu vou transformá−la <1>em uma arma real!<2,2>
+TALK04 752: <7>Shadramon<7>Opa, tá com<1>a Old Claw.<2,2><3>Que troço velho!<1>Vão zoar da<1>tua cara!<2,2><3>Traz a Saber Fang<1>que eu faço uma<1>arma de responsa!<2,2>
 TALK04 753: <7>Shadramon<7>Você tem a Saber <1>Fang e a Old Claw.<1>Entregue−as para mim!<2,2><3>Ooooh, isso é...<1>é incrível...<2,2><3>OK, vamos fundir<1>elas...<2,2><3>E aí!<1>Não é legal?<1>Isto é Vanquish!<2,2><3>Bem, eu tenho várias<1>então vou te dar uma!<2,2><3>Só não deixe alguns<1>caras maus comuns <1>rirem de você!<2,2>
 TALK04 754: <7>Shadramon<7>Sha sha sha!<1>Não me agradeça.<2,2><3>Eu só fiz o que<1>um cara mau faria!<2,2>
 TALK04 755: <7>Shadramon<7>Eu sou Shadramon!<1>Um cara mau <1>lógico!<2,2>
@@ -2361,10 +2361,10 @@ TALK04 762: <7>Ponchomon<7>Pouca gente <1>tem a Twinkle!<2,2><3>Certifique−se 
 TALK04 763: <7>Ponchomon<7>Hola amigo,<1>como vão as coisas?!<2,2>
 TALK04 764: <7>Ponchomon<7>Yo, yo, yo.<1>Você não pode usar <1>a Old Wand!<2,2><3>Você quer que eu <1>faça uma arma <1>avant−garde?<2,2><3>Traga a Khakkhara<1>e eu farei <1>a qualquer hora!<2,2>
 TALK04 765: <7>Ponchomon<7>Amigo, você tem a Old <1>Wand e a Khakkhara!<2,2><3>Então entregue−as <1>para mim!<2,2><3>...cha, cha, cha!<1>Cha, cha, cha!<1>Ooooo mambo!<2,2><3>Aqui está!<1>É avant garde,<1>Twinkle!<2,2><3>Você pode se gabar <1>disso! Boa sorte, amigo!<2,2>
-TALK04 830: <7>MetalEtemon<7>OH ho ho ho ho!<1>Você tem que me vencer <1>para avançar!<2,2>
-TALK04 831: <7>MetalEtemon<7>Oh ho ho ho ho!<1>Você não foi <1>rival à altura!<2,2>
-TALK04 832: <7>MetalEtemon<7>...Eu perdi! Eu <1>deveria ter <1>prestado atenção!<2,2>
-TALK04 833: <7>MetalEtemon<7>Eu não vou deixar você<1>escapar tão fácil da<1>próxima vez.<2,2>
+TALK04 830: <7>MetalEtemon<7>OH ho ho ho ho!<1>Quer passar? Vai<1>ter que me vencer!<2,2>
+TALK04 831: <7>MetalEtemon<7>Oh ho ho ho ho!<1>Não deu nem<1>pro cheiro!<2,2>
+TALK04 832: <7>MetalEtemon<7>...Rodei!<1>Vacilei e dancei<1>bonito!<2,2>
+TALK04 833: <7>MetalEtemon<7>Da próxima vez<1>não vai ter moleza<1>não, viu!<2,2>
 TALK04 839: <7>Kurt<7>Oioioi,<1>oink! Oooi,<1>oooink!<2,2>
 TALK04 843: <7>Divermon<7>Eu sou o único <1>Divermon que restou <1>aqui...<2,2><3>Infelizmente, <1>não estou à altura <1>do Etemon...<2,2>
 TALK04 846: <7><9><7>Isso! Eu consegui um <1>Charisma Chip!<2,2>
@@ -2454,7 +2454,7 @@ TALK05 2: <7>Digivolve Navi<7>Você pode aprender <1>sobre digivolução <1>aqui
 TALK05 3: <7>Digimon Navi<7>Nós vamos ensinar <1>você sobre técnicas <1>de Digimon.<2,2><3>Dicas sobre batalha de<1>Digimon e como treinar<1>Digimon são fornecidas.<2,2>
 TALK05 4: <7>Dr. Kadomatsu<7>Eu sou o Dr.<1>Kadomatsu, o líder em<1>pesquisa de Digimon!<2,2><3>Você pode digivolver <1>e trocar de Digimon <1>neste Digi−Lab!<2,2>
 TALK05 5: <7><9><7>Está tudo limpo! ...será<1>que eles limpariam meu<1>quarto também?<2,2>
-TALK05 6: <7><9><7>Ei!<1>Alguém escondeu <1>dinheiro aqui!<2,2><3>Isso! Eu consegui <1>300 BIT!<2,2>
+TALK05 6: <7><9><7>Opa!<1>Alguém entocou<1>grana aqui!<2,2><3>Aê! Descolei<1>300 BIT!<2,2>
 TALK05 7: <7><9><7>Será que tem <1>algo aqui...<1>Acho que não...<2,2>
 TALK05 28: <7>Login de Conta<7>Oh? Você ainda não tem<1>seu Digimon parceiro.<2,2><3>Vá ao Lobby para <1>recuperar dados Digimon <1>do seu satélite.<2,2>
 TALK05 37: <7>Gargomon<7>Kaboom! Este <1>é o Armory.<2,2>
@@ -2468,7 +2468,7 @@ TALK05 68: <7>Gomamon<7>Esta é a<1>Pawn Shop!<2,2>
 TALK05 69: <7>Sr. Smith<7>Eu sou o Sr. Smith, <1>o gerente desta <1>loja.<2,2>
 TALK05 70: <7>Sr. Smith<7>Bem−vindo à <1>Smith’s Shop!<2,2><3>Nossos itens são todos<1>bons, então dê uma <1>olhada.<2,2>
 TALK05 71: <7>Sr. Smith<7>Bem−vindo à <1>Smith’s <1>Shop!<2,2>
-TALK05 72: <7>Smith Junior<7>O pai não está aqui,<1>então eu estou no<1>comando da loja!<2,2><3>Você não tem orgulho <1>de mim?<1>Heh heh heh!<2,2>
+TALK05 72: <7>Smith Junior<7>O coroa não tá,<1>então eu mando<1>na área aqui!<2,2><3>Não é de dar<1>orgulho?<1>Heh heh heh!<2,2>
 TALK05 73: <7>Smith Junior<7>O pai não está aqui,<1>então eu estou no<1>comando da loja!<2,2>
 TALK05 74: <7>Wizardmon<7>Bem−vindo, este é o<1>Black Market.<2,2><3>Você não encontra a<1>maioria destes itens em<1>qualquer lugar!<2,2>
 TALK05 75: <7>Gargomon<7>Bem−vindo. Este é o<1>Heavy Armory!<2,2><3>Apenas as armas fortes<1>são vendidas aqui!<2,2>
@@ -2508,9 +2508,9 @@ TALK05 411: <7>Login Manager<7>O servidor está <1>fechado para <1>manutenção.
 TALK05 412: <7>Login Manager<7>A manutenção <1>exigirá <1>mais tempo.<2,2><3>Por favor, seja <1>paciente durante <1>este tempo.<2,2>
 TALK05 413: <7>Login Manager<7>Oh! Você é um <1>Digimon perdido!<2,2><3>Vá ao <1>Administration<1>Center para ajuda.<2,2>
 TALK05 414: <7>Login Manager<7>A manutenção <1>exigirá <1>mais tempo.<2,2><3>Por favor, seja <1>paciente durante <1>este tempo.<2,2>
-TALK05 415: <7>Login Manager<7>Sinto muito, eles não <1>terminaram ainda.<2,2><3>Estou ficando cansado <1>de pedir desculpas...<1>Sigh...<2,2>
-TALK05 416: <7>Login Manager<7>Você me assustou! <1>Eu pensei que você <1>fosse o A.o.A.<2,2><3>Estou preocupado.<1>Nesse ritmo, não<1>conseguiremos a<2,2><3>manutenção.<2,2>
-TALK05 417: <7>Login Manager<7>Quando o A.o.A <1>apareceu primeiro, eu <1>não sabia o que fazer.<2,2><3>Eu nunca quero <1>estar tão assustado <1>de novo!<2,2>
+TALK05 415: <7>Login Manager<7>Foi mal, ainda<1>não terminaram.<2,2><3>Já tô de saco<1>cheio de pedir<1>desculpa... Aff!<2,2>
+TALK05 416: <7>Login Manager<7>Que susto, caramba!<1>Achei que fosse<1>a A.o.A.<2,2><3>Tô cabreiro...<1>Desse jeito a<1>manutenção<2,2><3>não anda!<2,2>
+TALK05 417: <7>Login Manager<7>Quando a A.o.A<1>baixou aqui, eu<1>quase caí duro!<2,2><3>Nunca mais quero<1>um susto feio<1>desses!<2,2>
 TALK05 418: <7>Login Manager<7>Sinto muito. Você não<1>pode voltar ao Mundo<1>Real ainda.<2,2><3>Tudo isso é culpa <1>do A.o.A!<2,2>
 TALK05 419: <7>Login Manager<7>Você ouviu?<1>O A.o.A foi <1>derrotado!<2,2><3>Graças a Deus!<1>Agora podemos <1>voltar para casa!<2,2>
 TALK05 432: <7>Login Manger<7>O, oink!<1>Oi, oinkkk!<2,2>
@@ -2518,7 +2518,7 @@ TALK05 434: <7>Arena Reception<7>Esta é a inscrição<1>para o torneio<1>Server
 TALK05 435: <7>Arena Reception<7>Como entrar no<1>Administration<1>Center?<2,2><3>Sinto muito, mas Tamers<1>comuns não podem<1>entrar!<2,2>
 TALK05 436: <7>Arena Reception<7>Oh, vocês são <1>Digimon perdidos?<2,2><3>Então vão para o <1>Administration <1>Center!<2,2>
 TALK05 437: <7>Arena Reception<7>Devido à manutenção <1>do sistema...<2,2><3>As inscrições do <1>torneio foram <1>encerradas.<2,2><3>Por favor, aguarde <1>até que anunciemos <1>a reabertura.<2,2>
-TALK05 438: <7>Arena Reception<7>A manutenção está <1>demorando mais que <1>o normal.<2,2><3>Os Tamers não par <1>de vir me <1>incomodar.<2,2>
+TALK05 438: <7>Arena Reception<7>A manutenção<1>empacou<1>de vez.<2,2><3>E os Tamers não<1>param de encher<1>a paciência!<2,2>
 TALK05 439: <7>Arena Reception<7>O A.o.A pegou os dados<1>de todos os Digimon mais<1>fortes!<2,2><3>Espero que eles <1>não usem mal o que <1>roubaram.<2,2>
 TALK05 440: <7>Arena Reception<7>Estou feliz que todos <1>do A.o.A foram <1>capturados.<2,2><3>Estou chocado ao saber <1>sobre o Game Master,<1>no entanto...<2,2>
 TALK05 441: <7>Arena Reception<7>Desculpe, não estamos <1>abertos para <1>inscrições.<2,2><3>Não terei nada <1>para fazer por <1>um tempo...<2,2>
@@ -2538,7 +2538,7 @@ TALK05 535: <7>Smith Junior<7>For a conversa,<1>meu<1>pai também leiloa.<2,2><3
 TALK05 536: <7>Smith Junior<7>For a conversa,<1>meu<1>pai também leiloa.<2,2><3>Por isso às vezes <1>ele se ausenta.<2,2>
 TALK05 537: <7>Smith Junior<7>For a conversa,<1>meu<1>pai também leiloa.<2,2><3>Por isso às vezes <1>ele se ausenta.<2,2>
 TALK05 538: <7><9><7>Vamos tocar <1>de novo...<2,2><3>Hmm... nada... Acho<1>que apertar o ”E”<1>repetidamente não faz<2,2><3>nada.<2,2>
-TALK05 540: <7>Smith Junior<7>For fora do <1>registro, meu pai<1>também leiloa.<2,2><3>Então quando ele <1>está longe...!<2,2>
+TALK05 540: <7>Smith Junior<7>Papinho sério:<1>o coroa também<1>faz leilão.<2,2><3>Aí quando ele sai,<1>a casa é minha...!<2,2>
 TALK05 541: <7><9><7>Isso é um ”M”<1>... vamos tocar...<2,2><3>..........<1>..........<1>..........<2,2><3>Hã? <1>Nada aconteceu.<1>Hmmmm...<2,2>
 TALK05 542: <7><9><7>Vamos tocar <1>de novo...<2,2><3>Hmm... nada... Acho<1>que apertar o ”M”<1>repetidamente não faz<2,2><3>nada.<2,2>
 TALK05 543: <7><9><7>Isso é um ”O”<1>... vamos tocar...<2,2><3>..........<1>..........<1>..........<2,2><3>Hã? <1>Nada aconteceu.<1>Hmmmm...<2,2>
@@ -2586,24 +2586,24 @@ TALK06 58: <7>Tamer Catherine<7>Ooi!<1>Eu sou a Catherine <1>de Sydney!<2,2>
 TALK06 59: <7>Tamer Catherine<7>Oi, parceiro!<1>Eu sou a Catherine!<2,2><3>Estou tão feliz que <1>posso jogar muito <1>hoje!<2,2>
 TALK06 60: <7>Tamer Catherine<7>Eu sou a Catherine!<1>Agora posso aproveitar <1>mais!<2,2>
 TALK06 61: <7>Tamer Catherine<7>Oink, oink!<2,2>
-TALK06 63: <7>Tamer Catherine<7>...mas me desculpe.<1>Estamos almoçando <1>agora mesmo!<2,2><3>Então vamos duelar <1>em outro momento.<2,2>
+TALK06 63: <7>Tamer Catherine<7>...foi mal, mas<1>tô na hora do<1>rango agora!<2,2><3>Depois a gente<1>duela, tá?<2,2>
 TALK06 64: <7>Tamer Catherine<7>Batalha de Cartas <1>comigo. Eu finalmente <1>aprendi como!<2,2>
 TALK06 65: <7>Tamer Catherine<7>Vamos batalhar <1>Digimon agora... <1>mas seja gentil comigo.<2,2>
 TALK06 66: <7>Tamer Catherine<7>Sinto muito. Eu não <1>sou páreo para você.<2,2><3>Eu vou praticar, <1>então duela comigo <1>da próxima vez!<2,2>
 TALK06 67: <7>Tamer Catherine<7>Uau, eu nunca <1>vi ninguém com <1>um troféu!<2,2><3>Você deve ser <1>muito bom!<2,2>
 TALK06 68: <7>Tamer Catherine<7>Eu consegui, eu venci!<2,2><3>Obrigada! Venha <1>jogar de novo.<2,2>
-TALK06 69: <7>Tamer Catherine<7>Que pena, eu perdi.<2,2><3>Você é bom!<1>Eu quero outra <1>chance contra você.<2,2>
-TALK06 70: <7>Tamer Lucia<7>...Você ficou <1>surpreso com o <1>meu visual?<2,2><3>Ei, me chamavam de <1>”Gal Gamer Lucia” <1>no passado!<2,2>
+TALK06 69: <7>Tamer Catherine<7>Poxa, rodei feio!<2,2><3>Você manda bem!<1>Quero revanche<1>depois!<2,2>
+TALK06 70: <7>Tamer Lucia<7>...Caiu o queixo<1>com o meu<1>visu?<2,2><3>Antigamente eu<1>era a ”Gal Gamer<1>Lucia”!<2,2>
 TALK06 71: <7>Tamer Lucia<7>Eu sou a Lucia! Uma <1>veterana com 20 anos <1>de experiência!<2,2>
 TALK06 72: <7>Tamer Lucia<7>Oi, eu sou a antiga <1>gênia gamer, <1>”Lucia Sue”!<2,2>
 TALK06 73: <7>Tamer Lucia<7>Oiiink!<2,2>
-TALK06 75: <7>Tamer Lucia<7>Eu tenho movimentos <1>que garotos como você <1>nunca viram.<2,2><3>Só porque somos <1>velhas não significa <1>que não somos boas!<2,2>
+TALK06 75: <7>Tamer Lucia<7>Tenho uns macetes<1>que a garotada<1>nem sonha!<2,2><3>Panela velha é<1>que faz comida<1>boa!<2,2>
 TALK06 76: <7>Tamer Lucia<7>Eu tenho confiança <1>nas minhas habilidades <1>de Card Battle!<2,2>
 TALK06 77: <7>Tamer Lucia<7>Eu ainda sou uma <1>pro em Digimon <1>Battle!<2,2>
 TALK06 78: <7>Tamer Lucia<7>Bem, boa <1>sorte. Você<1>precisará dela.<2,2>
 TALK06 79: <7>Tamer Lucia<7>Eu não devo estar<1>no mesmo nível<1>dos gamers de hoje.<2,2><3>Deixe−me praticar<1>mais um pouco <1>antes de lutarmos!<2,2>
-TALK06 80: <7>Tamer Lucia<7>Viu! Eu não vou<1>perder para vocês,<1>bebês!<2,2>
-TALK06 81: <7>Tamer Lucia<7>Ah, não, eu <1>perdi...<2,2><3>Acho que meu<1>tempo acabou.<2,2>
+TALK06 80: <7>Tamer Lucia<7>Toma essa! Não<1>perco pra leite<1>com pera!<2,2>
+TALK06 81: <7>Tamer Lucia<7>Poxa vida,<1>rodei...<2,2><3>Acho que pendurei<1>as chuteiras!<2,2>
 TALK06 82: <7>Tamer Robert<7>Ora, olhe só quem <1>apareceu. Um garoto<1>Tamer...<2,2>
 TALK06 83: <7>Tamer Robert<7>Eu não consigo acreditar<1>que ainda não <1>podemos voltar...<2,2>
 TALK06 84: <7>Tamer Robert<7>Oink, oiiink!<1>Oiiiiiiiiiiiiiiink!<2,2>
@@ -2611,22 +2611,22 @@ TALK06 85: <7>Gatomon<7>...Entendo, você está <1>procurando Keith <1>e Nick...
 TALK06 86: <7>Tamer Robert<7>Desculpe, mas eu <1>não vou duelar <1>com você.<2,2><3>Não tenho <1>tempo para <1>cuidar de você.<2,2>
 TALK06 87: <7>Tamer Robert<7>Garoto, você sabe <1>Card Battle?<2,2><3>Então eu jogo <1>com você por <1>um tempo.<2,2>
 TALK06 88: <7>Tamer Robert<7>Não estou fazendo nada,<1>então vou jogar com você<1>em uma Digimon Battle.<2,2>
-TALK06 89: <7>Tamer Robert<7>Desculpe, mas eu <1>não vou <1>lutar.<2,2><3>É humilhante <1>perder para uma <1>criança.<2,2>
+TALK06 89: <7>Tamer Robert<7>Foi mal, mas<1>não vou<1>lutar.<2,2><3>Passar vergonha<1>pra criança?<1>Nem a pau!<2,2>
 TALK06 90: <7>Tamer Robert<7>Desculpe, mas eu <1>não vou <1>lutar.<2,2><3>Crianças são melhores <1>em jogos.<2,2>
 TALK06 91: <7>Tamer Robert<7>As coisas estão <1>péssimas devido <1>à A.o.A.<2,2>
 TALK06 92: <7>Tamer Robert<7>Ah, desculpe. Eu <1>deveria ter sido <1>mais gentil com você.<2,2><3>É por isso que eu <1>não gosto de jogar <1>com crianças.<2,2>
-TALK06 93: <7>Tamer Robert<7>Hã, o quê?!<1>Eu perdi?<2,2><3>Ops! Eu achei <1>que você fosse <1>apenas mais um pirralho.<2,2>
-TALK06 94: <7>Tamer Tomomi<7>O que devo fazer?<1>Eu tenho um encontro <1>agora mesmo...<2,2><3>...mas é mais <1>divertido jogar <1>com todos os outros!<2,2>
+TALK06 93: <7>Tamer Robert<7>Hã, quê?!<1>Perdi?!<2,2><3>Vacilei! Achei<1>que era moleza<1>e dancei!<2,2>
+TALK06 94: <7>Tamer Tomomi<7>E agora? Tinha<1>um encontro<1>marcado...<2,2><3>...mas jogar com<1>a galera é bem<1>mais maneiro!<2,2>
 TALK06 95: <7>Tamer Tomomi<7>O que devo fazer? Eu<1>já estou atrasada para o<1>meu encontro...<2,2><3>É mais divertido <1>jogar jogos <1>com todos os outros!<2,2>
 TALK06 96: <7>Tamer Tomomi<7>O que devo fazer?<1>Meu namorado está <1>me esperando.<2,2><3>Mas é mais divertido <1>jogar jogos <1>com todos os outros!<2,2>
 TALK06 97: <7>Tamer Tomomi<7>Oink, oinnnk.<1>Oink, oink!<2,2>
-TALK06 99: <7>Tamer Tomomi<7>Eu decidi!<1>Eu vou cancelar <1>o meu encontro!<2,2><3>O Masato é legal, <1>então ele me perdoa!<2,2>
+TALK06 99: <7>Tamer Tomomi<7>Decidido! Vou<1>dar um bolo no<1>meu encontro!<2,2><3>O Masato é legal,<1>ele desencanou!<2,2>
 TALK06 100: <7>Tamer Tomomi<7>Eu sei, eu <1>decidirei com isso!<2,2><3>Se eu vencer o duelo, <1>eu cancelo o encontro!<2,2>
 TALK06 101: <7>Tamer Tomomi<7>Eu sei, eu <1>decidirei com isso!<2,2><3>Se eu vencer a batalha,<1>eu simplesmente não <1>vou ao encontro!<2,2>
 TALK06 102: <7>Tamer Tomomi<7>Eu decidi!<1>Eu não vou <1>ao meu encontro!<2,2><3>Isso tem que ser <1>um jogo <1>divertido!<2,2>
 TALK06 103: <7>Tamer Tomomi<7>Eu decidi!<1>Eu não vou ao <1>meu encontro!<2,2><3>Eu preciso ficar <1>forte o suficiente <1>para te vencer!<2,2>
 TALK06 104: <7>Tamer Tomomi<7>Sim, eu venci!<2,2><3>Então eu vou <1>cancelar meu encontro!<1>Obrigada!<2,2>
-TALK06 105: <7>Tamer Tomomi<7>O quê, eu perdi?<1>Que droga!<2,2><3>Tudo bem então, <1>eu vou <1>cancelar meu encontro!<2,2>
+TALK06 105: <7>Tamer Tomomi<7>Quê, perdi?!<1>Que saco!<2,2><3>Quer saber? Vou<1>dar o bolo no<1>encontro assim mesmo!<2,2>
 TALK06 107: <7>Tamer Catherine<7>Apenas Card Battle <1>comigo!<2,2><3>Estou muito melhor <1>agora que eu <1>pratiquei!<2,2>
 TALK06 120: <7>Tamer Lucia<7>Eu ainda estou <1>no mesmo nível <1>que vocês.<2,2><3>Para provar, eu<1>mostrarei para vocês em<1>uma Card Battle!<2,2>
 TALK06 121: <7>Tamer Robert<7>...Tudo bem, <1>já que há tempo, <1>eu jogo com você.<2,2><3>Mas se você perder, <1>não venha chorar.<2,2>
@@ -2646,45 +2646,45 @@ TALK06 134: <7>Tamer Bob<7>Aproveite por enquanto.<1>Mas você logo<1>perceberá
 TALK06 135: <7>Tamer Bob<7>Eu venci a batalha.<1>Mas há uma <1>sensação de perda...<2,2><3>Esse sentimento <1>me faz<1>refletir.<2,2>
 TALK06 136: <7>Tamer Bob<7>Hmm, talvez você<1>encontre a resposta.<2,2><3>Então eu te darei <1>esta Tidal Wave!<2,2><3>E certifique−se de<1>observar o que acontece<1>no fim da batalha!<2,2>
 TALK06 137: <7>Tamer Bob<7>Aproveite por enquanto.<1>Mas você logo<1>perceberá...<2,2><3>...que as batalhas<1>não dão bons<1>frutos.<2,2>
-TALK06 138: <7>Tamer Andy<7>Eu sou o Andy, yah.<1>Um Tamer genial<1>da Suíça!<2,2><3>Naturalmente, eu sou<1>o Server <1>Champ!<2,2>
+TALK06 138: <7>Tamer Andy<7>Eu sou o Andy, yah.<1>Um gênio da<1>Suíça!<2,2><3>Claro que o<1>Server Champ<1>sou eu!<2,2>
 TALK06 139: <7>Tamer Andy<7>Bem, isso é<1>algo novo,<1>yah!<2,2><3>Mas não importa <1>o que, eu serei o<1>Server Champ!<2,2>
 TALK06 140: <7>Tamer Andy<7>Algum Tamer derrotou<1>o Oficial Chefe, <1>yah.<2,2><3>Mas ele não <1>será o Server<1>Champ, eu serei!<2,2>
 TALK06 141: <7>Tamer Andy<7>Oinc.<1>Ooooink!<2,2>
-TALK06 143: <7>Tamer Andy<7>Desculpe, mas você <1>não tem chance<1>contra mim.<2,2><3>Eu não quero<1>perder meu tempo<1>com você, yah.<2,2>
+TALK06 143: <7>Tamer Andy<7>Foi mal, mas você<1>não dá nem pro<1>começo.<2,2><3>Sem tempo pra<1>café com leite<1>hoje, yah!<2,2>
 TALK06 144: <7>Tamer Andy<7>Eu vou provar<1>mostrando para você<1>meus poderes.<2,2><3>Card Battle está<1>bom, yah?<2,2>
 TALK06 145: <7>Tamer Andy<7>Eu vou provar<1>mostrando para você<1>meus poderes.<2,2><3>Digimon Battle<1>está bom, yah?<2,2>
 TALK06 146: <7>Tamer Andy<7>É verdade que perdi<1>para você da<1>última vez...<2,2><3>Mas eu vou<1>triunfar no<1>final!<2,2>
 TALK06 147: <7>Tamer Andy<7>Você é realmente<1>incrível. Eu admito<1>isso.<2,2><3>Mas um rival forte<1>é o que eu precisava<1>para me empolgar!<2,2>
 TALK06 148: <7>Tamer Andy<7>Eu não te paguei<1>pela última vez.<2,2><3>Card Battle está bom,<1>yah?<2,2>
 TALK06 149: <7>Tamer Andy<7>Viu, agora você<1>entende?<2,2><3>Eu, Andy, serei o<1>Server Champ!<2,2>
-TALK06 150: <7>Tamer Andy<7>Ha ha. Bem,<1>às vezes as coisas<1>acontecem assim.<2,2><3>Hmm... acho que<1>hoje não é o <1>meu dia.<2,2>
-TALK06 151: <7>Tamer George<7>Ei garoto, você<1>quer apanhar?!<2,2>
-TALK06 152: <7>Tamer George<7>É irritante que<1>eu não possa voltar<1>ainda!<2,2><3>...o que é isso?<1>Quer levar um<1>soco?<2,2>
+TALK06 150: <7>Tamer Andy<7>Ha ha. Faz parte,<1>deu zebra<1>hoje.<2,2><3>É... hoje não<1>era o meu<1>dia mesmo!<2,2>
+TALK06 151: <7>Tamer George<7>Ei, tá a fim de<1>levar uns tabefes?!<2,2>
+TALK06 152: <7>Tamer George<7>Que saco ficar<1>preso aqui sem<1>poder voltar!<2,2><3>...tá olhando o quê?<1>Quer beijar a<1>lona?!<2,2>
 TALK06 153: <7>Tamer George<7>Todo esse negócio da<1>A.o.A está me<1>tirando do sério!<2,2><3>...o quê? Cuide da<1>sua vida.<2,2>
 TALK06 154: <7>Tamer George<7>Oiiink!<1>Oinc, oinc!<2,2>
-TALK06 156: <7>Tamer George<7>Bem, eu deixarei<1>vocês irem desta vez.<1>Sumam daqui!<2,2>
+TALK06 156: <7>Tamer George<7>Dessa vez eu<1>passo batido.<1>Vaza daqui!<2,2>
 TALK06 157: <7>Tamer George<7>Certo. Eu vou mostrar <1>quem manda no<1>Card Battle!<2,2>
 TALK06 158: <7>Tamer George<7>Eu vou mostrar quem é <1>o mestre no <1>Digimon Battle!<2,2>
-TALK06 159: <7>Tamer George<7>...Ah, é você.<1>O que você quer?<1>Você já venceu.<2,2><3>Você está me<1>irritando − vá para<1>outro lugar! Sério!<2,2>
+TALK06 159: <7>Tamer George<7>...Ah, é você.<1>Já levou a<1>melhor.<2,2><3>Já deu no nervo,<1>vai encher outro!<1>Sério!<2,2>
 TALK06 160: <7>Tamer George<7>Apenas me deixe <1>em paz, ok...<2,2><3>Por favor, apenas<1>me deixe em paz,<1>tudo bem?<2,2>
 TALK06 161: <7>Tamer George<7>...ah, está bem.<2,2><3>Então eu te mostro <1>em uma Card Battle!<2,2>
 TALK06 162: <7>Tamer George<7>Viu? Agora você <1>sabe.<2,2><3>Não fale com<1>mim nunca mais!<2,2>
-TALK06 163: <7>Tamer George<7>...ei, não<1>fique metido<1>porque venceu!<2,2><3>Apenas me deixe<1>em paz... Você<1>ouviu − SUMA!<2,2>
+TALK06 163: <7>Tamer George<7>...ei, não<1>se acha só<1>porque venceu!<2,2><3>Me erra!<1>Ouviu bem?<1>DESAPARECE!<2,2>
 TALK06 164: <7>Tamer Mei Lin<7>Nihao!<1>Eu sou Mei Lin<1>de Pequim!<2,2><3>Existem muitos<1>Tamers na<1>China também!<2,2>
 TALK06 165: <7>Tamer Mei Lin<7>O que a MAGAMI<1>está fazendo?!<2,2><3>Estou em apuros se<1>não conseguir voltar.<2,2>
 TALK06 166: <7>Tamer Mei Lin<7>Por causa da<1>A.o.A, estamos <1>presos.<2,2><3>Mas agora posso<1>relaxar <1>e aproveitar.<2,2>
 TALK06 167: <7>Tamer Mei Lin<7>Oi, oinc.<1>Oiink!<2,2>
 TALK06 169: <7>Tamer Mei Lin<7>Você deveria <1>vir a Pequim <1>algum dia!<2,2><3>A comida é <1>ótima!<2,2>
 TALK06 170: <7>Tamer Mei Lin<7>Então vamos de<1>Card Battle!<2,2><3>Eu não vou perder para<1>um Tamer de <1>outro país!<2,2>
-TALK06 171: <7>Tamer Mei Lin<7>Então vamos de <1>Digimon Battle!<2,2><3>Eu vou te mostrar <1>meu estilo de<1>kung−fu Digimon!<2,2>
+TALK06 171: <7>Tamer Mei Lin<7>Bora de<1>Digimon Battle!<2,2><3>Segura o meu<1>kung−fu Digimon,<1>estilo dragão!<2,2>
 TALK06 172: <7>Tamer Mei Lin<7>...eu acabei de<1>perder para<1>você!<2,2><3>Não sinto que estou <1>pronta de novo, então<1>talvez na próxima!<2,2>
 TALK06 173: <7>Tamer Mei Lin<7>...uau, você é<1>muito bom!<2,2><3>Eu não venceria se<1>lutássemos agora, então<1>na próxima!<2,2>
 TALK06 174: <7>Tamer Mei Lin<7>Vamos de Card Battle!<2,2><3>Eu preciso vencer para<1>trazer honra para<1>a China!<2,2>
-TALK06 175: <7>Tamer Mei Lin<7>Viu, esse é o meu<1>verdadeiro poder!<2,2><3>Na próxima eu vou<1>mostrar meu estilo <1>Digimon Oculto.<2,2>
+TALK06 175: <7>Tamer Mei Lin<7>Viu só a minha<1>força?!<2,2><3>Da próxima eu<1>solto meu golpe<1>secreto!<2,2>
 TALK06 176: <7>Tamer Mei Lin<7>...Aww, <1>eu perdi?<2,2><3>...Eu vou me lembrar<1>disso e na próxima vez<1>eu vencerei.<2,2>
-TALK06 178: <7>Tamer Gordon<7>Heh heh! Eu <1>matei o serviço <1>e loguei.<2,2>
+TALK06 178: <7>Tamer Gordon<7>Heh heh! Dei<1>o migué no trampo<1>e loguei.<2,2>
 TALK06 179: <7>Tamer Gordon<7>Heh heh! Depois <1>de jogar aqui, <1>quero pedir demissão!<2,2>
-TALK06 180: <7>Tamer Gordon<7>Heh heh! Eu <1>decidi. Vou <1>pedir demissão!<2,2>
+TALK06 180: <7>Tamer Gordon<7>Heh heh! Bati<1>o martelo: vou<1>pedir as contas!<2,2>
 TALK06 181: <7>Tamer Gordon<7>Oooo! Oink!<1>Oinkkk!<2,2>
 TALK06 182: <7>Tamer Gordon<7>Bem, você saberá como<1>eu me sinto quando<1>começar a trabalhar.<2,2>
 TALK06 183: <7>Tamer Gordon<7>Então vamos de <1>Card Battle!<2,2><3>Assim eu posso <1>esquecer todas as <1>coisas ruins.<2,2>
@@ -2693,22 +2693,22 @@ TALK06 185: <7>Tamer Gordon<7>A liberdade é o <1>bem mais precioso <1>para os h
 TALK06 186: <7>Tamer Gordon<7>Mas você é <1>realmente forte.<2,2><3>Como posso <1>ficar forte <1>como você?<2,2>
 TALK06 187: <7>Tamer Gordon<7>Vamos de Card Battle!<2,2><3>Eu adoro essa frase.<1>Sinto−me como uma<1>criança de novo!<2,2>
 TALK06 188: <7>Tamer Gordon<7>Não deixe isso <1>te desanimar.<2,2><3>Existem coisas <1>piores na vida <1>para se preocupar.<2,2>
-TALK06 189: <7>Tamer Gordon<7>O quê... o quê? <1>Acho que sou um <1>perdedor até aqui.<2,2><3>Não, não pode ser! Se<1>eu tentar, amanhã é um<1>novo dia!<2,2>
+TALK06 189: <7>Tamer Gordon<7>Quê?!<1>Até aqui eu tomo<1>um toco?!<2,2><3>Nada disso! Sacode<1>a poeira que amanhã<1>tem mais!<2,2>
 TALK06 190: <7>Tamer Jessica<7>É bom viver uma vida<1>longa se eu puder jogar<1>algo como este jogo.<2,2>
-TALK06 191: <7>Tamer Jessica<7>Aparentemente não <1>podemos voltar ao <1>Mundo Real...<2,2><3>Eu não me importaria de<1>ficar aqui para sempre.<2,2>
+TALK06 191: <7>Tamer Jessica<7>Pelo visto não<1>dá pra voltar pro<1>Mundo Real...<2,2><3>Por mim eu fincava<1>bandeira aqui!<2,2>
 TALK06 192: <7>Tamer Jessica<7>Aparentemente o <1>A.o.A se foi.<2,2><3>Agora posso <1>aproveitar este <1>mundo novamente.<2,2>
 TALK06 193: <7>Tamer Jessica<7>Oooink.<1>Oooink.<2,2>
 TALK06 194: <7>Tamer Jessica<7>Jogar este <1>jogo quando <1>você é jovem...<2,2><3>Você tem tanta <1>sorte.<2,2>
-TALK06 195: <7>Tamer Jessica<7>Bem, vamos <1>começar este <1>duelo?<2,2><3>Só porque sou <1>velha, não se <1>segure.<2,2>
+TALK06 195: <7>Tamer Jessica<7>Vamos pro<1>duelo,<1>então?<2,2><3>Não alivia só<1>porque sou vovó<1>não, hein!<2,2>
 TALK06 196: <7>Tamer Jessica<7>Este é realmente <1>um mundo divertido.<2,2><3>Eu não me importaria de<1>ficar aqui para sempre.<2,2>
 TALK06 197: <7>Tamer Jessica<7>Bem, vamos <1>começar esta <1>batalha?<2,2><3>Só porque sou <1>velha, não se <1>segure.<2,2>
 TALK06 198: <7>Tamer Jessica<7>Tire um tempo para<1>aproveitar este mundo ao<1>máximo!<2,2>
 TALK06 199: <7>Tamer Jessica<7>Então vamos <1>ter um duelo.<2,2><3>Esta será a primeira<1>partida divertida que<1>tenho em tempos.<2,2>
 TALK06 200: <7>Tamer Jessica<7>Sinto muito, <1>eu venci.<2,2><3>Se quiser vencer, <1>deve ganhar mais <1>experiência.<2,2>
-TALK06 201: <7>Tamer Jessica<7>Você é muito <1>forte, garoto!<2,2><3>Venha visitar <1>e lute com esta <1>velha novamente.<2,2>
+TALK06 201: <7>Tamer Jessica<7>Você é barra−pesada<1>mesmo!<2,2><3>Aparece de novo<1>pra encarar essa<1>coroa!<2,2>
 TALK06 202: <7>Tamer Jessica<7>Sinto muito, <1>eu venci.<2,2><3>Se quiser vencer, <1>deve ganhar mais <1>experiência.<2,2>
 TALK06 203: <7>Tamer Jessica<7>Você é realmente <1>um garoto forte.<1>Eu gosto de você.<2,2><3>Aqui, leve esta <1>Volcanic Cannon <1>como um presente.<2,2><3>Fique forte <1>por mim também!<2,2>
-TALK06 220: <7>Tamer Akiba<7>La la la la la <1>Eu sou Akiba, <1>o tamer feliz.<2,2><3>Isso é ótimo! <1>Me sinto sortudo <1>e feliz!<2,2>
+TALK06 220: <7>Tamer Akiba<7>Lá lá lá lá lá!<1>Sou o Akiba, só<1>alegria!<2,2><3>Que maravilha! Tô<1>com o pé direito<1>hoje!<2,2>
 TALK06 221: <7>Tamer Akiba<7>La la la la la Que sorte<1>que podemos jogar de<1>graça!<2,2>
 TALK06 222: <7>Tamer Akiba<7>La la la la la <1>O A.o.A foi <1>capturado!<2,2><3>Agora podemos jogar em<1>paz novamente! La la la<1>la<2,2>
 TALK06 223: <7>Tamer Akiba<7>Oi oi oi oink <1>...oink oink!<2,2>
@@ -2718,8 +2718,8 @@ TALK06 227: <7>Tamer Akiba<7>Tudo o que eu preciso é<1>de um Digimon Battle<1>a
 TALK06 228: <7>Tamer Akiba<7>Você é tão <1>forte.<2,2><3>Eu não sou combina para<1>você. La la la la la<2,2>
 TALK06 229: <7>Tamer Akiba<7>Você é realment<1>e incrível.<2,2><3>Boa sorte para <1>se tornar o <1>Campeão Mundial.<2,2>
 TALK06 230: <7>Tamer Akiba<7>Será perfeito se<1>pudéssemos fazer uma<1>Card Battle. La la la la<2,2><3>la<2,2>
-TALK06 231: <7>Tamer Akiba<7>Eu venci de novo.<1>La la la la la<2,2><3>É por isso que <1>não paro de jogar <1>Digimon Online.<2,2>
-TALK06 232: <7>Tamer Akiba<7>Oh, não!<1>Eu... eu perdi...<2,2><3>Que choque.<1>Hoje está tão <1>triste...<2,2>
+TALK06 231: <7>Tamer Akiba<7>Ganhei mais uma!<1>Lá lá lá lá lá!<2,2><3>Por isso que eu<1>não largo o<1>Digimon Online!<2,2>
+TALK06 232: <7>Tamer Akiba<7>Aaaah, não!<1>Rodei...<2,2><3>Que banho de água<1>fria. Acabou a<1>cantoria...<2,2>
 TALK06 240: <7>SIGN<7>Leste: Seiryu City<1>Oeste: Asuka City<1>Sul: Forest Inn<2,2>
 TALK06 251: <7>Andy’s Groupie<7>Oinc,<1>oinc, oinc!<2,2>
 TALK06 269: <7>Bakemon Fan Cary<7>Oinnnk, oinc!<1>Oioioioink!<2,2>
@@ -2729,12 +2729,12 @@ TALK06 275: <7>Gatomon<7>As pessoas perguntam,<1>mas eu não sei onde<1>está o 
 TALK06 276: <7>Gatomon<7>Você está na Inn agora.<1>Por favor, descanse!<2,2>
 TALK06 277: <7>Gatomon<7>Há problemas <1>em Asuka City.<2,2><3>Eu me pergunto se as <1>outras Gatomon <1>estão bem.<2,2>
 TALK06 278: <7>Gatomon<7>Se a Matrix Chamber<1>estiver fora, você não<1>pode ir para outros<2,2><3>servers.<2,2><3>Mas isso é estranho.<1>Eu me pergunto como o <1>A.o.A chegou aqui...<2,2>
-TALK06 279: <7>Gatomon<7>Aquele terremoto <1>me assustou!<2,2><3>Mas que bom <1>que nada se <1>quebrou.<2,2>
+TALK06 279: <7>Gatomon<7>Que baita susto<1>aquele tremor!<2,2><3>Ainda bem que<1>nada foi pro<1>brejo!<2,2>
 TALK06 280: <7>Gatomon<7>Acho que todos estão <1>ficando cansados...<2,2><3>Digo, você não pode <1>voltar para o <1>Real World...<2,2>
 TALK06 281: <7>Gatomon<7>Eu vou ter minha <1>própria Inn logo.<2,2><3>Farei o meu melhor para<1>te ajudar, então venha<1>visitar!<2,2>
-TALK06 282: <7>Gatomon<7>Por favor!<1>Alguém faça <1>algo!<2,2><3>O mundo será <1>destruído!<2,2>
+TALK06 282: <7>Gatomon<7>Socorro! Alguém<1>dá um jeito<1>nisso!<2,2><3>O mundo vai<1>pro espaço!<2,2>
 TALK06 298: <7>Grandpa Pug<7>Oink, oink.<1>Oioionk, oink!<2,2>
-TALK06 300: <7>Trooper<7>O quê?! Todos os<1>outros players foram<1>transformados em<2,2><3>Oinkmon?<2,2><3>Ha ha, tome essa!<1>A A.o.A está dando<1>a última risada!<2,2>
+TALK06 300: <7>Trooper<7>Quê?! Todo<1>mundo virou<1>Oinkmon?!<2,2><3>Ha ha!<2,2><3>Toma essa! A A.o.A<1>deu o troco e<1>mandou ver!<2,2>
 TALK06 310: <7>Ghostbuster Puck<7>Oink, oink!<1>Oioioink, oink!<2,2>
 TALK06 321: <7>Nami<7>Ooooink,<1>ooooink!<2,2>
 TALK06 326: <7>Animal Lover Jen<7>...oink?!<1>Oin, oink, oink!<2,2>
@@ -2774,7 +2774,7 @@ TALK06 677: <7>DRI Bob<7>Isso é um <1>DDNA do Veemon!<2,2><3>Então você encon
 TALK06 679: <7>DRI Bob<7>Eu sou um especialista <1>em Veemon.<2,2><3>Mas não sou tão bom <1>com Paildramon, <1>então obrigado!<2,2>
 TALK06 680: <7>DRI Bob<7>Eu sou o DRI Bob!<1>Vou te contar um <1>segredo.<2,2>
 TALK06 681: <7>DRI Bob<7>Para ser sincero, <1>em vez de treinar <1>todos eles...<2,2><3>você deveria apenas <1>se concentrar em um.<2,2><3>Há um relatório de que<1>isso os torna mais fáceis<1>de digivolver!<2,2>
-TALK06 682: <7>Baronmon<7>Eu consigo ver!<1>Eu consigo ver o <1>futuro!<2,2><3>Há porcos <1>por toda parte!<2,2>
+TALK06 682: <7>Baronmon<7>Eu tô vendo!<1>Eu tô vendo o<1>futuro!<2,2><3>Tem leitão pra<1>todo lado!<2,2>
 TALK06 683: <7>Baronmon<7>Sepikmon estava com a <1>máscara dele quando <1>estava comigo.<2,2><3>O estranho é que...<1>...a última vez que<1>soube, ele estava em<2,2><3>Asuka City!<2,2>
 TALK06 684: <7>Baronmon<7>É verdade que o<1>Sepikmon perdeu a<1>máscara?<2,2><3>Ouvi dizer que ele está <1>em Asuka City!<2,2>
 TALK06 685: <7>Baronmon<7>Eu ouvi!<1>Você encontrou a <1>máscara do Sepikmon.<2,2><3>Como amigo dele, eu <1>também agradeço!<2,2>
@@ -2788,12 +2788,12 @@ TALK06 693: <7>DRI Johann<7>Oink, oink, oink!<1>Oink, oink!<2,2>
 TALK06 694: <7>DRI Johann<7>Eu conto com <1>você!<2,2><3>Por favor, crie um <1>Agumon forte!<2,2>
 TALK06 695: <7>DRI Johann<7>Você tem um <1>ótimo Agumon!<2,2><3>Por favor, treine−o <1>bem!<2,2>
 TALK06 696: <7>DRI Johann<7>Estou ocupado <1>agora.<2,2><3>Eu falo com <1>você mais tarde.<2,2>
-TALK06 697: <7>Divermon<7>A dor ― tem <1>algo preso na <1>minha garganta!<2,2><3>Por favor, tire <1>isso daqui!<2,2><3>.........<1>..........<2,2><3>Obrigado, agora eu <1>me sinto melhor!<2,2><3>Ah, um Red Snapper <1>estava preso.<2,2><3>Eu não preciso, então <1>você pode ficar com ele.<1>Até logo!<2,2>
+TALK06 697: <7>Divermon<7>Ai, socorro! Tem<1>um treco entalado<1>na garganta!<2,2><3>Tira isso<1>pelo amor!<2,2><3>.........<1>..........<2,2><3>Ufa, desencalhou!<1>Que alívio!<2,2><3>Era um Red Snapper<1>entalado no gogó!<2,2><3>Pode ficar com<1>ele, tô fora!<1>Valeu, fui!<2,2>
 TALK06 698: <7>Divermon<7>Obrigado pela última<1>vez.<2,2><3>Venha para a <1>Duel Island <1>algum dia.<2,2><3>Meus amigos vão jogar <1>Card Battle com você.<2,2>
 TALK06 700: <7>DRI Johann<7>Estou ocupado <1>agora.<2,2><3>Eu falo com <1>você mais tarde.<2,2>
 TALK06 701: <7>MetalGreymon<7>...hm? O quê?<2,2>
 TALK06 702: <7>MetalGreymon<7>Digital DNA é <1>muito importante, então <1>por favor, use−o bem!<2,2>
-TALK06 703: <7>WarGrowlmon<7>Aaargh!<1>O que você <1>quer?<2,2><3>Eu estava tendo um <1>bom sonho <1>comendo pão!<2,2>
+TALK06 703: <7>WarGrowlmon<7>Aaargh!<1>Qual é a<1>tua?!<2,2><3>Eu tava sonhando<1>com um pão<1>quentinho!<2,2>
 TALK06 704: <7>WarGrowlmon<7>Vocês são <1>fortes! Aquela batalha <1>foi ótima!<2,2>
 TALK06 705: <7>MagnaAngemon<7>Oh, o que foi? <1>Posso te ajudar?<2,2>
 TALK06 706: <7>MagnaAngemon<7>Eu só posso dar <1>um Digital DNA.<2,2><3>Por favor, use−o <1>com cuidado.<2,2>
@@ -2806,7 +2806,7 @@ TALK06 712: <7>Armormon<7>Eu perdi para você...<2,2><3>Preciso treinar mais <1>
 TALK06 713: <7>GrapLeomon<7>Hã?<1>Quem é você?<2,2>
 TALK06 714: <7>GrapLeomon<7>...hmmm, o quê?<1>Eu te dei o <1>Digital DNA.<2,2><3>Eu cumpro promessas.<1>Esse é o meu jeito!<2,2>
 TALK06 715: <7>Paildramon<7>Que boa soneca!<1>É tão bom <1>tirar um cochilo!<2,2>
-TALK06 716: <7>Paildramon<7>Aww, <1>eu estava <1>me sentindo tão bem.<2,2><3>Eu nunca vou te <1>dar um <1>Digital DNA!<2,2>
+TALK06 716: <7>Paildramon<7>Pô, cortou<1>o meu barato<1>total!<2,2><3>Agora não dou<1>Digital DNA<1>nem a pau!<2,2>
 TALK06 739: <7><9><7>Tem algo <1>no monitor...<2,2><3>Diz que eu não <1>tenho Blue Card...<1>Hã...<2,2>
 TALK06 740: <7><9><7>OK, agora <1>desta vez <1>deve funcionar.<2,2>
 TALK06 741: <7><9><7>Vamos para o <1>Setor Sul.<2,2>
@@ -2817,7 +2817,7 @@ TALK06 763: <7>SIGN<7>Norte: Suzaku City<1>Leste: South Station<1>Oeste: Ether J
 TALK06 777: <7>Gatomon<7>Esta é uma parada de<1>descanso na oásis.<2,2><3>Digimon cansados vão <1>se recuperar!<2,2>
 TALK06 783: <7>Baronmon<7>Eu finalmente descobri <1>a arte do<1>”Change Account!”<2,2><3>Se você quiser <1>mudar o nome do <1>seu Digimon, me avise.<2,2><3>Eu vou mudar para você<1>a qualquer momento!<2,2>
 TALK06 787: <7>Divermon<7>Hmmm?!<1>Você quer duelar <1>comigo?<2,2><3>Tudo bem!<1>Venha!<2,2>
-TALK06 788: <7>Divermon<7>Heh heh heh,<2,2><3>Você ainda não é <1>bom o suficiente!<1>ainda!<2,2>
+TALK06 788: <7>Divermon<7>Heh heh heh!<2,2><3>Ainda falta<1>muito arroz com<1>feijão, viu!<2,2>
 TALK06 789: <7>Divermon<7>Ei!<1>Você é muito bom.<2,2>
 TALK06 790: <7>Divermon<7>Foi uma boa <1>batalha.<1>Vamos fazer de novo.<2,2>
 TALK06 806: <7>Gatomon<7>Todos estão irritados <1>com Zanbamon na <1>Jungle Grave.<2,2><3>Sepikmon na Shaman <1>House deveria <1>conseguir fazer algo...<2,2><3>Mas não o vemos há<1>algum tempo. Eu me<1>pergunto por quê...<2,2>
@@ -2827,18 +2827,18 @@ TALK06 811: <7><9><7>Vamos para o East <1>Sector!<2,2>
 TALK06 812: <7><9><7>Sim! Eu consegui <1>600 BITS!<2,2>
 TALK06 813: <7><9><7>Sim! Eu consegui <1>1600 BITS!<2,2>
 TALK06 826: <7><9><7>Eu tenho que encontrar<1>o Digi−Egg da<1>Sinceridade...<2,2>
-TALK06 828: <7>Divermon<7>Apenas Tamer de verdade<1>podem passar daqui.<2,2><3>Você nem tem uma <1>bag de Folder?<2,2><3>Eu nunca deixarei<1>ninguém como você<1>passar!<2,2>
+TALK06 828: <7>Divermon<7>Aqui só entra Tamer<1>de carteirinha!<2,2><3>Nem Folder Bag<1>você tem?!<2,2><3>Aqui você não<1>passa nem por<1>decreto!<2,2>
 TALK06 862: <7>Baronmon<7>Vamos mudar o <1>nome do seu <1>parceiro Digimon!<2,2>
 TALK07 158: <7>Model Marilyn<7>Oink,<1>oi, oinoinoink!<2,2>
-TALK07 159: <7>Model Marilyn<7>Eu odeio isso!<2,2><3>Minha beleza foi<1>arruinada ao me<1>transformar em Oinkmon!<2,2>
+TALK07 159: <7>Model Marilyn<7>Que horror!<2,2><3>Acabaram com a<1>minha beleza me<1>virando Oinkmon!<2,2>
 TALK07 160: <7>Model Marilyn<7>Oink,<1>oi, oinoinoink!<2,2>
 TALK07 161: <7>Cameraman Capa<7>Oink,<1>oink, oink!<2,2>
-TALK07 162: <7>Cameraman Capa<7>Você era fofa como <1>Oinkmon, Marilyn.<2,2><3>Eu deveria ter tirado <1>uma foto sua.<2,2>
+TALK07 162: <7>Cameraman Capa<7>Você tava um charme<1>de Oinkmon, Marilyn!<2,2><3>Vacilei de não<1>bater uma foto!<2,2>
 TALK07 163: <7>Cameraman Capa<7>Oink,<1>oink, oink!<2,2>
 TALK07 166: <7>President Gonzo<7>Oiiink, oink,<1>oinkoinkoink!<2,2>
-TALK07 167: <7>President Gonzo<7>Eu não quero ir <1>para a reunião de hoje.<2,2><3>Se eu ainda fosse <1>Oinkmon, eu não<1>teria que ir!<2,2>
+TALK07 167: <7>President Gonzo<7>Tô sem saco pra<1>reunião de hoje.<2,2><3>Antes tivesse<1>ficado Oinkmon<1>pra fugir dela!<2,2>
 TALK07 168: <7>Miko<7>Ooioioioioio, oi!<1>Oi, oinkk!<2,2>
-TALK07 170: <7>Gatomon<7>Uau, eu acordei e<1>todos eram <1>Digimon!<2,2><3>O que― o que <1>aconteceu?!<2,2>
+TALK07 170: <7>Gatomon<7>Uau, acordei e<1>estava todo mundo<1>Digimon!<2,2><3>Que parada<1>foi essa?!<2,2>
 TALK07 171: <7>Gatomon<7>É tudo culpa da A.o.A!<2,2><3>Como eles podem fazer <1>isso?<2,2>
 TALK07 172: <7>Gatomon<7>Eu já ouvi falar de<1>você! Muito obrigada!<2,2><3>Agora podemos nos<1>sentir melhor fazendo o<1>nosso trabalho!<2,2>
 TALK07 173: <7>Gatomon<7>Todos se transformaram<1>em Digimon de novo!<2,2><3>Eu pensei que você<1>tivesse derrotado a<1>A.o.A?!<2,2>
@@ -2901,12 +2901,12 @@ TALK07 409: <7>Jogador de Beisebol Shigeo<7>Oink, oink,<1>ooinknoink oink!<2,2>
 TALK07 411: <7>Golfista Woods<7>Ooooooink!<1>Oooinnk, oinknoink!<2,2>
 TALK07 413: <7>Fã de Maratona Naoko<7>Oinoinonk, oink.<1>Ooinik, oinkoink!<2,2>
 TALK07 447: <7>Avarento Reagan<7>Ooin, ooinik,<1>oooiioinio, oink!<2,2>
-TALK07 448: <7>Egoísta Goldie<7>Não, não, noooo!<2,2><3>Eu deveria ser um <1>MagnaAngemon, não um <1>Oinkmon!<2,2><3>Alguém me mude <1>agora!<2,2>
+TALK07 448: <7>Egoísta Goldie<7>Não, não, nããão!<2,2><3>Eu merecia virar<1>MagnaAngemon, não<1>um Oinkmon!<2,2><3>Dá um jeito<1>nisso já!<2,2>
 TALK07 449: <7>Egoísta Goldie<7>Oooooinki, oink,<1>ooinkkkk!<2,2>
 TALK07 451: <7>Preguiçoso Tatsu<7>Oink, oinnknoink,<1>oinnk, oin. Oink,<1>ooink, oink!<2,2>
-TALK07 452: <7>Amante de Bolo Bianca<7>Estou tão estressada <1>por ter voltado <1>a ser Oinkmon!<2,2><3>Vou comer um pouco <1>de bolo quando <1>voltarmos para casa.<2,2>
+TALK07 452: <7>Amante de Bolo Bianca<7>Que estresse<1>voltar a ser<1>Oinkmon!<2,2><3>Chegando em casa<1>vou detonar<1>um bolo inteiro!<2,2>
 TALK07 453: <7>Amante de Bolo Bianca<7>Oinonkoink!<1>Oioink, oinnk!<2,2>
-TALK07 454: <7>Estilista Talia<7>As mulheres precisam <1>ser belas, mesmo <1>sendo Oinkmon!<2,2><3>Eu vou desenvolver a <1>Moda Oinkmon <1>agora.<2,2>
+TALK07 454: <7>Estilista Talia<7>Estilo não se<1>perde nem sendo<1>Oinkmon!<2,2><3>Vou lançar a<1>Moda Oinkmon<1>agora mesmo!<2,2>
 TALK07 455: <7>Estilista Talia<7>Oinnnnk, oink!<1>Oinnkoink,<1>Oooink, oink!<2,2>
 TALK07 477: <7>Tamer Heinrich<7>Ooink, oink.<1>Oooo, oink!<2,2>
 TALK07 489: <7><9><7>Sim! Eu ganhei <1>300 BIT!<2,2>
@@ -2941,9 +2941,9 @@ TALK07 615: <7>Amadeus<7>Ooink, oink oink!<1>Ooink, oink!<2,2>
 TALK07 648: <7>Hal the Bully<7>Quando me transformaram<1>em Oinkmon, senti o que<1>é ser intimidado.<2,2><3>Então nunca vou <1>intimidar ninguém!<2,2>
 TALK07 649: <7>Hal the Bully<7>Oooink, oink!<1>Ooink, oinoinonk!<2,2>
 TALK07 651: <7>Cowardly Kate<7>...Ooink?!<1>Ooink!<1>Ooooinkoink!<2,2>
-TALK07 652: <7>Sherwood’s Robin<7>Nós não perderemos<1>agora que estou aqui!<2,2><3>...Se eu já não <1>fosse um <1>Oinkmon...<2,2>
+TALK07 652: <7>Sherwood’s Robin<7>Agora a gente vira<1>comigo na área!<2,2><3>...Se eu já não<1>fosse um<1>Oinkmon, né...<2,2>
 TALK07 653: <7>Sherwood’s Robin<7>Ooioioinoinoink.<1>Oioioink, oink!<1>Ooinonoink!<2,2>
-TALK07 657: <7>Bad boy Dennis<7>Ei, mantenha o que <1>aconteceu hoje <1>em segredo.<2,2><3>Se descobrirem <1>que eu virei <1>aquele Oinkmon fofo...<2,2><3>Vão rir de mim <1>para sempre!<2,2>
+TALK07 657: <7>Bad boy Dennis<7>Ei, bico calado<1>sobre o lance<1>de hoje!<2,2><3>Se souberem que<1>virei aquele<1>Oinkmon fofo...<2,2><3>Vão zoar comigo<1>pra sempre!<2,2>
 TALK07 658: <7>Bad boy Dennis<7>...oink,<1>oionioik, oink!<1>Oioink, oinoink!<2,2>
 TALK07 660: <7>Anime Fan Hayato<7>Oooink, oink!<1>Oiooink, ooink!<2,2>
 TALK07 662: <7>Sherry<7>Ooi...ooink,<1>oionk, oink!<2,2>
@@ -2952,14 +2952,14 @@ TALK07 689: <7>Tamer Gon<7>Oi, oioioin,<1>oi, oioioink!<2,2>
 TALK07 718: <7>Gatomon<7>Bem−vindo à minha<1>Estalagem!<2,2><3>Por favor, relaxe e <1>descanse.<2,2>
 TALK07 719: <7>Guardromon<7>ACESSANDO<1>MATRIX DRIVE.<2,2>
 TALK07 720: <7>Gargomon<7>Ka Boom!<1>Este é o<1>Armory!<2,2>
-TALK07 721: <7>MetalEtemon<7>Ei! Eu sou, na verdade,<1>um ferreiro<1>genial!<2,2><3>Mas vocês não têm<1>nenhum gosto...<2,2><3>Voltem quando tiverem<1>armaduras melhores!<2,2>
+TALK07 721: <7>MetalEtemon<7>Ei! Eu sou um<1>ferreiro de<1>primeira linha!<2,2><3>Mas vocês tão sem<1>estilo nenhum...<2,2><3>Voltem com algo<1>mais estiloso!<2,2>
 TALK07 727: <7>Gatomon<7>Este é o ponto de <1>descanso Oasis.<2,2><3>Digimon cansados vão <1>se recuperar se você <1>descansar aqui.<2,2>
-TALK07 729: <7>Shakkoumon<7>Este é o gym.<2,2><3>Sem dor, sem ganho!<2,2>
+TALK07 729: <7>Shakkoumon<7>Aqui é o gym!<2,2><3>Sem suor não rola!<2,2>
 TALK07 730: <7>Asuramon<7>Treinar é bom.<1>Treine bem!<2,2>
-TALK07 731: <7>Magnamon<7>Este é o Legendary<1>Gym, Hyper Version!<2,2><3>É o mais difícil do<1>Digimon Online, mas<1>você quer tentar?<2,2>
+TALK07 731: <7>Magnamon<7>Aqui é o Legendary<1>Gym, Hyper Version!<2,2><3>É pedreira pura,<1>mas vai encarar<1>mesmo assim?<2,2>
 TALK07 732: <7>Guard Banch<7>Oioionk, onk!<1>Oooink, oooiioo!<2,2>
 TALK07 734: <7>Kabukimon<7>Kotetsu é uma<1>ótima katana afiada.<2,2><3>Use−a com cuidado!<2,2>
-TALK07 735: <7>Kabukimon<7>Meu nome é...<1>...oh!<1>Kabukimon!<2,2>
+TALK07 735: <7>Kabukimon<7>Meu nome é...<1>...o grande!<1>Kabukimoooon!<2,2>
 TALK07 736: <7>Kabukimon<7>Eu sou, na verdade, <1>fanático por katanas.<2,2><3>Se você me trouxer<1>a Onimaru...<2,2><3>eu a fundirei com a<1>Rusty Katana e <1>farei algo incrível.<2,2>
 TALK07 737: <7>Kabukimon<7>Oh, você carrega<1>em sua mão a<1>grande Onimaru!<2,2><3>Então eu vou fundir<1>a Onimaru com a<1>Rusty Katana...<2,2><3>E criar a<1>maior arma,<1>Kotetsu.<2,2><3>Tudo bem, espere <1>um momento...<1>...Aiyaaaaa!<2,2><3>Hm! Aqui está a<1>Kotetsu!<2,2><3>Eu vou entregá−la.<1>Ela é muito valiosa,<1>então seja cuidadoso.<2,2>
 TALK07 738: <7>Shurimon<7>Eu ainda estou em<1>treinamento.<2,2><3>Sinto muito, mas <1>não posso lutar<1>com você.<2,2>
@@ -2971,8 +2971,8 @@ TALK07 743: <7>Nohemon<7>Eu sou Nohemon,<1>não um espantalho!<2,2>
 TALK07 744: <7>Nohemon<7>Oh, você tem a<1>Rusty Glove.<2,2><3>Então vá buscar a<1>Kaiser Fist.<2,2><3>Aí eu farei para você<1>uma arma mais legal!<2,2>
 TALK07 745: <7>Nohemon<7>Oh, você pegou a<1>Rusty Glove e a<1>Kaiser Fist!<2,2><3>OK, entregue para mim.<1>Não se preocupe, não<1>vou pegá−las para mim.<2,2><3>OK, lá vamos nós.<2,2><3>...olhe só − você<1>conseguiu a Zodiac!<2,2><3>OK, eu vou devolver <1>isso para você.<1>Use bem!<2,2>
 TALK07 746: <7>Shadramon<7>Sha sha sha!<1>Não me agradeça.<2,2><3>Eu só fiz o que<1>um cara mau faria!<2,2>
-TALK07 747: <7>Shadramon<7>Eu sou Shadramon!<1>Um cara mau <1>lógico!<2,2>
-TALK07 748: <7>Shadramon<7>Oh, você pegou a<1>Old Claw.<2,2><3>Por que você a guarda?<1>Vão rir de você!<2,2><3>Traga a Saber Fang.<1>Eu as transformarei em<1>uma arma de verdade!<2,2>
+TALK07 747: <7>Shadramon<7>Eu sou Shadramon!<1>Um vilão de<1>lógica afiada!<2,2>
+TALK07 748: <7>Shadramon<7>Opa, tá com<1>a Old Claw.<2,2><3>Vai guardar isso?<1>Que mico!<2,2><3>Traz a Saber Fang<1>que eu viro uma<1>arma de verdade!<2,2>
 TALK07 749: <7>Shadramon<7>Você tem a Saber <1>Fang e a Old Claw.<1>Entregue−as para mim!<2,2><3>Ooooh, isso é...<1>é incrível...<2,2><3>OK, vamos fundi−la...<2,2><3>E aí!<1>Não é legal?<1>Isto é Vanquish!<2,2><3>Bem, eu tenho várias<1>então vou te dar uma!<2,2><3>Só não deixe alguns<1>caras maus comuns <1>rirem de você!<2,2>
 TALK07 750: <7>Shadramon<7>Sha sha sha!<1>Não me agradeça.<2,2><3>Eu só fiz o que<1>um cara mau faria!<2,2>
 TALK07 751: <7>Shadramon<7>Eu sou Shadramon!<1>Um cara mau <1>lógico!<2,2>
@@ -3027,7 +3027,7 @@ TALK07 812: <7>Trooper<7>Apenas olhe! Vamos<1>transformar todos em<1>Oinkmon!<2,
 TALK07 837: <7><9><7>Sim! Eu consegui<1>3000 Bits!<2,2>
 TALK07 840: <7><9><7>Eu me pergunto como <1>se livrar deste bloco...<2,2><3>Parece que é <1>controlado de <1>algum lugar..<2,2>
 TALK07 848: <7>Sagitarimon<7>Você me conheceu e <1>recebeu a Judgment.<2,2><3>Você é o Tamer mais<1>sortudo deste server!<2,2>
-TALK07 849: <7>Sagitarimon<7>Eu sou o lendário <1>Digimon <1>Sagitarimon!<2,2><3>Você tem sorte de <1>até conseguir me olhar!<2,2>
+TALK07 849: <7>Sagitarimon<7>Eu sou o<1>lendário Digimon<1>Sagitarimon!<2,2><3>Já tá no lucro<1>só de me olhar!<2,2>
 TALK07 850: <7>Sagitarimon<7>Hmm? <1>Você tem Justify!<2,2><3>Então aguente o Laser <1>Cannon!<2,2><3>E você terá <1>mais sorte!<2,2>
 TALK07 851: <7>Sagitarimon<7>Ei, você tem Laser <1>Cannon e <1>Justify!<2,2><3>Dê−os para mim...<2,2><3>...hmmm...Haaa!<1>Aiyeaaa!<2,2><3>Olhe, este é o <1>Judgment!<2,2><3>Você tem sorte de <1>estar segurando isso!<1>Ha ha ha!<2,2>
 TALK07 926: <7><7>NÃO TRADUZIR<2,2>
@@ -3042,13 +3042,13 @@ TALK08 2: <7><9><7>Certo!<1>Eu consegui um Fire<1>Chip!<2,2>
 TALK08 3: <7><9><7>Certo!<1>Eu consegui um Water<1>Chip!<2,2>
 TALK08 4: <7>Tamer Genji<7>Ha ha! Eu estive<1>ouvindo rumores <1>sobre você!<2,2><3>Você provou ser <1>um grande <1>tamer!!<2,2>
 TALK08 5: <7>Tamer Genji<7>Vamos ver qual <1>é sua habilidade <1>em um jogo de cartas.<2,2>
-TALK08 6: <7>Tamer Genji<7>O quê!? Você ainda <1>precisa de mais <1>treinamento!<2,2><3>Você me decepciona!<1>É melhor você <1>ficar mais forte!<2,2>
+TALK08 6: <7>Tamer Genji<7>Quê?! Ainda tá<1>cru desse<1>jeito?!<2,2><3>Que decepção!<1>Vai treinar mais<1>um bocado!<2,2>
 TALK08 7: <7>Tamer Genji<7>Ah ha! Exatamente <1>como eu ouvi! Você <1>é poderoso!<2,2><3>Mal posso esperar <1>para ver o quão <1>forte você ficará!<2,2>
 TALK08 13: <7>Tamer Natsumi<7>Eu sou a Natsumi! Eu <1>quero ser uma <1>star Tamer!<2,2>
 TALK08 14: <7>Tamer Natsumi<7>Ei, vamos jogar <1>cartas! Eu sou bem <1>forte, sabe!<2,2>
 TALK08 15: <7>Tamer Natsumi<7>Eu consegui! Eu venci!<2,2><3>Eu tenho que ser <1>forte para ser uma <1>star Tamer!<2,2>
-TALK08 16: <7>Tamer Natsumi<7>Espere! O que <1>aconteceu!?<2,2><3>Droga! Er... Finja <1>que não ouviu <1>sobre isso!<2,2>
-TALK08 17: <7>Flamedramon<7>Lucky Mouse, eu <1>digo Kurt, é <1>irado demais!<2,2><3>Até nós Digimon estamos<1>felizes em jogar.<2,2>
+TALK08 16: <7>Tamer Natsumi<7>Peraí! Que<1>que rolou?!<2,2><3>Puxa! Er... Faz<1>de conta que não<1>viu nada!<2,2>
+TALK08 17: <7>Flamedramon<7>O Lucky Mouse,<1>digo Kurt, é<1>gente finíssima!<2,2><3>Até nós Digimon<1>tamo curtindo!<2,2>
 TALK08 24: <7>Tamer Service<7>Seus dados estão sendo <1>usados como eram <1>antes.<2,2><3>Continue se esforçando <1>para ser o melhor <1>tamer que puder!<2,2>
 TALK08 25: <7>Guide<7>Obrigado por <1>participar da <1>rodada de teste.<2,2><3>Você pode jogar apenas <1>no Leste e no <1>Centro,<2,2><3>mas estamos turbinando <1>o Circuit Board para <1>sua diversão!<2,2>
 TALK08 34: <7>Digivolve Navi<7>Você pode encontrar<1>pistas para aprender<1>sobre degivolução aqui.<2,2><3>Qual tópico você<1>gostaria de ver?<2,2>
@@ -3073,30 +3073,30 @@ TALK08 65: <7>Smith Junior<7>O leilão está<1>encerrado hoje!<2,2><3>Este será
 TALK08 66: <7>Divermon<7>Bem−vindo ao Yellow <1>Cruiser, o paraíso da<1>mania de cards!<2,2>
 TALK08 69: <7>Tamer Nacky<7>Agora que o Digimon<1>Online foi<1>renovado,<2,2><3>espero que eu consiga<1>quebrar minha sequência<1>de derrotas!<2,2>
 TALK08 70: <7>Tamer Nacky<7>Ei, venha<1>enfrentar−me em<1>uma batalha de card!<2,2><3>Certo, pronto<1>para me ver ganhar?<2,2>
-TALK08 71: <7>Tamer Nacky<7>Eu consegui! Eu<1>sabia que poderia<1>te vencer!<2,2><3>Cuidado!<1>Estou em uma maré<1>de sorte!<2,2>
-TALK08 72: <7>Tamer Nacky<7>Não pode ser!!!<1>Eu perdi!!<2,2><3>Parece que estou<1>preso nesta<1>sequência de derrotas!<2,2>
+TALK08 71: <7>Tamer Nacky<7>Consegui! Sabia<1>que dava pé<1>vencer você!<2,2><3>Abre o olho!<1>Tô com a corda<1>toda hoje!<2,2>
+TALK08 72: <7>Tamer Nacky<7>Não é possível!!<1>Rodei de novo!!<2,2><3>Que zica braba<1>é essa que não<1>larga do pé?!<2,2>
 TALK08 73: <7>Tamer Harami<7>Hoje eu consegui a<1>permissão da minha<1>menininha para<2,2><3>vir!<2,2>
 TALK08 74: <7>Tamer Harami<7>Às vezes você tem<1>que se soltar e<1>se divertir!<2,2><3>Tudo bem então,<1>vamos jogar<1>cards!<2,2>
-TALK08 75: <7>Tamer Harami<7>Boa! Minha<1>vitória!!<2,2><3>Isso com certeza<1>deve deixar minha<1>pequena feliz!<2,2>
-TALK08 76: <7>Tamer Harami<7>Ei! O que foi<1>que aconteceu!?<2,2><3>Desculpe Yoko, o papai<1>te decepcionou!<2,2>
+TALK08 75: <7>Tamer Harami<7>Show! Levei<1>essa!!<2,2><3>Minha pequena<1>vai dar pulos<1>de alegria!<2,2>
+TALK08 76: <7>Tamer Harami<7>Ei! Que parada<1>foi essa?!<2,2><3>Foi mal, Yoko! O pai<1>escorregou feio!<2,2>
 TALK08 77: <7>Tamer Mei Lin<7>Nihao! Você é o<8,1><5,1> <1>certo? Estou tão feliz em <1>conhecer você!<2,2><3>Graças a você, o Digimon<1>Online voltou!<2,2>
 TALK08 78: <7>Tamer Mei Lin<7>Ei, já que estamos<1>aqui, vamos jogar<1>cartas!<2,2><3>Eu nunca pensei que<1>poderia jogar cartas <1>com você!<2,2>
-TALK08 79: <7>Tamer Mei Lin<7>Eba!<1>Eu venci!!<2,2><3>Você pode ser bom em<1>batalhar, mas não em<1>jogar cartas!<2,2>
+TALK08 79: <7>Tamer Mei Lin<7>Eba!<1>Mandei ver!!<2,2><3>Na porrada você<1>até vai, mas nas<1>cartas dançou!<2,2>
 TALK08 80: <7>Tamer Mei Lin<7>Ahhh não! Eu... <1>Você é realmente<1>forte!<2,2><3>Vou continuar<1>praticando até ser capaz<1>de te vencer!<2,2>
 TALK08 81: <7>Tamer Mitch<7>Sim, estou empolgado <1>que possamos jogar <1>Digimon Online de novo<2,2>
 TALK08 82: <7>Tamer Mitch<7>OK, garoto!<1>Vamos jogar<1>cartas!<2,2><3>Eu acho que este<1>vai ser um<1>ótimo jogo!<2,2>
-TALK08 83: <7>Tamer Mitch<7>Ufa! Eu apenas <1>amo a sensação<1>da vitória!<2,2><3>É por isso que eu não <1>consigo me cansar <1>do Digimon Online!<2,2>
+TALK08 83: <7>Tamer Mitch<7>Ufa! Vencer é<1>bom demais da<1>conta!<2,2><3>Por isso que não<1>largo o Digimon<1>Online nunca!<2,2>
 TALK08 84: <7>Tamer Mitch<7>Uau! Você é bom! Acho<1>que você deve ser, já<1>que venceu o A.o.A!<2,2><3>Eu aposto que você vai<1>se tornar o melhor tamer<1>de todos!<2,2>
 TALK08 85: <7><9><7>O que foi aquilo?<1>Acho que vi <1>algum brilho.<2,2><3>Eu imaginei?<1>Talvez eu devesse <1>dar uma olhada.<2,2>
 TALK08 86: <7><9><7>Não, parece<1>que não foi<1>nada.<2,2>
 TALK08 87: <7><9><7>Parece que <1>algo caiu <1>neste vão!<2,2><3>Ei! <1>Olhe só! Uma <1>”Card de Membros P!”<2,2><3>Uma Card de Membro<1>Platinum! Deixe−me<1>ver... O que eu faço<2,2><3>com ela?<2,2>
 TALK08 88: <7><9><7>Não. Parece que<1>não tem nada<1>aqui.<2,2>
 TALK08 89: <7>Ponchomon<7>Ei, amigo! <1>Bem−vindo ao<1>El Dorado!<2,2><3>Aceita algumas <1>infos de itens quentes,<1>amigo?<2,2>
-TALK08 94: <7>Tamer Andy<7>Eu sou Andy, o <1>Tamer genial do <1>Server 1!<2,2><3>Eu te aviso agora,<1>você não será <1>rival para mim!<2,2>
+TALK08 94: <7>Tamer Andy<7>Sou Andy, o<1>gênio mor do<1>Server 1!<2,2><3>Já aviso: não dá<1>nem pro cheiro<1>comigo!<2,2>
 TALK08 95: <7>Tamer Andy<7>Deixe−me provar <1>em um jogo de <1>cartas!<2,2><3>Você consegue vencer <1>o mega−forte Folder <1>que eu criei?<2,2>
-TALK08 96: <7>Tamer Andy<7>Ha ha ha! Você <1>sabia que ia <1>perder!<2,2><3>Ninguém consegue vencer<1>o Tamer Andy!!<2,2>
-TALK08 97: <7>Tamer Andy<7>O que aconteceu! <1>Mas este era o <1>Folder mais forte!!<2,2><3>Bem, prepare−se <1>porque da próxima vez <1>eu não vou perder!<2,2>
-TALK08 117: <7>Autor William<7>Você leu meu <1>livro, ”Oinkio & <1>Floriette”?<2,2><3>É uma história de <1>amor sobre Oinkmon <1>e Floramon!<2,2><3>O próximo eu vou <1>escrever ”Numemette”!<1>Fique de olho!<2,2>
+TALK08 96: <7>Tamer Andy<7>Ha ha ha! Já<1>sabia que ia<1>dar ruim!<2,2><3>Ninguém derruba o<1>Tamer Andy!!<2,2>
+TALK08 97: <7>Tamer Andy<7>O que houve?!<1>Esse era meu<1>Folder supremo!!<2,2><3>Se prepara que<1>na próxima não<1>dou colher de chá!<2,2>
+TALK08 117: <7>Autor William<7>Já leu meu livro,<1>”Oinkio &<1>Floriette”?<2,2><3>É um novelão<1>entre Oinkmon e<1>Floramon!<2,2><3>Depois vem<1>”Numemette”!<1>Fique de olho!<2,2>
 TALK08 121: <7>Guardromon<7>Agora eu me tornei<1>um guarda da<1>Patrulha Digimon!<2,2><3>Eu farei o meu melhor<1>para proteger o Digimon<1>Online!<2,2>
 TALK08 131: <7>Sr. Wedge<7>Ei! Obrigado por<1>vir à<1>loja do Wedge!<2,2><3>Eu tenho muitos<1>itens bons, então <1>dê uma olhada!<2,2>
 TALK08 132: <7>Sr. Wedge<7>Ah, vejo que você <1>tem um Platinum<1>Card!<2,2>
@@ -3124,30 +3124,30 @@ TALK09 17: <7><9><7>Certo!<1>Eu peguei um<1>Gold Ticket!<2,2>
 TALK09 18: <7><9><7>Certo!<1>Eu peguei um<1>Platinum Ticket!<2,2>
 TALK09 19: <7><9><7>Certo!<1>Eu peguei uma<1>Rusty Katana!<2,2>
 TALK09 20: <7><9><7>Certo!<1>Eu peguei uma<1>Old Wand!<2,2>
-TALK09 25: <7>Tamer Peter<7>Então você é quem<1>derrotou o<1>A.o.A.<2,2><3>Hmph! Você não<1>parece tão especial para<1>mim.<2,2>
+TALK09 25: <7>Tamer Peter<7>Então foi você<1>que derrubou a<1>A.o.A.<2,2><3>Hmph! Não achei<1>essa Coca−Cola<1>toda não.<2,2>
 TALK09 26: <7>Tamer Peter<7>Bem então, vamos<1>ver o que<1>você tem.<2,2><3>Prepare−se para uma<1>partida de cards!<2,2>
 TALK09 27: <7>Tamer Peter<7>Hmph! Então é só<1>isso que você tem,<1>hein?<2,2><3>Você é mesmo<1>quem derrotou o<1>A.o.A.?<2,2>
-TALK09 28: <7>Tamer Peter<7>Eu desisto. Você é<1>tudo o que os boatos<1>dizem.<2,2><3>Mas cuidado. Existem<1>caras mais fortes neste<1>lugar.<2,2>
-TALK09 29: <7>Tamer Mitsuko<7>Não, não é! Você é o<1><8,1><5,1>, certo?<2,2><3>Eu sou sua maior<1>fã! Ah, estou ficando<1>desmaiada!<2,2>
+TALK09 28: <7>Tamer Peter<7>Me rendo! Os<1>boatos são tudo<1>verdade.<2,2><3>Mas abre o olho:<1>tem barra−pesada<1>neste lugar.<2,2>
+TALK09 29: <7>Tamer Mitsuko<7>Mentira! Você é<1><8,1><5,1>, né?!<2,2><3>Sou fã número um!<1>Ai, minhas pernas<1>vão bambeando!<2,2>
 TALK09 30: <7>Tamer Mitsuko<7>Já que temos este<1>momento, não quer<1>jogar cards comigo?<2,2>
 TALK09 31: <7>Tamer Mitsuko<7>Isso é típico de<1>você, <8,1><5,1>!<2,2><3>Deixar uma velha<1>como eu vencer.<1>Você é tão<2,2><3>gentil! Eu gosto<1>ainda mais de você!<2,2>
 TALK09 32: <7>Tamer Mitsuko<7>Isso é típico de<1>você, <8,1><5,1>!<1>Você é tão<2,2><3>forte! Eu gosto<1>ainda mais de<1>você!<2,2>
 TALK09 33: <7>Tamer Mitsuko<7>Estou feliz que o<1>Digimon Online voltou!<1>Agora posso jogar<2,2><3>sem ter que me<1>preocupar com<1>absolutamente nada!<2,2>
 TALK09 34: <7>Tamer Mai<7>Já que temos um<1>momento agora, que tal<1>uma batalha?<2,2><3>Eu não tive tempo<1>de jogar cards<1>antes!<2,2>
 TALK09 35: <7>Tamer Mai<7>E então? É incrível,<1>não é? Minha habilidade!<1>Na verdade, eu<2,2><3>estive treinando<1>secretamente desde a<1>última vez!<2,2>
-TALK09 36: <7>Tamer Mai<7>Nossa, você é forte<1>para uma criança!<2,2><3>Não aguento isso!<1>Eu tenho que me<1>tornar mais dura!<2,2>
-TALK09 37: <7>Tamer George<7>Cara, isso está<1>quebrado. Onde estão<1>todos os tamers REAIS?<2,2><3>Desde que eu<2,2><3>loguei, estou morrendo<1>de tédio!<2,2>
-TALK09 38: <7>Tamer George<7>O que está olhando?<1>Ah, quer jogar<1>comigo?!<2,2><3>Ha! Tudo bem então,<1>veja o que você<1>tem, garoto!<2,2>
-TALK09 39: <7>Tamer George<7>Isso é tudo o que<1>tem? Pff! Saia<1>da minha frente. <2,2><3>Volte para o<1>jardim de infância<1>de onde veio!<2,2>
-TALK09 40: <7>Tamer George<7>Sim! Agora ISSO foi uma<1>batalha! Eu perdi, mas<1>não estou entediado!<2,2><3>Ei, temos que jogar<1>de novo qualquer<1>hora, certo?<2,2>
+TALK09 36: <7>Tamer Mai<7>Caramba, tem força<1>de gente grande!<2,2><3>Não dá! Preciso<1>engrossar o<1>caldo!<2,2>
+TALK09 37: <7>Tamer George<7>Que tédio brabo!<1>Cadê os tamers<1>REAIS daqui?!<2,2><3>Desde que entrei<2,2><3>tô vendo<1>moscas aqui!<2,2>
+TALK09 38: <7>Tamer George<7>Perdeu alguma<1>coisa? Ah, quer<1>encarar?!<2,2><3>Bora lá, quero<1>ver se tem<1>peito mesmo!<2,2>
+TALK09 39: <7>Tamer George<7>Só isso? Pff!<1>Sai da minha<1>reta!<2,2><3>Volta pro<1>parquinho de<1>onde veio!<2,2>
+TALK09 40: <7>Tamer George<7>Aí sim! ISSO que<1>é briga boa! Perdi,<1>mas tirei o mofo!<2,2><3>Ei, bora outra<1>hora dessas,<1>fechou?!<2,2>
 TALK09 41: <7>Tamer Masato<7>A Tomomi e eu<1>logamos juntos<1>hoje!<2,2><3>Agora estamos em uma<1>competição entre<1>nós dois!<2,2>
 TALK09 42: <7>Tamer Masato<7>Estamos competindo para<1>ver quem derrota mais<1>tamers!<2,2><3>Então não leve a<1>mal quando eu te<1>der uma derrota!<2,2>
-TALK09 43: <7>Tamer Masato<7>Ah, é! Eu posso<1>não conseguir vencer<1>a Tomomi ainda!<2,2><3>Ela é mais forte<1>do que eu, o que é<1>embaraçoso...<2,2><3>pois eu sou um homem!<2,2>
-TALK09 44: <7>Tamer Masato<7>Ah não! Eu...<1>eu perdi!<2,2><3>Isso é terrível!<1>A Tomomi vai<1>me dar um fora!<2,2>
-TALK09 45: <7>Tamer Alexei<7>Quando eu fui<1>transformado em um<1>Oinkmon, jurei aos<2,2><3>deuses que se eu<1>fosse humano de novo,<1>pararia de beber!<2,2>
-TALK09 46: <7>Tamer Alexei<7>Heh heh heh. Tudo bem,<1>garoto, prepare−se para<1>testemunhar o poder de<2,2><3>mim −<2,2><3>sóbrio!<2,2>
-TALK09 47: <7>Tamer Alexei<7>Ha ha ha! Já<1>teve o suficiente?<2,2><3>Ninguém vai me chamar<1>de Alexei Alcoólatra<1>a partir de agora!<2,2>
-TALK09 48: <7>Tamer Alexei<7>Arrrgh! Eu não<1>aguento! Só preciso de<1>um pequeno gole...<2,2><3>Não, eu não posso!<1>Eu jurei que nunca<1>beberia de novo!<2,2>
+TALK09 43: <7>Tamer Masato<7>Aí complica! Nem<1>a Tomomi eu<1>ganho ainda!<2,2><3>Ela tá me dando<1>um baile, que<1>vergonha...<2,2><3>Logo eu, o machão!<2,2>
+TALK09 44: <7>Tamer Masato<7>Putz, eu...<1>perdi!<2,2><3>Deu ruim total!<1>A Tomomi vai me<1>dar o fora!<2,2>
+TALK09 45: <7>Tamer Alexei<7>Quando virei<1>Oinkmon, fiz<1>promessa braba:<2,2><3>se voltasse ao<1>normal, largava<1>a manguaça!<2,2>
+TALK09 46: <7>Tamer Alexei<7>Heh heh! Se segura<1>que você vai ver<1>o poder de mim −<2,2><3>agora −<2,2><3>de cara limpa!<2,2>
+TALK09 47: <7>Tamer Alexei<7>Ha ha ha! Já<1>pediu arrego?!<2,2><3>Ninguém me chama<1>mais de Alexei<1>Pé−de−Cana!<2,2>
+TALK09 48: <7>Tamer Alexei<7>Arrrgh! Não dá!<1>Só preciso de<1>um dedinho...<2,2><3>Não, segura a onda!<1>Prometi e não<1>volto atrás!<2,2>
 TALK09 49: <7>Tamer Tomomi<7>Eu loguei hoje com<1>o Masato! Estamos<1>competindo para ver<2,2><3>quem derrota mais<1>tamers!<2,2>
 TALK09 50: <7>Tamer Tomomi<7>Então venha me<1>ajudar. Um jogo de<1>cards serve!<2,2>
 TALK09 51: <7>Tamer Tomomi<7>Sim!<1>Obrigada!<2,2><3>Agora posso contar<1>isso para o<1>Masato!<2,2>
@@ -3155,27 +3155,27 @@ TALK09 52: <7>Tamer Tomomi<7>Bem, eu perdi. Para<1>ser sincera, eu não<1>me imp
 TALK09 53: <7>Tamer Akiba<7>La la−la la la−−la!<1>Eu sou o alegre<1>tamer Akiba!<2,2><3>Eu voltei para o<1>Digimon Online.<1>La la−la la la−−la!<2,2>
 TALK09 54: <7>Tamer Akiba<7>Seria maravilhoso<1>se eu pudesse<1>jogar um<2,2><3>jogo de cards.<1>O que você<1>acha?<2,2>
 TALK09 55: <7>Tamer Akiba<7>Sim, eu sou incrível.<1>Eu te derrotei, eu fiz.<1>La la−la la la−−la!<2,2><3>É por isso que eu<1>nunca paro o<1>Digimon Online.<2,2>
-TALK09 56: <7>Tamer Akiba<7>Isso é horrível!<1>Eu... eu perdi!<1>Acho que estou em<2,2><3>choque. Não consigo<1>continuar cantando<1>hoje!<2,2>
-TALK09 57: <7>Tamer Gon<7>Aaaah! Logo quando<1>eu me escondi, alguém<1>me achou!<2,2><3>Ops! Alguns hábitos<1>são difíceis de parar!<2,2>
+TALK09 56: <7>Tamer Akiba<7>Que tragédia!<1>Eu... perdi!<1>Que choque...<2,2><3>Perdi o rebolado.<1>Hoje acabou<1>o show!<2,2>
+TALK09 57: <7>Tamer Gon<7>Aaaah! Tava<1>mocozado e alguém<1>me achou!<2,2><3>Ops! Mania velha<1>é dura de largar!<2,2>
 TALK09 58: <7>Tamer Gon<7>De fato, isso foi<1>bem<1>embaraçoso.<2,2><3>Que tal eu me<1>redimir com um<1>jogo de cards?<2,2>
 TALK09 59: <7>Tamer Gon<7>De fato, eu venci.<1>Sinto muito!<1>Espere um minuto.<2,2><3>A culpa é sua por<1>não ter treinado<1>o suficiente!<2,2>
 TALK09 60: <7>Tamer Gon<7>De fato, você é<1>muito poderosa. Eu me<1>sinto seguro sabendo<2,2><3>que há tamers fortes<1>como você por aí!<2,2>
 TALK09 61: <7>Tamer Wan<7>Eu sabia que o<1>Digimon Online voltaria!<1>Estou feliz que o<2,2><3>Lucky Mouse, digo,<1>Kurt o trouxe de volta!<2,2>
 TALK09 62: <7>Tamer Wan<7>Então, que tal um<1>jogo de cards? Eu<1>não vou me segurar!<2,2>
 TALK09 63: <7>Tamer Wan<7>Perdoe−me por<1>vencer.<2,2><3>O que aconteceu?<1>Você está se sentindo<1>bem hoje?<2,2>
-TALK09 64: <7>Tamer Wan<7>Incrível! Você é<1>tão forte quanto<1>dizem!<2,2><3>Lutar com você<1>é verdadeiramente<1>educativo.<2,2>
+TALK09 64: <7>Tamer Wan<7>Sinistro! A fama<1>não era papo<1>furado!<2,2><3>Enfrentar você<1>é uma aula<1>de luxo.<2,2>
 TALK09 65: <7>Tamer Kenny<7>Ei, <8,1><5,1>!<1>Sou eu, Kenny!<1>Como você tem estado?<2,2><3>Você foi realmente<1>algo incrível há<1>algum tempo!<2,2>
 TALK09 66: <7>Tamer Kenny<7>Faz muito<1>tempo. Que tal<1>algumas cards?<2,2>
-TALK09 67: <7>Tamer Kenny<7>Certo! Eu venci o<1><8,1><5,1>!<2,2><3>Ah, sim! Vou<1>contar a todos<1>sobre isso!<2,2>
+TALK09 67: <7>Tamer Kenny<7>Aê! Passei o rodo<1>em <8,1><5,1>!<2,2><3>Vou espalhar<1>pra torcida<1>inteira!<2,2>
 TALK09 68: <7>Tamer Kenny<7>Você continua<1>incrível como sempre,<1><8,1><5,1>!<2,2><3>Algum dia quero<1>ser forte<1>como você!<2,2>
 TALK09 69: <7>Tamer Jessica<7>Realmente, este<1>é um mundo<1>tão divertido.<2,2><3>Eu poderia ficar<1>aqui para sempre!<2,2>
-TALK09 70: <7>Tamer Jessica<7>Então, e então?<1>Vamos jogar algumas<1>cards, rapaz?<2,2><3>Não se segure comigo só<1>porque sou velha!<1>Eeeheheheheh!<2,2>
+TALK09 70: <7>Tamer Jessica<7>E aí, bora bater<1>umas cartas<1>comigo?<2,2><3>Vem com tudo, sem<1>pena dessa coroa!<1>Eeeheheheheh!<2,2>
 TALK09 71: <7>Tamer Jessica<7>Ah, me sinto mal<1>por te vencer.<1>Mas você não tem<2,2><3>nem de longe a<1>experiência que eu<1>tenho em cards.<2,2>
 TALK09 72: <7>Tamer Jessica<7>Céus, você<1>é muito bom<1>nisso! Mal posso<2,2><3>esperar para ver o quão<1>forte você se tornará!<1>Eeeheheheheh!<2,2>
 TALK09 73: <7>Tamer Haruko<7>Hm? Ei, você<1>é quem venceu a<1>A.o.A., certo?<2,2><3>Uau! Um único Tamer<1>salvou o mundo<1>inteiro!<2,2>
 TALK09 74: <7>Tamer Haruko<7>Eu sempre quis<1>lutar com você.<2,2><3>Que tal realizar<1>o sonho desta<1>velha senhora!<2,2>
-TALK09 75: <7>Tamer Haruko<7>Ora, ora! Eu te<1>venci agora, não?<1>Os Tamers de hoje<2,2><3>simplesmente não são<1>como os de antigamente.<2,2>
-TALK09 76: <7>Tamer Haruko<7>Oh céus, eu perdi!<2,2><3>Acho que meus dias<1>como ”Gal Gamer<1>Haruko” acabaram.<2,2>
+TALK09 75: <7>Tamer Haruko<7>Ora, ora!<1>Passei o rodo,<1>hein?!<2,2><3>Os Tamers de hoje<1>não aguentam o tranco!<2,2>
+TALK09 76: <7>Tamer Haruko<7>Vixe maria, perdi!<2,2><3>Acho que já deu<1>pra ”Gal Gamer<1>Haruko”!<2,2>
 TALK09 77: <7>Tamer Catherine<7>Meu nome é Catherine!<1>Estou tão feliz que<1>posso jogar hoje!<2,2>
 TALK09 78: <7>Tamer Catherine<7>Eu amo cards. Se<1>você quiser, podemos<1>jogar uma partida!<2,2>
 TALK09 79: <7>Tamer Catherine<7>Sim!<1>Eu venci! Eu venci!<2,2><3>Obrigada!<1>Vamos jogar<1>de novo, OK?<2,2>
@@ -3196,19 +3196,19 @@ TALK09 98: <7>Tamer Pierre<7>Sacre Bleu! Eu sinto<1>muito por isso.<2,2><3>Estar
 TALK09 99: <7>Tamer Pierre<7>Tres Bien! Você me<1>derrotou com maestria!<2,2><3>Muito bem, pode<1>passar.<2,2>
 TALK09 100: <7>Tamer Pierre<7>O poder do Monsieur<1>é incroyable!<2,2><3>Eu também me esforçarei<1>muito para não perder.<2,2>
 TALK09 101: <7>Tamer Poemy<7>Venerável<1>herói! O perigo está<1>além daqui.<2,2><3>Por favor, pare e<1>desista da sua<1>progressão!<2,2>
-TALK09 102: <7>Tamer Poemy<7>Você insiste em passar?<1>Eu, porém, não posso<1>abandonar minha<2,2><3>posição. Oh, que<1>tragédia! Isso é<1>realmente uma história<2,2><3>de amor<2,2><3>de proporções<1>românticas!<2,2>
-TALK09 103: <7>Tamer Poemy<7>O que foi isso?<1>Onde está esse Hero?<1>Que decepção!<2,2><3>Por que você teve que<1>estragar o clima<1>assim? Eu te odeio!<2,2>
+TALK09 102: <7>Tamer Poemy<7>Insiste em passar?<1>Mas eu não posso<1>largar meu<2,2><3>posto! Oh, que<1>drama! Isso parece<1>até novela<2,2><3>mexicana<2,2><3>das oito, cheia<1>de romance!<2,2>
+TALK09 103: <7>Tamer Poemy<7>Que papelão foi<1>esse?! Cadê o Hero?!<1>Que decepção!<2,2><3>Cortou meu barato<1>desse jeito?!<1>Te odeio!<2,2>
 TALK09 104: <7>Tamer Poemy<7>Oh, como é corajoso,<1>Hero!<2,2>
 TALK09 105: <7>Tamer Poemy<7>Oh, valente Hero!<2,2><3>Eu estou sempre<1>pensando em você!<2,2>
-TALK09 106: <7>Tamer Haruka<7>Oh ho ho ho! Eu<1>sou uma tamer<1>invencível!<2,2><3>Não vou permitir<1>que você prossiga!<2,2>
+TALK09 106: <7>Tamer Haruka<7>Oh ho ho ho!<1>Ninguém derruba<1>esta dama!<2,2><3>Daqui você não<1>passa nem a pau!<2,2>
 TALK09 107: <7>Tamer Haruka<7>Você ousa me desafiar?<1>Não conhecer os<1>seus limites pode ser<2,2><3>chamado de bravura,<1>eu suponho.<2,2>
-TALK09 108: <7>Tamer Haruka<7>Oh ho ho ho!<1>Testemunhe meu poder!<1>Agora, se você<2,2><3>percebeu o quanto<1>é tolo, parta<1>daqui imediatamente!<2,2>
+TALK09 108: <7>Tamer Haruka<7>Oh ho ho ho!<1>Sinta meu poder!<1>Agora que<2,2><3>caiu na real,<1>bate em retirada<1>já!<2,2>
 TALK09 109: <7>Tamer Haruka<7>Bem, de vez em quando<1>temos que deixar<1>os outros vencerem.<2,2>
-TALK09 110: <7>Tamer Haruka<7>Você percebeu que eu<1>deixei você vencer!<1>Isso é a prova de<2,2><3>o quão incrivelmente<1>forte eu sou.<1>Oh ho ho ho!<2,2>
+TALK09 110: <7>Tamer Haruka<7>Eu deixei você<1>ganhar, tá na cara!<1>Isso prova<2,2><3>que sou humilde<1>até demais.<1>Oh ho ho ho!<2,2>
 TALK09 111: <7>Panjyamon<7>Este é um novo<1>gym de treinamento!<2,2><3>Se você treinar pesado,<1>você definitivamente<1>ficará poderoso!<2,2>
 TALK09 112: <7>Placa<7>Norte: Amaterasu Cty<1>Leste: Qing Long City<2,2>
 TALK09 113: <7>Togemon<7>Espero que consertem os<1>outros servers logo<1>também.<2,2><3>Então poderei ser uma<1>receptionist de<1>gym novamente.<2,2>
-TALK09 116: <7>Leomon<7>Não baixe sua guarda<1>só porque você<1>venceu o A.o.A.!<2,2><3>Tamers mestres nunca<1>negligenciam o treino,<1>não importa o quê!<2,2>
+TALK09 116: <7>Leomon<7>Não dê mole só<1>porque venceu<1>a A.o.A.!<2,2><3>Tamer de verdade<1>não mata treino<1>nunca!<2,2>
 TALK09 120: <7>Magnamon<7>O oceano é tão<1>sereno. É relaxante<1>apenas olhar para ele.<2,2><3>Mais uma vez,<1>tudo está certo<1>com o mundo.<2,2>
 TALK09 125: <7>Asuramon<7>Ora, se não é o<1><8,1><5,1>. Eu ouvi<1>falar de você. Você<2,2><3>ainda tem um longo e<1>difícil caminho para<1>percorrer antes de<2,2><3>se tornar um Tamer mestre.<1>Para ficar mais forte, você<1>deve lutar!<2,2>
 TALK09 127: <7>Placa<7>Leste: Qing Long City<1>Oeste: Amaterasu City<1>Sul: Forest Inn<2,2>
@@ -3241,11 +3241,11 @@ TALK09 170: <7>Yashamon<7>...eu sou Yashamon.<1>Eu gosto dos fortes...<2,2>
 TALK09 171: <7>Yashamon<7>Os fortes devem <1>empunhar armas <1>adequadas...<2,2><3>...se você tem a <1>Kotetsu, pegue a <1>Tenjinmaru...<2,2><3>...então eu farei <1>de você uma <1>arma melhor...<2,2>
 TALK09 172: <7>Yashamon<7>...Você tem tanto a<1>Kotetsu quanto a<1>Tenjinmaru...<2,2><3>...Se você tiver ambas,<1>então criarei uma<1>arma mais poderosa.<2,2><3>...Minha alma forte,<1>habita nestas<1>duas espadas!<2,2><3>...Segure, a<1>Masamune<1>foi criada...<2,2><3>...Adeus. Torne−se<1>forte para que esteja à<1>altura desta espada...<2,2>
 TALK09 173: <7>Sajitarimon<7>Você conseguiu a <1>Judgement <1>ao me encontrar..<2,2><3>Você é provavelmente o <1>Tamer mais sortudo <1>deste Server!<2,2>
-TALK09 174: <7>Sajitarimon<7>Eu sou o <1>Digimon fantasmal..<1>Sajitarimon!<2,2><3>Você tem muita sorte de<1>até conseguir ver um<1>vislumbre de mim!<2,2>
+TALK09 174: <7>Sajitarimon<7>Eu sou o<1>misterioso..<1>Sajitarimon!<2,2><3>Já ganhou na<1>loteria só de<1>me enxergar!<2,2>
 TALK09 175: <7>Sajitarimon<7>Hm? Você tem a <1>Justify!<2,2><3>Então pegue a Laser <1>Cannon também, e <1>traga−as aqui.<2,2><3>Você está prestes a <1>ver exatamente o quão <1>sortudo você é!<2,2>
 TALK09 176: <7>Sajitarimon<7>Uau, você tem a <1>Laser Cannon e a <1>Justify!<2,2><3>Tudo bem então,<1>entregue−as para mim<1>por um instante..<2,2><3>Hmm.. Haa!!<1>Hi−ya..!!<2,2><3>Agora, veja <1>só! Esta é a <1>Judgement!<2,2><3>Você tem sorte de <1>possuir isso!<1>Ha ha ha!!<2,2>
 TALK09 177: <7>Siihomon<7>O quê? Você não <1>precisa me <1>agradecer!<2,2><3>Os homens são tão <1>sentimentais! <1>Ho ho!<2,2>
-TALK09 178: <7>Siihomon<7>..ho ho!<1>Siihomon é o meu <1>nome!<2,2><3>Você chegou <1>bastante longe, amigão!<2,2>
+TALK09 178: <7>Siihomon<7>..ho ho!<1>Siihomon na<1>área!<2,2><3>Chegou longe pra<1>valer, hein!<2,2>
 TALK09 179: <7>Siihomon<7>Ei, amigão!<1>Você tem a Zodiac,<1>que item legal!<2,2><3>Então pegue a <1>Tempest Arm e <1>traga−a para mim!<2,2><3>Eu farei de você o <1>mais legal de todas <1>as armas legais!<2,2>
 TALK09 180: <7>Siihomon<7>Ei, amigão! Você <1>tem a Tempest <1>Arm e a Zodiac!<2,2><3>Então entregue−as para<1>mim por um segundo!<2,2><3>Ho ho..! Bons <1>materiais me permitem <1>fazer um bom trabalho!<2,2><3>..e aqui está,<1>conheça a <1>Prominence!<2,2><3>Esta não é uma <1>arma comum!<1>Não se esqueça disso!<2,2>
 TALK09 181: <7>Depusumon<7>..Aaaahhh.<1>Não é bom <1>estar na água!<2,2><3>Nada é mais <1>refrescante do que <1>isto!<2,2>
@@ -3268,9 +3268,9 @@ TALK09 197: <7>Nohemon<7>O que achou, <1>a Supernova não é <1>incrível?<2,2><
 TALK09 198: <7>Nohemon<7>Eu sou o Nohemon!<1>E não, eu não sou <1>um espantalho!<2,2>
 TALK09 199: <7>Nohemon<7>Uau, o que é isso?<1>Você ainda está usando <1>a Prominence?<2,2><3>Por que você não volta <1>aqui com a Raijin <1>Fist?<2,2><3>Então eu farei uma <1>arma incrível que <1>você terá orgulho!<2,2>
 TALK09 200: <7>Nohemon<7>Ei, você tem a <1>Prominence e a <1>Raijin Fist!<2,2><3>Entregue−as para <1>mim. Não se preocupe, <1>eu não vou roubá−las.<2,2><3>Lá vou eu!<1>Isso vai ali e <1>aquilo vai aqui..<2,2><3>Isso é um milagre?<1>Veja por si mesmo, <1>a Supernova!<2,2><3>Não existe arma <1>mais forte que esta <1>para Kumamon.<2,2><3>Então cuide bem <1>dela, está bem?<2,2>
-TALK09 201: <7>Shadramon<7>Nem eu consigo fazer <1>uma arma melhor <1>que a Invincible.<2,2><3>Esta é, sem <1>dúvida, a <1>melhor do mundo!<2,2><3>Ela faz você parecer <1>um fera só de <1>segurá−la! He he he!<2,2>
+TALK09 201: <7>Shadramon<7>Nem eu supero<1>essa incrível<1>Invincible!<2,2><3>É a mais braba<1>do mundo,<1>sem caô!<2,2><3>Só de segurar já<1>dá uma moral!<1>He he he!<2,2>
 TALK09 202: <7>Shadramon<7>Yo! Eu me lembro de<1>você.. Você é quem me<1>pediu a Vaquish!<2,2><3>É bom saber <1>que você ainda <1>está na ativa!!<2,2>
-TALK09 203: <7>Shadramon<7>Uau, não me diga <1>que você ainda <1>usa a Destruction!<2,2><3>Isso não está certo.<1>Isso não te faz <1>bem agora!<2,2><3>Traga−me a Burial Fang <1>e eu farei uma <1>arma real para você!!<2,2>
+TALK09 203: <7>Shadramon<7>Uau, ainda usa<1>a velha<1>Destruction?!<2,2><3>Que papelão! Isso<1>já saiu de<1>linha faz tempo!<2,2><3>Traz a Burial Fang<1>que eu faço coisa<1>fina pra você!!<2,2>
 TALK09 204: <7>Shadramon<7>Você trouxe a <1>Destruction e a <1>Burial Fang!<2,2><3>Deixe−me ver..<1>Vamos colocá−las <1>juntas..<2,2><3>Olhe só! Ficou <1>legal, hein? Esta é <1>a Invincible!<2,2><3>Esta é a melhor <1>arma do mundo, <1>sem mentiras!<2,2><3>Nem eu consigo fazer <1>uma arma melhor que <1>a Invincible!<2,2><3>Agora você é o <1>mais brabo de todos <1>os caras! he he he!!<2,2>
 TALK09 205: <7>Kongoumon<7>Eternally é<1>realmente, muito bom!<2,2><3>Para Patamons e<1>Renamons, este é<1>de longe o melhor!<2,2>
 TALK09 206: <7>Kongoumon<7>Shaka shaka! Eu sou<1>Kongoumon. Nos<1>encontramos novamente!<2,2>
@@ -3281,23 +3281,23 @@ TALK09 210: <7>MetalGreymon<7>Você é o<1><8,1><5,1> que<1>derrotou o A.o.A?<2,
 TALK09 211: <7>MetalGreymon<7>Certo, vamos<1>lutar!<2,2><3>Estou curioso para ver<1>do que você é<1>feito!!<2,2>
 TALK09 212: <7>MetalGreymon<7>..Hmm, seus poderes<1>superaram as minhas<1>expectativas!<2,2><3>Aqui, pegue este item<1>como prova de que você<1>me venceu.<2,2><3>Este é o Agumon DDNA,<1>extraído do meu<1>DDNA!<2,2><3>Se você levar isso ao<1>Dr. Osomatsu ou ao<1>Piccolomon..<2,2><3>Você encontrará o<1>Agumon no Digimon<1>Exchange no lounge!<2,2><3>Por favor, evolua−o<1>para um Digimon<1>poderoso!<2,2>
 TALK09 213: <7>MegaroGrowlmon<7>Visite o Dr. Osomatsu<1>ou o Piccolomon.<2,2><3>Você encontrará o<1>Girumon no Digimon<1>Exchange no lounge!<2,2>
-TALK09 214: <7>MegaroGrowlmon<7>Zzz..!!<1>Por que você me<1>acordou!?<2,2><3>Eu estava sonhando<1>com uma sobremesa<1>deliciosa!<2,2>
-TALK09 215: <7>MegaroGrowlmon<7>Eu não tolerarei ninguém<1>que me interrompa<1>durante o sono!<2,2><3>Agora eu vou te<1>dar uma lição que<1>você jamais esquecerá!<2,2>
+TALK09 214: <7>MegaroGrowlmon<7>Zzz..!!<1>Que que deu pra<1>me acordar!?<2,2><3>Tava num sonho bom<1>com um pudinzão<1>delicioso!<2,2>
+TALK09 215: <7>MegaroGrowlmon<7>Mexeu com a<1>minha soneca,<1>já era!<2,2><3>Vou te dar um<1>corretivo pra não<1>esquecer nunca!<2,2>
 TALK09 216: <7>MegaroGrowlmon<7>..Ai! Me desculpe! Eu<1>estava errado! Por<1>favor, me perdoe!<2,2><3>Como prova do meu<1>pedido de desculpas,<1>você pode ficar com este<2,2><3>Girumon DDNA,<2,2><3>extraído do meu próprio.<1>Leve isso para o <1>Dr. Osomatsu<2,2><3>ou Piccolomon.. Você<1>encontrará o Girumon no<1>Digimon Exchange<2,2><3>no lounge! Sinto muito<1>por ter ficado bravo com<1>você! he he..<2,2>
 TALK09 217: <7>Piledrimon<7>Visite o Dr. Osomatsu<1>ou o Piccolomon. Você<1>encontrará o Veemon<2,2><3>no Digimon<1>Exchange no<1>lounge!<2,2>
 TALK09 218: <7>Piledrimon<7>Huhhh, que tédio..<1>Existe algo<1>interessante por aqui?<2,2>
 TALK09 219: <7>Piledrimon<7>Ei, vamos ter <1>uma batalha já que<1>estamos aqui juntos.<2,2><3>Se você vencer, eu te<1>darei um<1>item valioso!<2,2>
 TALK09 220: <7>Piledrimon<7>Ufa, isso foi<1>certamente divertido!<1>Bela batalha, hein?<2,2><3>Como prometi,<1>eu vou te dar um<1>item. Aqui.<2,2><3>É o Veemon DDNA,<1>extraído do meu<1>próprio DDNA!<2,2><3>Leve isso para o<1>Dr. Osomatsu ou<1>Piccolomon..<2,2><3>Você encontrará o<1>Veemon no Digimon<1>Exchange no lounge!<2,2><3>Treine−o muito e<1>evolua−o para um<1>Veemon robusto!<2,2>
 TALK09 221: <7>Taomon<7>Procure pelo Dr.<1>Osomatsu ou Piccolomon<1>imediatamente, e você<2,2><3>encontrará o Renamon no<1>Digimon Exchange<1>no lounge!<2,2>
-TALK09 222: <7>Taomon<7>On, Kirikirisowaka,<1>On, Kirikirisowaka.<2,2><3>Não me perturbe,<1>estou no meio <1>das minhas meditações.<2,2>
-TALK09 223: <7>Taomon<7>Eu te avisei que estava<1>no meio das minhas<1>meditações.<2,2><3>Talvez você precise de<1>uma surra para entender<1>minha mensagem..<2,2>
+TALK09 222: <7>Taomon<7>On, Kirikirisowaka,<1>On, Kirikirisowaka.<2,2><3>Não amola!<1>Tô no meio da<1>minha meditação.<2,2>
+TALK09 223: <7>Taomon<7>Avisei que tava<1>no meio das minhas<1>meditações.<2,2><3>Acho que só<1>levando uns tabefes<1>pra cair a ficha..<2,2>
 TALK09 224: <7>Taomon<7>Às vezes este tipo de<1>meditação é boa para<1>a alma também.<2,2><3>Peço desculpas pelo<1>meu mau comportamento.<1>Por favor, pegue isto.<2,2><3>É o Renamon DDNA,<1>extraído do meu<1>próprio DDNA.<2,2><3>Leve isso ao Piccolomon<1>ou ao Dr. Osomatsu.<1>Você encontrará o<2,2><3>Renamon<2,2><3>no Digimon<1>Exchange no<1>lounge.<2,2><3>Esforce−se e evolua−o<1>para um grande<1>Renamon. Desejo−lhe o<2,2><3>melhor.<2,2>
 TALK09 225: <7>HolyAngemon<7>Agora, vá ver o<1>Dr. Osomatsu ou o<1>Piccolomon. Você<2,2><3>encontrará o Patamon no<1>Digimon Exchange<1>no lounge.<2,2>
 TALK09 226: <7>HolyAnglemon<7>..Oh? Você deve ser o<1><8,1><5,1>! Eu ouvi<1>todas as histórias.<2,2><3>Eu gostaria de ver<1>justamente o quão forte<1>você é. Vamos lutar?<2,2>
 TALK09 227: <7>HolyAngemon<7>Ok, vamos começar<1>a batalha. Você<1>está pronto?<2,2>
 TALK09 228: <7>HolyAngemon<7>Ufa, os boatos sobre<1>você são verdadeiros.<1>Você é realmente durão!<2,2><3>Como prova da minha<1>gratidão por <1>lutar comigo, pegue<2,2><3>este Patamon DDNA,<1>extraído do meu<1>próprio DDNA. Leve−o<2,2><3>ao Dr. Osomatsu ou<1>Piccolomon, e você<1>encontrará o Patamon no<2,2><3>Digimon Exchange<1>no lounge.<1>Boa sorte, eu estou<2,2><3>torcendo por você!<1>Que você alcance <1>grandes coisas!<2,2>
 TALK09 229: <7>Kyukimon<7>Vá ao Dr. Osomatsu ou<1>Piccolomon. Você poderá<1>usar o Kotemon<2,2><3>no Digimon<1>Exchange!<2,2>
-TALK09 230: <7>Kyukimo<7>Oh, que tragédia! Os<1>Tamers de hoje em dia<1>são todos uns covardes!<2,2><3>Não consigo encontrar<1>um oponente à altura.<2,2>
+TALK09 230: <7>Kyukimo<7>Ah, que fase! Os<1>Tamers de hoje são<1>tudo frouxo!<2,2><3>Não acho ninguém<1>que dê pro gasto.<2,2>
 TALK09 231: <7>Kyukimon<7>Eu te digo<1>uma coisa. Se você<1>lutar bem contra<2,2><3>mim, eu te<1>recompensarei com um<1>presente que certamente<2,2><3>vai encantar!<2,2>
 TALK09 232: <7>Kyukimon<7>Ha ha ha, excelente!<1>Eu não tinha uma boa<1>batalha como esta há<2,2><3>eras! Agora, pegue<1>este presente como<1>prometido. <2,2><3>Este é o Kotemon<1>DDNA extraído <1>do meu próprio DDNA.<2,2><3>Leve isto ao<1>Dr. Osomatsu ou<1>Piccolomon.<2,2><3>Você encontrará um<1>Kotemon no Digimon<1>Exchange no lounge.<2,2><3>Tenho certeza de que<1>você vai evoluí−lo para<1>um ótimo Kotemon.<2,2><3>Desejo−lhe o melhor!<2,2>
 TALK09 233: <7>Armormon<7>Você deveria <1>visitar o Dr. Osomatsu<1>ou o Piccolomon<2,2><3>Você pode ter o Monmon<1>como parceiro no <1>Digimon Exchange.<2,2>
@@ -3305,16 +3305,16 @@ TALK09 234: <7>Armormon<7>Você é o<1><8,1><5,1>, aquele<1>que derrotou o A.o.A
 TALK09 235: <7>Armormon<7>E então? Você está<1>pronto para uma luta<1>contra mim? <2,2><3>Eu quero ver justamente<1>o quão bom você <1>realmente é.<2,2>
 TALK09 236: <7>Armormon<7>De fato, os rumores<1>parecem ser verdadeiros<1>sobre seu poder!<2,2><3>Como prova da minha<1>gratidão, por favor,<1>leve isto com você.<2,2><3>É o Monmon DDNA,<1>extraído do meu<1>próprio DDNA.<2,2><3>Leve isto ao<1>Dr. Osomatsu ou<1>Piccolomon. você pode<2,2><3>ter o Kumamon como seu<1>parceiro no Digimon<1>Exchange! <2,2><3>Até logo.<1>Consiga o Monmon e<1>torne−se mais forte!<2,2>
 TALK09 237: <7>GurappuLeomon<7>Agora, vá e <1>visite o Dr. Osomatsu<1>ou o Piccolomon.<2,2><3>Você poderá usar o<1>Kumamon no<1>Digimon Exchange!<2,2>
-TALK09 238: <7>GurappuLeomon<7>Hahahaha! Você é um<1>Tamer e tanto<2,2><3>para chegar a este<1>lugar! Eu adoraria lutar<1>com um Tamer como<2,2><3>você!<2,2>
-TALK09 239: <7>GrapLeomon<7>Espero que você esteja<1>pronto, porque<1>eu estou chegando!<2,2>
+TALK09 238: <7>GurappuLeomon<7>Ha ha ha! Você tem<1>fibra mesmo<2,2><3>pra chegar até<1>aqui! Bora tirar<1>a limpo numa luta<2,2><3>de verdade!<2,2>
+TALK09 239: <7>GrapLeomon<7>Segura a onda,<1>que o bicho<1>vai pegar!<2,2>
 TALK09 240: <7>GrapLeomon<7>Ha ha ha ha!<2,2><3>Você é um Tamer ainda<1>melhor do que eu<1>imaginei! Eu posso<2,2><3>confiar isso a<2,2><3>você. É o Kumamon<1>DDNA tirado do meu<1>próprio. Pegue−o. Se<2,2><3>você<2,2><3>levar isto ao Piximon ou<1>ao Dr. Osomatsu,<1>poderá ter o Kumamon<2,2><3>como seu<2,2><3>parceiro no Digimon<1>Exchange! Se<1>alguém pode evoluir um<2,2><3>Kumamon de verdade, <1>é você. Estou contando<1>com você!<2,2>
-TALK09 263: <7>MetalEtemon<7>Eba!<1>Eu sou o maior! Eu<1>sou tão legal!<2,2>
-TALK09 264: <7>MetalEtemon<7>Eba! Eu me sinto todo<1>aquecido por dentro.<1>Isso é ótimo!<2,2>
-TALK09 265: <7>MetalEtemon<7>Eba! Você é um<1>otário! Você<1>vai se arrepender<2,2><3>de ter me encontrado<1>aqui!<2,2>
-TALK09 266: <7>MetalEtemon<7>Meu corpo deslumbrante<1>brilha em prata!<1>He he he!<2,2><3>Eu posso encarar<1>qualquer um que<1>aparecer.<2,2>
-TALK09 267: <7>MetalEtemon<7>Eu simplesmente não<1>posso perder! Por quê,<1>você pergunta? Porque<2,2><3>MetalEtemons são<2,2><3>invencíveis!<2,2>
-TALK09 270: <7>MetalEtemon<7>Está pronto para<1>lutar no estilo card?<1>Vamos lá!<2,2>
-TALK09 273: <7>MetalEtemon<7>Eba!<1>EU SOU O CAMPEÃO!<2,2><3>Ninguém tem o<1>que é preciso para<1>me vencer!<2,2>
+TALK09 263: <7>MetalEtemon<7>Oba!<1>Eu sou o maioral!<1>Sou demais!<2,2>
+TALK09 264: <7>MetalEtemon<7>Oba! Tô com o<1>sangue fervendo!<1>Que beleza!<2,2>
+TALK09 265: <7>MetalEtemon<7>Oba! Caiu na<1>arapuca! Vai se<1>arrepender<2,2><3>de cruzar meu<1>caminho!<2,2>
+TALK09 266: <7>MetalEtemon<7>Meu corpitcho<1>prateado ofusca<1>até o sol!<2,2><3>Pode vir quente<1>que eu tô<1>fervendo!<2,2>
+TALK09 267: <7>MetalEtemon<7>Eu não perco nem<1>jogando par ou<1>ímpar! Porque<2,2><3>MetalEtemons são<2,2><3>imbatíveis!<2,2>
+TALK09 270: <7>MetalEtemon<7>Tá pronto pra<1>encarar nas cartas?<1>Manda ver!<2,2>
+TALK09 273: <7>MetalEtemon<7>Oba!<1>SOU O REI DA PARADA!<2,2><3>Ninguém aqui tem<1>bola pra me<1>derrubar!<2,2>
 TALK09 287: <7>MetalEtemon<7>Ooh.<1>Inacreditável.<1>Eu perdi!<2,2><3>Muito bem. Pegue<1>esta Sacred Spear<1>e vença!<2,2>
 TALK09 288: <7>MetalEtemon<7>Ooh.<1>Inacreditável.<1>Eu perdi!<2,2><3>Muito bem. Pegue<1>esta Tidal Wave<1>e vença!<2,2>
 TALK09 289: <7>MetalEtemon<7>Ooh.<1>Inacreditável.<1>Eu perdi!<2,2><3>Muito bem. Pegue<1>esta Wild Aura<1>e vença!<2,2>
@@ -4113,7 +4113,7 @@ TALK05 62: <7>Oikawa<7>...Heh. Perdi outra.<1>Estou ficando bom<1>nisso.<2,2><3>
 TALK05 63: <7>Sepikmon<7>Uma caçada limpa.<1>Meus rastreadores<1>cantarão isso hoje.<2,2><3>Vá. A última prova<1>espera por você.<2,2>
 TALK05 64: <7>Gennai<7>Muito bem. A vigília<1>valeu a pena, afinal.<2,2><3>Volte para a sala.<1>O portão é seu.<2,2>
 TALK05 65: <7>Gennai<7>Hm... Forte o<1>suficiente. Por ora.<2,2><3>Mantenha seus<1>parceiros aquecidos,<1>criança.<2,2><3>Ainda vamos nos<1>ver de novo.<2,2>
-TALK05 77: <7>Guilmon<7>Pegue o Demon Bell.<1>Inimigos ficam mais<1>fortes e rápidos...<2,2><3>...mas pagam mais<1>Bits e dão mais<1>materiais.<2,2>
+TALK05 77: <7>Guilmon<7>Pegue o Demon Bell.<1>Inimigos mais fortes,<1>rápidos e dano direto<2,2><3>cortado pela metade!<1>Domine Weak, One More<1>e Baton Pass...<2,2><3>...por 3x materiais,<1>2x XP/Bits e 2x<1>bônus de caçada.<2,2>
 TALK05 78: <7>Guilmon<7>Vai largar o Bell?<1>Tudo bem. Tudo volta<1>ao normal.<2,2>
 TALK05 79: <7>????<7>Alguém me achou numa<1>pilha de brinquedos<1>sem uso e pôs aqui.<2,2><3>...É bem melhor que<1>a caixa.<2,2>
 TALK05 81: <7>Gennai<7>Hm hm... As formas<1>que um Blast evoca.<1>Deixe-me vê-las.<2,2>
@@ -4122,6 +4122,7 @@ TALK05 99: <7>Oikawa<7>Você veio. Igor me<1>cedeu um balcão.<1>Diz que devo a 
 TALK06 5: <7>Homem Encapuzado<7>Bulbmon era uma<1>alavanca. Você puxou<1>por mim. Obrigado.<2,2><3>Há muito tempo ando<1>por estes servidores<1>atrás de uma porta.<2,2><3>Você achou uma fácil.<1>Era azul, não era?<2,2><3>Quero ver o que faz<1>você merecer essa<1>porta.<2,2>
 TALK06 6: <7>Homem Encapuzado<7>Já voltou? Ótimo.<1>Perder é um hábito<1>que conheço bem.<2,2><3>Vamos de novo.<2,2>
 TALK06 7: <7>Homem Encapuzado<7>...Então é isso que<1>basta. Agora entendi.<2,2><3>Meu nome é Oikawa.<1>Tenho algo a vender.<2,2><3>Mas não tenho onde.<1>Sua porta azul,<1>talvez.<2,2><3>Nos encontraremos<1>atrás dela.<2,2>
+TALK06 8: <7>???<7>...Uma voz ecoa na sua<1>cabeça. Vá primeiro a<1>uma sala azul e vença<2,2><3>Ogremon em Central<1>Park antes de entrar<1>na Floresta Protocol.<2,2>
 TALK06 676: <7>DRI Bob<7>Ei, você viu o<1>Paildramon?<2,2><3>Estou procurando por<1>ele há séculos, mas<1>não o encontro.<2,2><3>Dizem que ele voa<1>sobre a Ponte Bulk,<1>no Setor Sul.<2,2><3>Se você o achar, eu<1>dou algo incrível...<2,2>
 TALK06 691: <7>DRI Johann<7>Estou procurando o<1>MetalGreymon...<2,2><3>Dizem que ele vaga<1>pelo Pântano Bulk,<1>no Setor Sul.<2,2><3>Se eu conseguir o<1>DDNA do Agumon, sigo<1>com minha pesquisa...<2,2><3>Ah! Se você o vir,<1>pode pegar o DDNA<1>dele?<2,2><3>Vou adicionar Agumon<1>como seu parceiro de<1>recompensa!<2,2>
 $Fire: Fogo
@@ -4311,6 +4312,7 @@ $FleeAskNo: Voltar
 $DriTitle: Simulações DRI
 $DriSep: " - "
 $DriDash: --
+$DriThrough: " ... "
 $DriOf: " de "
 $DriReward: "Prêmio "
 $DriUnlock: "Liberar "
@@ -4321,8 +4323,8 @@ $DriKeysStart: Botão ×: Iniciar<1>Botão △: Voltar
 $DriKeysConfirm: Botão ×: Confirmar<1>Botão △: Voltar
 $DriKeysFight: Botão ×: Lutar<1>Botão △: Voltar
 $DriRival0: O Tamer Tranquilo
-$DriRival0Hello: Momentai! Lutar não é tudo,<1>mas uma simulação é um teste justo!
-$DriRival0Won: Leu cada jogada... mandou bem!<1>Momentai! Você mereceu!
+$DriRival0Hello: Lutar não é tudo,<1>mas uma simulação é um teste justo!
+$DriRival0Won: Leu cada jogada... mandou bem!<1>Meu parceiro diria: Momentai!
 $DriRival0Lost: Ir com pressa nunca dá certo!<1>Pense e volte com um plano!
 $DriRival1: O Herdeiro dos Milagres
 $DriRival1Hello: Milagres não caem do céu!<1>Nós os criamos... mostre o seu!
@@ -4340,6 +4342,50 @@ $DriRival4: O Tamer Sonhador
 $DriRival4Hello: Desenhei meu parceiro antes de vê-lo!<1>Vamos ver o que seus sonhos fazem!
 $DriRival4Won: Esse laço é real, dá pra sentir!<1>Nunca deixe de sonhar!
 $DriRival4Lost: Até caminho escuro dá em algum lugar!<1>Segure no seu parceiro e volte!
+$DriRival5: O Fantoche das Trevas
+$DriRival5Hello: Eu só queria chegar àquele mundo...<1>Agora as trevas lutam por mim!
+$DriRival5Won: Até as trevas se curvaram a você...<1>Talvez ainda exista luz.
+$DriRival5Lost: No fim, as trevas sempre vencem...<1>Prove que estou errado: volte!
+$DriRival6: A Rainha Digimon
+$DriRival6Hello: Me chamam de Rainha Digimon.<1>Não me entedie... lute pra valer!
+$DriRival6Won: Hmph. Nada mal... nada mal mesmo.<1>Hoje a coroa é sua.
+$DriRival6Lost: Só isso? Uma rainha precisa de rival!<1>Treine mais e me enfrente de novo.
+$DriRival7: A Criança da Luz
+$DriRival7Hello: A luz brilha mais forte no escuro.<1>Vamos ver o quanto a sua brilha!
+$DriRival7Won: Sua luz chegou a todos os cantos!<1>Obrigada por uma batalha incrível.
+$DriRival7Lost: Até uma luz pequena pode crescer.<1>Descanse um pouco e brilhe de novo!
+$DriRival8: A Criança da Bondade
+$DriRival8Hello: Já usei meu poder do jeito errado.<1>Hoje luto pra proteger. Pronto?
+$DriRival8Won: Força com um coração gentil...<1>Esse é o jeito certo de vencer.
+$DriRival8Lost: Não tenha vergonha de perder.<1>Bondade é saber se levantar!
+$DriRival9: O Guerreiro Sem Coração
+$DriRival9Hello: Não tenho Tamer nem coração.<1>Então o que eu sou? Lute e mostre!
+$DriRival9Won: Então é o coração que te faz forte...<1>Vou continuar procurando o meu.
+$DriRival9Lost: Seu coração não me deteve.<1>Ache um mais forte e volte!
+$DriRival10: O Lorde Demônio Solitário
+$DriRival10Hello: Ninguém me doma, sacou?<1>Mostra o que você tem, moleque!
+$DriRival10Won: Tsc... tá bom, você é durão.<1>Talvez um parceiro não seja ruim.
+$DriRival10Lost: Rá! Falei que não preciso de ninguém!<1>Volta quando for sério!
+$DriRival11: O Caminho da Espada
+$DriRival11Hello: Um espadachim de verdade se curva.<1>Agora saque a lâmina... comece!
+$DriRival11Won: Um golpe limpo. Eu me rendo.<1>Seu treino aparece em cada golpe!
+$DriRival11Lost: Lâmina sem foco não corta.<1>Treine a mente e volte!
+$DriRival12: A Criança da Amizade
+$DriRival12Hello: Não sou de falar. Meu parceiro<1>fala por mim... com as presas!
+$DriRival12Won: ...Heh. Você é legal.<1>Amigos como você valem a pena.
+$DriRival12Lost: Sozinho nunca dá certo.<1>Confie no seu time e tente de novo.
+$DriRival13: O Punho de Ferro
+$DriRival13Hello: Meu parceiro bate como uma montanha!<1>Segure firme e revide!
+$DriRival13Won: Que soco! Você é dos bons!<1>Vamos treinar juntos um dia.
+$DriRival13Lost: A força vem de baixo pra cima.<1>Construa a sua e volte!
+$DriRival14: O Caçador da Floresta
+$DriRival14Hello: Na floresta só os fortes sobrevivem.<1>Você vai ser caçador ou presa?
+$DriRival14Won: Você era o caçador o tempo todo!<1>A floresta se curva a você.
+$DriRival14Lost: Caiu na teia! Volte pro ninho,<1>fique mais forte e tente de novo!
+$DriRival15: O Capitão Pirata
+$DriRival15Hello: Ahoy! Minha tripulação está completa<1>e pronta pra lutar!
+$DriRival15Won: Raios me partam, que batalha!<1>Você daria um ótimo capitão!
+$DriRival15Lost: Afundou na primeira onda, marujo!<1>Remende o barco e zarpe de novo!
 $DriStages: "Fases vencidas "
 $DriNewReward: Novo prêmio
 $DriNoReward: Sem novo prêmio
@@ -4348,9 +4394,9 @@ $DriAgent: Agente da DRI
 $DriGreet: A rede de simulação da DRI está online.<1>Quer colocar sua equipe à prova?
 $DriGreetDone: Você venceu todas as simulações - incrível!<1>Quer rodar alguma de novo?
 $DriAskSim: Simulações
-$DriAskTalk: Conversar
+$DriAskTalk: Falar
 $DriAskBye: Sair
-$GuideMenu: GUIDE
+$GuideMenu: GUIA
 $GuideTitle: Guide
 $GuideTabQuest: Missão
 $GuideTabAuctions: Leilões
@@ -4402,13 +4448,23 @@ $Q4sT: Tom Repetidor diz que o Líder Seiryu<1>sumiu e uma porta azul abriu na e
 $Q4a: O Líder Seiryu
 $Q4aT: Treine perto da Cidade Asuka, vá a leste<1>pela Floresta Wire e Pradaria do Vento<1>até Cidade Seiryu. Pergunte pelo Líder:<1>Tom Repetidor, na escada da pousada,<1>sabe de todas as novidades.
 $Q5: Rumo ao Setor Sul
-$Q5T: A gôndola da Estação Leste, após a<1>Floresta Kicking, pede um Blue Card.<1>Um Guilmon o tem: pergunte na Pousada<1>Asuka, Pousada da Floresta e na pousada<1>da Torre Zephyr, em Cidade Seiryu.
-$Q5b: Cartão falso
-$Q5bT: O 8lue Card é falso! O Guilmon<1>Trapaceiro se esconde no fundo do porão<1>da Pousada da Floresta.
-$Q5c: Suba na gôndola
-$Q5cT: Registre o Blue Card no terminal da<1>Estação Leste. Ponha seu Digimon mais<1>forte na frente: um chefe ataca no<1>caminho.
-$Q6: Bulbmon
-$Q6T: Resista ao Digimon que caiu nos trilhos<1>da gôndola.
+$Q5T: O Líder Suzaku espera no Setor Sul,<1>depois da gôndola da Estação Leste. Da<1>Cidade Seiryu, passe pela Pradaria do<1>Vento e pela Floresta do Chute até a<1>Estação Leste e vá ao terminal da gôndola.
+$Q6: O Blue Card
+$Q6T: A gôndola pede um Blue Card, e quem tem<1>são os Digimon que nascem dele: os<1>Guilmon. Fale com o Guilmon no segundo<1>andar da Pousada Asuka, na Cidade Asuka.
+$Q6b: O primo faminto
+$Q6bT: O primo dele tem o cartão. Foi para a<1>Cidade Seiryu, mas estava com fome e<1>pode ter parado para comer: fale com o<1>Guilmon da Pousada da Floresta, saindo<1>da Floresta East Wire.
+$Q6c: O Guilmon dorminhoco
+$Q6cT: O Guilmon do cartão seguiu para a Cidade<1>Seiryu, e ele adora uma soneca. Ache o<1>Guilmon Astuto no andar de cima da<1>pousada da Torre Zephyr, perto das camas.
+$Q6d: Registre o cartão
+$Q6dT: O Guilmon Astuto te deu um cartão. Leve<1>ao terminal da Estação Leste e tente<1>registrar. Mas tem algo estranho no<1>nome dele...
+$Q6e: O 8lue Card falso
+$Q6eT: O 8lue Card é falso! Um Guilmon da<1>Cidade Seiryu conhece o trapaceiro: ele<1>fica na rua do grande emblema vermelho,<1>perto da entrada que vem da Pradaria<1>do Vento.
+$Q6f: A toca do trapaceiro
+$Q6fT: O Guilmon Astuto gosta de lugares<1>subterrâneos, de porão com fantasmas.<1>Desça as escadas até o fundo do porão<1>da Pousada da Floresta e fale com ele.
+$Q6g: Suba na gôndola
+$Q6gT: Enfim, o Blue Card de verdade! Registre<1>no terminal da Estação Leste e suba na<1>gôndola. Ponha seu Digimon mais forte<1>na frente: um chefe ataca no caminho.
+$Q6h: Bulbmon
+$Q6hT: Resista ao Digimon que caiu nos trilhos<1>da gôndola. Vença e a gôndola segue até<1>a Estação Sul.
 $Q7: A Tumba da Selva
 $Q7T: Da Estação Sul, cruze o Pântano Bulk e<1>a Ponte Bulk. Descanse na Pousada do<1>Pântano e vá ao sul até a Tumba da Selva.
 $Q8: Máscara de Sepikmon
@@ -4500,7 +4556,7 @@ $M1T: Divermon, no Yellow Cruiser (o teto<1>amarelo do nível inferior da Cidade
 $M2: Botas-Árvore
 $M2T: O jogador Hide, no Cabo Plug, perdeu sua<1>carta Gabumon: ela fica nas prateleiras<1>do porão da Pousada Asuka. Depois, fale<1>com Debbie no Lamb Chop e ache Veemon no<1>extremo leste da Pradaria do Vento.
 $M3: Vara de Pesca
-$M3T: Tai Kong Wang, na Praia das Conchas, faz<1>uma com Lança de Bambu (Armaria de Asuka),<1>Teia de Aranha (Dokugumon, Floresta<1>Protocol) e o Pargo Vermelho preso no<1>Divermon do Lago Divermon.
+$M3T: Tai Kong Wang, na Praia das Conchas, faz<1>uma com Lança da Brisa (Armaria de Asuka),<1>Teia de Aranha (Dokugumon, Floresta<1>Protocol) e o Pargo Vermelho preso no<1>Divermon do Lago Divermon.
 $VelvetTitle: VELVET
 $TimeTitle: TIME
 $TimeTitle2: ROOM
@@ -4649,8 +4705,8 @@ ITMINF 298: Mais Sabedoria, menos Vel.
 ITMINF 295: Muito mais Força, menos Defesa.
 ITMINF 297: Muito mais Sabedoria, menos Vel.
 ITMINF 76: Blast além do limite. Custa 10 TP
-ITMINF 67: Revive caídos: 60%, 30% de HP.
-ITMINF 70: Revive caídos: 85%, 60% de HP.
+ITMINF 67: Revive 40%, 30%HP (nerf: cura)
+ITMINF 70: Revive 65%, 60%HP (nerf: cura)
 ITMINF 46: Em batalha: revive, 100%, HP cheio
 ITMINF 26: Super Hard: inim. +fortes, 2x drop
 ITMNAM 167: Lança da Brisa
@@ -4931,7 +4987,7 @@ $FinBond3: <7>Kail<7>Você salvou o Kurt e<1>nunca virou as costas<1>para ningu�
 $FinBond4: <7>Sepikmon<7>Os ventos de todos os<1>setores respondem ao<1>seu chamado, Tamer.<2,2><3>Nenhuma presa resiste<1>a um coração que se<1>recusa a ceder.<2,2>
 $FinBond5: <7>Gennai<7>Nem os dados mais<1>sombrios apagam a luz<1>que vocês forjaram.<2,2><3>Que todos os laços<1>virem uma só chama.<1>Levante-se!<2,2>
 $FinBondAll: <7>Todos<7>Você não está sozinho!<1>Estamos todos aqui<1>com você!<2,2><3>Você consegue! Leve a<1>nossa força e quebre<1>todos os limites!<2,2>
-$FinSuperEvo: <7>Super Chosen Evolution<7>Todos os laços dos seus<1>parceiros ressoam juntos!<2,2><3>Além de todo limite...<1>SUPER CHOSEN EVOLUTION!<2,2>
-$FinIgorBye: <7>Igor<7>Ah... você caminhou<1>longe, meu convidado.<2,2><3>Esse poder pertence a<1>você agora. Ele será<1>útil no futuro.<2,2><3>Sinto que o seu coração<1>ainda poderá despertar<1>mais vínculos.<2,2><3>Quanto a mim, preciso<1>ir para uma prisão,<1>uma limusine...<2,2><3>...ou talvez um<1>elevador. É difícil<1>dizer.<2,2><3>Pois para mim, passado,<1>presente, futuro e até<1>mesmo os locais...<2,2><3>...se passam todos ao<1>mesmo tempo.<2,2><3>Um pequeno amigo vai<1>cuidar dos seus laços<1>aqui agora. Adeus.<2,2>
-$PipimonMeet: <7>Pipimon<7>Pipi! Olá! O Sr. Igor<1>me pediu para cuidar<1>desta sala!<2,2><3>Eu sou o Pipimon! Vamos<1>ver os laços de DNA<1>dos seus parceiros!<2,2>
+$FinSuperEvo: <7>Super Chosen Evolution<7>Todos os laços de seus<1>parceiros ressoam!<2,2><3>Além de todo limite...<1>SUPER CHOSEN<1>EVOLUTION!<2,2>
+$FinIgorBye: <7>Igor<7>Ah... você caminhou<1>longe, meu convidado.<2,2><3>Esse poder pertence a<1>você agora. Ele será<1>útil no futuro.<2,2><3>Sinto que seu coração<1>ainda poderá despertar<1>mais vínculos.<2,2><3>Quanto a mim, preciso<1>ir para uma prisão,<1>uma limusine...<2,2><3>...ou talvez um<1>elevador. É difícil<1>dizer.<2,2><3>Para mim, passado,<1>presente, futuro e até<1>mesmo os locais...<2,2><3>...se passam todos ao<1>mesmo tempo.<2,2><3>Um pequeno amigo vai<1>cuidar dos seus laços<1>aqui agora. Adeus.<2,2>
+$PipimonMeet: <7>Pipimon<7>Pipi! Olá! O Sr. Igor<1>me pediu para cuidar<1>desta sala!<2,2><3>Sou Pipimon! Vamos<1>ver os laços de DNA<1>dos seus parceiros!<2,2>
 $PipimonBack: <7>Pipimon<7>Pipi! Bem-vindo de<1>volta! Vamos ver os<1>laços de DNA!<2,2>

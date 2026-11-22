@@ -463,7 +463,7 @@ void stgtrain_main_show_tp(StgtrainMain *obj, StgtrainMainData *data, s32 show) 
 #ifdef PC_PORT
         if (data->pity != NULL) {
             s32 pal = 0;
-            const unsigned char *label = def_train_pity_label(&pal);
+            const unsigned char *label = def_train_pity_label_tier(obj->level, &pal);
             if (label != NULL) {
                 data->pity->set_text(data->pity, (u8 *)label, -1);
                 data->pity->set_palette(data->pity, pal);
@@ -825,6 +825,16 @@ void stgtrain_main_run(StgtrainMain *obj, StgtrainMainData *data) {
         }
         break;
     case 31:
+#ifdef PC_PORT
+        if (data->pity != NULL && data->level_menu != NULL && data->level_menu->base.step != 35) {
+            s32 pal = 0;
+            const unsigned char *label = def_train_pity_label_tier(data->level_menu->level, &pal);
+            if (label != NULL) {
+                data->pity->set_text(data->pity, (u8 *)label, -1);
+                data->pity->set_palette(data->pity, pal);
+            }
+        }
+#endif
         if (data->level_menu->base.step == 35) {
             if (data->session != NULL) {
                 data->session->base.state = OBJECT_STATE_END;
@@ -834,6 +844,9 @@ void stgtrain_main_run(StgtrainMain *obj, StgtrainMainData *data) {
             }
         } else if (data->level_menu->base.state == OBJECT_STATE_DONE) {
             data->level_menu->base.state = OBJECT_STATE_END;
+#ifdef PC_PORT
+            stgtrain_main_show_tp(obj, data, 1);
+#endif
             obj->base.step = 10;
         }
         break;

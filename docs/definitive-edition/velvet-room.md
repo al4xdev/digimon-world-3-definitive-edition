@@ -4,7 +4,7 @@
 
 ## The Velvet Room
 
-**Status: working and committed (`d927826` .. `46424ef`), with open items (below).** `port/game/definitive_velvet.c`. It runs
+**Status: working and committed (`d927826` .. `46424ef`), done.** `port/game/definitive_velvet.c`. It runs
 the bar map 0x20F (WSTAG255) as a room. **Ways in (rewritten 2026-11-18, `46424ef`; the owner vetoed drawn doors): no door
 sprite.** Each inn has a spot (`doors[]`, one per inn map, the second half's copies sharing the first half's layouts) in front
 of a piece of its own scenery that a faint blue light marks (`looks[]`). Standing within `VL_RADIUS` (12 px) of the spot shows
@@ -65,9 +65,6 @@ floor carries the light; `def_time_door`).
 - Debug env: `DW3_FEAT_VELVET`.
 - **Pitfalls:** a `POLY_F4` with semi-transparency dirties the void; the layer draws what was added last, first; the
   wstag handlers table is shifted by +1.
-- **Pending:** the owner's look in game at the lights (the six "divided" ones above); FR/IT/DE/ES translations of port
-  texts; a save inside the room. The doors' sprites were dropped (the owner vetoed drawn doors, 2026-11-18) and the room
-  was arranged on 2026-11-18 (positions above).
 
 ### Velvet Room: details, decisions and history
 
@@ -270,10 +267,3 @@ the main quest in another session and will create guide quests later):** small m
 teleport point (teaches the fast-travel network in practice), and steer the player through one of the wardrobe doors for the first time when rare Hunt Materials start to appear. This is the open
 "onboarding hooks" item.
 
-**Pending / questions to the owner (2026-11-17, updated 2026-11-18):** test in game (enter an inn, find the light, take it with CIRCLE, talk to every figure, leave by the front); look at each
-inn's light (the six "divided" ones first) or say "in that inn move it / make it stronger or weaker"; approve or replace the mentor's figure (the old man `0x39` until one is drawn); the room's music
-is done (the owner's arrangement, above); the door sprites and the 13 door positions were dropped with the doors; FR/IT/DE/ES lines (the port override
-covers English and PT-BR only, `dw3_velvet_text_own()` serves English elsewhere); **saving on the memory card inside the room**: the save falls on the generic `0xC00` and loading opens `0x20F` as the
-normal bar (`vl_room` is RAM, not on the card; the port's savestate carries it since 2026-11-16): acceptable? if not, it is the next decision. The owner's rules (summary): pt-BR with the owner,
-no commit without being asked, no AI attribution in repo files, scratch in `.dumps/`, plans in `.plan/tasks/`, move files to `/tmp` instead of `rm`, "no 'I don't know, wait': measure and go; ask only
-what is the owner's decision".
