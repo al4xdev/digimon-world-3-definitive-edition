@@ -21,8 +21,22 @@ set(DW3_LAUNCHER_VERSION "dev")
 if("$ENV{PSXSTACK_VERSION}" MATCHES "^v?([0-9]+[.][0-9]+[.][0-9]+)$")
     set(DW3_LAUNCHER_VERSION "${CMAKE_MATCH_1}")
 endif()
-message(STATUS "launcher version: ${DW3_LAUNCHER_VERSION}")
-target_compile_definitions(dw2003-launcher PRIVATE DW3_TARGET_PC HAVE_SDL3 _GNU_SOURCE DW3_LAUNCHER_VERSION="${DW3_LAUNCHER_VERSION}")
+if(DEFINED ENV{PSXSTACK_VERSION} AND NOT "$ENV{PSXSTACK_VERSION}" STREQUAL "")
+    set(DW3_LAUNCHER_STAMP "$ENV{PSXSTACK_VERSION}")
+else()
+    execute_process(
+        COMMAND git describe --tags --match "v[0-9]*.[0-9]*.[0-9]*" --always --dirty
+        WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+        OUTPUT_VARIABLE DW3_LAUNCHER_STAMP
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        ERROR_QUIET
+    )
+    if(NOT DW3_LAUNCHER_STAMP)
+        set(DW3_LAUNCHER_STAMP "${DW3_LAUNCHER_VERSION}")
+    endif()
+endif()
+message(STATUS "launcher version: ${DW3_LAUNCHER_VERSION} (${DW3_LAUNCHER_STAMP})")
+target_compile_definitions(dw2003-launcher PRIVATE DW3_TARGET_PC HAVE_SDL3 _GNU_SOURCE DW3_LAUNCHER_VERSION="${DW3_LAUNCHER_VERSION}" DW3_LAUNCHER_STAMP="${DW3_LAUNCHER_STAMP}")
 target_compile_options(dw2003-launcher PRIVATE -Wall)
 if(TARGET SDL3::SDL3-static)
     target_link_libraries(dw2003-launcher PRIVATE SDL3::SDL3-static)

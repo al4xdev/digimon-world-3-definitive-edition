@@ -79,9 +79,11 @@ EOF
     else
         echo "Warning: DW3_ANDROID_KEYSTORE is not set; the APK is signed with a debug key and will not install over one signed with the release key" >&2
     fi
+    DW3_COMMIT=$(git -C "$REPO" rev-parse HEAD 2>/dev/null || echo unknown)
     docker run --rm -u "$(id -u):$(id -g)" \
         -e DW3_VERSION \
         -e PSXSTACK_VERSION="$DW3_VERSION" \
+        -e PSXSTACK_COMMIT="$DW3_COMMIT" \
         "${KEY_ARGS[@]}" \
         ${SDL3_ENV:+-e SDL3_ANDROID_DIR="$SDL3_ENV"} \
         -e HOME=/work/.dumps/android-home \

@@ -971,6 +971,13 @@ static void draw_debug(void) {
 #endif
     if (status[0]) text(64, 350, status, 16, C_GREEN);
     text(64, 380, "A bug report is easier with LOGS on HEAVY and the zip attached.", 15, C_NOTE);
+#ifdef DW3_LAUNCHER_STAMP
+    {
+        char bld[96];
+        snprintf(bld, sizeof(bld), "BUILD: %s", DW3_LAUNCHER_STAMP);
+        text(64, 404, bld, 14, strstr(DW3_LAUNCHER_STAMP, "-dirty") ? C_GOLD : C_NOTE);
+    }
+#endif
     foot_std("RUN");
 }
 
