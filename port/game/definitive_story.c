@@ -181,6 +181,8 @@ int def_story_cond(int cond) {
         return def_on() && gamestate_data.progress == OK_STEP && !def_record_story(DEF_STORY_OIKAWA_BEATEN);
     case DEF_STORY_COND_MARKET:
         return def_on() && def_record_story(DEF_STORY_OIKAWA_BEATEN) && !def_record_story(DEF_STORY_MARKET_OPEN);
+    case DEF_STORY_COND_TIME:
+        return def_on() && !def_record_story(DEF_STORY_GATE_PASSED);
     }
     return 0;
 }

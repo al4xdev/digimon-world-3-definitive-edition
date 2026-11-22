@@ -46,7 +46,7 @@ extern const unsigned char def_str_Q0[], def_str_Q0T[], def_str_Q1[], def_str_Q1
     def_str_Q33[], def_str_Q33T[], def_str_Q34[], def_str_Q34T[], def_str_Q35[], def_str_Q35T[], def_str_Q36[],
     def_str_Q36T[], def_str_Q37[], def_str_Q37T[], def_str_Q38[], def_str_Q38T[], def_str_Q39[], def_str_Q39T[],
     def_str_Q40[], def_str_Q40T[], def_str_Q41[], def_str_Q41T[], def_str_Q43[], def_str_Q43T[], def_str_Q45[],
-    def_str_Q45T[], def_str_Q4s[], def_str_Q4sT[], def_str_Q4a[], def_str_Q4aT[], def_str_Q27o[], def_str_Q27oT[];
+    def_str_Q45T[], def_str_Q4s[], def_str_Q4sT[], def_str_Q4a[], def_str_Q4aT[], def_str_Q27o[], def_str_Q27oT[], def_str_Q40a[], def_str_Q40aT[];
 extern const unsigned char def_str_M0[], def_str_M0T[], def_str_M1[], def_str_M1T[], def_str_M2[], def_str_M2T[],
     def_str_M3[], def_str_M3T[], def_str_M4[], def_str_M4T[];
 extern const unsigned char def_str_AucWhen0[], def_str_AucWhen1[], def_str_AucWhen2[], def_str_AucWhen3[],
@@ -113,6 +113,7 @@ const DefQuest def_quests[] = {
     { 37, 37, ANY, 0, 0x288, def_str_Q37, def_str_Q37T },
     { 38, 38, ANY, 0, 0x219, def_str_Q38, def_str_Q38T },
     { 39, 39, ANY, 0, 0x288, def_str_Q39, def_str_Q39T },
+    { 40, 40, STORY(DEF_STORY_COND_TIME), 1, 0x288, def_str_Q40a, def_str_Q40aT }, /* the trials first: the blue door */
     { 40, 40, ANY, 0, 0x2DD, def_str_Q40, def_str_Q40T },
     { 41, 41, ANY, 0, 0x2DF, def_str_Q41, def_str_Q41T },
     { 42, 44, ANY, 0, 0, def_str_Q43, def_str_Q43T },

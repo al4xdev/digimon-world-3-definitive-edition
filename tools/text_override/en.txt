@@ -792,6 +792,8 @@ $Q39: Vemmon
 $Q39T: Kail is on the bridge of Central Park.<1>Stock up, then enter the Headquarters<1>from the Master Room of Amaterasu City.
 $Q40: No way back
 $Q40T: Lord Megadeath waits on Gunslinger.<1>Save and stock up before stepping into<1>the warp gate: nobody comes back.
+$Q40a: The Time Room
+$Q40aT: Take the blue door at the top of the<1>stairs in the Master Room: the Time Room.<1>Win all 3 trials in a row. Leaving the<1>room or abandoning one starts over.<1>The gate opens after the third.
 $Q41: Gunslinger
 $Q41T: The green teleporters lead to the<1>control panels that clear the way.<1>Reach the Control Room.
 $Q43: The last battle

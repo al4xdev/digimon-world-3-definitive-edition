@@ -708,6 +708,8 @@ $Q39: Vemmon
 $Q39T: Kail è sul ponte di Central Park.<1>Fai scorta, poi entra nel Quartier<1>Generale dalla Master Room di<1>Amaterasu City.
 $Q40: Nessun ritorno
 $Q40T: Lord Megadeath aspetta su Gunslinger.<1>Salva e fai scorta prima di entrare<1>nel portale: nessuno torna indietro.
+$Q40a: La Time Room
+$Q40aT: Entra dalla porta blu in cima alle scale<1>della Master Room: la Time Room. Vinci<1>le 3 prove di fila. Uscire dalla stanza<1>o abbandonarne una fa ricominciare tutto.<1>Il cancello si apre dopo la terza.
 $Q41: Gunslinger
 $Q41T: I teletrasportatori verdi portano<1>ai pannelli di controllo che aprono<1>la strada.<1>Raggiungi la Sala Controllo.
 $Q43: L'ultima battaglia
@@ -748,6 +750,7 @@ TALK05 65: <7>Gennai<7>Hm... Forte, per ora.<2,2>
 TALK06 5: <7>Hooded Man<7>Bulbmon era una leva.<1>L'hai abbassata<1>per me. Grazie.<2,2><3>Ho percorso questi<1>server per molto tempo<1>in cerca di una porta.<2,2><3>L'hai trovata con<1>facilità. Una blu,<1>vero?<2,2><3>Fammi vedere cosa ti<1>rende degno di quella<1>porta.<2,2>
 TALK06 6: <7>Hooded Man<7>Di nuovo qui? Bene.<1>Perdere è un'abitudine<1>che conosco bene.<2,2><3>Ricominciamo.<2,2>
 TALK06 7: <7>Hooded Man<7>...Ecco cosa serve.<1>Ora capisco.<2,2><3>Mi chiamo Oikawa.<1>Ho qualcosa da<1>vendere e nessun posto<2,2><3>dove venderlo. La tua<1>porta blu, forse.<1>Ci vediamo oltre.<2,2>
+TALK06 8: <7>???<7>...Una voce riecheggia<1>in te. Entra prima in<1>una sala blu, poi batti<2,2><3>Ogremon a Central Park<1>prima di entrare nella<1>Foresta Protocol.<2,2>
 TALK05 99: <7>Oikawa<7>Sei venuto. Igor mi fa<1>tenere un banco qui.<2,2><3>Dice che ti devo<1>un favore.<2,2><3>Quel che vendo non<1>dovrebbe esistere.<1>Cristalli. Rari.<2,2><3>Bits in anticipo.<1>Niente domande,<1>niente rimborsi.<2,2>
 TALK03 311: <7>Igor<7>Fermati, mio ospite.<1>Oltre quel cancello<1>non c'è ritorno.<2,2><3>I compagni portano<1>ancora la maledizione.<1>La via di Gennai<2,2><3>non è finita.<1>Percorrila prima,<1>oppure prova che basti<2,2><3>la tua forza.<1>La porta blu alla tua<2,2><3>sinistra apre la<1>Time Room.<2,2>
 TALK03 312: <7>Igor<7>Fermati, mio ospite.<1>Oltre quel cancello<1>non c'è ritorno.<2,2><3>Prima di passarlo,<1>lascia che il tempo<1>si fermi un poco.<2,2><3>La porta blu alla tua<1>sinistra apre la<1>Time Room. Supera le<2,2><3>sue prove. Il cancello<1>sarà tuo.<2,2>

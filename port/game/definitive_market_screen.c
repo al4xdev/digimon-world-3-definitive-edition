@@ -792,6 +792,9 @@ int def_bm_talk(s32 map, s32 actor_key1) {
     if (!def_on() || bm_ui.open || bm_ui.request) {
         return 0;
     }
+    if (def_time_on()) {
+        return 0; /* the Time Room's dealer only talks (dw3_velvet_shop_talk's early return): no market behind the counter */
+    }
     if (dw3_velvet_shop_greeting()) {
         return 0; /* the Velvet Room says its line first and asks for the screen itself (dw3_velvet_frame) */
     }

@@ -4541,6 +4541,8 @@ $Q39: Vemmon
 $Q39T: Kail está na ponte do Parque Central.<1>Abasteça-se e entre no Quartel-General<1>pela Sala do Mestre de Amaterasu.
 $Q40: Sem volta
 $Q40T: Lord Megadeath espera em Gunslinger.<1>Salve e abasteça-se antes de entrar no<1>portal: ninguém volta.
+$Q40a: A Time Room
+$Q40aT: Entre pela porta azul no topo da escada<1>da Sala do Mestre: a Time Room. Vença as<1>3 provas em sequência. Sair da sala ou<1>abandonar uma prova recomeça tudo.<1>O portão abre após a terceira.
 $Q41: Gunslinger
 $Q41T: Os teleportes verdes levam aos painéis<1>de controle que abrem o caminho.<1>Chegue à Sala de Controle.
 $Q43: A batalha final

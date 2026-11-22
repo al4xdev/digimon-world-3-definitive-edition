@@ -708,6 +708,8 @@ $Q39: Vemmon
 $Q39T: Kail steht auf der Brücke des<1>Zentralparks. Deck dich ein, dann<1>betritt das Hauptquartier vom Masterraum<1>in Amaterasu City aus.
 $Q40: Kein Weg zurück
 $Q40T: Lord Megadeath wartet auf Gunslinger.<1>Speichere und decke dich ein, bevor du<1>das Warp-Tor betrittst: Niemand kommt<1>zurück.
+$Q40a: Der Zeitraum
+$Q40aT: Nimm die blaue Tür oben an der Treppe im<1>Masterraum: der Zeitraum. Gewinne alle 3<1>Prüfungen nacheinander. Raum verlassen<1>oder eine abbrechen: alles beginnt von<1>vorn. Danach öffnet sich das Tor.
 $Q41: Gunslinger
 $Q41T: Die grünen Teleporter führen zu den<1>Kontrollpanelen, die den Weg freimachen.<1>Erreiche den Kontrollraum.
 $Q43: Der letzte Kampf
@@ -748,6 +750,7 @@ TALK05 65: <7>Gennai<7>Hm... Stark genug.<1>Vorerst.<2,2><3>Halt deine Partner<1
 TALK06 5: <7>Hooded Man<7>Bulbmon war ein Hebel.<1>Du hast ihn für mich<1>umgelegt. Danke.<2,2><3>Ich suche seit Jahren<1>eine Tür in Servern.<2,2><3>Du fandest sie leicht.<1>Eine blaue, oder?<2,2><3>Lass sehen, ob du<1>diese Tür wert bist.<2,2>
 TALK06 6: <7>Hooded Man<7>Schon zurück? Gut.<1>Verlieren kenne ich.<2,2><3>Los, noch einmal.<2,2>
 TALK06 7: <7>Hooded Man<7>...Also so ist das.<1>Jetzt sehe ich es.<2,2><3>Ich bin Oikawa.<1>Ich habe Ware, aber<1>keinen Laden.<2,2><3>Vielleicht deine blaue<1>Tür. Wir treffen uns<1>hinter ihr.<2,2>
+TALK06 8: <7>???<7>...Eine Stimme hallt in<1>dir. Betritt erst einen<1>blauen Raum und besiege<2,2><3>Ogremon im Central Park,<1>bevor du den Protocol-<1>Wald betrittst.<2,2>
 TALK05 99: <7>Oikawa<7>Du bist gekommen.<1>Igor lässt mich hier<1>einen Tresen führen.<2,2><3>Ich schulde dir was,<1>sagt er. Ich verkaufe,<1>was das Spiel nie gab.<2,2><3>Seltene Kristalle.<1>Bits im Voraus.<2,2><3>Keine Fragen.<1>Keine Rückgabe.<2,2>
 TALK03 311: <7>Igor<7>Halt, mein Gast.<1>Hinter diesem Tor:<1>kein Weg zurück.<2,2><3>Deine Partner tragen<1>den Fluch, und Gennais<1>Weg blieb unvollendet.<2,2><3>Geh ihn zuerst...<1>Oder beweise: Deine<1>Macht reicht aus.<2,2><3>Die blaue Tür links<1>öffnet den Zeitraum.<2,2>
 TALK03 312: <7>Igor<7>Halt, mein Gast.<1>Hinter diesem Tor:<1>kein Weg zurück.<2,2><3>Vorher lass die Zeit<1>kurz stillstehen.<2,2><3>Die blaue Tür links<1>führt zum Zeitraum.<2,2><3>Besteh die Prüfungen,<1>dann ist das Tor frei.<2,2>
