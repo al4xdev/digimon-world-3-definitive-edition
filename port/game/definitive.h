@@ -320,7 +320,7 @@ int def_form_floor(int row);
 /* The hit callouts (definitive_callout.c): the slanted word that pops over the side hit. def_callout_show starts one
  * (0 clears it) over `side`'s acting member (0 party, 1 enemy); def_callout_frame runs once per battle frame. */
 enum { DEF_CALLOUT_NONE, DEF_CALLOUT_WEAK, DEF_CALLOUT_RESIST, DEF_CALLOUT_OVERFINISH, DEF_CALLOUT_RARE, DEF_CALLOUT_EVOLVE,
-       DEF_CALLOUT_GUARDED, DEF_CALLOUT_COUNT };
+       DEF_CALLOUT_GUARDED, DEF_CALLOUT_SHIFT, DEF_CALLOUT_COUNT };
 void def_callout_show(int kind, int side);
 void def_callout_frame(void);
 
@@ -390,6 +390,7 @@ void def_hunt_map(int map);
 int def_hunt_encounter(int battle);
 void def_hunt_scale(void);
 int def_hunt_active(void);
+int def_hunt_region_fighting(void); /* the Rare Target's region being fought, -1 none */
 void def_hunt_skipped(void);
 /* The battle's end (def_log_end): a won random encounter adds to the chain and leaves its commons; a Rare Target fought
  * resets it, and won gives its rare item. The Rush's skip (def_hunt_skipped) counts for the chain and leaves commons. */
@@ -500,6 +501,7 @@ const unsigned char *def_super_talk_text(void);
 int def_super_step(int map, int x, int y);
 int def_super_battle(void);
 int def_super_battle_ready(void);           /* the battle being set up is the Super Rare's */
+int def_super_fighting(void);               /* the Super Rare hunt being fought, -1 none */
 void def_super_scale(void);
 /* The battle's members are set up: its HP at the start, given its full HP in the battle's units (max_hp: Super Hard's
  * raise included); the flight and the end then count in those units. */
@@ -541,7 +543,10 @@ int def_midi_battle_music(int music);
 int def_superhunt_frame(void);              /* the field's idle step: 1 while the board or a panel owns the field */
 void def_superhunt_screen_savestate(struct PortState *s);
 /* The rare foes' palette swap (definitive_recolor.c): the kinds, and its save-state part (the hooks are in port.h). */
-enum { DEF_RECOLOR_NONE, DEF_RECOLOR_RARE, DEF_RECOLOR_SUPER, DEF_RECOLOR_DARK, DEF_RECOLOR_BLACK, DEF_RECOLOR_GOLD, DEF_RECOLOR_KINDS };
+enum { DEF_RECOLOR_NONE, DEF_RECOLOR_RARE, DEF_RECOLOR_SUPER, DEF_RECOLOR_DARK, DEF_RECOLOR_BLACK, DEF_RECOLOR_GOLD,
+       DEF_RECOLOR_PERSONA, DEF_RECOLOR_KINDS };
+void def_recolor_enemy_hue(int degrees); /* an enemy persona's phase colour (definitive_persona.h HUES) */
+int def_persona_model_hue(void);         /* the colour of the enemy model being added, 0 none (definitive.c) */
 void def_recolor_savestate(struct PortState *s);
 /* The hero's skins (definitive_skins.c): a colour recipe for the hero's field sprites, each hunt won unlocks one. */
 #define DEF_SKIN_COUNT 13   /* one per hunt (DEF_SUPER_COUNT) */
@@ -695,6 +700,7 @@ int def_dri_talk(int map, int actor);
 int def_dri_frame(void);
 void def_dri_battle_begin(void);
 int def_dri_fighting(void);
+int def_dri_challenge_fighting(void); /* the challenge being fought, -1 none */
 void def_dri_battle_end(int result);
 void def_dri_stage_enters(int member);
 int def_dri_next_wave(void); /* the Mega: set up in a fallen enemy slot (its index), -1: none (def_enemy_next_wave) */
@@ -965,6 +971,11 @@ int def_record_rare_seen(int rare);
  * (an index of def_replicas), and setting or clearing it. */
 int def_record_replica(int r);
 void def_record_replica_set(int r, int on);
+/* The enemy personas solved (definitive_persona.h KEEP), a bit each in the same record's last bytes: whether bit `bit`
+ * is set, and setting it (it never clears). */
+#define DEF_PERSONA_KEEP_BITS 144
+int def_record_persona_kept(int bit);
+void def_record_persona_keep(int bit);
 void def_bestiary_discover(int index, int element_mask);
 int def_bestiary_known(int index);
 int def_bestiary_index(int species_id);

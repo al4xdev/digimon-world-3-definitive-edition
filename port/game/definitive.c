@@ -17,6 +17,7 @@
 #include "savestate.h"
 
 #include "definitive.h"
+#include "definitive_persona.h"
 
 s32 fightstg_rules_get_damage(u8 side, s32 id);
 s32 fightstg_rules_get_special_damage(u8 side, s32 id);
@@ -64,6 +65,9 @@ static int log_on(void) {
         fputc('\n', log_file);            \
         fflush(log_file);                 \
     } while (0)
+
+static void persona_battle_begin(void);
+static const DefPersona *persona_at(int slot);
 
 /* Blast Gauge phase 1: the Digimon (bits by id) that took their Blast form this battle (def_blast_started), whose price
  * the battle's end takes (def_blast_price). Emptied when a battle begins. */
@@ -119,6 +123,7 @@ void def_log_begin(void) {
     def_time_battle_begin();   /* the Time Room: whether it is a trial */
     def_story_battle_begin();  /* the Oikawa's arc: whether it is his */
     def_finale_battle_begin(); /* Extended Final Act: Dark Galacticmon / Super Chosen Evolution */
+    persona_battle_begin();    /* the enemy personas: who this battle is (after the hunts and the DRI said so) */
     if (def_hunt_active() || def_super_battle_ready()) {
         def_callout_show(DEF_CALLOUT_RARE, 1); /* a Rare Target; a Super Rare too */
     }
@@ -207,11 +212,13 @@ static int dark_mark(int species) {
 }
 
 /* Element `e` against a target whose resists (modifiers included) are `resists`: 1 weak, 2 neutral, 3 resisted. */
+static const DefPersona *persona_map_of(int species);
+
 static int target_class(int e, const short *resists, int species) {
     if (def_resisted(resists[e])) {
         return 3;
     }
-    return (def_weakness_mask(resists, dark_mark(species)) >> e) & 1 ? 1 : 2;
+    return (def_weakness_mask(resists, persona_map_of(species) != NULL ? 0 : dark_mark(species)) >> e) & 1 ? 1 : 2;
 }
 
 static void classify(u8 side, s32 id) {
@@ -306,19 +313,112 @@ void def_hit_feedback(void) {
     }
 }
 
-/* The Guard: some bosses take only DEF_GUARD_PCT of the party's blows until a stagger opens them (the weakness that
+/* ---- The enemy personas (definitive_persona.h): this file tells them who is fought and what happens. */
+static DefPersonaWhere persona_where_now(void) {
+    DefPersonaWhere w;
+
+    w.super = (short)def_super_fighting();
+    w.region = (short)(w.super < 0 ? def_hunt_region_fighting() : -1);
+    w.dri = (short)def_dri_challenge_fighting();
+    w.battle = (short)records_state.battle;
+    return w;
+}
+
+static void persona_battle_begin(void) {
+    DefPersonaWhere w = persona_where_now();
+
+    def_persona_battle_begin(&w);
+}
+
+/* The encounter read live, the way the old Guard list and the recolor did: one that is not what the battle began with
+ * (the enemy's model is added before the battle's begin hook; a test sets the battle by hand) is looked up again. */
+static void persona_refresh(void) {
+    DefPersonaWhere w = persona_where_now();
+
+    if (!def_persona_same_where(&w)) {
+        def_persona_battle_begin(&w);
+    }
+}
+
+/* The colour of the enemy model being added (def_recolor_model_added), 0 none. */
+int def_persona_model_hue(void) {
+    if (!def_on()) {
+        return 0;
+    }
+    persona_refresh();
+    return def_persona_battle_hue();
+}
+
+/* The persona of enemy slot `slot` (0..2), NULL none. */
+static const DefPersona *persona_at(int slot) {
+    if (!def_on() || slot < 0 || slot > 2) {
+        return NULL;
+    }
+    persona_refresh();
+    return def_persona_slot(slot, fightstg_battle.state.members[1][slot].digimon);
+}
+
+/* The current target's persona when it changes the map: its own discovery, its own Dark rule. */
+static const DefPersona *persona_map_of(int species) {
+    int slot = fightstg_battle.state.current[1] % 3;
+    const DefPersona *p;
+
+    if (fightstg_battle.state.members[1][slot].digimon != species) {
+        return NULL;
+    }
+    p = persona_at(slot);
+    return def_persona_own_map(p) ? p : NULL;
+}
+
+/* An enemy's stats block (fightstg_rules_get_stats): its persona's resistances for the phase it is in, before Resist
+ * Down / Mega Break lower them. */
+void def_persona_apply(int member, FightstgStats *out) {
+    const DefPersona *p = persona_at(member);
+
+    if (def_persona_own_map(p)) {
+        def_persona_resists(p, def_persona_phase(member), out->resists, out->resists);
+    }
+}
+
+/* 1 when enemy slot `slot` has a rule of its own: the HUD marks it (the inspect panel's title). */
+int def_persona_warn(int slot) {
+    return persona_at(slot % 3) != NULL;
+}
+
+const unsigned char *def_persona_title(int species, const unsigned char *name) {
+    extern const unsigned char def_str_PersonaMark[];
+    static unsigned char buf[48];
+    int p = 0;
+
+    if (!def_persona_warn(fightstg_battle.state.current[1]) || (name == NULL && (name = def_species_name(species)) == NULL)) {
+        return name;
+    }
+    def_glyph_put(buf, &p, sizeof(buf), def_str_PersonaMark);
+    def_glyph_put(buf, &p, sizeof(buf), name);
+    return buf;
+}
+
+/* A phase changed: say so, and repaint the model when the phase has its colour. */
+static void persona_phase_changed(int slot) {
+    int hue = def_persona_battle_hue();
+
+    def_callout_show(DEF_CALLOUT_SHIFT, 1);
+    if (hue != 0) {
+        def_recolor_enemy_hue(hue);
+    }
+    if (log_on()) {
+        LOG("persona: slot %d phase %d (hue %d)", slot, def_persona_phase(slot), hue);
+    }
+}
+
+/* The Guard: some enemies take only DEF_GUARD_PCT of the party's blows until a stagger opens them (the weakness that
  * staggers is what the player has to find; the blow that opens it is still guarded, the stagger being set after the
- * damage). A campaign boss is a one-enemy battle of the list below (species checked too, so a hunt or a duel that
- * borrows its battle is not guarded); the Time Room's trials guard their last challenger. Never the final boss. */
+ * damage). Who is guarded, and in which phase, is the enemy personas' (definitive_persona_table.c: the story bosses
+ * are CAMPAIGN rows, battle and species, so a hunt or a duel that borrows their battle is not); the Time Room's trials
+ * guard their last challenger. Never the final boss. */
 static int enemy_guarded(void) {
-    static const struct { s16 battle, species; } guarded[] = {
-        { 313, 141 }, /* Datamon, Lv34 */
-        { 15, 444 },  /* BK Imperialdramon, Lv46 */
-        { 31, 448 },  /* BK WarGreymon, Lv53 */
-    };
     int slot = fightstg_battle.state.current[1];
     s32 species = fightstg_battle.state.members[1][slot].digimon;
-    unsigned int i;
 
     if (fightstg_battle.state.type == 6 || chain.staggered[slot % 3]) {
         return 0;
@@ -326,12 +426,7 @@ static int enemy_guarded(void) {
     if (def_time_guarded(species)) {
         return 1;
     }
-    for (i = 0; i < sizeof(guarded) / sizeof(guarded[0]); i++) {
-        if (records_state.battle == guarded[i].battle && species == guarded[i].species) {
-            return 1;
-        }
-    }
-    return 0;
+    return def_persona_guard(persona_at(slot % 3), def_persona_phase(slot % 3));
 }
 
 static s32 guard_damage(u8 side, s32 value) {
@@ -533,7 +628,11 @@ extern const unsigned char def_str_Fire[], def_str_Water[], def_str_Ice[], def_s
 void def_turn_speeds(int side, int *own, int *other) {
     int *party = side == 0 ? own : other, *enemy = side == 0 ? other : own;
     int product, root = 999, i;
+    const DefPersona *p = persona_at(fightstg_battle.state.current[1] % 3);
 
+    if (p != NULL && p->speed_x != 0 && *party > 0) { /* SPEED_X: its Speed is the party's times n */
+        *enemy = *party * p->speed_x;
+    }
     if (!def_on() || *party <= *enemy || *enemy <= 0) {
         return;
     }
@@ -724,10 +823,19 @@ static const unsigned char *state_label(int cls, int *palette) {
     }
 }
 
+/* What the battle's inspect panel knows of the current target: its persona's own discovery when it has its own map
+ * (the species' bestiary would give it away), else the bestiary's. */
+static int inspect_known(int species) {
+    if (persona_map_of(species) != NULL) {
+        return def_persona_known(fightstg_battle.state.current[1] % 3);
+    }
+    return def_bestiary_known(def_bestiary_index(species));
+}
+
 const unsigned char *def_inspect_state(const short *resists, int e, int *palette) {
     int species = fightstg_battle.state.members[1][fightstg_battle.state.current[1]].digimon;
 
-    if (!((def_bestiary_known(def_bestiary_index(species)) >> e) & 1)) { /* not learnt yet: Libra or a hit on it tells */
+    if (!((inspect_known(species) >> e) & 1)) { /* not learnt yet: Libra or a hit on it tells */
         return state_label(0, palette);
     }
     return state_label(target_class(e, resists, species), palette);
@@ -764,7 +872,7 @@ static const unsigned char *family_state(int known, const short *resists, int sp
 const unsigned char *def_inspect_family_state(const short *resists, int f, int *palette) {
     int species = fightstg_battle.state.members[1][fightstg_battle.state.current[1]].digimon;
 
-    return family_state(def_bestiary_known(def_bestiary_index(species)), resists, species, f, palette);
+    return family_state(inspect_known(species), resists, species, f, palette);
 }
 
 const unsigned char *def_bestiary_family_state(FightstgEnemyRecord *rec, int index, int f, int *palette) {
@@ -840,6 +948,7 @@ void def_savestate(struct PortState *s) {
     def_respec_savestate(s); /* the pig's stat swap */
     def_midi_savestate(s);   /* Etemon's list */
     def_recolor_savestate(s); /* which model is the rare foe's, for its palette */
+    def_persona_savestate(s); /* the enemy personas: who is fought, each slot's phase and what was learnt */
     def_skin_savestate(s);
     port_girls_savestate(s); /* what the hero's files in memory were painted for (Kaili, the skin) */
     def_guide_savestate(s); /* the Guide's screen and notice, with the field's heap they point into */
@@ -1460,8 +1569,15 @@ void def_action_resolved(u8 side, s32 id, s32 value) {
     }
     def_chain_player_hit(&chain, target, value > 0, weak ? hit_elem : -1, weak);
     if (value > 0 && hit_id == id && (hit_class == 1 || hit_class == 3)) { /* a weakness or a resistance found out */
-        def_bestiary_discover(def_bestiary_index(fightstg_battle.state.members[1][target].digimon),
-                              def_family_bits(hit_elem)); /* a pair is one affinity: both of it are learnt */
+        if (def_persona_own_map(persona_at(target % 3))) { /* its own map: learnt for it, not for the species */
+            def_persona_learn(target % 3, def_family_bits(hit_elem));
+        } else {
+            def_bestiary_discover(def_bestiary_index(fightstg_battle.state.members[1][target].digimon),
+                                  def_family_bits(hit_elem)); /* a pair is one affinity: both of it are learnt */
+        }
+    }
+    if (!was && chain.staggered[target] && def_persona_staggered(target % 3)) { /* ON_STAGGER: a new phase */
+        persona_phase_changed(target % 3);
     }
     if (log_on() && value > 0) {
         LOG("hit target %d weak %d stagger %d -> %d extra_pending %d", target, weak, was, chain.staggered[target],
@@ -1477,6 +1593,10 @@ void def_enemy_turn_begins(void) {
 
     if (!def_on()) {
         return;
+    }
+    persona_at(slot); /* looked up before its turn counts */
+    if (def_persona_enemy_turn(slot)) { /* PHASES(n): its turns in this phase ran out */
+        persona_phase_changed(slot);
     }
     if (resist_turns[1][slot] != 0 && --resist_turns[1][slot] == 0) { /* the lowered resists wear off */
         memset(resist_mod[1][slot], 0, sizeof(resist_mod[1][0]));
@@ -1626,7 +1746,11 @@ int def_tech_effect(u8 side, int tech, int *msg) {
         return 0;
     }
     if (!enemy && tech == 202) {
-        def_bestiary_discover(def_bestiary_index(fightstg_battle.state.members[1][slot].digimon), 0x7F);
+        if (def_persona_own_map(persona_at(slot))) { /* its own map: Libra reads it, not the species' */
+            def_persona_learn(slot, 0x7F);
+        } else {
+            def_bestiary_discover(def_bestiary_index(fightstg_battle.state.members[1][slot].digimon), 0x7F);
+        }
         *msg = 0;
         if (log_on()) {
             LOG("libra slot %d", slot);

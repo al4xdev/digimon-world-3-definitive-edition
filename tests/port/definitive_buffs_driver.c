@@ -149,6 +149,12 @@ void def_hunt_battle_end(int r) { (void)r; }
 void def_hunt_reward_done(void) {}
 void def_hunt_savestate(struct PortState *s) { (void)s; }
 int def_hunt_active(void) { return 0; }
+int def_hunt_region_fighting(void) { return -1; }
+int def_super_fighting(void) { return -1; }
+int def_dri_challenge_fighting(void) { return -1; }
+int def_record_persona_kept(int bit) { (void)bit; return 0; }
+void def_record_persona_keep(int bit) { (void)bit; }
+void def_recolor_enemy_hue(int degrees) { (void)degrees; }
 void def_hunt_skipped(void) {}
 void def_rush_savestate(struct PortState *s) { (void)s; }
 void def_guide_savestate(struct PortState *s) { (void)s; }

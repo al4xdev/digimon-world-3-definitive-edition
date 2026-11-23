@@ -140,6 +140,7 @@ for L in $LAYERS; do
             "$PY" "$ROOT/tests/port/definitive_mp.py"    # the rookies' MP patch and the save converter agree (definitive combat)
             "$PY" "$ROOT/tests/port/definitive_bestiary.py"   # the bestiary's card record: magic/version/checksum, 3 slots (definitive combat)
             "$PY" "$ROOT/tests/port/definitive_hunt.py"   # the regional hunt: chain, one-Digimon Rare Target, materials
+            "$PY" "$ROOT/tests/port/definitive_persona.py"   # the enemy personas: the table's rules and report, the engine's cases
             "$PY" "$ROOT/tests/port/definitive_superhunt.py"   # the Super Rare hunts: order, compass, point, flight, record
             "$PY" "$ROOT/tests/port/definitive_skins.py"   # the hero's skins: unlocks, the CLUT recipes, record
             "$PY" "$ROOT/tests/port/definitive_velvet_music.py"   # the Velvet Room's score through the sound hooks (skips without the local MIDI)

@@ -231,6 +231,14 @@ int def_hunt_active(void) {
     return hunt.rare != 0;
 }
 
+/* The region of the Rare Target being fought (the enemy personas' RARE), -1 none. */
+int def_hunt_region_fighting(void) {
+    if (!hunt.rare || hunt.target < 0 || hunt.target >= def_hunt_target_count) {
+        return -1;
+    }
+    return def_hunt_targets[hunt.target].region;
+}
+
 int def_hunt_flee(void) {
     if (def_super_tutorial_battle()) {
         return 0; /* tutorial Ogremon: the player cannot flee, though Ogremon itself can */

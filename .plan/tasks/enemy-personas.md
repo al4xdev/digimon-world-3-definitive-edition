@@ -20,7 +20,23 @@ When it closes, its final text moves to `.plan/closed/` here.
 - Ogremon (tutorial hunt) gets no rule: a normal mob with 2 weaknesses.
 - "Lost" commons with a rule appear only from Lv10 on, as hints before the rares.
 
+## Tooling (built 2026-11-23)
+
+- `port/game/definitive_persona.h`: the row type and the helpers (`SUPER/RARE/DRI/CAMPAIGN/SPECIES`, `KEEP`, `WEAK`,
+  `RESIST(_ALL)`, `GUARD_A/B/ALWAYS`, `PHASES(n)`, `ON_STAGGER`, `B_WEAK/B_RESIST`, `HUE(S)`, `SPEED_X`).
+- `port/game/definitive_persona_table.c`: the rows. Only the 3 story bosses that were already guarded so far.
+- `port/game/definitive_persona.c`: lookup (encounter rows before species rows), the phase machine, discovery, the rules
+  check. `definitive.c` glues it into the stats hook, Guard, speed, hit/Libra discovery, enemy turn, inspect.
+- Card: one "solved" bit per row (`KEEP(n)`, 144 max) in record 1's last 18 bytes. Record 2 is full and record 3 has
+  ~10 bytes, so a per-element map per encounter does not fit; within a fight the inspect learns hit by hit, and once
+  every weakness of every phase was found, later fights show the whole map.
+- Phase change: `SHIFT!` callout; with `HUES` the model's CLUTs are turned again from the stashed originals.
+- Inspect title gets a `! ` mark (`$PersonaMark`) for any enemy with a row.
+- `tests/port/definitive_persona.py`: checks the real table (and prints it for review), then drives the engine with its
+  own case rows and confirms the check catches each class of mistake.
+
 ## Next
 
-1. Build the tooling (table, helpers, engine functions, the C checker/report test). No distribution yet.
-2. One joint session to fill the cases (Super Rares, DRI lines, Rare Target molds, commons).
+1. Joint session to fill the cases (Super Rares, DRI lines, Rare Target molds, commons from Lv10).
+2. In game, confirm on a real fight: the SHIFT callout, the hue change, and SPEED_X (applied against the current enemy
+   target; the delay code does not say which enemy is acting).

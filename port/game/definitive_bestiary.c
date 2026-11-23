@@ -20,6 +20,12 @@ extern int fightstg_enemy_find_record(int id);
  * byte first (the rest of the 48 bytes is spare). A record without the "X1" (an older save) reads as none of it, and
  * one written before a field existed reads its bytes as 0. */
 #define REC_EXTRA 0xD0
+/* After the replicas, to the record's end: the enemy personas solved, a bit each (definitive_persona.h KEEP), low
+ * byte first. An older record reads them as 0. */
+#define REC_PERSONA (REC_EXTRA + 30)
+#define REC_PERSONA_BYTES (DEF_PERSONA_KEEP_BITS / 8)
+typedef char rec_persona_fits[REC_PERSONA + REC_PERSONA_BYTES <= DEF_BESTIARY_RECORD_SIZE ? 1 : -1];
+static unsigned char persona_kept[REC_PERSONA_BYTES];
 
 static unsigned char extra_flags;
 static unsigned int extra_network;
@@ -137,6 +143,7 @@ void def_bestiary_reset(void) {
     extra_chain = 0;
     memset(extra_materials, 0, sizeof(extra_materials));
     extra_replicas = 0;
+    memset(persona_kept, 0, sizeof(persona_kept));
     memset(rares, 0, sizeof(rares));
     memset(rares_seen, 0, sizeof(rares_seen));
     dri_unlocked = 0;
@@ -208,6 +215,11 @@ static int extra_any(void) {
             return 1;
         }
     }
+    for (i = 0; i < REC_PERSONA_BYTES; i++) {
+        if (persona_kept[i] != 0) {
+            return 1;
+        }
+    }
     return extra_flags != 0 || extra_network != 0 || extra_region != 0 || extra_chain != 0 || extra_replicas != 0;
 }
 
@@ -239,6 +251,7 @@ void def_bestiary_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, extra_chain);
     PORT_STATE_VAR(s, extra_materials);
     PORT_STATE_VAR(s, extra_replicas);
+    PORT_STATE_VAR(s, persona_kept);
     PORT_STATE_VAR(s, rares);
     PORT_STATE_VAR(s, rares_seen);
     PORT_STATE_VAR(s, dri_unlocked);
@@ -298,6 +311,7 @@ void def_bestiary_record_write(unsigned char *out) {
         for (i = 0; i < 4; i++) {
             out[REC_EXTRA + 26 + i] = (unsigned char)(extra_replicas >> (8 * i));
         }
+        memcpy(out + REC_PERSONA, persona_kept, REC_PERSONA_BYTES);
     }
 }
 
@@ -328,9 +342,21 @@ void def_bestiary_record_read(const unsigned char *in) {
         for (i = 0; i < 4; i++) {
             extra_replicas |= (unsigned int)in[REC_EXTRA + 26 + i] << (8 * i);
         }
+        memcpy(persona_kept, in + REC_PERSONA, REC_PERSONA_BYTES);
     }
     port_log("bestiary: the slot's record read: %d species known, flags %d, network 0x%X", known, extra_flags,
              extra_network);
+}
+
+int def_record_persona_kept(int bit) {
+    return bit >= 0 && bit < DEF_PERSONA_KEEP_BITS && ((persona_kept[bit / 8] >> (bit % 8)) & 1);
+}
+
+void def_record_persona_keep(int bit) {
+    if (bit >= 0 && bit < DEF_PERSONA_KEEP_BITS && !def_record_persona_kept(bit)) {
+        persona_kept[bit / 8] |= (unsigned char)(1 << (bit % 8));
+        port_log("persona: KEEP bit %d solved", bit);
+    }
 }
 
 int def_record_rare(int rare) {

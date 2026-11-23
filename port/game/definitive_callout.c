@@ -124,6 +124,9 @@ static const Style styles[DEF_CALLOUT_COUNT] = {
     /* A guarded boss took the blow at its reduced share: it did not go through (slam), until a stagger opens it. */
     [DEF_CALLOUT_GUARDED] = { "GUARDED", { 255, 244, 220 }, { 255, 196, 96 }, { 214, 112, 0 }, { 56, 24, 0 }, 1, 232, 270, 7,
                               36, 8 },
+    /* An enemy persona changed phase (definitive_persona.h PHASES / ON_STAGGER): its colour and weakness are new. */
+    [DEF_CALLOUT_SHIFT] = { "SHIFT!", { 255, 255, 255 }, { 236, 200, 255 }, { 168, 64, 240 }, { 40, 8, 64 }, 0, 256, 300, 10,
+                            44, 9 },
 };
 
 static struct {

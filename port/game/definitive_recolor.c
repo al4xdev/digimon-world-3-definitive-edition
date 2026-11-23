@@ -19,6 +19,7 @@
 #include "psxstack/savestate.h"
 
 #include "definitive.h"
+#include "definitive_persona.h"
 
 extern int def_on(void);
 extern const unsigned short *psyq_gpu_vram(void); /* psxstack/psyq/psyq.h: the VRAM as the GPU left it */
@@ -33,9 +34,12 @@ extern void port_log(const char *fmt, ...);
 #define RC_MAX 256  /* colours of a CLUT: 16 (4-bit texels) or 256 (8-bit) */
 #define RC_PAGES 4  /* recoloured models' pages at once (fightstg_slots_vram's slots) */
 #define RC_CLUTS 32 /* CLUTs turned per page (a model names a few) */
+#define RC_POOL 8192 /* a persona's CLUTs as they loaded, kept to turn them again when its phase changes */
 
-/* The turn of the colour wheel, in degrees, per kind: the regional Rare's and the Super Rare's (owner-tunable). */
-static const int rc_degrees[DEF_RECOLOR_KINDS] = { 0, 120, 200, 0, 0, 0 };
+/* The turn of the colour wheel, in degrees, per kind: the regional Rare's and the Super Rare's (owner-tunable). An
+ * enemy persona with its own colours (definitive_persona.h HUES) is DEF_RECOLOR_PERSONA, turned rc_persona_deg. */
+static const int rc_degrees[DEF_RECOLOR_KINDS] = { 0, 120, 200, 0, 0, 0, 0 };
+static int rc_persona_deg;
 
 static const void *rc_model; /* the enemy's model in a rare battle (compared only, never followed) */
 static int rc_kind;          /* its kind */
@@ -48,7 +52,11 @@ static struct {
     signed char kind; /* 0: free */
     unsigned char n;
     unsigned int done[RC_CLUTS];
+    unsigned short width[RC_CLUTS];  /* DEF_RECOLOR_PERSONA: each CLUT's colours */
+    unsigned short kept[RC_CLUTS];   /* and where rc_pool keeps them as they loaded (RC_POOL: not kept) */
 } rc_pages[RC_PAGES];
+static unsigned short rc_pool[RC_POOL];
+static int rc_pool_used;
 
 void def_recolor_model_added(const void *model, int id) {
     int kind;
@@ -85,6 +93,10 @@ void def_recolor_model_added(const void *model, int id) {
     }
     kind = !def_on() ? DEF_RECOLOR_NONE : def_super_battle_ready() ? DEF_RECOLOR_SUPER : def_hunt_active() ? DEF_RECOLOR_RARE
                                                                                                           : DEF_RECOLOR_NONE;
+    if (def_on() && (rc_persona_deg = def_persona_model_hue()) != 0) { /* a persona's colour is its phase's */
+        kind = DEF_RECOLOR_PERSONA;
+        rc_pool_used = 0;
+    }
     rc_model = kind != DEF_RECOLOR_NONE ? model : NULL;
     rc_kind = kind;
     if (kind != DEF_RECOLOR_NONE) {
@@ -222,7 +234,7 @@ const unsigned short *def_recolor_clut(const unsigned short *src, int n, int kin
         }
         return out;
     }
-    a = rc_degrees[kind] * 3.14159265358979 / 180.0;
+    a = (kind == DEF_RECOLOR_PERSONA ? rc_persona_deg : rc_degrees[kind]) * 3.14159265358979 / 180.0;
     cs = cos(a);
     sn = sin(a);
     m[0][0] = 0.299 + 0.701 * cs + 0.168 * sn;
@@ -282,16 +294,52 @@ void def_recolor_mesh_clut(int x, int y, int cx, int cy, int tp) {
     if (rc_pages[i].n == RC_CLUTS) {
         return; /* full: the rest stay as they are rather than turn twice */
     }
-    rc_pages[i].done[rc_pages[i].n++] = key;
+    j = rc_pages[i].n++;
+    rc_pages[i].done[j] = key;
     r.x = (short)cx;
     r.y = (short)cy;
     r.w = (tp & 3) == 0 ? 16 : 256;
     r.h = 1;
+    rc_pages[i].width[j] = (unsigned short)r.w;
+    rc_pages[i].kept[j] = RC_POOL;
     if (cx < 0 || cy < 0 || cy >= 512 || cx + r.w > 1024) {
         return;
     }
     memcpy(buf, psyq_gpu_vram() + cy * psyq_gpu_vram_stride() + cx, r.w * sizeof(buf[0]));
+    if (rc_pages[i].kind == DEF_RECOLOR_PERSONA && rc_pool_used + r.w <= RC_POOL) {
+        rc_pages[i].kept[j] = (unsigned short)rc_pool_used;
+        memcpy(rc_pool + rc_pool_used, buf, r.w * sizeof(buf[0]));
+        rc_pool_used += r.w;
+    }
     LoadImage(&r, (u32 *)def_recolor_clut(buf, r.w, rc_pages[i].kind));
+}
+
+/* An enemy persona's phase changed to colour `degrees`: its model's CLUTs are turned again from the colours they
+ * loaded with (a CLUT the pool had no room for keeps the turn it has). */
+void def_recolor_enemy_hue(int degrees) {
+    RECT r;
+    int i, j;
+
+    if (rc_kind != DEF_RECOLOR_PERSONA || degrees == rc_persona_deg) {
+        return;
+    }
+    rc_persona_deg = degrees;
+    for (i = 0; i < RC_PAGES; i++) {
+        if (rc_pages[i].kind != DEF_RECOLOR_PERSONA) {
+            continue;
+        }
+        for (j = 0; j < rc_pages[i].n; j++) {
+            if (rc_pages[i].kept[j] >= RC_POOL) {
+                continue;
+            }
+            r.x = (short)(rc_pages[i].done[j] & 0xFFFF);
+            r.y = (short)(rc_pages[i].done[j] >> 16);
+            r.w = (short)rc_pages[i].width[j];
+            r.h = 1;
+            LoadImage(&r, (u32 *)def_recolor_clut(rc_pool + rc_pages[i].kept[j], r.w, DEF_RECOLOR_PERSONA));
+        }
+    }
+    port_log("recolor: the persona's phase, %d degrees", degrees);
 }
 
 void def_recolor_savestate(struct PortState *s) {
@@ -300,4 +348,7 @@ void def_recolor_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, rc_party_model);
     PORT_STATE_VAR(s, rc_party_kind);
     PORT_STATE_VAR(s, rc_pages);
+    PORT_STATE_VAR(s, rc_persona_deg);
+    PORT_STATE_VAR(s, rc_pool_used);
+    PORT_STATE_VAR(s, rc_pool);
 }

@@ -1019,6 +1019,11 @@ int def_dri_fighting(void) {
     return dri_sim.fighting;
 }
 
+/* The DRI challenge being fought (the enemy personas' DRI), -1 none. */
+int def_dri_challenge_fighting(void) {
+    return dri_sim.fighting ? dri_sim.challenge : -1;
+}
+
 /* A stage that is a player form (DefDriStage.base): the base species' disc record (with the port's table on it, so the
  * line's balance is the generator's) under the form's name, type and techniques, and a plan of its own (below). Asked by
  * fightstg_enemy_get_record only for an ID with no disc record, while a simulation is set up or runs. */

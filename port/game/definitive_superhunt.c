@@ -462,6 +462,11 @@ int def_super_battle(void) {
     return st.active >= 0 ? def_super_rares[st.active].battle : -1;
 }
 
+/* The Super Rare hunt being fought (the enemy personas' SUPER), -1 none. */
+int def_super_fighting(void) {
+    return run.battle && st.active >= 0 ? st.active : -1;
+}
+
 int def_super_battle_ready(void) {
     return run.battle && st.active >= 0;
 }

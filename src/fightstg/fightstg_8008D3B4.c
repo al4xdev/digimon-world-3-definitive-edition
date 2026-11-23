@@ -4329,7 +4329,8 @@ static void fightstg_battle_menu_inspect_set(FightstgBattleMenuData *data, s32 o
     rec = fightstg_enemy_records.get(fightstg_battle.state.members[1][fightstg_battle.state.current[1]].digimon);
     if (rec != NULL) {
 #ifdef PC_PORT
-        const unsigned char *rare = def_hunt_foe_name(rec->id, 1); /* a Rare Target: the HUD's numeral here too */
+        /* a Rare Target: the HUD's numeral here too; an enemy with a persona: its mark before the name */
+        const unsigned char *rare = def_persona_title(rec->id, def_hunt_foe_name(rec->id, 1));
 
         if (rare != NULL) {
             data->inspect_title->set_text(data->inspect_title, (u8 *)rare, -1);
@@ -9168,6 +9169,7 @@ FightstgStats *fightstg_rules_get_stats(u8 side, s32 first, s32 member) {
         m = &fightstg_battle.state.members[1][member];
         fightstg_rules_get_enemy_stats(out, m, member);
 #ifdef PC_PORT
+        def_persona_apply(member, out);       /* the enemy personas: its phase's resistances */
         def_apply_resist_mod(1, member, out); /* definitive combat: Resist Down / Mega Break */
 #endif
     }

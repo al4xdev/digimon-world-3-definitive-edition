@@ -343,6 +343,7 @@ $HuntHeld: x
 $HuntRarePrefix: Matériau rare :<1>
 $HuntRareWord: Noyau
 $HuntSpace: " "
+$PersonaMark: "! "
 $HuntRomanI: I
 $HuntRomanV: V
 $HuntRomanX: X

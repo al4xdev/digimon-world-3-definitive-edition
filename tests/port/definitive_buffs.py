@@ -32,6 +32,10 @@ def main():
         str(ROOT / "port/game/definitive_progression.c"),
         str(ROOT / "port/game/definitive_mp.c"),
         str(ROOT / "port/game/definitive_text.c"),
+        str(ROOT / "port/game/definitive_persona.c"),
+        str(ROOT / "port/game/definitive_persona_table.c"),
+        str(ROOT / "port/game/definitive_hunt_targets.c"),
+        str(ROOT / "port/game/definitive_glyph.c"),
         str(ROOT / "tests/port/definitive_buffs_driver.c"),
         "-o", str(exe),
     ]

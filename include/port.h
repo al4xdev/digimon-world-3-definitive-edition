@@ -394,6 +394,13 @@ void def_mp_hook(void); /* the rookies' MP patch, at a new game and at each batt
 struct FightstgStats;
 int def_tech_effect(u8 side, int tech, int *msg);
 void def_apply_resist_mod(int side, int member, struct FightstgStats *out);
+/* The enemy personas (port/game/definitive_persona.h): an enemy's resistances for its persona's phase, as get_stats
+ * builds them (before def_apply_resist_mod); and whether enemy slot `slot` has a rule of its own (the HUD's mark). */
+void def_persona_apply(int member, struct FightstgStats *out);
+int def_persona_warn(int slot);
+/* The inspect panel's title: `name` (or the species' own name when NULL) after the persona mark, when the current
+ * target has a rule of its own; else `name` as it is. */
+const unsigned char *def_persona_title(int species, const unsigned char *name);
 int def_resist_down_mask(int side, int slot);
 int def_resist_down_families(int side, int slot); /* the same, a pair of elements as its family's one bit */
 const unsigned char *def_message(int i);

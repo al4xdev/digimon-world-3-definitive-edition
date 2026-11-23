@@ -4275,6 +4275,7 @@ $HuntHeld: x
 $HuntRarePrefix: Material raro:<1>
 $HuntRareWord: Core
 $HuntSpace: " "
+$PersonaMark: "! "
 $HuntRomanI: I
 $HuntRomanV: V
 $HuntRomanX: X

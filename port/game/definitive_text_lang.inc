@@ -830,6 +830,12 @@ static const unsigned char def_fr_str_HuntSpace[] = { 0x01, 0x01, 0x00 };
 static const unsigned char def_de_str_HuntSpace[] = { 0x01, 0x01, 0x00 };
 static const unsigned char def_it_str_HuntSpace[] = { 0x01, 0x01, 0x00 };
 static const unsigned char def_es_str_HuntSpace[] = { 0x01, 0x01, 0x00 };
+static const unsigned char def_en_str_PersonaMark[] = { 0xE7, 0x01, 0x01, 0x00 };
+static const unsigned char def_pt_str_PersonaMark[] = { 0xE7, 0x01, 0x01, 0x00 };
+static const unsigned char def_fr_str_PersonaMark[] = { 0xE7, 0x01, 0x01, 0x00 };
+static const unsigned char def_de_str_PersonaMark[] = { 0xE7, 0x01, 0x01, 0x00 };
+static const unsigned char def_it_str_PersonaMark[] = { 0xE7, 0x01, 0x01, 0x00 };
+static const unsigned char def_es_str_PersonaMark[] = { 0xE7, 0x01, 0x01, 0x00 };
 static const unsigned char def_en_str_HuntRomanI[] = { 0x16, 0x00 };
 static const unsigned char def_pt_str_HuntRomanI[] = { 0x16, 0x00 };
 static const unsigned char def_fr_str_HuntRomanI[] = { 0x16, 0x00 };
@@ -16587,6 +16593,14 @@ void def_language_set(int lang) {
     case 3: memcpy(def_str_HuntSpace, def_de_str_HuntSpace, 3); break;
     case 4: memcpy(def_str_HuntSpace, def_it_str_HuntSpace, 3); break;
     case 5: memcpy(def_str_HuntSpace, def_es_str_HuntSpace, 3); break;
+    }
+    switch (def_lang_now) {
+    case 0: memcpy(def_str_PersonaMark, def_en_str_PersonaMark, 4); break;
+    case 1: memcpy(def_str_PersonaMark, def_pt_str_PersonaMark, 4); break;
+    case 2: memcpy(def_str_PersonaMark, def_fr_str_PersonaMark, 4); break;
+    case 3: memcpy(def_str_PersonaMark, def_de_str_PersonaMark, 4); break;
+    case 4: memcpy(def_str_PersonaMark, def_it_str_PersonaMark, 4); break;
+    case 5: memcpy(def_str_PersonaMark, def_es_str_PersonaMark, 4); break;
     }
     switch (def_lang_now) {
     case 0: memcpy(def_str_HuntRomanI, def_en_str_HuntRomanI, 2); break;
