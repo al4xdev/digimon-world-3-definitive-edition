@@ -31,3 +31,7 @@ worker's own test (push/pull, old clients), not by this e2e. Also: `make` withou
 - A crash between the JSON write and the card write loses that save's persona progress (by design: the entry's gen
   is newer than the card's). Softer rule possible: accept gen == card gen + 1.
 - The mirror's format 2 JSON is not validated on adopt beyond its sha.
+- Unrelated, found running the port layer: `tests/port/field.py` swamp_flies fails since at least 2026-11-17: its
+  script uses a `write_mem` step the pinned psxstack runtime does not have ("unknown step type"). CI's `port` job is
+  skipped without the disc, so it never showed there. Also `scripts/test.sh --layer port` stops at `vram.py` (exit 2)
+  on a machine without pcsx-redux instead of skipping it.

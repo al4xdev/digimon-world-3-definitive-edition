@@ -24,3 +24,8 @@ The pattern for a new item:
 
 Blocked on: the launcher carrying `card1.mcd` and `card1.def.json` as a pair (backup, restore, cloud, mirror).
 Until then, an item in the expansion has no backup and does not sync across devices.
+
+## The bestiary in the expansion save (owner asked 2026-11-23; left out of 0.8.14 for time)
+Move the species table (193 bytes on the card) into a "bestiary" section, keeping the card's copy written for a few
+releases (rollback), union on load. Needed once a common's row changes its map by phase; today the commons' pieces
+keep the species' elements (only RESIST_ALL, shown by the bestiary as fought), so one map per species is enough.

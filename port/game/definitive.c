@@ -833,7 +833,7 @@ static const unsigned char *state_label(int cls, int *palette) {
 /* What the battle's inspect panel knows of the current target: its persona's own discovery when it has its own map
  * (the species' bestiary would give it away), else the bestiary's. */
 static int inspect_known(int species) {
-    if (persona_map_of(species) != NULL) {
+    if (def_persona_hides_species(persona_map_of(species))) {
         return def_persona_known(fightstg_battle.state.current[1] % 3);
     }
     return def_bestiary_known(def_bestiary_index(species));
@@ -848,12 +848,25 @@ const unsigned char *def_inspect_state(const short *resists, int e, int *palette
     return state_label(target_class(e, resists, species), palette);
 }
 
+/* The species' affinities as fought: a common's own row (RESIST_ALL) over the enemy table. */
+static const short *bestiary_resists(FightstgEnemyRecord *rec, short *buf) {
+    const DefPersona *p = def_persona_species(rec->id);
+
+    def_enemy_override(rec); /* the field reads SDIGIEDT itself: the record may not have gone through the battle's get */
+    if (!def_persona_own_map(p)) {
+        return rec->resists;
+    }
+    def_persona_resists(p, 0, rec->resists, buf);
+    return buf;
+}
+
 const unsigned char *def_bestiary_state(FightstgEnemyRecord *rec, int index, int e, int *palette) {
+    short buf[7];
+
     if (!((def_bestiary_known(index) >> e) & 1)) {
         return state_label(0, palette);
     }
-    def_enemy_override(rec); /* the field reads SDIGIEDT itself: the record may not have gone through the battle's get */
-    return state_label(target_class(e, rec->resists, rec->id), palette);
+    return state_label(target_class(e, bestiary_resists(rec, buf), rec->id), palette);
 }
 
 /* A family's line, from what is learnt of its elements (`known`: the bestiary's bits): Weak as soon as one of them is
@@ -883,8 +896,9 @@ const unsigned char *def_inspect_family_state(const short *resists, int f, int *
 }
 
 const unsigned char *def_bestiary_family_state(FightstgEnemyRecord *rec, int index, int f, int *palette) {
-    def_enemy_override(rec); /* as def_bestiary_state */
-    return family_state(def_bestiary_known(index), rec->resists, rec->id, f, palette);
+    short buf[7];
+
+    return family_state(def_bestiary_known(index), bestiary_resists(rec, buf), rec->id, f, palette);
 }
 
 /* ---- The enemy table. Applied each time the game asks for the record (idempotent), so it holds after a reload
@@ -1576,7 +1590,7 @@ void def_action_resolved(u8 side, s32 id, s32 value) {
     }
     def_chain_player_hit(&chain, target, value > 0, weak ? hit_elem : -1, weak);
     if (value > 0 && hit_id == id && (hit_class == 1 || hit_class == 3)) { /* a weakness or a resistance found out */
-        if (def_persona_own_map(persona_at(target % 3))) { /* its own map: learnt for it, not for the species */
+        if (def_persona_hides_species(persona_at(target % 3))) { /* an encounter's own map: learnt for it alone */
             def_persona_learn(target % 3, def_family_bits(hit_elem));
         } else {
             def_bestiary_discover(def_bestiary_index(fightstg_battle.state.members[1][target].digimon),
@@ -1753,7 +1767,7 @@ int def_tech_effect(u8 side, int tech, int *msg) {
         return 0;
     }
     if (!enemy && tech == 202) {
-        if (def_persona_own_map(persona_at(slot))) { /* its own map: Libra reads it, not the species' */
+        if (def_persona_hides_species(persona_at(slot))) { /* an encounter's own map: Libra reads it alone */
             def_persona_learn(slot, 0x7F);
         } else {
             def_bestiary_discover(def_bestiary_index(fightstg_battle.state.members[1][slot].digimon), 0x7F);

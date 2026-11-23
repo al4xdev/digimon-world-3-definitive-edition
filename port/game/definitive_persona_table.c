@@ -116,10 +116,73 @@ const DefPersona def_personas[] = {
     { RARE(0xad), KEEP(109), WEAK(THUNDER), RESIST(WATER | WIND), SPEED_X(3), DEF_PCT(60) }, /* Cherrymon, Lv41: relampago */
     { RARE(0xff), KEEP(110), WEAK(WIND), RESIST(THUNDER), PHASES(2), B_WEAK(WATER), B_RESIST(WIND), HUES(60, 240) }, /* Bulbmon, Lv44: camaleao */
     { SPECIES(222), GUARD_A, PHASES(2) }, /* Woodmon, Lv12: mare */
-    { SPECIES(277), KEEP(111), RESIST_ALL, DEF_PCT(60) }, /* Baronmon, Lv16: brutamontes */
+    { SPECIES(277), RESIST_ALL, DEF_PCT(60) }, /* Baronmon, Lv16: brutamontes */
     { SPECIES(435), GUARD_A, PHASES(2) }, /* Guardromon, Lv29: mare */
-    { SPECIES(208), KEEP(112), RESIST_ALL, DEF_PCT(60) }, /* Tortomon, Lv29: brutamontes */
+    { SPECIES(208), RESIST_ALL, DEF_PCT(60) }, /* Tortomon, Lv29: brutamontes */
     { SPECIES(35), GUARD_A, PHASES(2) }, /* Shellmon, Lv39: mare */
-    { SPECIES(108), KEEP(113), RESIST_ALL, DEF_PCT(60) }, /* Rockmon, Lv49: brutamontes */
+    { SPECIES(108), RESIST_ALL, DEF_PCT(60) }, /* Rockmon, Lv49: brutamontes */
+    { SPECIES(217), GUARD_A, PHASES(2) }, /* DemiDevimon, Lv10: mare */
+    { SPECIES(42), GUARD_A, ON_STAGGER }, /* Etemon, Lv20: fechadura */
+    { SPECIES(40), SPEED_X(2), DEF_PCT(60) }, /* Andromon, Lv24: relampago */
+    { SPECIES(460), GUARD_A, PHASES(2) }, /* Cardmon, Lv27: mare */
+    { SPECIES(465), GUARD_A, ON_STAGGER }, /* Vemmon, Lv28: fechadura */
+    { SPECIES(13), SPEED_X(2), DEF_PCT(60) }, /* Mamemon, Lv29: relampago */
+    { SPECIES(53), RESIST_ALL, DEF_PCT(60) }, /* Nanimon, Lv29: brutamontes */
+    { SPECIES(173), GUARD_A, PHASES(2) }, /* Musyamon, Lv31: mare */
+    { SPECIES(200), GUARD_A, ON_STAGGER }, /* Blossomon, Lv34: fechadura */
+    { SPECIES(61), SPEED_X(2), DEF_PCT(60) }, /* MegaSeadramon, Lv35: relampago */
+    { SPECIES(37), GUARD_A, PHASES(2) }, /* Bakemon, Lv35: mare */
+    { SPECIES(220), GUARD_A, ON_STAGGER }, /* Gesomon, Lv36: fechadura */
+    { SPECIES(406), SPEED_X(2), DEF_PCT(60) }, /* Tortomon, Lv36: relampago */
+    { SPECIES(407), RESIST_ALL, DEF_PCT(60) }, /* ShogunGekomon, Lv39: brutamontes */
+    { SPECIES(414), GUARD_A, PHASES(2) }, /* Numemon, Lv39: mare */
+    { SPECIES(422), GUARD_A, ON_STAGGER }, /* Kurisarimon, Lv40: fechadura */
+    { SPECIES(418), SPEED_X(2), DEF_PCT(60) }, /* Raremon, Lv40: relampago */
+    { SPECIES(166), GUARD_A, PHASES(2) }, /* Dokugumon, Lv41: mare */
+    { SPECIES(462), GUARD_A, ON_STAGGER }, /* Cardmon, Lv42: fechadura */
+    { SPECIES(50), SPEED_X(2), DEF_PCT(60) }, /* Kokatorimon, Lv42: relampago */
+    { SPECIES(39), RESIST_ALL, DEF_PCT(60) }, /* Sukamon, Lv42: brutamontes */
+    { SPECIES(89), GUARD_A, PHASES(2) }, /* Fugamon, Lv42: mare */
+    { SPECIES(136), GUARD_A, ON_STAGGER }, /* Tuskmon, Lv42: fechadura */
+    { SPECIES(202), SPEED_X(2), DEF_PCT(60) }, /* Scorpiomon, Lv43: relampago */
+    { SPECIES(210), GUARD_A, PHASES(2) }, /* Dolphmon, Lv43: mare */
+    { SPECIES(126), GUARD_A, ON_STAGGER }, /* Brachiomon, Lv44: fechadura */
+    { SPECIES(28), SPEED_X(2), DEF_PCT(60) }, /* Vademon, Lv44: relampago */
+    { SPECIES(397), RESIST_ALL, DEF_PCT(60) }, /* Dokugumon, Lv45: brutamontes */
+    { SPECIES(420), GUARD_A, PHASES(2) }, /* Tankmon, Lv45: mare */
+    { SPECIES(137), GUARD_A, ON_STAGGER }, /* Flymon, Lv45: fechadura */
+    { SPECIES(269), SPEED_X(2), DEF_PCT(60) }, /* Valkyrimon, Lv45: relampago */
+    { SPECIES(270), GUARD_A, PHASES(2) }, /* Vikemon, Lv45: mare */
+    { SPECIES(138), GUARD_A, ON_STAGGER }, /* Deltamon, Lv45: fechadura */
+    { SPECIES(23), SPEED_X(2), DEF_PCT(60) }, /* Frigimon, Lv45: relampago */
+    { SPECIES(424), RESIST_ALL, DEF_PCT(60) }, /* Blossomon, Lv45: brutamontes */
+    { SPECIES(238), GUARD_A, PHASES(2) }, /* Snimon, Lv46: mare */
+    { SPECIES(65), GUARD_A, ON_STAGGER }, /* MetalEtemon, Lv46: fechadura */
+    { SPECIES(426), SPEED_X(2), DEF_PCT(60) }, /* Whamon, Lv47: relampago */
+    { SPECIES(464), GUARD_A, PHASES(2) }, /* Cardmon, Lv47: mare */
+    { SPECIES(272), GUARD_A, ON_STAGGER }, /* Shadramon, Lv47: fechadura */
+    { SPECIES(463), SPEED_X(2), DEF_PCT(60) }, /* Cardmon, Lv47: relampago */
+    { SPECIES(135), RESIST_ALL, DEF_PCT(60) }, /* Devidramon, Lv48: brutamontes */
+    { SPECIES(360), GUARD_A, PHASES(2) }, /* Antylamon, Lv49: mare */
+    { SPECIES(431), GUARD_A, ON_STAGGER }, /* Vikemon, Lv50: fechadura */
+    { SPECIES(7), SPEED_X(2), DEF_PCT(60) }, /* Airdramon, Lv50: relampago */
+    { SPECIES(411), GUARD_A, PHASES(2) }, /* Maildramon, Lv50: mare */
+    { SPECIES(115), GUARD_A, ON_STAGGER }, /* Machinedramon, Lv51: fechadura */
+    { SPECIES(327), SPEED_X(2), DEF_PCT(60) }, /* Lynxmon, Lv52: relampago */
+    { SPECIES(176), RESIST_ALL, DEF_PCT(60) }, /* Thundermon, Lv52: brutamontes */
+    { SPECIES(132), GUARD_A, PHASES(2) }, /* Gizamon, Lv52: mare */
+    { SPECIES(60), GUARD_A, ON_STAGGER }, /* H−Kabuterimon, Lv52: fechadura */
+    { SPECIES(224), SPEED_X(2), DEF_PCT(60) }, /* MarineDevimon, Lv52: relampago */
+    { SPECIES(203), GUARD_A, PHASES(2) }, /* Triceramon, Lv52: mare */
+    { SPECIES(434), GUARD_A, ON_STAGGER }, /* Antylamon, Lv52: fechadura */
+    { SPECIES(8), SPEED_X(2), DEF_PCT(60) }, /* Tyrannomon, Lv52: relampago */
+    { SPECIES(206), RESIST_ALL, DEF_PCT(60) }, /* Tapirmon, Lv53: brutamontes */
+    { SPECIES(110), GUARD_A, PHASES(2) }, /* Gekomon, Lv53: mare */
+    { SPECIES(281), GUARD_A, ON_STAGGER }, /* Tylomon, Lv53: fechadura */
+    { SPECIES(312), SPEED_X(2), DEF_PCT(60) }, /* Ghoulmon, Lv54: relampago */
+    { SPECIES(247), GUARD_A, PHASES(2) }, /* Creepymon, Lv55: mare */
+    { SPECIES(251), GUARD_A, ON_STAGGER }, /* Apokarimon, Lv56: fechadura */
+    { SPECIES(396), SPEED_X(2), DEF_PCT(60) }, /* Yanmamon, Lv58: relampago */
+    { SPECIES(428), RESIST_ALL, DEF_PCT(60) }, /* Ebidramon, Lv60: brutamontes */
 };
 const int def_persona_count = sizeof(def_personas) / sizeof(def_personas[0]);

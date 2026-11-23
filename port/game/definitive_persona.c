@@ -61,6 +61,23 @@ const DefPersona *def_persona_find(const DefPersonaWhere *w, int species) {
     return NULL;
 }
 
+/* A common species' own row (the bestiary screen's: no encounter), NULL none. */
+const DefPersona *def_persona_species(int species) {
+    int i;
+
+    for (i = 0; i < def_persona_count && species > 0; i++) {
+        if (def_personas[i].kind == DEF_PERSONA_SPECIES && def_personas[i].a == species) {
+            return &def_personas[i];
+        }
+    }
+    return NULL;
+}
+
+/* An encounter's own map, kept apart from its species' (a SPECIES row's map is the species' own: the bestiary's). */
+int def_persona_hides_species(const DefPersona *p) {
+    return def_persona_own_map(p) && p->kind != DEF_PERSONA_SPECIES;
+}
+
 /* The phase whose map applies: a phase B that names no weakness or resistance keeps A's. */
 static int map_phase(const DefPersona *p, int phase) {
     if (phase == 1 && p->phases == 2 && (p->phase[1].weak | p->phase[1].resist) != 0) {

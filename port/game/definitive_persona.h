@@ -94,7 +94,9 @@ typedef struct DefPersonaWhere {
 
 /* ---- The table (no game state: the host test drives these). */
 const DefPersona *def_persona_find(const DefPersonaWhere *w, int species);
-int def_persona_own_map(const DefPersona *p);        /* 1: it changes the weaknesses (its own discovery) */
+int def_persona_own_map(const DefPersona *p);        /* 1: it changes the weaknesses */
+int def_persona_hides_species(const DefPersona *p);  /* 1: an encounter's own map, its discovery apart (not SPECIES) */
+const DefPersona *def_persona_species(int species);  /* a common species' row, NULL none */
 int def_persona_def(const DefPersona *p, int defense); /* its Defense after DEF_PCT (at least 1) */
 int def_persona_weak(const DefPersona *p, int phase); /* the phase's weak families */
 int def_persona_guard(const DefPersona *p, int phase);
