@@ -634,11 +634,33 @@ static u8 *read_file(const char *path, size_t *size) {
     return buf;
 }
 
+/* A bounded copy, one that the format checker can see is bounded: the SDL build compiles with -Werror and GCC cannot
+ * tell how long the strings here are, so snprintf("%s") into a smaller buffer is an error there (a path is as long as
+ * the player's folder plus the file's name). */
+static void copy_trunc(char *dst, size_t size, const char *src) {
+    size_t n = strnlen(src, size - 1);
+
+    memcpy(dst, src, n);
+    dst[n] = 0;
+}
+
 static void file_path(char *out, size_t size, const char *name) {
     char dir[512];
+    size_t d, n;
 
     def_midi_dir(dir, sizeof(dir));
-    snprintf(out, size, "%s/%s", dir, name);
+    d = strnlen(dir, sizeof(dir) - 1); /* bounded by its own buffer: -Werror's stringop-overread wants to see that */
+    if (d > size - 1) {
+        d = size - 1;
+    }
+    memcpy(out, dir, d);
+    out[d] = 0;
+    if (d + 2 <= size) {
+        out[d] = '/';
+        n = strnlen(name, size - d - 2);
+        memcpy(out + d + 1, name, n);
+        out[d + 1 + n] = 0;
+    }
 }
 
 static int name_cmp(const void *a, const void *b) {
@@ -702,7 +724,7 @@ int def_midi_scan(void) {
             continue;
         }
         if (def_midi_to_sep(data, size, sep, SEP_MAX, &cut, &notes) != 0) {
-            snprintf(midi_names[midi_count], MIDI_NAME, "%s", names[i]);
+            copy_trunc(midi_names[midi_count], MIDI_NAME, names[i]);
             midi_cut[midi_count++] = cut;
         }
         free(data);
@@ -912,7 +934,7 @@ int def_midi_battle_music(int music) {
             continue; /* the fallbacks do not repeat it either */
         }
         if (load_piece(name)) {
-            snprintf(last, sizeof(last), "%s", name);
+            copy_trunc(last, sizeof(last), name);
             choice_save();
             return 0x60000000 | DW3_MIDI_BANK << 18;
         }
