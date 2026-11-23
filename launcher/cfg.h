@@ -19,7 +19,6 @@ typedef struct Cfg {
     int ff;                  /* 0 off, 1 2x, 2 4x, 3 8x, 4 unlimited */
     int load;                /* fast_loading: 0 off, 1 2x, 2 4x, 3 8x, 4 instant */
     int skip, battles, hit;  /* skip dialogues, skip battle animations, hit reaction */
-    int btext;               /* 0 off, 1 skip, 2 async */
     int bmem, bbuf;          /* remember cursor; buffer input 0 off 1 short 2 long */
     int logs;                /* 0 off 1 soft 2 heavy */
     int led;                 /* the led_bar mod's switch in settings.json */

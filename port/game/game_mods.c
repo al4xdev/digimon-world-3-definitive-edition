@@ -1,5 +1,6 @@
 /* The game's built-in mods (docs/LAUNCHER.md "Built-in mods"; psxstack/game.h game_mods): skip_dialogues,
- * battle_animations, preset_language, widescreen, led_bar, battle_menu and battle_text
+ * battle_animations, preset_language, widescreen, led_bar and battle_menu (the battle text is no longer a mod: it is
+ * always skipped)
  * (and, after them, the handheld's features and the player's pad.map), as PortMod records the
  * runtime's engine (port/runtime/mods.c) reads the settings of, gives hotkeys to and runs every vsync. Each reaches the game's C through
  * the port_mod_* flags and functions of include/port.h, read inside `#ifdef PC_PORT` blocks. The runtime's own mod,
@@ -521,23 +522,15 @@ void port_bm_remember(s32 kind, s32 member, s32 value) {
     bm_memory[kind][member & 63] = value;
 }
 
-/* ---- battle_text (docs/LAUNCHER.md "Battle text"): the battle's message box (FightstgMessage) is only presentation, and
- * every action waits for it and for a confirm press. `mode` off leaves it, skip drops every message, async (the default)
- * lets the action go on while the text stays up for a moment (a toast: new text replaces the old) and drops the
- * messages the animation already says. The mode is read every vsync, so it applies live. The toast's windows are arena
- * objects held here (FIGHTSTG runs and draws them), so they are part of the save state. */
-static const char *const bt_modes[] = { "off", "skip", "async", NULL };
-enum { BT_MODE };
-static const PortModOption bt_options[] = {
-    { .id = "mode", .type = PORT_MOD_ENUM, .def = "\"skip\"", .values = bt_modes, .applies = "live" },
-};
-int port_mod_battle_text;
+/* ---- battle text: always skipped (the owner, 2026-11-23). It was the `battle_text` mod, with off / skip / async;
+ * from now on the battle's message box (FightstgMessage) never waits and never shows: every action goes on, and the
+ * player reads the result rather than the box. The mode stays a code variable (BT_SKIP: 1) for the FIGHTSTG side and
+ * for a future change. The toast's windows are arena objects held here (FIGHTSTG runs and draws them), so they are
+ * part of the save state. */
+#define BT_SKIP 1
+int port_mod_battle_text = BT_SKIP;
 void *port_battle_text_windows[2];
 s32 port_battle_text_frames;
-
-static void bt_frame(struct PortMod *mod) {
-    port_mod_battle_text = (int)mod->values[BT_MODE].number;
-}
 
 static PortMod game_mod_table[] = {
     { .id = "skip_dialogues", .version = "0.1", .options = sd_options,
@@ -552,8 +545,6 @@ static PortMod game_mod_table[] = {
     { .id = "led_bar", .version = "0.1", .start = led_bar_start, .frame = led_bar_frame,
       .status = led_bar_status },
     { .id = "battle_menu", .version = "0.1", .options = bm_options, .option_count = BM_OPTIONS, .start = bm_start },
-    { .id = "battle_text", .version = "0.1", .options = bt_options,
-      .option_count = (int)(sizeof(bt_options) / sizeof(bt_options[0])), .start = bt_frame, .frame = bt_frame },
 };
 
 int game_mod_count(void) {

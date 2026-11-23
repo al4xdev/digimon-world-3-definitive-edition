@@ -135,8 +135,10 @@ checks the scanner against every script on the disc; `tests/port/mods.py` runs t
 
 ### Battle text
 
-`battle_text`. Option: `mode` (enum `off` / `skip` / `async`, default `skip`; read every vsync, so it applies live).
-Flag: `port_mod_battle_text` (0, 1, 2).
+**Not a mod any more: the battle text is always skipped** (the owner, 2026-11-23 — "from now on it is all skip"). The
+launcher has no option for it and the settings file no longer carries one; `port_mod_battle_text` stays as a code
+constant (`BT_SKIP`, 1, in `port/game/game_mods.c`) for the FIGHTSTG side and for a future change. 0 (as the disc) and
+2 (async) remain in the flag's vocabulary, unused.
 
 The battle's message box (`FightstgMessage`, `src/fightstg/fightstg_8008D3B4.c`) is presentation only: the rules ran
 before it is shown, but every action waits for it to be dismissed with a confirm press. The hook sits in
@@ -158,9 +160,9 @@ frame, and `fightstg_slots_create` clears it for a new battle. Its state (`port_
 rule changes, but the frame count of a battle does, so the scripted replays of the disc's own battles do not apply with
 the mode on.
 
-The C launcher (`launcher/`, GAME > BATTLE TEXT) cycles OFF / SKIP / ASYNC and ships it on, in `skip` (the
-direct-button battle HUD has no need of the messages). The stack has no "on unless the settings say otherwise" for a
-mod: on a desktop it is off until switched on.
+Being fixed, it also changes the frame count of a battle for everyone, so the scripted replays of the disc's own
+battles are compared on the game state, not on frames (`tests/port/mods.py`'s `battle_menu` runs the first battle this
+way).
 
 ### Preset language
 

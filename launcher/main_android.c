@@ -38,7 +38,7 @@ enum {
     S_CLOUD, S_PAIR_HOST, S_PAIR_ENTER, S_DEVICES, S_REVOKE_CONFIRM, S_RENEW_CONFIRM, S_CONFLICT, S_CONFLICT_CONFIRM
 };
 enum { HI_PLAY, HI_GAME, HI_HUD, HI_CONTROLS, HI_SAVES, HI_DEBUG, HI_RESET, HI_COUNT };
-enum { GAME_LANG, GAME_FF, GAME_LOAD, GAME_SKIP, GAME_BATTLES, GAME_HIT, GAME_BTEXT, GAME_TOUCHPAD, GAME_DISC, GAME_N };
+enum { GAME_LANG, GAME_FF, GAME_LOAD, GAME_SKIP, GAME_BATTLES, GAME_HIT, GAME_TOUCHPAD, GAME_DISC, GAME_N };
 #define GAME_ROW_STEP 36
 enum { SAVES_SYNC, SAVES_INTERVAL, SAVES_BACKUPS, SAVES_NOW, SAVES_RESTORE, SAVES_ACCOUNT, SAVES_N };
 /* CLOUD ACCOUNT rows: the first two when this device has no live key, all four once it has one. */
@@ -112,13 +112,12 @@ static uint32_t *trans_from, *trans_to;
 static const char *lang_label[8] = {"ENGLISH", "PORTUGUESE BR", "FRENCH", "GERMAN", "ITALIAN", "SPANISH", "USA", "JAPANESE"};
 static const char *ff_label[5] = {"OFF", "2X", "4X", "8X", "UNLIMITED"};
 static const char *load_label[5] = {"OFF", "2X", "4X", "8X", "INSTANT"};
-static const char *bt_label[3] = {"OFF", "SKIP", "ASYNC"};
 static const char *buf_label[3] = {"OFF", "SHORT", "LONG"};
 static const char *log_label[3] = {"OFF", "SOFT", "HEAVY"};
 static const char *lay_label[4] = {"PS1", "XBOX", "NINTENDO", "CUSTOM"};
 static const char *act_label[A_COUNT] = {"CONFIRM / CROSS", "CARD / SQUARE", "BACK / CIRCLE", "MENU / TRIANGLE", "PREV / L1", "NEXT / R1", "START", "SELECT"};
 static const int act_order[A_COUNT] = {A_CROSS, A_CIRCLE, A_TRIANGLE, A_SQUARE, A_L1, A_R1, A_START, A_SELECT};
-static const char *hud_label[H_COUNT] = {"FIGHT", "TECH", "DIGIVOLVE", "TAG", "ITEM", "RUN", "INSPECT", "BLAST"};
+static const char *hud_label[H_COUNT] = {"FIGHT", "TECH", "DIGIVOLVE", "TAG", "BAG", "RUN", "INFO", "BLAST"};
 /* the "Fight button" row (cfg_fight_place + 1): neither layout reads CUSTOM, and choosing on it gives the bottom */
 static const char *fight_label[] = {"CUSTOM", "BOTTOM", "RIGHT"};
 #define HUD_ROWS (H_COUNT + 3)
@@ -455,7 +454,7 @@ static void draw_game(void) {
     }
     const char *lab[GAME_N] = {
         "LANGUAGE", "FAST-FORWARD", "FAST LOAD", "SKIP DIALOGUES", "SKIP BATTLE ANIMS",
-        "   HIT REACTION", "BATTLE TEXT", "FLOATING PAD", "DISC IMAGE"
+        "   HIT REACTION", "FLOATING PAD", "DISC IMAGE"
     };
     const char *val[GAME_N] = {
         lang_label[c.lang < 0 || c.lang > 7 ? 0 : c.lang],
@@ -464,7 +463,6 @@ static void draw_game(void) {
         c.skip ? "ON" : "OFF",
         c.battles ? "ON" : "OFF",
         c.battles ? (c.hit ? "ON" : "OFF") : "-",
-        bt_label[c.btext],
         c.touch_pad ? "ON" : "OFF",
         disc_lbl
     };
@@ -903,7 +901,6 @@ static void activate_game_row(int row, int dir) {
     case GAME_SKIP: c.skip = !c.skip; break;
     case GAME_BATTLES: c.battles = !c.battles; break;
     case GAME_HIT: if (c.battles) c.hit = !c.hit; break;
-    case GAME_BTEXT: c.btext = (c.btext + dir + 3) % 3; break;
     case GAME_TOUCHPAD: c.touch_pad = !c.touch_pad; break;
     case GAME_DISC: pick_disc_android(); break;
     }

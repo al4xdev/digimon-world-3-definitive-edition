@@ -207,41 +207,6 @@ def battle_animations(binary, out):
                   f"(emulator, the mod off: {e['battle_won']['frame'] - e['battle_start']['frame']})")
 
 
-def battle_text(binary, out):
-    """battle_text: first_battle_save's battle with each mode on. The message box is presentation (the rules ran before
-    it), so the battle's outcome (the game state at battle_won and battle_end, `gamestate_sha1_stable`) must be the
-    same in every mode, and the battle must take fewer frames than with the mode off (the messages no longer wait for
-    a press). Only the checkpoints up to battle_end are compared: the route's later steps are the disc replay's."""
-    print("mods: battle_text (first_battle_save to battle_end, the three modes)")
-    # the port keeps the pad's raw bits while the route was written for the rotated ones (see bm_state): CROSS and
-    # CIRCLE swapped
-    swap = {"CROSS": "CIRCLE", "CIRCLE": "CROSS"}
-    steps = json.loads((SCRIPTS / "first_battle_save.json").read_text())["steps"]
-    route = derived(out, "bt_route", [dict(s, buttons=[swap.get(b, b) for b in s["buttons"]]) if "buttons" in s else s
-                                      for s in steps])
-    seen = {}
-    for mode in ("off", "skip", "async"):
-        cfg = out / f"bt_{mode}.settings.json"
-        cfg.write_text(json.dumps({"schema": 1, "disc": {"path": str(DISC)}, "video": {"window": False},
-                                   "memcard1": f"bt_{mode}_1.mcd", "memcard2": f"bt_{mode}_2.mcd",
-                                   "mods": {"battle_text": {"enabled": True, "mode": mode}}}))
-        for card in (out / f"bt_{mode}_1.mcd", out / f"bt_{mode}_2.mcd"):
-            card.unlink(missing_ok=True)
-        _, _, rec, _ = run_port(binary, out, f"bt_{mode}", route, cfg, True)   # the route fails after battle_end
-        cps = {c["name"]: c for c in rec["checkpoints"]} if rec else {}
-        check(all(n in cps for n in ("battle_start", "battle_won", "battle_end")),
-              f"mode {mode}: the battle is won and ends")
-        if "battle_end" in cps:
-            seen[mode] = (cps["battle_won"]["gamestate_sha1_stable"], cps["battle_end"]["gamestate_sha1_stable"],
-                          cps["battle_won"]["frame"] - cps["battle_start"]["frame"])
-            print(f"    the battle took {seen[mode][2]} frames")
-    if len(seen) == 3:
-        check(seen["skip"][:2] == seen["off"][:2] == seen["async"][:2],
-              "the game state at battle_won and battle_end is the same in all three modes")
-        check(seen["skip"][2] < seen["off"][2] and seen["async"][2] < seen["off"][2],
-              f"skip ({seen['skip'][2]}) and async ({seen['async'][2]}) take fewer frames than off ({seen['off'][2]})")
-
-
 def widescreen(binary, out):
     """widescreen: the battle and the field with the mod on in the headless build: the game's frame log unchanged,
     the software picture's 4:3 logged once."""
@@ -517,8 +482,7 @@ def battle_menu(binary, out):
 def bm_run(binary, out, state, label, steps, mods):
     """The first battle from its start state with a script of `steps`; battle_menu with `mods`; returns the stderr lines
     of the menu's mod ("battle menu")."""
-    cfg = settings(out, f"bm_{label}", {"battle_menu": dict(mods, enabled=True),
-                                        "battle_text": {"enabled": True, "mode": "skip"}})
+    cfg = settings(out, f"bm_{label}", {"battle_menu": dict(mods, enabled=True)})
     script = derived(out, f"bm_{label}", steps + [{"type": "checkpoint", "name": "end"}])
     proc = subprocess.run([str(binary), "--config", str(cfg), "--script", str(script), "--script-mods",
                            "--load-state", str(state)], cwd=ROOT, capture_output=True, text=True, timeout=600)
@@ -559,7 +523,6 @@ MODS_TESTS = {
     "skip_dialogues": skip_dialogues,
     "definitive_xp": lambda binary, out, record: definitive_xp(binary, out),
     "battle_animations": lambda binary, out, record: battle_animations(binary, out),
-    "battle_text": lambda binary, out, record: battle_text(binary, out),
     "widescreen": lambda binary, out, record: widescreen(binary, out),
     "battle_menu": lambda binary, out, record: battle_menu(binary, out),
     "led_bar": lambda binary, out, record: led_bar(binary, out),

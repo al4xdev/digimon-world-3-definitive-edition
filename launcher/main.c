@@ -105,12 +105,11 @@ static const char *buf_label[] = {"OFF", "SHORT", "LONG"};
 static const char *fight_label[] = {"CUSTOM", "BOTTOM", "RIGHT"};
 #define HUD_FIGHT_ROW (H_COUNT + 2)
 #define HUD_ROWS (H_COUNT + 3)
-static const char *bt_label[] = {"OFF", "SKIP", "ASYNC"};
 static const char *log_label[] = {"OFF", "SOFT", "HEAVY"};
 static const char *lay_label[] = {"PS1", "XBOX", "NINTENDO", "CUSTOM"};
 static const char *filt_label[] = {"NONE", "SHARP", "SCANLINES", "CRT", "SMOOTH"};
 static const char *act_label[A_COUNT] = {"CONFIRM", "CARD", "BACK", "MENU", "L1", "R1", "START", "SELECT"};
-static const char *hud_label[H_COUNT] = {"FIGHT", "TECH", "DIGIVOLVE", "TAG", "ITEM", "RUN", "INSPECT", "BLAST"};
+static const char *hud_label[H_COUNT] = {"FIGHT", "TECH", "DIGIVOLVE", "TAG", "BAG", "RUN", "INFO", "BLAST"};
 /* On-screen order of the pad rows follows the pad: confirm, back, menu, card first. */
 static const int act_order[A_COUNT] = {A_CROSS, A_CIRCLE, A_TRIANGLE, A_SQUARE, A_L1, A_R1, A_START, A_SELECT};
 
@@ -134,7 +133,7 @@ static int home_step(void) {
     return home_n > 7 ? 38 : 44;
 }
 
-static int game_n(void) { return is_portmaster ? 7 : 8; }
+static int game_n(void) { return is_portmaster ? 6 : 7; }
 static int game_step(void) { return is_portmaster ? 36 : 30; }
 
 static int home_index(int id) {
@@ -431,16 +430,16 @@ static void draw_game(void) {
         const char *b = path_last_sep(disc_path);
         disc_lbl = b ? b + 1 : disc_path;
     }
-    const char *v[8] = {lang_label[c.lang < 0 || c.lang > 7 ? 0 : c.lang], ff_label[c.ff], load_label[c.load],
+    const char *v[7] = {lang_label[c.lang < 0 || c.lang > 7 ? 0 : c.lang], ff_label[c.ff], load_label[c.load],
                         c.skip ? "ON" : "OFF", c.battles ? "ON" : "OFF", c.battles ? (c.hit ? "ON" : "OFF") : "-",
-                        bt_label[c.btext], disc_lbl};
-    const char *lab[8] = {"LANGUAGE", "FAST-FORWARD", "FAST LOAD", "SKIP DIALOGUES", "SKIP BATTLE ANIMS",
-                          "   HIT REACTION", "BATTLE TEXT", "DISC IMAGE"};
+                        disc_lbl};
+    const char *lab[7] = {"LANGUAGE", "FAST-FORWARD", "FAST LOAD", "SKIP DIALOGUES", "SKIP BATTLE ANIMS",
+                          "   HIT REACTION", "DISC IMAGE"};
     int n = game_n(), st = game_step();
     int gy = (int)(cur_y >= 0 && cur_screen == S_GAME ? cur_y : row_target_y(S_GAME, sel));
     draw_focus(40, gy, W - 80, 34, 8, 0);
     for (int i = 0; i < n; i++) {
-        int on = (i == 7) ? (disc_path[0] != 0) : (strcmp(v[i], "OFF") && strcmp(v[i], "-"));
+        int on = (i == 6) ? (disc_path[0] != 0) : (strcmp(v[i], "OFF") && strcmp(v[i], "-"));
         row(90 + i * st, lab[i], v[i], i == sel, 0, on, 0);
     }
     static const char *desc[8] = {"Game text language (English, Portuguese BR, French, German, Italian, Spanish).",
@@ -493,7 +492,7 @@ static void draw_hud(void) {
             else text_r(x - 16, y - 8, names, 13, col);
         }
     }
-    const char *rl[HUD_ROWS] = {"FIGHT", "TECH", "DIGIVOLVE", "TAG", "ITEM", "RUN", "INSPECT", "BLAST", "REMEMBER CURSOR", "BUFFER INPUT",
+    const char *rl[HUD_ROWS] = {"FIGHT", "TECH", "DIGIVOLVE", "TAG", "BAG", "RUN", "INFO", "BLAST", "REMEMBER CURSOR", "BUFFER INPUT",
                                 "FIGHT BUTTON"};
     int gy = (int)(cur_y >= 0 && cur_screen == S_HUD ? cur_y : row_target_y(S_HUD, sel));
     int sbd = sel < H_COUNT && (dm >> sel & 1);
@@ -1702,12 +1701,11 @@ static void on_press(int code) {
             case 3: c.skip = !c.skip; break;
             case 4: c.battles = !c.battles; if (!c.battles) c.hit = 0; break;
             case 5: if (c.battles) c.hit = !c.hit; break;
-            case 6: c.btext = (c.btext + s + 3) % 3; break;
-            case 7:
+            case 6:
                 if (ok) {
                     browse_start_dir(b_dir, sizeof(b_dir));
                     browse_load(b_dir);
-                    go(S_BROWSE, 0, 1, 90 + 7 * game_step() + 14);
+                    go(S_BROWSE, 0, 1, 90 + 6 * game_step() + 14);
                 }
                 break;
             }
@@ -2026,12 +2024,12 @@ static void on_press(int code) {
                 snprintf(next, sizeof(next), "%s/..", b_dir);
                 browse_load(next);
             } else {
-                go(S_GAME, 7, -1, 90 + 7 * game_step() + 14);
+                go(S_GAME, 6, -1, 90 + 6 * game_step() + 14);
             }
         } else if (code == c.pad[A_TRIANGLE].code && is_pc) {
             if (browse_disc() == 0) {
                 cfg_save(&c);
-                go(S_GAME, 7, -1, 90 + 7 * game_step() + 14);
+                go(S_GAME, 6, -1, 90 + 6 * game_step() + 14);
             }
         } else if (ok && b_count > 0) {
             char next[1500];
@@ -2041,7 +2039,7 @@ static void on_press(int code) {
             } else {
                 snprintf(disc_path, sizeof(disc_path), "%.1199s", next);
                 cfg_save(&c);
-                go(S_GAME, 7, -1, 90 + 7 * game_step() + 14);
+                go(S_GAME, 6, -1, 90 + 6 * game_step() + 14);
             }
         }
         break;
@@ -2224,7 +2222,7 @@ static int self_test(const char *root) {
     snprintf(disc_path, sizeof(disc_path), "%s", p);
     Cfg a, b;
     cfg_defaults(&a);
-    a.lang = 1; a.ff = 2; a.load = 4; a.skip = 1; a.battles = 1; a.hit = 1; a.btext = 2; a.bmem = 0; a.bbuf = 2;
+    a.lang = 1; a.ff = 2; a.load = 4; a.skip = 1; a.battles = 1; a.hit = 1; a.bmem = 0; a.bbuf = 2;
     a.logs = 1; a.fullscreen = !a.fullscreen; a.fill = !a.fill; a.scale = 4; a.filter = 3; a.backup_max = 42;
     a.sync_enabled = 0; a.sync_interval_min = 30; a.hud[H_FIGHT] = K_R2; a.hud[H_RUN] = K_L1;
     a.pad[A_START].code = K_SELECT; a.pad[A_SELECT].code = K_START;
