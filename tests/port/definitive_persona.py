@@ -19,6 +19,8 @@ def build(name, extra):
         "-I", str(ROOT / "port/game"),
         str(ROOT / "port/game/definitive_persona.c"),
         str(ROOT / "port/game/definitive_hunt_targets.c"),
+        str(ROOT / "port/game/definitive_persona_save.c"),
+        str(ROOT / "port/third_party/cjson/cJSON.c"),
         str(ROOT / "tests/port/definitive_persona_driver.c"),
         *extra,
         "-o", str(exe),

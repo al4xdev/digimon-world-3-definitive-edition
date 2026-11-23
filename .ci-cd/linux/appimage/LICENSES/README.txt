@@ -7,6 +7,8 @@ The licences of what this AppImage contains.
   LiberationSans.txt    the launcher's font, Liberation Sans Bold (SIL Open Font License 1.1), embedded in
                         usr/bin/dw2003-launcher
   stb_truetype.txt      stb_truetype (MIT or public domain), the launcher's font rasterizer, compiled into it
+  cJSON.txt             cJSON (MIT), the game's reader and writer of its expansion save, compiled into
+                        usr/bin/dw2003
   appimage-runtime.txt  the AppImage runtime (MIT) at the start of the .AppImage file, with the libraries linked
                         into it (musl, libfuse 3 under the LGPL 2.1, squashfuse, zstd, zlib)
                         (https://github.com/AppImage/type2-runtime)

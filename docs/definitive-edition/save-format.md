@@ -39,3 +39,21 @@ nothing gained stays byte for byte the same; `out[5]` (the XOR checksum) covers 
 read (a material count past `DEF_HUNT_MATERIAL_CAP` reads as the cap); never grow `REC_EXTRA`: add a record per slot
 instead (record 2 "HUNT" and record 3 "BLST" did exactly that). Converter:
 `tools/convert_save_mp.py card1.mcd` (`--dry-run`; writes "DFV2"). Tests: `tests/saves`, `tests/port/definitive_bestiary.py`.
+
+## The expansion save (`card1.def.json`)
+
+What has no room on the card lives in a JSON beside it (`card1.mcd` -> `card1.def.json`), read whole when a slot is
+loaded and written whole, before the card, when one is saved (`port/game/definitive_expansion.h`):
+
+```json
+{"version": 1, "slots": [{"gen": 7, "personas": {"3": {"known": [5, 0], "solved": false}}}, {"gen": 0}, ...]}
+```
+
+- **Pairing.** `REC_EXTRA` + 30 (the last 18 bytes of record 1) hold "EXP1" and the slot's generation (u32, low byte
+  first). An entry whose `gen` is not the card's (a card restored or synced without its JSON) reads as empty, logged.
+  Those bytes held the old persona solved bits (144), imported into the file on the first load.
+- **Sections.** One named object per slot each (`definitive_expansion_sections.c`; today only `"personas"`). Keys the
+  build does not know are kept when the file is written again; a file of a newer `version` is read as empty and never
+  overwritten. Adding a section: `.plan/tasks/expansion-save.md`.
+- **The launcher** carries the two files as one save (backups, restore, cloud, the RecompLauncher mirror;
+  `launcher/cloud.h`). Tests: `tests/port/definitive_expansion.py`.

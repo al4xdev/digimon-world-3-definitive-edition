@@ -113,6 +113,7 @@ sed "s/@VERSION@/$version/g" "$pkg/README.txt" > "$stage/README.txt"
 cp "$ROOT/LICENSE" "$stage/LICENSES/dw2003recomp.txt"
 cp "$sdl/share/licenses/SDL3/LICENSE.txt" "$stage/LICENSES/SDL3.txt"
 cp "$ROOT/launcher/LICENSES/"*.txt "$stage/LICENSES/"   # the launcher's font and stb_truetype
+cp "$ROOT/port/third_party/cjson/LICENSE" "$stage/LICENSES/cJSON.txt"   # the game's JSON (the expansion save)
 cp "$llvm/LICENSE.TXT" "$stage/LICENSES/llvm.txt"
 cp "$pkg/LICENSES/"*.txt "$stage/LICENSES/"
 # Windows line endings for the text files a player opens in Notepad (the licences as their authors wrote them).

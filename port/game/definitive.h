@@ -971,11 +971,6 @@ int def_record_rare_seen(int rare);
  * (an index of def_replicas), and setting or clearing it. */
 int def_record_replica(int r);
 void def_record_replica_set(int r, int on);
-/* The enemy personas solved (definitive_persona.h KEEP), a bit each in the same record's last bytes: whether bit `bit`
- * is set, and setting it (it never clears). */
-#define DEF_PERSONA_KEEP_BITS 144
-int def_record_persona_kept(int bit);
-void def_record_persona_keep(int bit);
 void def_bestiary_discover(int index, int element_mask);
 int def_bestiary_known(int index);
 int def_bestiary_index(int species_id);

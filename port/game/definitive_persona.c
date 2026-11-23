@@ -69,6 +69,14 @@ static int map_phase(const DefPersona *p, int phase) {
     return 0;
 }
 
+int def_persona_def(const DefPersona *p, int defense) {
+    if (p == NULL || p->def_pct == 0) {
+        return defense;
+    }
+    defense = defense * p->def_pct / 100;
+    return defense < 1 ? 1 : defense; /* the damage formulas divide by it */
+}
+
 int def_persona_own_map(const DefPersona *p) {
     return p != NULL && (p->phase[0].weak | p->phase[0].resist | p->phase[1].weak | p->phase[1].resist) != 0;
 }
@@ -159,14 +167,14 @@ int def_persona_check_rows(const DefPersona *rows, int count, void (*report)(con
                 bad += report_one(report, "the same encounter twice", i);
             }
             if (p->keep != 0 && p->keep == rows[j].keep) {
-                bad += report_one(report, "KEEP bit used twice", i);
+                bad += report_one(report, "KEEP id used twice", i);
             }
         }
         if (def_persona_own_map(p) && p->kind != DEF_PERSONA_SPECIES && p->keep == 0) {
-            bad += report_one(report, "changes the map but has no KEEP bit", i);
+            bad += report_one(report, "changes the map but has no KEEP id", i);
         }
-        if (p->keep > DEF_PERSONA_KEEP_BITS) {
-            bad += report_one(report, "KEEP bit out of the card's room", i);
+        if (p->keep > DEF_PERSONA_KEEPS) {
+            bad += report_one(report, "KEEP id past DEF_PERSONA_KEEPS", i);
         }
         for (k = 0; k < 2; k++) {
             if (p->phase[k].weak & p->phase[k].resist) {
@@ -197,6 +205,9 @@ int def_persona_check_rows(const DefPersona *rows, int count, void (*report)(con
         }
         if (p->speed_x > 5) {
             bad += report_one(report, "SPEED_X past 5", i);
+        }
+        if (p->def_pct > 100) {
+            bad += report_one(report, "DEF_PCT past 100 (it only lowers)", i);
         }
         if (p->kind == DEF_PERSONA_SUPER) { /* no two Super Rares the same puzzle */
             for (j = 0; j < i; j++) {
@@ -290,6 +301,12 @@ int def_persona_staggered(int slot) {
     return p != NULL && p->phases == 2 && p->turns == 0 ? next_phase(slot) : 0;
 }
 
+/* What is known of the row's map `map`: this battle's, with the slot's save (any earlier fight, and another slot of
+ * this one with the same row) for a row with a KEEP id. */
+static int known_of(int slot, const DefPersona *p, int map) {
+    return slots[slot].known[map] | (p->keep != 0 ? def_persona_record_known(p->keep - 1, map) : 0);
+}
+
 /* Solved: every weakness of every phase learnt (a phase with none: its whole map). */
 static int solved(int slot, const DefPersona *p) {
     int k, n = p->phases == 2 ? 2 : 1;
@@ -297,7 +314,7 @@ static int solved(int slot, const DefPersona *p) {
     for (k = 0; k < n; k++) {
         int need = p->phase[map_phase(p, k)].weak != 0 ? elements_of(p->phase[map_phase(p, k)].weak) : 0x7F;
 
-        if ((slots[slot].known[map_phase(p, k)] & need) != need) {
+        if ((known_of(slot, p, map_phase(p, k)) & need) != need) {
             return 0;
         }
     }
@@ -310,21 +327,26 @@ int def_persona_known(int slot) {
     if (p == NULL) {
         return 0;
     }
-    if (p->keep != 0 && def_record_persona_kept(p->keep - 1)) {
+    if (p->keep != 0 && def_persona_record_solved(p->keep - 1)) {
         return 0x7F;
     }
-    return slots[slot].known[map_phase(p, slots[slot].phase)];
+    return known_of(slot, p, map_phase(p, slots[slot].phase));
 }
 
 void def_persona_learn(int slot, int element_bits) {
     const DefPersona *p = row_of(slot);
+    int map;
 
     if (p == NULL) {
         return;
     }
-    slots[slot].known[map_phase(p, slots[slot].phase)] |= (unsigned char)(element_bits & 0x7F);
-    if (p->keep != 0 && solved(slot, p)) {
-        def_record_persona_keep(p->keep - 1);
+    map = map_phase(p, slots[slot].phase);
+    slots[slot].known[map] |= (unsigned char)(element_bits & 0x7F);
+    if (p->keep != 0) {
+        def_persona_record_learn(p->keep - 1, map, element_bits);
+        if (solved(slot, p)) {
+            def_persona_record_solve(p->keep - 1);
+        }
     }
 }
 

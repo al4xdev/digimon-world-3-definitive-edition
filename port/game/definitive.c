@@ -371,12 +371,15 @@ static const DefPersona *persona_map_of(int species) {
 }
 
 /* An enemy's stats block (fightstg_rules_get_stats): its persona's resistances for the phase it is in, before Resist
- * Down / Mega Break lower them. */
+ * Down / Mega Break lower them, and its Defense (stats[1]) at DEF_PCT. */
 void def_persona_apply(int member, FightstgStats *out) {
     const DefPersona *p = persona_at(member);
 
     if (def_persona_own_map(p)) {
         def_persona_resists(p, def_persona_phase(member), out->resists, out->resists);
+    }
+    if (p != NULL && p->def_pct != 0) {
+        out->stats[1] = (s16)def_persona_def(p, out->stats[1]);
     }
 }
 

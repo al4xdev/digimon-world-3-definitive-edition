@@ -35,10 +35,11 @@ typedef struct DefPersonaPhase {
 typedef struct DefPersona {
     unsigned char kind;       /* DEF_PERSONA_* */
     short a, b;               /* SUPER: hunt index; RARE: region; DRI: challenge; CAMPAIGN: battle, species; SPECIES */
-    unsigned char keep;       /* KEEP(n): n + 1, the row's "solved" bit on the card (DEF_PERSONA_KEEP_BITS); 0 none */
+    unsigned short keep;      /* KEEP(n): n + 1, the row's discovery id (DEF_PERSONA_KEEPS); 0 none */
     unsigned char phases;     /* 1, or 2 with PHASES / ON_STAGGER */
     unsigned char turns;      /* the enemy's turns a phase lasts; 0 with two phases: until it is staggered */
     unsigned char speed_x;    /* its Speed as this many times the party's; 0 its own */
+    unsigned char def_pct;    /* its Defense at this percent of its own (1..100, lower only); 0 its own */
     DefPersonaPhase phase[2]; /* A, B */
 } DefPersona;
 
@@ -52,8 +53,9 @@ typedef struct DefPersona {
 #define DRI(c) .kind = DEF_PERSONA_DRI, .a = (c)
 #define CAMPAIGN(battle, species) .kind = DEF_PERSONA_CAMPAIGN, .a = (battle), .b = (species)
 #define SPECIES(id) .kind = DEF_PERSONA_SPECIES, .a = (id)
-/* Its bit on the card: once the player has found every weakness of it, later fights show its map. Needed by every
- * row that changes the map, except SPECIES (the bestiary keeps those). Never reuse or renumber a bit. */
+/* Its discovery's id in the slot's save (the expansion's "personas", definitive_persona_save.c): what was learnt of
+ * its map in any fight, and once every weakness of it was found, later fights show the whole map. Needed by every row
+ * that changes the map, except SPECIES (the bestiary keeps those). Never reuse or renumber an id. */
 #define KEEP(n) .keep = (n) + 1
 
 /* Phase A (or the only one). */
@@ -75,6 +77,9 @@ typedef struct DefPersona {
 #define GUARD_B .phase[1].guard = 1
 /* Speed relative to the party (owner: a fixed 999 means little late in the game). */
 #define SPEED_X(n) .speed_x = (n)
+/* Its Defense at n% (owner, 2026-11-23: the molds that are fought hard, Brutamontes going physical and Relampago
+ * hit in one go, take a lower Defense instead of the guide's lower HP, which a row cannot set). */
+#define DEF_PCT(n) .def_pct = (n)
 
 extern const DefPersona def_personas[];
 extern const int def_persona_count;
@@ -90,6 +95,7 @@ typedef struct DefPersonaWhere {
 /* ---- The table (no game state: the host test drives these). */
 const DefPersona *def_persona_find(const DefPersonaWhere *w, int species);
 int def_persona_own_map(const DefPersona *p);        /* 1: it changes the weaknesses (its own discovery) */
+int def_persona_def(const DefPersona *p, int defense); /* its Defense after DEF_PCT (at least 1) */
 int def_persona_weak(const DefPersona *p, int phase); /* the phase's weak families */
 int def_persona_guard(const DefPersona *p, int phase);
 int def_persona_hue(const DefPersona *p, int phase);
@@ -109,6 +115,14 @@ int def_persona_staggered(int slot);   /* it was staggered: 1 when the phase cha
 int def_persona_known(int slot);       /* element bits the inspect shows (all once the row is solved) */
 void def_persona_learn(int slot, int element_bits);
 int def_persona_battle_hue(void);      /* the encounter's hue now (the enemy's model), 0 none */
+
+/* ---- Discovery, kept per slot by KEEP id (definitive_persona_save.c, the expansion save's "personas" section):
+ * the element bits learnt of the id's map `phase` (0: A's, 1: B's own) in any fight, and whether it was solved. */
+#define DEF_PERSONA_KEEPS 256 /* KEEP(0)..KEEP(255) */
+int def_persona_record_known(int id, int phase);
+void def_persona_record_learn(int id, int phase, int bits);
+int def_persona_record_solved(int id);
+void def_persona_record_solve(int id);
 struct PortState;
 void def_persona_savestate(struct PortState *s);
 

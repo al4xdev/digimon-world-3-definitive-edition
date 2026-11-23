@@ -123,6 +123,7 @@ cp "$pkg/dw2003recomp.svg" "$appdir/usr/share/icons/hicolor/scalable/apps/"
 cp "$ROOT/LICENSE" "$appdir/LICENSES/dw2003recomp.txt"
 cp "$sdl/share/licenses/SDL3/LICENSE.txt" "$appdir/LICENSES/SDL3.txt"
 cp "$ROOT/launcher/LICENSES/"*.txt "$appdir/LICENSES/"   # the launcher's font and stb_truetype
+cp "$ROOT/port/third_party/cjson/LICENSE" "$appdir/LICENSES/cJSON.txt"   # the game's JSON (the expansion save)
 cp "$appimage/runtime-LICENSE" "$appdir/LICENSES/appimage-runtime.txt"
 cp "$pkg/LICENSES/"*.txt "$appdir/LICENSES/"
 

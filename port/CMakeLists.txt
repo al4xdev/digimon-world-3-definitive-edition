@@ -58,6 +58,9 @@ if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/game/definitive_adventure_music.inc")
 endif()
 file(GLOB DW3_CONFIG_DEPS "${DW3_ROOT}/config/*.symbols.txt" "${DW3_ROOT}/config/wstag/*.symbols.txt")
 file(GLOB DW3_ADAPTER_SRCS CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/game/*.c")
+# Vendored (docs/THIRD_PARTY.md): cJSON, the expansion save's JSON (game/definitive_expansion.c). Built as the adapter is,
+# -Werror included; it is clean at -Wall -Wextra.
+list(APPEND DW3_ADAPTER_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/third_party/cjson/cJSON.c")
 
 # -O2 for the game's own C crashes at boot here: sound_init -> sound_update_loading -> cdload_get_subfile, SIGSEGV,
 # reproducible (three runs out of three, and a core dump with that stack). Under -O0 it does not, so the decompilation

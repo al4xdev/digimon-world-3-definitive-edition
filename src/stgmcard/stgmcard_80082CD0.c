@@ -249,6 +249,10 @@ void def_record2_read(const unsigned char *in);
 unsigned char *def_record3_buffer(void);
 void def_record3_write(unsigned char *out);
 void def_record3_read(const unsigned char *in);
+/* The expansion save (port/game/definitive_expansion.h): the JSON beside card `port`, read after the first record
+ * (which carries the generation pairing them) and written before any of the card's. */
+void def_expansion_load(int port, int slot);
+void def_expansion_save(int port, int slot);
 #endif
 extern StgmcardContentsWindow stgmcard_contents_windows[19];
 extern s32 stgmcard_party_anims[8][7]; /* frames of the save files' sprite animations, ended by -1 */
@@ -1289,6 +1293,7 @@ void stgmcard_screen_run(StgmcardScreen *obj, StgmcardScreenData *data) {
                                           DEF_BESTIARY_PART | (stgmcard_module.slot << 8));
         if (ret != 0) {
             def_bestiary_record_read(ret == 1 ? def_bestiary_buffer() : NULL);
+            def_expansion_load(obj->port, stgmcard_module.slot);
             port_girls_refresh(); /* the save's hero (DEF_SAVE_KAILI) came with the record */
             obj->base.step = 0x49; /* the second record next */
         }
@@ -1398,6 +1403,7 @@ void stgmcard_screen_run(StgmcardScreen *obj, StgmcardScreenData *data) {
 #endif
 #ifdef PC_PORT
         if (def_bestiary_active()) {
+            def_expansion_save(obj->port, stgmcard_module.slot); /* the file first: the record takes its generation */
             def_bestiary_record_write(def_bestiary_buffer()); /* step 0x36 writes it after the slot */
             def_record2_write(def_record2_buffer());          /* and step 0x37 the second record */
             def_record3_write(def_record3_buffer());          /* and step 0x38 the third */

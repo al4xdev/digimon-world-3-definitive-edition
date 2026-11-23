@@ -152,8 +152,10 @@ int def_hunt_active(void) { return 0; }
 int def_hunt_region_fighting(void) { return -1; }
 int def_super_fighting(void) { return -1; }
 int def_dri_challenge_fighting(void) { return -1; }
-int def_record_persona_kept(int bit) { (void)bit; return 0; }
-void def_record_persona_keep(int bit) { (void)bit; }
+int def_persona_record_known(int id, int phase) { (void)id; (void)phase; return 0; }
+void def_persona_record_learn(int id, int phase, int bits) { (void)id; (void)phase; (void)bits; }
+int def_persona_record_solved(int id) { (void)id; return 0; }
+void def_persona_record_solve(int id) { (void)id; }
 void def_recolor_enemy_hue(int degrees) { (void)degrees; }
 void def_hunt_skipped(void) {}
 void def_rush_savestate(struct PortState *s) { (void)s; }
