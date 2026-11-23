@@ -4178,7 +4178,10 @@ static void fightstg_battle_menu_show(FightstgBattleMenu *obj, FightstgBattleMen
                     cyan[3] = { 170, 240, 255 }, green[3] = { 150, 255, 170 },
                     shadow[3] = { 6, 10, 34 };
     GfxLayer *layer = gfx_module.funcs.get_layer(0x1005);
-    s32 x = obj->x[i] + dx;
+    /* widescreen: the block keeps its 4:3 shape and moves as a whole to the wide picture's left edge (the owner), the
+     * way the old HUD's left corner did. Shifting per kind, as the split layout needed, would tear the two tab rows
+     * apart now that they sit in one block. */
+    s32 x = obj->x[i] + dx - port_video_widescreen_pad();
     s32 y = obj->y[i] + dy;
     s32 h = FIGHTSTG_BMENU_CHIP;
     s32 size = obj->word_size[i];
@@ -4518,7 +4521,7 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
             fightstg_battle_menu_show(obj, data, i, dx, dy, glow);
         }
         /* queued after the plates, so drawn under them */
-        fightstg_battle_menu_rhombus(FIGHTSTG_BMENU_CX + FIGHTSTG_BMENU_CHIP / 2 - (r * r) / 3,
+        fightstg_battle_menu_rhombus(FIGHTSTG_BMENU_CX + FIGHTSTG_BMENU_CHIP / 2 - (r * r) / 3 - wide_pad,
                                      FIGHTSTG_BMENU_CY + FIGHTSTG_BMENU_CHIP / 2, FIGHTSTG_BMENU_STEP_X + 12,
                                      FIGHTSTG_BMENU_STEP_Y + 9);
         if (obj->inspect) {
