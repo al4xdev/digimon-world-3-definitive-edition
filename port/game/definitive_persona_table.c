@@ -24,7 +24,7 @@ const DefPersona def_personas[] = {
     { SUPER(12), KEEP(11), WEAK(WIND), RESIST(WATER), GUARD_A, PHASES(2), B_WEAK(FIRE), B_RESIST(THUNDER), HUES(20, 280) }, /* Kyukimon, Lv61: mare+camaleao */
     { DRI(0), KEEP(20), RESIST_ALL, DEF_PCT(60) }, /* Terriermon (r9), Lv57: brutamontes */
     { DRI(1), KEEP(21), WEAK(WATER), RESIST(FIRE | WIND), GUARD_ALWAYS }, /* Veemon (r3), Lv33: fechadura */
-    { DRI(2), KEEP(22), WEAK(THUNDER), RESIST(FIRE), GUARD_A, PHASES(2) }, /* Patamon (r4), Lv37: mare+fraqueza_unica */
+    { DRI(2), KEEP(22), WEAK(WIND), RESIST(FIRE), PHASES(3), B_WEAK(THUNDER), B_RESIST(WATER), HUES(55, 200) }, /* Patamon (r4), Lv37: camaleao */
     { DRI(3), KEEP(23), WEAK(FIRE), RESIST(WATER | THUNDER) }, /* Agumon (r6), Lv45: contramao */
     { DRI(4), KEEP(24), WEAK(WATER), RESIST(FIRE), GUARD_ALWAYS, ON_STAGGER, B_WEAK(WIND), B_RESIST(THUNDER), HUES(200, 100) }, /* Guilmon (r7), Lv49: reflexo */
     { DRI(5), KEEP(25), WEAK(FIRE), RESIST(DARK), PHASES(2), B_WEAK(THUNDER), B_RESIST(DARK | WATER), HUES(280, 20) }, /* Devimon (r12), Lv69: camaleao */
@@ -37,32 +37,32 @@ const DefPersona def_personas[] = {
     { DRI(12), KEEP(32), WEAK(FIRE), RESIST(WATER | WIND), GUARD_ALWAYS }, /* Musyamon (r8), Lv53: fechadura */
     { DRI(13), KEEP(33), WEAK(WATER), RESIST(FIRE | WIND) }, /* Kumamon (r2), Lv29: contramao */
     { DRI(14), KEEP(34), WEAK(FIRE), RESIST(WIND), PHASES(2), B_WEAK(WATER), B_RESIST(THUNDER), HUES(15, 190) }, /* Kuwagamon (r10), Lv61: camaleao */
-    { DRI(15), GUARD_A, PHASES(2) }, /* Monmon (r1), Lv25: mare */
+    { DRI(15), KEEP(35), WEAK(WIND) }, /* Monmon (r1), Lv25: fraqueza_unica */
     { RARE(0x1), KEEP(40), WEAK(FIRE), RESIST(WATER | WIND | THUNDER | DARK) }, /* Snimon, Lv48: agulha */
     { RARE(0x2), KEEP(41), WEAK(WATER), RESIST(FIRE | WIND) }, /* BK MegaGargomon, Lv46: contramao */
     { RARE(0x3), KEEP(42), WEAK(THUNDER), RESIST(WATER | WIND), GUARD_ALWAYS }, /* KingEtemon, Lv46: fechadura */
-    { RARE(0x4), GUARD_A, PHASES(2) }, /* Antylamon, Lv46: mare */
+    { RARE(0x4), KEEP(43), WEAK(FIRE), RESIST(WATER), GUARD_A, PHASES(2) }, /* Antylamon, Lv46: mare */
     { RARE(0x7), KEEP(44), RESIST_ALL, DEF_PCT(60) }, /* Guardromon, Lv29: brutamontes */
-    { RARE(0x8), KEEP(45), WEAK(FIRE), RESIST(WATER | WIND), SPEED_X(3), DEF_PCT(60) }, /* BK WarGrowlmon, Lv48: relampago */
+    { RARE(0x8), KEEP(45), WEAK(THUNDER), RESIST(WATER | WIND), SPEED_X(3), DEF_PCT(60) }, /* BK WarGrowlmon, Lv48: relampago */
     { RARE(0x9), KEEP(46), WEAK(WATER), RESIST(FIRE), PHASES(2), B_WEAK(WIND), B_RESIST(WATER), HUES(40, 200) }, /* Deltamon, Lv46: camaleao */
     { RARE(0xd), GUARD_A, PHASES(2) }, /* Apemon, Lv13: mare */
-    { RARE(0xf), KEEP(48), RESIST_ALL, DEF_PCT(60) }, /* Tuskmon, Lv11: brutamontes */
-    { RARE(0x10), KEEP(49), WEAK(THUNDER), RESIST(FIRE | WIND), GUARD_ALWAYS }, /* Tyrannomon, Lv27: fechadura */
+    { RARE(0xf), KEEP(48), WEAK(WIND) }, /* Tuskmon, Lv11: fraqueza_unica */
+    { RARE(0x10), KEEP(49), WEAK(WATER), RESIST(FIRE | WIND), GUARD_ALWAYS }, /* Tyrannomon, Lv27: fechadura */
     { RARE(0x11), KEEP(50), RESIST_ALL, DEF_PCT(60) }, /* Gizamon, Lv15: brutamontes */
     { RARE(0x12), KEEP(51), WEAK(WIND), RESIST(WATER), SPEED_X(3), DEF_PCT(60) }, /* Gesomon, Lv23: relampago */
     { RARE(0x13), KEEP(52), RESIST_ALL, DEF_PCT(60) }, /* Phantomon, Lv32: brutamontes */
     { RARE(0x14), GUARD_A, PHASES(2) }, /* Dokugumon, Lv14: mare */
     { RARE(0x15), KEEP(54), WEAK(FIRE), RESIST(WIND | THUNDER), GUARD_ALWAYS }, /* Kuwagamon, Lv16: fechadura */
     { RARE(0x16), GUARD_A, PHASES(2) }, /* Shellmon, Lv17: mare */
-    { RARE(0x17), KEEP(56), WEAK(WATER), RESIST(WIND | THUNDER), GUARD_ALWAYS }, /* Kokatorimon, Lv21: fechadura */
-    { RARE(0x18), KEEP(57), RESIST_ALL, DEF_PCT(60) }, /* Woodmon, Lv11: brutamontes */
+    { RARE(0x17), KEEP(56), WEAK(FIRE), RESIST(WIND | THUNDER), GUARD_ALWAYS }, /* Kokatorimon, Lv21: fechadura */
+    { RARE(0x18), KEEP(57), WEAK(THUNDER) }, /* Woodmon, Lv11: fraqueza_unica */
     { RARE(0x19), KEEP(58), WEAK(WIND), RESIST(THUNDER), SPEED_X(3), DEF_PCT(60) }, /* Flymon, Lv26: relampago */
     { RARE(0x1a), KEEP(59), RESIST_ALL, DEF_PCT(60) }, /* Mammothmon, Lv25: brutamontes */
-    { RARE(0x1b), KEEP(60), WEAK(THUNDER), RESIST(WIND), PHASES(2), B_WEAK(FIRE), B_RESIST(THUNDER), HUES(200, 20) }, /* WarGrowlmon, Lv25: camaleao */
+    { RARE(0x1b), KEEP(60), WEAK(WATER), RESIST(FIRE), PHASES(2), B_WEAK(THUNDER), B_RESIST(WATER), HUES(200, 20) }, /* WarGrowlmon, Lv25: camaleao */
     { RARE(0x1c), KEEP(61), WEAK(WATER), RESIST(FIRE | WIND | THUNDER | DARK) }, /* Vemmon, Lv27: agulha */
-    { RARE(0x1d), GUARD_A, PHASES(2) }, /* Betamon, Lv6: mare */
-    { RARE(0x20), KEEP(63), RESIST_ALL, DEF_PCT(60) }, /* Coelamon, Lv12: brutamontes */
-    { RARE(0x22), GUARD_A, PHASES(2) }, /* MagnaAngemon, Lv26: mare */
+    { RARE(0x1d), KEEP(62), WEAK(FIRE) }, /* Betamon, Lv6: fraqueza_unica */
+    { RARE(0x20), GUARD_A, PHASES(2) }, /* Coelamon, Lv12: mare */
+    { RARE(0x22), KEEP(64), RESIST_ALL, DEF_PCT(60) }, /* MagnaAngemon, Lv26: brutamontes */
     { RARE(0x23), KEEP(65), WEAK(WIND), RESIST(FIRE | THUNDER) }, /* Persiamon, Lv38: contramao */
     { RARE(0x25), KEEP(66), WEAK(FIRE), RESIST(WATER | THUNDER), GUARD_ALWAYS }, /* Paildramon, Lv15: fechadura */
     { RARE(0x26), KEEP(67), WEAK(WATER), RESIST(WIND), PHASES(2), B_WEAK(THUNDER), B_RESIST(WATER), HUES(300, 90) }, /* Armormon, Lv27: camaleao */
@@ -70,50 +70,50 @@ const DefPersona def_personas[] = {
     { RARE(0x28), KEEP(69), WEAK(THUNDER) }, /* Etemon, Lv18: fraqueza_unica */
     { RARE(0x29), KEEP(70), WEAK(WIND), RESIST(WATER), GUARD_ALWAYS }, /* Tortomon, Lv25: fechadura */
     { RARE(0x2a), KEEP(71), WEAK(WATER), RESIST(FIRE | THUNDER) }, /* Crabmon, Lv18: contramao */
-    { RARE(0x2b), KEEP(72), RESIST_ALL, DEF_PCT(60) }, /* ShogunGekomon, Lv13: brutamontes */
+    { RARE(0x2b), KEEP(72), WEAK(THUNDER) }, /* ShogunGekomon, Lv13: fraqueza_unica */
     { RARE(0x2c), KEEP(73), WEAK(FIRE), RESIST(WATER), SPEED_X(3), DEF_PCT(60) }, /* Dolphmon, Lv21: relampago */
-    { RARE(0x2d), GUARD_A, PHASES(2) }, /* Minotarumon, Lv13: mare */
-    { RARE(0x81), KEEP(75), RESIST_ALL, DEF_PCT(60) }, /* Tapirmon, Lv52: brutamontes */
-    { RARE(0x82), KEEP(76), WEAK(FIRE), RESIST(WATER | THUNDER), SPEED_X(3), DEF_PCT(60) }, /* Raidenmon, Lv53: relampago */
-    { RARE(0x83), KEEP(77), WEAK(WIND), RESIST(WATER), PHASES(2), B_WEAK(DARK), B_RESIST(WIND), HUES(120, 300) }, /* Suijinmon, Lv52: camaleao */
-    { RARE(0x84), KEEP(78), WEAK(FIRE), RESIST(DARK), GUARD_ALWAYS, ON_STAGGER, B_WEAK(DARK), B_RESIST(FIRE), HUES(200, 20) }, /* Raijinmon, Lv52: reflexo */
-    { RARE(0x87), KEEP(79), WEAK(WATER), RESIST(FIRE | WIND | THUNDER | DARK) }, /* Thundermon, Lv51: agulha */
-    { RARE(0x88), KEEP(80), WEAK(THUNDER), RESIST(FIRE | WATER) }, /* MetalGreymon, Lv53: contramao */
-    { RARE(0x89), KEEP(81), WEAK(WATER), RESIST(FIRE | THUNDER), GUARD_ALWAYS }, /* Arukenimon, Lv53: fechadura */
+    { RARE(0x2d), KEEP(74), WEAK(WATER) }, /* Minotarumon, Lv13: fraqueza_unica */
+    { RARE(0x81), KEEP(75), WEAK(FIRE), RESIST(WATER), GUARD_A, PHASES(2) }, /* Tapirmon, Lv52: mare */
+    { RARE(0x82), KEEP(76), RESIST_ALL, DEF_PCT(60) }, /* Raidenmon, Lv53: brutamontes */
+    { RARE(0x83), KEEP(77), WEAK(WIND), RESIST(WATER | THUNDER), SPEED_X(3), DEF_PCT(60) }, /* Suijinmon, Lv52: relampago */
+    { RARE(0x84), KEEP(78), WEAK(FIRE), RESIST(WATER), PHASES(2), B_WEAK(DARK), B_RESIST(FIRE), HUES(200, 20) }, /* Raijinmon, Lv52: camaleao */
+    { RARE(0x87), KEEP(79), WEAK(WATER), RESIST(DARK), GUARD_ALWAYS, ON_STAGGER, B_WEAK(DARK), B_RESIST(WATER), HUES(300, 90) }, /* Thundermon, Lv51: reflexo */
+    { RARE(0x88), KEEP(80), WEAK(FIRE), RESIST(WATER | WIND | THUNDER | DARK) }, /* MetalGreymon, Lv53: agulha */
+    { RARE(0x89), KEEP(81), WEAK(THUNDER), RESIST(WATER | WIND) }, /* Arukenimon, Lv53: contramao */
     { RARE(0x8d), KEEP(82), WEAK(WIND), RESIST(FIRE | WATER | THUNDER | DARK) }, /* Kurisarimon, Lv28: agulha */
-    { RARE(0x8f), GUARD_A, PHASES(2) }, /* Triceramon, Lv41: mare */
+    { RARE(0x8f), KEEP(83), WEAK(WATER), RESIST(FIRE), GUARD_A, PHASES(2) }, /* Triceramon, Lv41: mare */
     { RARE(0x90), KEEP(84), RESIST_ALL, DEF_PCT(60) }, /* Armageddemon, Lv50: brutamontes */
     { RARE(0x91), GUARD_A, PHASES(2) }, /* Airdramon, Lv27: mare */
-    { RARE(0x92), KEEP(86), WEAK(THUNDER), RESIST(WATER), PHASES(2), B_WEAK(FIRE), B_RESIST(THUNDER), HUES(60, 240) }, /* Gekomon, Lv42: camaleao */
-    { RARE(0x93), KEEP(87), WEAK(WATER), RESIST(THUNDER), GUARD_ALWAYS, ON_STAGGER, B_WEAK(THUNDER), B_RESIST(WATER), HUES(160, 330) }, /* BK Imperialdramon, Lv39: reflexo */
-    { RARE(0x94), KEEP(88), WEAK(FIRE), RESIST(WATER | WIND | THUNDER | DARK) }, /* Yanmamon, Lv35: agulha */
+    { RARE(0x92), KEEP(86), WEAK(THUNDER), RESIST(WATER), PHASES(2), B_WEAK(WIND), B_RESIST(THUNDER), HUES(60, 240) }, /* Gekomon, Lv42: camaleao */
+    { RARE(0x93), KEEP(87), WEAK(FIRE), RESIST(THUNDER), GUARD_ALWAYS, ON_STAGGER, B_WEAK(THUNDER), B_RESIST(FIRE), HUES(160, 330) }, /* BK Imperialdramon, Lv39: reflexo */
+    { RARE(0x94), KEEP(88), WEAK(WATER), RESIST(FIRE | WIND | THUNDER | DARK) }, /* Yanmamon, Lv35: agulha */
     { RARE(0x95), KEEP(89), WEAK(WIND), RESIST(FIRE | WATER) }, /* Okuwamon, Lv26: contramao */
     { RARE(0x96), KEEP(90), WEAK(THUNDER), RESIST(FIRE | WATER), GUARD_ALWAYS }, /* Ebidramon, Lv40: fechadura */
-    { RARE(0x97), GUARD_A, PHASES(2) }, /* Vikemon, Lv43: mare */
+    { RARE(0x97), KEEP(91), WEAK(FIRE), RESIST(WATER), GUARD_A, PHASES(2) }, /* Vikemon, Lv43: mare */
     { RARE(0x98), KEEP(92), RESIST_ALL, DEF_PCT(60) }, /* Roachmon, Lv49: brutamontes */
     { RARE(0x99), KEEP(93), WEAK(WIND), RESIST(WATER | THUNDER), SPEED_X(3), DEF_PCT(60) }, /* Puppetmon, Lv50: relampago */
     { RARE(0x9a), KEEP(94), WEAK(THUNDER), RESIST(FIRE), PHASES(2), B_WEAK(DARK), B_RESIST(THUNDER), HUES(40, 200) }, /* Lynxmon, Lv49: camaleao */
-    { RARE(0x9b), KEEP(95), WEAK(WATER), RESIST(DARK), GUARD_ALWAYS, ON_STAGGER, B_WEAK(DARK), B_RESIST(WATER), HUES(120, 300) }, /* Boltmon, Lv49: reflexo */
+    { RARE(0x9b), KEEP(95), WEAK(WATER), RESIST(FIRE), GUARD_ALWAYS, ON_STAGGER, B_WEAK(FIRE), B_RESIST(WATER), HUES(120, 300) }, /* Boltmon, Lv49: reflexo */
     { RARE(0x9c), KEEP(96), WEAK(WIND), RESIST(FIRE | WATER | THUNDER | DARK) }, /* Vilemon, Lv50: agulha */
     { RARE(0x9d), KEEP(97), WEAK(WATER), RESIST(FIRE | THUNDER) }, /* Goburimon, Lv21: contramao */
     { RARE(0xa0), KEEP(98), WEAK(FIRE), RESIST(WATER), GUARD_ALWAYS }, /* Divermon, Lv22: fechadura */
-    { RARE(0xa2), GUARD_A, PHASES(2) }, /* Maildramon, Lv50: mare */
+    { RARE(0xa2), KEEP(99), WEAK(WATER), RESIST(FIRE), GUARD_A, PHASES(2) }, /* Maildramon, Lv50: mare */
     { RARE(0xa3), KEEP(100), RESIST_ALL, DEF_PCT(60) }, /* Raremon, Lv44: brutamontes */
     { RARE(0xa5), KEEP(101), WEAK(THUNDER), RESIST(WATER), SPEED_X(3), DEF_PCT(60) }, /* Seadramon, Lv40: relampago */
-    { RARE(0xa6), KEEP(102), WEAK(WATER), RESIST(FIRE), PHASES(2), B_WEAK(DARK), B_RESIST(WATER), HUES(200, 20) }, /* BK WarGreymon, Lv50: camaleao */
-    { RARE(0xa7), KEEP(103), WEAK(THUNDER), RESIST(FIRE), GUARD_ALWAYS, ON_STAGGER, B_WEAK(FIRE), B_RESIST(THUNDER), HUES(300, 90) }, /* Fujinmon, Lv51: reflexo */
+    { RARE(0xa6), KEEP(102), WEAK(THUNDER), RESIST(FIRE), PHASES(2), B_WEAK(DARK), B_RESIST(THUNDER), HUES(200, 20) }, /* BK WarGreymon, Lv50: camaleao */
+    { RARE(0xa7), KEEP(103), WEAK(WATER), RESIST(WIND), GUARD_ALWAYS, ON_STAGGER, B_WEAK(WIND), B_RESIST(WATER), HUES(300, 90) }, /* Fujinmon, Lv51: reflexo */
     { RARE(0xa8), KEEP(104), WEAK(FIRE), RESIST(WATER | WIND | THUNDER | DARK) }, /* Blossomon, Lv42: agulha */
-    { RARE(0xa9), KEEP(105), WEAK(WATER), RESIST(WIND | THUNDER) }, /* Scorpiomon, Lv42: contramao */
+    { RARE(0xa9), KEEP(105), WEAK(FIRE), RESIST(WIND | THUNDER) }, /* Scorpiomon, Lv42: contramao */
     { RARE(0xaa), KEEP(106), WEAK(WIND), RESIST(FIRE | THUNDER), GUARD_ALWAYS }, /* MetalSeadramon, Lv40: fechadura */
-    { RARE(0xab), GUARD_A, PHASES(2) }, /* MegaSeadramon, Lv40: mare */
+    { RARE(0xab), KEEP(107), WEAK(THUNDER), RESIST(FIRE), GUARD_A, PHASES(2) }, /* MegaSeadramon, Lv40: mare */
     { RARE(0xac), KEEP(108), RESIST_ALL, DEF_PCT(60) }, /* Megadramon, Lv41: brutamontes */
     { RARE(0xad), KEEP(109), WEAK(THUNDER), RESIST(WATER | WIND), SPEED_X(3), DEF_PCT(60) }, /* Cherrymon, Lv41: relampago */
-    { RARE(0xff), KEEP(110), WEAK(WIND), RESIST(WATER), PHASES(2), B_WEAK(FIRE), B_RESIST(WIND), HUES(60, 240) }, /* Bulbmon, Lv44: camaleao */
+    { RARE(0xff), KEEP(110), WEAK(WIND), RESIST(THUNDER), PHASES(2), B_WEAK(WATER), B_RESIST(WIND), HUES(60, 240) }, /* Bulbmon, Lv44: camaleao */
     { SPECIES(222), GUARD_A, PHASES(2) }, /* Woodmon, Lv12: mare */
-    { SPECIES(277), RESIST_ALL, DEF_PCT(60) }, /* Baronmon, Lv16: brutamontes */
+    { SPECIES(277), KEEP(111), RESIST_ALL, DEF_PCT(60) }, /* Baronmon, Lv16: brutamontes */
     { SPECIES(435), GUARD_A, PHASES(2) }, /* Guardromon, Lv29: mare */
-    { SPECIES(208), RESIST_ALL, DEF_PCT(60) }, /* Tortomon, Lv29: brutamontes */
+    { SPECIES(208), KEEP(112), RESIST_ALL, DEF_PCT(60) }, /* Tortomon, Lv29: brutamontes */
     { SPECIES(35), GUARD_A, PHASES(2) }, /* Shellmon, Lv39: mare */
-    { SPECIES(108), RESIST_ALL, DEF_PCT(60) }, /* Rockmon, Lv49: brutamontes */
+    { SPECIES(108), KEEP(113), RESIST_ALL, DEF_PCT(60) }, /* Rockmon, Lv49: brutamontes */
 };
 const int def_persona_count = sizeof(def_personas) / sizeof(def_personas[0]);
