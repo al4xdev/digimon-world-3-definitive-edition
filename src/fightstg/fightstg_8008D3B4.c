@@ -4094,7 +4094,7 @@ static void fightstg_battle_menu_rhombus(s32 cx, s32 cy, s32 rx, s32 ry) {
     }
     poly = gfx_module.funcs.get_packet();
     tpage = (DR_TPAGE *)(poly + 1);
-    setRGB0(poly, 200, 195, 150);
+    setRGB0(poly, 200, 195, 150); /* the reference veil: the diamond stays translucent */
     setPolyF4(poly);
     setSemiTrans(poly, 1);
     setXY4(poly, cx, cy - ry, cx + rx, cy, cx - rx, cy, cx, cy + ry);
@@ -4253,7 +4253,26 @@ static void fightstg_battle_menu_show(FightstgBattleMenu *obj, FightstgBattleMen
         }
     }
     /* the dark plate: darkens the arena so the word reads over any stage */
-    fightstg_battle_menu_plate(x + obj->plate_x[i], y - 1, obj->plate_w[i], h + 2, FIGHTSTG_BMENU_SKEW, 2, 170, 160, 120);
+    /* Three weights by PLACE, not by action (the owner, round 6): the bottom and left arms carry the diamond's own
+     * black, the right arm sits between that and the shoulders' veil, the top arm keeps the plain veil. Swapping Fight
+     * and Tag between arms keeps the weights where they are. */
+    {
+        s32 spot = obj->spot[i];
+        s32 r = 90, g = 95, b = 65;
+
+        if (spot == 0 || spot == 1) { /* south (bottom), west (left): the diamond's black */
+            r = 200;
+            g = 195;
+            b = 150;
+        } else if (spot == 3) { /* east (right): between the shoulders' veil (90,95,65) and the diamond's black
+                                 * (200,195,150), a touch under halfway (the owner: 145 was too strong, 118 too weak) */
+            r = 131;
+            g = 133;
+            b = 97;
+        }
+        fightstg_battle_menu_plate(x + obj->plate_x[i], y - 1, obj->plate_w[i], h + 2, FIGHTSTG_BMENU_SKEW, 2, (u8)r,
+                                   (u8)g, (u8)b);
+    }
 }
 
 static void fightstg_battle_menu_paint(FightstgBattleMenuData *data, s32 i, u8 palette) {
