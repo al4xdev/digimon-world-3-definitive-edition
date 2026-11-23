@@ -20,3 +20,14 @@ does not move the settings, so a run rewrites the developer's real `~/.local/sha
 pad.map}` (same values back, this time). Fix the isolation (an env or flag for the settings dir) before running it
 again, then the script. The pair is covered by the launcher's `--self-test` (backups, restore, mirror) and the
 worker's own test (push/pull, old clients), not by this e2e. Also: `make` without `SDL=1` fails on `SDL_OpenURL`.
+
+## Left from the 0.8.14 release review (2026-11-23, minor)
+
+- The game derives `card1.def.json` from `port_settings.memcard[port]`; `--memcard1 X.mcd` on the command line opens
+  another card but still pairs with the config card's JSON. The launcher passes only `--config`, so players are not
+  hit. Fix: derive the path from the card `port_memcard_open` really used.
+- A load that fails transiently (the JSON unreadable) leaves the sections empty; the next save of that slot writes
+  them empty with a higher generation over the real entry. Fix: remember the failed load and skip the write.
+- A crash between the JSON write and the card write loses that save's persona progress (by design: the entry's gen
+  is newer than the card's). Softer rule possible: accept gen == card gen + 1.
+- The mirror's format 2 JSON is not validated on adopt beyond its sha.

@@ -46,3 +46,5 @@ When it closes, its final text moves to `.plan/closed/` here.
    key only from Lv45 (solvability), HP/DEF of Relampago/Brutamontes, the commons' regions.
 2. In game, confirm on a real fight: the SHIFT callout, the hue change, and SPEED_X (applied against the current enemy
    target; the delay code does not say which enemy is acting).
+3. Release 0.8.14 review (Sonnet, JSON only): Rare Targets still cluster by mold (Lv40-41 sea group, Lv49-50);
+   DRI(10) Impmon's phase A opens only to Dark (the Guard is 30%, so winnable). Tune from play reports.
