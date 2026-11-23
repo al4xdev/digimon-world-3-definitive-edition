@@ -277,27 +277,34 @@ buttons, `remember_cursor`, `buffer_input`), which apply while it is enabled and
 exception is a replay script (`--script`), which keeps the original list. A seventh button, **Inspect** (L2, or R2 and
 then the free places when the player put an action there), opens a panel with the enemy's five element families (weak,
 neutral or resisted once found out, `???` otherwise; combat.md "Knowing your enemy") and spends no turn; "Enemy x2"
-shows over the arena when the enemy acts twice before our next turn. An eighth button, **Blast** (R2, the dark star
-under L1; the free places when it clashes), sets the acting Digimon's Blast off once its gauge is full and spends the
-turn (see [`definitive-edition/blast.md`](definitive-edition/blast.md#the-gauge) "The gauge"); with the gauge not full
-it is grey and refused; at a critical moment (a partner fell, or the acting Digimon is at a quarter of its HP) a full
-gauge pulses the button red and says "Blast calls...". Both launchers list it: the C one's BATTLE HUD screen
-(`bm_blast`), the psxstack one from the manifest.
+shows beside the menu when the enemy acts twice before our next turn. An eighth button, **Blast** (R2, the right tab
+above Tech; the free places when it clashes), sets the acting Digimon's Blast off once its gauge is full and spends the
+turn (see [`definitive-edition/blast.md`](definitive-edition/blast.md#the-gauge) "The gauge"); the tab **is** the
+gauge's bar (a dark slot that fills from its left end as the gauge charges), so with the gauge not full it is grey and
+refused; full, it is lit and the acting Digimon may Blast; at a critical moment (a partner fell, or the acting Digimon
+is at a quarter of its HP) the lit tab shines and shakes: it calls, with no line of its own. Both launchers list it: the
+C one's BATTLE HUD screen (`bm_blast`), the psxstack one from the manifest.
 Redesigns **only the battle's main command menu** (Fight, Tech, Digivolve, Tag, Item,
-Run): the list and its cursor are gone, each action has its own button, and a compact 3x3 grid shaped like the pad is
-drawn where the list was: the up and down arms (Y, B) are columns, the left and right ones (X, A) and the shoulders
-(L1, R1) are cells. Each action is one of the font's coloured pictures (fist, bolt, figure, arrows, book, wing) beside its
-button's symbol, on a dark panel, with a short slide-in and press feedback (`fightstg_battle_menu_update`,
-`src/fightstg/fightstg_8008D3B4.c`).
+Run): the list and its cursor are gone, each action has its own button, and the menu is one compact block in the left
+middle of the screen, clear of the enemy and of the fighter the player watches: the shoulders' two rows on top (L2
+Inspect over L1 Item at the block's left, R2 Blast over R1 Tech at its right, as on the pad) and the four face buttons
+below them as a diamond on a dark rhombus (top Digivolve, left Run, right Tag, bottom Fight; each action sits on the
+button the player mapped it to). Each action is a chip with its button's glyph (opaque, outlined in the Xbox letter's
+colour, or the PlayStation symbol) and the command written out in the callouts' polygon capitals, the chip where the
+button is (on the diamond, on the block's edge for a shoulder) and the word beside it. Fight has the largest word and a
+warm edge; a refused press flashes its tab red. The Inspect panel and the refusal's box open in the right middle, and
+the battle's portrait window (the acting Digimon's close-up) is not opened with the menu.
+A short slide-in and press feedback (`fightstg_battle_menu_update`,
+`src/fightstg/fightstg_8008D3B4.c`; the 2026-11-23 redesign: `.plan/tasks/battle-hud-redesign.md`).
 The submenus (techniques, items, Digivolve, Tag), the confusion menu and the rest of the battle are the game's own.
 With the mod off nothing runs: the dispatch is one `#ifdef PC_PORT` test where the menu is created.
 
 | option | default | |
 |---|---|---|
-| `fight` | right button | the place of each action on the pad: `south`, `west`, `north`, `east` (the face buttons by position), `l1`, `r1`, `l2`, `r2` |
+| `fight` | bottom button | the place of each action on the pad: `south`, `west`, `north`, `east` (the face buttons by position), `l1`, `r1`, `l2`, `r2` |
 | `tech` | R1 | |
 | `digivolve` | top button | |
-| `tag` | bottom button | |
+| `tag` | right button | |
 | `item` | L1 | |
 | `run` | left button | |
 | `inspect` | L2 | |

@@ -296,14 +296,16 @@ static const struct {
 /* The options' order is the original list's (and the menu's result's): Fight, Tech, Digivolve, Tag, Item, Run. */
 enum { BM_FIGHT, BM_TECH, BM_DV, BM_TAG, BM_ITEM, BM_RUN, BM_COUNT, BM_REMEMBER = BM_COUNT, BM_BUFFER, BM_INSPECT_OPT,
        BM_BLAST_OPT, BM_OPTIONS };
-static const u8 bm_default_places[BM_COUNT] = { 3, 5, 2, 0, 4, 1 }; /* east r1 north south l1 west */
+/* Fight on the bottom face button, Tag on the right (the owner, 2026-11-23: the launcher's "Fight button" row gives the
+ * old Fight right, Tag bottom back; replay scripts never see these, they keep the original list menu) */
+static const u8 bm_default_places[BM_COUNT] = { 0, 5, 2, 3, 4, 1 }; /* south r1 north east l1 west */
 #define BM_OPTION(name, default_place) \
     { .id = name, .type = PORT_MOD_ENUM, .def = default_place, .values = bm_places, .applies = "live" }
 static const char *const bm_buffers[] = { "off", "short", "long", NULL };
 static const int bm_buffer_ms[] = { 0, 1000, 1500 }; /* off, short, long (the owner played with 1.0 s: now the default) */
 static const PortModOption bm_options[BM_OPTIONS] = {
-    BM_OPTION("fight", "\"east\""),  BM_OPTION("tech", "\"r1\""),   BM_OPTION("digivolve", "\"north\""),
-    BM_OPTION("tag", "\"south\""),   BM_OPTION("item", "\"l1\""),   BM_OPTION("run", "\"west\""),
+    BM_OPTION("fight", "\"south\""),  BM_OPTION("tech", "\"r1\""),   BM_OPTION("digivolve", "\"north\""),
+    BM_OPTION("tag", "\"east\""),    BM_OPTION("item", "\"l1\""),   BM_OPTION("run", "\"west\""),
     { .id = "remember_cursor", .type = PORT_MOD_BOOL, .def = "true", .applies = "live" },
     { .id = "buffer_input", .type = PORT_MOD_ENUM, .def = "\"short\"", .values = bm_buffers, .applies = "live" },
     BM_OPTION("inspect", "\"l2\""),
@@ -316,7 +318,7 @@ int port_mod_bm_buffer; /* frames; 0: off */
 #define BM_ACTIONS (BM_COUNT + 2)
 #define BM_INSPECT BM_COUNT       /* the actions' indexes (fightstg's FIGHTSTG_BMENU_INSPECT, _BLAST) */
 #define BM_BLAST (BM_COUNT + 1)
-static u8 bm_place[BM_ACTIONS] = { 3, 5, 2, 0, 4, 1, 6, 7 }; /* by action: index into bm_places (bm_default_places) */
+static u8 bm_place[BM_ACTIONS] = { 0, 5, 2, 3, 4, 1, 6, 7 }; /* by action: index into bm_places (bm_default_places) */
 
 /* An extra action (Inspect, Blast) whose option clashes with an action before it takes the first free place: L2, R2,
  * then the shoulders and the face buttons. */
@@ -884,6 +886,13 @@ int port_battle_menu_pressed(int action) {
  * (only north, the one place the two agree on, was right). */
 static int bm_place_in_file(int action) {
     return bm_slot[bm_place[action]].game;
+}
+
+/* Where the action is drawn on the battle menu: its place on the pad (bm_places' index: 0 south, 1 west, 2 north,
+ * 3 east, 4 l1, 5 r1, 6 l2, 7 r2), so a remapped action appears at its button's spot (the owner, 2026-11-23). Display
+ * only: the input never reads it. Unique once bm_start has resolved the clashes. */
+int port_battle_menu_screen_place(int action) {
+    return action >= 0 && action < BM_ACTIONS ? bm_place[action] : -1;
 }
 
 /* The PS1 button at the action's physical place: the symbol the menu shows when there is no letter. */

@@ -43,7 +43,8 @@ the headless build (no GPU renderer): the frame log equals the run without the m
 the game does, and the field's hooks and the extended VRAM do nothing without the canvas; the renderer's pictures are
 tests/port/render_gpu.py's), and the run logs once that the picture stays 4:3.
 battle_menu: from the first battle's start (a state of the build), at the command menu: each default button chooses
-its own action, the buttons not on the menu choose nothing, the mod off reads the original's menu, a pad.map that
+its own action (Fight on the bottom face button, Tag on the right), the launcher's other Fight button (Fight right, Tag
+bottom) swaps the two, the buttons not on the menu choose nothing, the mod off reads the original's menu, a pad.map that
 swaps cross and square moves the actions with the buttons, two actions on one button fall back to the defaults.
 Exit codes: 0 pass, 1 fail, 2 something missing.
 """
@@ -473,13 +474,20 @@ def battle_menu(binary, out):
     check(state is not None, "the first battle's start saved as a state")
     if state is None:
         return
-    # the default places: east Fight, r1 Tech, north Digivolve, south Tag, l1 Item, west Run (script names are the runtime's)
-    for button, action, bit in (("CIRCLE", 0, 13), ("R1", 1, 11), ("TRIANGLE", 2, 12), ("CROSS", 3, 14),
+    # the default places (2026-11-23): south Fight, r1 Tech, north Digivolve, east Tag, l1 Item, west Run (script names
+    # are the runtime's)
+    for button, action, bit in (("CROSS", 0, 14), ("R1", 1, 11), ("TRIANGLE", 2, 12), ("CIRCLE", 3, 13),
                                 ("L1", 4, 10), ("SQUARE", 5, 15)):
         rc, lines = bm_press(binary, out, state, f"{button}", button, {})
         got = bm_chosen(lines)
         check(rc == 0 and len(got) == 1 and got[0][1:] == (action, bit),
               f"{button}: action {action} from bit {bit} ({got})")
+    # the launcher's "Fight button: Right" (the layout before 2026-11-23): Fight east, Tag south
+    for button, action, bit in (("CIRCLE", 0, 13), ("CROSS", 3, 14)):
+        rc, lines = bm_press(binary, out, state, f"right_{button}", button, {"fight": "east", "tag": "south"})
+        got = bm_chosen(lines)
+        check(rc == 0 and len(got) == 1 and got[0][1:] == (action, bit),
+              f"Fight button right: {button} chooses action {action} from bit {bit} ({got})")
     for button in (None, "L2", "UP", "DOWN", "START"):
         rc, lines = bm_press(binary, out, state, f"none_{button}", button, {})
         check(rc == 0 and not bm_chosen(lines), f"{button or 'no press'}: no action chosen ({bm_chosen(lines)})")
@@ -491,7 +499,7 @@ def battle_menu(binary, out):
     check(rc == 0 and not lines, f"the mod off: the original's menu, no press line ({lines})")
     # the player's pad: logical cross is delivered by the west button, logical square by the south one
     remap = "cross west B\nsquare south X\n"
-    for button, action, bit in (("CROSS", 3, 15), ("SQUARE", 5, 14)):
+    for button, action, bit in (("CROSS", 0, 15), ("SQUARE", 5, 14)):
         rc, lines = bm_press(binary, out, state, f"remap_{button}", button, {}, remap)
         got = bm_chosen(lines)
         check(rc == 0 and len(got) == 1 and got[0][1:] == (action, bit),
@@ -533,7 +541,7 @@ def battle_menu_flow(binary, out, state):
               f"remember_cursor {str(remember).lower()}: the command menu keeps the last choice ({lasts[:2]}, want {want})")
     # buffer_input: Fight, then Fight pressed every 8 frames through the animation and the enemy's turn: with the buffer
     # one press falls in the window before each next menu and is given to it; without it none is
-    mash = [wait(700), tap("CIRCLE")] + [s for _ in range(150) for s in (wait(8), tap("CIRCLE"))] + [wait(60)]
+    mash = [wait(700), tap("CROSS")] + [s for _ in range(150) for s in (wait(8), tap("CROSS"))] + [wait(60)]
     results = {}
     for buf in ("off", "short", "long"):
         rc, lines = bm_run(binary, out, state, f"buffer_{buf}", mash, {"remember_cursor": False, "buffer_input": buf})

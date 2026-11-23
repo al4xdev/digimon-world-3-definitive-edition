@@ -100,6 +100,11 @@ static const char *ff_label[] = {"OFF", "2X", "4X", "8X", "UNLIMITED"};
 static const char *load_label[] = {"OFF", "2X", "4X", "8X", "INSTANT"};
 static const char *lang_label[] = {"ENGLISH", "PORTUGUÊS (BR)", "FRANÇAIS", "DEUTSCH", "ITALIANO", "ESPAÑOL", "ENGLISH (USA)", "JAPANESE"};
 static const char *buf_label[] = {"OFF", "SHORT", "LONG"};
+/* the "Fight button" row (cfg_fight_place + 1): a layout of the per-action rows that is neither reads CUSTOM, and
+ * choosing on it gives the bottom */
+static const char *fight_label[] = {"CUSTOM", "BOTTOM", "RIGHT"};
+#define HUD_FIGHT_ROW (H_COUNT + 2)
+#define HUD_ROWS (H_COUNT + 3)
 static const char *bt_label[] = {"OFF", "SKIP", "ASYNC"};
 static const char *log_label[] = {"OFF", "SOFT", "HEAVY"};
 static const char *lay_label[] = {"PS1", "XBOX", "NINTENDO", "CUSTOM"};
@@ -216,7 +221,7 @@ static int row_target_y(int s, int idx) {
     case S_BACKUPS: return 114 + (idx - bk_scroll) * 38 - 4;
     case S_DEVICES: return 114 + (idx - dev_scroll) * 38 - 4;
     case S_BROWSE: return 114 + (idx - b_scroll) * 36 - 4;
-    case S_HUD: return 180 + idx * 25 - 3;
+    case S_HUD: return 180 + idx * 23 - 3; /* 23, not 25: the eleventh row (Fight button) clears the footer */
     case S_CONTROLS: return idx == 0 ? 74 : 128 + (idx - 1) * 36 - 4;
     }
     return -1;
@@ -488,11 +493,12 @@ static void draw_hud(void) {
             else text_r(x - 16, y - 8, names, 13, col);
         }
     }
-    const char *rl[H_COUNT + 2] = {"FIGHT", "TECH", "DIGIVOLVE", "TAG", "ITEM", "RUN", "INSPECT", "BLAST", "REMEMBER CURSOR", "BUFFER INPUT"};
+    const char *rl[HUD_ROWS] = {"FIGHT", "TECH", "DIGIVOLVE", "TAG", "ITEM", "RUN", "INSPECT", "BLAST", "REMEMBER CURSOR", "BUFFER INPUT",
+                                "FIGHT BUTTON"};
     int gy = (int)(cur_y >= 0 && cur_screen == S_HUD ? cur_y : row_target_y(S_HUD, sel));
     int sbd = sel < H_COUNT && (dm >> sel & 1);
     draw_focus(40, gy, W - 80, 25, 6, sbd);
-    for (int i = 0; i < H_COUNT + 2; i++) {
+    for (int i = 0; i < HUD_ROWS; i++) {
         char g[16], v[48];
         if (i < H_COUNT) {
             glyph(c.hud[i], g);
@@ -500,8 +506,9 @@ static void draw_hud(void) {
             else snprintf(v, sizeof(v), "%s  [%s]", place_display(c.hud[i]), g);
         }
         else if (i == H_COUNT) snprintf(v, sizeof(v), "%s", c.bmem ? "ON" : "OFF");
-        else snprintf(v, sizeof(v), "%s", buf_label[c.bbuf]);
-        int y = 180 + i * 25, bd = i < H_COUNT && (dm >> i & 1);
+        else if (i == H_COUNT + 1) snprintf(v, sizeof(v), "%s", buf_label[c.bbuf]);
+        else snprintf(v, sizeof(v), "%s", fight_label[cfg_fight_place(&c) + 1]);
+        int y = 180 + i * 23, bd = i < H_COUNT && (dm >> i & 1);
         text(64, y, rl[i], 17, bd ? C_RED : i == sel ? C_GOLD : C_TEXT);
         text_r(W - 64, y, v, 17, bd ? C_RED : i == sel ? C_GOLD : C_NOTE);
     }
@@ -1654,7 +1661,7 @@ static void on_press(int code) {
     case S_HOME: n = home_n; break;
     case S_GAME: n = game_n(); break;
     case S_VIDEO: n = VIDEO_N; break;
-    case S_HUD: n = H_COUNT + 2; break;
+    case S_HUD: n = HUD_ROWS; break;
     case S_CONTROLS: n = 1 + A_COUNT; break;
     case S_SAVES: n = 6; break;
     case S_BACKUPS: n = bk_count; break;
@@ -1740,6 +1747,7 @@ static void on_press(int code) {
         if (d && sel < H_COUNT) c.hud[sel] = hud_cycle(c.hud[sel], d);
         else if (sel == H_COUNT && (ok || d)) c.bmem = !c.bmem;
         else if (sel == H_COUNT + 1 && (ok || d)) c.bbuf = (c.bbuf + s + 3) % 3;
+        else if (sel == HUD_FIGHT_ROW && (ok || d)) cfg_set_fight_place(&c, cfg_fight_place(&c) != 1);
         break;
     case S_CONTROLS:
         if (back) leave_edit(HI_CONTROLS);
@@ -2225,6 +2233,37 @@ static int self_test(const char *root) {
     cfg_load(&b);
     check(!memcmp(&a, &b, sizeof(a)), "settings: read back as written");
     check(!strcmp(disc_path, p), "settings: the disc read back");
+    {
+        /* The Fight button (2026-11-23): Fight at the bottom by default; the row swaps it with Tag, and a button another
+         * action held moves to the row it left; an old tui.state still on the old defaults takes the new one. */
+        Cfg f, g;
+        char tp[1200];
+        cfg_defaults(&f);
+        check(cfg_fight_place(&f) == 0 && f.hud[H_FIGHT] == K_SOUTH && f.hud[H_TAG] == K_EAST,
+              "fight button: Fight bottom, Tag right by default");
+        cfg_set_fight_place(&f, 1);
+        check(cfg_fight_place(&f) == 1 && !dup_hud(&f, NULL), "fight button: RIGHT puts Fight right and Tag at the bottom");
+        f.hud[H_RUN] = K_SOUTH; f.hud[H_TAG] = K_WEST;
+        cfg_set_fight_place(&f, 0);
+        check(cfg_fight_place(&f) == 0 && f.hud[H_RUN] == K_WEST && !dup_hud(&f, NULL),
+              "fight button: BOTTOM from a custom layout leaves no button on two rows");
+        cfg_defaults(&f);
+        cfg_set_fight_place(&f, 1);
+        cfg_save(&f);
+        cfg_load(&g);
+        check(cfg_fight_place(&g) == 1, "fight button: RIGHT, saved, is read back as RIGHT");
+        snprintf(tp, sizeof(tp), "%s/tui.state", game_dir);
+        write_text(tp, "hz=50\nbm_fight=east\nbm_tag=south\n");
+        cfg_load(&g);
+        check(cfg_fight_place(&g) == 0, "fight button: a tui.state from before, on the old defaults, takes the bottom");
+        write_text(tp, "hz=50\nbm_fight=west\nbm_run=east\nbm_tag=south\n");
+        cfg_load(&g);
+        check(g.hud[H_FIGHT] == K_WEST && g.hud[H_RUN] == K_EAST, "fight button: a layout of the player's own is kept");
+        cfg_save(&a);
+        disc_path[0] = 0;
+        cfg_load(&b);
+        snprintf(disc_path, sizeof(disc_path), "%s", p);
+    }
     {
         /* RecompLauncher's mirror (cloud.h): written, never offered back, a change from outside asked about (and kept
          * until answered), then adopted into card1.mcd. */

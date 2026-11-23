@@ -180,6 +180,7 @@ int port_battle_menu_place(int bit);
 int port_battle_menu_pressed(int action);
 char port_battle_menu_letter(int action);
 int port_battle_menu_symbol_bit(int action); /* the PS1 button pad.map puts at the action's place (its symbol) */
+int port_battle_menu_screen_place(int action); /* where the menu draws it: 0 south 1 west 2 north 3 east 4 l1 5 r1 6 l2 7 r2 */
 u8 port_face_symbol_code(int bit); /* the extra glyph of a face button's symbol; 0 for a shoulder or trigger */
 u8 port_face_text_code(int bit); /* the same, as a text the port writes has to spell it (message.c swaps circle and triangle) */
 void port_battle_menu_chosen(int action, int bit, int refused); /* logs a press on the menu (tests/port/mods.py) */

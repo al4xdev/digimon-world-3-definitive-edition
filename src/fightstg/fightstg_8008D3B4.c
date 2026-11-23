@@ -36,6 +36,13 @@
 /* battle_menu's buffer_input: the command object is in its menu step (a menu is open, so a press is the menu's, not the
  * buffer's); set by fightstg_command_update every frame, cleared with the toast at a battle's start. */
 s32 fightstg_bm_in_menu;
+#ifdef PC_PORT
+/* The vsync (port_frames) of the battle menu's last RUN tick: while it is fresh the menu is up, and the HUD leaves the
+ * original Blast bar out (the menu's Blast tab carries the gauge then; the owner, 2026-11-23). A stamp, not a flag, so
+ * the bar is back the frame after the menu goes, however it goes. */
+extern long port_frames;
+long fightstg_bmenu_seen = -100;
+#endif
 #endif
 
 /* .bss, in address order. GCC 2.8 emits uninitialized definitions in the order of their first declaration
@@ -2961,7 +2968,14 @@ void fightstg_command_update(FightstgCommand *obj, FightstgCommandData *data) {
                         port_bm_log_last(obj->last);
                     }
 #endif
+#ifdef PC_PORT
+                    /* The battle menu's HUD has no portrait window: it showed the acting Digimon that is already on
+                     * the arena, as the largest, brightest box on screen, over the arena (the HUD redesign's critique:
+                     * it outweighed the commands). The name box says whose turn it is. */
+                    if (data->children[2] == NULL && port_mod_battle_menu == 0) {
+#else
                     if (data->children[2] == NULL) {
+#endif
                         data->children[2] = fightstg_portrait_create();
                     }
                     if (data->children[6] == NULL) {
@@ -3513,6 +3527,9 @@ void fightstg_hud_draw(FightstgHud *obj, FightstgHudData *data) {
     frame = (gfx_module.funcs.get_time() >> 2) & 3;
     idx = gamestate_data.funcs.get_party_member(fightstg_battle.state.current[0]);
 #ifdef PC_PORT
+    if (port_mod_battle_menu != 0 && port_frames - fightstg_bmenu_seen <= 2) {
+        goto blast_bar_done;
+    }
     sprite.draw(bank, 0x1E, 0x104 + wide_pad, 0x3D);
     if (records_state.gauges[idx] < 1000) {
         fightstg_hud_gauge[2].vx = fightstg_hud_gauge[0].vx = records_state.gauges[idx] / 25 + 0x109;
@@ -3528,6 +3545,7 @@ void fightstg_hud_draw(FightstgHud *obj, FightstgHudData *data) {
         sprite.draw(bank, frame + 0x37, 0x109 + wide_pad, 0x3E);
     }
     sprite.draw(bank, 0xB, 0x104 + wide_pad, 0x3D);
+blast_bar_done:
 #else
     sprite.draw(bank, 0x1E, 0x104, 0x3D);
     if (records_state.gauges[idx] < 1000) {
@@ -3743,10 +3761,15 @@ typedef struct FightstgBattleMenuData {
     MessageWindow *notice;            /* why the grey Blast refuses the Chosen Evolution (def_chosen_refusal); empty */
 } FightstgBattleMenuData; /* only pointers: the block is run and scanned as objects */
 
-/* The menu's object: FightstgCommandMenu's own fields, then what the animation needs (never in the data block). The
- * animation is the little the old list had (a highlight) made for a press: the actions slide in (8 ticks), the pressed
- * one nudges and lights while the others grey (7 ticks, then the choice is given), a refused one shakes. Per frame it
- * costs one flat quad and two window moves a action, no allocation. */
+/* The menu's object: FightstgCommandMenu's own fields, then what the drawing and the animation need (never in the data
+ * block). The layout is the pad's (2026-11-23 redesign, .plan/tasks/battle-hud-redesign.md): the four face buttons are
+ * a diamond as on the pad, each a chip with the button's glyph and the command written out beside it in the callouts'
+ * polygon capitals (def_poly_text: no texture, sharp at any scale), the word on the outside; the shoulders are a
+ * separate group of tabs above it, the left ones on the left and the right ones on the right, L2/R2 above L1/R1 as on
+ * the pad. Fight, the action of most turns, has the largest word and the warm plate; the Blast tab carries the gauge.
+ * The animation: the tabs slide in (8 ticks), the pressed one nudges and lights while the others grey (7 ticks, then
+ * the choice is given), a refused one shakes red. Per frame an action costs two polygon words, three or four flat
+ * quads and one window move, no allocation. */
 typedef struct FightstgBattleMenu {
     /* 0x00 */ Object base;
     /* 0x50 */ s32 sel;
@@ -3758,62 +3781,102 @@ typedef struct FightstgBattleMenu {
     /* 0x68 */ s32 refused_age;
     /* Action 6 is Inspect (definitive combat): a button like the others, but it opens a panel instead of a result.
      * Action 7 is Blast: grey until the acting Digimon's gauge is full (def_blast_ready). */
-    s16 x[FIGHTSTG_BMENU_ACTIONS];    /* each action's anchor: its picture's corner in the cross's middle column, else its cell's */
+    s16 x[FIGHTSTG_BMENU_ACTIONS];       /* the button chip's top-left corner, at rest */
     s16 y[FIGHTSTG_BMENU_ACTIONS];
-    u8 grey[FIGHTSTG_BMENU_ACTIONS];  /* the Digimon cannot do it now */
-    s8 sym_x[FIGHTSTG_BMENU_ACTIONS]; /* from the anchor: the button's symbol (9-pixel font) */
-    s8 sym_y[FIGHTSTG_BMENU_ACTIONS];
-    s8 pic_x[FIGHTSTG_BMENU_ACTIONS]; /* the picture */
-    s8 pic_y[FIGHTSTG_BMENU_ACTIONS];
-    s8 panel_x[FIGHTSTG_BMENU_ACTIONS]; /* the dark panel's rectangle */
-    s8 panel_y[FIGHTSTG_BMENU_ACTIONS];
-    u8 panel_w[FIGHTSTG_BMENU_ACTIONS];
-    u8 panel_h[FIGHTSTG_BMENU_ACTIONS];
+    u8 grey[FIGHTSTG_BMENU_ACTIONS];     /* the Digimon cannot do it now */
+    u8 chip_w[FIGHTSTG_BMENU_ACTIONS];   /* the chip: the glyph and its margin */
+    u8 sym_w[FIGHTSTG_BMENU_ACTIONS];    /* the glyph's own width (centred in the chip) */
+    u8 tint[FIGHTSTG_BMENU_ACTIONS];     /* the chip's colour: the Xbox letter's, or neutral */
+    s16 word_x[FIGHTSTG_BMENU_ACTIONS];  /* from x: the word's left end */
+    s16 word_w[FIGHTSTG_BMENU_ACTIONS];
+    s16 word_size[FIGHTSTG_BMENU_ACTIONS]; /* 8.8 of the callouts' 16-pixel letters */
+    s16 plate_x[FIGHTSTG_BMENU_ACTIONS]; /* from x: the plate behind chip and word */
+    s16 plate_w[FIGHTSTG_BMENU_ACTIONS];
     s32 inspect; /* the Inspect panel is open */
-    s32 tag_free; /* the Tag button shows the free swap's picture (an enemy is open and the window's swap is unspent) */
-    s32 tempt;    /* a full gauge at a critical moment: the Blast button pulses red (def_blast_tempt) */
-    s32 notice;   /* the refusal's box is open (in the Inspect panel's place: one or the other) */
+    s32 tag_free; /* the Tag tab shows the free swap's picture (an enemy is open and the window's swap is unspent) */
+    s32 tempt;    /* a full gauge at a critical moment: the Blast tab turns bright and shakes (def_blast_tempt) */
+    s32 notice;   /* the refusal's box is open (above the menu) */
+    u8 spot[FIGHTSTG_BMENU_ACTIONS]; /* where each action is drawn (fightstg_bmenu_place's index) */
+    u8 at[FIGHTSTG_BMENU_ACTIONS];   /* and the action drawn at each spot */
 } FightstgBattleMenu;
 
 #define FIGHTSTG_BMENU_SLIDE 8
 #define FIGHTSTG_BMENU_PRESS 7
-#define FIGHTSTG_BMENU_SHAKE 6
-#define FIGHTSTG_BMENU_PANEL_H 15
-#define FIGHTSTG_BMENU_PANEL_DEPTH 1 /* the windows draw at depth 0; which of the two is behind is settled by the picture */
+#define FIGHTSTG_BMENU_SHAKE 14 /* long enough to be seen: a refusal is the menu's only error */
+#define FIGHTSTG_BMENU_PANEL_DEPTH 1 /* the windows and the words draw at depth 0, over the plates */
 #define FIGHTSTG_BMENU_PAL_GREY 7    /* the font's grey row (the list's refused entries) */
-#define FIGHTSTG_BMENU_SYMBOL_DY 3   /* the 9-pixel font's symbols sit this far down to centre on a 14-pixel picture */
 #define FIGHTSTG_BMENU_PAL_HOT 0     /* the pressed action keeps its own colours while the others grey */
+#define FIGHTSTG_BMENU_FIGHT 0
+#define FIGHTSTG_BMENU_TAG 3
+#define FIGHTSTG_BMENU_INSPECT 6
+#define FIGHTSTG_BMENU_BLINK 8 /* ticks of each look of the full Blast tab */
 
-/* Each action is drawn as one of the font's coloured pictures (extra glyphs, `01 xx`; one textured quad each, the
- * same cost as a letter): Fight a fist, Tech a lightning bolt, Digivolve the glowing figure, Tag a gear, Item a
- * book, Run a wing. All are framed 15-pixel pictures (the bare arrows 0x37/0x38 are not: they looked bigger and
- * unframed beside the others). Zero-ended; their width is the advance of what is in them. */
-static const u8 fightstg_bmenu_glyphs[FIGHTSTG_BMENU_ACTIONS][6] = {
-    { 1, 0x25, 0 }, { 1, 0x33, 0 }, { 1, 0x27, 0 }, { 1, 0x35, 0 }, { 1, 0x28, 0 }, { 1, 0x31, 0 },
-    { 1, 0x2C, 0 }, /* Inspect: the sparkle */
-    { 1, 0x36, 0 }, /* Blast: the dark star (the Dark element's picture): the cursed evolution */
+/* The places (4:3 screen), one compact block in the left middle (the owner, round 6: the v3 cut's placement, which he
+ * prefers to the split layout's one along the bottom edge): the shoulders' two rows on top, L2/L1 at the block's left
+ * and R2/R1 at its right, then the face diamond below them on a dark rhombus of its own, so it reads as the pad's
+ * diamond and not as a list. The block spans x 6-157 and y 136-225: the arena's middle (the enemy) and the fighter on
+ * the right stay clear, and the right middle, which the portrait window used, holds the Inspect panel and the
+ * refusal's box. In each tab the chip is on the outside (where the button is on the pad) and the word inside; in the
+ * diamond the chip is on the diamond and the word outside. The block is one piece in widescreen too: it does not
+ * reach the wide screen's edges, so it keeps the 4:3 places. */
+#define FIGHTSTG_BMENU_M 6         /* the left margin (the handhelds' overscan) */
+#define FIGHTSTG_BMENU_R 152       /* the shoulder tabs' right edge: R2/R1's chips end here */
+#define FIGHTSTG_BMENU_CX 64       /* the top and bottom chips' left: the diamond's middle column */
+#define FIGHTSTG_BMENU_CY 193      /* the side chips' top */
+#define FIGHTSTG_BMENU_STEP_X 19   /* chip to chip in the diamond */
+#define FIGHTSTG_BMENU_STEP_Y 16
+#define FIGHTSTG_BMENU_ROW2 136    /* L2 / R2 (above, as on the pad) */
+#define FIGHTSTG_BMENU_ROW1 152    /* L1 / R1 */
+#define FIGHTSTG_BMENU_CHIP 15
+#define FIGHTSTG_BMENU_GAP 4       /* chip to word */
+#define FIGHTSTG_BMENU_SIZE_TAB 160   /* 10 pixels */
+#define FIGHTSTG_BMENU_SIZE_INSPECT 128 /* 8 pixels */
+#define FIGHTSTG_BMENU_SIZE_FACE 160
+#define FIGHTSTG_BMENU_SIZE_FIGHT 208 /* 13 pixels */
+#define FIGHTSTG_BMENU_SKEW 3      /* the plates lean as the letters do */
+#define FIGHTSTG_BMENU_WORD_W 70   /* a word's room, at any spot (a longer one is drawn smaller) */
+#define FIGHTSTG_BMENU_WEST_W 34   /* but the left face's: between the left tabs' plates and its chip (RUN fits) */
+
+/* The eight spots, by place on the pad (port_battle_menu_screen_place: 0 south, 1 west, 2 north, 3 east, 4 L1, 5 R1,
+ * 6 L2, 7 R2). An action is drawn at the spot of the button it is mapped to (the owner, 2026-11-23: a remapped action
+ * moves with its button; the chip shows that button's glyph). kind 0: a face chip with its word on the right; 1: a face
+ * chip with its word on the left (the diamond's left arm); 2: a left shoulder tab (chip at the block's left edge, then
+ * the word); 3: a right shoulder tab (word, then chip at the block's right edge). */
+static const struct {
+    s16 x, y;
+    u8 kind;
+} fightstg_bmenu_place[FIGHTSTG_BMENU_ACTIONS] = {
+    { FIGHTSTG_BMENU_CX, FIGHTSTG_BMENU_CY + FIGHTSTG_BMENU_STEP_Y, 0 }, /* south: Fight by default */
+    { FIGHTSTG_BMENU_CX - FIGHTSTG_BMENU_STEP_X, FIGHTSTG_BMENU_CY, 1 }, /* west: Run */
+    { FIGHTSTG_BMENU_CX, FIGHTSTG_BMENU_CY - FIGHTSTG_BMENU_STEP_Y, 0 }, /* north: Digivolve */
+    { FIGHTSTG_BMENU_CX + FIGHTSTG_BMENU_STEP_X, FIGHTSTG_BMENU_CY, 0 }, /* east: Tag */
+    { FIGHTSTG_BMENU_M, FIGHTSTG_BMENU_ROW1, 2 },    /* L1: Item */
+    { 0, FIGHTSTG_BMENU_ROW1, 3 },                   /* R1: Tech */
+    { FIGHTSTG_BMENU_M, FIGHTSTG_BMENU_ROW2, 2 },    /* L2: Inspect */
+    { 0, FIGHTSTG_BMENU_ROW2, 3 },                   /* R2: Blast */
 };
-/* Tag's picture while the swap is free (the enemy is open): the red disc in place of the gear. */
+
+/* The action's spot: its button's place, or its default button's when the place is not one of the eight. */
+static s32 fightstg_bmenu_spot(s32 action) {
+    static const u8 defaults[FIGHTSTG_BMENU_ACTIONS] = { 0, 5, 2, 3, 4, 1, 6, 7 }; /* game_mods.c's */
+    s32 place = port_battle_menu_screen_place(action);
+
+    return place >= 0 && place < FIGHTSTG_BMENU_ACTIONS ? place : defaults[action];
+}
+
+/* The command's word, in the language in use (capitals of the callouts' letters: accents in UTF-8). */
+static const char *fightstg_bmenu_word(s32 action) {
+    /* English only (the owner, 2026-11-23): these words are read at 320x240 in a fraction of a second, and a
+     * translated set makes them change length, wrap and shrink per language - a UI/UX problem, not a translation one.
+     * The game's own texts stay in the player's language; only the eight commands are fixed. */
+    static const char *const words[FIGHTSTG_BMENU_ACTIONS] = {"FIGHT", "TECH",   "DIGIVOLVE", "TAG",
+                                                              "ITEM",  "RUN",    "INSPECT",   "BLAST"};
+
+    return action >= 0 && action < FIGHTSTG_BMENU_ACTIONS ? words[action] : "BLAST";
+}
+
+/* Tag's picture while the swap is free (the enemy is open): the red disc after the word. */
 static const u8 fightstg_bmenu_tag_free_glyph[3] = { 1, 0x2F, 0 };
-static const u8 fightstg_bmenu_glyph_w[FIGHTSTG_BMENU_ACTIONS] = { 15, 15, 15, 15, 15, 15, 15, 15 };
-
-/* 3x3 layout matching the physical pad, packed. The button's symbol is in the 9-pixel font (3), the picture in the
- * 14-pixel one (1). Left and right (X, A, and the shoulders) are a cell, symbol then picture: 27 wide, a shoulder's
- * 34 (its name has two letters). Up and down (Y, B) are a column the width of the picture, as the cross's arms: the
- * symbol on the outside, the picture toward the middle, so the hole between X and A is as wide as that column.
- *                  Y                 y 167 (symbol)
- *        [L1] [pic Y] [R1]           row 0, y 177
- *        [X pic] hole [A pic]        row 1, y 193
- *             [pic B]                row 2, y 209
- *                  B                 y 224 (symbol)
- * The cross sits in the screen's bottom-left corner (x 4-99, y 166-234, a margin of about 6 pixels for the handhelds'
- * overscan), under the player's Digimon and over the arena floor, so neither the Digimon nor the gauge (y 135-150,
- * x 104 on) is covered; the old list was higher (y 109-204). */
-static const s16 fightstg_battle_menu_slots[FIGHTSTG_BMENU_ACTIONS][2] = {
-    { 44, 177 }, { 17, 193 }, { 58, 193 }, { 44, 209 }, { 4, 177 }, { 65, 177 },
-    { 4, 209 },  /* Inspect: under L1, left of the cross's foot */
-    { 65, 209 }, /* Blast: under R1, right of the cross's foot (Inspect's mirror) */
-};
 
 /* The game's text for the button of an action: direct letter from the configured place if mapped,
  * else the face buttons' own glyphs (01 xx, the symbol), else its name in the main font (L1, R1...). */
@@ -3997,74 +4060,215 @@ static void fightstg_hud_draw_mods(FightstgHud *obj, FightstgHudData *data) {
 }
 #endif
 
-/* Action i at its rest place moved by (dx, dy): its windows, its panel, and `glow` (0 none, 1 pressed, 2 refused). */
-static void fightstg_battle_menu_show(FightstgBattleMenu *obj, FightstgBattleMenuData *data, s32 i, s32 dx, s32 dy,
-                                      s32 glow) {
-    s32 x = obj->x[i] + dx;
-    s32 y = obj->y[i] + dy;
-    s32 qx = x + obj->panel_x[i];
-    s32 qy = y + obj->panel_y[i];
+/* A plate: the quad of fightstg_battle_menu_quad with its top edge `skew` pixels right of its foot, as the letters
+ * lean. `abr` -1 is opaque (the chips: the glyph must read over any arena). */
+static void fightstg_battle_menu_plate(s32 x, s32 y, s32 w, s32 h, s32 skew, s32 abr, u8 r, u8 g, u8 b) {
+    POLY_F4 *poly;
+    DR_TPAGE *tpage;
+    GfxLayer *layer = gfx_module.funcs.get_layer(0x1005);
 
-    data->icons[i]->set_pos(data->icons[i], x + obj->sym_x[i], y + obj->sym_y[i]);
-    data->labels[i]->set_pos(data->labels[i], x + obj->pic_x[i], y + obj->pic_y[i]);
-    fightstg_battle_menu_quad(qx, qy, obj->panel_w[i], obj->panel_h[i], 2, 150, 140, 100);
-    if (glow == 1) {
-        fightstg_battle_menu_quad(qx, qy, obj->panel_w[i], obj->panel_h[i], 1, 30, 90, 170);
-    } else if (glow == 2) {
-        fightstg_battle_menu_quad(qx, qy, obj->panel_w[i], obj->panel_h[i], 1, 110, 10, 10);
+    if (layer == NULL) {
+        return;
     }
+    poly = gfx_module.funcs.get_packet();
+    tpage = (DR_TPAGE *)(poly + 1);
+    setRGB0(poly, r, g, b);
+    setPolyF4(poly);
+    setSemiTrans(poly, abr >= 0);
+    setXY4(poly, x + skew, y, x + w + skew, y, x, y + h, x + w, y + h);
+    addPrim(layer->get_ot_entry(layer, FIGHTSTG_BMENU_PANEL_DEPTH), poly);
+    SetDrawTPage(tpage, 0, 1, getTPage(1, abr >= 0 ? abr : 0, 0, 0));
+    addPrim(layer->get_ot_entry(layer, FIGHTSTG_BMENU_PANEL_DEPTH), tpage);
+    gfx_module.funcs.set_packet(tpage + 1);
 }
 
-/* Each action sits at a fixed place on the screen regardless of which button is mapped to it:
- * 0 Fight -> slot 2 (Right of cross)
- * 1 Tech -> slot 5 (Top-Right wing)
- * 2 Digivolve -> slot 0 (Top of cross)
- * 3 Tag -> slot 3 (Bottom of cross)
- * 4 Item -> slot 4 (Top-Left wing)
- * 5 Run -> slot 1 (Left of cross) */
-static const u8 fightstg_bmenu_action_slot[FIGHTSTG_BMENU_ACTIONS] = { 2, 5, 0, 3, 4, 1, 6, 7 };
+/* The diamond's backing: a dark rhombus (one quad, its corners at the middle of each side) behind the four face chips,
+ * so the four read as one pad-shaped group. */
+static void fightstg_battle_menu_rhombus(s32 cx, s32 cy, s32 rx, s32 ry) {
+    POLY_F4 *poly;
+    DR_TPAGE *tpage;
+    GfxLayer *layer = gfx_module.funcs.get_layer(0x1005);
 
-/* Where an action's symbol, picture and panel go from its anchor (see fightstg_battle_menu_slots). `face`: the symbol
- * is one letter (a shoulder button's is two); `slot` 0 and 3 are the cross's up and down arms, drawn as a column. */
-static void fightstg_battle_menu_cell(FightstgBattleMenu *obj, s32 i, s32 slot, s32 face, s32 ps1_sym) {
-    s32 icon_w = ps1_sym ? 15 : (face ? 10 : 17); /* the symbol's advance in font 1 (14px) or font 3 (9px) */
-
-    if (slot == 0 || slot == 3) {
-        obj->sym_x[i] = ps1_sym ? 0 : (face ? 3 : -1); /* centred on the picture's 15 pixels */
-        obj->sym_y[i] = slot == 0 ? (ps1_sym ? -14 : -10) : 15;
-        obj->pic_x[i] = obj->pic_y[i] = 0;
-        obj->panel_x[i] = -2;
-        obj->panel_y[i] = slot == 0 ? (ps1_sym ? -15 : -11) : -1;
-        obj->panel_w[i] = 18 + (face ? 0 : 2);
-        obj->panel_h[i] = ps1_sym ? 30 : 26;
-    } else {
-        /* the right side (A, R1, R2) is the left side mirrored: the picture toward the middle, the symbol outside */
-        s32 right = slot == 2 || slot == 5 || slot == 7;
-
-        obj->sym_x[i] = right ? fightstg_bmenu_glyph_w[i] : 0;
-        obj->sym_y[i] = ps1_sym ? 0 : FIGHTSTG_BMENU_SYMBOL_DY;
-        obj->pic_x[i] = right ? 0 : icon_w;
-        obj->pic_y[i] = 0;
-        obj->panel_x[i] = -2;
-        obj->panel_y[i] = -1;
-        obj->panel_w[i] = icon_w + fightstg_bmenu_glyph_w[i] + 2;
-        obj->panel_h[i] = FIGHTSTG_BMENU_PANEL_H;
+    if (layer == NULL) {
+        return;
     }
+    poly = gfx_module.funcs.get_packet();
+    tpage = (DR_TPAGE *)(poly + 1);
+    setRGB0(poly, 200, 195, 150);
+    setPolyF4(poly);
+    setSemiTrans(poly, 1);
+    setXY4(poly, cx, cy - ry, cx + rx, cy, cx - rx, cy, cx, cy + ry);
+    addPrim(layer->get_ot_entry(layer, FIGHTSTG_BMENU_PANEL_DEPTH), poly);
+    SetDrawTPage(tpage, 0, 1, getTPage(1, 2, 0, 0));
+    addPrim(layer->get_ot_entry(layer, FIGHTSTG_BMENU_PANEL_DEPTH), tpage);
+    gfx_module.funcs.set_packet(tpage + 1);
+}
+
+/* The chips' outlines, at full strength so the colour is the controller's: neutral (the shoulders, the PlayStation
+ * symbols, which are coloured glyphs of their own), then the Xbox face letters' own (A green, B red, X blue,
+ * Y yellow). */
+static const u8 fightstg_bmenu_tints[5][3] = {
+    { 170, 176, 205 }, { 30, 190, 70 }, { 235, 50, 45 }, { 50, 125, 250 }, { 250, 200, 30 },
+};
+
+static u8 fightstg_battle_menu_tint_of(const u8 *icon) {
+    if (icon[0] >= 0x0E && icon[0] < 0x0E + 26 && icon[1] == 0) {
+        switch ('A' + icon[0] - 0x0E) {
+        case 'A':
+            return 1;
+        case 'B':
+            return 2;
+        case 'X':
+            return 3;
+        case 'Y':
+            return 4;
+        }
+    }
+    return 0;
+}
+
+/* Lays action i out from its place, the chip's glyph width and the word's: chip, word and plate, relative to the chip.
+ * A word too wide for its room (a long translation) is drawn smaller. */
+static void fightstg_battle_menu_layout(FightstgBattleMenu *obj, s32 i, s32 sym_w) {
+    const char *word = fightstg_bmenu_word(i);
+    s32 spot = fightstg_bmenu_spot(i);
+    s32 kind = fightstg_bmenu_place[spot].kind;
+    s32 size = i == FIGHTSTG_BMENU_FIGHT ? FIGHTSTG_BMENU_SIZE_FIGHT
+               : i == FIGHTSTG_BMENU_INSPECT
+                   ? FIGHTSTG_BMENU_SIZE_INSPECT
+               : kind >= 2 ? FIGHTSTG_BMENU_SIZE_TAB
+                           : FIGHTSTG_BMENU_SIZE_FACE;
+    s32 chip_w = sym_w + 4 < FIGHTSTG_BMENU_CHIP ? FIGHTSTG_BMENU_CHIP : sym_w + 4;
+    s32 room = kind == 1 ? FIGHTSTG_BMENU_WEST_W : FIGHTSTG_BMENU_WORD_W;
+    s32 w = def_poly_text_width(size, word);
+
+    if (w > room && w > 0) {
+        size = size * room / w;
+        w = def_poly_text_width(size, word);
+    }
+    obj->x[i] = fightstg_bmenu_place[spot].x;
+    obj->y[i] = fightstg_bmenu_place[spot].y;
+    obj->spot[i] = spot;
+    obj->at[spot] = i;
+    if (kind == 3) { /* the chip at the block's right edge, the word before it */
+        obj->x[i] = FIGHTSTG_BMENU_R - chip_w;
+    }
+    obj->chip_w[i] = chip_w;
+    obj->sym_w[i] = sym_w;
+    obj->word_size[i] = size;
+    obj->word_w[i] = w;
+    obj->word_x[i] = (kind == 1 || kind == 3) ? -FIGHTSTG_BMENU_GAP - w : chip_w + FIGHTSTG_BMENU_GAP;
+    obj->plate_x[i] = (kind == 1 || kind == 3) ? obj->word_x[i] - 5 : -2;
+    obj->plate_w[i] = chip_w + FIGHTSTG_BMENU_GAP + w + 7;
+}
+
+/* The acting Digimon's Blast Gauge, 0..1000 (the HUD's bar at the top right shows the same). */
+static s32 fightstg_battle_menu_gauge(void) {
+    s32 id = gamestate_data.funcs.get_party_member(fightstg_battle.state.current[0]);
+
+    return id >= 0 && id < 8 ? records_state.gauges[id] : 0;
+}
+
+/* Action i at its rest place moved by (dx, dy): its word, its chip and glyph, its plate, and `glow` (0 none, 1
+ * pressed, 2 refused, 3 the ready Blast's pulse, 4 the tempting Blast: the plate lit, the word dark). Queued front to back: in an ordering-table entry what is
+ * added last is drawn first. */
+static void fightstg_battle_menu_show(FightstgBattleMenu *obj, FightstgBattleMenuData *data, s32 i, s32 dx, s32 dy,
+                                      s32 glow) {
+    static const u8 white[3] = { 236, 242, 255 }, warm[3] = { 255, 214, 120 }, grey[3] = { 112, 116, 130 },
+                    cyan[3] = { 170, 240, 255 }, green[3] = { 150, 255, 170 },
+                    shadow[3] = { 6, 10, 34 };
+    GfxLayer *layer = gfx_module.funcs.get_layer(0x1005);
+    s32 x = obj->x[i] + dx;
+    s32 y = obj->y[i] + dy;
+    s32 h = FIGHTSTG_BMENU_CHIP;
+    s32 size = obj->word_size[i];
+    s32 wy = y + (h - (16 * size >> 8)) / 2;
+    s32 dim = obj->grey[i] || (obj->press >= 0 && obj->press != i);
+    /* the Blast's gauge: the tab is its bar (below), and a full tab inks its word and chip dark, as the temptation
+     * does, because the bright cyan leaves a light word nothing to stand on */
+    s32 gauge = i == FIGHTSTG_BMENU_BLAST ? fightstg_battle_menu_gauge() : 0;
+    s32 full = i == FIGHTSTG_BMENU_BLAST && gauge >= 1000;
+    /* lit: full AND spendable. A full gauge the battle refuses (no TP, a status, a purification) keeps the charging
+     * blue and only turns its word white: the amber and the buzz mean "you can spend it now" (the owner) */
+    s32 lit = full && !obj->grey[i];
+    /* the full tab alternates between its two looks (the owner): the dark amber with the word white, then the pale
+     * straw with the word dark, so the word keeps its contrast on whichever fill is showing */
+    s32 blink = (obj->age / FIGHTSTG_BMENU_BLINK) % 2;
+    const u8 *rgb = glow == 4                                       ? shadow
+                    : lit                                           ? (blink ? shadow : white)
+                    : full                                          ? white
+                    : glow == 2 && i == obj->refused                 ? white
+                    : dim                                           ? grey
+                    : i == FIGHTSTG_BMENU_FIGHT                     ? warm
+                    : i == FIGHTSTG_BMENU_BLAST                     ? cyan
+                    : i == FIGHTSTG_BMENU_TAG && obj->tag_free      ? green
+                                                                    : white;
+    const u8 *tint = fightstg_bmenu_tints[obj->tint[i]];
+    const char *word = fightstg_bmenu_word(i);
+    if (layer == NULL) {
+        return;
+    }
+    def_poly_text(layer, 0, x + obj->word_x[i], wy, size, word, rgb);
+    def_poly_text(layer, 0, x + obj->word_x[i] + 1, wy + 1, size, word, glow == 4 ? white : shadow);
+    data->icons[i]->set_pos(data->icons[i], x + (obj->chip_w[i] - obj->sym_w[i]) / 2, y + 1);
+    if (data->labels[i] != NULL) { /* Tag's free swap: the red disc after the word */
+        data->labels[i]->set_pos(data->labels[i], x + obj->word_x[i] + obj->word_w[i] + 3, y);
+    }
+    /* the chip: opaque, dark, outlined in the button's colour (one quad on another) */
+    fightstg_battle_menu_plate(x + 1, y + 1, obj->chip_w[i] - 2, h - 2, 0, -1, dim ? 26 : 16, dim ? 26 : 18, dim ? 30 : 30);
+    if (dim) {
+        fightstg_battle_menu_plate(x, y, obj->chip_w[i], h, 0, -1, 70, 72, 84);
+    } else if (glow == 4 || lit) { /* on the lit plate the chip is inked as its word is, not pasted on in grey */
+        fightstg_battle_menu_plate(x, y, obj->chip_w[i], h, 0, -1, shadow[0], shadow[1], shadow[2]);
+    } else {
+        fightstg_battle_menu_plate(x, y, obj->chip_w[i], h, 0, -1, tint[0], tint[1], tint[2]);
+    }
+    if (glow == 1) {
+        fightstg_battle_menu_plate(x + obj->plate_x[i], y - 1, obj->plate_w[i], h + 2, FIGHTSTG_BMENU_SKEW, 1, 40, 110, 190);
+    } else if (glow == 2) {
+        fightstg_battle_menu_plate(x + obj->plate_x[i], y - 1, obj->plate_w[i], h + 2, FIGHTSTG_BMENU_SKEW, 1, 170, 20, 20);
+    } else if (glow == 4) { /* the temptation: the plate itself bright cyan (opaque), the word dark on it */
+        fightstg_battle_menu_plate(x + obj->plate_x[i], y - 1, obj->plate_w[i], h + 2, FIGHTSTG_BMENU_SKEW, -1, 70, 215, 245);
+    }
+    if (i == FIGHTSTG_BMENU_BLAST) {
+        /* the tab itself is the gauge (the owner, round 6: a bar of its own was one more thing to read). The tab is a
+         * dark slot filled from its left end as the gauge charges, in the Blast's cyan (never Fight's warm colour, never
+         * a refusal's red), so the fill grows towards the button it stands for; full, it is white-cyan, and glow 3's
+         * pulse and glow 4's bright plate still mark ready and tempting. Queued after the word and the chip and before
+         * the dark plate: the chip and the word draw over the fill, the dark plate under it. */
+        s32 g = gauge;
+        s32 tx = x + obj->plate_x[i];
+        s32 tw = obj->plate_w[i];
+
+        g = g < 0 ? 0 : g > 1000 ? 1000 : g;
+        /* the fill alone, with no slot of its own behind it (the owner): the tab's empty part is the arena, and the
+         * charge is what shows over it. Queued after the word and the chip, so drawn under them, and before the dark
+         * plate, so over it. */
+        if (g > 0) {
+            /* mode 0, the half blend: the charge reads as a translucent slab over the arena, as the tabs' own veils
+             * do, instead of the additive mode that clipped to solid cyan over the bright floor (the owner) */
+            fightstg_battle_menu_plate(tx, y - 1, tw * g / 1000, h + 2, FIGHTSTG_BMENU_SKEW, 0,
+                                       lit ? (blink ? 250 : 230) : 80, lit ? (blink ? 225 : 160) : 230,
+                                       lit ? (blink ? 160 : 40) : 255);
+        }
+    }
+    /* the dark plate: darkens the arena so the word reads over any stage */
+    fightstg_battle_menu_plate(x + obj->plate_x[i], y - 1, obj->plate_w[i], h + 2, FIGHTSTG_BMENU_SKEW, 2, 170, 160, 120);
 }
 
 static void fightstg_battle_menu_paint(FightstgBattleMenuData *data, s32 i, u8 palette) {
     data->icons[i]->set_palette(data->icons[i], palette);
-    data->labels[i]->set_palette(data->labels[i], palette);
 }
 
 /* Inspect (definitive combat): the current enemy's seven elements as Weak / Resist / - (neutral) / ??? (not
  * learnt), from its resists as they stand now (buffs and debuffs included). Open: the text is set; closed: the windows
  * are emptied. The panel is a title (the enemy's name) over two columns of picture + state in the 14-pixel font (the
  * 9-pixel one has two usable colours and reads badly at 320x240): Fire, Water, Ice, Wind | Thunder, Machine, Dark.
- * It sits right of the buttons and under the gauges (x 104-232, y 160-235), left of the player's Digimon. */
-#define FIGHTSTG_INSPECT_X 104
-#define FIGHTSTG_INSPECT_Y 163       /* the title's line */
-#define FIGHTSTG_INSPECT_ROW_Y 178   /* the first element's */
+ * It sits in the right middle (x 170-308, y 75-136), the room the portrait window had: clear of the enemy (centre-left)
+ * and of the menu (under y 184). */
+#define FIGHTSTG_INSPECT_X 174
+#define FIGHTSTG_INSPECT_Y 78        /* the title's line */
+#define FIGHTSTG_INSPECT_ROW_Y 92    /* the first element's */
 #define FIGHTSTG_INSPECT_LINE 14
 #define FIGHTSTG_INSPECT_FAMILIES 5  /* the cells: the elements by family (DEF_FAMILIES), a pair as one cell */
 #define FIGHTSTG_INSPECT_ROWS 3      /* families per column */
@@ -4072,12 +4276,15 @@ static void fightstg_battle_menu_paint(FightstgBattleMenuData *data, s32 i, u8 p
 #define FIGHTSTG_INSPECT_PAIR_DX 11  /* a pair's second picture, behind the first's right side */
 #define FIGHTSTG_INSPECT_STATE_DX 29 /* the state's text, after a pair's two pictures (every cell's, so they line up) */
 #define FIGHTSTG_INSPECT_W 138
-#define FIGHTSTG_TWICE_X 108 /* the "Enemy x2" label: over the arena floor, under the gauges */
-#define FIGHTSTG_TWICE_Y 152
-#define FIGHTSTG_TEMPT_X 4   /* the Blast's temptation: above the cross's left wing, left of the gauges */
-#define FIGHTSTG_TEMPT_Y 150
-#define FIGHTSTG_TEMPT_PULSE 8 /* ticks lit, then as many dark */
-#define FIGHTSTG_NOTICE_W 200    /* the refusal's box: the Inspect panel's corner, wider (its lines are sentences) */
+#define FIGHTSTG_TWICE_X (FIGHTSTG_BMENU_R + 8) /* the "Enemy x2" and LIMIT BREAK labels: right of the tabs */
+#define FIGHTSTG_TWICE_Y (FIGHTSTG_BMENU_ROW1 + 3)
+#define FIGHTSTG_TEMPT_X 248 /* the temptation window: kept, always empty (the Blast tab calls instead) */
+#define FIGHTSTG_TEMPT_Y 166
+#define FIGHTSTG_TEMPT_SHAKE_EVERY 24 /* the tempting Blast tab shakes in bursts: one every 24 ticks, */
+#define FIGHTSTG_TEMPT_SHAKE 8        /* 8 ticks long */
+#define FIGHTSTG_NOTICE_W 200    /* the refusal's box: the Inspect panel's place, right-aligned (its lines are sentences) */
+#define FIGHTSTG_NOTICE_X 112
+#define FIGHTSTG_NOTICE_Y 78
 #define FIGHTSTG_NOTICE_LINES 3
 static const u8 fightstg_inspect_empty[1] = { 0 };
 
@@ -4118,7 +4325,7 @@ static void fightstg_battle_menu_inspect_set(FightstgBattleMenuData *data, s32 o
 
 /* The open panel's backdrop: the dark quad, a line under the title and a frame in the windows' blue. */
 static void fightstg_battle_menu_inspect_frame(void) {
-    s32 x = FIGHTSTG_INSPECT_X - port_video_widescreen_pad() - 4;
+    s32 x = FIGHTSTG_INSPECT_X + port_video_widescreen_pad() - 4;
     s32 y = FIGHTSTG_INSPECT_Y - 3;
     s32 w = FIGHTSTG_INSPECT_W;
     s32 h = FIGHTSTG_INSPECT_ROW_Y + FIGHTSTG_INSPECT_LINE * FIGHTSTG_INSPECT_ROWS + 2 - y;
@@ -4133,8 +4340,8 @@ static void fightstg_battle_menu_inspect_frame(void) {
 
 /* The refusal's box: the Inspect panel's backdrop and frame, without the title's line. */
 static void fightstg_battle_menu_notice_frame(void) {
-    s32 x = FIGHTSTG_INSPECT_X - port_video_widescreen_pad() - 4;
-    s32 y = FIGHTSTG_INSPECT_Y - 3;
+    s32 x = FIGHTSTG_NOTICE_X + port_video_widescreen_pad() - 4;
+    s32 y = FIGHTSTG_NOTICE_Y - 3;
     s32 w = FIGHTSTG_NOTICE_W;
     s32 h = FIGHTSTG_INSPECT_LINE * FIGHTSTG_NOTICE_LINES + 8;
 
@@ -4153,7 +4360,6 @@ static void fightstg_battle_menu_notice_set(FightstgBattleMenu *obj, FightstgBat
 void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData *data) {
     FightstgMember *member;
     u8 icon[4];
-    s32 slot;
     s32 x;
     s32 y;
     s32 r;
@@ -4188,13 +4394,7 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
             break;
         }
         for (i = 0; i < FIGHTSTG_BMENU_ACTIONS; i++) {
-            slot = fightstg_bmenu_action_slot[i];
-            x = fightstg_battle_menu_slots[slot][0] - wide_pad;
-            y = fightstg_battle_menu_slots[slot][1];
             fightstg_battle_menu_icon_text(icon, i);
-            obj->x[i] = x;
-            obj->y[i] = y;
-            fightstg_battle_menu_cell(obj, i, slot, icon[1] == 0, icon[0] == 1);
             if (def_finale_blast_only()) {
                 obj->grey[i] = (i != FIGHTSTG_BMENU_BLAST);
             } else if (def_finale_golden_mode()) {
@@ -4204,19 +4404,26 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
                                (i == FIGHTSTG_BMENU_RUN && (def_super_tutorial_battle() || def_finale_active())) ||
                                (i == FIGHTSTG_BMENU_BLAST && !def_blast_ready());
             }
-            x -= FIGHTSTG_BMENU_SLIDE * FIGHTSTG_BMENU_SLIDE / 3; /* opens where the slide starts */
-            data->icons[i] = message_create_window(0x1005, icon[0] == 1 ? 1 : 3, x + obj->sym_x[i], y + obj->sym_y[i]);
+            /* the glyph in the dialogues' 14-pixel font: a letter, a PlayStation symbol or a shoulder's name */
+            data->icons[i] = message_create_window(0x1005, 1, 0, 0);
             data->icons[i]->set_text(data->icons[i], icon, -1);
-            data->labels[i] = message_create_window(0x1005, 1, x + obj->pic_x[i], y + obj->pic_y[i]);
-            data->labels[i]->set_text(data->labels[i], (u8 *)fightstg_bmenu_glyphs[i], -1);
+            data->icons[i]->measure(data->icons[i], 1); /* its width, then back to placing it by its left end */
+            x = data->icons[i]->measured_width;
+            data->icons[i]->measure(data->icons[i], 0);
+            obj->tint[i] = fightstg_battle_menu_tint_of(icon);
+            fightstg_battle_menu_layout(obj, i, x);
+            data->labels[i] = NULL;
             fightstg_battle_menu_paint(data, i, obj->grey[i] ? FIGHTSTG_BMENU_PAL_GREY : 0);
         }
-        data->inspect_title = message_create_window(0x1005, 1, FIGHTSTG_INSPECT_X - wide_pad, FIGHTSTG_INSPECT_Y);
+        data->labels[FIGHTSTG_BMENU_TAG] = message_create_window(0x1005, 1, 0, 0);
+        data->labels[FIGHTSTG_BMENU_TAG]->set_text(data->labels[FIGHTSTG_BMENU_TAG], (u8 *)fightstg_inspect_empty, -1);
+        obj->tag_free = 0;
+        data->inspect_title = message_create_window(0x1005, 1, FIGHTSTG_INSPECT_X + wide_pad, FIGHTSTG_INSPECT_Y);
         for (i = 0; i < 7; i++) {
             /* five cells by family; windows 5 and 6 are the second pictures of the pairs (families 1 and 3) */
             s32 f = i < FIGHTSTG_INSPECT_FAMILIES ? i : i == 5 ? 1 : 3;
 
-            x = FIGHTSTG_INSPECT_X - wide_pad + FIGHTSTG_INSPECT_COL_DX * (f / FIGHTSTG_INSPECT_ROWS);
+            x = FIGHTSTG_INSPECT_X + wide_pad + FIGHTSTG_INSPECT_COL_DX * (f / FIGHTSTG_INSPECT_ROWS);
             y = FIGHTSTG_INSPECT_ROW_Y + FIGHTSTG_INSPECT_LINE * (f % FIGHTSTG_INSPECT_ROWS);
             if (i >= FIGHTSTG_INSPECT_FAMILIES) {
                 x += FIGHTSTG_INSPECT_PAIR_DX;
@@ -4227,7 +4434,7 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
         fightstg_battle_menu_inspect_set(data, 0);
         data->twice = message_create_window(0x1005, 3, FIGHTSTG_TWICE_X - wide_pad, FIGHTSTG_TWICE_Y);
         data->twice->set_text(data->twice, (u8 *)(def_enemy_acts_twice() ? def_twice_label() : fightstg_inspect_empty), -1);
-        data->limit_break = message_create_window(0x1005, 3, FIGHTSTG_TWICE_X + 74 - wide_pad, FIGHTSTG_TWICE_Y);
+        data->limit_break = message_create_window(0x1005, 3, FIGHTSTG_TWICE_X - wide_pad, FIGHTSTG_TWICE_Y + 11);
         data->limit_break->set_palette(data->limit_break, 2);
         data->limit_break->set_text(
             data->limit_break,
@@ -4235,20 +4442,20 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
                                                                             : fightstg_inspect_empty),
             -1);
         obj->tempt = def_blast_tempt() || def_finale_blast_only();
-        data->notice = message_create_window(0x1005, 1, FIGHTSTG_INSPECT_X - wide_pad, FIGHTSTG_INSPECT_Y);
+        data->notice = message_create_window(0x1005, 1, FIGHTSTG_NOTICE_X + wide_pad, FIGHTSTG_NOTICE_Y);
         data->notice->set_page_lines(data->notice, FIGHTSTG_NOTICE_LINES); /* a window pages two lines by default */
         fightstg_battle_menu_notice_set(obj, data, def_battle_menu_notice());
-        data->tempt = message_create_window(0x1005, 1, FIGHTSTG_TEMPT_X - wide_pad, FIGHTSTG_TEMPT_Y); /* the 14-pixel
-                                                                                       * font: the 9-pixel one
-                                                                                       * reads badly over the arena */
-        data->tempt->set_text(data->tempt,
-                              (u8 *)(obj->tempt ? def_blast_tempt_label() : fightstg_inspect_empty), -1);
+        /* The temptation has no line of its own any more (the owner, 2026-11-23): the Blast tab itself calls, turning
+         * bright cyan with a dark word and shaking (fightstg_battle_menu_show's glow 4). The window stays, empty. */
+        data->tempt = message_create_window(0x1005, 1, FIGHTSTG_TEMPT_X + wide_pad, FIGHTSTG_TEMPT_Y);
+        data->tempt->set_text(data->tempt, (u8 *)fightstg_inspect_empty, -1);
         if (obj->tempt) {
             port_log("battle menu: the Blast tempts");
         }
         obj->base.next_state(obj);
         break;
     case OBJECT_STATE_RUN:
+        fightstg_bmenu_seen = port_frames;
         obj->age += gfx_module.funcs.get_frame_ticks();
         r = FIGHTSTG_BMENU_SLIDE - obj->age;
         r = r < 0 ? 0 : r;
@@ -4261,27 +4468,40 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
                 obj->refused = -1;
             }
         }
+        if (obj->tag_free != def_swap_free()) { /* the free swap came or went: Tag's word and disc follow */
+            obj->tag_free = def_swap_free();
+            data->labels[FIGHTSTG_BMENU_TAG]->set_text(data->labels[FIGHTSTG_BMENU_TAG],
+                                                       (u8 *)(obj->tag_free ? fightstg_bmenu_tag_free_glyph
+                                                                            : fightstg_inspect_empty), -1);
+        }
         for (i = 0; i < FIGHTSTG_BMENU_ACTIONS; i++) {
             dx = -(r * r) / 3;
             dy = 0;
             glow = 0;
             if (i == obj->press) {
-                /* a nudge toward the menu's middle that settles back: 2 3 2 1 0 0 0 */
+                /* a nudge toward the diamond's middle that settles back: 2 3 2 1 0 0 0 */
                 dx += obj->press_age < 4 ? (obj->press_age < 2 ? 2 + obj->press_age : 4 - obj->press_age) : 0;
                 glow = 1;
             } else if (i == obj->refused) {
                 dx += (obj->refused_age & 1) ? 3 : -3;
                 glow = 2;
-            } else if (i == FIGHTSTG_BMENU_BLAST && obj->tempt && obj->press < 0 &&
-                       (obj->age / FIGHTSTG_TEMPT_PULSE) % 2 == 0) {
-                glow = 2; /* the temptation: the red of a refusal, pulsing */
+            } else if (i == FIGHTSTG_BMENU_BLAST && !obj->grey[i] && obj->press < 0 && obj->tempt) {
+                /* the temptation: the tab stays lit (bright cyan, dark word) and shakes in bursts, 8 ticks in 24 (critic, round 5:
+                 * any more and it nears the meter above and Tech below) */
+                glow = 4;
+                if (obj->age % FIGHTSTG_TEMPT_SHAKE_EVERY < FIGHTSTG_TEMPT_SHAKE) {
+                    dx += (obj->age & 1) ? 2 : -2; /* sideways only: a vertical pixel blurs the word at 320 */
+                }
+            } else if (i == FIGHTSTG_BMENU_BLAST && !obj->grey[i] && obj->press < 0) {
+                /* the full tab buzzes in place (the owner): one pixel each way on every tick, this tab only */
+                dx += (obj->age & 1) ? 1 : -1;
             }
             fightstg_battle_menu_show(obj, data, i, dx, dy, glow);
         }
-        if (obj->tag_free != def_swap_free()) { /* the free swap came or went: Tag's picture follows */
-            obj->tag_free = def_swap_free();
-            data->labels[3]->set_text(data->labels[3], (u8 *)(obj->tag_free ? fightstg_bmenu_tag_free_glyph : fightstg_bmenu_glyphs[3]), -1);
-        }
+        /* queued after the plates, so drawn under them */
+        fightstg_battle_menu_rhombus(FIGHTSTG_BMENU_CX + FIGHTSTG_BMENU_CHIP / 2 - (r * r) / 3,
+                                     FIGHTSTG_BMENU_CY + FIGHTSTG_BMENU_CHIP / 2, FIGHTSTG_BMENU_STEP_X + 12,
+                                     FIGHTSTG_BMENU_STEP_Y + 9);
         if (obj->inspect) {
             fightstg_battle_menu_inspect_frame();
         } else if (obj->notice) {

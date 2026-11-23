@@ -11,7 +11,9 @@
 
 - Gain per hit: WEAK +150, stagger +100, OVERFINISH +200, an extra action +100; using an item or fleeing -100. A plain hit
   does not fill it, and nothing triggers it automatically.
-- Activation is the battle menu's 8th action **Blast**, R2 by default (the launcher has a BLAST row). It needs a full gauge
+- Activation is the battle menu's 8th action **Blast**, R2 by default (the launcher has a BLAST row), and the tab's own
+  fill is the gauge's bar: a dark slot that fills from its left end as the gauge charges, lit cyan with a dark word when
+  full. It needs a full gauge
   (1000), no Blast already active, HP, and no status 8 or 0x20.
 - Price: HP and MP at 1 after the battle, and -25% Power/Guard/Speed through `GamestateStats.penalties` (cleared only by an
   inn's `inn_heal_party`).
@@ -37,8 +39,9 @@
   partner, each as its Rookie with the Blast flag off (`def_blast_plug_revive`; a partner still overheated stays sealed); its
   description is then `$PlugRevive` instead of `ITMINF` 76 ("Revive: Rookie form, 1 HP and 1 MP" / "Revive em Rookie com 1 HP
   e 1 MP"). Before the quest it is still the curse.
-- **Temptation:** a full gauge with a knocked-out partner, or the acting Digimon at <= 25% HP, makes the Blast button pulse
-  red (8 ticks on, 8 off) with "Blast calls...".
+- **Temptation:** a full gauge with a knocked-out partner, or the acting Digimon at <= 25% HP, makes the Blast tab
+  call: it is lit bright cyan with the word dark, and it shakes sideways in bursts (8 ticks in 24); red is kept for a
+  refusal, so the temptation is never read as one. It says nothing else: the tab itself is the call.
 - Save: eight s16 gauges at slot+0x26F0.
 
 ### The quest (`definitive_purify.c`)
@@ -86,7 +89,7 @@ panel states the rule under the partners: Rookie form only, and the Mega past 99
   the battle's end). The original never writes that field; only `inn_heal_party` zeroes it and the status screens already mark a penalised status; no new save field.
   A second Blast before an inn does not deepen it. **DV Plug** (`def_blast_plug`, effect 0x4C of `fightstg_8008D3B4.c`): one use fills the gauge and calls the game's event 0x12; it costs no TP
   (the TP is the Blast's, see above); text "Fill Blast; revives last fallen." and its Last Stand notice (`$PlugLastStand`).
-- **Activation details:** menu action 8 (the choice 7 -> command 7, `DEF_BLAST_COMMAND_ID`, step 0x13, spends the turn like the DV); dark star icon (`01 36`) under L1;
+- **Activation details:** menu action 8 (the choice 7 -> command 7, `DEF_BLAST_COMMAND_ID`, step 0x13, spends the turn like the DV); the battle menu's BLAST tab (R2, the tab itself being the gauge's bar);
   greyed and refused otherwise; `tests/port/mods.py` expects "R2: refused 7" with an empty gauge. The launcher (C, desktop and Android) has the BLAST row (`H_BLAST`, `bm_blast`,
   default R2; on Android the screen's rows went from 27 to 25 px to fit); the psxstack one reads `mod.json`.
 - **Gain rule** (`def_action_resolved` -> `blast_add`, pure `def_blast_gain`; numbers `DEF_BLAST_*`): per blow that lands, WEAK +150, stagger +100, OVERFINISH +200, a blow in an

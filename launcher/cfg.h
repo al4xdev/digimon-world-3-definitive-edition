@@ -58,6 +58,12 @@ void cfg_set_layout(Cfg *c, int layout);
 int cfg_layout(const Cfg *c);
 char layout_letter(int layout, int code);
 const char *place_display(int code);  /* "SOUTH", "EAST", ... as the handheld's pad is printed */
+/* The "Fight button" row: Fight and Tag on the face buttons, Fight at the bottom (the default since 2026-11-23) or on
+ * the right (the layout before). cfg_fight_place: 0 bottom (Fight south, Tag east), 1 right (Fight east, Tag south),
+ * -1 neither (the player put them elsewhere on the per-action rows). cfg_set_fight_place moves the two, and whatever
+ * action held a button they take gets the one its taker left, so no button ends up on two rows. */
+int cfg_fight_place(const Cfg *c);
+void cfg_set_fight_place(Cfg *c, int right);
 const char *code_name(int code);      /* the kernel's name for it (settings.json's) */
 int dup_actions(const Cfg *c, unsigned *mask_out);   /* pad rows sharing a button: count; mask of the rows */
 int dup_hud(const Cfg *c, unsigned *mask_out);       /* battle actions sharing a button */
