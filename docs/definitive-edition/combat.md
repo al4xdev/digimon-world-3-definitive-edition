@@ -15,7 +15,8 @@ one weakness or one resistance. Every enemy has its own, counted in families:
   or struggle;
 - from level 45 on, enemies are weak to two families and resist two, and so are bosses;
 - the final boss is weak to one family and to Dark, and resists three;
-- Dark is rare on both sides: only a handful of enemies are weak to it, and as few resist it. The four other families
+- Dark is rare on both sides: only a handful of enemies are weak to it (eight common species, from Numemon to
+  Clockmon, carry it as a third weakness), and as few resist it. The four other families
   come out about even: of the 193 species, 93 are weak to Fire, 87 to Water + Ice, 94 to Wind and 93 to Thunder +
   Machine.
 

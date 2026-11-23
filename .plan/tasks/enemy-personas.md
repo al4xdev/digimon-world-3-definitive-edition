@@ -27,9 +27,11 @@ When it closes, its final text moves to `.plan/closed/` here.
 - `port/game/definitive_persona_table.c`: the rows. Only the 3 story bosses that were already guarded so far.
 - `port/game/definitive_persona.c`: lookup (encounter rows before species rows), the phase machine, discovery, the rules
   check. `definitive.c` glues it into the stats hook, Guard, speed, hit/Libra discovery, enemy turn, inspect.
-- Card: one "solved" bit per row (`KEEP(n)`, 144 max) in record 1's last 18 bytes. Record 2 is full and record 3 has
-  ~10 bytes, so a per-element map per encounter does not fit; within a fight the inspect learns hit by hit, and once
-  every weakness of every phase was found, later fights show the whole map.
+- Discovery is saved in the expansion save (`.plan/tasks/expansion-save.md`), section `"personas"`
+  (`port/game/definitive_persona_save.c`): per KEEP id (0..255, `DEF_PERSONA_KEEPS`) the per-phase map learnt over
+  every fight (the inspect shows it in later fights before it is solved) and the solved flag (then the whole map).
+  The card's old 144 solved bits (record 1's last 18 bytes) are migrated on first load; those bytes now hold the
+  expansion's generation. The engine uses `def_persona_record_known/learn/solved/solve`, no file I/O.
 - Phase change: `SHIFT!` callout; with `HUES` the model's CLUTs are turned again from the stashed originals.
 - Inspect title gets a `! ` mark (`$PersonaMark`) for any enemy with a row.
 - `tests/port/definitive_persona.py`: checks the real table (and prints it for review), then drives the engine with its
@@ -37,6 +39,10 @@ When it closes, its final text moves to `.plan/closed/` here.
 
 ## Next
 
-1. Joint session to fill the cases (Super Rares, DRI lines, Rare Target molds, commons from Lv10).
+1. Joint session to review the cases. A full draft is in the table since 2026-11-23 (108 rows: 12 Super Rares, 16 DRI
+   lines, 71 Rare Targets, 6 lost commons), written by the assistant alone from the guide; the review table for the
+   owner (and other LLMs) is `.dumps/tasks/persona/personas.proposed.json`, both made by
+   `.dumps/tasks/persona/draft_personas.py` (an authoring aid: the C table is the source once reviewed). Open: Dark as a
+   key only from Lv45 (solvability), HP/DEF of Relampago/Brutamontes, the commons' regions.
 2. In game, confirm on a real fight: the SHIFT callout, the hue change, and SPEED_X (applied against the current enemy
    target; the delay code does not say which enemy is acting).
