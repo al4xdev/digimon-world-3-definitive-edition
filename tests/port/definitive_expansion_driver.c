@@ -264,6 +264,12 @@ int main(int argc, char **argv) {
         snprintf(other, sizeof(other), "%s.bad", path);
         check("not JSON: written anew", save(0) == 1 && exists(path) && cJSON_Parse(slurp(path)) != NULL);
         check("not JSON: the old one moved beside it", exists(other) && strcmp(slurp(other), "{not json") == 0);
+        spit(path, "[1, 2]");
+        check("JSON but not an object: moved aside too", save(0) == 1 && strcmp(slurp(other), "[1, 2]") == 0 &&
+                                                              cJSON_IsObject(cJSON_Parse(slurp(path))));
+        spit(path, "{\"Version\": 1, \"slots\": []}");
+        check("a hand-edited key case is another key", save(0) == 1 && strstr(slurp(path), "\"Version\"") != NULL &&
+                                                          strstr(slurp(path), "\"version\"") != NULL);
     }
 
     /* A savestate carries the expansion in memory. */

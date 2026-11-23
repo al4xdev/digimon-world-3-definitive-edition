@@ -261,7 +261,9 @@ int def_expansion_load_file(const char *path, int slot) {
 }
 
 static void put(cJSON *o, const char *key, cJSON *item) {
-    if (cJSON_HasObjectItem(o, key)) {
+    /* Case-sensitive on both sides: a hand-edited "Gen" is another key (HasObjectItem would match it, the replace
+     * would not, and the item would leak). */
+    if (cJSON_GetObjectItemCaseSensitive(o, key) != NULL) {
         cJSON_ReplaceItemInObjectCaseSensitive(o, key, item);
     } else {
         cJSON_AddItemToObject(o, key, item);
@@ -345,16 +347,23 @@ int def_expansion_save_file(const char *path, int slot) {
                  gen);
         return 0;
     }
-    if (old != NULL && (probe = cJSON_Parse(old)) == NULL) { /* not JSON: kept beside it, never lost */
+    probe = old != NULL ? cJSON_Parse(old) : NULL;
+    if (old != NULL && !cJSON_IsObject(probe)) { /* not our JSON (or none at all): kept beside it, never lost */
         char *bad = malloc(strlen(path) + 5);
+        int moved = bad != NULL;
 
-        if (bad != NULL) {
+        cJSON_Delete(probe);
+        if (moved) {
             sprintf(bad, "%s.bad", path);
-            port_log("expansion: %s is not JSON: moved to %s", path, bad);
-            port_file_replace(path, bad);
+            moved = port_file_replace(path, bad) == 0;
+            port_log("expansion: %s is not a JSON object: %s %s", path, moved ? "moved to" : "could not be moved to",
+                     bad);
             free(bad);
         }
         free(old);
+        if (!moved) { /* never written over: the card keeps its generation, the slot's expansion reads as empty */
+            return 0;
+        }
         old = NULL;
     } else if (old != NULL) {
         cJSON_Delete(probe);
