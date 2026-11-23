@@ -29,3 +29,8 @@ Until then, an item in the expansion has no backup and does not sync across devi
 Move the species table (193 bytes on the card) into a "bestiary" section, keeping the card's copy written for a few
 releases (rollback), union on load. Needed once a common's row changes its map by phase; today the commons' pieces
 keep the species' elements (only RESIST_ALL, shown by the bestiary as fought), so one map per species is enough.
+
+## Next update (owner, 2026-11-23): a fuller bestiary
+- The bestiary merge above (species + encounter personas in one screen, in the expansion save).
+- New conditions to discover per entry (beyond elements: Guard, phases, speed, what else the personas add).
+- Digimon that are not in the original game (new species: model, record and table entries to design).
