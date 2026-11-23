@@ -403,6 +403,10 @@ joven: parte de él solo se ha jugado unas pocas veces, así que cuenta con aspe
 - **Ataques especiales aún en ajuste.** Los ataques especiales/de firma de algunas formas en el DRI Gauntlet y en el
   simulador de purificación de la Evolución Elegida.
 - **Aún en playtest.** La Evolución Elegida y algunos combates secretos del final del juego.
+- **La migración del esquema del guardado de expansión.** El nuevo archivo de guardado junto a la memory card
+  (`card1.def.json`, las debilidades de enemigos que descubriste) viaja con la tarjeta en las copias de seguridad, la
+  restauración y la sincronización en la nube, y tiene una versión de esquema. La próxima actualización que cambie ese
+  esquema trae una pantalla en el launcher que migra el archivo.
 
 No hay nada más planeado: de aquí en adelante el trabajo son hotfixes. Los errores van al
 [issue tracker](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues).

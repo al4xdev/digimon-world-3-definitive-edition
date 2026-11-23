@@ -405,6 +405,9 @@ Manches wurde erst ein paar Mal durchgespielt, rechne also mit Ecken und Kanten 
 - **Spezialangriffe werden noch abgestimmt.** Die Spezial-/Signaturangriffe einiger Formen im DRI Gauntlet und im
   Läuterungssimulator der Auserwählten Evolution.
 - **Noch im Playtest.** Die Auserwählte Evolution und einige geheime Endgame-Kämpfe.
+- **Die Schemamigration des Erweiterungsspielstands.** Die neue Speicherdatei neben der Memory Card (`card1.def.json`,
+  die entdeckten Gegnerschwächen) reist mit der Karte in Backups, Wiederherstellung und Cloud-Sync und hat eine
+  Schemaversion. Das nächste Update, das dieses Schema ändert, bringt einen Launcher-Bildschirm, der die Datei migriert.
 
 Sonst ist nichts geplant: ab jetzt besteht die Arbeit aus Hotfixes. Fehler gehören in den
 [Issue Tracker](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues).

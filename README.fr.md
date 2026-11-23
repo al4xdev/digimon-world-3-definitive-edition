@@ -409,6 +409,10 @@ Ce qui reste :
 - **Attaques spéciales encore en réglage.** Les attaques spéciales/signature de quelques formes dans le DRI Gauntlet et
   dans le simulateur de purification de l'Évolution Choisie.
 - **Encore en playtest.** L'Évolution Choisie et quelques combats secrets de fin de jeu.
+- **La migration du schéma de la sauvegarde d'extension.** Le nouveau fichier de sauvegarde à côté de la carte mémoire
+  (`card1.def.json`, les faiblesses ennemies que vous avez découvertes) voyage avec la carte dans les sauvegardes, la
+  restauration et la synchronisation cloud, et a une version de schéma. La prochaine mise à jour qui change ce schéma
+  apporte un écran du launcher qui migre le fichier.
 
 Rien d'autre n'est prévu : désormais, le travail se résume à des hotfixes. Les bugs vont dans l'
 [issue tracker](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues).

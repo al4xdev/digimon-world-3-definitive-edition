@@ -402,6 +402,10 @@ stata giocata solo poche volte, quindi aspettati qualche spigolo e hotfix freque
 - **Attacchi speciali ancora in regolazione.** Gli attacchi speciali/firma di alcune forme nel DRI Gauntlet e nel
   simulatore di purificazione dell'Evoluzione Scelta.
 - **Ancora in playtest.** L'Evoluzione Scelta e alcune battaglie segrete di fine gioco.
+- **La migrazione dello schema del salvataggio di espansione.** Il nuovo file di salvataggio accanto alla memory card
+  (`card1.def.json`, le debolezze dei nemici che hai scoperto) viaggia con la card nei backup, nel ripristino e nella
+  sincronizzazione cloud, e ha una versione di schema. Il prossimo aggiornamento che cambia quello schema porta una
+  schermata del launcher che migra il file.
 
 Nient'altro è in programma: da qui in avanti il lavoro sono hotfix. I bug vanno nell'
 [issue tracker](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues).

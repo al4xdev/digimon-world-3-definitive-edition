@@ -398,6 +398,9 @@ it has only been played through a few times, so expect rough edges and frequent 
 - **Special attacks still being tuned.** A few forms' special/signature attacks in the DRI Gauntlet and the Chosen
   Evolution purification simulator.
 - **Still being playtested.** Chosen Evolution and a few secret endgame battles.
+- **The expansion save's schema migration.** The new save file beside the memory card (`card1.def.json`, the enemy
+  weaknesses you have discovered) travels with the card in backups, restore and cloud sync, and has a schema version.
+  The next update that changes that schema brings a launcher screen that migrates the file.
 
 Nothing else is planned: from here on the work is hotfixes. Bugs go to the
 [issue tracker](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues).
