@@ -471,7 +471,20 @@ test("the expansion save rides with the card, and the clients from before it nev
   assert.equal(pullOld.headers.get("X-Save-Sha256"), sha256(card));
   assert.equal(Buffer.compare(Buffer.from(await pullOld.arrayBuffer()), card), 0);
 
-  // An old client pushing a card alone clears the expansion: it no longer pairs with that card
+  // An old client re-pushing the same card (it pushes at every game exit) keeps the expansion: it still pairs
+  const pushOldSame = await fetch(`${BASE}/v1/saves/card1/push`, {
+    method: "POST",
+    headers: { ...auth, "X-Expected-Seq": "2" },
+    body: card,
+  });
+  const pos = await pushOldSame.json();
+  assert.equal(pos.deduplicated, true);
+  assert.equal(pos.seq, 2);
+  const metaSame = await (await fetch(`${BASE}/v1/saves/card1/pull?meta=1`, { headers: auth })).json();
+  assert.equal(metaSame.expansion, true);
+  assert.equal(metaSame.pair_sha256, sha256(pair2));
+
+  // An old client pushing another card alone clears the expansion: it no longer pairs with that card
   const card2 = makeMemoryCard(8);
   const pushOld = await fetch(`${BASE}/v1/saves/card1/push`, {
     method: "POST",

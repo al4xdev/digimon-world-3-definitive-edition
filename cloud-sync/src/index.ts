@@ -483,7 +483,11 @@ async function handleSavePush(
 
   const existingSeq = Number(existing?.seq ?? 0);
 
-  if (existing && (existing.pair_sha256 ?? existing.sha256) === pairSha) {
+  // A client from before the expansion (no X-Save-Expansion-Size) re-pushing the card the cloud already holds changes
+  // nothing: its JSON still pairs with that card, so it is kept (clearing it here would make a newer launcher's next
+  // pull delete its local card1.def.json).
+  const legacySameCard = extHeader === null && existing != null && existing.sha256 === computedSha;
+  if (existing && ((existing.pair_sha256 ?? existing.sha256) === pairSha || legacySameCard)) {
     await touchActivity(env, auth, meta, ts, true);
     return json({
       ok: true,
@@ -491,7 +495,7 @@ async function handleSavePush(
       slot,
       seq: existingSeq,
       sha256: computedSha,
-      pair_sha256: pairSha,
+      pair_sha256: existing.pair_sha256 ?? existing.sha256,
       updated_at: Number(existing.updated_at),
     });
   }

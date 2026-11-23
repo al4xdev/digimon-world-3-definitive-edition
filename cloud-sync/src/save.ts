@@ -53,6 +53,11 @@ export async function gzipBytes(raw: Uint8Array, maxBytes = PS1_MC_SIZE + 4096):
 
 /** The expansion save is the game's JSON: one object, UTF-8. Its sections are the game's business, not checked here. */
 export function validateExpansion(raw: Uint8Array): void {
+  // The launcher refuses on pull anything that does not start with '{' (the game writes it so): refused here too, so
+  // the cloud never holds a row its own clients cannot take back.
+  if (raw.byteLength === 0 || raw[0] !== 0x7b) {
+    throw new PayloadError("invalid_expansion: expected a JSON object starting with '{'", 400);
+  }
   let v: unknown;
   try {
     v = JSON.parse(new TextDecoder("utf-8", { fatal: true, ignoreBOM: false }).decode(raw));

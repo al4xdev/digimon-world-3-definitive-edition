@@ -159,7 +159,8 @@ int save_expansion_path(const char *card_path, char *out, size_t n) {
 }
 
 /* The card then its JSON in one malloc'd buffer (*len_out bytes, *ext_len_out of them the JSON: 0 when there is none);
- * NULL when the card is not a valid one or the JSON is past EXPANSION_MAX (not the game's: nothing is carried then). */
+ * NULL when the card is not a valid one. A JSON past EXPANSION_MAX (the game takes up to 4 MB) or not starting with
+ * '{' is not carried: the card goes alone, so the card itself still syncs and is backed up (the file stays on disk). */
 static char *pair_load(const char *card_path, size_t *len_out, size_t *ext_len_out) {
     size_t cl = 0, el = 0;
     char *card = read_all(card_path, &cl);
@@ -169,10 +170,12 @@ static char *pair_load(const char *card_path, size_t *len_out, size_t *ext_len_o
     }
     char ep[1200];
     char *ext = save_expansion_path(card_path, ep, sizeof(ep)) ? read_all(ep, &el) : NULL;
-    if (ext && el > EXPANSION_MAX) {
+    if (ext && (el > EXPANSION_MAX || (el > 0 && ext[0] != '{'))) {
+        fprintf(stderr, "[cloud] %s: %zu bytes, not carried with the card (past %d or not a JSON object)\n", ep, el,
+                EXPANSION_MAX);
         free(ext);
-        free(card);
-        return NULL;
+        ext = NULL;
+        el = 0;
     }
     if (ext && el > 0) {
         char *nb = realloc(card, PS1_MC_SIZE + el + 1);
@@ -190,16 +193,23 @@ static char *pair_load(const char *card_path, size_t *len_out, size_t *ext_len_o
 }
 
 /* Writes a pair over card_path and its JSON: the JSON first, as the game does (the card's generation names it), then
- * the card. ext_len 0 removes the JSON: the card being written has none (the old one was backed up by the caller). */
+ * the card. ext_len 0: the card being written has none, so the old JSON is moved aside to <json>.prev, not deleted
+ * (the caller's backup may not hold it: no valid card beside it, or one too big to carry). */
 static int pair_write(const char *card_path, const char *data, size_t ext_len) {
-    char ep[1200];
+    char ep[1200], prev[1210];
     if (!save_expansion_path(card_path, ep, sizeof(ep))) return -1;
     if (ext_len > 0) {
         if (write_atomic_bytes(ep, data + PS1_MC_SIZE, ext_len, 0644) != 0) return -1;
-    } else if (unlink(ep) != 0 && errno != ENOENT) {
+    } else {
+        snprintf(prev, sizeof(prev), "%s.prev", ep);
+        remove(prev); /* rename() over an existing file fails on Windows */
+        if (rename(ep, prev) != 0 && errno != ENOENT) return -1;
+    }
+    if (write_atomic_bytes(card_path, data, PS1_MC_SIZE, 0644) != 0) {
+        if (ext_len > 0) unlink(ep); /* a backup's JSON without its card would never be rotated away */
         return -1;
     }
-    return write_atomic_bytes(card_path, data, PS1_MC_SIZE, 0644);
+    return 0;
 }
 
 /* ---- Local PS1 Memory Card validation & rotation (1..100) ---- */

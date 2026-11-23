@@ -2324,8 +2324,16 @@ static int self_test(const char *root) {
             check(recomp_mirror_foreign(game_dir, NULL) == 1 && recomp_mirror_adopt(game_dir, 5, err, sizeof(err)) == 0 &&
                       save_is_valid_mc(cp, got) && !strcmp(got, sha_pair) && access(ep, F_OK) == 0,
                   "expansion: a format 2 mirror adopted writes the card and its JSON");
-            check(save_backup_restore(game_dir, bks[nb].name, 5, err, sizeof(err)) == 0 && access(ep, F_OK) != 0,
-                  "expansion: a backup from before the JSON leaves none beside the card");
+            char epv[1300];
+            snprintf(epv, sizeof(epv), "%s.prev", ep);
+            check(save_backup_restore(game_dir, bks[nb].name, 5, err, sizeof(err)) == 0 && access(ep, F_OK) != 0 &&
+                      access(epv, F_OK) == 0,
+                  "expansion: a backup from before the JSON leaves none beside the card (the old one moved aside)");
+            remove(epv);
+            /* one the launcher cannot carry (not a JSON object) is left alone: the card still counts and syncs */
+            save_is_valid_mc(cp, sha_card);
+            write_text(ep, "[1]");
+            check(save_is_valid_mc(cp, got) && !strcmp(got, sha_card), "expansion: an uncarriable JSON, the card alone");
             remove(ep);
         }
         remove(sp);
