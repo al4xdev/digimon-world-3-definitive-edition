@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""The hunt's tables (redone 2026-11-17): the Rare Target of each
+"""LEGACY (owner, 2026-11-23): frozen. The table it wrote is now hand-maintained, one case at a time, so
+it no longer writes into port/game/; it still runs as a library and for its proposal under .dumps/.
+
+The hunt's tables (redone 2026-11-17): the Rare Target of each
 region (one Digimon), the twelve Super Rares and their territories, and the common materials. The owner approves the
 proposal before it is applied.
 
@@ -430,6 +433,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--apply", action="store_true", help="also write port/game/definitive_hunt_targets.c")
     args = ap.parse_args()
+    if args.apply:
+        sys.exit("LEGACY: port/game/definitive_hunt_targets.c is hand-maintained now (2026-11-23); "
+                 "this tool no longer overwrites it")
     rows, sup = propose()
     assert len(sup) == 13 and len({x["name"] for x in sup}) == 13
     com, level, sp = commons(battle_info())

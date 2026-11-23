@@ -3,8 +3,8 @@
 driver with stand-in challenges and agents: the stage-to-tier rule, the agents' match, each challenge's Tamer
 texts, the unlock (once, paid exactly,
 never again), the rewards (each tier once, the best stage only rises), the second card record's bytes 152..157 written
-and read back (an older record as nothing unlocked) and a replay script (nothing). Then the generated table checked
-against its rule (tools/gen_dri_challenges.py --check) and against the game's data: every stage an enemy species, every
+and read back (an older record as nothing unlocked) and a replay script (nothing). Then the table (hand-maintained since
+2026-11-23, no longer held to tools/gen_dri_challenges.py's rule) checked against the game's data: every stage an enemy species, every
 battle and reward an existing one, every unlock's material and rare item in range. Needs only the host gcc."""
 import re
 import subprocess
@@ -62,10 +62,6 @@ def main():
     run = subprocess.run([str(exe)], capture_output=True, text=True)
     print(run.stdout, end="")
     bad = run.returncode != 0
-    gen = subprocess.run([sys.executable, str(ROOT / "tools/gen_dri_challenges.py"), "--check"], capture_output=True,
-                         text=True)
-    print(gen.stdout, end="")
-    bad |= gen.returncode != 0
     bad |= not table_ok()
     print("definitive_dri: " + ("FAIL" if bad else "pass"))
     return 1 if bad else 0

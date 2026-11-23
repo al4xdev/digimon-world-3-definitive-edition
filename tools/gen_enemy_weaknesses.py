@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""The enemy table of the definitive combat (weaknesses): every species gets its archetype's weaknesses and strong
+"""LEGACY (owner, 2026-11-23): frozen. The table it wrote is now hand-maintained, one case at a time, so
+it no longer writes into port/game/; it still runs as a library and for its proposal under .dumps/.
+
+The enemy table of the definitive combat (weaknesses): every species gets its archetype's weaknesses and strong
 resistances, counted by element family (Fire, Water+Ice, Wind, Thunder+Machine, Dark: the owner's rule of 2026-11-13,
 a pair is one affinity, so its two elements always share one value): plain 2+1, wall 1+2, late 2+2, boss 2+2, final
 boss 1+3 (and its Dark mark), the rest neutral; a few species carry the Dark mark.
@@ -331,7 +334,10 @@ def main():
     a = ap.parse_args()
     rows = propose(species(), battles(), tech_elements())
     check(rows)
-    write(rows, a.apply)
+    if a.apply:
+        sys.exit("LEGACY: port/game/definitive_enemies.c is hand-maintained now (2026-11-23); "
+                 "this tool no longer overwrites it")
+    write(rows, False)
 
 
 if __name__ == "__main__":

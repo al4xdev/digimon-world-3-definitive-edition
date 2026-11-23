@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""The DRI Agents' Gauntlet. Each challenge is one battle that runs the four stages of an evolution line, Rookie to
+"""LEGACY (owner, 2026-11-23): frozen. The table it wrote is now hand-maintained, one case at a time, so
+it no longer writes into port/game/; it still runs as a library and for its proposal under .dumps/.
+
+The DRI Agents' Gauntlet. Each challenge is one battle that runs the four stages of an evolution line, Rookie to
 Mega (owner, 2026-11-21): the first three are its enemy members and the battle brings in the next when one falls
 (wfightmn_knockout); the Mega comes in as a wave in a fallen member's slot (def_dri_next_wave). So the "next form" comes
 in at its own full HP while the party keeps its state. The owner approves the list.
@@ -389,7 +392,7 @@ def write_md(rows_, names, its, battles, rows):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--check", action="store_true", help="exit 1 if the committed table is not the rule's")
+    ap.add_argument("--check", action="store_true", help="exit 1 if the committed table is not the rule's (expected to differ: the table is hand-maintained)")
     a = ap.parse_args()
     rows_, names, its, rows, battles = table()
     text = c_text(rows_, names)
@@ -398,9 +401,8 @@ def main():
         print(f"{'ok' if ok else 'FAIL'} port/game/definitive_dri_table.c is the rule's ({len(rows_)} challenges, "
               f"{len(AGENTS)} DRI Agents)")
         return 0 if ok else 1
-    GEN.write_text(text)
     write_md(rows_, names, its, battles, rows)
-    print(f"written {GEN} ({len(rows_)} challenges) and {OUT / 'desafios.md'}")
+    print(f"written {OUT / 'desafios.md'} ({len(rows_)} challenges); {GEN} is hand-maintained (LEGACY), untouched")
     return 0
 
 
