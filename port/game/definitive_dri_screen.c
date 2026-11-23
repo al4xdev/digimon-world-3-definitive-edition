@@ -1024,6 +1024,14 @@ int def_dri_challenge_fighting(void) {
     return dri_sim.fighting ? dri_sim.challenge : -1;
 }
 
+/* Before def_dri_battle_begin (the enemy's model is added first): the challenge, when this battle is the one sim_start
+ * set up (the same test def_dri_battle_begin makes). */
+int def_dri_challenge_pending(void) {
+    const DefDriChallenge *ch = dri_sim.pending ? def_dri_challenge(dri_sim.challenge) : NULL;
+
+    return ch != NULL && records_state.battle == ch->battle ? dri_sim.challenge : -1;
+}
+
 /* A stage that is a player form (DefDriStage.base): the base species' disc record (with the port's table on it, so the
  * line's balance is the generator's) under the form's name, type and techniques, and a plan of its own (below). Asked by
  * fightstg_enemy_get_record only for an ID with no disc record, while a simulation is set up or runs. */

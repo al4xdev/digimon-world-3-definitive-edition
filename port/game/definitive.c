@@ -320,6 +320,9 @@ static DefPersonaWhere persona_where_now(void) {
     w.super = (short)def_super_fighting();
     w.region = (short)(w.super < 0 ? def_hunt_region_fighting() : -1);
     w.dri = (short)def_dri_challenge_fighting();
+    if (w.dri < 0) { /* the model is added before the battle's begin hook: the DRI line set up for this battle */
+        w.dri = (short)def_dri_challenge_pending();
+    }
     w.battle = (short)records_state.battle;
     return w;
 }
@@ -346,7 +349,7 @@ int def_persona_model_hue(void) {
         return 0;
     }
     persona_refresh();
-    return def_persona_battle_hue();
+    return def_persona_battle_hue(-1);
 }
 
 /* The persona of enemy slot `slot` (0..2), NULL none. */
@@ -403,7 +406,7 @@ const unsigned char *def_persona_title(int species, const unsigned char *name) {
 
 /* A phase changed: say so, and repaint the model when the phase has its colour. */
 static void persona_phase_changed(int slot) {
-    int hue = def_persona_battle_hue();
+    int hue = def_persona_battle_hue(slot);
 
     def_callout_show(DEF_CALLOUT_SHIFT, 1);
     if (hue != 0) {
@@ -494,6 +497,7 @@ void def_log_end(int result) {
     /* The Super Rare hunts: its HP at the end, kept when it fled (it is the enemies' first) */
     def_super_battle_end(result, fightstg_battle.state.members[1][0].hp);
     def_dri_battle_end(result);  /* a DRI simulation's stages felled and their rewards */
+    def_persona_battle_end();      /* won, lost or fled: the same encounter again starts from phase A */
     def_purify_battle_end(result); /* Blast phase 2: the dark forms felled, the next wave or the TP back */
     def_time_battle_end(result);   /* the Time Room: a trial won or lost */
     def_story_battle_end(result);  /* the Oikawa's arc */

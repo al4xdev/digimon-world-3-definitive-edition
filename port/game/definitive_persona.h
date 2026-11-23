@@ -108,13 +108,14 @@ int def_persona_check_rows(const DefPersona *rows, int count, void (*report)(con
 /* ---- A battle's state, per enemy slot (0..2). */
 void def_persona_battle_begin(const DefPersonaWhere *w);
 int def_persona_same_where(const DefPersonaWhere *w); /* 1: the battle began as `w` */
+void def_persona_battle_end(void); /* forget the encounter: the next battle, even the same one again, starts anew */
 const DefPersona *def_persona_slot(int slot, int species); /* the slot's row (a new species there starts it again) */
 int def_persona_phase(int slot);
 int def_persona_enemy_turn(int slot);  /* its turn begins: 1 when the phase changed */
 int def_persona_staggered(int slot);   /* it was staggered: 1 when the phase changed */
 int def_persona_known(int slot);       /* element bits the inspect shows (all once the row is solved) */
 void def_persona_learn(int slot, int element_bits);
-int def_persona_battle_hue(void);      /* the encounter's hue now (the enemy's model), 0 none */
+int def_persona_battle_hue(int slot);  /* the hue now of enemy slot `slot` (-1: the encounter's first), 0 none */
 
 /* ---- Discovery, kept per slot by KEEP id (definitive_persona_save.c, the expansion save's "personas" section):
  * the element bits learnt of the id's map `phase` (0: A's, 1: B's own) in any fight, and whether it was solved. */

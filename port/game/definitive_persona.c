@@ -254,6 +254,13 @@ void def_persona_battle_begin(const DefPersonaWhere *w) {
     }
 }
 
+void def_persona_battle_end(void) {
+    /* No encounter has these: a Super Rare fled and fought again finds a new battle, its phases from A. */
+    DefPersonaWhere none = { .super = -2, .region = -2, .dri = -2, .battle = -2 };
+
+    def_persona_battle_begin(&none);
+}
+
 const DefPersona *def_persona_slot(int slot, int species) {
     const DefPersona *p;
 
@@ -352,9 +359,16 @@ void def_persona_learn(int slot, int element_bits) {
 
 /* The enemy's model is added before any slot was looked up, so the encounter's row is found from `where` alone (a
  * Super Rare, a Rare Target or a DRI line: the rows a hue is allowed on, CAMPAIGN aside, which needs the species). */
-int def_persona_battle_hue(void) {
+int def_persona_battle_hue(int slot) {
     int i;
 
+    if (slot >= 0 && slot < 3) { /* the slot that changed phase: a DRI line's stages each keep their own */
+        const DefPersona *p = row_of(slot);
+
+        if (p != NULL && p->kind != DEF_PERSONA_SPECIES && def_persona_hue(p, slots[slot].phase) != 0) {
+            return def_persona_hue(p, slots[slot].phase);
+        }
+    }
     for (i = 0; i < 3; i++) {
         const DefPersona *p = row_of(i);
 

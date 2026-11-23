@@ -701,6 +701,7 @@ int def_dri_frame(void);
 void def_dri_battle_begin(void);
 int def_dri_fighting(void);
 int def_dri_challenge_fighting(void); /* the challenge being fought, -1 none */
+int def_dri_challenge_pending(void);  /* the challenge set up for the battle about to begin, -1 none */
 void def_dri_battle_end(int result);
 void def_dri_stage_enters(int member);
 int def_dri_next_wave(void); /* the Mega: set up in a fallen enemy slot (its index), -1: none (def_enemy_next_wave) */
