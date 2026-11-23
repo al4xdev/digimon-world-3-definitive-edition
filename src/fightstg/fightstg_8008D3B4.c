@@ -3810,9 +3810,10 @@ typedef struct FightstgBattleMenu {
 #define FIGHTSTG_BMENU_TAG 3
 #define FIGHTSTG_BMENU_INSPECT 6
 #define FIGHTSTG_BMENU_BLINK 8 /* ticks of each look of the full Blast tab */
-#define FIGHTSTG_BMENU_WIDE_SHIFT 100 /* % of the widescreen pad the block follows in widescreen (the owner,
-                                       * measured: at 100 the words clear the seam between the 4:3 buffer and the
-                                       * wide canvas; 110 worked, 100 keeps the block nearer the edge) */
+#define FIGHTSTG_BMENU_WIDE_SHIFT 110 /* % of the widescreen pad the block follows in widescreen: the owner's
+                                       * walk of the range on screen, and 110 is the minimum where the words clear the
+                                       * seam between the 4:3 buffer and the wide canvas (100..109 leave the band over
+                                       * the commands) */
 
 /* The places (4:3 screen), one compact block in the left middle (the owner, round 6: the v3 cut's placement, which he
  * prefers to the split layout's one along the bottom edge): the shoulders' two rows on top, L2/L1 at the block's left
