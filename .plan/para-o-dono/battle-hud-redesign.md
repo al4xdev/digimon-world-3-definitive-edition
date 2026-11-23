@@ -13,8 +13,8 @@ Each item has the default already implemented; nothing here blocks the branch.
    from its left end in cyan as the gauge charges. The original HUD's bar under the party panel stays, and it is what
    shows the gauge filling during actions, while the menu is closed; it is hidden while the menu is open. **Default:
    both, each where it belongs.** Option: hide the original bar always, if the tab is enough for you.
-4. **The command words are English only** (your call, round 6): FIGHT, TECH, DIGIVOLVE, TAG, ITEM, RUN, INSPECT,
-   BLAST. Eight words read in a fraction of a second at 320x240 stop being readable once they change length, wrap or
+4. **The command words are English only** (your call, round 6): FIGHT, TECH, DIGIVOLVE, TAG, BAG, RUN, INFO,
+   BLAST (BAG and INFO are short on purpose: a long word straddles the widescreen seam). Eight words read in a fraction of a second at 320x240 stop being readable once they change length, wrap or
    shrink per language; the game's own texts (submenus, notices, the Guide) stay in the player's language.
 5. **No "Blast calls..." line any more** (round 5): the lit tab itself calls, shining and shaking, so there is no
    wording left to decide. The string is still in the text table, unused; delete it there if you prefer.

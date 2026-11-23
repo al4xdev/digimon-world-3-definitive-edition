@@ -3810,6 +3810,8 @@ typedef struct FightstgBattleMenu {
 #define FIGHTSTG_BMENU_TAG 3
 #define FIGHTSTG_BMENU_INSPECT 6
 #define FIGHTSTG_BMENU_BLINK 8 /* ticks of each look of the full Blast tab */
+#define FIGHTSTG_BMENU_WIDE_SHIFT 110 /* % of the widescreen pad the block follows in widescreen (the owner, measured:
+                                       * at 110 the words clear the seam between the 4:3 buffer and the wide canvas) */
 
 /* The places (4:3 screen), one compact block in the left middle (the owner, round 6: the v3 cut's placement, which he
  * prefers to the split layout's one along the bottom edge): the shoulders' two rows on top, L2/L1 at the block's left
@@ -3870,7 +3872,7 @@ static const char *fightstg_bmenu_word(s32 action) {
      * translated set makes them change length, wrap and shrink per language - a UI/UX problem, not a translation one.
      * The game's own texts stay in the player's language; only the eight commands are fixed. */
     static const char *const words[FIGHTSTG_BMENU_ACTIONS] = {"FIGHT", "TECH",   "DIGIVOLVE", "TAG",
-                                                              "ITEM",  "RUN",    "INSPECT",   "BLAST"};
+                                                              "BAG",   "RUN",    "INFO",      "BLAST"};
 
     return action >= 0 && action < FIGHTSTG_BMENU_ACTIONS ? words[action] : "BLAST";
 }
@@ -4178,7 +4180,7 @@ static void fightstg_battle_menu_show(FightstgBattleMenu *obj, FightstgBattleMen
                     cyan[3] = { 170, 240, 255 }, green[3] = { 150, 255, 170 },
                     shadow[3] = { 6, 10, 34 };
     GfxLayer *layer = gfx_module.funcs.get_layer(0x1005);
-    s32 x = obj->x[i] + dx;
+    s32 x = obj->x[i] + dx - port_video_widescreen_pad() * FIGHTSTG_BMENU_WIDE_SHIFT / 100;
     s32 y = obj->y[i] + dy;
     s32 h = FIGHTSTG_BMENU_CHIP;
     s32 size = obj->word_size[i];
@@ -4518,7 +4520,8 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
             fightstg_battle_menu_show(obj, data, i, dx, dy, glow);
         }
         /* queued after the plates, so drawn under them */
-        fightstg_battle_menu_rhombus(FIGHTSTG_BMENU_CX + FIGHTSTG_BMENU_CHIP / 2 - (r * r) / 3,
+        fightstg_battle_menu_rhombus(FIGHTSTG_BMENU_CX + FIGHTSTG_BMENU_CHIP / 2 - (r * r) / 3 -
+                                         port_video_widescreen_pad() * FIGHTSTG_BMENU_WIDE_SHIFT / 100,
                                      FIGHTSTG_BMENU_CY + FIGHTSTG_BMENU_CHIP / 2, FIGHTSTG_BMENU_STEP_X + 12,
                                      FIGHTSTG_BMENU_STEP_Y + 9);
         if (obj->inspect) {
