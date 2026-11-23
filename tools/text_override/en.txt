@@ -1099,3 +1099,15 @@ $RsNoBits: Not enough Bits.
 $RsLow: It needs 101 or more to give 100.
 $RsFull: That would pass 999.
 $RsSame: Pick a different stat.
+# Etemon's jukebox (port/game/definitive_midi_screen.c): the player's MIDI files as the random battles' music.
+$MidiTitle: Etemon's Jukebox
+$MidiKeys: × button: Choose   △ button: Leave
+$MidiOwn: Game's own music
+$MidiShuffle: All, shuffled
+$MidiOrder: All, in order
+$MidiFolder: "Folder: "
+$MidiNone: No .mid files yet. Drop some there.
+$MidiMore: Green row: plays in random battles.
+$MidiSet: Done: random battles play this piece.
+$MidiOwnSet: Done: the game's own music is back.
+$MidiCut: Done. Long piece: its end is cut.

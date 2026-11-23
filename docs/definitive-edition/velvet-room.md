@@ -67,6 +67,54 @@ floor carries the light; `def_time_door`).
 - **Pitfalls:** a `POLY_F4` with semi-transparency dirties the void; the layer draws what was added last, first; the
   wstag handlers table is shifted by +1.
 
+### Etemon's jukebox: the player's own MIDI as the random battles' music
+
+Talk to Etemon at the piano (story step 22 and later, as before): his joke line first, then a list opens (`definitive_midi_screen.c`,
+a field overlay run from FIELDSTG's idle step like the pig's stat swap; up/down move, the confirm button chooses, back leaves). The
+first row is the game's own music (the default), then "All, shuffled" (a random file each battle, never the previous one) and "All, in order" (the next file by name, wrapping; the position is kept); the others are the `.mid` / `.midi` files of the player's folder, sorted without
+regard to case, those that do not convert left out. The chosen row is green. The choice is for the **random battles**
+(`fieldstg_encounter_start`: the Rare Targets and the Rush's pick are the same encounter). Scripted battles, bosses, the Super Rares
+and the Time Room keep their own music. Pick the first row, or delete the file, and the game's music is back, with no message.
+
+**Where the files live.** A `midi` folder beside the settings file (`settings.json`, the memory cards `card1.mcd`/`card2.mcd`: the
+launcher owns that folder, psxstack's `port_settings.dir`), or the folder named by `DW3_MIDI_DIR` (tests, power users). The port
+makes it when the list is first opened and the list shows its tail, so a player finds it from the game.
+
+| platform | folder |
+|---|---|
+| Linux | `~/.local/share/dw2003/midi` (the launcher's per-user directory, SDL's pref path: where `card1.mcd` is), or `midi` beside the binary in portable mode |
+| Windows | `%APPDATA%\dw2003\midi` (the same), or beside the exe in portable mode |
+| Android | the app's files directory (`Android/data/com.al4xdev.dw2003/files/midi`, beside `settings.json`; the app starts in that folder) |
+| PortMaster handhelds | `ports/dw3/midi` (the package folder, next to `settings.json`) |
+
+The choice is in `battle_music.txt` in that folder (`mode: own|file|shuffle|order`, `file:` or `last:`). It is the install's, not the
+save's: the files are the player's, on this device. A file that does not convert is skipped in a playlist; with none, the game's music. Decisions: `.plan/closed/etemon-midi.md`.
+
+**How it plays (the pipeline).** The same one as the Velvet Room's and the Adventure scores, but converted at run time in C
+(`definitive_midi.c`) instead of at configure time by a generator: the game's LIBSND plays a SEP (the disc's sequence format,
+`docs/FORMATS.md` "SEP") on the samples of BGM031 (sound bank 33) under a bank id of its own, **74** (72 is the room's, 73 the
+Adventure score's: a bank loaded under its id is not loaded again, and BGM031 must keep its own score). `sound.c`'s PC_PORT hooks
+copy BGM031's record, and write the SEP where BGM031's own is in the header buffer of an extra entry (`dw3_midi_sound_bank/header`);
+`def_midi_battle_music` returns the key `0x60000000 | 74 << 18` for `records_state.music`, which the battle plays after loading
+`(music >> 18) & 0x7F` as an extra bank (`wfightmn`). When the chosen file's SEP differs from the one the loaded bank holds
+(another file, or the same one edited), the entries that hold bank 74 forget it (`dw3_midi_sound_forget`) and the next battle loads
+it again. The converter reads format 0 and 1 files in metric time and keeps the notes, the tempo map, the programs and the
+channel volume and pan (pitch bend, aftertouch and the other controllers are dropped: the SEP's room is for the notes), merged by
+tick with each file's channel kept; the General MIDI programs map onto the instruments BGM031 has (the disc has no GM set: 1 pianos,
+guitars and tuned percussion, 2 brass and the cello, 3 basses, 4 violin, 5 organs and reeds, 6 viola, ensembles and pads, 8 flutes,
+pipes and leads); channel 10 maps note by note onto the four drum tones of program 0 (kick 36, snare 38, hat 44, cymbal 49; other
+drum notes are dropped); BGM031's oboe tone is re-centred (62) as the room's score does. The piece loops as the disc's BGMs do
+(NRPN 20 / 30). **Limits:** the SEP gets what the buffer has past BGM031's VAB header, about 31 KB (roughly 4000 notes: three to
+five minutes of a full band, more of a small one): a longer file is cut where it fits and every sounding note is closed there (the
+list says so on choosing it: "its end is cut"), every melodic tone gets one shared attack/release and the reverb (type 3, depth 64: the owner's "middle setting", unlike the room's per-instrument tuning), no piano sample (program 1's tone plays the pianos), 24 SPU voices shared with the sound effects, files up to 3 MB.
+Conversion costs a few milliseconds a file; the list converts each file once when it opens (to leave out the ones that do not
+play) and a battle converts the chosen one when it starts.
+
+Tests: `tests/port/definitive_midi.py` (the module alone: list, choice file, a path out of the folder refused, the converter's
+notes, drums, programs, tempo map and the cut, the bank hook on BGM031's real header file, the strings in six languages) and
+`tests/port/definitive_midi_battle.py` (a random battle on map `0x233` from a card the first-battle script saves: the chosen file's
+key plays and the audio is not silent; with nothing chosen or the file gone it is the game's own).
+
 ### Velvet Room: details, decisions and history
 
 **Owner decisions, in order.** (1) First the Velvet Server, a room where the new NPCs live. (2) NPCs: the Black Market trader (moves

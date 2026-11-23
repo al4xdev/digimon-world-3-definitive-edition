@@ -5018,3 +5018,15 @@ $FinSuperEvo: <7>Super Chosen Evolution<7>Todos os laços de seus<1>parceiros re
 $FinIgorBye: <7>Igor<7>Ah... você caminhou<1>longe, meu convidado.<2,2><3>Esse poder pertence a<1>você agora. Ele será<1>útil no futuro.<2,2><3>Sinto que seu coração<1>ainda poderá despertar<1>mais vínculos.<2,2><3>Quanto a mim, preciso<1>ir para uma prisão,<1>uma limusine...<2,2><3>...ou talvez um<1>elevador. É difícil<1>dizer.<2,2><3>Para mim, passado,<1>presente, futuro e até<1>mesmo os locais...<2,2><3>...se passam todos ao<1>mesmo tempo.<2,2><3>Um pequeno amigo vai<1>cuidar dos seus laços<1>aqui agora. Adeus.<2,2>
 $PipimonMeet: <7>Pipimon<7>Pipi! Olá! O Sr. Igor<1>me pediu para cuidar<1>desta sala!<2,2><3>Sou Pipimon! Vamos<1>ver os laços de DNA<1>dos seus parceiros!<2,2>
 $PipimonBack: <7>Pipimon<7>Pipi! Bem-vindo de<1>volta! Vamos ver os<1>laços de DNA!<2,2>
+# Etemon's jukebox (port/game/definitive_midi_screen.c): the player's MIDI files as the random battles' music.
+$MidiTitle: Jukebox do Etemon
+$MidiKeys: Botão ×: Escolher   Botão △: Sair
+$MidiOwn: Música original do jogo
+$MidiShuffle: Todas, aleatório
+$MidiOrder: Todas, em ordem
+$MidiFolder: "Pasta: "
+$MidiNone: Nenhum .mid ainda. Ponha-os lá.
+$MidiMore: Linha verde: toca nas batalhas.
+$MidiSet: Pronto: as batalhas tocam esta música.
+$MidiOwnSet: Pronto: a música original voltou.
+$MidiCut: Pronto. Música longa: o fim é cortado.

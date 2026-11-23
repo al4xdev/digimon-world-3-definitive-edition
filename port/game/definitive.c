@@ -838,6 +838,7 @@ void def_savestate(struct PortState *s) {
     def_finale_savestate(s); /* Extended Final Act & Post-Credits Farewell */
     def_superhunt_screen_savestate(s); /* the Sepikmon's board and the hunts' reward panel */
     def_respec_savestate(s); /* the pig's stat swap */
+    def_midi_savestate(s);   /* Etemon's list */
     def_recolor_savestate(s); /* which model is the rare foe's, for its palette */
     def_skin_savestate(s);
     port_girls_savestate(s); /* what the hero's files in memory were painted for (Kaili, the skin) */

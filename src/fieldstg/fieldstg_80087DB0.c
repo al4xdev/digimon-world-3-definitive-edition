@@ -1837,7 +1837,7 @@ void fieldstg_manager_update(FieldstgManager *obj, FieldstgManagerData *data) {
             if (dw3_travel_frame()) {
                 break; /* the Guardromon's SAVE / TELEPORT screen owns the field */
             }
-            if (def_bm_frame() || def_dri_frame() || def_purify_frame() || def_superhunt_frame() || def_respec_frame()) {
+            if (def_bm_frame() || def_dri_frame() || def_purify_frame() || def_superhunt_frame() || def_respec_frame() || def_midi_frame()) {
                 break; /* the Black Market's, a DRI Agent's, the mentor's, the Sepikmon's or the pig's screen owns the
                         * field (the hunts' also draw the compass) */
             }
@@ -5364,6 +5364,7 @@ void fieldstg_encounter_start(void) {
     records_state.stage = event->stage;
     records_state.music = event->music;
 #ifdef PC_PORT
+    records_state.music = def_midi_battle_music(records_state.music); /* the player's own piece (Etemon's jukebox) */
     {
         /* The region's Rare Target in place of the encounter, on the encounter's stage and music; asked
          * before the Rush, which never offers to skip it. */

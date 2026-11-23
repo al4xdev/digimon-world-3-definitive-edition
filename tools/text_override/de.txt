@@ -959,3 +959,15 @@ $RsNoBits: Nicht genug Bits.
 $RsLow: Für 100 braucht er 101 oder mehr.
 $RsFull: Das wäre über 999.
 $RsSame: Wähle einen anderen Wert.
+# Etemon's jukebox (port/game/definitive_midi_screen.c): the player's MIDI files as the random battles' music.
+$MidiTitle: Etemons Jukebox
+$MidiKeys: × Taste: Wählen   △ Taste: Gehen
+$MidiOwn: Musik des Spiels
+$MidiShuffle: Alle, gemischt
+$MidiOrder: Alle, der Reihe nach
+$MidiFolder: "Ordner: "
+$MidiNone: Noch keine .mid. Leg welche hinein.
+$MidiMore: Grüne Zeile: spielt in Kämpfen.
+$MidiSet: Fertig: Kämpfe spielen dieses Stück.
+$MidiOwnSet: Fertig: die Spielmusik ist zurück.
+$MidiCut: Fertig. Langes Stück: Ende gekürzt.

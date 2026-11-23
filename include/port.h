@@ -518,6 +518,8 @@ s32 def_form_anim_rows_exchanged(void);
 int def_purify_frame(void);
 int def_superhunt_frame(void);
 int def_respec_frame(void);
+int def_midi_frame(void);
+int def_midi_battle_music(int music); /* the player's MIDI as the random battles' music, when one is chosen */
 int def_purify_stage_enters(int member);
 int def_purify_defeat(void);
 int def_purify_won_wave(void); /* the battle just ended was a purification's wave, won (def_log_end ran) */

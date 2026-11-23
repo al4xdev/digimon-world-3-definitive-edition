@@ -121,6 +121,12 @@ extern void dw3_adventure_sound_body(s32 id, s32 *buffer, s32 spu_addr);
 extern void dw3_adventure_sound_music(s32 id);
 extern void dw3_adventure_sound_stopped(s32 id);
 extern void dw3_adventure_sound_silenced(void);
+/* port/game/definitive_midi.c (id 74): the player's own MIDI, converted at run time (Etemon's jukebox) */
+extern SoundBank *dw3_midi_sound_bank(s32 id);
+extern void dw3_midi_sound_header(s32 id, s32 *buffer);
+extern void dw3_midi_sound_music(s32 id);
+extern void dw3_midi_sound_stopped(s32 id);
+extern void dw3_midi_sound_silenced(void);
 #endif
 
 /* The three entries' buffers for the VAB header file, and their VAB bodies' SPU addresses. */
@@ -178,6 +184,7 @@ s32 sound_play(s32 key) {
 #ifdef PC_PORT
         dw3_velvet_sound_music(id);
         dw3_adventure_sound_music(id);
+        dw3_midi_sound_music(id);
 #endif
     }
     if (is_note) {
@@ -211,6 +218,7 @@ void sound_stop_all(void) {
 #ifdef PC_PORT
     dw3_velvet_sound_silenced();
     dw3_adventure_sound_silenced();
+    dw3_midi_sound_silenced();
 #endif
     sound_module.current = 0;
 }
@@ -230,6 +238,7 @@ void sound_stop(s32 key) {
 #ifdef PC_PORT
     dw3_velvet_sound_stopped(id);
     dw3_adventure_sound_stopped(id);
+    dw3_midi_sound_stopped(id);
 #endif
     if (sound_module.current == key) {
         sound_module.current = 0;
@@ -252,6 +261,20 @@ void sound_fade_out(s32 key) {
         sound_module.current = 0;
     }
 }
+
+#ifdef PC_PORT
+/* The player's MIDI bank (id 74) is chosen again: the entries that hold it forget it, so the next battle loads the new
+ * piece (a bank already loaded under its id is not loaded again). Never while it plays: it is asked between battles. */
+void dw3_midi_sound_forget(void) {
+    s32 i;
+
+    for (i = 1; i < 3; i++) {
+        if (sound_module.entries[i].id == 74) {
+            sound_module.entries[i].id = -1;
+        }
+    }
+}
+#endif
 
 s32 sound_is_loading(void) {
     return sound_module.loading.step != 0;
@@ -277,7 +300,9 @@ void sound_load_bank(s32 index, s32 id) {
     }
     load->step = 1;
 #ifdef PC_PORT
-    if (id == 73) {
+    if (id == 74) {
+        load->bank = dw3_midi_sound_bank(id);
+    } else if (id == 73) {
         load->bank = dw3_adventure_sound_bank(id);
     } else if (id == 72) {
         load->bank = dw3_velvet_sound_bank(id);
@@ -337,6 +362,7 @@ void sound_update_loading(void) {
 #ifdef PC_PORT
         dw3_velvet_sound_header(entry->id, entry->header_buffer);
         dw3_adventure_sound_header(entry->id, entry->header_buffer);
+        dw3_midi_sound_header(entry->id, entry->header_buffer);
 #endif
         entry->vab_id = SsVabOpenHeadSticky(cdload_module.get_subfile(load->bank->vab_header, entry->header_buffer), index,
                                             entry->spu_addr);

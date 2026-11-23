@@ -143,6 +143,7 @@ for L in $LAYERS; do
             "$PY" "$ROOT/tests/port/definitive_superhunt.py"   # the Super Rare hunts: order, compass, point, flight, record
             "$PY" "$ROOT/tests/port/definitive_skins.py"   # the hero's skins: unlocks, the CLUT recipes, record
             "$PY" "$ROOT/tests/port/definitive_velvet_music.py"   # the Velvet Room's score through the sound hooks (skips without the local MIDI)
+            "$PY" "$ROOT/tests/port/definitive_midi.py"   # the player's MIDI as battle music: list, choice, converter, bank hook (Etemon's jukebox)
             "$PY" "$ROOT/tests/port/definitive_tp.py"    # TP table + save converter DFV2 (definitive progression)
             "$PY" "$ROOT/tests/port/definitive_pity.py"  # training pity counter & guarantee (definitive progression)
             "$PY" "$ROOT/tests/port/definitive_gauges.py" # Blast Gauge slot save/load & clamp (definitive progression)
@@ -155,6 +156,7 @@ for L in $LAYERS; do
             "$PY" "$ROOT/tests/port/debug.py"      # the debug channel (--debug) and tools/mcp's offline self-test
             "$PY" "$ROOT/tests/port/savestate.py" "${M32[@]}"   # save states: resumed at battle_start, the same run
             "$PY" "$ROOT/tests/port/crash.py"      # the crash report (DW3_PORT_CRASH_AT, a fatal error, --version)
+            "$PY" "$ROOT/tests/port/definitive_midi_battle.py"   # a random battle plays the chosen MIDI (bank 74), the game's own otherwise (~35 s)
             "$PY" "$ROOT/tests/port/field.py"      # field events and menus the replays do not reach (the lobby's exit before progress 3, the item list, a dive, the swamp's flies)
         fi ;;
     *) echo "unknown layer $L" >&2; exit 2 ;;

@@ -395,6 +395,7 @@ static s32 vl_mentor_phase; /* 1 the mentor's line is on screen: his panel (the 
 static s32 vl_room; /* the room is running (set when a portal is taken, cleared when the map is left) */
 static s32 vl_from; /* the inn the portal was taken in */
 static s32 vl_sepik_phase; /* 1 the Sepikmon's line is on screen: his board opens after it */
+static s32 vl_etemon_phase; /* 1 Etemon's line is on screen: his jukebox opens after it */
 static s32 vl_pig_phase; /* 1 the pig's line is on screen: his stat swap opens after it */
 static s32 vl_pulled; /* the room was entered by dw3_velvet_pull: who speaks to the player on arrival (VL_PULL_*) */
 static s32 vl_igor_phase; /* 1 Igor's line is on screen: the story hears when it closes (def_story_igor_done) */
@@ -983,6 +984,10 @@ void dw3_velvet_draw(void) {
             vl_pig_phase = 0;
             def_respec_offer(); /* the stat swap (definitive_respec_screen.c) */
         }
+        if (vl_etemon_phase == 1 && fieldstg_stage.actor_busy == 0) {
+            vl_etemon_phase = 0;
+            def_midi_offer(); /* the player's MIDI as the battle music (definitive_midi_screen.c) */
+        }
         if (vl_mentor_phase == 1 && fieldstg_stage.actor_busy == 0) {
             vl_mentor_phase = 0;
             def_purify_offer(); /* Blast phase 2 (definitive_purify.c) */
@@ -1340,6 +1345,10 @@ void dw3_velvet_shop_talk(FieldstgActor *actor) {
         vl_pig_phase = 1;
         return;
     }
+    if (vl_on() && vl_room && actor != NULL && actor->base.key1 == VL_ETEMON && actor->base.key2 == 1) {
+        vl_etemon_phase = 1; /* his joke line first, then the jukebox */
+        return;
+    }
     if (vl_on() && vl_room && actor != NULL && actor->base.key1 == VL_MENTOR && actor->base.key2 == 1) {
         vl_mentor_talks[0].message = VL_MENTOR_LINE; /* the Time Room may have left its own there */
         vl_mentor_phase = 1;
@@ -1420,6 +1429,7 @@ void dw3_velvet_reset(void) {
     vl_shop_phase = 0;
     vl_mentor_phase = 0;
     vl_sepik_phase = 0;
+    vl_etemon_phase = 0;
     vl_pig_phase = 0;
     vl_pulled = 0;
     vl_igor_phase = 0;
@@ -1438,6 +1448,7 @@ void dw3_velvet_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, vl_shop_phase);
     PORT_STATE_VAR(s, vl_mentor_phase);
     PORT_STATE_VAR(s, vl_sepik_phase);
+    PORT_STATE_VAR(s, vl_etemon_phase);
     PORT_STATE_VAR(s, vl_pig_phase);
     PORT_STATE_VAR(s, vl_pulled);
     PORT_STATE_VAR(s, vl_igor_phase);

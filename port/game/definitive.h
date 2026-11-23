@@ -526,6 +526,18 @@ void def_superhunt_board_offer(void);       /* his line is over: the board opens
 void def_respec_offer(void);    /* the pig's line is over: his board opens on the field's next frame */
 int def_respec_frame(void);     /* the field's idle step: 1 while his board owns the field */
 void def_respec_savestate(struct PortState *s);
+/* Etemon's jukebox (definitive_midi_screen.c, definitive_midi.c): the player's MIDI files as the music of the random
+ * battles. */
+void def_midi_offer(void);   /* Etemon's line is over: his list opens on the field's next frame */
+int def_midi_frame(void);    /* the field's idle step: 1 while his list owns the field */
+void def_midi_savestate(struct PortState *s);
+void def_midi_dir(char *out, unsigned long size); /* the folder the files are in (DW3_MIDI_DIR, or `midi` beside the settings) */
+int def_midi_scan(void);                   /* the folder's playable files into the list: their count */
+const char *def_midi_name(int i);
+int def_midi_was_cut(int i);               /* the piece is longer than a sound bank's room: its end is cut */
+int def_midi_chosen(void);                 /* the chosen file's index in the list, -1: the game's own music */
+void def_midi_choose(int i);               /* -1: the game's own music */
+int def_midi_battle_music(int music);
 int def_superhunt_frame(void);              /* the field's idle step: 1 while the board or a panel owns the field */
 void def_superhunt_screen_savestate(struct PortState *s);
 /* The rare foes' palette swap (definitive_recolor.c): the kinds, and its save-state part (the hooks are in port.h). */
