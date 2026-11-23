@@ -4,6 +4,12 @@
 #include "definitive.h"
 #include "definitive_persona.h"
 
+/* GCC 8 (the PortMaster toolchains, Debian buster) reports nested designated initializers such as .phase[1].hue as
+ * missing the phase's other fields; C zeroes them, which is what the rows mean. Newer GCC and clang do not warn. */
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+#endif
+
 const DefPersona def_personas[] = {
     /* DRAFT 2026-11-23, written without the owner from the design guide; the review table is
      * .dumps/tasks/persona/personas.proposed.json. The molds' names are the guide's (Fechadura, Agulha, ...). */
