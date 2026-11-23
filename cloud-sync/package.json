@@ -9,7 +9,9 @@
     "typecheck": "tsc --noEmit",
     "test": "node --test --test-concurrency=1 test/*.test.mjs",
     "db:migrate:local": "wrangler d1 execute dw3-cloud-sync-db --local --file=./schema.sql",
-    "db:migrate:remote": "wrangler d1 execute dw3-cloud-sync-db --remote --file=./schema.sql"
+    "db:migrate:remote": "wrangler d1 execute dw3-cloud-sync-db --remote --file=./schema.sql",
+    "db:migrate:expansion:local": "wrangler d1 execute dw3-cloud-sync-db --local --file=./migrations/0002_save_expansion.sql",
+    "db:migrate:expansion:remote": "wrangler d1 execute dw3-cloud-sync-db --remote --file=./migrations/0002_save_expansion.sql"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250411.0",

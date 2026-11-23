@@ -8,8 +8,21 @@ import {
   sha256Hex,
 } from "./crypto";
 import { checkRateLimit } from "./rateLimit";
-import { gunzipBounded, gzipBytes, PayloadError, readLimitedStream, toUint8Array, validatePs1MemoryCard } from "./save";
-import { ALLOWED_PLATFORMS, ALLOWED_SLOTS, PS1_MC_SIZE, type AuthContext, type ClientMeta, type Env } from "./types";
+import {
+  gunzipBounded,
+  gzipBytes,
+  PayloadError,
+  readLimitedStream,
+  toUint8Array,
+  validateExpansion,
+  validatePs1MemoryCard,
+} from "./save";
+import {
+  ALLOWED_PLATFORMS,
+  ALLOWED_SLOTS,
+  EXPANSION_MAX,
+  PS1_MC_SIZE,
+  type AuthContext, type ClientMeta, type Env } from "./types";
 
 const SECURITY_HEADERS: Record<string, string> = {
   "X-Content-Type-Options": "nosniff",
@@ -303,15 +316,26 @@ async function handleMe(env: Env, auth: AuthContext, meta: ClientMeta, ts: numbe
     env.DB.prepare(`SELECT COUNT(*) AS cnt FROM devices WHERE account_id = ?1 AND status = 'active'`)
       .bind(auth.accountId)
       .first<{ cnt: number }>(),
-    env.DB.prepare(`SELECT slot, sha256, raw_size, seq, updated_at, updated_by FROM saves WHERE account_id = ?1`)
+    env.DB.prepare(
+      `SELECT slot, sha256, pair_sha256, raw_size, seq, updated_at, updated_by FROM saves WHERE account_id = ?1`,
+    )
       .bind(auth.accountId)
-      .all<{ slot: string; sha256: string; raw_size: number; seq: number; updated_at: number; updated_by: string }>(),
+      .all<{
+        slot: string;
+        sha256: string;
+        pair_sha256: string | null;
+        raw_size: number;
+        seq: number;
+        updated_at: number;
+        updated_by: string;
+      }>(),
   ]);
 
   const saves: Record<string, unknown> = {};
   for (const s of savesRows.results ?? []) {
     saves[s.slot] = {
       sha256: s.sha256,
+      pair_sha256: s.pair_sha256 ?? s.sha256,
       raw_size: Number(s.raw_size),
       seq: Number(s.seq),
       updated_at: Number(s.updated_at),
@@ -395,20 +419,32 @@ async function handleSavePush(
     return errJson("rate_limited", 429, "Too many save uploads", { "Retry-After": String(rl.retryAfterSec) });
   }
 
+  /* The expansion save (card1.def.json) rides after the card's 128 KB when the client says how long it is. A client
+   * from before it sends the card alone: that clears the stored expansion, which no longer pairs with the new card
+   * (the game's generation check would read it as empty anyway). */
+  const extHeader = request.headers.get("X-Save-Expansion-Size");
+  let extSize = 0;
+  if (extHeader !== null) {
+    extSize = Number(extHeader);
+    if (!Number.isInteger(extSize) || extSize < 0 || extSize > EXPANSION_MAX) {
+      return errJson("invalid_expansion_size", 400);
+    }
+  }
+  const rawMax = PS1_MC_SIZE + extSize;
   const cl = Number(request.headers.get("Content-Length") ?? "0");
-  if (cl > PS1_MC_SIZE + 4096) {
+  if (cl > rawMax + 4096) {
     return errJson("payload_too_large", 413);
   }
   if (!request.body) {
     return errJson("empty_body", 400);
   }
 
-  const bodyBytes = await readLimitedStream(request.body, PS1_MC_SIZE + 4096);
+  const bodyBytes = await readLimitedStream(request.body, rawMax + 4096);
   const ce = (request.headers.get("Content-Encoding") ?? "").toLowerCase().trim();
   let rawBytes: Uint8Array;
   if (ce === "gzip") {
     try {
-      rawBytes = await gunzipBounded(bodyBytes, PS1_MC_SIZE);
+      rawBytes = await gunzipBounded(bodyBytes, rawMax);
     } catch (e) {
       if (e instanceof PayloadError) throw e;
       return errJson("invalid_gzip", 400);
@@ -419,23 +455,35 @@ async function handleSavePush(
     return errJson("unsupported_encoding", 415);
   }
 
-  validatePs1MemoryCard(rawBytes);
+  if (rawBytes.byteLength !== rawMax) {
+    return errJson("invalid_save_size", 400, `expected ${rawMax} bytes, got ${rawBytes.byteLength}`);
+  }
+  const cardBytes = extSize > 0 ? rawBytes.subarray(0, PS1_MC_SIZE) : rawBytes;
+  validatePs1MemoryCard(cardBytes);
+  if (extSize > 0) validateExpansion(rawBytes.subarray(PS1_MC_SIZE));
 
-  const computedSha = await sha256Hex(rawBytes);
+  /* sha256 stays the card's alone: the clients from before the expansion compare it with their card. pair_sha256 is
+   * the card and the expansion together (sha256 of both, the card first), the card's own sha with no expansion. */
+  const computedSha = await sha256Hex(cardBytes);
+  const pairSha = extSize > 0 ? await sha256Hex(rawBytes) : computedSha;
   const declaredSha = request.headers.get("X-Save-Sha256")?.trim().toLowerCase();
   if (declaredSha && declaredSha !== computedSha) {
     return errJson("sha256_mismatch", 400, `expected ${declaredSha}, got ${computedSha}`);
   }
+  const declaredPair = request.headers.get("X-Save-Pair-Sha256")?.trim().toLowerCase();
+  if (declaredPair && declaredPair !== pairSha) {
+    return errJson("sha256_mismatch", 400, `expected pair ${declaredPair}, got ${pairSha}`);
+  }
 
   const existing = await env.DB.prepare(
-    `SELECT sha256, seq, updated_at FROM saves WHERE account_id = ?1 AND slot = ?2`,
+    `SELECT sha256, pair_sha256, seq, updated_at FROM saves WHERE account_id = ?1 AND slot = ?2`,
   )
     .bind(auth.accountId, slot)
-    .first<{ sha256: string; seq: number; updated_at: number }>();
+    .first<{ sha256: string; pair_sha256: string | null; seq: number; updated_at: number }>();
 
   const existingSeq = Number(existing?.seq ?? 0);
 
-  if (existing && existing.sha256 === computedSha) {
+  if (existing && (existing.pair_sha256 ?? existing.sha256) === pairSha) {
     await touchActivity(env, auth, meta, ts, true);
     return json({
       ok: true,
@@ -443,6 +491,7 @@ async function handleSavePush(
       slot,
       seq: existingSeq,
       sha256: computedSha,
+      pair_sha256: pairSha,
       updated_at: Number(existing.updated_at),
     });
   }
@@ -468,37 +517,40 @@ async function handleSavePush(
     }
   }
 
-  const compressedBlob = await gzipBytes(rawBytes);
+  const compressedBlob = await gzipBytes(cardBytes);
+  const extBlob = extSize > 0 ? await gzipBytes(rawBytes.subarray(PS1_MC_SIZE), EXPANSION_MAX + 4096) : null;
 
   let committedSeq = 0;
   if (!existing) {
     const ins = await env.DB.prepare(
-      `INSERT INTO saves (account_id, slot, sha256, raw_size, seq, updated_at, updated_by, blob)
-       VALUES (?1, ?2, ?3, ?4, 1, ?5, ?6, ?7)
+      `INSERT INTO saves (account_id, slot, sha256, raw_size, seq, updated_at, updated_by, blob, pair_sha256, ext_blob)
+       VALUES (?1, ?2, ?3, ?4, 1, ?5, ?6, ?7, ?8, ?9)
        ON CONFLICT(account_id, slot) DO NOTHING
        RETURNING seq`,
     )
-      .bind(auth.accountId, slot, computedSha, PS1_MC_SIZE, ts, auth.deviceId, compressedBlob)
+      .bind(auth.accountId, slot, computedSha, PS1_MC_SIZE, ts, auth.deviceId, compressedBlob, pairSha, extBlob)
       .first<{ seq: number }>();
     if (ins) committedSeq = Number(ins.seq);
   } else if (force) {
     const upd = await env.DB.prepare(
       `UPDATE saves
-       SET sha256 = ?1, raw_size = ?2, seq = seq + 1, updated_at = ?3, updated_by = ?4, blob = ?5
+       SET sha256 = ?1, raw_size = ?2, seq = seq + 1, updated_at = ?3, updated_by = ?4, blob = ?5,
+           pair_sha256 = ?8, ext_blob = ?9
        WHERE account_id = ?6 AND slot = ?7
        RETURNING seq`,
     )
-      .bind(computedSha, PS1_MC_SIZE, ts, auth.deviceId, compressedBlob, auth.accountId, slot)
+      .bind(computedSha, PS1_MC_SIZE, ts, auth.deviceId, compressedBlob, auth.accountId, slot, pairSha, extBlob)
       .first<{ seq: number }>();
     if (upd) committedSeq = Number(upd.seq);
   } else {
     const upd = await env.DB.prepare(
       `UPDATE saves
-       SET sha256 = ?1, raw_size = ?2, seq = seq + 1, updated_at = ?3, updated_by = ?4, blob = ?5
+       SET sha256 = ?1, raw_size = ?2, seq = seq + 1, updated_at = ?3, updated_by = ?4, blob = ?5,
+           pair_sha256 = ?9, ext_blob = ?10
        WHERE account_id = ?6 AND slot = ?7 AND seq = ?8
        RETURNING seq`,
     )
-      .bind(computedSha, PS1_MC_SIZE, ts, auth.deviceId, compressedBlob, auth.accountId, slot, existingSeq)
+      .bind(computedSha, PS1_MC_SIZE, ts, auth.deviceId, compressedBlob, auth.accountId, slot, existingSeq, pairSha, extBlob)
       .first<{ seq: number }>();
     if (upd) committedSeq = Number(upd.seq);
   }
@@ -529,6 +581,8 @@ async function handleSavePush(
     slot,
     seq: committedSeq,
     sha256: computedSha,
+    pair_sha256: pairSha,
+    expansion_size: extSize,
     raw_size: PS1_MC_SIZE,
     stored_bytes: compressedBlob.byteLength,
     updated_at: ts,
@@ -549,10 +603,19 @@ async function handleSavePull(
 
   if (metaOnly) {
     const row = await env.DB.prepare(
-      `SELECT sha256, raw_size, seq, updated_at, updated_by FROM saves WHERE account_id = ?1 AND slot = ?2`,
+      `SELECT sha256, pair_sha256, ext_blob IS NOT NULL AS has_ext, raw_size, seq, updated_at, updated_by
+       FROM saves WHERE account_id = ?1 AND slot = ?2`,
     )
       .bind(auth.accountId, slot)
-      .first<{ sha256: string; raw_size: number; seq: number; updated_at: number; updated_by: string }>();
+      .first<{
+        sha256: string;
+        pair_sha256: string | null;
+        has_ext: number;
+        raw_size: number;
+        seq: number;
+        updated_at: number;
+        updated_by: string;
+      }>();
 
     if (!row) {
       return errJson("save_not_found", 404);
@@ -563,6 +626,7 @@ async function handleSavePull(
       "X-Save-Sha256": row.sha256,
       "X-Save-Updated-At": String(row.updated_at),
       "X-Save-Size": String(row.raw_size),
+      "X-Save-Pair-Sha256": row.pair_sha256 ?? row.sha256,
     };
     if (request.method === "HEAD") {
       return new Response(null, { status: 200, headers: { ...SECURITY_HEADERS, ...hdrs } });
@@ -571,6 +635,8 @@ async function handleSavePull(
       {
         slot,
         sha256: row.sha256,
+        pair_sha256: row.pair_sha256 ?? row.sha256,
+        expansion: Number(row.has_ext) === 1,
         raw_size: Number(row.raw_size),
         seq: Number(row.seq),
         updated_at: Number(row.updated_at),
@@ -582,11 +648,14 @@ async function handleSavePull(
   }
 
   const row = await env.DB.prepare(
-    `SELECT sha256, raw_size, seq, updated_at, updated_by, blob FROM saves WHERE account_id = ?1 AND slot = ?2`,
+    `SELECT sha256, pair_sha256, ext_blob, raw_size, seq, updated_at, updated_by, blob
+     FROM saves WHERE account_id = ?1 AND slot = ?2`,
   )
     .bind(auth.accountId, slot)
     .first<{
       sha256: string;
+      pair_sha256: string | null;
+      ext_blob: unknown;
       raw_size: number;
       seq: number;
       updated_at: number;
@@ -613,13 +682,25 @@ async function handleSavePull(
   }
 
   const gzBytes = toUint8Array(row.blob);
-  const rawBytes = await gunzipBounded(gzBytes, PS1_MC_SIZE);
+  const cardBytes = await gunzipBounded(gzBytes, PS1_MC_SIZE);
+  /* Only a client that asks gets the expansion after the card; the ones from before it read exactly 128 KB. */
+  let rawBytes = cardBytes;
+  let extSize = 0;
+  if (request.headers.get("X-Accept-Expansion") === "1" && row.ext_blob != null) {
+    const ext = await gunzipBounded(toUint8Array(row.ext_blob), EXPANSION_MAX);
+    extSize = ext.byteLength;
+    rawBytes = new Uint8Array(cardBytes.byteLength + extSize);
+    rawBytes.set(cardBytes, 0);
+    rawBytes.set(ext, cardBytes.byteLength);
+  }
 
   return new Response(rawBytes, {
     status: 200,
     headers: {
       "Content-Type": "application/octet-stream",
       "Content-Length": String(rawBytes.byteLength),
+      "X-Save-Expansion-Size": String(extSize),
+      "X-Save-Pair-Sha256": row.pair_sha256 ?? row.sha256,
       ETag: `"${row.sha256}"`,
       "X-Save-Seq": String(row.seq),
       "X-Save-Sha256": row.sha256,

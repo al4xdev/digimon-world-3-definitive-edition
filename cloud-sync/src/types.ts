@@ -24,5 +24,7 @@ export interface AuthContext {
 }
 
 export const PS1_MC_SIZE = 131072;
+/* The expansion save (card1.def.json) beside the card: a few KB in practice, 1 MB at most. */
+export const EXPANSION_MAX = 1 << 20;
 export const ALLOWED_SLOTS = new Set(["card1", "card2"]);
 export const ALLOWED_PLATFORMS = new Set(["portmaster", "pc", "android", "unknown"]);

@@ -389,3 +389,100 @@ test("registration rate limiting and 40-day retention cleanup", async () => {
   });
   assert.equal(afterPurge.status, 401);
 });
+
+test("the expansion save rides with the card, and the clients from before it never see it", async () => {
+  const reg = await fetch(`${BASE}/v1/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "CF-Connecting-IP": "198.51.100.70" },
+    body: JSON.stringify({ device_name: "PC-Expansion", platform: "pc" }),
+  });
+  assert.equal(reg.status, 201);
+  const dev = await reg.json();
+  const auth = { Authorization: `Bearer ${dev.device_token}` };
+
+  const card = makeMemoryCard(7);
+  const ext = Buffer.from(JSON.stringify({ version: 1, slots: [{ gen: 3, personas: { "3": { known: [5, 0], solved: false } } }] }));
+  const pair = Buffer.concat([card, ext]);
+
+  // Not JSON, or a size that does not match the body: refused
+  const badJson = await fetch(`${BASE}/v1/saves/card1/push`, {
+    method: "POST",
+    headers: { ...auth, "X-Save-Expansion-Size": "4" },
+    body: Buffer.concat([card, Buffer.from("nope")]),
+  });
+  assert.equal(badJson.status, 400);
+  const badSize = await fetch(`${BASE}/v1/saves/card1/push`, {
+    method: "POST",
+    headers: { ...auth, "X-Save-Expansion-Size": String(ext.length + 1) },
+    body: pair,
+  });
+  assert.equal(badSize.status, 400);
+
+  // The pair, gzipped as the launcher may send it
+  const push = await fetch(`${BASE}/v1/saves/card1/push`, {
+    method: "POST",
+    headers: {
+      ...auth,
+      "Content-Encoding": "gzip",
+      "X-Expected-Seq": "0",
+      "X-Save-Sha256": sha256(card),
+      "X-Save-Pair-Sha256": sha256(pair),
+      "X-Save-Expansion-Size": String(ext.length),
+    },
+    body: gzipSync(pair),
+  });
+  assert.equal(push.status, 200);
+  const pj = await push.json();
+  assert.equal(pj.seq, 1);
+  assert.equal(pj.sha256, sha256(card));
+  assert.equal(pj.pair_sha256, sha256(pair));
+
+  // The same card with another expansion is a change, not a duplicate
+  const ext2 = Buffer.from(JSON.stringify({ version: 1, slots: [{ gen: 4 }] }));
+  const pair2 = Buffer.concat([card, ext2]);
+  const push2 = await fetch(`${BASE}/v1/saves/card1/push`, {
+    method: "POST",
+    headers: { ...auth, "X-Expected-Seq": "1", "X-Save-Expansion-Size": String(ext2.length) },
+    body: pair2,
+  });
+  assert.equal((await push2.json()).deduplicated, false);
+  const pushDup = await fetch(`${BASE}/v1/saves/card1/push`, {
+    method: "POST",
+    headers: { ...auth, "X-Save-Expansion-Size": String(ext2.length) },
+    body: pair2,
+  });
+  assert.equal((await pushDup.json()).deduplicated, true);
+
+  // Meta: the card's sha for the old clients, the pair's for the new
+  const meta = await (await fetch(`${BASE}/v1/saves/card1/pull?meta=1`, { headers: auth })).json();
+  assert.equal(meta.sha256, sha256(card));
+  assert.equal(meta.pair_sha256, sha256(pair2));
+  assert.equal(meta.expansion, true);
+
+  // A new client gets the card then the expansion
+  const pullNew = await fetch(`${BASE}/v1/saves/card1/pull`, { headers: { ...auth, "X-Accept-Expansion": "1" } });
+  assert.equal(pullNew.status, 200);
+  assert.equal(pullNew.headers.get("X-Save-Expansion-Size"), String(ext2.length));
+  assert.equal(pullNew.headers.get("X-Save-Pair-Sha256"), sha256(pair2));
+  assert.equal(Buffer.compare(Buffer.from(await pullNew.arrayBuffer()), pair2), 0);
+
+  // An old client gets exactly the 128 KB card, with the sha it checks
+  const pullOld = await fetch(`${BASE}/v1/saves/card1/pull`, { headers: auth });
+  assert.equal(pullOld.headers.get("X-Save-Sha256"), sha256(card));
+  assert.equal(Buffer.compare(Buffer.from(await pullOld.arrayBuffer()), card), 0);
+
+  // An old client pushing a card alone clears the expansion: it no longer pairs with that card
+  const card2 = makeMemoryCard(8);
+  const pushOld = await fetch(`${BASE}/v1/saves/card1/push`, {
+    method: "POST",
+    headers: { ...auth, "X-Expected-Seq": "2" },
+    body: card2,
+  });
+  assert.equal(pushOld.status, 200);
+  const meta2 = await (await fetch(`${BASE}/v1/saves/card1/pull?meta=1`, { headers: auth })).json();
+  assert.equal(meta2.expansion, false);
+  assert.equal(meta2.pair_sha256, sha256(card2));
+  const pullAfter = await fetch(`${BASE}/v1/saves/card1/pull`, { headers: { ...auth, "X-Accept-Expansion": "1" } });
+  assert.equal(pullAfter.headers.get("X-Save-Expansion-Size"), "0");
+  assert.equal(Buffer.compare(Buffer.from(await pullAfter.arrayBuffer()), card2), 0);
+});

@@ -36,6 +36,9 @@ CREATE TABLE IF NOT EXISTS saves (
   updated_at INTEGER NOT NULL,
   updated_by TEXT NOT NULL,
   blob BLOB NOT NULL,
+  -- the card and its expansion save (card1.def.json) together; NULL: the card alone (sha256). See migrations/.
+  pair_sha256 TEXT,
+  ext_blob BLOB,
   PRIMARY KEY (account_id, slot)
 );
 

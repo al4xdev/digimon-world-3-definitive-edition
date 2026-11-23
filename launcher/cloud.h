@@ -58,14 +58,23 @@ typedef struct {
     char claim_secret[128];
 } PairClaim;
 
-/* Local PS1 memory card validation & rotation (1..100). */
+/* The expansion save: the game keeps what has no room on the card in a JSON beside it (card1.mcd -> card1.def.json,
+ * port/game/definitive_expansion.h). The two are one save here: the sha, the backups (card1_<stamp>_<sha>.mcd and its
+ * .def.json), restore, the cloud and the RecompLauncher mirror carry both. The sha is sha256 of the card then the JSON,
+ * which is the card's own sha when there is no JSON: a card from before the expansion keeps the sha it always had.
+ * The JSON's schema ("version") is the game's; migrating it is not done here yet (.plan/backlog/launcher-expansion-save.md). */
+#define EXPANSION_MAX (1 << 20) /* the cloud's limit too (cloud-sync/src/types.ts) */
+int save_expansion_path(const char *card_path, char *out, size_t n);
+
+/* Local PS1 memory card validation & rotation (1..100). sha_out: the pair's (above). */
 int save_is_valid_mc(const char *path, char sha_out[65]);
 int save_backup_rotate(const char *game_dir, const char *slot_file, int max_keep);
 int save_backup_list(const char *game_dir, SaveBackup *out, int max_items);
 int save_backup_restore(const char *game_dir, const char *backup_name, int max_keep, char *err, size_t err_n);
 
 /* RecompLauncher mirror. When RecompLauncher starts the launcher (RECOMPLAUNCHER is set) the card is mirrored to
- * <game_dir>/recomp/dw3-save.dw3s: one JSON header line (format, sha256, device, time, cloud seq) then the 128 KB card.
+ * <game_dir>/recomp/dw3-save.dw3s: one JSON header line (format, sha256, device, time, cloud seq) then the 128 KB card;
+ * format 2 adds expansion_size and the expansion's JSON after the card (sha256 then the pair's).
  * That folder is the only save RecompLauncher knows (recomplauncher.json "saves"), so its own backups and cloud copy
  * the mirror and never card1.mcd. <game_dir>/recomp_mirror.state holds the sha of the last mirror this launcher wrote
  * or took in; a mirror that is valid but matches neither that nor card1.mcd was changed from outside (a restore, a

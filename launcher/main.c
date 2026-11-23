@@ -2296,6 +2296,38 @@ static int self_test(const char *root) {
         check(save_backup_list(game_dir, (SaveBackup[4]){0}, 4) >= 1, "recomp mirror: the card it replaced was backed up first");
         unlink(mp);
         check(!recomp_mirror_foreign(game_dir, NULL), "recomp mirror: a missing or damaged mirror is never offered");
+
+        /* The expansion save (cloud.h): card1.def.json is part of the save's sha, its backups, restore and the mirror. */
+        {
+            char ep[1200], sha_card[65], sha_pair[65], got[80] = "";
+            SaveBackup bks[8];
+            snprintf(ep, sizeof(ep), "%s/card1.def.json", game_dir);
+            save_is_valid_mc(cp, sha_card);
+            write_text(ep, "{\"version\":1,\"slots\":[{\"gen\":3}]}");
+            check(save_is_valid_mc(cp, sha_pair) && strcmp(sha_card, sha_pair) != 0,
+                  "expansion: its JSON changes the save's sha; with none the card's own sha is kept");
+            check(recomp_mirror_write(game_dir, "dev1", "TEST", 4, 1) == 0, "expansion: the mirror is written as a pair");
+            int nb = save_backup_list(game_dir, bks, 8);
+            save_backup_rotate(game_dir, "card1.mcd", 5);
+            check(save_backup_list(game_dir, bks, 8) == nb + 1, "expansion: a JSON change alone is a new backup");
+            char bj[1300];
+            snprintf(bj, sizeof(bj), "%s/saves_backup/%.*s.def.json", game_dir, (int)strlen(bks[0].name) - 4, bks[0].name);
+            check(access(bj, F_OK) == 0, "expansion: the backup carries the JSON beside the card");
+            write_text(ep, "{\"version\":1,\"slots\":[{\"gen\":9}]}");
+            check(save_backup_restore(game_dir, bks[0].name, 5, err, sizeof(err)) == 0, "expansion: a pair restored");
+            cf = fopen(ep, "rb");
+            if (cf) { got[fread(got, 1, sizeof(got) - 1, cf)] = 0; fclose(cf); }
+            check(strstr(got, "\"gen\":3") != NULL, "expansion: restore brings the backup's JSON back with its card");
+            /* the mirror holds the gen 3 pair: changed locally to a card with no JSON, then adopted back */
+            remove(ep);
+            write_text(sp, "0000000000000000000000000000000000000000000000000000000000000000");
+            check(recomp_mirror_foreign(game_dir, NULL) == 1 && recomp_mirror_adopt(game_dir, 5, err, sizeof(err)) == 0 &&
+                      save_is_valid_mc(cp, got) && !strcmp(got, sha_pair) && access(ep, F_OK) == 0,
+                  "expansion: a format 2 mirror adopted writes the card and its JSON");
+            check(save_backup_restore(game_dir, bks[nb].name, 5, err, sizeof(err)) == 0 && access(ep, F_OK) != 0,
+                  "expansion: a backup from before the JSON leaves none beside the card");
+            remove(ep);
+        }
         remove(sp);
         remove(cp); /* the rest of the self-test starts without a card, as before */
         snprintf(mp, sizeof(mp), "%s/recomp", game_dir);

@@ -150,15 +150,66 @@ static int write_atomic_bytes(const char *path, const void *data, size_t len, mo
     return 0;
 }
 
+/* ---- The card and its expansion save (cloud.h) ---- */
+int save_expansion_path(const char *card_path, char *out, size_t n) {
+    size_t l = strlen(card_path);
+    if (l >= 4 && !strcmp(card_path + l - 4, ".mcd")) l -= 4;
+    int w = snprintf(out, n, "%.*s.def.json", (int)l, card_path);
+    return w > 0 && (size_t)w < n;
+}
+
+/* The card then its JSON in one malloc'd buffer (*len_out bytes, *ext_len_out of them the JSON: 0 when there is none);
+ * NULL when the card is not a valid one or the JSON is past EXPANSION_MAX (not the game's: nothing is carried then). */
+static char *pair_load(const char *card_path, size_t *len_out, size_t *ext_len_out) {
+    size_t cl = 0, el = 0;
+    char *card = read_all(card_path, &cl);
+    if (!card || cl != PS1_MC_SIZE || (uint8_t)card[0] != 0x4d || (uint8_t)card[1] != 0x43) {
+        free(card);
+        return NULL;
+    }
+    char ep[1200];
+    char *ext = save_expansion_path(card_path, ep, sizeof(ep)) ? read_all(ep, &el) : NULL;
+    if (ext && el > EXPANSION_MAX) {
+        free(ext);
+        free(card);
+        return NULL;
+    }
+    if (ext && el > 0) {
+        char *nb = realloc(card, PS1_MC_SIZE + el + 1);
+        if (!nb) { free(ext); free(card); return NULL; }
+        card = nb;
+        memcpy(card + PS1_MC_SIZE, ext, el);
+        card[PS1_MC_SIZE + el] = 0;
+    } else {
+        el = 0;
+    }
+    free(ext);
+    *len_out = PS1_MC_SIZE + el;
+    *ext_len_out = el;
+    return card;
+}
+
+/* Writes a pair over card_path and its JSON: the JSON first, as the game does (the card's generation names it), then
+ * the card. ext_len 0 removes the JSON: the card being written has none (the old one was backed up by the caller). */
+static int pair_write(const char *card_path, const char *data, size_t ext_len) {
+    char ep[1200];
+    if (!save_expansion_path(card_path, ep, sizeof(ep))) return -1;
+    if (ext_len > 0) {
+        if (write_atomic_bytes(ep, data + PS1_MC_SIZE, ext_len, 0644) != 0) return -1;
+    } else if (unlink(ep) != 0 && errno != ENOENT) {
+        return -1;
+    }
+    return write_atomic_bytes(card_path, data, PS1_MC_SIZE, 0644);
+}
+
 /* ---- Local PS1 Memory Card validation & rotation (1..100) ---- */
 int save_is_valid_mc(const char *path, char sha_out[65]) {
-    size_t sz = 0;
-    char *buf = read_all(path, &sz);
+    size_t sz = 0, el = 0;
+    char *buf = pair_load(path, &sz, &el);
     if (!buf) return 0;
-    int ok = (sz == PS1_MC_SIZE && (uint8_t)buf[0] == 0x4d && (uint8_t)buf[1] == 0x43);
-    if (ok && sha_out) sha256_bytes(buf, sz, sha_out);
+    if (sha_out) sha256_bytes(buf, sz, sha_out);
     free(buf);
-    return ok;
+    return 1;
 }
 
 typedef struct {
@@ -234,13 +285,9 @@ int save_backup_rotate(const char *game_dir, const char *slot_file, int max_keep
 
     char src[1024];
     snprintf(src, sizeof(src), "%s/%s", game_dir, slot_file);
-    size_t sz = 0;
-    char *raw = read_all(src, &sz);
+    size_t sz = 0, el = 0;
+    char *raw = pair_load(src, &sz, &el);
     if (!raw) return -1;
-    if (sz != PS1_MC_SIZE || (uint8_t)raw[0] != 0x4d || (uint8_t)raw[1] != 0x43) {
-        free(raw);
-        return -1;
-    }
     char sha[65];
     sha256_bytes(raw, sz, sha);
 
@@ -266,7 +313,7 @@ int save_backup_rotate(const char *game_dir, const char *slot_file, int max_keep
         char stamp[32], dst[1200];
         strftime(stamp, sizeof(stamp), "%Y%m%d_%H%M%S", &tm);
         snprintf(dst, sizeof(dst), "%s/card1_%s_%.8s.mcd", bdir, stamp, sha);
-        if (write_atomic_bytes(dst, raw, sz, 0644) != 0) {
+        if (pair_write(dst, raw, el) != 0) { /* the JSON beside it, card1_<stamp>_<sha>.def.json */
             free(raw);
             return -1;
         }
@@ -278,6 +325,8 @@ int save_backup_rotate(const char *game_dir, const char *slot_file, int max_keep
         char rm_path[1200];
         snprintf(rm_path, sizeof(rm_path), "%s/%s", bdir, list[i].name);
         unlink(rm_path);
+        char rm_ext[1200];
+        if (save_expansion_path(rm_path, rm_ext, sizeof(rm_ext))) unlink(rm_ext);
     }
     return 0;
 }
@@ -291,10 +340,9 @@ int save_backup_restore(const char *game_dir, const char *backup_name, int max_k
     snprintf(src, sizeof(src), "%s/saves_backup/%s", game_dir, backup_name);
     snprintf(dst, sizeof(dst), "%s/card1.mcd", game_dir);
 
-    size_t sz = 0;
-    char *raw = read_all(src, &sz);
-    if (!raw || sz != PS1_MC_SIZE || (uint8_t)raw[0] != 0x4d || (uint8_t)raw[1] != 0x43) {
-        free(raw);
+    size_t sz = 0, el = 0;
+    char *raw = pair_load(src, &sz, &el);
+    if (!raw) {
         snprintf(err, err_n, "BACKUP FILE IS CORRUPT");
         return -1;
     }
@@ -303,7 +351,7 @@ int save_backup_restore(const char *game_dir, const char *backup_name, int max_k
     if (save_is_valid_mc(dst, NULL)) {
         save_backup_rotate(game_dir, "card1.mcd", max_keep);
     }
-    int rc = write_atomic_bytes(dst, raw, sz, 0644);
+    int rc = pair_write(dst, raw, el); /* a backup from before the expansion has no JSON: none is left beside the card */
     free(raw);
     if (rc != 0) {
         snprintf(err, err_n, "COULD NOT WRITE card1.mcd");
@@ -345,22 +393,27 @@ static void recomp_state_write(const char *game_dir, const char *sha) {
     write_atomic_bytes(path, sha, 64, 0644);
 }
 
-/* A valid mirror: 1, with its header in *m and the whole file in *buf (malloc'd; *card points at the card inside it). */
-static int recomp_read(const char *game_dir, RecompMirror *m, char **buf, const char **card) {
+/* A valid mirror: 1, with its header in *m and the whole file in *buf (malloc'd; *card points at the card inside it,
+ * *ext_len bytes of the expansion's JSON after it: format 2; format 1 has none). */
+static int recomp_read(const char *game_dir, RecompMirror *m, char **buf, const char **card, size_t *ext_len) {
     char path[1100];
     snprintf(path, sizeof(path), "%s/%s/%s", game_dir, RECOMP_DIR, RECOMP_FILE);
     size_t len = 0;
     char *b = read_all(path, &len);
     if (!b) return 0;
     char *nl = memchr(b, '\n', len < 1024 ? len : 1024);
-    if (!nl || len - (size_t)(nl - b) - 1 != PS1_MC_SIZE) { free(b); return 0; }
+    if (!nl) { free(b); return 0; }
     *nl = 0;
     const char *data = nl + 1;
-    int fmt = 0, ok = jget_int(b, "format", &fmt) && fmt == 1 && (uint8_t)data[0] == 0x4d && (uint8_t)data[1] == 0x43;
+    size_t data_len = len - (size_t)(nl - b) - 1;
+    long el = 0;
+    int fmt = 0, ok = jget_int(b, "format", &fmt) && (fmt == 1 || (fmt == 2 && jget_long(b, "expansion_size", &el))) &&
+                      el >= 0 && el <= EXPANSION_MAX && data_len == PS1_MC_SIZE + (size_t)el &&
+                      (uint8_t)data[0] == 0x4d && (uint8_t)data[1] == 0x43;
     char sha[65];
     memset(m, 0, sizeof(*m));
     if (ok) {
-        sha256_bytes(data, PS1_MC_SIZE, sha);
+        sha256_bytes(data, data_len, sha);
         ok = jget_str(b, "sha256", m->sha256, sizeof(m->sha256)) && strcmp(m->sha256, sha) == 0;
     }
     if (!ok) { free(b); return 0; }
@@ -370,25 +423,24 @@ static int recomp_read(const char *game_dir, RecompMirror *m, char **buf, const 
     jget_int(b, "cloud_seq", &m->cloud_seq);
     *buf = b;
     *card = data;
+    *ext_len = (size_t)el;
     return 1;
 }
 
 int recomp_mirror_write(const char *game_dir, const char *device_id, const char *device_name, int cloud_seq, int force) {
     char card_p[1100], sha[65], state_sha[65];
     snprintf(card_p, sizeof(card_p), "%s/card1.mcd", game_dir);
-    size_t sz = 0;
-    char *raw = read_all(card_p, &sz);
-    if (!raw || sz != PS1_MC_SIZE || (uint8_t)raw[0] != 0x4d || (uint8_t)raw[1] != 0x43) {
-        free(raw);
-        return -1;
-    }
+    size_t sz = 0, el = 0;
+    char *raw = pair_load(card_p, &sz, &el);
+    if (!raw) return -1;
     sha256_bytes(raw, sz, sha);
     recomp_state_read(game_dir, state_sha);
 
     RecompMirror cur;
     char *mb = NULL;
     const char *md = NULL;
-    if (recomp_read(game_dir, &cur, &mb, &md)) {
+    size_t mel = 0;
+    if (recomp_read(game_dir, &cur, &mb, &md, &mel)) {
         free(mb);
         if (!force) {
             if (!strcmp(cur.sha256, sha)) {
@@ -406,9 +458,13 @@ int recomp_mirror_write(const char *game_dir, const char *device_id, const char 
     char eid[128], ename[96], hdr[512];
     json_escape(device_id ? device_id : "", eid, sizeof(eid));
     json_escape(device_name ? device_name : "", ename, sizeof(ename));
+    /* Format 1 (the card alone) while there is no JSON, so a launcher from before the expansion still reads it; format 2
+     * carries the JSON after the card, and its sha256 is the pair's. */
+    char ext_field[48] = "";
+    if (el > 0) snprintf(ext_field, sizeof(ext_field), ",\"expansion_size\":%lu", (unsigned long)el);
     int hn = snprintf(hdr, sizeof(hdr),
-                      "{\"format\":1,\"sha256\":\"%s\",\"device_id\":\"%s\",\"device_name\":\"%s\",\"written_at\":%ld,\"cloud_seq\":%d}\n",
-                      sha, eid, ename, (long)time(NULL), cloud_seq);
+                      "{\"format\":%d,\"sha256\":\"%s\",\"device_id\":\"%s\",\"device_name\":\"%s\",\"written_at\":%ld,\"cloud_seq\":%d%s}\n",
+                      el > 0 ? 2 : 1, sha, eid, ename, (long)time(NULL), cloud_seq, ext_field);
     if (hn <= 0 || (size_t)hn >= sizeof(hdr)) { free(raw); return -1; }
     char *out = malloc((size_t)hn + sz);
     if (!out) { free(raw); return -1; }
@@ -431,7 +487,8 @@ int recomp_mirror_foreign(const char *game_dir, RecompMirror *out) {
     RecompMirror m;
     char *mb = NULL;
     const char *md = NULL;
-    if (!recomp_read(game_dir, &m, &mb, &md)) return 0;
+    size_t mel = 0;
+    if (!recomp_read(game_dir, &m, &mb, &md, &mel)) return 0;
     free(mb);
     char state_sha[65], local_sha[65] = "", card_p[1100];
     recomp_state_read(game_dir, state_sha);
@@ -446,14 +503,15 @@ int recomp_mirror_adopt(const char *game_dir, int backup_max, char *err, size_t 
     RecompMirror m;
     char *mb = NULL;
     const char *md = NULL;
-    if (!recomp_read(game_dir, &m, &mb, &md)) {
+    size_t mel = 0;
+    if (!recomp_read(game_dir, &m, &mb, &md, &mel)) {
         snprintf(err, err_n, "RECOMPLAUNCHER SAVE IS CORRUPT");
         return -1;
     }
     char card_p[1100];
     snprintf(card_p, sizeof(card_p), "%s/card1.mcd", game_dir);
     if (save_is_valid_mc(card_p, NULL)) save_backup_rotate(game_dir, "card1.mcd", backup_max);
-    int rc = write_atomic_bytes(card_p, md, PS1_MC_SIZE, 0644);
+    int rc = pair_write(card_p, md, mel);
     if (rc == 0) recomp_state_write(game_dir, m.sha256);
     free(mb);
     if (rc != 0) {
@@ -924,7 +982,9 @@ int cloud_refresh_me(CloudState *st, const char *game_dir, char *err, size_t err
     const char *c1 = saves_obj ? find_json_val(saves_obj, "card1") : NULL;
     if (c1) {
         jget_int(c1, "seq", &st->cloud_seq);
-        jget_str(c1, "sha256", st->cloud_sha256, sizeof(st->cloud_sha256));
+        /* the pair's sha (the card and its expansion); a worker from before it has the card's only */
+        if (!jget_str(c1, "pair_sha256", st->cloud_sha256, sizeof(st->cloud_sha256)))
+            jget_str(c1, "sha256", st->cloud_sha256, sizeof(st->cloud_sha256));
         jget_long(c1, "updated_at", &st->cloud_updated_at);
     } else {
         st->cloud_seq = 0;
@@ -943,15 +1003,16 @@ int cloud_push_card1(CloudState *st, const char *game_dir, int backup_max, int f
     }
     char card[1024];
     snprintf(card, sizeof(card), "%s/card1.mcd", game_dir);
-    size_t sz = 0;
-    char *raw = read_all(card, &sz);
-    if (!raw || sz != PS1_MC_SIZE || (uint8_t)raw[0] != 0x4d || (uint8_t)raw[1] != 0x43) {
-        free(raw);
+    /* The body is the card then its expansion's JSON (X-Save-Expansion-Size of it, 0: none, which clears the cloud's). */
+    size_t sz = 0, el = 0;
+    char *raw = pair_load(card, &sz, &el);
+    if (!raw) {
         snprintf(msg_out, msg_n, "NO VALID LOCAL card1.mcd");
         return -1;
     }
-    char sha[65];
+    char sha[65], card_sha[65];
     sha256_bytes(raw, sz, sha);
+    sha256_bytes(raw, PS1_MC_SIZE, card_sha);
 
     char snap[1100];
 #if defined(__ANDROID__) || defined(_WIN32)
@@ -990,12 +1051,14 @@ int cloud_push_card1(CloudState *st, const char *game_dir, int backup_max, int f
 
     save_backup_rotate(game_dir, "card1.mcd", backup_max);
 
-    char url[320], h_sha[96], h_seq[48], h_force[24];
+    char url[320], h_sha[96], h_pair[112], h_ext[64], h_seq[48], h_force[24];
     snprintf(url, sizeof(url), "%s/v1/saves/card1/push", st->worker_url);
-    snprintf(h_sha, sizeof(h_sha), "X-Save-Sha256: %s", sha);
+    snprintf(h_sha, sizeof(h_sha), "X-Save-Sha256: %s", card_sha);
+    snprintf(h_pair, sizeof(h_pair), "X-Save-Pair-Sha256: %s", sha);
+    snprintf(h_ext, sizeof(h_ext), "X-Save-Expansion-Size: %lu", (unsigned long)el);
     snprintf(h_seq, sizeof(h_seq), "X-Expected-Seq: %d", st->last_seq);
-    const char *hdrs[3] = {h_sha, h_seq, NULL};
-    int nh = 2;
+    const char *hdrs[5] = {h_sha, h_pair, h_ext, h_seq, NULL};
+    int nh = 4;
     if (force) {
         snprintf(h_force, sizeof(h_force), "X-Force: 1");
         hdrs[nh++] = h_force;
@@ -1010,7 +1073,7 @@ int cloud_push_card1(CloudState *st, const char *game_dir, int backup_max, int f
     }
     if (r.status == 409) {
         jget_int(r.body ? r.body : "", "server_seq", &st->cloud_seq);
-        jget_str(r.body ? r.body : "", "server_sha256", st->cloud_sha256, sizeof(st->cloud_sha256));
+        jget_str(r.body ? r.body : "", "server_sha256", st->cloud_sha256, sizeof(st->cloud_sha256)); /* the card's */
         http_resp_free(&r);
         snprintf(msg_out, msg_n, "CLOUD CONFLICT (SERVER #%d)", st->cloud_seq);
         return -2;
@@ -1045,8 +1108,11 @@ int cloud_pull_card1(CloudState *st, const char *game_dir, int backup_max, char 
     snprintf(tmp, sizeof(tmp), "%s/card1.cloud.tmp.%ld", game_dir, (long)getpid());
     snprintf(dst, sizeof(dst), "%s/card1.mcd", game_dir);
 
+    /* Asked for, the expansion's JSON comes after the card (X-Save-Expansion-Size); a worker from before it sends the
+     * card alone and no such header, read as no JSON. */
+    static const char *const pull_hdrs[1] = {"X-Accept-Expansion: 1"};
     HttpResp r;
-    if (http_exec("GET", url, st->device_token, NULL, 0, NULL, NULL, tmp, &r) != 0) {
+    if (http_exec("GET", url, st->device_token, pull_hdrs, 1, NULL, NULL, tmp, &r) != 0) {
         unlink(tmp);
         snprintf(msg_out, msg_n, "OFFLINE OR NETWORK ERROR");
         return -1;
@@ -1064,15 +1130,24 @@ int cloud_pull_card1(CloudState *st, const char *game_dir, int backup_max, char 
         return -1;
     }
 
-    char dl_sha[65], hdr_sha[65], seq_s[32];
-    if (!save_is_valid_mc(tmp, dl_sha)) {
-        unlink(tmp);
+    char dl_sha[65], card_sha[65], hdr_sha[65], ext_s[32], seq_s[32];
+    size_t dl_len = 0;
+    long el = 0;
+    char *dl = read_all(tmp, &dl_len);
+    unlink(tmp);
+    if (header_val(r.headers, "X-Save-Expansion-Size", ext_s, sizeof(ext_s))) el = atol(ext_s);
+    if (!dl || el < 0 || el > EXPANSION_MAX || dl_len != PS1_MC_SIZE + (size_t)el || (uint8_t)dl[0] != 0x4d ||
+        (uint8_t)dl[1] != 0x43 || (el > 0 && dl[PS1_MC_SIZE] != '{')) {
+        free(dl);
         http_resp_free(&r);
         snprintf(msg_out, msg_n, "CORRUPT CLOUD PAYLOAD");
         return -1;
     }
-    if (header_val(r.headers, "X-Save-Sha256", hdr_sha, sizeof(hdr_sha)) && strcasecmp(hdr_sha, dl_sha) != 0) {
-        unlink(tmp);
+    sha256_bytes(dl, dl_len, dl_sha);
+    sha256_bytes(dl, PS1_MC_SIZE, card_sha);
+    if ((header_val(r.headers, "X-Save-Pair-Sha256", hdr_sha, sizeof(hdr_sha)) && strcasecmp(hdr_sha, dl_sha) != 0) ||
+        (header_val(r.headers, "X-Save-Sha256", hdr_sha, sizeof(hdr_sha)) && strcasecmp(hdr_sha, card_sha) != 0)) {
+        free(dl);
         http_resp_free(&r);
         snprintf(msg_out, msg_n, "CLOUD PAYLOAD SHA MISMATCH");
         return -1;
@@ -1081,8 +1156,9 @@ int cloud_pull_card1(CloudState *st, const char *game_dir, int backup_max, char 
     if (save_is_valid_mc(dst, NULL)) {
         save_backup_rotate(game_dir, "card1.mcd", backup_max);
     }
-    if (rename_over(tmp, dst) != 0) {
-        unlink(tmp);
+    int wrc = pair_write(dst, dl, (size_t)el); /* no JSON in the cloud: the local one (backed up) goes with the old card */
+    free(dl);
+    if (wrc != 0) {
         http_resp_free(&r);
         snprintf(msg_out, msg_n, "COULD NOT REPLACE card1.mcd");
         return -1;
@@ -1142,7 +1218,7 @@ int cloud_sync_card1(CloudState *st, const char *game_dir, int backup_max, int i
     int cseq = 0;
     char csha[65] = "";
     jget_int(r.body, "seq", &cseq);
-    jget_str(r.body, "sha256", csha, sizeof(csha));
+    if (!jget_str(r.body, "pair_sha256", csha, sizeof(csha))) jget_str(r.body, "sha256", csha, sizeof(csha));
     jget_long(r.body, "updated_at", &st->cloud_updated_at);
     http_resp_free(&r);
 

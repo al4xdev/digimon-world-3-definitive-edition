@@ -45,10 +45,23 @@ export async function gunzipBounded(compressed: Uint8Array, maxBytes: number): P
   return readLimitedStream(input, maxBytes);
 }
 
-export async function gzipBytes(raw: Uint8Array): Promise<Uint8Array> {
+export async function gzipBytes(raw: Uint8Array, maxBytes = PS1_MC_SIZE + 4096): Promise<Uint8Array> {
   const cs = new CompressionStream("gzip");
   const compressed = new Blob([raw]).stream().pipeThrough(cs);
-  return readLimitedStream(compressed, PS1_MC_SIZE + 4096);
+  return readLimitedStream(compressed, maxBytes);
+}
+
+/** The expansion save is the game's JSON: one object, UTF-8. Its sections are the game's business, not checked here. */
+export function validateExpansion(raw: Uint8Array): void {
+  let v: unknown;
+  try {
+    v = JSON.parse(new TextDecoder("utf-8", { fatal: true, ignoreBOM: false }).decode(raw));
+  } catch {
+    throw new PayloadError("invalid_expansion: not UTF-8 JSON", 400);
+  }
+  if (v === null || typeof v !== "object" || Array.isArray(v)) {
+    throw new PayloadError("invalid_expansion: expected a JSON object", 400);
+  }
 }
 
 export function validatePs1MemoryCard(raw: Uint8Array): void {
