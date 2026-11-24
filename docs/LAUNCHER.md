@@ -194,8 +194,15 @@ because the launcher appends to it - and the crash report keeps its last lines e
 without them. The separate one-off meters (`DW3_PRESENT_LOG`, `DW3_GPU_LOG`, `DW3_PHASE`) are commented in that launcher and
 are not the same thing: they write their own files and some cost real frames.
 
-`SAVE LOGS`, in the same group, writes `dw3-logs-<date>.zip` beside the port: `logs/*`, `crash-*.txt`, `settings.json`,
-`pad.map`, `tui.state` and a `system.txt` with the renderer, `uname` and the date. The cards and the disc are left out.
+`SEND LOGS`, in the same group, saves `dw3-logs-<date>.zip` beside the port: `logs/*`, `crash-*.txt`, `settings.json`,
+`pad.map`, `tui.state`, the player's `card1.mcd` (and `card1.def.json` up to 512 KB: an RPG's progress, nothing
+personal, and what reproduces a battle or quest bug) and a `system.txt` (OS, CPU, cores, memory, launcher version). The
+disc and the cloud token are left out. It then uploads a second zip (`dw3-send-<date>.zip`, deleted after, each log cut
+to its last 300 KB so it fits 1.5 MB) to the cloud worker's `POST /v1/logs` (`cloud-sync/src/index.ts`), which needs no
+account, allows 5 uploads an hour and 20 a day per IP and keeps them `RETENTION_DAYS` days. The launcher shows the
+report's code (`XXXXX-XXXXX`); the bug report form requires it (`docs/CONTRIBUTING.md` "Reporting issues"). The
+developer reads a report with `GET /v1/admin/logs` and `/v1/admin/logs/<code>` (`X-Admin-Secret`). Setup on a database
+from before it: `npm run db:migrate:logs:remote` in `cloud-sync/`.
 
 ### Widescreen
 

@@ -214,6 +214,7 @@ export async function runRetentionCleanup(env: Env, ts = nowSec()): Promise<{
   const retentionDays = intEnv(env.RETENTION_DAYS, 40);
   const cutoff = ts - retentionDays * 86400;
 
+  await env.DB.prepare(`DELETE FROM log_reports WHERE created_at < ?1`).bind(cutoff).run();
   const pRes = await env.DB.prepare(`DELETE FROM pairing_codes WHERE expires_at <= ?1`).bind(ts).run();
   const rRes = await env.DB.prepare(`DELETE FROM rate_limits WHERE reset_at <= ?1`).bind(ts).run();
 
@@ -1024,12 +1025,61 @@ async function handleAdmin(request: Request, env: Env, meta: ClientMeta, path: s
     return errJson("missing_target", 400);
   }
 
+  if (path === "/v1/admin/logs" && request.method === "GET") {
+    const rows = await env.DB.prepare(
+      `SELECT id, created_at, country, platform, device_id, launcher, size FROM log_reports ORDER BY created_at DESC LIMIT 100`,
+    ).all();
+    return json({ ok: true, reports: rows.results ?? [] });
+  }
+  const logMatch = /^\/v1\/admin\/logs\/([A-Z0-9]{5}-[A-Z0-9]{5})$/.exec(path);
+  if (logMatch && request.method === "GET") {
+    const row = await env.DB.prepare(`SELECT zip FROM log_reports WHERE id = ?1`).bind(logMatch[1]!).first<{ zip: unknown }>();
+    if (!row) return errJson("not_found", 404);
+    return new Response(toUint8Array(row.zip), { headers: { "Content-Type": "application/zip", "Content-Disposition": `attachment; filename="dw3-logs-${logMatch[1]}.zip"` } });
+  }
+
   if (path === "/v1/admin/cleanup" && request.method === "POST") {
     const stats = await runRetentionCleanup(env, ts);
     return json({ ok: true, ...stats });
   }
 
   return errJson("not_found", 404);
+}
+
+/* The launcher's SEND LOGS: a zip (logs, crash reports, the player's card). No account: a crash can come before the
+ * registration. Bounded instead: 1.5 MB (a D1 row holds 2 MB), a ZIP's magic, 5 a hour and 20 a day per IP. */
+const LOG_MAX = 1_500_000;
+/* The report's code, the one a player types or photographs into an issue: 10 characters of an alphabet without the look-alikes
+ * (no 0/O, 1/I/L), as XXXXX-XXXXX. 32^10 is plenty against guessing a stranger's report. */
+const CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+function reportCode(): string {
+  const b = crypto.getRandomValues(new Uint8Array(10));
+  const c = Array.from(b, (x) => CODE_ALPHABET[x % CODE_ALPHABET.length]).join("");
+  return `${c.slice(0, 5)}-${c.slice(5)}`;
+}
+async function handleLogUpload(request: Request, env: Env, meta: ClientMeta, ts: number): Promise<Response> {
+  const hour = await checkRateLimit(env, `logs:h:${meta.ipHash}`, 5, 3600, ts);
+  const day = await checkRateLimit(env, `logs:d:${meta.ipHash}`, 20, 86400, ts);
+  if (!hour.allowed || !day.allowed) {
+    return errJson("rate_limited", 429, undefined, { "Retry-After": String(Math.max(hour.retryAfterSec, 1)) });
+  }
+  const cl = Number(request.headers.get("Content-Length") ?? "0");
+  if (cl > LOG_MAX) throw new PayloadError("logs_too_large", 413);
+  if (!request.body) throw new PayloadError("empty_body", 400);
+  const bytes = await readLimitedStream(request.body, LOG_MAX);
+  if (bytes.byteLength < 22 || bytes[0] !== 0x50 || bytes[1] !== 0x4b) throw new PayloadError("not_a_zip", 400);
+  const clean = (name: string, max: number): string =>
+    (request.headers.get(name) ?? "").replace(/[^\x20-\x7e]/g, "").slice(0, max);
+  const platform = ALLOWED_PLATFORMS.has(clean("X-Platform", 16)) ? clean("X-Platform", 16) : "unknown";
+  const id = reportCode();
+  await env.DB.prepare(
+    `INSERT INTO log_reports (id, created_at, ip_hash, country, platform, device_id, launcher, sha256, size, zip)
+     VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10)`,
+  )
+    .bind(id, ts, meta.ipHash, meta.country, platform, clean("X-Device-Id", 64) || null, clean("X-Launcher", 40) || null,
+      await sha256Hex(bytes), bytes.byteLength, bytes)
+    .run();
+  return json({ ok: true, id });
 }
 
 export default {
@@ -1055,6 +1105,9 @@ export default {
 
       if (path === "/v1/register" && request.method === "POST") {
         return await handleRegister(request, env, meta, ts);
+      }
+      if (path === "/v1/logs" && request.method === "POST") {
+        return await handleLogUpload(request, env, meta, ts);
       }
       if (path === "/v1/pair/claim" && request.method === "POST") {
         return await handlePairClaim(request, env, meta, ts);

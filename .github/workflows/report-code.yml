@@ -1,0 +1,44 @@
+# A bug report in the runtime areas (the game, the launcher, the AppImage) must carry the code SEND LOGS showed: the
+# launcher uploads the logs and the player's save, and the code is how the developer opens them. Without it the issue
+# is closed with a comment; editing the issue to add the code reopens it. The template asks for the code; this is what
+# makes it a rule (a form cannot check a pattern).
+name: report-code
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  issues: write
+
+jobs:
+  check:
+    if: contains(github.event.issue.labels.*.name, 'bug')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the report code
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          NUM: ${{ github.event.issue.number }}
+          BODY: ${{ github.event.issue.body }}
+          STATE: ${{ github.event.issue.state }}
+        run: |
+          # The form's Area answer decides: the three runtime areas need a code, the build and tools ones may say N/A.
+          area=$(printf '%s\n' "$BODY" | awk '/^### Area/{f=1;next} f&&NF{print;exit}')
+          code=$(printf '%s\n' "$BODY" | grep -oE '[A-HJKMNP-Z2-9]{5}-[A-HJKMNP-Z2-9]{5}' | head -1 || true)
+          case "$area" in
+            "The game (PC port), in play"|"The launcher"|"The AppImage"*) need=1 ;;
+            *) need=0 ;;
+          esac
+          if [ "$need" = 0 ] || [ -n "$code" ]; then
+            if [ "$STATE" = closed ] && gh issue view "$NUM" --json labels -q '.labels[].name' | grep -qx needs-report-code; then
+              gh issue edit "$NUM" --remove-label needs-report-code
+              gh issue reopen "$NUM" --comment "Report code found, reopened."
+            fi
+            exit 0
+          fi
+          [ "$STATE" = open ] || exit 0
+          gh label create needs-report-code --color d93f0b --description "A bug report needs the launcher's SEND LOGS code" 2>/dev/null || true
+          gh issue edit "$NUM" --add-label needs-report-code
+          gh issue close "$NUM" --reason "not planned" --comment "This bug report has no report code, so it is closed for now. In the launcher open DEBUG, set LOGS to HEAVY, reproduce the problem, then DEBUG > SEND LOGS: it shows a code like \`K7M2Q-9XPB4\`. Edit this issue, put the code in the **Report code** field (or attach a photo of the screen) and it reopens by itself."

@@ -964,24 +964,43 @@ static void draw_conflict_confirm(void) {
     text(bx, ty + 9, "CANCEL", 16, C_TEXT);
 }
 
+/* SEND LOGS: the full zip is saved beside the game as ever, then the capped one goes to the server and is dropped. */
+static void send_logs(void) {
+    char nm[80], up[80], id[40] = "", err[96] = "";
+    if (logs_save(nm, sizeof(nm)) != 0) { snprintf(status, sizeof(status), "COULD NOT SAVE THE ZIP"); return; }
+    if (logs_pack(up, sizeof(up), 1) != 0) { snprintf(status, sizeof(status), "SAVED %s", nm); return; }
+    char zp[1300];
+    snprintf(zp, sizeof(zp), "%s/%s", game_dir, up);
+#ifdef DW3_LAUNCHER_VERSION
+    const char *ver = DW3_LAUNCHER_VERSION;
+#else
+    const char *ver = "";
+#endif
+    int rc = cloud_send_logs(&cloud, zp, ver, is_portmaster, id, sizeof(id), err, sizeof(err));
+    unlink(zp);
+    if (rc == 0) snprintf(status, sizeof(status), "SENT. REPORT %s. A COPY IS SAVED", id);
+    else snprintf(status, sizeof(status), "NOT SENT: %s. ZIP SAVED", err);
+}
+
 static void draw_debug(void) {
     header("DIGIMON WORLD 3", "DEBUG");
     int gy = (int)(cur_y >= 0 && cur_screen == S_DEBUG ? cur_y : row_target_y(S_DEBUG, sel));
     draw_focus(40, gy, W - 80, 36, 8, 0);
     row(92, "LOGS", log_label[c.logs], sel == 0, 0, c.logs > 0, 0);
-    row(140, "SAVE LOGS", "ZIP", sel == 1, 0, 0, 0);
+    row(140, "SEND LOGS", "UPLOAD", sel == 1, 0, 0, 0);
     row(188, "CLEAN LOGS", "ASK", sel == 2, 0, 0, 0);
 #ifdef DW3_TARGET_PC
     row(236, "CHECK FOR UPDATES", c.update_check ? "ON" : "OFF", sel == 3, 0, c.update_check, 0);
     if (debug_n() == 5) row(284, "NEW VERSION", upd.latest, sel == 4, 0, 1, 0);
 #endif
     if (status[0]) text(64, 350, status, 16, C_GREEN);
-    text(64, 380, "A bug report is easier with LOGS on HEAVY and the zip attached.", 15, C_NOTE);
+    text(64, 380, "SEND LOGS uploads the logs and your save (RPG data) to the developer.", 15, C_NOTE);
+    text(64, 400, "Then open an issue on GitHub and say what happened.", 15, C_NOTE);
 #ifdef DW3_LAUNCHER_STAMP
     {
         char bld[96];
         snprintf(bld, sizeof(bld), "BUILD: %s", DW3_LAUNCHER_STAMP);
-        text(64, 404, bld, 14, strstr(DW3_LAUNCHER_STAMP, "-dirty") ? C_GOLD : C_NOTE);
+        text(64, 428, bld, 14, strstr(DW3_LAUNCHER_STAMP, "-dirty") ? C_GOLD : C_NOTE);
     }
 #endif
     foot_std("RUN");
@@ -1043,7 +1062,7 @@ static void draw_error(void) {
         snprintf(el, sizeof(el), "%.62s%s", last_err, strlen(last_err) > 62 ? "..." : "");
         text(76, 168, el, 14, C_GOLD);
     }
-    text(76, 210, "Turn LOGS to HEAVY in DEBUG, try again, then SAVE LOGS.", 15, C_NOTE);
+    text(76, 210, "Turn LOGS to HEAVY in DEBUG, try again, then SEND LOGS.", 15, C_NOTE);
     foot_std("OK");
 }
 
@@ -2048,9 +2067,7 @@ static void on_press(int code) {
         if (back) { int hi = home_index(HI_DEBUG); cfg_save(&c); go(S_HOME, hi, -1, 92 + hi * home_step() + 14); }
         if (sel == 0 && (ok || d)) c.logs = (c.logs + s + 3) % 3;
         if (sel == 1 && ok) {
-            char nm[80];
-            int r = logs_save(nm, sizeof(nm));
-            snprintf(status, sizeof(status), r == 0 ? "SAVED %s" : "COULD NOT SAVE THE ZIP%.0s", nm);
+            send_logs();
         }
         if (sel == 2 && ok) { start_trans(1, 188 + 14); screen = S_CLEAN; }
 #ifdef DW3_TARGET_PC

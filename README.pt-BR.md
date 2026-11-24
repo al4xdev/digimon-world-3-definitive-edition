@@ -424,8 +424,10 @@ C equivalente. Este fork acrescenta o caminho para portáteis e a Definitive Edi
 
 ## Contribuindo e suporte
 
-Leia primeiro o [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md). Relate bugs e tire dúvidas no
+Leia primeiro o [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md). Tire dúvidas no
 [issue tracker](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues).
+
+**Para relatar um bug:** no launcher abra DEBUG, ponha REGISTROS em COMPLETO, reproduza o problema e use DEBUG > ENVIAR LOGS. Ele envia os registros e o seu save (dados de RPG) e mostra um código de report; abra um [bug report](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues/new?template=bug_report.yml) e digite o código (ou tire uma foto dele). O formulário exige. Detalhes: [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md#reporting-issues).
 
 ## Créditos e licença
 

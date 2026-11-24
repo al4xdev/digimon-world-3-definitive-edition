@@ -146,13 +146,29 @@ areas your change touches.
 
 Use the [issue templates](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues/new/choose): a **bug report** for
 something that is wrong in the game, the port, the launcher or the build, a **feature request** for an idea. Search the
-[open issues](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues) first. A useful bug report has:
+[open issues](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues) first. A bug report starts with its **report code**; the rest is below.
+
+**How to report a bug that happens in the game or the launcher:**
+
+1. In the launcher open **DEBUG** and set **LOGS** to **HEAVY**.
+2. Play until the problem happens (or start the game again if it crashed).
+3. Back in the launcher open **DEBUG** and choose **SEND LOGS**. It saves `dw3-logs-<date>.zip` beside the game and
+   uploads the logs, the crash reports, the settings and your memory card (RPG data, nothing personal) to the
+   developer, then shows a **report code** like `K7M2Q-9XPB4`.
+4. Open a [bug report](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues/new?template=bug_report.yml)
+   and type the code in **Report code**, or attach a photo of the screen with it. The form requires it, and a bot closes a
+   runtime bug report without one (editing the issue to add the code reopens it). Build and tools problems write `N/A`.
+
+If the upload fails (offline), the zip is still saved: attach it to the issue instead.
+
+A useful bug report has:
 
 - the **version** (the AppImage's file name, or the commit you built) and your **system** (distribution, desktop, GPU,
   gamepad);
 - **what happened** and **what you expected**, compared with the original game on a PS1 or an emulator if you can;
 - **steps to reproduce** from a new game or a save (the memory card in `~/.local/share/dw2003/` helps);
-- the **output**: the launcher shows the game's last lines after an error and has a **Copy** button for them;
+- the **report code** from SEND LOGS (above);
+- the **output**, if the code is not possible: the launcher shows the game's last lines after an error and has a **Copy** button for them;
 - a screenshot or a short video when it is visual.
 
 Never attach game files or a disc image.

@@ -925,6 +925,36 @@ static void check_revoked_resp(CloudState *st, const char *game_dir, const HttpR
     }
 }
 
+/* SEND LOGS: the zip (logs_pack(upload=1)) to the worker's /v1/logs. No account is needed (a crash can come before the
+ * registration); the device id rides along when there is one, so a report can be matched to a cloud save. */
+int cloud_send_logs(const CloudState *st, const char *zip_path, const char *launcher, int is_portmaster,
+                    char *id_out, size_t id_n, char *err, size_t err_n) {
+    char url[320], h_plat[48], h_dev[96], h_ver[64];
+    const char *base = st->worker_url[0] ? st->worker_url : DW3_DEFAULT_SYNC_URL;
+    snprintf(url, sizeof(url), "%s/v1/logs", base);
+    snprintf(h_plat, sizeof(h_plat), "X-Platform: %s", client_platform(is_portmaster));
+    snprintf(h_dev, sizeof(h_dev), "X-Device-Id: %s", st->device_id);
+    snprintf(h_ver, sizeof(h_ver), "X-Launcher: %s", launcher ? launcher : "");
+    const char *hdrs[3] = {h_plat, h_ver, h_dev};
+    HttpResp r;
+    if (http_exec("POST", url, NULL, hdrs, st->device_id[0] ? 3 : 2, NULL, zip_path, NULL, &r) != 0) {
+        snprintf(err, err_n, "OFFLINE OR NETWORK ERROR");
+        return -1;
+    }
+    int ok = r.status == 200 && r.body;
+    if (ok) {
+        if (id_out && id_n) { id_out[0] = 0; jget_str(r.body, "id", id_out, id_n); }
+    } else if (r.status == 429) {
+        snprintf(err, err_n, "TOO MANY REPORTS, TRY LATER");
+    } else if (r.status == 413) {
+        snprintf(err, err_n, "THE ZIP IS TOO BIG");
+    } else {
+        snprintf(err, err_n, "SERVER ANSWERED %d", r.status);
+    }
+    http_resp_free(&r);
+    return ok ? 0 : -1;
+}
+
 /* ---- Cloud API ---- */
 int cloud_register(CloudState *st, const char *game_dir, int is_portmaster, char *err, size_t err_n) {
     char url[320], name[48], ename[96], body[256];

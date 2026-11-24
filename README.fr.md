@@ -435,8 +435,10 @@ partir d'un C équivalent. Ce fork ajoute la voie vers les consoles portables et
 
 ## Contribuer et obtenir de l'aide
 
-Lisez d'abord [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md). Signalez les bugs et posez vos questions dans le
+Lisez d'abord [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md). Posez vos questions dans le
 [issue tracker](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues).
+
+**Pour signaler un bug :** dans le launcher, ouvrez DEBUG, mettez JOURNAUX sur COMPLET, reproduisez le problème puis DEBUG > ENVOYER. Les journaux et votre sauvegarde (données RPG) sont envoyés et un code de rapport s'affiche ; ouvrez un [bug report](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues/new?template=bug_report.yml) et saisissez ce code (ou photographiez-le). Le formulaire l'exige. Détails : [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md#reporting-issues).
 
 ## Crédits et licence
 

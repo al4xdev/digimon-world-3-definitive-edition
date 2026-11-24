@@ -79,5 +79,8 @@ int led_install(char *why, size_t n); /* 0 on success */
 
 /* debug */
 int logs_save(char *name, size_t n);
+/* The same zip; upload: the one SEND LOGS posts (dw3-send-*.zip, each log cut to its last 300 KB so it fits the server's
+ * 1.5 MB). Both carry the player's card and system.txt. */
+int logs_pack(char *name, size_t n, int upload);
 int logs_clean(void);
 #endif

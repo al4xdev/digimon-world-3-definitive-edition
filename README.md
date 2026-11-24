@@ -423,8 +423,10 @@ handheld path and the Definitive Edition.
 
 ## Contributing and support
 
-Read [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) first. Report bugs and ask questions in the
+Read [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) first. Ask questions in the
 [issue tracker](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues).
+
+**To report a bug:** in the launcher open DEBUG, set LOGS to HEAVY, reproduce it, then DEBUG > SEND LOGS. It uploads the logs and your save (RPG data) and shows a report code; open a [bug report](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues/new?template=bug_report.yml) and type that code (or photograph it). The form requires it. Details: [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md#reporting-issues).
 
 ## Credits and license
 

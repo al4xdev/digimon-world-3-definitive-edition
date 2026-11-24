@@ -499,3 +499,23 @@ test("the expansion save rides with the card, and the clients from before it nev
   assert.equal(pullAfter.headers.get("X-Save-Expansion-Size"), "0");
   assert.equal(Buffer.compare(Buffer.from(await pullAfter.arrayBuffer()), card2), 0);
 });
+
+test("SEND LOGS: a zip is kept without an account, a non-zip and a big body are refused, the admin reads it back", async () => {
+  const zip = Buffer.concat([Buffer.from("PK\x03\x04"), Buffer.alloc(64, 7)]);
+  const ip = { "CF-Connecting-IP": "198.51.100.77" };
+  const up = await fetch(`${BASE}/v1/logs`, { method: "POST", headers: { ...ip, "X-Platform": "pc", "X-Launcher": "1.2.3" }, body: zip });
+  assert.equal(up.status, 200);
+  const { id } = await up.json();
+  assert.match(id, /^[A-Z2-9]{5}-[A-Z2-9]{5}$/);
+
+  const notZip = await fetch(`${BASE}/v1/logs`, { method: "POST", headers: ip, body: Buffer.from("hello world, not a zip at all") });
+  assert.equal(notZip.status, 400);
+  const big = await fetch(`${BASE}/v1/logs`, { method: "POST", headers: ip, body: Buffer.concat([Buffer.from("PK"), Buffer.alloc(1_600_000)]) });
+  assert.equal(big.status, 413);
+
+  assert.equal((await fetch(`${BASE}/v1/admin/logs`)).status, 401);
+  const list = await (await fetch(`${BASE}/v1/admin/logs`, { headers: { "X-Admin-Secret": ADMIN_SECRET } })).json();
+  assert.ok(list.reports.some((r) => r.id === id && r.platform === "pc" && r.size === zip.length));
+  const back = await fetch(`${BASE}/v1/admin/logs/${id}`, { headers: { "X-Admin-Secret": ADMIN_SECRET } });
+  assert.deepEqual(Buffer.from(await back.arrayBuffer()), zip);
+});

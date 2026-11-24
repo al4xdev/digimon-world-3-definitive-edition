@@ -68,3 +68,17 @@ CREATE TABLE IF NOT EXISTS rate_limits (
 );
 
 CREATE INDEX IF NOT EXISTS idx_rate_limits_reset ON rate_limits(reset_at);
+
+CREATE TABLE IF NOT EXISTS log_reports (
+  id TEXT PRIMARY KEY,
+  created_at INTEGER NOT NULL,
+  ip_hash TEXT NOT NULL,
+  country TEXT NOT NULL,
+  platform TEXT NOT NULL,
+  device_id TEXT,
+  launcher TEXT,
+  sha256 TEXT NOT NULL,
+  size INTEGER NOT NULL,
+  zip BLOB NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_log_reports_created ON log_reports(created_at);

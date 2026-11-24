@@ -893,20 +893,28 @@ static void zip_put(FILE *z, ZipEnt *e, int *count, int max, const char *arcname
     fwrite(data, 1, len, z);
 }
 
-static void zip_file(FILE *z, ZipEnt *e, int *count, int max, const char *arcname, const char *path) {
+/* tail_cap: 0 keeps the whole file; else a bigger file gives its last tail_cap bytes (an upload's zip must fit the
+ * server's 1.5 MB and this zip is stored, not deflated; the end of a log is where the crash is). skip_over: 0, or a
+ * size above which the file is left out (the expansion save). */
+static void zip_file(FILE *z, ZipEnt *e, int *count, int max, const char *arcname, const char *path, long tail_cap,
+                     long skip_over) {
     struct stat st;
     if (stat(path, &st) != 0 || !S_ISREG(st.st_mode) || st.st_size > 64L * 1024 * 1024) return;
+    if (skip_over > 0 && st.st_size > skip_over) return;
     FILE *f = fopen(path, "rb");
     if (!f) return;
-    unsigned char *b = malloc((size_t)st.st_size + 1);
-    size_t r = b ? fread(b, 1, (size_t)st.st_size, f) : 0;
+    long len = (long)st.st_size, off = 0;
+    if (tail_cap > 0 && len > tail_cap) { off = len - tail_cap; len = tail_cap; }
+    unsigned char *b = malloc((size_t)len + 1);
+    size_t r = 0;
+    if (b && fseek(f, off, SEEK_SET) == 0) r = fread(b, 1, (size_t)len, f);
     fclose(f);
     if (b) zip_put(z, e, count, max, arcname, b, r);
     free(b);
 }
 
 static void zip_dir(FILE *z, ZipEnt *e, int *count, int max, const char *dir, const char *prefix, const char *suffix,
-                    const char *arc_dir) {
+                    const char *arc_dir, long tail_cap) {
     DIR *d = opendir(dir);
     struct dirent *de;
     while (d && (de = readdir(d))) {
@@ -915,16 +923,31 @@ static void zip_dir(FILE *z, ZipEnt *e, int *count, int max, const char *dir, co
         char p[1400], arc[400];
         snprintf(p, sizeof(p), "%s/%s", dir, de->d_name);
         snprintf(arc, sizeof(arc), "%s%s", arc_dir, de->d_name);
-        zip_file(z, e, count, max, arc, p);
+        zip_file(z, e, count, max, arc, p, tail_cap, 0);
     }
     if (d) closedir(d);
 }
 
-int logs_save(char *name, size_t n) {
+/* The machine, as far as the environment tells it without an API: what a "it stutters on my PC" report needs first. */
+static int win_system_txt(char *out, size_t n) {
+    const char *ev[] = {"OS", "PROCESSOR_ARCHITECTURE", "PROCESSOR_IDENTIFIER", "PROCESSOR_LEVEL", "NUMBER_OF_PROCESSORS"};
+    int l = snprintf(out, n, "os: windows\n");
+    for (unsigned i = 0; i < sizeof(ev) / sizeof(ev[0]) && l > 0 && (size_t)l < n; i++) {
+        const char *v = getenv(ev[i]);
+        if (v) l += snprintf(out + l, n - (size_t)l, "%s: %s\n", ev[i], v);
+    }
+#ifdef DW3_LAUNCHER_VERSION
+    if (l > 0 && (size_t)l < n) l += snprintf(out + l, n - (size_t)l, "launcher: %s\n", DW3_LAUNCHER_VERSION);
+#endif
+    return l > 0 && (size_t)l < n ? l : (int)n - 1;
+}
+
+int logs_pack(char *name, size_t n, int upload) {
     time_t t = time(NULL);
     struct tm tm;
     localtime_r(&t, &tm);
-    strftime(name, n, "dw3-logs-%Y%m%d-%H%M%S.zip", &tm);
+    strftime(name, n, upload ? "dw3-send-%Y%m%d-%H%M%S.zip" : "dw3-logs-%Y%m%d-%H%M%S.zip", &tm);
+    const long cap = upload ? 300L * 1024 : 0; /* per log file, for the upload */
     char zp[1200], p[1200];
     snprintf(zp, sizeof(zp), "%s/%s", game_dir, name);
     FILE *z = fopen(zp, "wb");
@@ -936,13 +959,19 @@ int logs_save(char *name, size_t n) {
     static const char *const files[] = {"settings.json", "pad.map", "tui.state", "menu.log", "log.txt"};
     for (unsigned i = 0; i < sizeof(files) / sizeof(files[0]); i++) {
         path_of(p, sizeof(p), files[i]);
-        zip_file(z, e, &count, MAXE, files[i], p);
+        zip_file(z, e, &count, MAXE, files[i], p, cap, 0);
     }
-    zip_dir(z, e, &count, MAXE, game_dir, "crash-", ".txt", "crashes/");
+    /* The player's card: it is an RPG's progress, nothing personal, and what reproduces a battle or a quest bug. */
+    path_of(p, sizeof(p), "card1.mcd");
+    zip_file(z, e, &count, MAXE, "card1.mcd", p, 0, 0);
+    path_of(p, sizeof(p), "card1.def.json");
+    zip_file(z, e, &count, MAXE, "card1.def.json", p, 0, 512L * 1024);
+    zip_dir(z, e, &count, MAXE, game_dir, "crash-", ".txt", "crashes/", cap);
     path_of(p, sizeof(p), "logs");
-    zip_dir(z, e, &count, MAXE, p, "", "", "logs/");
-    static const char sys[] = "os: windows\n";
-    zip_put(z, e, &count, MAXE, "system.txt", (const unsigned char *)sys, sizeof(sys) - 1);
+    zip_dir(z, e, &count, MAXE, p, "", "", "logs/", cap);
+    char sys[1024];
+    int sl = win_system_txt(sys, sizeof(sys));
+    zip_put(z, e, &count, MAXE, "system.txt", (const unsigned char *)sys, (size_t)sl);
     unsigned long cd = (unsigned long)ftell(z);
     for (int i = 0; i < count; i++) {
         size_t nl = strlen(e[i].name);
@@ -958,25 +987,41 @@ int logs_save(char *name, size_t n) {
     return fclose(z) == 0 ? 0 : -1;
 }
 #else
-int logs_save(char *name, size_t n) {
-    char cmd[2048];
+int logs_pack(char *name, size_t n, int upload) {
+    char cmd[3072];
     time_t t = time(NULL);
     struct tm tm;
     localtime_r(&t, &tm);
-    strftime(name, n, "dw3-logs-%Y%m%d-%H%M%S.zip", &tm);
+    strftime(name, n, upload ? "dw3-send-%Y%m%d-%H%M%S.zip" : "dw3-logs-%Y%m%d-%H%M%S.zip", &tm);
     /* python3 is on every console this runs on (the launcher script needs it too); a zip writer is not worth the code */
+    /* cap: for the upload (1.5 MB at the server) each log keeps its last 300 KB; the end is where the crash is. */
     snprintf(cmd, sizeof(cmd),
         "cd '%s' && python3 -c \"import os,sys,glob,zipfile\n"
+        "cap=300*1024 if sys.argv[2]=='1' else 0\n"
+        "def put(f,arc=None,cap=0,skip=0):\n"
+        "  if not os.path.isfile(f) or (skip and os.path.getsize(f)>skip): return\n"
+        "  if cap and os.path.getsize(f)>cap:\n"
+        "    d=open(f,'rb'); d.seek(-cap,2); z.writestr(arc or f,d.read())\n"
+        "  else: z.write(f,arc or f)\n"
         "z=zipfile.ZipFile(sys.argv[1],'w',zipfile.ZIP_DEFLATED)\n"
-        "for f in ('settings.json','pad.map','tui.state','menu.log','log.txt'):\n"
-        "  os.path.isfile(f) and z.write(f)\n"
-        "for f in glob.glob('crash-*.txt'): z.write(f,'crashes/'+f)\n"
-        "for f in glob.glob('logs/*'):\n"
-        "  os.path.isfile(f) and z.write(f)\n"
-        "z.writestr('system.txt','uname: '+' '.join(os.uname())+'\\n')\n\" '%s' 2>/dev/null", game_dir, name);
+        "for f in ('settings.json','pad.map','tui.state','menu.log','log.txt'): put(f,None,cap)\n"
+        "put('card1.mcd')\n"
+        "put('card1.def.json',None,0,512*1024)\n"
+        "for f in glob.glob('crash-*.txt'): put(f,'crashes/'+f,cap)\n"
+        "for f in glob.glob('logs/*'): put(f,None,cap)\n"
+        "def rd(p,n=4096):\n"
+        "  try: return open(p).read(n)\n"
+        "  except Exception: return ''\n"
+        "cpu=[l for l in rd('/proc/cpuinfo',65536).split('\\n') if l.startswith('model name') or l.startswith('Hardware')][:1]\n"
+        "mem=[l for l in rd('/proc/meminfo').split('\\n') if l.startswith('MemTotal')]\n"
+        "osr=[l for l in rd('/etc/os-release').split('\\n') if l.startswith('PRETTY_NAME')]\n"
+        "z.writestr('system.txt','kernel: '+' '.join(os.uname()[:1]+os.uname()[2:])+'\\ncores: '+str(os.cpu_count())+'\\n'+'\\n'.join(cpu+mem+osr)+'\\n')\" '%s' %d 2>/dev/null",
+        game_dir, name, upload ? 1 : 0);
     return system(cmd) == 0 ? 0 : -1;
 }
 #endif
+
+int logs_save(char *name, size_t n) { return logs_pack(name, n, 0); }
 
 static int rm_matching(const char *dirpath, const char *prefix, const char *suffix) {
     DIR *d = opendir(dirpath);

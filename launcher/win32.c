@@ -126,7 +126,9 @@ int w32_spawn(W32Proc *p, const char *const *argv, const char *cwd, int status_f
     wchar_t *wapp = NULL, *wcmd = NULL, *wcwd = NULL;
     unsigned char *crt = NULL;
 
-    if (!CreatePipe(&out_rd, &out_wr, &sa, 0) || !CreatePipe(&st_rd, &st_wr, &sa, 0)) goto done;
+    if (!CreatePipe(&out_rd, &out_wr, &sa, 1 << 20) || !CreatePipe(&st_rd, &st_wr, &sa, 0)) goto done;
+    /* The game's output pipe is 1 MB, not the default 4 KB: the game writes its log unbuffered (HEAVY logs are KBs per
+     * frame) and the launcher reads every 50 ms; a full pipe blocks the game's WriteFile, which is a stalled frame. */
     /* Only the write ends go to the child: the launcher keeps the read ends. */
     SetHandleInformation(out_rd, HANDLE_FLAG_INHERIT, 0);
     SetHandleInformation(st_rd, HANDLE_FLAG_INHERIT, 0);
@@ -250,6 +252,9 @@ typedef struct {
 static DWORD WINAPI thread_main(LPVOID p) {
     ThreadStart ts = *(ThreadStart *)p;
     free(p);
+    /* Background work (the periodic cloud push) must never take the game's CPU: on a one-core PC it ran at the game's
+     * own priority, a TLS handshake and a hash in the middle of a frame. */
+    SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_BELOW_NORMAL);
     return (DWORD)ts.fn(ts.arg);
 }
 

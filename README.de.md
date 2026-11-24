@@ -430,8 +430,10 @@ bauen. Dieser Fork ergänzt den Handheld-Pfad und die Definitive Edition.
 
 ## Mitmachen und Support
 
-Lies zuerst [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md). Melde Bugs und stelle Fragen im
+Lies zuerst [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md). Stelle Fragen im
 [Issue Tracker](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues).
+
+**Einen Bug melden:** Im Launcher DEBUG öffnen, LOGS auf VOLL stellen, das Problem nachstellen, dann DEBUG > LOGS SENDEN. Logs und Spielstand (RPG-Daten) werden hochgeladen und ein Report-Code erscheint; eröffne einen [Bug Report](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues/new?template=bug_report.yml) und tippe den Code ein (oder fotografiere ihn). Das Formular verlangt ihn. Details: [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md#reporting-issues).
 
 ## Credits und Lizenz
 

@@ -761,12 +761,25 @@ static void draw_backups(void) {
     footer_touch(0, 1, bk_count > 0 ? "RESTORE" : NULL);
 }
 
+/* SEND LOGS: the full zip is saved as ever, then the capped one goes to the server and is dropped. */
+static void send_logs(void) {
+    char nm[128], up[128], id[40] = "", err[96] = "";
+    if (logs_save(nm, sizeof(nm)) != 0) { snprintf(status, sizeof(status), "SAVE LOGS FAILED"); return; }
+    if (logs_pack(up, sizeof(up), 1) != 0) { snprintf(status, sizeof(status), "SAVED %s", nm); return; }
+    char zp[1400];
+    snprintf(zp, sizeof(zp), "%s/%s", game_dir, up);
+    int rc = cloud_send_logs(&cloud, zp, port_version, 0, id, sizeof(id), err, sizeof(err));
+    unlink(zp);
+    if (rc == 0) snprintf(status, sizeof(status), "SENT. REPORT %s. A COPY IS SAVED", id);
+    else snprintf(status, sizeof(status), "NOT SENT: %s. ZIP SAVED", err);
+}
+
 static void draw_debug(void) {
     header_touch("DEBUG", 1);
     int gy = (int)(cur_y >= 0 && cur_screen == S_DEBUG ? cur_y : row_target_y(S_DEBUG, sel));
     draw_focus(32, gy, W - 64, 44, 10, 0);
     row_touch(86, 44, "LOGS", log_label[c.logs], sel == DEBUG_LOGS, 0, c.logs > 0, 0, 1);
-    row_touch(140, 44, "SAVE LOGS", "ZIP", sel == DEBUG_SAVE_LOGS, 0, 0, 0, 0);
+    row_touch(140, 44, "SEND LOGS", "UPLOAD", sel == DEBUG_SAVE_LOGS, 0, 0, 0, 0);
     row_touch(194, 44, "CLEAN LOGS", "ASK", sel == DEBUG_CLEAN_LOGS, 0, 0, 0, 0);
     row_touch(248, 44, "CHECK FOR UPDATES", c.update_check ? "ON" : "OFF", sel == DEBUG_UPDATES, 0, c.update_check, 0, 1);
     if (status[0]) text(40, 322, status, 16, C_GREEN);
@@ -1394,9 +1407,7 @@ static void on_touch(int code, int x, int y) {
                 sel = i;
                 if (i == DEBUG_LOGS) { c.logs = (c.logs + 1) % 3; cfg_save(&c); }
                 else if (i == DEBUG_SAVE_LOGS) {
-                    char nm[128] = "";
-                    if (logs_save(nm, sizeof(nm)) == 0) snprintf(status, sizeof(status), "SAVED %s", nm);
-                    else snprintf(status, sizeof(status), "SAVE LOGS FAILED");
+                    send_logs();
                 } else if (i == DEBUG_CLEAN_LOGS) {
                     go(S_CLEAN, 0, +1);
                 } else if (i == DEBUG_UPDATES) {

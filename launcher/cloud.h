@@ -118,6 +118,10 @@ int cloud_pair_approve(CloudState *st, const char *code, int approve, char *err,
 int cloud_pair_claim(CloudState *st, const char *code, int is_portmaster, PairClaim *claim_out, char *err, size_t err_n);
 int cloud_pair_poll(CloudState *st, const char *game_dir, const PairClaim *claim, int *approved_out, char *err, size_t err_n);
 
+/* SEND LOGS: POSTs a zip (cfg.h logs_pack) to the worker; no account needed. id_out: the report's id. */
+int cloud_send_logs(const CloudState *st, const char *zip_path, const char *launcher, int is_portmaster,
+                    char *id_out, size_t id_n, char *err, size_t err_n);
+
 int cloud_list_devices(CloudState *st, CloudDevice *out, int max_n, int *count_out, char *err, size_t err_n);
 int cloud_revoke_device(CloudState *st, const char *device_id, char *err, size_t err_n);
 
