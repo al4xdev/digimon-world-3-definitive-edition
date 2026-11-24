@@ -946,6 +946,8 @@ int cloud_send_logs(const CloudState *st, const char *zip_path, const char *laun
         if (id_out && id_n) { id_out[0] = 0; jget_str(r.body, "id", id_out, id_n); }
     } else if (r.status == 429) {
         snprintf(err, err_n, "TOO MANY REPORTS, TRY LATER");
+    } else if (r.status == 503) {
+        snprintf(err, err_n, "THE SERVER IS BUSY, TRY LATER");
     } else if (r.status == 413) {
         snprintf(err, err_n, "THE ZIP IS TOO BIG");
     } else {

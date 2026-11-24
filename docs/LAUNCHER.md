@@ -195,10 +195,11 @@ without them. The separate one-off meters (`DW3_PRESENT_LOG`, `DW3_GPU_LOG`, `DW
 are not the same thing: they write their own files and some cost real frames.
 
 `SEND LOGS`, in the same group, saves `dw3-logs-<date>.zip` beside the port: `logs/*`, `crash-*.txt`, `settings.json`,
-`pad.map`, `tui.state`, the player's `card1.mcd` (and `card1.def.json` up to 512 KB: an RPG's progress, nothing
+`pad.map`, `tui.state`, the player's `card1.mcd` (and `card1.def.json` up to 512 KB, 256 KB in the upload: an RPG's progress, nothing
 personal, and what reproduces a battle or quest bug) and a `system.txt` (OS, CPU, cores, memory, launcher version). The
 disc and the cloud token are left out. It then uploads a second zip (`dw3-send-<date>.zip`, deleted after, each log cut
-to its last 300 KB so it fits 1.5 MB) to the cloud worker's `POST /v1/logs` (`cloud-sync/src/index.ts`), which needs no
+to its last 200 KB, a crash report to 100 KB, the whole under 1.3 MB so it fits the server's 1.5 MB, and the home folder's name
+taken out of the text) to the cloud worker's `POST /v1/logs` (`cloud-sync/src/index.ts`), which needs no
 account, allows 5 uploads an hour and 20 a day per IP and keeps them `RETENTION_DAYS` days. The launcher shows the
 report's code (`XXXXX-XXXXX`); the bug report form requires it (`docs/CONTRIBUTING.md` "Reporting issues"). The
 developer reads a report with `GET /v1/admin/logs` and `/v1/admin/logs/<code>` (`X-Admin-Secret`). Setup on a database
@@ -216,9 +217,9 @@ window and no SDL, the only code that touches installed files:
    runs the staged launcher's `--version` once (it must end with 0);
 3. writes `READY` to `update.status` and waits for `update.go` (the launcher writes it when the player presses START) **and** for
    the launcher's process to be gone;
-4. moves each file the package has from the install into `backup/` (Linux: `.dw2003-backup/`) and the new one into its
+4. moves each file the package has from the install into `dw2003-backup/` (Linux: `.dw2003-backup/`, beside the AppImage; not a bare `backup/`, which may be the player's own folder) and the new one into its
    place, by rename on the same volume: Windows lets a running executable be renamed, not deleted or overwritten. The
-   previous update's `backup/` is deleted first; files the package does not have, and the player's own, are never touched;
+   previous update's backup folder is deleted first (links are removed, never entered); files the package does not have, and the player's own, are never touched;
 5. any failure puts every moved file back, newest first, and starts the old launcher; `dw2003-updater --rollback --dir D
    --backup B` does the same by hand. `update.log` (in the install folder) says what happened;
 6. starts the new launcher. The launcher removes `.update/` and `update.status` at its next start.

@@ -121,7 +121,18 @@ static int mkdir_parent(const char *file) {
     return mkdir_p(b);
 }
 
+/* stat that does not follow a link (a symlink or a junction is removed, never entered). */
+static int stat_nofollow(const char *p, struct stat *st) {
+#ifdef _WIN32
+    return stat(p, st);
+#else
+    return lstat(p, st);
+#endif
+}
+
 static void rmtree(const char *path) {
+    struct stat ls;
+    if (stat_nofollow(path, &ls) == 0 && !S_ISDIR(ls.st_mode)) { remove(path); return; }
     DIR *d = opendir(path);
     if (!d) { remove(path); return; }
     struct dirent *e;
@@ -129,7 +140,8 @@ static void rmtree(const char *path) {
         if (!strcmp(e->d_name, ".") || !strcmp(e->d_name, "..")) continue;
         char c[1400];
         snprintf(c, sizeof(c), "%s/%s", path, e->d_name);
-        if (is_dir(c)) rmtree(c);
+        struct stat cs;
+        if (stat_nofollow(c, &cs) == 0 && S_ISDIR(cs.st_mode)) rmtree(c);
         else remove(c);
     }
     closedir(d);
@@ -329,6 +341,7 @@ static void start_detached(const char *exe) {
 typedef struct {
     char rel[400];
     int had_old; /* the install had a file there, now in backup/ */
+    int placed;  /* the new file is in the install: only then is what is there ours to take away again */
 } Move;
 static Move *moves;
 static int nmoves;
@@ -340,7 +353,8 @@ static int put_back(void) {
         snprintf(inst, sizeof(inst), "%s/%s", A.dir, moves[i].rel);
         snprintf(bak, sizeof(bak), "%s/%s", A.backup, moves[i].rel);
         snprintf(failed, sizeof(failed), "%s/failed/%s", A.work, moves[i].rel);
-        if (exists(inst)) {
+        /* A file whose old copy could not be moved is still the player's own: never touched unless ours was put there. */
+        if (moves[i].placed && exists(inst)) {
             mkdir_parent(failed);
             if (rename_over(inst, failed) != 0) { say("rollback: could not move %s away", moves[i].rel); bad = 1; }
         }
@@ -369,6 +383,7 @@ static int swap(char (*files)[400], int nfiles) {
         snprintf(neu, sizeof(neu), "%s/new/%s", A.work, files[i]);
         snprintf(moves[nmoves].rel, sizeof(moves[nmoves].rel), "%s", files[i]);
         moves[nmoves].had_old = 0;
+        moves[nmoves].placed = 0;
         nmoves++;
         if (mkdir_parent(inst) != 0 || mkdir_parent(bak) != 0) return -1;
         if (exists(inst)) {
@@ -376,6 +391,7 @@ static int swap(char (*files)[400], int nfiles) {
             moves[nmoves - 1].had_old = 1;
         }
         if (move_retry(neu, inst) != 0) { say("could not put %s in place", files[i]); return -1; }
+        moves[nmoves - 1].placed = 1;
 #ifndef _WIN32
         chmod(inst, 0755); /* the AppImage must run; no other file of a Linux package is a program */
 #endif
@@ -483,7 +499,8 @@ int main(int argc, char **argv) {
     char gof[1300];
     snprintf(gof, sizeof(gof), "%s/update.go", A.work);
     for (;;) {
-        int go = exists(gof), gone = pid_gone();
+        /* gone first: a launcher that writes update.go and ends between the two looks must still count as going ahead */
+        int gone = pid_gone(), go = exists(gof);
         if (go && gone) break;
         if (gone && !go) { say("the launcher ended without the go-ahead: staged, nothing changed"); return 0; }
         SLEEP_MS(200);

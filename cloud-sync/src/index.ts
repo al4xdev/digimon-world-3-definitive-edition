@@ -1049,6 +1049,8 @@ async function handleAdmin(request: Request, env: Env, meta: ClientMeta, path: s
 /* The launcher's SEND LOGS: a zip (logs, crash reports, the player's card). No account: a crash can come before the
  * registration. Bounded instead: 1.5 MB (a D1 row holds 2 MB), a ZIP's magic, 5 a hour and 20 a day per IP. */
 const LOG_MAX = 1_500_000;
+const LOG_WORLD_PER_DAY = 300; // reports a day, all senders
+const LOG_STORE_MAX = 150_000_000; // bytes kept: well under a free D1 database's 500 MB, with the saves beside them
 /* The report's code, the one a player types or photographs into an issue: 10 characters of an alphabet without the look-alikes
  * (no 0/O, 1/I/L), as XXXXX-XXXXX. 32^10 is plenty against guessing a stranger's report. */
 const CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
@@ -1058,13 +1060,20 @@ function reportCode(): string {
   return `${c.slice(0, 5)}-${c.slice(5)}`;
 }
 async function handleLogUpload(request: Request, env: Env, meta: ClientMeta, ts: number): Promise<Response> {
+  // The cheap refusals first: a request that is too big must not use up the sender's uploads.
+  const cl = Number(request.headers.get("Content-Length") ?? "0");
+  if (cl > LOG_MAX) throw new PayloadError("logs_too_large", 413);
   const hour = await checkRateLimit(env, `logs:h:${meta.ipHash}`, 5, 3600, ts);
   const day = await checkRateLimit(env, `logs:d:${meta.ipHash}`, 20, 86400, ts);
   if (!hour.allowed || !day.allowed) {
     return errJson("rate_limited", 429, undefined, { "Retry-After": String(Math.max(hour.retryAfterSec, 1)) });
   }
-  const cl = Number(request.headers.get("Content-Length") ?? "0");
-  if (cl > LOG_MAX) throw new PayloadError("logs_too_large", 413);
+  // The reports share the database the cloud saves live in: a flood of them must never fill it. A cap on what a day
+  // adds (all senders together) and one on what is kept.
+  const world = await checkRateLimit(env, "logs:world:day", LOG_WORLD_PER_DAY, 86400, ts);
+  if (!world.allowed) return errJson("busy", 503, undefined, { "Retry-After": String(world.retryAfterSec) });
+  const kept = await env.DB.prepare(`SELECT COALESCE(SUM(size), 0) AS bytes FROM log_reports`).first<{ bytes: number }>();
+  if (Number(kept?.bytes ?? 0) > LOG_STORE_MAX) return errJson("busy", 503, undefined, { "Retry-After": "3600" });
   if (!request.body) throw new PayloadError("empty_body", 400);
   const bytes = await readLimitedStream(request.body, LOG_MAX);
   if (bytes.byteLength < 22 || bytes[0] !== 0x50 || bytes[1] !== 0x4b) throw new PayloadError("not_a_zip", 400);

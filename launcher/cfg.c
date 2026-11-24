@@ -860,8 +860,8 @@ int led_install(char *why, size_t n) {
 #endif
 
 /* ---- logs ---- */
-#ifdef _WIN32
-/* Windows has no python3 to write the zip: a stored (uncompressed) one is written here, the same files in it. */
+#if defined(_WIN32) || defined(__ANDROID__)
+/* Windows and Android have no python3 to write the zip: a stored (uncompressed) one is written here, the same files in it. */
 typedef struct {
     char name[200];
     unsigned long crc, size, off;
@@ -879,8 +879,48 @@ static unsigned long zip_crc(const unsigned char *b, size_t n) {
 static void zip_u16(FILE *z, unsigned v) { fputc((int)(v & 255), z); fputc((int)((v >> 8) & 255), z); }
 static void zip_u32(FILE *z, unsigned long v) { zip_u16(z, (unsigned)(v & 0xffff)); zip_u16(z, (unsigned)(v >> 16)); }
 
+/* The upload's zip is stored, not deflated, and the server takes 1.5 MB: past this many bytes nothing more is added (the
+ * entries that matter come first). 0: no limit (the zip kept beside the game). */
+static long zip_budget, zip_used;
+static int zip_scrub; /* the text files of the upload: the home folder's name taken out (not the card: it is bytes) */
+
+/* Replaces every `needle` in b by "~", in place; the new length. The player's home folder is in the game's own paths
+ * (settings.json's disc, the log's lines) and a report should carry nothing that names them. */
+static size_t scrub_one(unsigned char *b, size_t n, const char *needle) {
+    size_t nl = needle ? strlen(needle) : 0;
+    if (nl < 3) return n;
+    size_t o = 0;
+    for (size_t i = 0; i < n;) {
+        if (i + nl <= n && memcmp(b + i, needle, nl) == 0) { b[o++] = '~'; i += nl; }
+        else b[o++] = b[i++];
+    }
+    return o;
+}
+
+static size_t scrub_home(unsigned char *b, size_t n) {
+    const char *envs[] = {"USERPROFILE", "HOME"};
+    for (unsigned k = 0; k < sizeof(envs) / sizeof(envs[0]); k++) {
+        const char *h = getenv(envs[k]);
+        if (!h || strlen(h) < 3) continue;
+        char v[1200], bs[1200], fs[1200];
+        snprintf(v, sizeof(v), "%s", h);
+        /* as the home folder is written in a path, in JSON (backslashes doubled) and with forward slashes */
+        size_t j = 0;
+        for (const char *p = v; *p && j + 2 < sizeof(bs); p++) { bs[j++] = *p; if (*p == '\\') bs[j++] = '\\'; }
+        bs[j] = 0;
+        snprintf(fs, sizeof(fs), "%s", v);
+        for (char *p = fs; *p; p++) if (*p == '\\') *p = '/';
+        n = scrub_one(b, n, v);
+        n = scrub_one(b, n, bs);
+        n = scrub_one(b, n, fs);
+    }
+    return n;
+}
+
 static void zip_put(FILE *z, ZipEnt *e, int *count, int max, const char *arcname, const unsigned char *data, size_t len) {
     if (*count >= max) return;
+    if (zip_budget && zip_used + (long)len > zip_budget) return;
+    zip_used += (long)len;
     ZipEnt *x = &e[(*count)++];
     snprintf(x->name, sizeof(x->name), "%s", arcname);
     x->crc = zip_crc(data, len);
@@ -909,6 +949,7 @@ static void zip_file(FILE *z, ZipEnt *e, int *count, int max, const char *arcnam
     size_t r = 0;
     if (b && fseek(f, off, SEEK_SET) == 0) r = fread(b, 1, (size_t)len, f);
     fclose(f);
+    if (b && zip_scrub && strcmp(arcname, "card1.mcd")) r = scrub_home(b, r);
     if (b) zip_put(z, e, count, max, arcname, b, r);
     free(b);
 }
@@ -930,10 +971,17 @@ static void zip_dir(FILE *z, ZipEnt *e, int *count, int max, const char *dir, co
 
 /* The machine, as far as the environment tells it without an API: what a "it stutters on my PC" report needs first. */
 static int win_system_txt(char *out, size_t n) {
+#ifndef __ANDROID__
     const char *ev[] = {"OS", "PROCESSOR_ARCHITECTURE", "PROCESSOR_IDENTIFIER", "PROCESSOR_LEVEL", "NUMBER_OF_PROCESSORS"};
+#endif
+#ifdef __ANDROID__
+    int l = snprintf(out, n, "os: android\n");
+    const char *ev[] = {NULL};
+#else
     int l = snprintf(out, n, "os: windows\n");
+#endif
     for (unsigned i = 0; i < sizeof(ev) / sizeof(ev[0]) && l > 0 && (size_t)l < n; i++) {
-        const char *v = getenv(ev[i]);
+        const char *v = ev[i] ? getenv(ev[i]) : NULL;
         if (v) l += snprintf(out + l, n - (size_t)l, "%s: %s\n", ev[i], v);
     }
 #ifdef DW3_LAUNCHER_VERSION
@@ -947,7 +995,11 @@ int logs_pack(char *name, size_t n, int upload) {
     struct tm tm;
     localtime_r(&t, &tm);
     strftime(name, n, upload ? "dw3-send-%Y%m%d-%H%M%S.zip" : "dw3-logs-%Y%m%d-%H%M%S.zip", &tm);
-    const long cap = upload ? 300L * 1024 : 0; /* per log file, for the upload */
+    const long cap = upload ? 200L * 1024 : 0;      /* per log file, for the upload */
+    const long crash_cap = upload ? 100L * 1024 : 0; /* per crash report: the head and the end of the stack are what is read */
+    zip_budget = upload ? 1300L * 1024 : 0; /* in all: the server's 1.5 MB less the zip's own headers */
+    zip_used = 0;
+    zip_scrub = upload;
     char zp[1200], p[1200];
     snprintf(zp, sizeof(zp), "%s/%s", game_dir, name);
     FILE *z = fopen(zp, "wb");
@@ -956,22 +1008,29 @@ int logs_pack(char *name, size_t n, int upload) {
     ZipEnt *e = calloc(MAXE, sizeof(ZipEnt));
     int count = 0;
     if (!e) { fclose(z); return -1; }
-    static const char *const files[] = {"settings.json", "pad.map", "tui.state", "menu.log", "log.txt"};
-    for (unsigned i = 0; i < sizeof(files) / sizeof(files[0]); i++) {
-        path_of(p, sizeof(p), files[i]);
-        zip_file(z, e, &count, MAXE, files[i], p, cap, 0);
+    /* In the order that matters when the budget runs out: the machine, the settings, the card, the logs, then the crashes. */
+    char sys[1024];
+    int sl = win_system_txt(sys, sizeof(sys));
+    zip_put(z, e, &count, MAXE, "system.txt", (const unsigned char *)sys, (size_t)sl);
+    static const char *const small[] = {"settings.json", "pad.map", "tui.state"};
+    for (unsigned i = 0; i < sizeof(small) / sizeof(small[0]); i++) {
+        path_of(p, sizeof(p), small[i]);
+        zip_file(z, e, &count, MAXE, small[i], p, cap, 0);
     }
     /* The player's card: it is an RPG's progress, nothing personal, and what reproduces a battle or a quest bug. */
     path_of(p, sizeof(p), "card1.mcd");
     zip_file(z, e, &count, MAXE, "card1.mcd", p, 0, 0);
     path_of(p, sizeof(p), "card1.def.json");
-    zip_file(z, e, &count, MAXE, "card1.def.json", p, 0, 512L * 1024);
-    zip_dir(z, e, &count, MAXE, game_dir, "crash-", ".txt", "crashes/", cap);
+    zip_file(z, e, &count, MAXE, "card1.def.json", p, 0, upload ? 256L * 1024 : 512L * 1024);
+    static const char *const logs[] = {"menu.log", "log.txt"};
+    for (unsigned i = 0; i < sizeof(logs) / sizeof(logs[0]); i++) {
+        path_of(p, sizeof(p), logs[i]);
+        zip_file(z, e, &count, MAXE, logs[i], p, cap, 0);
+    }
     path_of(p, sizeof(p), "logs");
     zip_dir(z, e, &count, MAXE, p, "", "", "logs/", cap);
-    char sys[1024];
-    int sl = win_system_txt(sys, sizeof(sys));
-    zip_put(z, e, &count, MAXE, "system.txt", (const unsigned char *)sys, (size_t)sl);
+    /* last: they are the biggest and the logs above say the same (a crash report keeps what the budget has left) */
+    zip_dir(z, e, &count, MAXE, game_dir, "crash-", ".txt", "crashes/", crash_cap);
     unsigned long cd = (unsigned long)ftell(z);
     for (int i = 0; i < count; i++) {
         size_t nl = strlen(e[i].name);
@@ -993,22 +1052,26 @@ int logs_pack(char *name, size_t n, int upload) {
     struct tm tm;
     localtime_r(&t, &tm);
     strftime(name, n, upload ? "dw3-send-%Y%m%d-%H%M%S.zip" : "dw3-logs-%Y%m%d-%H%M%S.zip", &tm);
+    if (strchr(game_dir, '\'')) return -1; /* it goes inside single quotes of a shell command */
     /* python3 is on every console this runs on (the launcher script needs it too); a zip writer is not worth the code */
-    /* cap: for the upload (1.5 MB at the server) each log keeps its last 300 KB; the end is where the crash is. */
+    /* cap: for the upload (1.5 MB at the server) each log keeps its last 200 KB (a crash report 100 KB): the end is where the crash is. */
     snprintf(cmd, sizeof(cmd),
         "cd '%s' && python3 -c \"import os,sys,glob,zipfile\n"
-        "cap=300*1024 if sys.argv[2]=='1' else 0\n"
-        "def put(f,arc=None,cap=0,skip=0):\n"
+        "cap=200*1024 if sys.argv[2]=='1' else 0\n"
+        "h=os.path.expanduser('~')\n"
+        "def put(f,arc=None,cap=0,skip=0,scrub=1):\n"
         "  if not os.path.isfile(f) or (skip and os.path.getsize(f)>skip): return\n"
-        "  if cap and os.path.getsize(f)>cap:\n"
-        "    d=open(f,'rb'); d.seek(-cap,2); z.writestr(arc or f,d.read())\n"
-        "  else: z.write(f,arc or f)\n"
+        "  d=open(f,'rb'); n=os.path.getsize(f)\n"
+        "  if cap and n>cap: d.seek(-cap,2)\n"
+        "  b=d.read()\n"
+        "  if scrub and len(h)>2 and sys.argv[2]=='1': b=b.replace(h.encode(),b'~')\n"
+        "  z.writestr(arc or f,b)\n"
         "z=zipfile.ZipFile(sys.argv[1],'w',zipfile.ZIP_DEFLATED)\n"
         "for f in ('settings.json','pad.map','tui.state','menu.log','log.txt'): put(f,None,cap)\n"
-        "put('card1.mcd')\n"
-        "put('card1.def.json',None,0,512*1024)\n"
-        "for f in glob.glob('crash-*.txt'): put(f,'crashes/'+f,cap)\n"
+        "put('card1.mcd',None,0,0,0)\n"
+        "put('card1.def.json',None,0,(256 if cap else 512)*1024)\n"
         "for f in glob.glob('logs/*'): put(f,None,cap)\n"
+        "for f in sorted(glob.glob('crash-*.txt'),key=os.path.getmtime)[-8:]: put(f,'crashes/'+f,cap//2)\n"
         "def rd(p,n=4096):\n"
         "  try: return open(p).read(n)\n"
         "  except Exception: return ''\n"

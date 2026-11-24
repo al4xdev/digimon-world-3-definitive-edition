@@ -26,7 +26,10 @@ jobs:
         run: |
           # The form's Area answer decides: the three runtime areas need a code, the build and tools ones may say N/A.
           area=$(printf '%s\n' "$BODY" | awk '/^### Area/{f=1;next} f&&NF{print;exit}')
-          code=$(printf '%s\n' "$BODY" | grep -oE '[A-HJKMNP-Z2-9]{5}-[A-HJKMNP-Z2-9]{5}' | head -1 || true)
+          # The code as typed, in any case; or a picture attached (a photo or screenshot of the screen: a bot cannot read it,
+          # the maintainer does). The template says both are fine.
+          code=$(printf '%s\n' "$BODY" | tr 'a-z' 'A-Z' | grep -oE '[A-HJKMNP-Z2-9]{5}-[A-HJKMNP-Z2-9]{5}' | head -1 || true)
+          if [ -z "$code" ] && printf '%s\n' "$BODY" | grep -qE '!\[|user-attachments|<img '; then code=image; fi
           case "$area" in
             "The game (PC port), in play"|"The launcher"|"The AppImage"*) need=1 ;;
             *) need=0 ;;
@@ -41,4 +44,4 @@ jobs:
           [ "$STATE" = open ] || exit 0
           gh label create needs-report-code --color d93f0b --description "A bug report needs the launcher's SEND LOGS code" 2>/dev/null || true
           gh issue edit "$NUM" --add-label needs-report-code
-          gh issue close "$NUM" --reason "not planned" --comment "This bug report has no report code, so it is closed for now. In the launcher open DEBUG, set LOGS to HEAVY, reproduce the problem, then DEBUG > SEND LOGS: it shows a code like \`K7M2Q-9XPB4\`. Edit this issue, put the code in the **Report code** field (or attach a photo of the screen) and it reopens by itself."
+          gh issue close "$NUM" --reason "not planned" --comment "This bug report has no report code, so it is closed for now. In the launcher open DEBUG, set LOGS to HEAVY, reproduce the problem, then DEBUG > SEND LOGS: it shows a code like \`K7M2Q-9XPB4\`. Edit this issue, put the code in the **Report code** field (or attach a photo of the screen: any picture in the issue counts) and it reopens by itself."

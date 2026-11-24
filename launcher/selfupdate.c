@@ -43,7 +43,7 @@ static int layout(const char *exe_dir, Layout *L) {
     for (char *p = self; *p; p++) if (*p == '\\') *p = '/';
     snprintf(L->dir, sizeof(L->dir), "%s", exe_dir);
     snprintf(L->work, sizeof(L->work), "%s/.update", L->dir);
-    snprintf(L->backup, sizeof(L->backup), "%s/backup", L->dir);
+    snprintf(L->backup, sizeof(L->backup), "%s/dw2003-backup", L->dir); /* a bare "backup" may be the player's own folder, and the next update deletes this one */
     snprintf(L->restart, sizeof(L->restart), "%s", self);
     const char *slash = strrchr(self, '/');
     snprintf(L->smoke, sizeof(L->smoke), "%s", slash ? slash + 1 : self);
@@ -70,7 +70,14 @@ int selfupd_available(const UpdateInfo *u, const char *exe_dir) {
     if (!u->asset_url[0] || strlen(u->asset_sha256) != 64 || u->asset_size <= 0) return 0;
     if (recomp_active()) return 0; /* RecompLauncher updates the launcher itself */
     if (!layout(exe_dir, &L)) return 0;
-    if (access(L.updater, F_OK) != 0 || access(L.dir, W_OK) != 0) return 0;
+    if (access(L.updater, F_OK) != 0) return 0;
+    /* access(W_OK) on a folder says yes on Windows whatever its permissions (Program Files): try to make a file */
+    char probe[1300];
+    snprintf(probe, sizeof(probe), "%s/.dw2003-write-test", L.dir);
+    FILE *t = fopen(probe, "wb");
+    if (!t) return 0;
+    fclose(t);
+    remove(probe);
     return 1;
 }
 
@@ -84,7 +91,12 @@ static void rmtree(const char *path) {
         char c[1500];
         snprintf(c, sizeof(c), "%s/%s", path, e->d_name);
         struct stat st;
-        if (stat(c, &st) == 0 && S_ISDIR(st.st_mode)) rmtree(c);
+#ifdef _WIN32
+        int r = stat(c, &st);
+#else
+        int r = lstat(c, &st); /* a link is removed, never entered */
+#endif
+        if (r == 0 && S_ISDIR(st.st_mode)) rmtree(c);
         else remove(c);
     }
     closedir(d);
@@ -222,6 +234,7 @@ void selfupd_cancel(void) {
     if (su_handle) w32_handle_kill(su_handle);
     su_handle = NULL;
 #else
+    kill(-(pid_t)su_pid, SIGTERM); /* its own process group (setsid): the updater and the curl it runs */
     kill((pid_t)su_pid, SIGTERM);
     waitpid((pid_t)su_pid, NULL, 0);
 #endif

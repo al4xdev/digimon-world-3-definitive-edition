@@ -78,10 +78,21 @@ the Windows zip and AppImage packaging, `check_release_contents.py`, CI step, do
 Cross-built for Windows with the repo's toolchain: both `.exe`s link, GUI subsystem, manifest, only Windows DLLs.
 Differences from the plan above: the minigame's back/east button is a jump, so SELECT hides or cancels (not B); a staged
 package is not reused after an interrupted run (it is downloaded again, 5 MB); Linux uses `.dw2003-update/` and
-`.dw2003-backup/` beside the AppImage (a bare `backup/` next to a file in Downloads is not a good neighbour).
+`.dw2003-backup/` beside the AppImage (Windows: `.update/` and `dw2003-backup/`) (a bare `backup/` next to a file in Downloads is not a good neighbour).
 NOT run: anything on real Windows or under Wine (WinHTTP download with the redirect, MoveFileExW on a running exe, the
 real swap); the Wine CI job for the updater; a real update from one release to the next (there is no release with the
 updater yet, so the first one that ships it cannot update itself: the second can).
+
+## Audit (opus, 2026-11-24) and what was fixed
+Fixed: the rollback could take away the player's own file when moving it to the backup had failed (a `placed` flag now);
+the go-ahead was read after the launcher's exit (the other way round now); `rmtree` followed links; the Windows backup
+folder is `dw2003-backup/` (a bare `backup/` may be the player's and is deleted by the next update); the writable test
+makes a file (access() lies on Windows); cancel on Linux kills the updater's process group (the curl too). Telemetry: the
+stored zip (Windows, now Android too) has a total budget and the logs come before the crashes; the home folder's name is
+taken out of the uploaded text; the worker has a global storage cap; the issue bot is case-insensitive and keeps an issue
+with an attached image open.
+Left: PID reuse on Windows (the handle is opened each poll); a crash in the middle of a swap leaves a half-installed folder
+(only `--rollback`, by hand, repairs it).
 
 ## Decisions for you (answered: yes to all)
 1. Name `dw2003-updater(.exe)` shipped in the Windows zip and, on Linux, inside the AppImage? (Recommended: yes.)
