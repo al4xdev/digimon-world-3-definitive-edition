@@ -4152,7 +4152,6 @@ $Weak: Weak
 $Resist: Resist
 $Neutral: -
 $Unknown: ???
-$Twice: Inimigo x2
 $BlastTempt: Blast chama...
 $BlastNoGauge: Encha o Blast Gauge primeiro<1>(fraquezas, atordoamento,<1>One More, OVERFINISH).
 $BlastOverheated: Superaquecido demais para<1>usar o Blast agora.
@@ -4276,6 +4275,19 @@ $HuntRarePrefix: Material raro:<1>
 $HuntRareWord: Core
 $HuntSpace: " "
 $PersonaMark: "! "
+$InfoShiftTurnsA: "SHIFT cada "
+$InfoShiftTurnsB: " turnos"
+$InfoShiftStagger: SHIFT ao atordoar
+$InfoShiftWeak: nova fraqueza
+$InfoShiftGuard: guarda liga/desliga
+$InfoShiftBoth: fraqueza + guarda
+$InfoGuardA: "Só "
+$InfoGuardB: %do dano
+$InfoGuardUntil: até ser atordoado
+$InfoSpeedA: "Velocidade "
+$InfoSpeedB: x a sua
+$InfoDefA: "Defesa "
+$InfoDefB: "%"
 $HuntRomanI: I
 $HuntRomanV: V
 $HuntRomanX: X

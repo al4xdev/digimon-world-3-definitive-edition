@@ -151,7 +151,7 @@ physical blow and the element's picture for magic.
   (once a round), or land any other blow for a bonus that ends the stagger.
 - **OVERFINISH**: knock an enemy out with a blow that earns one more action and it stays down for it. Every hit on it
   pays Bits.
-- **You open the fight** unless you are ambushed. An enemy twice as fast acts twice, and the HUD says so ("Enemy x2");
+- **You open the fight** unless you are ambushed. An enemy twice as fast acts twice, and the INFO panel's turn queue shows it;
   your own side needs four times its speed, so your extra actions come from One More.
 - **You hear it, too**: a different sound for a weakness, a neutral hit and a resisted one.
 

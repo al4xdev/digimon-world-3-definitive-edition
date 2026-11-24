@@ -155,8 +155,8 @@ l'image de l'élément pour la magie.
   gardant votre tour (une fois par tour), ou portez n'importe quel autre coup pour un bonus qui met fin à l'étourdissement.
 - **OVERFINISH** : mettez un ennemi K.O. avec un coup qui offre une action de plus, et il reste à terre pour la
   subir. Chaque coup porté rapporte des Bits.
-- **C'est vous qui ouvrez le combat**, sauf embuscade. Un ennemi deux fois plus rapide agit deux fois, et le HUD
-  vous le dit (« Enemy x2 ») ; votre camp doit être quatre fois plus rapide, vos actions en plus viennent donc du One More.
+- **C'est vous qui ouvrez le combat**, sauf embuscade. Un ennemi deux fois plus rapide agit deux fois, et la file
+  des tours du panneau INFO le montre ; votre camp doit être quatre fois plus rapide, vos actions en plus viennent donc du One More.
 - **Cela s'entend aussi** : un son différent pour une faiblesse, un coup neutre et un coup résisté.
 
 <table>

@@ -435,6 +435,108 @@ static int enemy_guarded(void) {
     return def_persona_guard(persona_at(slot % 3), def_persona_phase(slot % 3));
 }
 
+/* ---- The INFO panel's traits (the battle menu's Inspect): what kind of enemy the current target is, read from its
+ * persona row and the battle's state, never changing them. def_persona_enemy_turn / def_persona_staggered advance the
+ * phase and def_turn_queue rewrites fightstg_rules.stats, so none of them is called from here. */
+static int inspect_has_guard(const DefPersona *p, s32 species) {
+    if (fightstg_battle.state.type == 6) { /* the final boss is never guarded (enemy_guarded) */
+        return 0;
+    }
+    return def_time_guarded(species) || def_persona_guard(p, 0) || def_persona_guard(p, 1);
+}
+
+void def_inspect_info(DefInspectInfo *out) {
+    int slot = fightstg_battle.state.current[1];
+    s32 species = fightstg_battle.state.members[1][slot].digimon;
+    const DefPersona *p = persona_at(slot % 3);
+
+    memset(out, 0, sizeof(*out));
+    if (!def_on()) {
+        return;
+    }
+    if (p != NULL && p->phases == 2) {
+        out->kind[out->count++] = DEF_TRAIT_SHIFT;
+        out->phase = (unsigned char)def_persona_phase(slot % 3);
+        out->left = (unsigned char)def_persona_turns_left(slot % 3);
+        out->every = p->turns;
+    }
+    if (inspect_has_guard(p, species)) {
+        out->kind[out->count++] = DEF_TRAIT_GUARD;
+        out->guarded = (unsigned char)enemy_guarded(); /* the rule itself: phase, stagger, Time Room */
+    }
+    if (p != NULL && p->speed_x != 0) {
+        out->kind[out->count++] = DEF_TRAIT_SPEED;
+    }
+    if (p != NULL && p->def_pct != 0) {
+        out->kind[out->count++] = DEF_TRAIT_DEF;
+    }
+}
+
+/* A legend line made of a translated head, the row's number and a translated tail ("Speed " 3 "x yours"): the
+ * languages put the number in different places, so each has its own head and tail. */
+static void legend_number(unsigned char *buf, int *p, int size, const unsigned char *head, int n,
+                          const unsigned char *tail) {
+    def_glyph_put(buf, p, size, head);
+    def_glyph_number(buf, p, size, n);
+    def_glyph_put(buf, p, size, tail);
+}
+
+static void legend_newline(unsigned char *buf, int *p, int size) {
+    static const unsigned char newline[3] = { 2, 1, 0 };
+
+    def_glyph_put(buf, p, size, newline);
+}
+
+const unsigned char *def_inspect_legend(int kind) {
+    extern const unsigned char def_str_InfoShiftTurnsA[], def_str_InfoShiftTurnsB[], def_str_InfoShiftStagger[],
+        def_str_InfoShiftWeak[], def_str_InfoShiftGuard[], def_str_InfoShiftBoth[], def_str_InfoGuardA[],
+        def_str_InfoGuardB[], def_str_InfoGuardUntil[], def_str_InfoSpeedA[], def_str_InfoSpeedB[],
+        def_str_InfoDefA[], def_str_InfoDefB[];
+    static unsigned char buf[DEF_TRAITS][96];
+    const DefPersona *p = persona_at(fightstg_battle.state.current[1] % 3);
+    unsigned char *b;
+    int n = 0;
+
+    if (kind < 0 || kind >= DEF_TRAITS) {
+        return NULL;
+    }
+    b = buf[kind];
+    b[0] = 0;
+    switch (kind) {
+    case DEF_TRAIT_SHIFT: /* when, then what changes: the weaknesses, the guard or both */
+        if (p == NULL || p->phases != 2) {
+            break;
+        }
+        if (p->turns != 0) {
+            legend_number(b, &n, sizeof(buf[0]), def_str_InfoShiftTurnsA, p->turns, def_str_InfoShiftTurnsB);
+        } else {
+            def_glyph_put(b, &n, sizeof(buf[0]), def_str_InfoShiftStagger);
+        }
+        legend_newline(b, &n, sizeof(buf[0]));
+        def_glyph_put(b, &n, sizeof(buf[0]),
+                      !def_persona_shifts_map(p)                          ? def_str_InfoShiftGuard
+                      : def_persona_guard(p, 0) != def_persona_guard(p, 1) ? def_str_InfoShiftBoth
+                                                                           : def_str_InfoShiftWeak);
+        break;
+    case DEF_TRAIT_GUARD:
+        legend_number(b, &n, sizeof(buf[0]), def_str_InfoGuardA, DEF_GUARD_PCT, def_str_InfoGuardB);
+        legend_newline(b, &n, sizeof(buf[0]));
+        def_glyph_put(b, &n, sizeof(buf[0]), def_str_InfoGuardUntil);
+        break;
+    case DEF_TRAIT_SPEED:
+        if (p != NULL) {
+            legend_number(b, &n, sizeof(buf[0]), def_str_InfoSpeedA, p->speed_x, def_str_InfoSpeedB);
+        }
+        break;
+    case DEF_TRAIT_DEF:
+        if (p != NULL) {
+            legend_number(b, &n, sizeof(buf[0]), def_str_InfoDefA, p->def_pct, def_str_InfoDefB);
+        }
+        break;
+    }
+    return b;
+}
+
 static s32 guard_damage(u8 side, s32 value) {
     if (side == 0) {
         guard_hit = 0; /* every blow of the party decides it afresh */
@@ -631,7 +733,7 @@ extern const unsigned char def_str_Fire[], def_str_Water[], def_str_Ice[], def_s
 /* Turn order by Speed, asymmetric: a faster party counts only the square root of its lead (4x the enemy's Speed to
  * act twice every time, where the disc needs 2x), so the party's extra actions come from One More and Baton Pass; a
  * faster enemy keeps the disc's rule, its answer to having no One More. Both delays of a pair read the same speeds,
- * so def_enemy_acts_twice stays right. side is the acting one's (0 the party, 0x10 the enemy). */
+ * so def_turn_queue stays right. side is the acting one's (0 the party, 0x10 the enemy). */
 void def_turn_speeds(int side, int *own, int *other) {
     int *party = side == 0 ? own : other, *enemy = side == 0 ? other : own;
     int product, root = 999, i;
@@ -650,13 +752,15 @@ void def_turn_speeds(int side, int *own, int *other) {
     *party = root; /* the geometric mean: the lead p/e becomes sqrt(p/e) */
 }
 
-/* "Enemy acts twice": with the command menu open, E the time left to the enemy's turn, Pe the delay its next
- * turn would take and P the one ours would (fightstg_events.get_delay kind 0: no draw, but it rewrites
- * fightstg_rules.stats, so only here, with the menu open and nothing being calculated), the enemy acts again before
- * we do when E + Pe < P. */
-int def_enemy_acts_twice(void) {
+/* The next turns, for the INFO panel's queue: with the command menu open, E the time left to the enemy's turn, Pe
+ * the delay its next turn would take and P the one ours would (fightstg_events.get_delay kind 0: no draw, but it
+ * rewrites fightstg_rules.stats, so only here, with the menu open and nothing being calculated). The enemy acts at E
+ * and E + Pe, we at P; an enemy turn comes first only when strictly earlier (the "Enemy x2" rule, E + Pe < P). Ours
+ * is the last one known: after it our own next delay would be needed, so a queue that starts with us is two long. */
+int def_turn_queue(unsigned char queue[3]) {
     int e = fightstg_events.find(3);
     s32 left, enemy_next, own_next;
+    int n = 0;
 
     if (e < 0) {
         return 0;
@@ -667,12 +771,17 @@ int def_enemy_acts_twice(void) {
     if (log_on()) {
         LOG("twice E %d Pe %d P %d -> %d", (int)left, (int)enemy_next, (int)own_next, left + enemy_next < own_next);
     }
-    return left + enemy_next < own_next;
-}
-
-const unsigned char *def_twice_label(void) {
-    extern const unsigned char def_str_Twice[];
-    return def_str_Twice;
+    if (left < own_next) {
+        queue[n++] = DEF_TURN_ENEMY;
+        if (left + enemy_next < own_next) {
+            queue[n++] = DEF_TURN_ENEMY;
+        }
+        queue[n++] = DEF_TURN_PARTY;
+    } else {
+        queue[n++] = DEF_TURN_PARTY;
+        queue[n++] = DEF_TURN_ENEMY;
+    }
+    return n;
 }
 
 /* Limit Break (> 999 stats): scoped in v1.0 to Chosen Evolution (side 0) and Dark Galacticmon (side 1). */

@@ -152,8 +152,8 @@ golpe físico e o desenho do elemento para magia.
   o seu turno (uma vez por rodada), ou desfira qualquer outro golpe por um bônus que encerra o atordoamento.
 - **OVERFINISH**: nocauteie um inimigo com um golpe que dá mais uma ação e ele continua caído para recebê-la. Cada
   golpe nele rende Bits.
-- **Você abre a luta**, a não ser que seja emboscado. Um inimigo duas vezes mais rápido age duas vezes, e o HUD
-  avisa ("Enemy x2"); o seu lado precisa de quatro vezes a velocidade dele, então suas ações extras vêm do One More.
+- **Você abre a luta**, a não ser que seja emboscado. Um inimigo duas vezes mais rápido age duas vezes, e a fila de
+  turnos do painel INFO mostra isso; o seu lado precisa de quatro vezes a velocidade dele, então suas ações extras vêm do One More.
 - **Você também ouve**: um som diferente para fraqueza, para golpe neutro e para golpe resistido.
 
 <table>

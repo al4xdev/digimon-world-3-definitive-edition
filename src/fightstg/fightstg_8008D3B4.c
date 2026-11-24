@@ -3754,8 +3754,8 @@ typedef struct FightstgBattleMenuData {
     MessageWindow *labels[FIGHTSTG_BMENU_ACTIONS];
     MessageWindow *inspect_names[7];  /* Inspect's panel: the element's picture, */
     MessageWindow *inspect_states[7]; /* and Weak / Resist / - / ??? (empty while the panel is closed) */
-    MessageWindow *twice;             /* "Enemy x2" while the enemy acts twice before our next turn */
     MessageWindow *inspect_title;     /* the panel's title: the enemy's name */
+    MessageWindow *legend[DEF_TRAITS]; /* the panel's legend: one window per trait of the enemy, two lines at most */
     MessageWindow *tempt;             /* the Blast's temptation (def_blast_tempt), above the cross; empty otherwise */
     MessageWindow *limit_break;       /* "LIMIT BREAK" badge when Chosen Evolution or Dark Galacticmon exceeds 999 */
     MessageWindow *notice;            /* why the grey Blast refuses the Chosen Evolution (def_chosen_refusal); empty */
@@ -3793,6 +3793,12 @@ typedef struct FightstgBattleMenu {
     s16 plate_x[FIGHTSTG_BMENU_ACTIONS]; /* from x: the plate behind chip and word */
     s16 plate_w[FIGHTSTG_BMENU_ACTIONS];
     s32 inspect; /* the Inspect panel is open */
+    DefInspectInfo info; /* the panel's traits, read when it opens (nothing changes them while the menu is up) */
+    s16 inspect_rows_y;  /* the grid's first line: under the traits row when there is one */
+    s16 inspect_h;       /* the open panel's height */
+    s16 legend_y[DEF_TRAITS]; /* each legend entry's first line */
+    u8 queue[3];         /* the next turns (DEF_TURN_*), read once at the menu's creation: def_turn_queue rewrites */
+    s32 queue_n;         /* fightstg_rules.stats */
     s32 tag_free; /* the Tag tab shows the free swap's picture (an enemy is open and the window's swap is unspent) */
     s32 tempt;    /* a full gauge at a critical moment: the Blast tab turns bright and shakes (def_blast_tempt) */
     s32 notice;   /* the refusal's box is open (above the menu) */
@@ -4287,8 +4293,8 @@ static void fightstg_battle_menu_paint(FightstgBattleMenuData *data, s32 i, u8 p
  * learnt), from its resists as they stand now (buffs and debuffs included). Open: the text is set; closed: the windows
  * are emptied. The panel is a title (the enemy's name) over two columns of picture + state in the 14-pixel font (the
  * 9-pixel one has two usable colours and reads badly at 320x240): Fire, Water, Ice, Wind | Thunder, Machine, Dark.
- * It sits in the right middle (x 170-308, y 75-136), the room the portrait window had: clear of the enemy (centre-left)
- * and of the menu (under y 184). */
+ * It sits in the right middle (x 170-308, from y 75), the room the portrait window had: clear of the enemy (centre-left)
+ * and of the menu (under y 184); with a traits row and a legend it grows down over the player's Digimon. */
 #define FIGHTSTG_INSPECT_X 174
 #define FIGHTSTG_INSPECT_Y 78        /* the title's line */
 #define FIGHTSTG_INSPECT_ROW_Y 92    /* the first element's */
@@ -4299,7 +4305,8 @@ static void fightstg_battle_menu_paint(FightstgBattleMenuData *data, s32 i, u8 p
 #define FIGHTSTG_INSPECT_PAIR_DX 11  /* a pair's second picture, behind the first's right side */
 #define FIGHTSTG_INSPECT_STATE_DX 29 /* the state's text, after a pair's two pictures (every cell's, so they line up) */
 #define FIGHTSTG_INSPECT_W 138
-#define FIGHTSTG_TWICE_X (FIGHTSTG_BMENU_R + 8) /* the "Enemy x2" and LIMIT BREAK labels: right of the tabs */
+#define FIGHTSTG_TWICE_X (FIGHTSTG_BMENU_R + 8) /* the LIMIT BREAK label, right of the tabs, one line under where */
+                                        /* "Enemy x2" was before it moved into the panel */
 #define FIGHTSTG_TWICE_Y (FIGHTSTG_BMENU_ROW1 + 3)
 #define FIGHTSTG_TEMPT_X 248 /* the temptation window: kept, always empty (the Blast tab calls instead) */
 #define FIGHTSTG_TEMPT_Y 166
@@ -4311,12 +4318,125 @@ static void fightstg_battle_menu_paint(FightstgBattleMenuData *data, s32 i, u8 p
 #define FIGHTSTG_NOTICE_LINES 3
 static const u8 fightstg_inspect_empty[1] = { 0 };
 
-static void fightstg_battle_menu_inspect_set(FightstgBattleMenuData *data, s32 open) {
+/* The INFO panel's second part (.plan/tasks/battle-hud-part2-info.md): what kind of enemy it is. Under the title a
+ * traits row: one picture per trait (SHIFT's two halves, the guard's shield, the speed's chevrons, the cracked block
+ * of a lowered Defense), and at its right end the next turns as a queue of chips (red diamond the enemy, blue disc
+ * us: two diamonds before the disc is the old "Enemy x2"), for every enemy, so it needs no legend; under the grid the
+ * legend, one entry per trait with the same picture and the row's own values. The pictures are new on purpose,
+ * drawn as flat pixels on the panel's layer, so none reads as an element (part 1's critic). The panel grows down
+ * over the player's Digimon, inside the 240 lines with the most traits a row has (6 legend lines). */
+#define FIGHTSTG_INSPECT_PICT 11       /* a picture's side */
+#define FIGHTSTG_INSPECT_TRAIT_STEP 15 /* picture to picture on the traits row */
+#define FIGHTSTG_INSPECT_CHIP 7         /* a turn's chip in the queue, */
+#define FIGHTSTG_INSPECT_QUEUE_STEP 12  /* chip to chip, the arrow between them */
+#define FIGHTSTG_INSPECT_PIP 3         /* SHIFT's countdown: one 3-pixel pip per enemy turn left */
+#define FIGHTSTG_INSPECT_PIP_STEP 4
+#define FIGHTSTG_INSPECT_LEGEND_DX 14  /* a legend entry's text, after its picture */
+#define FIGHTSTG_INSPECT_RIGHT (FIGHTSTG_INSPECT_X - 4 + FIGHTSTG_INSPECT_W - 4) /* where the panel's text ends */
+
+/* The pictures, row by row: '#' the first colour, '+' the second, '.' none. */
+static const char *const fightstg_inspect_picts[DEF_TRAITS][FIGHTSTG_INSPECT_PICT] = {
+    /* SHIFT: two halves, the phase it is in lit (A the left one) */
+    { "...##.++...", "..###.+++..", ".####.++++.", "#####.+++++", "#####.+++++", "#####.+++++", "#####.+++++",
+      "#####.+++++", ".####.++++.", "..###.+++..", "...##.++..." },
+    /* the guard: a shield, lit while it is guarded now */
+    { "###########", "#+++++++++#", "#+++++++++#", "#+++++++++#", "#+++++++++#", ".#+++++++#.", ".#+++++++#.",
+      "..#+++++#..", "..#+++++#..", "...#+++#...", "....###...." },
+    /* the speed: two chevrons */
+    { "#....#.....", "##...##....", ".##...##...", "..##...##..", "...##...##.", "....##...##", "...##...##.",
+      "..##...##..", ".##...##...", "##...##....", "#....#....." },
+    /* a lowered Defense: a cracked block */
+    { "#####.#####", "#++++..+++#", "#+++++.+++#", "#++++..+++#", "#++++.++++#", "#+++..++++#", "#++++.++++#",
+      "#++++..+++#", "#+++++.+++#", "#++++..+++#", "#####.#####" },
+};
+static const u8 fightstg_inspect_pict_rgb[DEF_TRAITS][2][3] = {
+    { { 240, 120, 255 }, { 240, 120, 255 } }, /* SHIFT: the unlit half is dimmed when drawn */
+    { { 255, 210, 60 }, { 60, 120, 220 } },   /* gold rim, blue field */
+    { { 90, 235, 130 }, { 90, 235, 130 } },
+    { { 215, 160, 95 }, { 150, 95, 55 } },
+};
+
+/* The queue's chips (DEF_TURN_PARTY, DEF_TURN_ENEMY) and the arrow between two. */
+static const char *const fightstg_inspect_chips[2][FIGHTSTG_INSPECT_CHIP] = {
+    { "..###..", ".#####.", "#######", "#######", "#######", ".#####.", "..###.." },
+    { "...#...", "..###..", ".#####.", "#######", ".#####.", "..###..", "...#..." },
+};
+static const char *const fightstg_inspect_arrow[5] = { "#..", ".#.", "..#", ".#.", "#.." };
+static const u8 fightstg_inspect_chip_rgb[3][3] = { { 90, 170, 255 }, { 240, 70, 60 }, { 120, 130, 160 } };
+
+/* An opaque flat rectangle on the panel's layer, over the backdrop (queued before it). */
+static void fightstg_inspect_pixels(s32 x, s32 y, s32 w, s32 h, const u8 *rgb, s32 dim) {
+    POLY_F4 *poly;
+    GfxLayer *layer = gfx_module.funcs.get_layer(0x1005);
+
+    if (layer == NULL) {
+        return;
+    }
+    poly = gfx_module.funcs.get_packet();
+    setPolyF4(poly);
+    setRGB0(poly, dim ? rgb[0] / 2 : rgb[0], dim ? rgb[1] / 2 : rgb[1], dim ? rgb[2] / 2 : rgb[2]); /* half: an open
+                                                                                   * shield must still read on the navy */
+    setXY4(poly, x, y, x + w, y, x, y + h, x + w, y + h);
+    addPrim(layer->get_ot_entry(layer, FIGHTSTG_BMENU_PANEL_DEPTH), poly);
+    gfx_module.funcs.set_packet(poly + 1);
+}
+
+/* A bitmap at (x, y), `h` lines: a quad per run of one colour on a line, '#' in `a`, '+' in `b`, each dimmed when
+ * its flag says so. */
+static void fightstg_inspect_bitmap(s32 x, s32 y, const char *const *rows, s32 h, const u8 *a, const u8 *b, s32 dim_a,
+                                    s32 dim_b) {
+    s32 r;
+    s32 c;
+    s32 end;
+
+    for (r = 0; r < h; r++) {
+        const char *row = rows[r];
+
+        for (c = 0; row[c] != 0; c = end) {
+            char k = row[c];
+
+            for (end = c + 1; row[end] == k; end++) {
+            }
+            if (k != '.') {
+                fightstg_inspect_pixels(x + c, y + r, end - c, 1, k == '#' ? a : b, k == '#' ? dim_a : dim_b);
+            }
+        }
+    }
+}
+
+/* Trait `kind`'s picture at (x, y). `lit`: 0 dims it all (the guard open now); for SHIFT, the phase whose half is
+ * lit (A the left one). */
+static void fightstg_inspect_pict(s32 x, s32 y, s32 kind, s32 lit) {
+    s32 shift = kind == DEF_TRAIT_SHIFT;
+
+    fightstg_inspect_bitmap(x, y, fightstg_inspect_picts[kind], FIGHTSTG_INSPECT_PICT, fightstg_inspect_pict_rgb[kind][0],
+                            fightstg_inspect_pict_rgb[kind][1], !lit, shift ? lit != 0 : !lit);
+}
+
+static s32 fightstg_inspect_lines(const u8 *text) {
+    s32 n = 1;
+
+    for (; text != NULL && *text != 0; text++) {
+        if (text[0] == 2 && text[1] == 1) {
+            n++;
+        }
+    }
+    return n;
+}
+
+static void fightstg_battle_menu_inspect_set(FightstgBattleMenu *obj, FightstgBattleMenuData *data, s32 open) {
     FightstgStats *enemy;
     FightstgEnemyRecord *rec;
+    s32 wide_pad = port_video_widescreen_pad();
+    s32 traits;
+    s32 x;
+    s32 y;
     s32 e;
     s32 n;
 
+    for (e = 0; e < DEF_TRAITS; e++) {
+        data->legend[e]->set_text(data->legend[e], (u8 *)fightstg_inspect_empty, -1);
+    }
     if (!open) {
         data->inspect_title->set_text(data->inspect_title, (u8 *)fightstg_inspect_empty, -1);
         for (e = 0; e < 7; e++) {
@@ -4325,6 +4445,9 @@ static void fightstg_battle_menu_inspect_set(FightstgBattleMenuData *data, s32 o
         }
         return;
     }
+    def_inspect_info(&obj->info);
+    traits = obj->info.count > 0 || obj->queue_n > 0;
+    obj->inspect_rows_y = traits ? FIGHTSTG_INSPECT_ROW_Y + FIGHTSTG_INSPECT_LINE : FIGHTSTG_INSPECT_ROW_Y;
     enemy = fightstg_rules.get_stats(0x10, 0, fightstg_battle.state.current[1]);
     rec = fightstg_enemy_records.get(fightstg_battle.state.members[1][fightstg_battle.state.current[1]].digimon);
     if (rec != NULL) {
@@ -4338,6 +4461,15 @@ static void fightstg_battle_menu_inspect_set(FightstgBattleMenuData *data, s32 o
 #endif
         data->inspect_title->set_text(data->inspect_title, cdload_module.files.get_file(records_language + 0x4E), rec->name);
     }
+    for (e = 0; e < 7; e++) {
+        /* five cells by family; windows 5 and 6 are the second pictures of the pairs (families 1 and 3) */
+        s32 f = e < FIGHTSTG_INSPECT_FAMILIES ? e : e == 5 ? 1 : 3;
+
+        x = FIGHTSTG_INSPECT_X + wide_pad + FIGHTSTG_INSPECT_COL_DX * (f / FIGHTSTG_INSPECT_ROWS);
+        y = obj->inspect_rows_y + FIGHTSTG_INSPECT_LINE * (f % FIGHTSTG_INSPECT_ROWS);
+        data->inspect_names[e]->set_pos(data->inspect_names[e], e >= FIGHTSTG_INSPECT_FAMILIES ? x + FIGHTSTG_INSPECT_PAIR_DX : x, y);
+        data->inspect_states[e]->set_pos(data->inspect_states[e], x + FIGHTSTG_INSPECT_STATE_DX, y);
+    }
     for (e = 0; e < FIGHTSTG_INSPECT_FAMILIES; e++) {
         data->inspect_names[e]->set_text(data->inspect_names[e], (u8 *)def_family_icon(e, 0), -1);
         data->inspect_states[e]->set_text(data->inspect_states[e], (u8 *)def_inspect_family_state(enemy->resists, e, &n), -1);
@@ -4345,20 +4477,67 @@ static void fightstg_battle_menu_inspect_set(FightstgBattleMenuData *data, s32 o
     }
     data->inspect_names[5]->set_text(data->inspect_names[5], (u8 *)def_family_icon(1, 1), -1); /* the pairs' second */
     data->inspect_names[6]->set_text(data->inspect_names[6], (u8 *)def_family_icon(3, 1), -1); /* pictures */
+    y = obj->inspect_rows_y + FIGHTSTG_INSPECT_LINE * FIGHTSTG_INSPECT_ROWS + 4;
+    for (e = 0; e < obj->info.count; e++) {
+        const u8 *text = def_inspect_legend(obj->info.kind[e]);
+
+        obj->legend_y[e] = (s16)y;
+        data->legend[e]->set_pos(data->legend[e], FIGHTSTG_INSPECT_X + wide_pad + FIGHTSTG_INSPECT_LEGEND_DX, y);
+        data->legend[e]->set_text(data->legend[e], (u8 *)text, -1);
+        y += FIGHTSTG_INSPECT_LINE * fightstg_inspect_lines(text);
+    }
+    obj->inspect_h = (s16)(y + 2 - (FIGHTSTG_INSPECT_Y - 3));
 }
 
-/* The open panel's backdrop: the dark quad, a line under the title and a frame in the windows' blue. */
-static void fightstg_battle_menu_inspect_frame(void) {
+/* The open panel's backdrop: the dark quad, a line under the title (and under the grid when a legend follows), a
+ * frame in the windows' blue, and the traits' pictures. */
+static void fightstg_battle_menu_inspect_frame(FightstgBattleMenu *obj) {
     s32 x = FIGHTSTG_INSPECT_X + port_video_widescreen_pad() - 4;
     s32 y = FIGHTSTG_INSPECT_Y - 3;
     s32 w = FIGHTSTG_INSPECT_W;
-    s32 h = FIGHTSTG_INSPECT_ROW_Y + FIGHTSTG_INSPECT_LINE * FIGHTSTG_INSPECT_ROWS + 2 - y;
+    s32 h = obj->inspect_h;
+    s32 px = x + 4;
+    s32 i;
+    s32 k;
 
+    for (i = 0; i < obj->info.count; i++) {
+        s32 kind = obj->info.kind[i];
+        s32 lit = kind == DEF_TRAIT_SHIFT ? obj->info.phase == 0 : kind == DEF_TRAIT_GUARD ? obj->info.guarded : 1;
+
+        fightstg_inspect_pict(px, FIGHTSTG_INSPECT_ROW_Y + 1, kind, lit);
+        px += FIGHTSTG_INSPECT_TRAIT_STEP;
+        if (kind == DEF_TRAIT_SHIFT) { /* the countdown: the enemy's turns left in this phase */
+            for (k = 0; k < obj->info.left; k++) {
+                fightstg_inspect_pixels(px - 2 + FIGHTSTG_INSPECT_PIP_STEP * k, FIGHTSTG_INSPECT_ROW_Y + 5,
+                                        FIGHTSTG_INSPECT_PIP, FIGHTSTG_INSPECT_PIP, fightstg_inspect_pict_rgb[kind][0], 0);
+            }
+            px += obj->info.left > 0 ? FIGHTSTG_INSPECT_PIP_STEP * obj->info.left + 2 : 0;
+        }
+        /* the legend's picture is the row's, state included (one picture, one meaning) */
+        fightstg_inspect_pict(x + 4, obj->legend_y[i] + 1, kind, lit);
+    }
+    /* the next turns, right-aligned on the traits row, an arrow between two */
+    px = x + 4 + FIGHTSTG_INSPECT_RIGHT - FIGHTSTG_INSPECT_X - (FIGHTSTG_INSPECT_QUEUE_STEP * (obj->queue_n - 1) +
+                                                              FIGHTSTG_INSPECT_CHIP);
+    for (i = 0; i < obj->queue_n; i++) {
+        const u8 *rgb = fightstg_inspect_chip_rgb[obj->queue[i]];
+
+        fightstg_inspect_bitmap(px, FIGHTSTG_INSPECT_ROW_Y + 3, fightstg_inspect_chips[obj->queue[i]],
+                                FIGHTSTG_INSPECT_CHIP, rgb, rgb, 0, 0);
+        if (i + 1 < obj->queue_n) {
+            fightstg_inspect_bitmap(px + FIGHTSTG_INSPECT_CHIP + 1, FIGHTSTG_INSPECT_ROW_Y + 4, fightstg_inspect_arrow,
+                                    5, fightstg_inspect_chip_rgb[2], fightstg_inspect_chip_rgb[2], 0, 0);
+        }
+        px += FIGHTSTG_INSPECT_QUEUE_STEP;
+    }
     fightstg_battle_menu_quad(x, y, w, 1, 1, 40, 110, 220);
     fightstg_battle_menu_quad(x, y + h - 1, w, 1, 1, 40, 110, 220);
     fightstg_battle_menu_quad(x, y + 1, 1, h - 2, 1, 40, 110, 220);
     fightstg_battle_menu_quad(x + w - 1, y + 1, 1, h - 2, 1, 40, 110, 220);
     fightstg_battle_menu_quad(x + 3, FIGHTSTG_INSPECT_ROW_Y - 2, w - 6, 1, 1, 30, 70, 150);
+    if (obj->info.count > 0) {
+        fightstg_battle_menu_quad(x + 3, obj->legend_y[0] - 2, w - 6, 1, 1, 30, 70, 150);
+    }
     fightstg_battle_menu_quad(x, y, w, h, 2, 190, 180, 130); /* added last: the layer draws it first, under the lines */
 }
 
@@ -4443,21 +4622,17 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
         data->labels[FIGHTSTG_BMENU_TAG]->set_text(data->labels[FIGHTSTG_BMENU_TAG], (u8 *)fightstg_inspect_empty, -1);
         obj->tag_free = 0;
         data->inspect_title = message_create_window(0x1005, 1, FIGHTSTG_INSPECT_X + wide_pad, FIGHTSTG_INSPECT_Y);
-        for (i = 0; i < 7; i++) {
-            /* five cells by family; windows 5 and 6 are the second pictures of the pairs (families 1 and 3) */
-            s32 f = i < FIGHTSTG_INSPECT_FAMILIES ? i : i == 5 ? 1 : 3;
-
-            x = FIGHTSTG_INSPECT_X + wide_pad + FIGHTSTG_INSPECT_COL_DX * (f / FIGHTSTG_INSPECT_ROWS);
-            y = FIGHTSTG_INSPECT_ROW_Y + FIGHTSTG_INSPECT_LINE * (f % FIGHTSTG_INSPECT_ROWS);
-            if (i >= FIGHTSTG_INSPECT_FAMILIES) {
-                x += FIGHTSTG_INSPECT_PAIR_DX;
-            }
-            data->inspect_names[i] = message_create_window(0x1005, 1, x, y);
-            data->inspect_states[i] = message_create_window(0x1005, 1, x + FIGHTSTG_INSPECT_STATE_DX, y);
+        for (i = 0; i < 7; i++) { /* placed when the panel opens (the grid moves down under a traits row) */
+            data->inspect_names[i] = message_create_window(0x1005, 1, 0, 0);
+            data->inspect_states[i] = message_create_window(0x1005, 1, 0, 0);
         }
-        fightstg_battle_menu_inspect_set(data, 0);
-        data->twice = message_create_window(0x1005, 3, FIGHTSTG_TWICE_X - wide_pad, FIGHTSTG_TWICE_Y);
-        data->twice->set_text(data->twice, (u8 *)(def_enemy_acts_twice() ? def_twice_label() : fightstg_inspect_empty), -1);
+        for (i = 0; i < DEF_TRAITS; i++) {
+            data->legend[i] = message_create_window(0x1005, 1, 0, 0);
+        }
+        /* The next turns (the old "Enemy x2", which left the middle of the screen: the owner, 2026-11-24) live in the
+         * panel only. Read here, once: def_turn_queue asks the turn delays, which rewrites fightstg_rules.stats. */
+        obj->queue_n = def_on() ? def_turn_queue(obj->queue) : 0;
+        fightstg_battle_menu_inspect_set(obj, data, 0);
         data->limit_break = message_create_window(0x1005, 3, FIGHTSTG_TWICE_X - wide_pad, FIGHTSTG_TWICE_Y + 11);
         data->limit_break->set_palette(data->limit_break, 2);
         data->limit_break->set_text(
@@ -4528,7 +4703,7 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
                                      FIGHTSTG_BMENU_CY + FIGHTSTG_BMENU_CHIP / 2, FIGHTSTG_BMENU_STEP_X + 12,
                                      FIGHTSTG_BMENU_STEP_Y + 9);
         if (obj->inspect) {
-            fightstg_battle_menu_inspect_frame();
+            fightstg_battle_menu_inspect_frame(obj);
         } else if (obj->notice) {
             fightstg_battle_menu_notice_frame();
         }
@@ -4545,7 +4720,7 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
         if (pad_state.get_pressed(0) & 0x8) { /* Start: the battle memory, the same panel as Inspect */
             sound_module.play(0x4001C);
             obj->inspect = !obj->inspect;
-            fightstg_battle_menu_inspect_set(data, obj->inspect);
+            fightstg_battle_menu_inspect_set(obj, data, obj->inspect);
             fightstg_battle_menu_notice_set(obj, data, NULL);
         }
         for (i = 0; i < FIGHTSTG_BMENU_ACTIONS; i++) {
@@ -4555,13 +4730,13 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
                 sound_module.play(0x4001C);
                 if (i == FIGHTSTG_BMENU_INSPECT) { /* Inspect: opens or closes the panel, the menu stays and no turn is spent */
                     obj->inspect = !obj->inspect;
-                    fightstg_battle_menu_inspect_set(data, obj->inspect);
+                    fightstg_battle_menu_inspect_set(obj, data, obj->inspect);
                     fightstg_battle_menu_notice_set(obj, data, NULL);
                     break;
                 }
                 if (obj->inspect) {
                     obj->inspect = 0;
-                    fightstg_battle_menu_inspect_set(data, 0);
+                    fightstg_battle_menu_inspect_set(obj, data, 0);
                 }
                 if (obj->grey[i]) {
                     port_bm_clear(); /* a refused press leaves the menu open, and nothing else is given */

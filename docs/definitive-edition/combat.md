@@ -49,7 +49,7 @@ lends a basic attack, never staggers.
 - **You hear and see how a technique landed**: a slanted **WEAK!** or **RESIST!** over the enemy, and a distinct
   sound for a weakness, a neutral hit and a resisted one.
 - **You open the fight** unless you are ambushed. Speed no longer decides who starts. An enemy twice as fast as your
-  active Digimon acts twice (the disc's rule), and the HUD shows "Enemy x2"; a faster party counts only the square root
+  active Digimon acts twice (the disc's rule), and the INFO panel's turn queue shows it; a faster party counts only the square root
   of its lead, so it needs four times the enemy's speed to act twice every time (`def_turn_speeds`, in
   `fightstg_events_get_delay`; owner, 2026-11-22): the party's extra actions are One More's and Baton Pass's.
 
@@ -148,6 +148,14 @@ way round, an enemy's magic of power 100 (stat scale 16, so × 1) with Spirit 15
   but only what you have found out: hitting a weakness or a resistance with an elemental technique teaches both
   elements of its family, everything else shows `???`. In Inspect a family you know shows its current state (weak,
   neutral or resisted, with a Resist Down or Mega Break already counted), not the state it had when you learnt it.
+- Inspect also says **what kind of enemy** it is, under its name: one picture per trait of its persona, each explained
+  by a legend at the panel's foot with the row's own values (nothing else explains them: no help screen). **SHIFT**
+  (two halves, the phase it is in lit, and one pip per enemy turn left before the next SHIFT when it counts turns):
+  every n turns or at each stagger its weakness, its guard or both change, which is when the `SHIFT!` callout pops; the
+  **guard** (a shield, lit while it is guarded now, dark while it is open: staggered, or in its unguarded phase): it
+  takes only 30% until staggered; **speed** (two chevrons): its Speed is the party's times n; a **lowered Defense** (a
+  cracked block). At the traits row's right end, for every enemy, the **next turns** as a queue of chips (red diamond
+  the enemy, blue disc you): two diamonds before the disc is an enemy that acts twice (the old "Enemy x2" label). The values of a phase not learnt yet stay `???`.
 - **Libra** reveals all of an enemy's elements at once.
 - The **Bestiary** (field menu) keeps what you learnt of every species, saved with your game, and lists its Hunt
   Materials: the common one with how many you hold, and its rare items as a collection (see [The hunt](hunt-and-economy.md#the-hunt)).
@@ -235,7 +243,7 @@ Working rules of the PRDs (kept because they explain why the code looks as it do
   The PRD's acceptance checks of layers 2-4 (chain, window, close, free swap) were read from this log. The first plan
   of measuring 4-6 bosses with a physical and a magic team (`baseline.md`) was dropped.
 - **Layer 2 (HUD, Inspect, sound, "Enemy x2").** The HUD became mandatory (the list menu is unreachable). Three distinct
-  sounds (weak, neutral, resisted) are picked from effects the battle already loads. The "Enemy x2" indicator shows when
+  sounds (weak, neutral, resisted) are picked from effects the battle already loads. The "Enemy x2" indicator (since 2026-11-24 the INFO panel's turn queue, `def_turn_queue`, read once per menu) shows when
   `E + Pe < P`, where E is the enemy's remaining turn delay in the queue, Pe = `get_delay(0x10, 0)` and P the player's
   remaining delay after the current action (`get_delay(0, 0)`); `get_delay` of type 0 draws nothing but **overwrites
   `fightstg_rules.stats[]`**, so call it only with the command menu open, never in the middle of a damage calculation.

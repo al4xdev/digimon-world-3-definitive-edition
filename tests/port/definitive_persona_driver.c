@@ -120,8 +120,12 @@ int main(void) {
     CHECK(def_persona_battle_hue(-1) == 40, "the model's colour before any slot is looked up");
     p = def_persona_slot(0, 99);
     CHECK(p == &def_personas[1] && def_persona_phase(0) == 0, "slot 0 is the Rare Target, phase A");
-    CHECK(def_persona_enemy_turn(0) == 0 && def_persona_enemy_turn(0) == 1 && def_persona_phase(0) == 1,
-          "two of its turns: phase B");
+    CHECK(def_persona_turns_left(0) == 2 && def_persona_turns_left(0) == 2, "INFO's countdown: 2, and reading it twice "
+          "changes nothing");
+    CHECK(def_persona_shifts_map(p) && !def_persona_shifts_map(&def_personas[2]), "a phase B with a map of its own");
+    CHECK(def_persona_enemy_turn(0) == 0 && def_persona_turns_left(0) == 1 && def_persona_enemy_turn(0) == 1 &&
+              def_persona_phase(0) == 1 && def_persona_turns_left(0) == 2,
+          "two of its turns: phase B, the countdown again from 2");
     CHECK(def_persona_battle_hue(-1) == 220, "phase B's colour");
     CHECK(def_persona_battle_hue(0) == 220 && def_persona_battle_hue(1) == 220, "the slot's own colour (none: the first)");
     def_persona_battle_end();
@@ -157,7 +161,7 @@ int main(void) {
     CHECK(def_persona_staggered(1) == 0, "one phase: a stagger changes nothing");
     p = def_persona_slot(2, 80);
     CHECK(def_persona_guard(p, def_persona_phase(2)), "Goburimon guarded in A");
-    CHECK(def_persona_enemy_turn(2) == 0, "ON_STAGGER: turns do not count");
+    CHECK(def_persona_enemy_turn(2) == 0 && def_persona_turns_left(2) == 0, "ON_STAGGER: turns do not count");
     CHECK(def_persona_staggered(2) == 1 && !def_persona_guard(p, def_persona_phase(2)), "staggered: open in B");
     CHECK(def_persona_battle_hue(-1) == 0, "a species row never recolours");
 

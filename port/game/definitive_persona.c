@@ -102,6 +102,10 @@ int def_persona_weak(const DefPersona *p, int phase) {
     return p != NULL ? p->phase[map_phase(p, phase & 1)].weak : 0;
 }
 
+int def_persona_shifts_map(const DefPersona *p) {
+    return p != NULL && map_phase(p, 1) != 0;
+}
+
 int def_persona_guard(const DefPersona *p, int phase) {
     return p != NULL && p->phase[phase & 1].guard != 0;
 }
@@ -299,6 +303,17 @@ static const DefPersona *row_of(int slot) {
 
 int def_persona_phase(int slot) {
     return row_of(slot) != NULL ? slots[slot].phase : 0;
+}
+
+/* The phase changes at the start of the enemy's turn that brings `turns` to the row's n (def_persona_enemy_turn), so
+ * this many of its turns are left, the next one included. */
+int def_persona_turns_left(int slot) {
+    const DefPersona *p = row_of(slot);
+
+    if (p == NULL || p->phases != 2 || p->turns == 0) {
+        return 0;
+    }
+    return p->turns - slots[slot].turns;
 }
 
 static int next_phase(int slot) {

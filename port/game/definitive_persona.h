@@ -100,6 +100,7 @@ const DefPersona *def_persona_species(int species);  /* a common species' row, N
 int def_persona_def(const DefPersona *p, int defense); /* its Defense after DEF_PCT (at least 1) */
 int def_persona_weak(const DefPersona *p, int phase); /* the phase's weak families */
 int def_persona_guard(const DefPersona *p, int phase);
+int def_persona_shifts_map(const DefPersona *p); /* 1: phase B has a map of its own (SHIFT changes the weaknesses) */
 int def_persona_hue(const DefPersona *p, int phase);
 /* The phase's resistances over the species' own (`base`), into `out` (may be `base`). */
 void def_persona_resists(const DefPersona *p, int phase, const short base[7], short out[7]);
@@ -113,6 +114,7 @@ int def_persona_same_where(const DefPersonaWhere *w); /* 1: the battle began as 
 void def_persona_battle_end(void); /* forget the encounter: the next battle, even the same one again, starts anew */
 const DefPersona *def_persona_slot(int slot, int species); /* the slot's row (a new species there starts it again) */
 int def_persona_phase(int slot);
+int def_persona_turns_left(int slot);  /* the enemy's turns to its next phase (PHASES(n)), 0 none; reads only */
 int def_persona_enemy_turn(int slot);  /* its turn begins: 1 when the phase changed */
 int def_persona_staggered(int slot);   /* it was staggered: 1 when the phase changed */
 int def_persona_known(int slot);       /* element bits the inspect shows (all once the row is solved) */

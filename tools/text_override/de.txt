@@ -9,7 +9,6 @@ $Weak: WEAK
 $Resist: RESIST
 $Neutral: -
 $Unknown: ???
-$Twice: Feind x2
 $BlastTempt: Blast lockt...
 $BlastNoGauge: Fülle erst die Blast-Leiste<1>(Schwächen, Betäubung,<1>One More, OVERFINISH).
 $BlastOverheated: Zu überhitzt, um jetzt<1>Blast zu nutzen.
@@ -344,6 +343,19 @@ $HuntRarePrefix: Seltenes Material:<1>
 $HuntRareWord: Kern
 $HuntSpace: " "
 $PersonaMark: "! "
+$InfoShiftTurnsA: "SHIFT alle "
+$InfoShiftTurnsB: " Züge"
+$InfoShiftStagger: SHIFT bei Betäubung
+$InfoShiftWeak: neue Schwäche
+$InfoShiftGuard: Deckung an/aus
+$InfoShiftBoth: Schwäche + Deckung
+$InfoGuardA: "Nur "
+$InfoGuardB: %Schaden
+$InfoGuardUntil: bis zur Betäubung
+$InfoSpeedA: "Tempo "
+$InfoSpeedB: x deins
+$InfoDefA: "Abwehr "
+$InfoDefB: "%"
 $HuntRomanI: I
 $HuntRomanV: V
 $HuntRomanX: X

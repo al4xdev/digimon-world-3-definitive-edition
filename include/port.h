@@ -401,6 +401,20 @@ int def_persona_warn(int slot);
 /* The inspect panel's title: `name` (or the species' own name when NULL) after the persona mark, when the current
  * target has a rule of its own; else `name` as it is. */
 const unsigned char *def_persona_title(int species, const unsigned char *name);
+/* The INFO panel (the battle menu's Inspect): the current target's traits, in the order they are drawn, with its live
+ * state (phase, turns to the next SHIFT, guarded now), and each trait's legend (glyph bytes, two lines at most) with
+ * the row's own values. Reads only: no phase is advanced and no turn delay asked (def_turn_queue is not). */
+enum { DEF_TRAIT_SHIFT, DEF_TRAIT_GUARD, DEF_TRAIT_SPEED, DEF_TRAIT_DEF, DEF_TRAITS };
+typedef struct DefInspectInfo {
+    unsigned char count;            /* traits in kind[] */
+    unsigned char kind[DEF_TRAITS]; /* DEF_TRAIT_* */
+    unsigned char phase;            /* SHIFT: 0 phase A, 1 phase B */
+    unsigned char left;             /* SHIFT: the enemy's turns to the next one, its next turn included; 0 on stagger */
+    unsigned char every;            /* SHIFT: PHASES(n)'s n, 0 on stagger */
+    unsigned char guarded;          /* GUARD: guarded now (open while staggered, in an unguarded phase) */
+} DefInspectInfo;
+void def_inspect_info(DefInspectInfo *out);
+const unsigned char *def_inspect_legend(int kind);
 int def_resist_down_mask(int side, int slot);
 int def_resist_down_families(int side, int slot); /* the same, a pair of elements as its family's one bit */
 const unsigned char *def_message(int i);
@@ -585,11 +599,12 @@ int def_poly_text_width(int size, const char *text);
  * has a row. */
 struct FightstgEnemyRecord;
 void def_enemy_override(struct FightstgEnemyRecord *rec);
-/* "Enemy acts twice": 1 when the enemy acts twice before our next turn (call with the command menu open, never
- * mid-calculation), and the label shown then. */
-int def_enemy_acts_twice(void);
+/* The next turns as the command menu opens (call it there, once: it asks the turn delays, which rewrites
+ * fightstg_rules.stats): DEF_TURN_* in order into `queue`, their count returned (0: none known). Two enemy turns
+ * before ours is the old "Enemy x2". */
+enum { DEF_TURN_PARTY, DEF_TURN_ENEMY };
+int def_turn_queue(unsigned char queue[3]);
 void def_turn_speeds(int side, int *own, int *other); /* the turn delay's speeds: a faster party's lead is square-rooted */
-const unsigned char *def_twice_label(void);
 s32 def_get_damage(u8 side, s32 id);
 s32 def_get_special_damage(u8 side, s32 id);
 int def_train_pity_guaranteed_tier(int tier);

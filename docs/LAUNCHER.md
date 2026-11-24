@@ -285,8 +285,7 @@ lock. On the host there is nothing to see: `tests/port/mods.py` keeps the mod's 
 buttons, `remember_cursor`, `buffer_input`), which apply while it is enabled and otherwise hold their defaults. The one
 exception is a replay script (`--script`), which keeps the original list. A seventh button, **Inspect** (L2, or R2 and
 then the free places when the player put an action there), opens a panel with the enemy's five element families (weak,
-neutral or resisted once found out, `???` otherwise; combat.md "Knowing your enemy") and spends no turn; "Enemy x2"
-shows beside the menu when the enemy acts twice before our next turn. An eighth button, **Blast** (R2, the right tab
+neutral or resisted once found out, `???` otherwise; combat.md "Knowing your enemy") and spends no turn; what kind of enemy it is (its traits and their legend) and the next turns (enemy twice before us: two red chips before the blue one). An eighth button, **Blast** (R2, the right tab
 above Tech; the free places when it clashes), sets the acting Digimon's Blast off once its gauge is full and spends the
 turn (see [`definitive-edition/blast.md`](definitive-edition/blast.md#the-gauge) "The gauge"); the tab **is** the
 gauge's bar (a dark slot that fills from its left end as the gauge charges), so with the gauge not full it is grey and

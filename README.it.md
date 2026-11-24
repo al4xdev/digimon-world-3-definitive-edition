@@ -154,7 +154,7 @@ blu (magia), ora vedi un pugno per un colpo fisico e l'immagine dell'elemento pe
 - **OVERFINISH**: manda KO un nemico con un colpo che dà un'azione in più, e lui resta a terra per subirla. Ogni colpo
   che lo raggiunge paga Bits.
 - **Sei tu ad aprire lo scontro**, a meno che tu non venga colto di sorpresa. Un nemico due volte più veloce agisce due
-  volte, e l'HUD te lo dice ("Enemy x2"); la tua parte ha bisogno di quattro volte la sua velocità, quindi le tue azioni extra vengono dal One More.
+  volte, e la coda dei turni del pannello INFO lo mostra; la tua parte ha bisogno di quattro volte la sua velocità, quindi le tue azioni extra vengono dal One More.
 - **Lo senti anche**: un suono diverso per una debolezza, un colpo neutro e un colpo resistito.
 
 <table>

@@ -155,7 +155,7 @@ sind hier Elementmagie. Die Techniklisten zeigen es auf einen Blick: Wo das Spie
 - **OVERFINISH**: Besiege einen Gegner mit einem Schlag, der eine weitere Aktion bringt, und er bleibt dafür am Boden.
   Jeder Treffer auf ihn zahlt Bits.
 - **Du eröffnest den Kampf**, es sei denn, du wirst überfallen. Ein doppelt so schneller Gegner handelt zweimal, und
-  das HUD sagt es dir ("Enemy x2"); deine Seite braucht das Vierfache seines Tempos, deine Extra-Aktionen kommen also von One More.
+  die Zugfolge im INFO-Fenster zeigt es; deine Seite braucht das Vierfache seines Tempos, deine Extra-Aktionen kommen also von One More.
 - **Du hörst es auch**: ein anderer Klang für eine Schwäche, einen neutralen und einen resistierten Treffer.
 
 <table>

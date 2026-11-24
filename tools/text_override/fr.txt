@@ -9,7 +9,6 @@ $Weak: Weak
 $Resist: Resist
 $Neutral: -
 $Unknown: ???
-$Twice: Ennemi x2
 $BlastTempt: Blast appelle...
 $BlastNoGauge: Remplissez la jauge Blast<1>(faiblesses, étourdissements,<1>One More, OVERFINISH).
 $BlastOverheated: Trop en surchauffe pour<1>lancer le Blast maintenant.
@@ -344,6 +343,19 @@ $HuntRarePrefix: Matériau rare :<1>
 $HuntRareWord: Noyau
 $HuntSpace: " "
 $PersonaMark: "! "
+$InfoShiftTurnsA: "SHIFT après "
+$InfoShiftTurnsB: " tours"
+$InfoShiftStagger: SHIFT si étourdi
+$InfoShiftWeak: nouvelle faiblesse
+$InfoShiftGuard: garde on/off
+$InfoShiftBoth: faiblesse + garde
+$InfoGuardA: "Ne subit que "
+$InfoGuardB: "%"
+$InfoGuardUntil: jusqu’à l’étourdir
+$InfoSpeedA: "Vitesse "
+$InfoSpeedB: x la vôtre
+$InfoDefA: "Défense "
+$InfoDefB: "%"
 $HuntRomanI: I
 $HuntRomanV: V
 $HuntRomanX: X

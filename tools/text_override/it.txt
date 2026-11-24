@@ -9,7 +9,6 @@ $Weak: Weak
 $Resist: Resist
 $Neutral: -
 $Unknown: ???
-$Twice: Nemico x2
 $BlastTempt: Il Blast chiama...
 $BlastNoGauge: Riempi prima la barra Blast<1>(debolezze, stordimenti,<1>One More, OVERFINISH).
 $BlastOverheated: Troppo surriscaldato per<1>usare il Blast ora.
@@ -344,6 +343,19 @@ $HuntRarePrefix: Materiale raro:<1>
 $HuntRareWord: Nucleo
 $HuntSpace: " "
 $PersonaMark: "! "
+$InfoShiftTurnsA: "SHIFT ogni "
+$InfoShiftTurnsB: " turni"
+$InfoShiftStagger: SHIFT se stordito
+$InfoShiftWeak: nuova debolezza
+$InfoShiftGuard: guardia sì/no
+$InfoShiftBoth: debolezza + guardia
+$InfoGuardA: "Solo "
+$InfoGuardB: %dei danni
+$InfoGuardUntil: finché stordito
+$InfoSpeedA: "Velocità "
+$InfoSpeedB: x la tua
+$InfoDefA: "Difesa "
+$InfoDefB: "%"
 $HuntRomanI: I
 $HuntRomanV: V
 $HuntRomanX: X

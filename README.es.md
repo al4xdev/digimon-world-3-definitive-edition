@@ -153,8 +153,8 @@ para un golpe físico y el dibujo del elemento para la magia.
   turno (una vez por ronda), o asesta cualquier otro golpe para un bonus que pone fin al aturdimiento.
 - **OVERFINISH**: derriba a un enemigo con un golpe que da una acción más y se queda en el suelo para recibirla. Cada
   golpe que reciba paga Bits.
-- **Tú abres el combate**, salvo que te tiendan una emboscada. Un enemigo el doble de rápido actúa dos veces, y el HUD te
-  lo dice ("Enemy x2"); tu bando necesita cuatro veces su velocidad, así que tus acciones extra vienen del One More.
+- **Tú abres el combate**, salvo que te tiendan una emboscada. Un enemigo el doble de rápido actúa dos veces, y la cola de turnos
+  del panel INFO lo muestra; tu bando necesita cuatro veces su velocidad, así que tus acciones extra vienen del One More.
 - **También se oye**: un sonido distinto para una debilidad, un golpe neutro y uno resistido.
 
 <table>

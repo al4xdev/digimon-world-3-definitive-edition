@@ -10,7 +10,6 @@ $Weak: Weak
 $Resist: Resist
 $Neutral: -
 $Unknown: ???
-$Twice: Enemy x2
 # Blast Gauge phase 1: the battle menu's temptation (a full gauge at a critical moment), above the cross.
 $BlastTempt: Blast calls...
 $BlastNoGauge: Fill the Blast Gauge first<1>(weaknesses, staggers,<1>One More, OVERFINISH).
@@ -385,6 +384,21 @@ $HuntRarePrefix: Rare material:<1>
 $HuntRareWord: Core
 $HuntSpace: " "
 $PersonaMark: "! "
+# The INFO panel's legend (def_inspect_legend): one entry per trait, two lines at most, each line within the
+# legend's 116 pixels in every language (tests/port/inspect_legend.py). A..B pairs go around the row's number.
+$InfoShiftTurnsA: "SHIFT every "
+$InfoShiftTurnsB: " turns"
+$InfoShiftStagger: SHIFT on stagger
+$InfoShiftWeak: new weakness
+$InfoShiftGuard: guard on/off
+$InfoShiftBoth: weakness + guard
+$InfoGuardA: "Takes only "
+$InfoGuardB: "%"
+$InfoGuardUntil: until staggered
+$InfoSpeedA: "Speed "
+$InfoSpeedB: x yours
+$InfoDefA: "Defense "
+$InfoDefB: "%"
 $HuntRomanI: I
 $HuntRomanV: V
 $HuntRomanX: X
