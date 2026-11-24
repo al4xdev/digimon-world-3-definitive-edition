@@ -321,7 +321,7 @@ int def_form_floor(int row);
 /* The hit callouts (definitive_callout.c): the slanted word that pops over the side hit. def_callout_show starts one
  * (0 clears it) over `side`'s acting member (0 party, 1 enemy); def_callout_frame runs once per battle frame. */
 enum { DEF_CALLOUT_NONE, DEF_CALLOUT_WEAK, DEF_CALLOUT_RESIST, DEF_CALLOUT_OVERFINISH, DEF_CALLOUT_RARE, DEF_CALLOUT_EVOLVE,
-       DEF_CALLOUT_GUARDED, DEF_CALLOUT_SHIFT, DEF_CALLOUT_COUNT };
+       DEF_CALLOUT_GUARDED, DEF_CALLOUT_SHIFT, DEF_CALLOUT_GUARDED_RED, DEF_CALLOUT_COUNT };
 void def_callout_show(int kind, int side);
 void def_callout_frame(void);
 

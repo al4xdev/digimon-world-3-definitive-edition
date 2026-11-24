@@ -107,7 +107,7 @@ int def_persona_shifts_map(const DefPersona *p) {
 }
 
 int def_persona_guard(const DefPersona *p, int phase) {
-    return p != NULL && p->phase[phase & 1].guard != 0;
+    return p != NULL ? p->phase[phase & 1].guard : DEF_GUARD_NONE;
 }
 
 int def_persona_hue(const DefPersona *p, int phase) {
@@ -212,6 +212,13 @@ int def_persona_check_rows(const DefPersona *rows, int count, void (*report)(con
             !(p->phase[1].guard && p->phase[0].guard && p->phase[1].weak == 0 && p->phase[1].resist == 0 &&
               p->phase[1].hue == 0)) {
             bad += report_one(report, "phase B set without PHASES or ON_STAGGER", i);
+        }
+        if (p->phase[0].guard > DEF_GUARD_RED || p->phase[1].guard > DEF_GUARD_RED) {
+            bad += report_one(report, "guard: GUARD_* (orange) or RED_* (red)", i);
+        }
+        if (p->phases == 2 && p->turns == 0 && p->phase[0].guard != p->phase[1].guard &&
+            (p->phase[0].guard == DEF_GUARD_RED || p->phase[1].guard == DEF_GUARD_RED)) {
+            bad += report_one(report, "a red guard that a stagger ends (ON_STAGGER): red is never opened by one", i);
         }
         if (p->phases == 2) {
             int map_b = map_phase(p, 1) != 0;

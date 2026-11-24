@@ -494,6 +494,37 @@ int main(void) {
         check("guard: final boss (type 6) is never guarded",
               dmg == 1000 && last_callout != DEF_CALLOUT_GUARDED);
         time_guarded_stub = 0;
+
+        /* The red guard (BK WarGreymon 31/448, RED_ALWAYS): physical and counters at 30% with the red callout, a
+         * weakness whole, any other magic at 30%, and a stagger never opens it. Its row makes it weak to Dark alone
+         * (element 6, defense_stat 8); the live resistances are set by hand to match. */
+        reset_battle();
+        records_state.battle = 31;
+        fightstg_battle.state.members[1][0].digimon = 448;
+        records_techniques[56 - 1].element = 9; /* Dark magic */
+        records_techniques[56 - 1].defense_stat = 8;
+        fightstg_rules.stats[1].resists[6] = 60;
+        stub_magic_damage = 1000;
+        last_callout = -1;
+        dmg = def_get_damage(0, 55);
+        def_hit_feedback();
+        check("red guard: physical takes 30% + red GUARDED", dmg == 300 && last_callout == DEF_CALLOUT_GUARDED_RED);
+        last_callout = -1;
+        dmg = def_get_special_damage(0, 56);
+        def_hit_feedback();
+        check("red guard: a weakness goes through whole and shows WEAK!", dmg == 1000 && last_callout == DEF_CALLOUT_WEAK);
+        def_action_resolved(0, 56, dmg); /* the weakness staggers it */
+        last_callout = -1;
+        dmg = def_get_damage(0, 55);
+        def_hit_feedback();
+        check("red guard: staggered, physical still takes 30% + red GUARDED",
+              dmg == 300 && last_callout == DEF_CALLOUT_GUARDED_RED);
+        dmg = def_counter_damage(0, 1000);
+        check("red guard: a counter takes 30%, even right after a weakness", dmg == 300);
+        records_techniques[56 - 1].defense_stat = 2; /* Fire, which it resists */
+        fightstg_rules.stats[1].resists[0] = 300;
+        dmg = def_get_special_damage(0, 56);
+        check("red guard: magic off the weakness takes 30%", dmg == 300);
         stub_phys_damage = 0;
     }
 

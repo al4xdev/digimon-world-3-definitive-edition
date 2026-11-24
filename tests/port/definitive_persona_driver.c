@@ -216,6 +216,7 @@ int main(void) {
            "A weak", "A resist", "A gd", "B weak", "B resist", "B gd", "speed/def%/hue");
     for (i = 0; i < def_persona_count; i++) {
         const DefPersona *p = &def_personas[i];
+        static const char *const guard_name[3] = { "", "yes", "red" }; /* DEF_GUARD_NONE, _ORANGE, _RED */
         char ph[8], keep[8];
 
         families(wa, p->phase[0].weak);
@@ -225,7 +226,7 @@ int main(void) {
         snprintf(ph, sizeof(ph), "%s", p->phases != 2 ? "1" : p->turns ? "2/t" : "2/stg");
         snprintf(keep, sizeof(keep), p->keep ? "%d" : "-", p->keep - 1);
         printf("%-3d %-9s %6d %5d %4s %-5s %-18s %-14s %-4s %-18s %-14s %-4s x%d %d%% %d/%d\n", i, kind_name(p->kind),
-               p->a, p->b, keep, ph, wa, ra, p->phase[0].guard ? "yes" : "", wb, rb, p->phase[1].guard ? "yes" : "",
+               p->a, p->b, keep, ph, wa, ra, guard_name[p->phase[0].guard % 3], wb, rb, guard_name[p->phase[1].guard % 3],
                p->speed_x, p->def_pct ? p->def_pct : 100, p->phase[0].hue, p->phase[1].hue);
     }
     printf("persona table: %d rows, %s\n", def_persona_count, bad ? "FAIL" : "ok");

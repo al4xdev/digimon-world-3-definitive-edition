@@ -8,6 +8,7 @@
  *   { DRI(3), KEEP(2), RESIST_ALL, SPEED_X(3) },                            a whole DRI line
  *   { CAMPAIGN(31, 448), GUARD_ALWAYS },                                    a story boss (battle + species)
  *   { SPECIES(80), PHASES(2), GUARD_A },                                    every Goburimon: guarded every other 2 turns
+ *   { SPECIES(80), RED_ALWAYS },                                            a red guard: no stagger opens it
  *
  * The design guide: .plan/tasks/enemy-personas.md. */
 #ifndef DEFINITIVE_PERSONA_H
@@ -28,7 +29,7 @@ enum { DEF_PERSONA_NONE, DEF_PERSONA_SUPER, DEF_PERSONA_RARE, DEF_PERSONA_DRI, D
 typedef struct DefPersonaPhase {
     unsigned char weak;   /* families at DEF_PERSONA_WEAK */
     unsigned char resist; /* families at DEF_PERSONA_RESIST; the rest neutral */
-    unsigned char guard;  /* 1: guarded in this phase (DEF_GUARD_PCT until a stagger) */
+    unsigned char guard;  /* DEF_GUARD_*: the guard this phase has, none, orange or red */
     short hue;            /* the enemy's palette turned this many degrees; 0 none (an encounter row only) */
 } DefPersonaPhase;
 
@@ -47,6 +48,11 @@ typedef struct DefPersona {
 #define DEF_PERSONA_RESIST 300 /* the enemy table's strong resistance (DEF_RESIST_MIN and up) */
 #define DEF_PERSONA_NEUTRAL 100
 
+/* The guard kinds (owner, 2026-11-24). Orange: every blow of the party at DEF_GUARD_PCT until a stagger opens it.
+ * Red: the same cut, but a stagger never opens it and a blow on a weakness goes through whole: against physical play,
+ * which no stagger ever opened anyway, it never goes down; magic has to find the weakness to get past it. */
+enum { DEF_GUARD_NONE, DEF_GUARD_ORANGE, DEF_GUARD_RED };
+
 /* Who. DRI: the whole line (owner: the persona is the line's, its stages only scale). */
 #define SUPER(i) .kind = DEF_PERSONA_SUPER, .a = (i)
 #define RARE(region) .kind = DEF_PERSONA_RARE, .a = (region)
@@ -62,10 +68,11 @@ typedef struct DefPersona {
 #define WEAK(f) .phase[0].weak = (f)
 #define RESIST(f) .phase[0].resist = (f)
 #define RESIST_ALL .phase[0].resist = DEF_PERSONA_FAMILIES
-#define GUARD_A .phase[0].guard = 1
+#define GUARD_A .phase[0].guard = DEF_GUARD_ORANGE
 #define HUE(deg) .phase[0].hue = (deg)
 /* Both phases. */
-#define GUARD_ALWAYS .phase[0].guard = 1, .phase[1].guard = 1
+#define GUARD_ALWAYS .phase[0].guard = DEF_GUARD_ORANGE, .phase[1].guard = DEF_GUARD_ORANGE
+#define RED_ALWAYS .phase[0].guard = DEF_GUARD_RED, .phase[1].guard = DEF_GUARD_RED
 #define HUES(a, b) .phase[0].hue = (a), .phase[1].hue = (b)
 /* Two phases: every `n` of the enemy's turns, or at each stagger. */
 #define PHASES(n) .phases = 2, .turns = (n)
@@ -74,7 +81,8 @@ typedef struct DefPersona {
 #define B_WEAK(f) .phase[1].weak = (f)
 #define B_RESIST(f) .phase[1].resist = (f)
 #define B_RESIST_ALL .phase[1].resist = DEF_PERSONA_FAMILIES
-#define GUARD_B .phase[1].guard = 1
+#define GUARD_B .phase[1].guard = DEF_GUARD_ORANGE
+#define RED_B .phase[1].guard = DEF_GUARD_RED
 /* Speed relative to the party (owner: a fixed 999 means little late in the game). */
 #define SPEED_X(n) .speed_x = (n)
 /* Its Defense at n% (owner, 2026-11-23: the molds that are fought hard, Brutamontes going physical and Relampago
@@ -99,7 +107,7 @@ int def_persona_hides_species(const DefPersona *p);  /* 1: an encounter's own ma
 const DefPersona *def_persona_species(int species);  /* a common species' row, NULL none */
 int def_persona_def(const DefPersona *p, int defense); /* its Defense after DEF_PCT (at least 1) */
 int def_persona_weak(const DefPersona *p, int phase); /* the phase's weak families */
-int def_persona_guard(const DefPersona *p, int phase);
+int def_persona_guard(const DefPersona *p, int phase); /* the phase's DEF_GUARD_* */
 int def_persona_shifts_map(const DefPersona *p); /* 1: phase B has a map of its own (SHIFT changes the weaknesses) */
 int def_persona_hue(const DefPersona *p, int phase);
 /* The phase's resistances over the species' own (`base`), into `out` (may be `base`). */

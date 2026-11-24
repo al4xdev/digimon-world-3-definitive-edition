@@ -33,7 +33,7 @@ static struct {
  * into the kill: such a blow shows the OVERFINISH! callout and its damage pays Bits with the battle's
  * (DEF_OVERFINISH_BITS_PCT). `overfinish_hit`: the blow being shown is one; `overfinish_damage`: the battle's total. */
 static int overfinish_hit;
-static int guard_hit; /* the blow being shown was cut by a boss's Guard (guard_damage); not saved: every blow resets it */
+static int guard_hit; /* the DEF_GUARD_* that cut the blow being shown (guard_damage), 0 none; every blow resets it */
 static s32 overfinish_damage;
 static DefChain chain; /* stagger, window, free swap (definitive_mask.c) */
 static short resist_mod[2][3][7]; /* per side (0 party, 1 enemy) and slot, what Resist Down took off each element */
@@ -218,7 +218,12 @@ static int target_class(int e, const short *resists, int species) {
     if (def_resisted(resists[e])) {
         return 3;
     }
-    return (def_weakness_mask(resists, persona_map_of(species) != NULL ? 0 : dark_mark(species)) >> e) & 1 ? 1 : 2;
+    /* Dark is the enemy table's mark (dark_mark), not its resistance; a persona's own map writes its Dark weakness
+     * into resists[6] (def_persona_resists), so that is read instead (a WEAK(DARK) row used to never stagger). */
+    return (def_weakness_mask(resists, persona_map_of(species) != NULL ? resists[6] <= DEF_WEAK_MAX : dark_mark(species)) >>
+            e) & 1
+               ? 1
+               : 2;
 }
 
 static void classify(u8 side, s32 id) {
@@ -298,9 +303,9 @@ void def_hit_feedback(void) {
         def_callout_show(DEF_CALLOUT_OVERFINISH, 1);
         return;
     }
-    if (guard_hit && hit_class != 1) { /* a weakness is the word that matters: it is what opens the Guard */
+    if (guard_hit && hit_class != 1) { /* a weakness is the word that matters: it opens orange, goes through red */
         sound_module.play(DEF_SND_RESISTED);
-        def_callout_show(DEF_CALLOUT_GUARDED, 1);
+        def_callout_show(guard_hit == DEF_GUARD_RED ? DEF_CALLOUT_GUARDED_RED : DEF_CALLOUT_GUARDED, 1);
         return;
     }
     if (hit_class == 0) {
@@ -421,18 +426,26 @@ static void persona_phase_changed(int slot) {
  * staggers is what the player has to find; the blow that opens it is still guarded, the stagger being set after the
  * damage). Who is guarded, and in which phase, is the enemy personas' (definitive_persona_table.c: the story bosses
  * are CAMPAIGN rows, battle and species, so a hunt or a duel that borrows their battle is not); the Time Room's trials
- * guard their last challenger. Never the final boss. */
-static int enemy_guarded(void) {
+ * guard their last challenger. Never the final boss. The red guard (definitive_persona.h DEF_GUARD_RED) is never
+ * opened: a stagger still gives its extra action, and guard_damage lets a blow on a weakness through instead.
+ * enemy_guard_kind: the guard the current phase has, staggered or not; enemy_guarded: the one up now, DEF_GUARD_*. */
+static int enemy_guard_kind(void) {
     int slot = fightstg_battle.state.current[1];
     s32 species = fightstg_battle.state.members[1][slot].digimon;
 
-    if (fightstg_battle.state.type == 6 || chain.staggered[slot % 3]) {
-        return 0;
+    if (fightstg_battle.state.type == 6) {
+        return DEF_GUARD_NONE;
     }
     if (def_time_guarded(species)) {
-        return 1;
+        return DEF_GUARD_ORANGE;
     }
     return def_persona_guard(persona_at(slot % 3), def_persona_phase(slot % 3));
+}
+
+static int enemy_guarded(void) {
+    int kind = enemy_guard_kind();
+
+    return kind == DEF_GUARD_ORANGE && chain.staggered[fightstg_battle.state.current[1] % 3] ? DEF_GUARD_NONE : kind;
 }
 
 /* ---- The INFO panel's traits (the battle menu's Inspect): what kind of enemy the current target is, read from its
@@ -462,7 +475,10 @@ void def_inspect_info(DefInspectInfo *out) {
     }
     if (inspect_has_guard(p, species)) {
         out->kind[out->count++] = DEF_TRAIT_GUARD;
-        out->guarded = (unsigned char)enemy_guarded(); /* the rule itself: phase, stagger, Time Room */
+        out->guarded = (unsigned char)(enemy_guarded() != DEF_GUARD_NONE); /* the rule itself: phase, stagger, Time Room */
+        /* the colour of the guard this phase has; an open phase shows the other one's (a tide that is red half the time) */
+        out->red = (unsigned char)((enemy_guard_kind() != DEF_GUARD_NONE ? enemy_guard_kind()
+                                    : def_persona_guard(p, 0) | def_persona_guard(p, 1)) == DEF_GUARD_RED);
     }
     if (p != NULL && p->speed_x != 0) {
         out->kind[out->count++] = DEF_TRAIT_SPEED;
@@ -491,7 +507,8 @@ const unsigned char *def_inspect_legend(int kind) {
     extern const unsigned char def_str_InfoShiftTurnsA[], def_str_InfoShiftTurnsB[], def_str_InfoShiftStagger[],
         def_str_InfoShiftWeak[], def_str_InfoShiftGuard[], def_str_InfoShiftBoth[], def_str_InfoGuardA[],
         def_str_InfoGuardB[], def_str_InfoGuardUntil[], def_str_InfoSpeedA[], def_str_InfoSpeedB[],
-        def_str_InfoDef[];
+        def_str_InfoDef[], def_str_InfoShiftRed[], def_str_InfoGuardRed[];
+    DefInspectInfo info;
     static unsigned char buf[DEF_TRAITS][96];
     const DefPersona *p = persona_at(fightstg_battle.state.current[1] % 3);
     unsigned char *b;
@@ -513,6 +530,11 @@ const unsigned char *def_inspect_legend(int kind) {
             def_glyph_put(b, &n, sizeof(buf[0]), def_str_InfoShiftStagger);
         }
         legend_newline(b, &n, sizeof(buf[0]));
+        if (!def_persona_shifts_map(p) && def_persona_guard(p, 0) != DEF_GUARD_NONE &&
+            def_persona_guard(p, 1) != DEF_GUARD_NONE) { /* orange one phase, red the other */
+            def_glyph_put(b, &n, sizeof(buf[0]), def_str_InfoShiftRed);
+            break;
+        }
         def_glyph_put(b, &n, sizeof(buf[0]),
                       !def_persona_shifts_map(p)                          ? def_str_InfoShiftGuard
                       : def_persona_guard(p, 0) != def_persona_guard(p, 1) ? def_str_InfoShiftBoth
@@ -521,7 +543,8 @@ const unsigned char *def_inspect_legend(int kind) {
     case DEF_TRAIT_GUARD:
         legend_number(b, &n, sizeof(buf[0]), def_str_InfoGuardA, DEF_GUARD_PCT, def_str_InfoGuardB);
         legend_newline(b, &n, sizeof(buf[0]));
-        def_glyph_put(b, &n, sizeof(buf[0]), def_str_InfoGuardUntil);
+        def_inspect_info(&info); /* the guard's colour, read the way the panel's picture reads it */
+        def_glyph_put(b, &n, sizeof(buf[0]), info.red ? def_str_InfoGuardRed : def_str_InfoGuardUntil);
         break;
     case DEF_TRAIT_SPEED:
         if (p != NULL) {
@@ -537,14 +560,18 @@ const unsigned char *def_inspect_legend(int kind) {
     return b;
 }
 
-static s32 guard_damage(u8 side, s32 value) {
+/* `weak`: the blow hits a weakness (classify's hit_class 1), which goes through a red guard whole. */
+static s32 guard_damage(u8 side, s32 value, int weak) {
+    int kind;
+
     if (side == 0) {
         guard_hit = 0; /* every blow of the party decides it afresh */
     }
-    if (!def_on() || side != 0 || value <= 0 || !enemy_guarded()) {
+    kind = def_on() && side == 0 && value > 0 ? enemy_guarded() : DEF_GUARD_NONE;
+    if (kind == DEF_GUARD_NONE || (kind == DEF_GUARD_RED && weak)) {
         return value;
     }
-    guard_hit = 1;
+    guard_hit = kind;
     if (log_on()) {
         LOG("guard: %d -> %d", (int)value, (int)(value * DEF_GUARD_PCT / 100 > 0 ? value * DEF_GUARD_PCT / 100 : 1));
     }
@@ -556,7 +583,7 @@ s32 def_counter_damage(u8 side, s32 value) {
     if (!def_on() || value <= 0) {
         return value;
     }
-    value = guard_damage(side, value);
+    value = guard_damage(side, value, 0); /* a counter is a physical blow: classify did not run for it */
     value = def_finale_damage(side, value);
     value = def_super_bell_damage(side, value);
     return value;
@@ -566,7 +593,7 @@ static s32 log_damage(u8 side, s32 id, s32 value, const char *what) {
     FightstgMember *target;
 
     classify(side, id);
-    value = guard_damage(side, value);
+    value = guard_damage(side, value, hit_class == 1);
     value = def_finale_damage(side, value);
     if (log_on()) {
         target = &fightstg_battle.state.members[side == 0][fightstg_battle.state.current[side == 0]];

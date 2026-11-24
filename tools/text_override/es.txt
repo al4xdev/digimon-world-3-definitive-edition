@@ -349,9 +349,11 @@ $InfoShiftStagger: SHIFT al aturdirlo
 $InfoShiftWeak: nueva debilidad
 $InfoShiftGuard: guardia sí/no
 $InfoShiftBoth: debilidad + guardia
+$InfoShiftRed: la guardia cambia
 $InfoGuardA: "Solo "
 $InfoGuardB: %del daño
 $InfoGuardUntil: hasta aturdirlo
+$InfoGuardRed: salvo debilidades
 $InfoSpeedA: "Velocidad "
 $InfoSpeedB: x la tuya
 $InfoDef: Recibe más daño

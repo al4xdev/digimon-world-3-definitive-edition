@@ -46,7 +46,7 @@ def rows():
             "name": note or r,
             "shift": phases is not None or "ON_STAGGER" in r,
             "turns": int(phases.group(1)) if phases else 0,
-            "guard": bool(re.search(r"GUARD_(A|B|ALWAYS)\b", r)),
+            "guard": bool(re.search(r"\b(GUARD|RED)_(A|B|ALWAYS)\b", r)),
             "speed": int(m2.group(1)) if (m2 := re.search(r"SPEED_X\((\d+)\)", r)) else 0,
             "def": int(m2.group(1)) if (m2 := re.search(r"DEF_PCT\((\d+)\)", r)) else 0,
         }
@@ -61,7 +61,8 @@ def main():
     for lang in LANGS:
         s = strings(lang)
         missing = [k for k in ("InfoShiftTurnsA", "InfoShiftTurnsB", "InfoShiftStagger", "InfoShiftWeak",
-                               "InfoShiftGuard", "InfoShiftBoth", "InfoGuardA", "InfoGuardB", "InfoGuardUntil",
+                               "InfoShiftGuard", "InfoShiftBoth", "InfoShiftRed", "InfoGuardA", "InfoGuardB", "InfoGuardUntil",
+                               "InfoGuardRed",
                                "InfoSpeedA", "InfoSpeedB", "InfoDef") if k not in s]
         if missing:
             print(f"inspect_info: {lang}.txt has no {', '.join(missing)}")
@@ -69,8 +70,8 @@ def main():
             continue
         entries = {  # what def_inspect_legend writes, with the largest numbers the table and the guard give
             "shift": [s["InfoShiftTurnsA"] + str(turns) + s["InfoShiftTurnsB"], s["InfoShiftStagger"],
-                      s["InfoShiftWeak"], s["InfoShiftGuard"], s["InfoShiftBoth"]],
-            "guard": [s["InfoGuardA"] + str(guard_pct) + s["InfoGuardB"], s["InfoGuardUntil"]],
+                      s["InfoShiftWeak"], s["InfoShiftGuard"], s["InfoShiftBoth"], s["InfoShiftRed"]],
+            "guard": [s["InfoGuardA"] + str(guard_pct) + s["InfoGuardB"], s["InfoGuardUntil"], s["InfoGuardRed"]],
             "speed": [s["InfoSpeedA"] + str(speed) + s["InfoSpeedB"]],
             "def": [s["InfoDef"]],
         }

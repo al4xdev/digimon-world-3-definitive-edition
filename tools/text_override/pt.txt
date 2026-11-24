@@ -4282,9 +4282,11 @@ $InfoShiftStagger: SHIFT ao atordoar
 $InfoShiftWeak: nova fraqueza
 $InfoShiftGuard: guarda liga/desliga
 $InfoShiftBoth: fraqueza + guarda
+$InfoShiftRed: guarda muda de cor
 $InfoGuardA: "Só "
 $InfoGuardB: %do dano
 $InfoGuardUntil: até ser atordoado
+$InfoGuardRed: exceto fraquezas
 $InfoSpeedA: "Velocidade "
 $InfoSpeedB: x a sua
 $InfoDef: Recebe mais dano
