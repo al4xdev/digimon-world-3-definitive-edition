@@ -72,22 +72,89 @@ static int json_string(const char *json, const char *key, char *out, size_t n) {
     return *p == '"' && j > 0;
 }
 
-static void finish(int state, const char *latest, const char *url) {
+/* The asset this build can install over itself: the name's end says which. The Windows zip has a sibling "-symbols.zip". */
+#if defined(_WIN32)
+#define ASSET_SUFFIX "-windows-x86_64.zip"
+#elif defined(DW3_TARGET_PC) && defined(__linux__) && !defined(__ANDROID__)
+#define ASSET_SUFFIX "-x86_64.AppImage"
+#endif
+
+#define ASSET_URL_PREFIX "https://github.com/al4xdev/digimon-world-3-definitive-edition/releases/download/"
+
+typedef struct {
+    char name[96], url[300], sha[65];
+    long size;
+} Asset;
+
+/* The release JSON's "assets": from each "name" to the next one is that asset's object (the uploader inside it has no
+ * "name"). Only a github.com download URL of this repository and a sha256 digest of 64 hex characters are accepted. */
+static void find_asset(const char *json, Asset *a) {
+    memset(a, 0, sizeof(*a));
+#ifdef ASSET_SUFFIX
+    const char *assets = strstr(json, "\"assets\"");
+    const char *p = assets;
+    while (p && (p = strstr(p, "\"name\""))) {
+        const char *next = strstr(p + 6, "\"name\"");
+        size_t len = next ? (size_t)(next - p) : strlen(p);
+        if (len > 6000) len = 6000;
+        char obj[6001];
+        memcpy(obj, p, len);
+        obj[len] = 0;
+        p += 6;
+        char name[96], url[300], dig[80];
+        if (!json_string(obj, "name", name, sizeof(name))) continue;
+        size_t nl = strlen(name), sl = strlen(ASSET_SUFFIX);
+        if (nl <= sl || strcmp(name + nl - sl, ASSET_SUFFIX) || strstr(name, "symbols") || strncmp(name, "dw2003-", 7)) continue;
+        if (!json_string(obj, "browser_download_url", url, sizeof(url)) ||
+            strncmp(url, ASSET_URL_PREFIX, strlen(ASSET_URL_PREFIX)) ||
+            strchr(url, ' ') || !json_string(obj, "digest", dig, sizeof(dig)) || strncmp(dig, "sha256:", 7) || strlen(dig + 7) != 64) {
+            continue;
+        }
+        const char *sz = strstr(obj, "\"size\"");
+        long size = sz ? strtol(strchr(sz, ':') + 1, NULL, 10) : 0;
+        if (size <= 0 || size > 200L * 1024 * 1024) continue;
+        for (int i = 0; i < 64; i++) {
+            char c = dig[7 + i];
+            if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f'))) goto next_asset;
+        }
+        snprintf(a->name, sizeof(a->name), "%s", name);
+        snprintf(a->url, sizeof(a->url), "%s", url);
+        snprintf(a->sha, sizeof(a->sha), "%s", dig + 7);
+        a->size = size;
+        return;
+    next_asset:;
+    }
+#else
+    (void)json;
+#endif
+}
+
+static void finish_asset(int state, const char *latest, const char *url, const Asset *a) {
     UP_LOCK();
     up_info.state = state;
     snprintf(up_info.latest, sizeof(up_info.latest), "%s", latest ? latest : "");
     snprintf(up_info.url, sizeof(up_info.url), "%s", url ? url : "");
+    snprintf(up_info.asset_name, sizeof(up_info.asset_name), "%s", a ? a->name : "");
+    snprintf(up_info.asset_url, sizeof(up_info.asset_url), "%s", a ? a->url : "");
+    snprintf(up_info.asset_sha256, sizeof(up_info.asset_sha256), "%s", a ? a->sha : "");
+    up_info.asset_size = a ? a->size : 0;
     UP_UNLOCK();
 }
 
+static void finish(int state, const char *latest, const char *url) { finish_asset(state, latest, url, NULL); }
+
 /* The cache: "<epoch> <tag> <url>". The answer for a newer release is kept as it came, and judged again against the
  * running version on read, so an update installed since does not keep the notice up. */
-static int cache_read(char *tag, size_t tn, char *url, size_t un) {
+static int cache_read(char *tag, size_t tn, char *url, size_t un, Asset *a) {
     FILE *f = fopen(up_cache, "r");
     if (!f) return 0;
     long when = 0;
     char t[64] = "", u[300] = "";
-    int ok = fscanf(f, "%ld %63s %299s", &when, t, u) == 3;
+    memset(a, 0, sizeof(*a));
+    /* An older cache has the first three fields only: no asset, so only the page, until the next request. */
+    int nf = fscanf(f, "%ld %63s %299s %95s %299s %64s %ld", &when, t, u, a->name, a->url, a->sha, &a->size);
+    int ok = nf >= 3;
+    if (nf < 7) memset(a, 0, sizeof(*a));
     fclose(f);
     long now = (long)time(NULL);
     if (!ok || when > now || now - when >= DW3_UPDATE_EVERY_S) return 0;
@@ -96,10 +163,12 @@ static int cache_read(char *tag, size_t tn, char *url, size_t un) {
     return 1;
 }
 
-static void cache_write(const char *tag, const char *url) {
+static void cache_write(const char *tag, const char *url, const Asset *a) {
     FILE *f = fopen(up_cache, "w");
     if (!f) return;
-    fprintf(f, "%ld %s %s\n", (long)time(NULL), tag, url);
+    fprintf(f, "%ld %s %s", (long)time(NULL), tag, url);
+    if (a->name[0]) fprintf(f, " %s %s %s %ld", a->name, a->url, a->sha, a->size);
+    fputc('\n', f);
     fclose(f);
 }
 
@@ -116,13 +185,17 @@ static void check_body(void) {
     }
     int ok = json_string(body, "tag_name", tag, sizeof(tag)) && json_string(body, "html_url", url, sizeof(url)) &&
              !strncmp(url, "https://github.com/", 19) && !strchr(url, ' ');
-    free(body);
+    char *body_copy = body; /* find_asset reads it below; freed there */
     if (!ok) {
+        free(body_copy);
         finish(UPDATE_FAILED, NULL, NULL);
         return;
     }
-    cache_write(tag, url);
-    finish(update_is_newer(tag, up_current) ? UPDATE_AVAILABLE : UPDATE_CURRENT, tag, url);
+    Asset a;
+    find_asset(body_copy, &a);
+    free(body_copy);
+    cache_write(tag, url, &a);
+    finish_asset(update_is_newer(tag, up_current) ? UPDATE_AVAILABLE : UPDATE_CURRENT, tag, url, &a);
 }
 
 #ifdef _WIN32
@@ -148,8 +221,9 @@ void update_check_start(const char *dir, const char *current, int enabled) {
     snprintf(up_cache, sizeof(up_cache), "%s/update.cache", dir && dir[0] ? dir : ".");
 
     char tag[64], url[300];
-    if (cache_read(tag, sizeof(tag), url, sizeof(url))) {
-        finish(update_is_newer(tag, up_current) ? UPDATE_AVAILABLE : UPDATE_CURRENT, tag, url);
+    Asset ca;
+    if (cache_read(tag, sizeof(tag), url, sizeof(url), &ca)) {
+        finish_asset(update_is_newer(tag, up_current) ? UPDATE_AVAILABLE : UPDATE_CURRENT, tag, url, &ca);
         return;
     }
     finish(UPDATE_CHECKING, NULL, NULL);

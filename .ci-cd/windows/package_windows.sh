@@ -82,14 +82,14 @@ DW3_VERSION="$version" "$ROOT/.ci-cd/windows/build_windows.sh" --launcher --jobs
 game_dir="$ROOT/build/port-win"
 launcher_dir="$ROOT/build/launcher-win"
 for f in "$game_dir/dw2003.exe" "$game_dir/dw2003.pdb" "$launcher_dir/dw2003-launcher.exe" \
-         "$launcher_dir/dw2003-launcher.pdb"; do
+         "$launcher_dir/dw2003-launcher.pdb" "$launcher_dir/dw2003-updater.exe"; do
     [[ -f "$f" ]] || die "the build made no $f"
 done
 [[ -d "$game_dir/mods" ]] || die "the game's build has no mods/ (psxstack copies its mods/ and port/mods there)"
 
 # ---- Checks on the executables: GUI subsystem (no console window), the manifest resource, static (no DLL of the
 # toolchain's or SDL's: only Windows' own libraries are imported).
-for exe in "$game_dir/dw2003.exe" "$launcher_dir/dw2003-launcher.exe"; do
+for exe in "$game_dir/dw2003.exe" "$launcher_dir/dw2003-launcher.exe" "$launcher_dir/dw2003-updater.exe"; do
     headers="$(objdump -p "$exe")"
     subsystem="$(grep -E '^Subsystem' <<<"$headers" | head -n 1 | sed 's/^Subsystem[[:space:]]*//')"
     [[ "$subsystem" == 00000002* || "$subsystem" == *"Windows GUI"* ]] ||
@@ -106,7 +106,7 @@ stage="$work/$base"
 syms="$work/$base-symbols"
 rm -rf "$stage" "$syms"
 mkdir -p "$stage/LICENSES" "$syms"
-cp "$game_dir/dw2003.exe" "$launcher_dir/dw2003-launcher.exe" "$stage/"
+cp "$game_dir/dw2003.exe" "$launcher_dir/dw2003-launcher.exe" "$launcher_dir/dw2003-updater.exe" "$stage/"
 cp "$ROOT/recomplauncher.json" "$stage/recomplauncher.json"
 cp -r "$game_dir/mods" "$stage/mods"
 sed "s/@VERSION@/$version/g" "$pkg/README.txt" > "$stage/README.txt"
@@ -137,7 +137,7 @@ if [[ $test -eq 1 ]]; then
     mkdir -p "$unz" "$ROOT/build/wine-prefix"
     "$python" -m zipfile -e "$out/$name" "$unz"
     "$python" -m zipfile -e "$out/$symbols" "$unz"
-    [[ -f "$unz/$base/dw2003-launcher.exe" && -f "$unz/$base/dw2003.exe" && -f "$unz/$base/mods/fast_forward/mod.json" &&
+    [[ -f "$unz/$base/dw2003-launcher.exe" && -f "$unz/$base/dw2003-updater.exe" && -f "$unz/$base/dw2003.exe" && -f "$unz/$base/mods/fast_forward/mod.json" &&
        -f "$unz/$base-symbols/dw2003.pdb" ]] || die "the zips do not unpack to $base/ and $base-symbols/"
     export WINEPREFIX="$ROOT/build/wine-prefix" WINEDEBUG=-all
     # The launcher's self-test from the unzipped folder: the game and the mods beside it, found by its own lookup.

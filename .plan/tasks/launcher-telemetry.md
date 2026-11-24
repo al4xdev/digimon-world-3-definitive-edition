@@ -30,8 +30,9 @@ Issue form requires the code, `.github/workflows/report-code.yml` closes a runti
 NOT DONE / NOT TESTED:
 - Windows runtime: cfg.c/win32.c/cloud.c cross-compile clean with llvm-mingw, but nothing ran (no Wine here): the
   stored-zip writer's tail cap, the 1 MB pipe, the BELOW_NORMAL thread. Try a build on the Windows PC.
-- Deploy (the owner's call): `cd cloud-sync && npm run db:migrate:logs:remote && npx wrangler deploy`; `ADMIN_SECRET`
-  secret must exist for the admin routes.
+- DEPLOYED 2026-11-24 (remote migration 0003, `wrangler deploy`, `ADMIN_SECRET` created; its value is in the
+  gitignored `.dumps/admin_secret`). Verified in production: upload 200 with a code, admin 401 without the secret, list
+  and download with it, the zip identical to what the launcher sent, a non-zip 400.
 - The frame-time summary in the game's log (psxstack runtime, its own repo/PR) and the launcher's own priority while the
   game runs.
 - Android: main_android.c edited, not built.

@@ -204,6 +204,32 @@ report's code (`XXXXX-XXXXX`); the bug report form requires it (`docs/CONTRIBUTI
 developer reads a report with `GET /v1/admin/logs` and `/v1/admin/logs/<code>` (`X-Admin-Secret`). Setup on a database
 from before it: `npm run db:migrate:logs:remote` in `cloud-sync/`.
 
+`NEW VERSION` (DEBUG, when GitHub has a newer release and `CHECK FOR UPDATES` is on) **installs it** on Windows and in the
+Linux AppImage; everywhere else (a checkout, a folder that cannot be written, PortMaster, under RecompLauncher, Android's own
+way) A still opens the release's page. `launcher/update.c` picks the platform's asset and its sha256 from the release's
+API answer (the `digest` of each asset); `launcher/selfupdate.c` copies `dw2003-updater` to `.update/run/` (Linux:
+`.dw2003-update/run/`, beside the AppImage, outside the mount) and runs the copy; `launcher/updater.c` is that program, with no
+window and no SDL, the only code that touches installed files:
+
+1. downloads the asset (WinHTTP on Windows, curl on Linux, as the cloud sync talks) and checks its size and sha256;
+2. unpacks a zip with miniz into `.update/new/`, refusing any entry that is absolute, has `..`, a backslash or a drive, and
+   runs the staged launcher's `--version` once (it must end with 0);
+3. writes `READY` to `update.status` and waits for `update.go` (the launcher writes it when the player presses START) **and** for
+   the launcher's process to be gone;
+4. moves each file the package has from the install into `backup/` (Linux: `.dw2003-backup/`) and the new one into its
+   place, by rename on the same volume: Windows lets a running executable be renamed, not deleted or overwritten. The
+   previous update's `backup/` is deleted first; files the package does not have, and the player's own, are never touched;
+5. any failure puts every moved file back, newest first, and starts the old launcher; `dw2003-updater --rollback --dir D
+   --backup B` does the same by hand. `update.log` (in the install folder) says what happened;
+6. starts the new launcher. The launcher removes `.update/` and `update.status` at its next start.
+
+While the updater works the launcher shows the runner minigame with the stage and the percent; when it is staged a notice
+says to press START to restart. SELECT hides the notice (the staged update waits) or, while it still downloads, cancels it.
+Nothing closes by itself. The hash comes from the same GitHub release as the file: it catches a broken or altered
+download, not a compromised release. `tests/launcher_updater_test.py` runs the updater and the launcher's side of it
+against a local fake release (a good update, a wrong hash or size, a 404, zip-slip, a launcher that does not start, a
+failure in the middle of the swap, no go-ahead, a single-file package, the cancel).
+
 ### Widescreen
 
 `widescreen`. One option, `field` (on by default; applies at restart), no hotkey: while enabled, the battle (FIGHTSTG)

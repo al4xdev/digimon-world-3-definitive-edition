@@ -86,6 +86,7 @@ __pycache__
 
 # The console launcher built by launcher/Makefile (.ci-cd/portmaster/build_arm.sh builds the package's into build/)
 launcher/dw3-launcher
+launcher/dw3-updater
 
 # Cloud sync worker local dependencies & wrangler state, and runtime client sync state
 cloud-sync/node_modules/

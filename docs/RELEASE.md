@@ -103,6 +103,7 @@ scripts/setup.sh venv sdl3-desktop appimage
 AppRun                                   the launcher, for a double-click and RecompLauncher alike (--play: PLAY at once)
 recomplauncher.json                      how RecompLauncher sets the game up (at the AppImage root)
 usr/bin/dw2003-launcher                  the launcher (launcher/, SDL3)
+usr/bin/dw2003-updater                   the program that replaces the AppImage when the launcher updates itself (launcher/updater.c)
 usr/bin/dw2003                           the game (the SDL build), found by the launcher beside itself
 usr/bin/mods/<id>/mod.json               the mods' manifests (port/mods/), listed by the launcher
 dw2003recomp.desktop, dw2003recomp.svg   .ci-cd/linux/appimage/ (the icon is our own drawing)
@@ -134,6 +135,7 @@ toolchain's or SDL's imported: only Windows' own), and zips one folder:
 ```
 dw2003-<version>-windows-x86_64/
   dw2003-launcher.exe        the launcher (run this)
+  dw2003-updater.exe         replaces the files when the launcher updates itself (launcher/updater.c; the launcher runs a copy of it)
   dw2003.exe                 the game, found by the launcher beside itself
   recomplauncher.json        how RecompLauncher sets the game up
   mods/<id>/mod.json         the mods' manifests (port/mods/)

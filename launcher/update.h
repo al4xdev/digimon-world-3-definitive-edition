@@ -4,8 +4,8 @@
 #include <stddef.h>
 
 /* The launcher's check for a newer release (update.c): GitHub's latest full release (never a pre-release) against the
- * running build's version. It only tells: the launcher shows the new version and opens its page; nothing is
- * downloaded. A build that is not a release (a version with a suffix, "1.0.0-3-gabcdef1", "dev-abcdef1") never asks.
+ * running build's version and the platform's asset to install (selfupdate.h: Windows and the Linux AppImage), or else
+ * only its page, which the launcher opens. A build that is not a release (a version with a suffix, "1.0.0-3-gabcdef1", "dev-abcdef1") never asks.
  * PortMaster has its own updates, so the PC launcher (Windows and Linux: DEBUG > CHECK FOR UPDATES, the notice on HOME)
  * and the Android launcher are the ones that call this; RecompLauncher's own updater is independent of it. */
 
@@ -24,6 +24,13 @@ typedef struct {
     int state;
     char latest[32]; /* the release's tag, "v1.0.1" */
     char url[256];   /* its page */
+    /* What can be installed over the running build: this platform's asset (Windows: the zip; Linux: the AppImage), with
+     * the sha256 the API publishes for it. Empty when there is none (Android, PortMaster, a release without it): the
+     * launcher then only opens the page. */
+    char asset_name[96];
+    char asset_url[300];
+    char asset_sha256[65];
+    long asset_size;
 } UpdateInfo;
 
 /* The request the check makes (cloud.c: curl, or Java's HttpURLConnection on Android). 0 with a malloc'ed body the

@@ -330,6 +330,9 @@ jobs:
           cmake --build build/launcher -j "$DW3_JOBS"
           build/launcher/dw2003-launcher --self-test build/launcher-test
 
+      - name: Launcher, the updater against a fake release
+        run: python3 tests/launcher_updater_test.py
+
       - name: Launcher, self-test with the disc and the game
         if: needs.areas.outputs.data == 'true'
         run: |

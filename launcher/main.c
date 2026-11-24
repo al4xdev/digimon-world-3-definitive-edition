@@ -23,12 +23,15 @@
 #include "sha256.h"
 #include "ui.h"
 #include "update.h"
+#ifdef DW3_TARGET_PC
+#include "selfupdate.h"
+#endif
 #include "win32.h"
 
 enum {
     S_SPLASH, S_HOME, S_GAME, S_VIDEO, S_HUD, S_CONTROLS, S_SAVES, S_BACKUPS, S_BACKUP_CONFIRM,
     S_CLOUD, S_PAIR_HOST, S_PAIR_ENTER, S_DEVICES, S_REVOKE_CONFIRM, S_CONFLICT, S_CONFLICT_CONFIRM,
-    S_DEBUG, S_BROWSE, S_LED, S_LED1, S_LED2, S_RESET, S_CLEAN, S_LOADING, S_DISC, S_ERROR
+    S_DEBUG, S_BROWSE, S_LED, S_LED1, S_LED2, S_RESET, S_CLEAN, S_LOADING, S_DISC, S_ERROR, S_UPDATING
 };
 enum { HI_PLAY, HI_GAME, HI_VIDEO, HI_HUD, HI_CONTROLS, HI_SAVES, HI_LED, HI_DEBUG, HI_RESET, HI_COUNT };
 
@@ -779,6 +782,7 @@ static void fmt_epoch(long ts, char *out, size_t n) {
 }
 
 static void go(int s, int to_sel, int dir, int focus_y);
+static void start_trans(int dir, int focus_y);
 
 static int cloud_usable(void) { return c.sync_enabled && cloud.registered && !cloud.revoked; }
 
@@ -991,7 +995,10 @@ static void draw_debug(void) {
     row(188, "CLEAN LOGS", "ASK", sel == 2, 0, 0, 0);
 #ifdef DW3_TARGET_PC
     row(236, "CHECK FOR UPDATES", c.update_check ? "ON" : "OFF", sel == 3, 0, c.update_check, 0);
-    if (debug_n() == 5) row(284, "NEW VERSION", upd.latest, sel == 4, 0, 1, 0);
+    if (debug_n() == 5) {
+        row(284, "NEW VERSION", upd.latest, sel == 4, 0, 1, 0);
+        if (sel == 4) text(64, 322, selfupd_available(&upd, exe_dir) ? "PRESS A TO UPDATE" : "PRESS A TO OPEN THE PAGE", 15, C_NOTE);
+    }
 #endif
     if (status[0]) text(64, 350, status, 16, C_GREEN);
     text(64, 380, "SEND LOGS uploads the logs and your save (RPG data) to the developer.", 15, C_NOTE);
@@ -1051,6 +1058,45 @@ static void draw_browse(void) {
     const char *k[] = {ga, gy, gb}, *w[] = {"OPEN / PICK", "SYSTEM DIALOG", "BACK"};
     footer(k, w, 3);
 }
+
+#ifdef DW3_TARGET_PC
+/* The self-update (selfupdate.h): the runner minigame stays up while the updater works, and when it is ready a notice
+ * asks the player to restart; nothing closes on its own. */
+static SelfUpdate su;
+static int su_on; /* an update was started this run and not cancelled or failed */
+
+static void draw_updating(void) {
+    char stage[120];
+    const char *t = su.state == SU_READY ? "UPDATE READY" : su.text[0] ? su.text : "STARTING";
+    snprintf(stage, sizeof(stage), "%s...", TR(t));
+    load_draw(&c, plat_now_ms() - launch_t0, stage, su.state == SU_READY ? 100 : su.pct);
+    if (su.state == SU_READY) {
+        rrect(60, 68, W - 120, 74, 12, C_PANEL, 256);
+        rrect_line(60, 68, W - 120, 74, 12, C_GOLD);
+        text_c(W / 2, 80, "UPDATE READY", 22, C_GOLD);
+        text_c(W / 2, 108, "PRESS START TO RESTART", 17, C_TEXT);
+        text_c(W / 2, 128, "SELECT: LATER", 13, C_NOTE);
+    } else {
+        text_c(W / 2, 464, "SELECT: CANCEL", 13, C_NOTE);
+    }
+}
+
+/* Starts the update and shows its screen; the reason on the DEBUG screen when it cannot. */
+static void start_update(void) {
+    char err[96] = "";
+    if (su_on && su.state == SU_READY) { start_trans(1, H / 2); screen = S_UPDATING; return; } /* staged earlier: back to its notice */
+    if (selfupd_start(&upd, exe_dir, err, sizeof(err)) != 0) { snprintf(status, sizeof(status), "%s", err); return; }
+    memset(&su, 0, sizeof(su));
+    su_on = 1;
+    launch_t0 = plat_now_ms();
+    char best[700];
+    snprintf(best, sizeof(best), "%s/loading.best", game_dir);
+    load_init(best);
+    start_trans(1, H / 2);
+    screen = S_UPDATING;
+    cur_screen = S_UPDATING;
+}
+#endif
 
 static void draw_error(void) {
     header("DIGIMON WORLD 3", "COULD NOT START");
@@ -1150,6 +1196,9 @@ static void draw_screen(void) {
         modal("CLEAN LOGS AND DUMPS?", "Delete logs/, crash-*.txt, menu.log, log.txt and the", "old dw3-logs-*.zip? The cards, settings, pad map",
               "and the disc are never touched.", "YES, CLEAN", "NO, KEEP", C_ORANGE); break;
     case S_LOADING: draw_loading(); break;
+#ifdef DW3_TARGET_PC
+    case S_UPDATING: draw_updating(); break;
+#endif
     case S_DISC: draw_disc(); break;
     case S_ERROR: draw_error(); break;
     }
@@ -1643,6 +1692,19 @@ static void on_press(int code) {
     int is_start = code == btn_start(), is_select = code == btn_select();
     if (screen == S_SPLASH) { go(S_HOME, 0, 1, H / 2); return; }
     if (screen == S_LOADING) { load_press(code); return; }
+#ifdef DW3_TARGET_PC
+    if (screen == S_UPDATING) {
+        if (su.state == SU_READY && is_start) { selfupd_go(); quit_flag = 1; return; } /* the updater swaps once this ends */
+        /* SELECT, not the back button: the minigame's three jump buttons include the east one, which is back's */
+        if (is_select) {
+            if (su.state != SU_READY) { selfupd_cancel(); su_on = 0; } /* a staged update keeps waiting; SELECT only hides it */
+            go(S_DEBUG, 4, -1, 284 + 14);
+            return;
+        }
+        load_press(code);
+        return;
+    }
+#endif
     if (is_select) held_select = 1;
     if (is_start) held_start = 1;
     if (held_select && held_start) { quit_flag = 2; return; } /* leaves without saving the edit in progress */
@@ -2078,7 +2140,8 @@ static void on_press(int code) {
         }
         if (sel == 4 && ok) {
             update_poll(&upd);
-            if (upd.state == UPDATE_AVAILABLE && plat_open_url(upd.url) != 0) snprintf(status, sizeof(status), "OPEN %s", upd.url);
+            if (upd.state == UPDATE_AVAILABLE && selfupd_available(&upd, exe_dir)) start_update();
+            else if (upd.state == UPDATE_AVAILABLE && plat_open_url(upd.url) != 0) snprintf(status, sizeof(status), "OPEN %s", upd.url);
         }
 #endif
         break;
@@ -2495,6 +2558,41 @@ static int self_test(const char *root) {
                  worst);
         check(fits, what);
     }
+#ifdef DW3_TARGET_PC
+    {
+        /* The update screen's words in every language: the notice inside its panel, the stage under the bar, the hints. */
+        struct { const char *s; int size, max; } words[] = {
+            {"UPDATE READY", 22, W - 120 - 24},          {"PRESS START TO RESTART", 17, W - 120 - 24},
+            {"SELECT: LATER", 13, W - 120 - 24},              {"DOWNLOADING...", 18, W - 40},
+            {"CHECKING...", 18, W - 40},                 {"PREPARING...", 18, W - 40},
+            {"SELECT: CANCEL", 13, W - 40}, {"PRESS A TO UPDATE", 15, W - 64 - 24},      {"PRESS A TO OPEN THE PAGE", 15, W - 64 - 24},
+        };
+        /* The two states drawn (and saved with --shots), to look at. */
+        memset(&su, 0, sizeof(su));
+        su.state = SU_RUNNING; su.pct = 43; snprintf(su.text, sizeof(su.text), "DOWNLOADING");
+        draw_updating(); plat_shot("update_downloading");
+        su.state = SU_READY; su.pct = 100;
+        draw_updating(); plat_shot("update_ready");
+        memset(&su, 0, sizeof(su));
+        int ufits = 1;
+        char uworst[96] = "";
+        for (int lang = 0; lang < 6; lang++) {
+            for (unsigned i = 0; i < sizeof(words) / sizeof(words[0]); i++) {
+                char w[160];
+                size_t n = strlen(words[i].s);
+                int dots = n > 3 && !strcmp(words[i].s + n - 3, "...");
+                snprintf(w, sizeof(w), "%.*s", (int)(dots ? n - 3 : n), words[i].s);
+                const char *t = ui_tr_lookup(w, lang);
+                if (text_w(t, words[i].size) + (dots ? 3 * words[i].size / 2 : 0) > words[i].max) {
+                    ufits = 0;
+                    snprintf(uworst, sizeof(uworst), "lang %d: \"%.40s\"", lang, t);
+                }
+            }
+        }
+        snprintf(what, sizeof(what), "update screen: every language fits%s%s", uworst[0] ? ": " : "", uworst);
+        check(ufits, what);
+    }
+#endif
     /* The game beside the launcher (the release's layout) and its mods; with a disc, 300 frames from PLAY. */
     const char *real = getenv("DW3_SELFTEST_GAME");
     if (!real) return st_fails;
@@ -2586,6 +2684,15 @@ int main(int argc, char **argv) {
         else if (!strcmp(argv[i], "--fb")) kind = PLAT_FB;
         else if (!strcmp(argv[i], "--pc")) is_pc = 1;
         else if (!strcmp(argv[i], "--splash")) force_splash = 1;
+        else if (!strcmp(argv[i], "--version")) {
+            /* what the updater runs on a staged launcher before installing it: it starts, and says which one it is */
+#ifdef DW3_LAUNCHER_VERSION
+            puts(DW3_LAUNCHER_VERSION);
+#else
+            puts("dev");
+#endif
+            return 0;
+        }
         else if (!strcmp(argv[i], "--play")) play_now = 1;
         else if (!strcmp(argv[i], "--null") && i + 1 < argc) { kind = PLAT_NULL; script = argv[++i]; }
 #ifndef DW3_TARGET_PC
@@ -2641,6 +2748,7 @@ int main(int argc, char **argv) {
     cloud_state_load(&cloud, game_dir);
 #ifdef DW3_TARGET_PC
     if (kind != PLAT_NULL) update_check_start(game_dir, DW3_LAUNCHER_VERSION, c.update_check); /* never in a test run */
+    if (kind != PLAT_NULL) selfupd_cleanup(exe_dir); /* what an earlier update left in its working folder */
 #endif
     trans_from = malloc((size_t)ui_w * ui_h * sizeof(uint32_t));
     trans_to = malloc((size_t)ui_w * ui_h * sizeof(uint32_t));
@@ -2661,7 +2769,7 @@ int main(int argc, char **argv) {
     for (;;) {
         int ty = row_target_y(screen, sel);
         int cursor_moving = ty >= 0 && cur_screen == screen && (cur_y - ty > 0.5f || ty - cur_y > 0.5f);
-        int animating = trans_active || cursor_moving || screen == S_SPLASH || screen == S_LOADING || screen == S_CONFLICT_CONFIRM;
+        int animating = trans_active || cursor_moving || screen == S_SPLASH || screen == S_LOADING || screen == S_UPDATING || screen == S_CONFLICT_CONFIRM;
         Ev ev = {0};
         int r = plat_poll(&ev, animating ? 16 : 33);
         if (r < 0) break;
@@ -2727,6 +2835,17 @@ int main(int argc, char **argv) {
                 else cur_y += diff * (dt >= 32 ? 0.55f : 0.35f);
             }
         }
+#ifdef DW3_TARGET_PC
+        if (su_on) {
+            selfupd_poll(&su);
+            if (su.state == SU_FAILED) {
+                su_on = 0;
+                if (screen == S_UPDATING) go(S_DEBUG, 4, -1, 284 + 14);
+                snprintf(status, sizeof(status), "UPDATE FAILED: %.120s", su.text);
+            }
+        }
+        if (screen == S_UPDATING) load_step(now - last);
+#endif
         if (screen == S_LOADING) {
             load_step(now - last);
             pump_game();

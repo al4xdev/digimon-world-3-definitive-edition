@@ -44,5 +44,15 @@ int w32_thread_end(void *thread, int wait, int *rc);
  * response arrived, whatever its status; -1 when none did. */
 int w32_http_request(const char *method, const char *url, const char *headers, const void *body, size_t body_len,
                      int *status_out, char **body_out, size_t *body_len_out, char *resp_headers, size_t resp_headers_n);
+/* A download to a file (WinHTTP, redirects followed): 0 when the exchange completed (*status_out the HTTP status; the file is
+ * kept only for a 200 whose length matched), -1 otherwise. progress(got, total, user) returning nonzero cancels. */
+int w32_http_download(const char *url, const char *dest, int *status_out, long *total_out,
+                      int (*progress)(long got, long total, void *user), void *user);
+/* A plain child process: argv[0] with argv in cwd, no console window, nothing inherited. handle_out (may be NULL) is kept
+ * for w32_handle_wait_kill / w32_handle_kill, which close it. */
+int w32_start(const char *const *argv, const char *cwd, unsigned long *pid_out, void **handle_out);
+int w32_pid_gone(unsigned long pid, int ms);
+int w32_handle_wait_kill(void *handle, int ms, unsigned long *code);
+void w32_handle_kill(void *handle);
 #endif
 #endif

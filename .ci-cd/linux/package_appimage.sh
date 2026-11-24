@@ -110,6 +110,7 @@ strip -o "$appdir/usr/bin/dw2003" "$work/port-sdl/dw2003"
 rm -f "$out/$debug"
 objcopy --only-keep-debug "$work/port-sdl/dw2003" "$out/$debug"
 strip -o "$appdir/usr/bin/dw2003-launcher" "$work/launcher/dw2003-launcher"
+strip -o "$appdir/usr/bin/dw2003-updater" "$work/launcher/dw2003-updater" # the launcher runs a copy of it to update the AppImage
 [[ -d "$work/port-sdl/mods" ]] || die "the game's build has no mods/ (psxstack copies its mods/ and port/mods there)"
 cp -r "$work/port-sdl/mods" "$appdir/usr/bin/mods"
 # A script, not a link: the launcher at its path inside the mount, for a double-click and RecompLauncher alike.
@@ -129,7 +130,7 @@ cp "$pkg/LICENSES/"*.txt "$appdir/LICENSES/"
 
 # ---- Only the C library's own libraries (SDL dlopens X11, Wayland, the audio servers, udev, ... at run time).
 allowed='linux-vdso\.so\.1|/lib64/ld-linux-x86-64\.so\.2|ld-linux-x86-64\.so\.2|lib(c|m|dl|pthread|rt)\.so\.[0-9]+'
-for bin in dw2003 dw2003-launcher; do
+for bin in dw2003 dw2003-launcher dw2003-updater; do
     libs="$(ldd "$appdir/usr/bin/$bin" | awk '{print $1}')"
     bad="$(grep -vE "^($allowed)\$" <<<"$libs" || true)"
     [[ -z "$bad" ]] || die "$bin needs libraries a desktop may not have: $(echo $bad)"

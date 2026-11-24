@@ -13,7 +13,7 @@ set(CMAKE_C_EXTENSIONS ON) # gnu99, as the handheld's build
 find_package(SDL3 3.2 CONFIG REQUIRED)
 message(STATUS "SDL3 ${SDL3_VERSION}: ${SDL3_DIR}")
 
-add_executable(dw2003-launcher main.c ui.c plat.c cfg.c loading.c cloud.c sha256.c update.c assets/assets.c)
+add_executable(dw2003-launcher main.c ui.c plat.c cfg.c loading.c cloud.c sha256.c update.c selfupdate.c assets/assets.c)
 
 # The running build's version for the update notice (update.h): a release's X.Y.Z, from the tag the packaging scripts
 # export as PSXSTACK_VERSION; any other build is "dev", which never asks.
@@ -66,4 +66,21 @@ if(WIN32)
 else()
     find_package(Threads REQUIRED)
     target_link_libraries(dw2003-launcher PRIVATE m Threads::Threads)
+endif()
+
+# The updater (updater.c): the one small program that replaces the installed files when the launcher updates itself. No
+# SDL, no window; it ships beside the launcher (the Windows zip, the AppImage's usr/bin). miniz is only its unzip.
+add_executable(dw2003-updater updater.c sha256.c third_party/miniz/miniz.c)
+target_compile_definitions(dw2003-updater PRIVATE _GNU_SOURCE MINIZ_NO_DEFLATE_APIS MINIZ_NO_TIME)
+target_compile_options(dw2003-updater PRIVATE -Wall)
+if(WIN32)
+    # Console subsystem would flash a window when the launcher starts it: a GUI program, with the same manifest (UTF-8
+    # code page: the paths it is given are UTF-8).
+    enable_language(RC)
+    configure_file(windows/dw2003-updater.rc.in "${CMAKE_CURRENT_BINARY_DIR}/dw2003-updater.rc" @ONLY)
+    target_sources(dw2003-updater PRIVATE win32.c "${CMAKE_CURRENT_BINARY_DIR}/dw2003-updater.rc")
+    set_source_files_properties("${CMAKE_CURRENT_BINARY_DIR}/dw2003-updater.rc" PROPERTIES
+        OBJECT_DEPENDS "${DW3_RC_DIR}/dw2003-launcher.manifest")
+    target_link_libraries(dw2003-updater PRIVATE winhttp comdlg32)
+    set_target_properties(dw2003-updater PROPERTIES WIN32_EXECUTABLE ON)
 endif()

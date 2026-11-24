@@ -8,6 +8,7 @@ ifeq ($(TARGET),portmaster)
 CFLAGS += -DDW3_TARGET_PORTMASTER
 else
 DW3_STAMP := $(shell git describe --tags --match "v[0-9]*.[0-9]*.[0-9]*" --always --dirty 2>/dev/null || echo dev)
+SRC += selfupdate.c
 CFLAGS += -DDW3_TARGET_PC -DDW3_LAUNCHER_VERSION=\"dev\" -DDW3_LAUNCHER_STAMP=\"$(DW3_STAMP)\"
 endif
 ifeq ($(SDL),1)
@@ -17,5 +18,8 @@ endif
 dw3-launcher: $(SRC) *.h assets/assets.h stb_truetype.h
 	$(CC) $(CFLAGS) $(SRC) -o $@ $(LIBS) -lm -lpthread
 
+dw3-updater: updater.c sha256.c third_party/miniz/miniz.c *.h
+	$(CC) $(CFLAGS) -DMINIZ_NO_DEFLATE_APIS -DMINIZ_NO_TIME updater.c sha256.c third_party/miniz/miniz.c -o $@
+
 clean:
-	rm -f dw3-launcher
+	rm -f dw3-launcher dw3-updater

@@ -385,3 +385,130 @@ done:
     return rc;
 }
 #endif
+
+/* ---- a download to a file, and plain processes (the updater: updater.c) ---- */
+
+/* The request's setup is w32_http_request's again, not shared with it: that function carries the cloud sync, which has
+ * run on real Windows, and this one only has to stream. 30 s without a byte ends a download; there is no overall limit. */
+int w32_http_download(const char *url, const char *dest, int *status_out, long *total_out,
+                      int (*progress)(long got, long total, void *user), void *user) {
+    int rc = -1;
+    *status_out = 0;
+    *total_out = 0;
+    HINTERNET ses = NULL, con = NULL, req = NULL;
+    wchar_t *wurl = wide(url);
+    wchar_t host[256], path[2048];
+    URL_COMPONENTSW uc;
+    memset(&uc, 0, sizeof(uc));
+    uc.dwStructSize = sizeof(uc);
+    uc.lpszHostName = host;
+    uc.dwHostNameLength = (DWORD)(sizeof(host) / sizeof(host[0]));
+    uc.lpszUrlPath = path;
+    uc.dwUrlPathLength = (DWORD)(sizeof(path) / sizeof(path[0]));
+    FILE *f = NULL;
+    char *buf = NULL;
+    if (!wurl || !WinHttpCrackUrl(wurl, 0, 0, &uc)) goto done;
+    ses = WinHttpOpen(L"dw3-launcher", WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME,
+                      WINHTTP_NO_PROXY_BYPASS, 0);
+    if (!ses) goto done;
+    WinHttpSetTimeouts(ses, 4000, 4000, 30000, 30000);
+    /* GitHub answers a release asset with a redirect to another host: WinHTTP follows it (its default policy). */
+    con = WinHttpConnect(ses, host, uc.nPort, 0);
+    if (!con) goto done;
+    req = WinHttpOpenRequest(con, L"GET", path, NULL, WINHTTP_NO_REFERER, WINHTTP_DEFAULT_ACCEPT_TYPES,
+                             uc.nScheme == INTERNET_SCHEME_HTTPS ? WINHTTP_FLAG_SECURE : 0);
+    if (!req) goto done;
+    if (!WinHttpSendRequest(req, WINHTTP_NO_ADDITIONAL_HEADERS, 0, WINHTTP_NO_REQUEST_DATA, 0, 0, 0) ||
+        !WinHttpReceiveResponse(req, NULL)) {
+        goto done;
+    }
+    DWORD status = 0, sz = sizeof(status);
+    if (!WinHttpQueryHeaders(req, WINHTTP_QUERY_STATUS_CODE | WINHTTP_QUERY_FLAG_NUMBER, WINHTTP_HEADER_NAME_BY_INDEX,
+                             &status, &sz, WINHTTP_NO_HEADER_INDEX)) {
+        goto done;
+    }
+    *status_out = (int)status;
+    if (status != 200) { rc = 0; goto done; }
+    DWORD clen = 0;
+    sz = sizeof(clen);
+    if (WinHttpQueryHeaders(req, WINHTTP_QUERY_CONTENT_LENGTH | WINHTTP_QUERY_FLAG_NUMBER, WINHTTP_HEADER_NAME_BY_INDEX,
+                            &clen, &sz, WINHTTP_NO_HEADER_INDEX)) {
+        *total_out = (long)clen;
+    }
+    f = fopen(dest, "wb"); /* binary: a text mode would turn bytes into others */
+    buf = malloc(64 * 1024);
+    if (!f || !buf) goto done;
+    long got = 0;
+    for (;;) {
+        DWORD n = 0;
+        if (!WinHttpReadData(req, buf, 64 * 1024, &n)) goto done;
+        if (n == 0) break;
+        if (fwrite(buf, 1, n, f) != n) goto done;
+        got += (long)n;
+        if (progress && progress(got, *total_out, user)) goto done; /* cancelled */
+    }
+    rc = (*total_out && got != *total_out) ? -1 : 0; /* fewer bytes than announced: a cut connection */
+done:
+    if (f && fclose(f) != 0) rc = -1;
+    if (rc != 0 || *status_out != 200) remove(dest);
+    free(buf);
+    if (req) WinHttpCloseHandle(req);
+    if (con) WinHttpCloseHandle(con);
+    if (ses) WinHttpCloseHandle(ses);
+    free(wurl);
+    return rc;
+}
+
+/* A plain child (no pipes, nothing inherited), kept apart from the game's w32_spawn. */
+int w32_start(const char *const *argv, const char *cwd, unsigned long *pid_out, void **handle_out) {
+    char *cmd = NULL;
+    size_t len = 0, cap = 0;
+    int rc = -1;
+    for (int i = 0; argv[i]; i++) append_arg(&cmd, &len, &cap, argv[i]);
+    wchar_t *wapp = wide(argv[0]), *wcmd = cmd ? wide(cmd) : NULL, *wcwd = cwd ? wide(cwd) : NULL;
+    if (wapp && wcmd && (!cwd || wcwd)) {
+        STARTUPINFOW si;
+        memset(&si, 0, sizeof(si));
+        si.cb = sizeof(si);
+        PROCESS_INFORMATION pi;
+        if (CreateProcessW(wapp, wcmd, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, wcwd, &si, &pi)) {
+            CloseHandle(pi.hThread);
+            if (pid_out) *pid_out = pi.dwProcessId;
+            if (handle_out) *handle_out = pi.hProcess;
+            else CloseHandle(pi.hProcess);
+            rc = 0;
+        }
+    }
+    free(cmd); free(wapp); free(wcmd); free(wcwd);
+    return rc;
+}
+
+/* 1 once the process with this id has ended (or never existed); waits up to ms. */
+int w32_pid_gone(unsigned long pid, int ms) {
+    HANDLE h = OpenProcess(SYNCHRONIZE, FALSE, (DWORD)pid);
+    if (!h) return 1;
+    DWORD r = WaitForSingleObject(h, (DWORD)ms);
+    CloseHandle(h);
+    return r == WAIT_OBJECT_0;
+}
+
+/* 1 when the child (w32_start's handle) has ended within ms (*code its exit code); else it is terminated, 0. */
+int w32_handle_wait_kill(void *handle, int ms, unsigned long *code) {
+    DWORD r = WaitForSingleObject((HANDLE)handle, (DWORD)ms), c = 1;
+    if (r != WAIT_OBJECT_0) {
+        TerminateProcess((HANDLE)handle, 1);
+        WaitForSingleObject((HANDLE)handle, 2000);
+        CloseHandle((HANDLE)handle);
+        return 0;
+    }
+    GetExitCodeProcess((HANDLE)handle, &c);
+    CloseHandle((HANDLE)handle);
+    if (code) *code = c;
+    return 1;
+}
+
+void w32_handle_kill(void *handle) {
+    TerminateProcess((HANDLE)handle, 1);
+    WaitForSingleObject((HANDLE)handle, 3000);
+    CloseHandle((HANDLE)handle);
+}
