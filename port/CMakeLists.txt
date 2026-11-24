@@ -95,6 +95,7 @@ if(ANDROID)
         "${DW3_ROOT}/launcher/ui.c"
         "${DW3_ROOT}/launcher/plat.c"
         "${DW3_ROOT}/launcher/cfg.c"
+        "${DW3_ROOT}/launcher/migrate.c"
         "${DW3_ROOT}/launcher/loading.c"
         "${DW3_ROOT}/launcher/cloud.c"
         "${DW3_ROOT}/launcher/update.c"

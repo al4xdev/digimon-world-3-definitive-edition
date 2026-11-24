@@ -41,6 +41,11 @@ extern int is_pc, is_portmaster, is_android;
 extern char game_dir[512];
 extern char disc_path[1200];  /* "" when there is none */
 
+/* Whole-file helpers (cfg.c): the text of a file (malloc'd; NULL when unreadable or past 4 MB), and a write that replaces it
+ * atomically. */
+char *slurp(const char *path);
+int write_atomic(const char *path, const char *text);
+
 typedef struct {
     char name[256];
     int is_dir;

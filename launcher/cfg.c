@@ -16,6 +16,7 @@
 #include <unistd.h>
 
 #include "compat.h"
+#include "migrate.h"
 #include "plat.h"
 #include "win32.h"
 
@@ -209,7 +210,7 @@ static void path_of(char *out, size_t n, const char *name) {
     snprintf(out, n, "%s/%s", game_dir, name);
 }
 
-static char *slurp(const char *path) {
+char *slurp(const char *path) {
     FILE *f = fopen(path, "rb");
     if (!f) return NULL;
     if (fseek(f, 0, SEEK_END) != 0) { fclose(f); return NULL; }
@@ -224,7 +225,7 @@ static char *slurp(const char *path) {
     return b;
 }
 
-static int write_atomic(const char *path, const char *text) {
+int write_atomic(const char *path, const char *text) {
     char tmp[800];
     snprintf(tmp, sizeof(tmp), "%s.tmp.%ld", path, (long)getpid());
     FILE *f = fopen(tmp, "wb");
@@ -412,11 +413,11 @@ static void cfg_read_settings(Cfg *c, const char *j) {
 void cfg_load(Cfg *c) {
     char path[600], line[1400];
     cfg_defaults(c);
+    int migrated = migrate_config_files() > 0; /* tui.state's old defaults take the new ones (migrate.c) */
     path_of(path, sizeof(path), "tui.state");
     FILE *f = fopen(path, "r");
     char ffspeed[16] = "";
     int ffon = 1;
-    int bm_v = 0, had_state = f != NULL;
     while (f && fgets(line, sizeof(line), f)) {
         char *eq = strchr(line, '=');
         if (!eq) continue;
@@ -453,17 +454,12 @@ void cfg_load(Cfg *c) {
         else if (!strcmp(line, "disc") && !disc_path[0] && v[0] && access(v, F_OK) == 0) {
             snprintf(disc_path, sizeof(disc_path), "%s", v);
         }
-        else if (!strcmp(line, "bm_v")) bm_v = n;
         else if (!strncmp(line, "bm_", 3)) {
             static const char *const keys[H_COUNT] = {"bm_fight", "bm_tech", "bm_digivolve", "bm_tag", "bm_item", "bm_run", "bm_inspect", "bm_blast"};
             for (int i = 0; i < H_COUNT; i++)
                 if (!strcmp(line, keys[i]) && hud_code(v)) c->hud[i] = hud_code(v);
         }
     }
-    /* Migration (2026-11-23): Fight moved to the bottom face button by default. A tui.state from before (no bm_v) that
-     * still has the old defaults, Fight right and Tag bottom, never chose them (every save writes all eight), so it
-     * takes the new default; any other layout was the player's and stays. The "Fight button" row brings the old back. */
-    if (had_state && bm_v < 2 && cfg_fight_place(c) == 1) cfg_set_fight_place(c, 0);
     if (f) {
         fclose(f);
         c->ff = !ffon ? 0 : ffspeed[0] ? idx_of(ff_names, 5, ffspeed, 3) : 3;
@@ -513,7 +509,9 @@ void cfg_load(Cfg *c) {
             if (json_str(j, "\"preset_language\"", "language", lstr, sizeof(lstr)))
                 c->lang = idx_of(lang_names, 8, lstr, 0);
         }
+        int tui_hz = c->hz;
         if (is_pc) cfg_read_settings(c, j);
+        if (migrated) c->hz = tui_hz; /* settings.json still holds the old 50: this once, tui.state's migrated value wins */
         free(j);
     }
 }
@@ -600,9 +598,9 @@ static int write_settings(const Cfg *c) {
 int cfg_save(const Cfg *c) {
     char path[600], text[3600] = "", line[1400];
     int rc = 0;
-    snprintf(text, sizeof(text), "hz=%d\nff=%d\nff_speed=%s\nload=%d\nskip=%d\nbattles=%d\nhit=%d\nsaveany=1\nbmenu=1\nbm_v=2\n"
+    snprintf(text, sizeof(text), "hz=%d\nff=%d\nff_speed=%s\nload=%d\nskip=%d\nbattles=%d\nhit=%d\nsaveany=1\nbmenu=1\nschema=%d\n"
              "bmem=%d\nbbuf=%d\nwidescreen=%d\nfullscreen=%d\ntouch_pad=%d\nfill=%d\nscale=%d\nrenderer_pc=%d\nfilter=%d\n",
-             c->hz, c->ff ? 1 : 0, ff_names[c->ff ? c->ff : 3], c->load, c->skip, c->battles, c->hit,
+             c->hz, c->ff ? 1 : 0, ff_names[c->ff ? c->ff : 3], c->load, c->skip, c->battles, c->hit, SCHEMA_TUI_STATE,
              c->bmem, c->bbuf, c->widescreen, c->fullscreen, c->touch_pad, c->fill, c->scale, c->renderer_pc, c->filter);
     if (disc_path[0]) {
         snprintf(line, sizeof(line), "disc=%s\n", disc_path);

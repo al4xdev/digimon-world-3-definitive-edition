@@ -13,6 +13,7 @@
 #include <unistd.h>
 
 #include "cfg.h"
+#include "migrate.h"
 #include "cloud.h"
 #include "i18n.h"
 #include "loading.h"
@@ -350,6 +351,7 @@ static void start_game(int sync) {
             return;
         }
     }
+    migrate_saves(); /* an old expansion save takes the current schema before the game reads it */
     if (cfg_save(&c) != 0) {
         snprintf(msg, sizeof(msg), "Cannot write settings.json");
         go(S_ERROR, 0, +1);

@@ -62,7 +62,7 @@ typedef struct {
  * port/game/definitive_expansion.h). The two are one save here: the sha, the backups (card1_<stamp>_<sha>.mcd and its
  * .def.json), restore, the cloud and the RecompLauncher mirror carry both. The sha is sha256 of the card then the JSON,
  * which is the card's own sha when there is no JSON: a card from before the expansion keeps the sha it always had.
- * The JSON's schema ("version") is the game's; migrating it is not done here yet (.plan/backlog/launcher-expansion-save.md). */
+ * The JSON's schema ("version") is the game's; the launcher migrates it before the game starts (migrate.h). */
 #define EXPANSION_MAX (1 << 20) /* the cloud's limit too (cloud-sync/src/types.ts) */
 int save_expansion_path(const char *card_path, char *out, size_t n);
 

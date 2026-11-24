@@ -5,7 +5,8 @@ Owner, 2026-11-23: not now. The next update that touches the expansion save (`ca
 1. **Pair the files.** DONE 2026-11-23 (launcher/cloud.c, cloud-sync worker deployed, D1 migrated). Was: Backup, restore, cloud sync and the RecompLauncher mirror are keyed only on `card1.mcd`. They
    must move `card1.mcd` and `card1.def.json` together (a restored card without its JSON reads that slot's expansion
    data as empty, by the generation check, so nothing is wrong, only lost).
-2. **Schema migration screen.** The JSON carries `"version"`. When a release changes the schema, the launcher shows a
+2. **Schema migration.** DONE 2026-11-24 (launcher/migrate.c, no screen: it migrates silently before the game starts,
+   the old file kept as .v<N>.bak; docs/LAUNCHER.md "Schema versions"). Was: the JSON carries `"version"`. When a release changes the schema, the launcher shows a
    screen that migrates the file (backup the old one first, then rewrite it to the new version) before the game runs.
    The game itself only reads its own version or older; a newer file is read as empty and not overwritten.
 

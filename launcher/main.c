@@ -15,6 +15,7 @@
 #endif
 
 #include "cfg.h"
+#include "migrate.h"
 #include "cloud.h"
 #include "compat.h"
 #include "i18n.h"
@@ -1472,6 +1473,7 @@ static void start_game(void) {
     last_err[0] = 0;
     disc_bad = DISC_OK;
     fatal_seen = 0;
+    migrate_saves(); /* an old expansion save (a restored backup, a cloud pull) takes the current schema first */
     cfg_save(&c);
     {
         char card_p[1024], smsg[128] = "";
@@ -2339,6 +2341,65 @@ static int self_test(const char *root) {
         write_text(tp, "hz=50\nbm_fight=west\nbm_run=east\nbm_tag=south\n");
         cfg_load(&g);
         check(g.hud[H_FIGHT] == K_WEST && g.hud[H_RUN] == K_EAST, "fight button: a layout of the player's own is kept");
+        /* Schema migrations (migrate.h): tui.state's old defaults take the new ones once, a file on the current schema
+         * keeps what the player chose, and the expansion save steps from version 1 to 2 with its old copy kept. */
+        write_text(tp, "hz=50\nbm_fight=east\nbm_tag=south\nbm_v=1\nff=1\n");
+        cfg_load(&g);
+        check(g.hz == 60 && cfg_fight_place(&g) == 0, "schema: an old tui.state takes 60 Hz and Fight at the bottom");
+        {
+            char *t = slurp(tp);
+            check(t && strstr(t, "schema=1") && !strstr(t, "bm_v") && strstr(t, "hz=60"), "schema: tui.state stamped schema=1");
+            free(t);
+        }
+        snprintf(tp, sizeof(tp), "%s/tui.state.v0.bak", game_dir);
+        {
+            char *t = slurp(tp);
+            check(t && strstr(t, "hz=50"), "schema: the old tui.state kept as .v0.bak");
+            free(t);
+        }
+        snprintf(tp, sizeof(tp), "%s/tui.state", game_dir);
+        write_text(tp, "schema=1\nhz=50\nbm_fight=east\nbm_tag=south\n");
+        cfg_load(&g);
+        {
+            char *t = slurp(tp); /* settings.json's refresh wins over tui.state's hz on a read, so the file is what shows */
+            check(cfg_fight_place(&g) == 1 && t && strstr(t, "hz=50"), "schema: a tui.state on the current schema keeps the player's Fight right and 50 Hz");
+            free(t);
+        }
+        write_text(tp, "schema=9\nhz=50\n");
+        cfg_load(&g);
+        {
+            char *t = slurp(tp);
+            check(t && !strcmp(t, "schema=9\nhz=50\n"), "schema: a newer tui.state is left as it is");
+            free(t);
+        }
+        {
+            char *j = strdup("{\"version\":1,\"slots\":[{\"gen\":3}]}"), *n = strdup("{\"version\":3,\"slots\":[]}"), *o2 = strdup("[1]");
+            int from = 0;
+            check(migrate_save_text(&j, &from) == MIGRATE_DONE && from == 1 && !strcmp(j, "{\"version\":2,\"slots\":[{\"gen\":3}]}"),
+                  "schema: the expansion save steps 1 -> 2 and nothing else changes");
+            check(migrate_save_text(&j, &from) == MIGRATE_NONE, "schema: version 2 is current");
+            check(migrate_save_text(&n, &from) == MIGRATE_NEWER && strstr(n, "\"version\":3"), "schema: a newer expansion save is left alone");
+            check(migrate_save_text(&o2, &from) == MIGRATE_NONE && !strcmp(o2, "[1]"), "schema: a file that is not the game's is left alone");
+            free(j); free(n); free(o2);
+        }
+        snprintf(tp, sizeof(tp), "%s/card1.def.json", game_dir);
+        write_text(tp, "{\"version\": 1, \"slots\": []}");
+        check(migrate_saves() == 1, "schema: card1.def.json migrated");
+        {
+            char *t = slurp(tp);
+            check(t && strstr(t, "\"version\": 2"), "schema: card1.def.json is on version 2");
+            free(t);
+            snprintf(tp, sizeof(tp), "%s/card1.def.json.v1.bak", game_dir);
+            t = slurp(tp);
+            check(t && strstr(t, "\"version\": 1"), "schema: the old expansion save kept as .v1.bak");
+            free(t);
+            check(migrate_saves() == 0, "schema: nothing left to migrate");
+            unlink(tp);
+            snprintf(tp, sizeof(tp), "%s/card1.def.json", game_dir);
+            unlink(tp);
+            snprintf(tp, sizeof(tp), "%s/tui.state.v0.bak", game_dir);
+            unlink(tp);
+        }
         cfg_save(&a);
         disc_path[0] = 0;
         cfg_load(&b);
