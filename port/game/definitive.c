@@ -491,7 +491,7 @@ const unsigned char *def_inspect_legend(int kind) {
     extern const unsigned char def_str_InfoShiftTurnsA[], def_str_InfoShiftTurnsB[], def_str_InfoShiftStagger[],
         def_str_InfoShiftWeak[], def_str_InfoShiftGuard[], def_str_InfoShiftBoth[], def_str_InfoGuardA[],
         def_str_InfoGuardB[], def_str_InfoGuardUntil[], def_str_InfoSpeedA[], def_str_InfoSpeedB[],
-        def_str_InfoDefA[], def_str_InfoDefB[];
+        def_str_InfoDef[];
     static unsigned char buf[DEF_TRAITS][96];
     const DefPersona *p = persona_at(fightstg_battle.state.current[1] % 3);
     unsigned char *b;
@@ -530,7 +530,7 @@ const unsigned char *def_inspect_legend(int kind) {
         break;
     case DEF_TRAIT_DEF:
         if (p != NULL) {
-            legend_number(b, &n, sizeof(buf[0]), def_str_InfoDefA, p->def_pct, def_str_InfoDefB);
+            def_glyph_put(b, &n, sizeof(buf[0]), def_str_InfoDef); /* no number: the player needs only "weak defense" */
         }
         break;
     }

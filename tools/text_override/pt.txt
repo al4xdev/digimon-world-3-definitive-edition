@@ -4287,8 +4287,7 @@ $InfoGuardB: %do dano
 $InfoGuardUntil: até ser atordoado
 $InfoSpeedA: "Velocidade "
 $InfoSpeedB: x a sua
-$InfoDefA: "Defesa "
-$InfoDefB: "%"
+$InfoDef: Recebe mais dano
 $HuntRomanI: I
 $HuntRomanV: V
 $HuntRomanX: X

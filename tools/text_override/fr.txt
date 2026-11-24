@@ -354,8 +354,7 @@ $InfoGuardB: "%"
 $InfoGuardUntil: jusqu’à l’étourdir
 $InfoSpeedA: "Vitesse "
 $InfoSpeedB: x la vôtre
-$InfoDefA: "Défense "
-$InfoDefB: "%"
+$InfoDef: Subit plus de dégâts
 $HuntRomanI: I
 $HuntRomanV: V
 $HuntRomanX: X

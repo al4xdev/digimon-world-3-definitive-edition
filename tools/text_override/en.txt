@@ -397,8 +397,7 @@ $InfoGuardB: "%"
 $InfoGuardUntil: until staggered
 $InfoSpeedA: "Speed "
 $InfoSpeedB: x yours
-$InfoDefA: "Defense "
-$InfoDefB: "%"
+$InfoDef: Takes more damage
 $HuntRomanI: I
 $HuntRomanV: V
 $HuntRomanX: X

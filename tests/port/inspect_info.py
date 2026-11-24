@@ -57,13 +57,12 @@ def main():
     table = list(rows())
     turns = max([r["turns"] for r in table] + [1])
     speed = max([r["speed"] for r in table] + [1])
-    defense = max([r["def"] for r in table] + [1])
     bad = 0
     for lang in LANGS:
         s = strings(lang)
         missing = [k for k in ("InfoShiftTurnsA", "InfoShiftTurnsB", "InfoShiftStagger", "InfoShiftWeak",
                                "InfoShiftGuard", "InfoShiftBoth", "InfoGuardA", "InfoGuardB", "InfoGuardUntil",
-                               "InfoSpeedA", "InfoSpeedB", "InfoDefA", "InfoDefB") if k not in s]
+                               "InfoSpeedA", "InfoSpeedB", "InfoDef") if k not in s]
         if missing:
             print(f"inspect_info: {lang}.txt has no {', '.join(missing)}")
             bad += 1
@@ -73,7 +72,7 @@ def main():
                       s["InfoShiftWeak"], s["InfoShiftGuard"], s["InfoShiftBoth"]],
             "guard": [s["InfoGuardA"] + str(guard_pct) + s["InfoGuardB"], s["InfoGuardUntil"]],
             "speed": [s["InfoSpeedA"] + str(speed) + s["InfoSpeedB"]],
-            "def": [s["InfoDefA"] + str(defense) + s["InfoDefB"]],
+            "def": [s["InfoDef"]],
         }
         for kind, lines in entries.items():
             for text in lines:

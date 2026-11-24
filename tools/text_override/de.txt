@@ -354,8 +354,7 @@ $InfoGuardB: %Schaden
 $InfoGuardUntil: bis zur Betäubung
 $InfoSpeedA: "Tempo "
 $InfoSpeedB: x deins
-$InfoDefA: "Abwehr "
-$InfoDefB: "%"
+$InfoDef: Nimmt mehr Schaden
 $HuntRomanI: I
 $HuntRomanV: V
 $HuntRomanX: X
