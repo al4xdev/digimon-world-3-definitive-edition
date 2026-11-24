@@ -1946,8 +1946,25 @@ static const struct {
     short tech, power;
 } to_magic[] = {
     { 53, 100 },  { 66, 200 },  { 68, 210 },  { 71, 220 },  { 72, 150 },  { 82, 430 },  { 95, 440 },
-    { 98, 630 },  { 88, 590 },  { 103, 500 }, { 105, 90 },  { 106, 160 }, { 107, 90 },  { 108, 140 }, { 109, 90 },  { 110, 240 },
+    { 98, 630 },  { 88, 590 },  { 103, 500 }, { 69, 230 },  { 73, 200 },  { 77, 230 },  { 79, 310 },  { 86, 590 },
+    { 87, 470 }, { 89, 740 },  { 92, 590 },  { 96, 800 },  { 99, 560 },  { 101, 640 }, { 102, 800 }, { 105, 90 },  { 106, 160 }, { 107, 90 },  { 108, 140 }, { 109, 90 },  { 110, 240 },
     { 111, 90 },  { 112, 160 }, { 113, 130 }, { 114, 240 }, { 134, 190 }, { 136, 270 }, { 376, 500 },
+};
+
+/* The elements the signatures given in to_magic with none take (defense_stat 2 Fire .. 8 Dark, the element power by the
+ * MP band as the elemental magic has it: 32 below 60 MP, 48 below 100, 56 below 150, 64 above, Dark 72 from 150 MP).
+ * 101 and 102 (Omnimon's T-Sword, Imperialdramon Paladin's Omega Blade) become magic with no element, and the
+ * counter stance of Final Purification (90, kind 10) stays physical: a counter does not go through the technique's own
+ * damage; so does Hookmon's Captain Cannon (62, kind 11): the critical chance it has is a physical blow's (a magic's
+ * critical roll does not read it). Their power (to_magic) is each blow's power x hits ranked among the player's signatures of about the same MP,
+ * carried to the same rank among the player's magic of that MP, the ratio kept within 0.7..1.4 and the power per hit
+ * within the strongest single hit of the player's magic (800) (owner, 2026-11-24, from the list he researched). */
+static const struct {
+    short tech;
+    unsigned char stat, power;
+} to_element[] = {
+    { 88, 2, 56 }, { 103, 8, 72 }, { 69, 8, 32 }, { 73, 7, 48 }, { 77, 7, 48 }, { 79, 2, 48 },
+    { 86, 7, 56 }, { 87, 2, 56 }, { 89, 8, 72 }, { 92, 2, 56 }, { 96, 7, 64 }, { 99, 8, 72 },
 };
 
 /* 1 for a technique the game had as a physical blow and the definitive edition casts as magic (to_magic): the battle
@@ -2028,10 +2045,10 @@ static void patch_techniques(void) {
             records_techniques[to_magic[k].tech - 1].element = 3;
             records_techniques[to_magic[k].tech - 1].power = (u16)to_magic[k].power;
         }
-        records_techniques[88 - 1].defense_stat = 2;   /* WarGreymon's special: Fire */
-        records_techniques[88 - 1].element_power = 56;
-        records_techniques[103 - 1].defense_stat = 8;  /* Beelzemon's special: Dark, the strongest element power of the table */
-        records_techniques[103 - 1].element_power = 72;
+        for (k = 0; k < sizeof(to_element) / sizeof(to_element[0]); k++) {
+            records_techniques[to_element[k].tech - 1].defense_stat = to_element[k].stat;
+            records_techniques[to_element[k].tech - 1].element_power = to_element[k].power;
+        }
     }
 
     /* The technique rework: MP adjustments on support / heal / charge / field skills (all E=0) */

@@ -156,41 +156,41 @@ SKLINF 65: Magia di fuoco.
 SKLINF 66: Magia di tuono.
 SKLINF 67: Magia di fuoco.
 SKLINF 68: Magia del vento.
-SKLINF 69: Attacco fisico. Ruba HP.
+SKLINF 69: Magia oscura. Ruba HP.
 SKLINF 70: Attacco fisico.
 SKLINF 71: Magia di tuono.
 SKLINF 72: Magia del vento. 3 colpi.
-SKLINF 73: Attacco fisico. 3 colpi.
+SKLINF 73: Magia macchina. 3 colpi.
 SKLINF 74: Attacco fisico. 3 colpi.
 SKLINF 75: Magia macchina.
 SKLINF 76: Magia macchina.
-SKLINF 77: Attacco fisico. 3 colpi.
+SKLINF 77: Magia macchina. 3 colpi.
 SKLINF 78: Magia di fuoco.
-SKLINF 79: Attacco fisico.
+SKLINF 79: Magia di fuoco.
 SKLINF 80: Attacco magico. Prob. KO.
 SKLINF 81: Magia tenebre. Att. -2, 3 turni.
 SKLINF 82: Magia macchina.
 SKLINF 83: Magia di tuono.
 SKLINF 84: Magia oscura.
 SKLINF 85: Attacco fisico.
-SKLINF 86: Attacco fisico.
-SKLINF 87: Attacco fisico. Prob. sonno.
-SKLINF 88: Attacco fisico.
-SKLINF 89: Attacco fisico.
+SKLINF 86: Magia macchina.
+SKLINF 87: Magia di fuoco. Prob. sonno.
+SKLINF 88: Magia di fuoco.
+SKLINF 89: Magia oscura.
 SKLINF 90: Attacco fisico. Contrattacco.
 SKLINF 91: Attacco magico.
-SKLINF 92: Attacco fisico.
+SKLINF 92: Magia di fuoco.
 SKLINF 93: Magia di ghiaccio.
 SKLINF 94: Attacco fisico. Prob. veleno.
 SKLINF 95: Magia oscura.
-SKLINF 96: Attacco fisico.
+SKLINF 96: Magia macchina.
 SKLINF 97: Magia oscura.
 SKLINF 98: Magia macchina.
-SKLINF 99: Attacco fisico. Prob. KO.
+SKLINF 99: Magia oscura. Prob. KO.
 SKLINF 100: Rianima alleati con HP max.
-SKLINF 101: Attacco fisico. Prob. paralisi.
-SKLINF 102: Attacco fisico.
-SKLINF 103: Attacco fisico. 3 colpi.
+SKLINF 101: Attacco magico. Prob. paralisi.
+SKLINF 102: Attacco magico.
+SKLINF 103: Magia oscura. 3 colpi.
 SKLINF 104: Magia oscura.
 SKLINF 105: Magia di fuoco.
 SKLINF 106: Magia di fuoco.

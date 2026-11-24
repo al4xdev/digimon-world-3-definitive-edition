@@ -156,41 +156,41 @@ SKLINF 65: Feuermagie.
 SKLINF 66: Donnermagie.
 SKLINF 67: Feuermagie.
 SKLINF 68: Windmagie.
-SKLINF 69: Physisch. Angriff, saugt HP.
+SKLINF 69: Dunkelmagie, saugt HP.
 SKLINF 70: Physischer Angriff.
 SKLINF 71: Donnermagie.
 SKLINF 72: Windmagie, 3 Treffer.
-SKLINF 73: Physisch. Angriff, 3 Treffer.
+SKLINF 73: Maschinenmagie, 3 Treffer.
 SKLINF 74: Physisch. Angriff, 3 Treffer.
 SKLINF 75: Maschinenmagie.
 SKLINF 76: Maschinenmagie.
-SKLINF 77: Physisch. Angriff, 3 Treffer.
+SKLINF 77: Maschinenmagie, 3 Treffer.
 SKLINF 78: Feuermagie.
-SKLINF 79: Physischer Angriff.
+SKLINF 79: Feuermagie.
 SKLINF 80: Magie-Angriff, K.o.-Chance.
 SKLINF 81: Dunkelmagie, Feind Ang.-2, 3 R.
 SKLINF 82: Maschinenmagie.
 SKLINF 83: Donnermagie.
 SKLINF 84: Dunkelmagie.
 SKLINF 85: Physischer Angriff.
-SKLINF 86: Physischer Angriff.
-SKLINF 87: Physisch. Angriff, Schlaf-Chance.
-SKLINF 88: Physischer Angriff.
-SKLINF 89: Physischer Angriff.
+SKLINF 86: Maschinenmagie.
+SKLINF 87: Feuermagie, Schlaf-Chance.
+SKLINF 88: Feuermagie.
+SKLINF 89: Dunkelmagie.
 SKLINF 90: Physisch. Angriff, Konter.
 SKLINF 91: Magie-Angriff.
-SKLINF 92: Physischer Angriff.
+SKLINF 92: Feuermagie.
 SKLINF 93: Eismagie.
 SKLINF 94: Physisch. Angriff, Gift-Chance.
 SKLINF 95: Dunkelmagie.
-SKLINF 96: Physischer Angriff.
+SKLINF 96: Maschinenmagie.
 SKLINF 97: Dunkelmagie.
 SKLINF 98: Maschinenmagie.
-SKLINF 99: Physisch. Angriff, K.o.-Chance.
+SKLINF 99: Dunkelmagie, K.o.-Chance.
 SKLINF 100: Belebt alle Partner mit max. HP.
-SKLINF 101: Physisch. Angriff, Lähm-Chance.
-SKLINF 102: Physischer Angriff.
-SKLINF 103: Physisch. Angriff, 3 Treffer.
+SKLINF 101: Magie-Angriff, Lähm-Chance.
+SKLINF 102: Magie-Angriff.
+SKLINF 103: Dunkelmagie, 3 Treffer.
 SKLINF 104: Dunkelmagie.
 SKLINF 105: Feuermagie.
 SKLINF 106: Feuermagie.

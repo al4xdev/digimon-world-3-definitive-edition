@@ -178,41 +178,41 @@ SKLINF 65: Fire magic.
 SKLINF 66: Thunder magic.
 SKLINF 67: Fire magic.
 SKLINF 68: Wind magic.
-SKLINF 69: Physical attack. Drains HP.
+SKLINF 69: Dark magic. Drains HP.
 SKLINF 70: Physical attack.
 SKLINF 71: Thunder magic.
 SKLINF 72: Wind magic. 3 hits.
-SKLINF 73: Physical attack. 3 hits.
+SKLINF 73: Machine magic. 3 hits.
 SKLINF 74: Physical attack. 3 hits.
 SKLINF 75: Machine magic.
 SKLINF 76: Machine magic.
-SKLINF 77: Physical attack. 3 hits.
+SKLINF 77: Machine magic. 3 hits.
 SKLINF 78: Fire magic.
-SKLINF 79: Physical attack.
+SKLINF 79: Fire magic.
 SKLINF 80: Magic attack. KO chance.
 SKLINF 81: Dark magic. Foe Atk-2, 3 turns.
 SKLINF 82: Machine magic.
 SKLINF 83: Thunder magic.
 SKLINF 84: Dark magic.
 SKLINF 85: Physical attack.
-SKLINF 86: Physical attack.
-SKLINF 87: Physical attack. Sleep chance.
-SKLINF 88: Physical attack.
-SKLINF 89: Physical attack.
+SKLINF 86: Machine magic.
+SKLINF 87: Fire magic. Sleep chance.
+SKLINF 88: Fire magic.
+SKLINF 89: Dark magic.
 SKLINF 90: Physical attack. Counters.
 SKLINF 91: Magic attack.
-SKLINF 92: Physical attack.
+SKLINF 92: Fire magic.
 SKLINF 93: Ice magic.
 SKLINF 94: Physical attack. Poison chance.
 SKLINF 95: Dark magic.
-SKLINF 96: Physical attack.
+SKLINF 96: Machine magic.
 SKLINF 97: Dark magic.
 SKLINF 98: Machine magic.
-SKLINF 99: Physical attack. KO chance.
+SKLINF 99: Dark magic. KO chance.
 SKLINF 100: Revives all allies at max HP.
-SKLINF 101: Physical attack. Paralysis chance.
-SKLINF 102: Physical attack.
-SKLINF 103: Physical attack. 3 hits.
+SKLINF 101: Magic attack. Paralysis chance.
+SKLINF 102: Magic attack.
+SKLINF 103: Dark magic. 3 hits.
 SKLINF 104: Dark magic.
 SKLINF 105: Fire magic.
 SKLINF 106: Fire magic.

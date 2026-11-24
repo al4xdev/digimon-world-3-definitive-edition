@@ -156,41 +156,41 @@ SKLINF 65: Magie Feu.
 SKLINF 66: Magie Tonnerre.
 SKLINF 67: Magie Feu.
 SKLINF 68: Magie Vent.
-SKLINF 69: Attaque. Absorbe les HP.
+SKLINF 69: Magie Ténèbres. Absorbe les HP.
 SKLINF 70: Attaque physique.
 SKLINF 71: Magie Tonnerre.
 SKLINF 72: Magie Vent. 3 coups.
-SKLINF 73: Attaque physique. 3 coups.
+SKLINF 73: Magie Machine. 3 coups.
 SKLINF 74: Attaque physique. 3 coups.
 SKLINF 75: Magie Machine.
 SKLINF 76: Magie Machine.
-SKLINF 77: Attaque physique. 3 coups.
+SKLINF 77: Magie Machine. 3 coups.
 SKLINF 78: Magie Feu.
-SKLINF 79: Attaque physique.
+SKLINF 79: Magie Feu.
 SKLINF 80: Attaque magique. Chance de KO.
 SKLINF 81: Ténèbres. Atq ennemi -2, 3 tours.
 SKLINF 82: Magie Machine.
 SKLINF 83: Magie Tonnerre.
 SKLINF 84: Magie Ténèbres.
 SKLINF 85: Attaque physique.
-SKLINF 86: Attaque physique.
-SKLINF 87: Attaque. Chance de sommeil.
-SKLINF 88: Attaque physique.
-SKLINF 89: Attaque physique.
+SKLINF 86: Magie Machine.
+SKLINF 87: Magie Feu. Chance de sommeil.
+SKLINF 88: Magie Feu.
+SKLINF 89: Magie Ténèbres.
 SKLINF 90: Attaque. Contre-attaque.
 SKLINF 91: Attaque magique.
-SKLINF 92: Attaque physique.
+SKLINF 92: Magie Feu.
 SKLINF 93: Magie Glace.
 SKLINF 94: Attaque. Chance de poison.
 SKLINF 95: Magie Ténèbres.
-SKLINF 96: Attaque physique.
+SKLINF 96: Magie Machine.
 SKLINF 97: Magie Ténèbres.
 SKLINF 98: Magie Machine.
-SKLINF 99: Attaque. Chance de KO.
+SKLINF 99: Magie Ténèbres. Chance de KO.
 SKLINF 100: Ranime les alliés, HP max.
-SKLINF 101: Attaque. Chance de paralysie.
-SKLINF 102: Attaque physique.
-SKLINF 103: Attaque physique. 3 coups.
+SKLINF 101: Magie. Chance de paralysie.
+SKLINF 102: Attaque magique.
+SKLINF 103: Magie Ténèbres. 3 coups.
 SKLINF 104: Magie Ténèbres.
 SKLINF 105: Magie Feu.
 SKLINF 106: Magie Feu.
