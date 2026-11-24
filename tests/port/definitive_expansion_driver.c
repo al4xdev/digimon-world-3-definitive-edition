@@ -311,6 +311,38 @@ int main(int argc, char **argv) {
     def_expansion_load(1, 0);
     check("in memory: a slot saved and loaded again pairs", def_persona_record_solved(42) && card_gen(0) == 1);
 
+    /* A read that fails when the slot is loaded and works later: the next save must not write the empty sections over the
+     * real entry (the file keeps its data, the card its generation), and loading the slot again heals it. */
+    {
+        char *before;
+        unsigned int gen_before;
+
+        def_bestiary_reset();
+        def_persona_record_learn(2, 0, 3);
+        def_persona_record_solve(5);
+        check("unreadable load: a slot with data saved", save(0) == 1);
+        gen_before = card_gen(0);
+        before = strdup(slurp(path));
+        def_bestiary_reset();
+        chmod(path, 0);
+        if (access(path, R_OK) != 0) { /* skipped when the test runs as a user the mode does not stop (root) */
+            check("unreadable load: the file cannot be read: not taken, empty", load(0) == 0 && !def_persona_record_solved(5));
+            chmod(path, 0644);
+            check("unreadable load: the file reads again, but the save does not write over it", save(0) == 0);
+            check("unreadable load: the file is as it was and the card keeps its generation",
+                  strcmp(slurp(path), before) == 0 && card_gen(0) == gen_before);
+            check("unreadable load: loading the slot again heals it", load(0) == 1 && def_persona_record_solved(5) &&
+                                                                          def_persona_record_known(2, 0) == 3);
+            check("unreadable load: and a save writes again", save(0) == 1);
+        } else {
+            chmod(path, 0644);
+            printf("ok unreadable load: skipped (the file stays readable here)\n");
+        }
+        free(before);
+        def_bestiary_reset();
+        check("unreadable load: reload for the next cases", load(0) == 1);
+    }
+
     printf("definitive_expansion: %d failure(s)\n", failures);
     return failures != 0;
 }

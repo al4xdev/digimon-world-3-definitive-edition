@@ -58,5 +58,8 @@ loaded and written whole, before the card, when one is saved (`port/game/definit
 - **Schema versions** (owner, 2026-11-24): `"version"` is 2 (1: the personas alone; 2: the `"respec"` section). Any schema change, a new
   section included, bumps it, and the launcher migrates the file before the game starts (`launcher/migrate.c`: one step per
   version, applied in sequence, the old file kept as `card1.def.json.v<N>.bak`). The game reads its own version or older.
+- **A read that fails.** When the file cannot be read as the slot loads (a lock, an antivirus), the slot's sections are empty
+  only because of that, so the slot's next save does not write the file (the card keeps its generation) until the slot is
+  loaded again; that session's progress in the expansion is lost, the file's data is not.
 - **The launcher** carries the two files as one save (backups, restore, cloud, the RecompLauncher mirror;
   `launcher/cloud.h`). Tests: `tests/port/definitive_expansion.py`.

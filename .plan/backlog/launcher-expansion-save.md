@@ -28,7 +28,9 @@ worker's own test (push/pull, old clients), not by this e2e. Also: `make` withou
   another card but still pairs with the config card's JSON. The launcher passes only `--config`, so players are not
   hit. Fix: derive the path from the card `port_memcard_open` really used.
 - A load that fails transiently (the JSON unreadable) leaves the sections empty; the next save of that slot writes
-  them empty with a higher generation over the real entry. Fix: remember the failed load and skip the write.
+  them empty with a higher generation over the real entry. DONE 2026-11-24: `load_failed` in definitive_expansion.c
+  makes the save leave the file and the card's generation alone until the slot is loaded again (a new game, a card read
+  or a load that worked clears it); tests/port/definitive_expansion_driver.c "unreadable load".
 - A crash between the JSON write and the card write loses that save's persona progress (by design: the entry's gen
   is newer than the card's). Softer rule possible: accept gen == card gen + 1.
 - The mirror's format 2 JSON is not validated on adopt beyond its sha.
