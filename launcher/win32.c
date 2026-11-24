@@ -298,16 +298,9 @@ int w32_http_request(const char *method, const char *url, const char *headers, c
     uc.lpszUrlPath = path;
     uc.dwUrlPathLength = (DWORD)(sizeof(path) / sizeof(path[0]));
     if (!wurl || !wmethod || !WinHttpCrackUrl(wurl, 0, 0, &uc)) goto done;
-    /* WinHttpCrackUrl gives the path and the query apart; the request wants them together. */
-    wchar_t extra[2048] = L"";
-    URL_COMPONENTSW q;
-    memset(&q, 0, sizeof(q));
-    q.dwStructSize = sizeof(q);
-    q.lpszExtraInfo = extra;
-    q.dwExtraInfoLength = (DWORD)(sizeof(extra) / sizeof(extra[0]));
-    if (WinHttpCrackUrl(wurl, 0, 0, &q) && extra[0] && wcslen(path) + wcslen(extra) < sizeof(path) / sizeof(path[0])) {
-        wcscat(path, extra);
-    }
+    /* WinHttpCrackUrl, asked only for the path, already returns it with the query ("/pull?meta=1"): the request wants
+     * exactly that. Appending the query again made "?meta=1?meta=1", which the worker did not read as the metadata
+     * request, so it sent the whole card and the sync never saw the cloud's rev or sha. */
 
     ses = WinHttpOpen(L"dw3-launcher", WINHTTP_ACCESS_TYPE_DEFAULT_PROXY, WINHTTP_NO_PROXY_NAME,
                       WINHTTP_NO_PROXY_BYPASS, 0);
