@@ -389,6 +389,28 @@ void def_persona_apply(int member, FightstgStats *out) {
     if (p != NULL && p->def_pct != 0) {
         out->stats[1] = (s16)def_persona_def(p, out->stats[1]);
     }
+    if (p != NULL && p->pow_pct != 0) {
+        out->stats[0] = (s16)def_persona_pow(p, out->stats[0]);
+    }
+}
+
+/* The battle's enemies as fieldstg_start_battle just copied them: each one's HP after its persona's HP_PCT. A hunt
+ * or a Super Rare that borrows the battle replaces them afterwards and is not a CAMPAIGN row anyway. */
+void def_persona_enemies_scale(void) {
+    DefPersonaWhere w;
+    int i;
+
+    if (!def_on()) {
+        return;
+    }
+    w = persona_where_now();
+    for (i = 0; i < 3; i++) {
+        RecordsEnemy *e = &records_state.enemies[i];
+
+        if (e->digimon != 0) {
+            e->hp = (s16)def_persona_hp(def_persona_find(&w, e->digimon), e->hp);
+        }
+    }
 }
 
 /* 1 when enemy slot `slot` has a rule of its own: the HUD marks it (the inspect panel's title). */

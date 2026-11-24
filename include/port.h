@@ -502,6 +502,7 @@ void def_rush_panel_reset(void);
 void def_hunt_map(int map);
 int def_hunt_encounter(int battle);
 void def_hunt_scale(void);
+void def_persona_enemies_scale(void); /* fieldstg_start_battle: the enemies' HP after their personas' HP_PCT */
 int def_hunt_active(void);
 void def_hunt_skipped(void);
 int def_hunt_flee(void);

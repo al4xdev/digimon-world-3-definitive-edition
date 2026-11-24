@@ -61,6 +61,7 @@ const DefPersona def_personas[] = {
     { DRI(3), KEEP(2), RESIST_ALL, SPEED_X(3), DEF_PCT(60) },                              /* 2 */
     { CAMPAIGN(31, 448), GUARD_ALWAYS },                                                   /* 3 */
     { SPECIES(80), ON_STAGGER, GUARD_A },                                                  /* 4 */
+    { CAMPAIGN(322, 465), HP_PCT(200), POW_PCT(180), RED_ALWAYS },                         /* 5 */
 };
 const int def_persona_count = sizeof(def_personas) / sizeof(def_personas[0]);
 
@@ -164,6 +165,16 @@ int main(void) {
     CHECK(def_persona_enemy_turn(2) == 0 && def_persona_turns_left(2) == 0, "ON_STAGGER: turns do not count");
     CHECK(def_persona_staggered(2) == 1 && !def_persona_guard(p, def_persona_phase(2)), "staggered: open in B");
     CHECK(def_persona_battle_hue(-1) == 0, "a species row never recolours");
+
+    /* HP_PCT / POW_PCT (row 5, the table's Vemmon gatekeeper): its story fight raised, the hunt that borrows it not. */
+    w = at(-1, -1, -1, 322);
+    p = def_persona_find(&w, 465);
+    CHECK(def_persona_hp(p, 792) == 1584 && def_persona_pow(p, 231) == 415, "Vemmon's fight: HP x2, Power x1.8");
+    CHECK(def_persona_guard(p, 0) == DEF_GUARD_RED && def_persona_guard(p, 1) == DEF_GUARD_RED, "Vemmon: red guard");
+    w = at(-1, 0x1C, -1, 322);
+    p = def_persona_find(&w, 465);
+    CHECK(def_persona_hp(p, 792) == 792 && def_persona_pow(p, 231) == 231, "the Rare Target Vemmon keeps its own");
+    CHECK(def_persona_hp(NULL, 9000) == 9000, "no row: HP as it is");
 
     /* A DRI wave: a new species in a slot starts its state again. */
     w = at(-1, -1, 3, 5);

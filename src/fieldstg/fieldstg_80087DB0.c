@@ -1938,6 +1938,9 @@ void fieldstg_start_battle(s32 battle) {
     for (i = 0; i < 3; i++) {
         records_state.enemies[i] = *fieldstg_battles[battle].enemies[i];
     }
+#ifdef PC_PORT
+    def_persona_enemies_scale();
+#endif
     records_state.has_prize = 0;
     if ((u32)(records_state.enemies[0].digimon - 0x1C9) >= 8) {
         return;

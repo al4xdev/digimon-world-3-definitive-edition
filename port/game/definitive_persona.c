@@ -94,6 +94,22 @@ int def_persona_def(const DefPersona *p, int defense) {
     return defense < 1 ? 1 : defense; /* the damage formulas divide by it */
 }
 
+int def_persona_hp(const DefPersona *p, int hp) {
+    if (p == NULL || p->hp_pct == 0) {
+        return hp;
+    }
+    hp = (int)((long)hp * p->hp_pct / 100);
+    return hp > 9999 ? 9999 : hp;
+}
+
+int def_persona_pow(const DefPersona *p, int power) {
+    if (p == NULL || p->pow_pct == 0) {
+        return power;
+    }
+    power = power * p->pow_pct / 100;
+    return power > 999 ? 999 : power;
+}
+
 int def_persona_own_map(const DefPersona *p) {
     return p != NULL && (p->phase[0].weak | p->phase[0].resist | p->phase[1].weak | p->phase[1].resist) != 0;
 }
@@ -236,6 +252,13 @@ int def_persona_check_rows(const DefPersona *rows, int count, void (*report)(con
         }
         if (p->def_pct > 100) {
             bad += report_one(report, "DEF_PCT past 100 (it only lowers)", i);
+        }
+        if ((p->hp_pct != 0 && (p->hp_pct < 100 || p->hp_pct > 400)) ||
+            (p->pow_pct != 0 && (p->pow_pct < 100 || p->pow_pct > 300))) {
+            bad += report_one(report, "HP_PCT 100..400, POW_PCT 100..300 (they only raise)", i);
+        }
+        if ((p->hp_pct != 0 || p->pow_pct != 0) && p->kind != DEF_PERSONA_CAMPAIGN) {
+            bad += report_one(report, "HP_PCT / POW_PCT on a CAMPAIGN row only (one fight, not a species)", i);
         }
         if (p->kind == DEF_PERSONA_SUPER) { /* no two Super Rares the same puzzle */
             for (j = 0; j < i; j++) {
