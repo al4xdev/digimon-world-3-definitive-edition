@@ -194,7 +194,7 @@ const DefEnemyRow def_enemy_rows[] = {
     { 463, { 390, 390, 390, 60, 60, 60, 107 }, 0 }, /* Cardmon */
     { 464, { 390, 390, 390, 60, 60, 60, 111 }, 0 }, /* Cardmon */
     { 465, { 103, 60, 60, 300, 60, 60, 103 }, 0 }, /* Vemmon */
-    { 466, { 505, 505, 505, 505, 60, 60, 60 }, 1 }, /* Galacticmon */
+    { 466, { 505, 505, 505, 505, 60, 60, 505 }, 0 }, /* Galacticmon, 2nd phase: resists Dark (owner, 2026-11-24) */
     { 467, { 505, 505, 505, 505, 60, 60, 60 }, 1 }, /* Galacticmon */
 };
 const int def_enemy_row_count = 193;

@@ -14,7 +14,8 @@ one weakness or one resistance. Every enemy has its own, counted in families:
 - about one in five enemies up to level 30 is a "wall", weak to a single family and resisting two: find the weakness
   or struggle;
 - from level 45 on, enemies are weak to two families and resist two, and so are bosses;
-- the final boss is weak to one family and to Dark, and resists three;
+- the final boss is weak to one family and to Dark, and resists three; its second phase (Galacticmon 466) resists Dark
+  instead of being weak to it, so a Dark build cannot burst it down (owner, 2026-11-24);
 - Dark is rare on both sides: only a handful of enemies are weak to it (eight common species, from Numemon to
   Clockmon, carry it as a third weakness), and as few resist it. The four other families
   come out about even: of the 193 species, 93 are weak to Fire, 87 to Water + Ice, 94 to Wind and 93 to Thunder +
@@ -259,7 +260,7 @@ Working rules of the PRDs (kept because they explain why the code looks as it do
     weak families keeps them, otherwise they are filled by opposition to the house element, then by balance, so the
     count per family evens out and two species of one battle do not share a pair;
   - **Dark:** weak only to Dark: BK Seraphimon, MagnaAngemon, Knightmon, Taomon (ids 447, 452, 178, 453); Dark as an extra
-    weakness: Valkyrimon and the three Galacticmon phases (269, 442, 466, 467); the only eight that resist Dark:
+    weakness: Valkyrimon and two of the three Galacticmon phases (269, 442, 467; the second one, 466, resists it); the only nine that resist Dark: Galacticmon's second phase and
     Armageddemon, VenomMyotismon, LadyDevimon, Phantomon, Mummymon, Ghoulmon, Gargoylemon, Apokarimon. The rule: resisting
     Dark is as rare as being weak to it so Dark stays a useful element;
   - `def_weakness_mask` marks the whole family when one of its values is at `DEF_WEAK_MAX` (80) or less, with **no median
