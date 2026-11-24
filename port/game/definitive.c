@@ -1940,7 +1940,8 @@ const unsigned char *def_message(int i) {
  * same MP, moved to the same place among the player's magic of that MP (medians, +-20 MP; at equal stats the physical
  * and magic formulas both give 1x the power): WarGreymon's 480 is 1.2x the physical median of 400 at 140 MP, and the magic
  * median there is 490, so 590; Beelzemon's 300 is 0.67x the median 450 at 250 MP, and the magic median there is 750,
- * so 500. */
+ * so 500. His blow strikes 3 times (hit_count 3, kind 9, kept), so 500 a hit is 1500: the strongest magic of the player
+ * (the 3-hit magic 171 is 350 a hit), kept on purpose (owner, 2026-11-24). */
 static const struct {
     short tech, power;
 } to_magic[] = {
