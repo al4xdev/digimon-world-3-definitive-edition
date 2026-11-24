@@ -25,9 +25,22 @@ static const char *kv_find(const char *text, const char *key) {
     return NULL;
 }
 
+/* A whole number from the start of `s`, for a version: digits only, then the end of the value. -1 when it is not one
+ * (a newer or foreign file reads as one that is too new, never as 0); huge numbers cap, so nothing overflows. */
+static int parse_version(const char *s) {
+    long v = 0;
+    int neg = 0, digits = 0;
+    if (*s == '-') { neg = 1; s++; }
+    for (; *s >= '0' && *s <= '9'; s++, digits++) {
+        if (v < 1000000) v = v * 10 + (*s - '0');
+    }
+    if (!digits || (*s && *s != '\n' && *s != '\r' && *s != ' ' && *s != '\t' && *s != ',' && *s != '}')) return -1;
+    return neg ? -1 : (int)v;
+}
+
 static int kv_int(const char *text, const char *key, int def) {
     const char *v = kv_find(text, key);
-    return v ? atoi(v) : def;
+    return v ? parse_version(v) : def;
 }
 
 static int kv_is(const char *text, const char *key, const char *value) {
@@ -81,7 +94,7 @@ int migrate_tui_text(char **text, int *from_out) {
     int v = kv_int(*text, "schema", 0), from = v;
     if (from_out) *from_out = from;
     if (v == SCHEMA_TUI_STATE) return MIGRATE_NONE;
-    if (v > SCHEMA_TUI_STATE || v < 0) return MIGRATE_NEWER;
+    if (v > SCHEMA_TUI_STATE || v < 0) return MIGRATE_NEWER; /* too new, or not a number: not ours to change */
     char *t = strdup(*text);
     if (!t) return MIGRATE_FAILED;
     for (; v < SCHEMA_TUI_STATE; v++) {
@@ -114,8 +127,9 @@ static int save_version(const char *text, size_t *at, size_t *len, int *value) {
     while (*p >= '0' && *p <= '9') p++;
     *at = (size_t)(s - text);
     *len = (size_t)(p - s);
-    *value = atoi(s);
-    return 1;
+    *value = parse_version(s);
+    /* a whole number only: 1.5 or 1e0 is not a version the game wrote */
+    return *p == ',' || *p == '}' || *p == ' ' || *p == '\n' || *p == '\r' || *p == '\t';
 }
 
 static int save_set_version(char **text, int version) {
@@ -147,7 +161,7 @@ int migrate_save_text(char **text, int *from_out) {
     if (!save_version(*text, &at, &len, &v)) return MIGRATE_NONE; /* not the game's file: not ours to touch */
     if (from_out) *from_out = v;
     if (v == SCHEMA_SAVE) return MIGRATE_NONE;
-    if (v > SCHEMA_SAVE) return MIGRATE_NEWER; /* the game leaves it as it is too */
+    if (v > SCHEMA_SAVE || v < 0) return MIGRATE_NEWER; /* the game leaves it as it is too */
     if (v < 1) return MIGRATE_NONE;
     char *t = strdup(*text);
     if (!t) return MIGRATE_FAILED;
@@ -169,8 +183,11 @@ static int migrate_file(const char *path, int (*fn)(char **, int *)) {
     if (r == MIGRATE_DONE) {
         char bak[700];
         char *old = slurp(path);
+        /* <file>.v<N>.bak, or .v<N>.2.bak ... when an older copy of that version is already there (a later restore
+         * or pull brought another one): no copy is ever replaced. */
         snprintf(bak, sizeof(bak), "%s.v%d.bak", path, from);
-        if (!old || (access(bak, F_OK) != 0 && write_atomic(bak, old) != 0) || write_atomic(path, text) != 0) r = MIGRATE_FAILED;
+        for (int k = 2; access(bak, F_OK) == 0 && k < 100; k++) snprintf(bak, sizeof(bak), "%s.v%d.%d.bak", path, from, k);
+        if (!old || access(bak, F_OK) == 0 || write_atomic(bak, old) != 0 || write_atomic(path, text) != 0) r = MIGRATE_FAILED;
         free(old);
     }
     free(text);
@@ -181,6 +198,16 @@ int migrate_config_files(void) {
     char p[600];
     snprintf(p, sizeof(p), "%s/tui.state", game_dir);
     return migrate_file(p, migrate_tui_text);
+}
+
+int migrate_tui_newer(void) {
+    char p[600];
+    snprintf(p, sizeof(p), "%s/tui.state", game_dir);
+    char *t = slurp(p);
+    if (!t) return 0;
+    int v = kv_int(t, "schema", 0);
+    free(t);
+    return v > SCHEMA_TUI_STATE || v < 0;
 }
 
 int migrate_saves(void) {

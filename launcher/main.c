@@ -1473,7 +1473,6 @@ static void start_game(void) {
     last_err[0] = 0;
     disc_bad = DISC_OK;
     fatal_seen = 0;
-    migrate_saves(); /* an old expansion save (a restored backup, a cloud pull) takes the current schema first */
     cfg_save(&c);
     {
         char card_p[1024], smsg[128] = "";
@@ -1491,6 +1490,9 @@ static void start_game(void) {
             }
             synced = src == 0;
         }
+        /* After the sync: a v1 file the pull just brought takes the current schema too, and the sync state follows the
+         * migrated bytes (cloud_migrate_saves), so the migration is not a local change to the cloud. */
+        cloud_migrate_saves(&cloud, game_dir);
         /* RecompLauncher's mirror (cloud.h): a changed one asks first; else it follows card1.mcd */
         if (recomp_active()) {
             if (recomp_mirror_foreign(game_dir, NULL)) {
@@ -2372,6 +2374,33 @@ static int self_test(const char *root) {
             check(t && !strcmp(t, "schema=9\nhz=50\n"), "schema: a newer tui.state is left as it is");
             free(t);
         }
+        write_text(tp, "hz=50\nbm_v=2\nff=1\n");
+        cfg_load(&g);
+        cfg_load(&g); /* no save in between: the 60 Hz is in the file, not only in the load that migrated it */
+        check(g.hz == 60, "schema: the migrated 60 Hz is still there on the next load");
+        {
+            char *crlf = strdup("hz=50\r\nbm_fight=east\r\nbm_tag=south\r\nff=1"); /* CRLF, and no newline at the end */
+            int from = -1;
+            check(migrate_tui_text(&crlf, &from) == MIGRATE_DONE && from == 0 && strstr(crlf, "hz=60") &&
+                      strstr(crlf, "bm_fight=south") && strstr(crlf, "schema=1") && strstr(crlf, "ff=1"),
+                  "schema: a tui.state with CRLF lines and no last newline migrates");
+            free(crlf);
+        }
+        write_text(tp, "schema=9\nhz=50\nfuture_key=1\n");
+        cfg_save(&g);
+        {
+            char *t = slurp(tp);
+            check(t && !strcmp(t, "schema=9\nhz=50\nfuture_key=1\n"), "schema: a newer tui.state survives a save of this launcher");
+            free(t);
+        }
+        {
+            char *a1 = strdup("{\"version\":1.5}"), *a2 = strdup("{\"version\":99999999999}"), *a3 = strdup("{\"version\":-1}");
+            int from = 0;
+            check(migrate_save_text(&a1, &from) == MIGRATE_NONE && !strcmp(a1, "{\"version\":1.5}"), "schema: a version that is not a whole number is not ours");
+            check(migrate_save_text(&a2, &from) == MIGRATE_NEWER, "schema: a huge version reads as newer, with no overflow");
+            check(migrate_save_text(&a3, &from) == MIGRATE_NONE && !strcmp(a3, "{\"version\":-1}"), "schema: a negative version is not ours, left alone");
+            free(a1); free(a2); free(a3);
+        }
         {
             char *j = strdup("{\"version\":1,\"slots\":[{\"gen\":3}]}"), *n = strdup("{\"version\":3,\"slots\":[]}"), *o2 = strdup("[1]");
             int from = 0;
@@ -2394,6 +2423,16 @@ static int self_test(const char *root) {
             check(t && strstr(t, "\"version\": 1"), "schema: the old expansion save kept as .v1.bak");
             free(t);
             check(migrate_saves() == 0, "schema: nothing left to migrate");
+            /* a later old file (a restored backup, a pull) gets its own copy: no .bak is ever replaced */
+            snprintf(tp, sizeof(tp), "%s/card1.def.json", game_dir);
+            write_text(tp, "{\"version\": 1, \"slots\": [{\"gen\": 8}]}");
+            check(migrate_saves() == 1, "schema: a second old file migrates too");
+            snprintf(tp, sizeof(tp), "%s/card1.def.json.v1.2.bak", game_dir);
+            t = slurp(tp);
+            check(t && strstr(t, "\"gen\": 8"), "schema: ... with its own copy, .v1.2.bak");
+            free(t);
+            unlink(tp);
+            snprintf(tp, sizeof(tp), "%s/card1.def.json.v1.bak", game_dir);
             unlink(tp);
             snprintf(tp, sizeof(tp), "%s/card1.def.json", game_dir);
             unlink(tp);
@@ -2449,6 +2488,22 @@ static int self_test(const char *root) {
             write_text(ep, "{\"version\":1,\"slots\":[{\"gen\":3}]}");
             check(save_is_valid_mc(cp, sha_pair) && strcmp(sha_card, sha_pair) != 0,
                   "expansion: its JSON changes the save's sha; with none the card's own sha is kept");
+            {
+                /* The migration is not a local change to the cloud: the synced pair's sha follows the migrated bytes. */
+                CloudState cs;
+                char after[65];
+                cloud_state_defaults(&cs);
+                snprintf(cs.last_sha256, sizeof(cs.last_sha256), "%s", sha_pair);
+                check(cloud_migrate_saves(&cs, game_dir) == 1 && save_is_valid_mc(cp, after) && strcmp(after, sha_pair) != 0 &&
+                          !strcmp(cs.last_sha256, after),
+                      "schema: migrating a synced save moves the cloud state's sha with it (no false conflict)");
+                write_text(ep, "{\"version\":1,\"slots\":[{\"gen\":3}]}"); /* the checks below use the version 1 file */
+                snprintf(ep, sizeof(ep), "%s/card1.def.json.v1.bak", game_dir);
+                unlink(ep);
+                snprintf(ep, sizeof(ep), "%s/cloud_sync.json", game_dir); /* cloud_state_save's file, from the check above */
+                unlink(ep);
+                snprintf(ep, sizeof(ep), "%s/card1.def.json", game_dir);
+            }
             check(recomp_mirror_write(game_dir, "dev1", "TEST", 4, 1) == 0, "expansion: the mirror is written as a pair");
             int nb = save_backup_list(game_dir, bks, 8);
             save_backup_rotate(game_dir, "card1.mcd", 5);

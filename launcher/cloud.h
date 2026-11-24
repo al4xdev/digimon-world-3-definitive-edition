@@ -99,6 +99,10 @@ int recomp_mirror_adopt(const char *game_dir, int backup_max, char *err, size_t 
 void cloud_state_defaults(CloudState *st);
 int cloud_state_load(CloudState *st, const char *game_dir);
 int cloud_state_save(const CloudState *st, const char *game_dir);
+/* migrate_saves (migrate.h) for the launcher's game_dir, keeping the cloud state neutral: the pair's sha changes with the
+ * JSON's version, so when the local pair was the last one synced (st->last_sha256), the migrated one becomes it, and the
+ * migration is not a local change (a false conflict with a newer cloud save). st may be NULL. Returns migrate_saves'. */
+int cloud_migrate_saves(CloudState *st, const char *game_dir);
 void cloud_state_clear_auth(CloudState *st);
 
 /* Cloud API operations (all return 0 on success, -1 on failure with err populated). */

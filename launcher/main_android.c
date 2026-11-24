@@ -351,7 +351,7 @@ static void start_game(int sync) {
             return;
         }
     }
-    migrate_saves(); /* an old expansion save takes the current schema before the game reads it */
+    cloud_migrate_saves(&cloud, game_dir); /* after the sync: an old expansion save takes the current schema (migrate.h) */
     if (cfg_save(&c) != 0) {
         snprintf(msg, sizeof(msg), "Cannot write settings.json");
         go(S_ERROR, 0, +1);

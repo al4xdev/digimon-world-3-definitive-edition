@@ -376,14 +376,13 @@ static int idx_of(const char *const *names, int n, const char *v, int def) {
     return def;
 }
 
-/* settings.json's values for the launcher's own options (VIDEO, GAME, DEBUG LOGS; recomplauncher.json shows the same
+/* settings.json's values for the launcher's own options (VIDEO, DEBUG LOGS; recomplauncher.json shows the same
  * ones) over tui.state's (PC): what RecompLauncher changed shows here, and the next save keeps it. Nothing else of
  * settings.json is read: the launcher rewrites the rest. */
 static void cfg_read_settings(Cfg *c, const char *j) {
     char s[1200];
     c->fullscreen = j_bool(j, "video/fullscreen", c->fullscreen);
     c->fill = j_bool(j, "video/fill", c->fill);
-    c->hz = j_int(j, "video/refresh", c->hz) == 50 ? 50 : 60;
     if (j_str(j, "video/renderer", s, sizeof(s))) c->renderer_pc = !strcmp(s, "software");
     if (j_str(j, "video/filter", s, sizeof(s))) c->filter = idx_of(filter_names, 5, s, c->filter);
     c->widescreen = j_bool(j, "mods/widescreen/enabled", c->widescreen) && !c->renderer_pc;
@@ -413,7 +412,7 @@ static void cfg_read_settings(Cfg *c, const char *j) {
 void cfg_load(Cfg *c) {
     char path[600], line[1400];
     cfg_defaults(c);
-    int migrated = migrate_config_files() > 0; /* tui.state's old defaults take the new ones (migrate.c) */
+    migrate_config_files(); /* tui.state's old defaults take the new ones (migrate.c) */
     path_of(path, sizeof(path), "tui.state");
     FILE *f = fopen(path, "r");
     char ffspeed[16] = "";
@@ -509,9 +508,7 @@ void cfg_load(Cfg *c) {
             if (json_str(j, "\"preset_language\"", "language", lstr, sizeof(lstr)))
                 c->lang = idx_of(lang_names, 8, lstr, 0);
         }
-        int tui_hz = c->hz;
         if (is_pc) cfg_read_settings(c, j);
-        if (migrated) c->hz = tui_hz; /* settings.json still holds the old 50: this once, tui.state's migrated value wins */
         free(j);
     }
 }
@@ -615,7 +612,9 @@ int cfg_save(const Cfg *c) {
              c->logs, c->lang, c->backup_max, c->sync_enabled, c->sync_interval_min, c->update_check);
     strcat(text, line);
     path_of(path, sizeof(path), "tui.state");
-    rc |= write_atomic(path, text);
+    /* A tui.state of a newer launcher (a downgrade) is not rewritten: its keys are not ours to drop, and stamping it
+     * schema=1 would run the newer file through the old steps again on the way back up. */
+    if (!migrate_tui_newer()) rc |= write_atomic(path, text);
     char pm[1024] = "# pad-map\n";
     for (int i = 0; i < A_COUNT; i++) {
         snprintf(line, sizeof(line), "%s %s %c\n", action_name[i], code_name(c->pad[i].code), c->pad[i].letter);

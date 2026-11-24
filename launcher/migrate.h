@@ -30,6 +30,7 @@ int migrate_save_text(char **text, int *from_out);
 /* On the files of the launcher's game_dir: the old file is kept as <file>.v<N>.bak, then replaced atomically.
  * Return the number of files migrated (0: none), or -1 when one failed (the file stays as it was). */
 int migrate_config_files(void);
+int migrate_tui_newer(void); /* 1 when tui.state is of a newer schema than this launcher's: cfg_save leaves it alone */
 int migrate_saves(void);
 
 #endif
