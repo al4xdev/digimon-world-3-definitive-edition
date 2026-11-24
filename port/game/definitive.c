@@ -1010,6 +1010,18 @@ const unsigned char *def_bestiary_family_state(FightstgEnemyRecord *rec, int ind
     return family_state(def_bestiary_known(index), bestiary_resists(rec, buf), rec->id, f, palette);
 }
 
+/* The HP a battle gives `species` (wfightmn_init_members): the three phases of Galacticmon, the last boss, get
+ * DEF_FINAL_HP_PCT of the disc's so the fight lasts (a Dark build took the first and third phases in one cast). */
+int def_boss_hp(int species, int hp) {
+    long v;
+
+    if (!def_on() || (species != 442 && species != 466 && species != 467)) {
+        return hp;
+    }
+    v = (long)hp * DEF_FINAL_HP_PCT / 100;
+    return v > 32000 ? 32000 : (int)v; /* the battle's HP is a short */
+}
+
 /* ---- The enemy table. Applied each time the game asks for the record (idempotent), so it holds after a reload
  * of SDIGIEDT and a load state alike. */
 void def_enemy_override(FightstgEnemyRecord *rec) {

@@ -197,6 +197,7 @@ void wfightmn_init_members(s32 leader) {
             members[i].hp = members[i].max_hp = records_state.enemies[i].hp;
 #ifdef PC_PORT
             members[i].hp = members[i].max_hp = (s16)def_super_hp(records_state.enemies[i].hp); /* Super Hard */
+            members[i].hp = members[i].max_hp = (s16)def_boss_hp(members[i].digimon, members[i].max_hp); /* the last boss */
             if (i == 0) {
                 members[0].hp = (s16)def_super_hp_start(members[0].max_hp); /* a Super Rare keeps the HP it lost */
             }

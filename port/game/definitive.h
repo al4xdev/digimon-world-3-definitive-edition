@@ -30,6 +30,7 @@
 #define DEF_BREAK_SLOW_DELTA 80 /* how far Slow Down (remade) lowers the enemy's resist of the user's best element */
 #define DEF_BREAK_MEGA_DELTA 100 /* how far Mega Break lowers each of the user's two best elements */
 #define DEF_BREAK_TURNS 3       /* the enemy's turns a lowered resist lasts */
+#define DEF_FINAL_HP_PCT 150 /* percent of the HP the disc gives each of Galacticmon's three phases (owner, 2026-11-24) */
 #define DEF_BOSS_DEBUFF_PCT 100 /* strength of a stat debuff in a battle whose boss the original made immune to it */
 #define DEF_BUFF_LV1_PCT 20      /* Tier +1 stat buff: +20% of base stat */
 #define DEF_BUFF_LV2_PCT 35      /* Tier +2 stat buff: +35% of base stat */

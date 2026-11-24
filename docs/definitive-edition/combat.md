@@ -16,6 +16,8 @@ one weakness or one resistance. Every enemy has its own, counted in families:
 - from level 45 on, enemies are weak to two families and resist two, and so are bosses;
 - the final boss is weak to one family and to Dark, and resists three; its second phase (Galacticmon 466) resists Dark
   instead of being weak to it, so a Dark build cannot burst it down (owner, 2026-11-24);
+  the three phases also carry 150% of the disc's HP (5040, 3600 and 5400 become 7560, 5400 and 8100: `def_boss_hp`,
+  `DEF_FINAL_HP_PCT`);
 - Dark is rare on both sides: only a handful of enemies are weak to it (eight common species, from Numemon to
   Clockmon, carry it as a third weakness), and as few resist it. The four other families
   come out about even: of the 193 species, 93 are weak to Fire, 87 to Water + Ice, 94 to Wind and 93 to Thunder +

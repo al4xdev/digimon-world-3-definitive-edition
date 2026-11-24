@@ -311,6 +311,7 @@ int def_poison_tick(int amount, int max_hp, int enemy);
  * battle) are scaled up, and a battle's Bits and Hunt Materials pay more; def_super_toggle gives or takes the Bell. */
 int def_super_on(void);
 int def_super_hp(int hp);
+int def_boss_hp(int species, int hp); /* the last boss's phases get more HP (definitive.c) */
 int def_super_speed(int speed);
 int def_super_reward(int amount);
 int def_super_materials(int amount);
