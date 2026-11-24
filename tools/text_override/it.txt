@@ -349,9 +349,11 @@ $InfoShiftStagger: SHIFT se stordito
 $InfoShiftWeak: nuova debolezza
 $InfoShiftGuard: guardia sì/no
 $InfoShiftBoth: debolezza + guardia
+$InfoShiftRed: la guardia cambia
 $InfoGuardA: "Solo "
 $InfoGuardB: %dei danni
 $InfoGuardUntil: finché stordito
+$InfoGuardRed: tranne debolezze
 $InfoSpeedA: "Velocità "
 $InfoSpeedB: x la tua
 $InfoDef: Subisce più danni

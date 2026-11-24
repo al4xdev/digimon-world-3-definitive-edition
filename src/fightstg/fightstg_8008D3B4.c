@@ -4353,7 +4353,7 @@ static const char *const fightstg_inspect_picts[DEF_TRAITS][FIGHTSTG_INSPECT_PIC
 };
 static const u8 fightstg_inspect_pict_rgb[DEF_TRAITS][2][3] = {
     { { 240, 120, 255 }, { 240, 120, 255 } }, /* SHIFT: the unlit half is dimmed when drawn */
-    { { 255, 210, 60 }, { 60, 120, 220 } },   /* gold rim, blue field */
+    { { 255, 210, 60 }, { 60, 120, 220 } },   /* gold rim, blue field (the red guard's field: fightstg_inspect_red) */
     { { 90, 235, 130 }, { 90, 235, 130 } },
     { { 215, 160, 95 }, { 150, 95, 55 } },
 };
@@ -4413,13 +4413,17 @@ static void fightstg_inspect_bitmap(s32 x, s32 y, const char *const *rows, s32 h
     }
 }
 
+/* The red guard's shield (definitive_persona.h DEF_GUARD_RED): the same gold rim on a red field. */
+static const u8 fightstg_inspect_red[3] = { 220, 40, 40 };
+
 /* Trait `kind`'s picture at (x, y). `lit`: 0 dims it all (the guard open now); for SHIFT, the phase whose half is
- * lit (A the left one). */
-static void fightstg_inspect_pict(s32 x, s32 y, s32 kind, s32 lit) {
+ * lit (A the left one). `red`: the guard's shield in red. */
+static void fightstg_inspect_pict(s32 x, s32 y, s32 kind, s32 lit, s32 red) {
     s32 shift = kind == DEF_TRAIT_SHIFT;
 
     fightstg_inspect_bitmap(x, y, fightstg_inspect_picts[kind], FIGHTSTG_INSPECT_PICT, fightstg_inspect_pict_rgb[kind][0],
-                            fightstg_inspect_pict_rgb[kind][1], !lit, shift ? lit != 0 : !lit);
+                            kind == DEF_TRAIT_GUARD && red ? fightstg_inspect_red : fightstg_inspect_pict_rgb[kind][1],
+                            !lit, shift ? lit != 0 : !lit);
 }
 
 static s32 fightstg_inspect_lines(const u8 *text) {
@@ -4613,7 +4617,7 @@ static void fightstg_battle_menu_inspect_frame(FightstgBattleMenu *obj, s32 ox, 
         s32 lit = kind == DEF_TRAIT_SHIFT ? obj->info.phase == 0 : kind == DEF_TRAIT_GUARD ? obj->info.guarded : 1;
 
         if (fightstg_panel_shows(obj, FIGHTSTG_INSPECT_ROW_Y + 1 + FIGHTSTG_INSPECT_PICT)) {
-            fightstg_inspect_pict(px, FIGHTSTG_INSPECT_ROW_Y + 1, kind, lit);
+            fightstg_inspect_pict(px, FIGHTSTG_INSPECT_ROW_Y + 1, kind, lit, obj->info.red);
         }
         px += FIGHTSTG_INSPECT_TRAIT_STEP;
         if (kind == DEF_TRAIT_SHIFT) { /* the countdown: the enemy's turns left in this phase */
@@ -4627,7 +4631,7 @@ static void fightstg_battle_menu_inspect_frame(FightstgBattleMenu *obj, s32 ox, 
         }
         /* the legend's picture is the row's, state included (one picture, one meaning) */
         if (fightstg_panel_shows(obj, obj->legend_y[i] + 1 + FIGHTSTG_INSPECT_PICT)) {
-            fightstg_inspect_pict(x + 4, obj->legend_y[i] + 1, kind, lit);
+            fightstg_inspect_pict(x + 4, obj->legend_y[i] + 1, kind, lit, obj->info.red);
         }
     }
     /* the next turns, right-aligned on the traits row, an arrow between two */

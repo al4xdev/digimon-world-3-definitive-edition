@@ -127,6 +127,9 @@ static const Style styles[DEF_CALLOUT_COUNT] = {
     /* An enemy persona changed phase (definitive_persona.h PHASES / ON_STAGGER): its colour and weakness are new. */
     [DEF_CALLOUT_SHIFT] = { "SHIFT!", { 255, 255, 255 }, { 236, 200, 255 }, { 168, 64, 240 }, { 40, 8, 64 }, 0, 256, 300, 10,
                             44, 9 },
+    /* A red guard cut it (definitive_persona.h DEF_GUARD_RED): GUARDED in red, as the panel's shield. */
+    [DEF_CALLOUT_GUARDED_RED] = { "GUARDED", { 255, 236, 230 }, { 255, 140, 120 }, { 216, 24, 24 }, { 56, 0, 0 }, 1, 232, 270,
+                                  7, 36, 8 },
 };
 
 static struct {

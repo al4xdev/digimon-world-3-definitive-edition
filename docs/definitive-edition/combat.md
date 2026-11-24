@@ -157,9 +157,16 @@ way round, an enemy's magic of power 100 (stat scale 16, so × 1) with Spirit 15
   (two halves, the phase it is in lit, and one pip per enemy turn left before the next SHIFT when it counts turns):
   every n turns or at each stagger its weakness, its guard or both change, which is when the `SHIFT!` callout pops; the
   **guard** (a shield, lit while it is guarded now, dark while it is open: staggered, or in its unguarded phase): it
-  takes only 30% until staggered; **speed** (two chevrons): its Speed is the party's times n; a **lowered Defense** (a
+  takes only 30% until staggered; the **red guard** (the shield on a red field, `GUARDED` in red) takes 30% of every
+  blow except one on a weakness, which goes through whole, and no stagger ever opens it (a weakness still staggers and
+  still gives its extra action): physical blows and counters always take 30%; **speed** (two chevrons): its Speed is the party's times n; a **lowered Defense** (a
   cracked block). At the traits row's right end, for every enemy, the **next turns** as a queue of chips (red diamond
   the enemy, blue disc you): two diamonds before the disc is an enemy that acts twice (the old "Enemy x2" label). The values of a phase not learnt yet stay `???`.
+- **Where the red guard is** (owner, 2026-11-24): against a party that plays only physical, which no guard ever stops
+  for long, and kept rare, since magic finds it easy. Campaign commons that always have it: Vemmon (Lv28), Blossomon
+  (34), Kurisarimon (40), Tuskmon (42), Shadramon (47), Machinedramon (51), Apokarimon (56); Creepymon (55) has the
+  orange guard in one phase and the red one in the other. The story's BK WarGreymon (Lv53) is weak to Dark alone,
+  resists every other family and has the red guard, its HP untouched.
 - **Libra** reveals all of an enemy's elements at once.
 - The **Bestiary** (field menu) keeps what you learnt of every species, saved with your game, and lists its Hunt
   Materials: the common one with how many you hold, and its rare items as a collection (see [The hunt](hunt-and-economy.md#the-hunt)).

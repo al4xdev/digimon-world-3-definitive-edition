@@ -413,6 +413,7 @@ typedef struct DefInspectInfo {
     unsigned char left;             /* SHIFT: the enemy's turns to the next one, its next turn included; 0 on stagger */
     unsigned char every;            /* SHIFT: PHASES(n)'s n, 0 on stagger */
     unsigned char guarded;          /* GUARD: guarded now (open while staggered, in an unguarded phase) */
+    unsigned char red;              /* GUARD: the red guard (never opened; a weakness goes through it) */
 } DefInspectInfo;
 void def_inspect_info(DefInspectInfo *out);
 const unsigned char *def_inspect_legend(int kind);

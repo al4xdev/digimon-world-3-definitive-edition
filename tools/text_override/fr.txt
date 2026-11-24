@@ -349,9 +349,11 @@ $InfoShiftStagger: SHIFT si étourdi
 $InfoShiftWeak: nouvelle faiblesse
 $InfoShiftGuard: garde on/off
 $InfoShiftBoth: faiblesse + garde
+$InfoShiftRed: la garde change
 $InfoGuardA: "Ne subit que "
 $InfoGuardB: "%"
 $InfoGuardUntil: jusqu’à l’étourdir
+$InfoGuardRed: sauf faiblesses
 $InfoSpeedA: "Vitesse "
 $InfoSpeedB: x la vôtre
 $InfoDef: Subit plus de dégâts

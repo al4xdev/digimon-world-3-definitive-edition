@@ -392,9 +392,11 @@ $InfoShiftStagger: SHIFT on stagger
 $InfoShiftWeak: new weakness
 $InfoShiftGuard: guard on/off
 $InfoShiftBoth: weakness + guard
+$InfoShiftRed: guard orange/red
 $InfoGuardA: "Takes only "
 $InfoGuardB: "%"
 $InfoGuardUntil: until staggered
+$InfoGuardRed: except weaknesses
 $InfoSpeedA: "Speed "
 $InfoSpeedB: x yours
 $InfoDef: Takes more damage

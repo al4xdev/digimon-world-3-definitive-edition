@@ -12,10 +12,14 @@
 
 const DefPersona def_personas[] = {
     /* DRAFT 2026-11-23, written without the owner from the design guide; the review table is
-     * .dumps/tasks/persona/personas.proposed.json. The molds' names are the guide's (Fechadura, Agulha, ...). */
+     * .dumps/tasks/persona/personas.proposed.json. The molds' names are the guide's (Fechadura, Agulha, ...).
+     * The red guard (owner, 2026-11-24, RED_*): about one campaign common Fechadura in three from Lv28, a reversed
+     * tide at Lv55 and the BK WarGreymon story boss, so that physical play meets a guard it never opens; few on
+     * purpose, a red guard being easy for the magic the game was planned around. */
     { CAMPAIGN(313, 141), GUARD_ALWAYS }, /* Datamon, Lv34: guard_campanha */
     { CAMPAIGN(15, 444), GUARD_ALWAYS }, /* BK Imperialdramon, Lv46: guard_campanha */
-    { CAMPAIGN(31, 448), GUARD_ALWAYS }, /* BK WarGreymon, Lv53: guard_campanha */
+    /* owner, 2026-11-24: the campaign's red-guard boss, weak to Dark alone; its HP is kept (no lowering) */
+    { CAMPAIGN(31, 448), KEEP(111), WEAK(DARK), RESIST(FIRE | WATER | WIND | THUNDER), RED_ALWAYS }, /* BK WarGreymon, Lv53: fechadura vermelha */
     { SUPER(1), KEEP(0), WEAK(WATER), RESIST(FIRE | WIND) }, /* MasterTyrannomon, Lv29: fraqueza_unica */
     { SUPER(2), KEEP(1), WEAK(WIND), RESIST(FIRE | THUNDER), GUARD_ALWAYS }, /* Pharaohmon, Lv37: fechadura */
     { SUPER(3), KEEP(2), WEAK(FIRE), RESIST(WATER), PHASES(2), B_WEAK(THUNDER), B_RESIST(WIND), HUES(330, 120) }, /* Cherrymon, Lv40: camaleao */
@@ -125,25 +129,25 @@ const DefPersona def_personas[] = {
     { SPECIES(42), GUARD_A, ON_STAGGER }, /* Etemon, Lv20: fechadura */
     { SPECIES(40), SPEED_X(2), DEF_PCT(60) }, /* Andromon, Lv24: relampago */
     { SPECIES(460), GUARD_A, PHASES(2) }, /* Cardmon, Lv27: mare */
-    { SPECIES(465), GUARD_A, ON_STAGGER }, /* Vemmon, Lv28: fechadura */
+    { SPECIES(465), RED_ALWAYS }, /* Vemmon, Lv28: fechadura vermelha */
     { SPECIES(13), SPEED_X(2), DEF_PCT(60) }, /* Mamemon, Lv29: relampago */
     { SPECIES(53), RESIST_ALL, DEF_PCT(60) }, /* Nanimon, Lv29: brutamontes */
     { SPECIES(173), GUARD_A, PHASES(2) }, /* Musyamon, Lv31: mare */
-    { SPECIES(200), GUARD_A, ON_STAGGER }, /* Blossomon, Lv34: fechadura */
+    { SPECIES(200), RED_ALWAYS }, /* Blossomon, Lv34: fechadura vermelha */
     { SPECIES(61), SPEED_X(2), DEF_PCT(60) }, /* MegaSeadramon, Lv35: relampago */
     { SPECIES(37), GUARD_A, PHASES(2) }, /* Bakemon, Lv35: mare */
     { SPECIES(220), GUARD_A, ON_STAGGER }, /* Gesomon, Lv36: fechadura */
     { SPECIES(406), SPEED_X(2), DEF_PCT(60) }, /* Tortomon, Lv36: relampago */
     { SPECIES(407), RESIST_ALL, DEF_PCT(60) }, /* ShogunGekomon, Lv39: brutamontes */
     { SPECIES(414), GUARD_A, PHASES(2) }, /* Numemon, Lv39: mare */
-    { SPECIES(422), GUARD_A, ON_STAGGER }, /* Kurisarimon, Lv40: fechadura */
+    { SPECIES(422), RED_ALWAYS }, /* Kurisarimon, Lv40: fechadura vermelha */
     { SPECIES(418), SPEED_X(2), DEF_PCT(60) }, /* Raremon, Lv40: relampago */
     { SPECIES(166), GUARD_A, PHASES(2) }, /* Dokugumon, Lv41: mare */
     { SPECIES(462), GUARD_A, ON_STAGGER }, /* Cardmon, Lv42: fechadura */
     { SPECIES(50), SPEED_X(2), DEF_PCT(60) }, /* Kokatorimon, Lv42: relampago */
     { SPECIES(39), RESIST_ALL, DEF_PCT(60) }, /* Sukamon, Lv42: brutamontes */
     { SPECIES(89), GUARD_A, PHASES(2) }, /* Fugamon, Lv42: mare */
-    { SPECIES(136), GUARD_A, ON_STAGGER }, /* Tuskmon, Lv42: fechadura */
+    { SPECIES(136), RED_ALWAYS }, /* Tuskmon, Lv42: fechadura vermelha */
     { SPECIES(202), SPEED_X(2), DEF_PCT(60) }, /* Scorpiomon, Lv43: relampago */
     { SPECIES(210), GUARD_A, PHASES(2) }, /* Dolphmon, Lv43: mare */
     { SPECIES(126), GUARD_A, ON_STAGGER }, /* Brachiomon, Lv44: fechadura */
@@ -160,14 +164,14 @@ const DefPersona def_personas[] = {
     { SPECIES(65), GUARD_A, ON_STAGGER }, /* MetalEtemon, Lv46: fechadura */
     { SPECIES(426), SPEED_X(2), DEF_PCT(60) }, /* Whamon, Lv47: relampago */
     { SPECIES(464), GUARD_A, PHASES(2) }, /* Cardmon, Lv47: mare */
-    { SPECIES(272), GUARD_A, ON_STAGGER }, /* Shadramon, Lv47: fechadura */
+    { SPECIES(272), RED_ALWAYS }, /* Shadramon, Lv47: fechadura vermelha */
     { SPECIES(463), SPEED_X(2), DEF_PCT(60) }, /* Cardmon, Lv47: relampago */
     { SPECIES(135), RESIST_ALL, DEF_PCT(60) }, /* Devidramon, Lv48: brutamontes */
     { SPECIES(360), GUARD_A, PHASES(2) }, /* Antylamon, Lv49: mare */
     { SPECIES(431), GUARD_A, ON_STAGGER }, /* Vikemon, Lv50: fechadura */
     { SPECIES(7), SPEED_X(2), DEF_PCT(60) }, /* Airdramon, Lv50: relampago */
     { SPECIES(411), GUARD_A, PHASES(2) }, /* Maildramon, Lv50: mare */
-    { SPECIES(115), GUARD_A, ON_STAGGER }, /* Machinedramon, Lv51: fechadura */
+    { SPECIES(115), RED_ALWAYS }, /* Machinedramon, Lv51: fechadura vermelha */
     { SPECIES(327), SPEED_X(2), DEF_PCT(60) }, /* Lynxmon, Lv52: relampago */
     { SPECIES(176), RESIST_ALL, DEF_PCT(60) }, /* Thundermon, Lv52: brutamontes */
     { SPECIES(132), GUARD_A, PHASES(2) }, /* Gizamon, Lv52: mare */
@@ -180,8 +184,8 @@ const DefPersona def_personas[] = {
     { SPECIES(110), GUARD_A, PHASES(2) }, /* Gekomon, Lv53: mare */
     { SPECIES(281), GUARD_A, ON_STAGGER }, /* Tylomon, Lv53: fechadura */
     { SPECIES(312), SPEED_X(2), DEF_PCT(60) }, /* Ghoulmon, Lv54: relampago */
-    { SPECIES(247), GUARD_A, PHASES(2) }, /* Creepymon, Lv55: mare */
-    { SPECIES(251), GUARD_A, ON_STAGGER }, /* Apokarimon, Lv56: fechadura */
+    { SPECIES(247), GUARD_A, RED_B, PHASES(2) }, /* Creepymon, Lv55: mare invertida (laranja/vermelha) */
+    { SPECIES(251), RED_ALWAYS }, /* Apokarimon, Lv56: fechadura vermelha */
     { SPECIES(396), SPEED_X(2), DEF_PCT(60) }, /* Yanmamon, Lv58: relampago */
     { SPECIES(428), RESIST_ALL, DEF_PCT(60) }, /* Ebidramon, Lv60: brutamontes */
 };

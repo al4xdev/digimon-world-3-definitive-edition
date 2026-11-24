@@ -349,9 +349,11 @@ $InfoShiftStagger: SHIFT bei Betäubung
 $InfoShiftWeak: neue Schwäche
 $InfoShiftGuard: Deckung an/aus
 $InfoShiftBoth: Schwäche + Deckung
+$InfoShiftRed: Deckung wechselt
 $InfoGuardA: "Nur "
 $InfoGuardB: %Schaden
 $InfoGuardUntil: bis zur Betäubung
+$InfoGuardRed: außer Schwächen
 $InfoSpeedA: "Tempo "
 $InfoSpeedB: x deins
 $InfoDef: Nimmt mehr Schaden
