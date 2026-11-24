@@ -364,7 +364,7 @@ nothing, the mod off gives the original's frame log.
 
 ## 50/60 Hz
 
-A setting, not a mod: `video.refresh: 60` or `--refresh 60` (default 50, PAL). It sets, before `port_overlay_init()`
+A setting, not a mod: `video.refresh: 60` or `--refresh 60` (the engine's own default is 50, PAL; the launcher writes 60 by default and its GAME screen has a REFRESH RATE row, PC and Android). It sets, before `port_overlay_init()`
 (so the reset's snapshot holds it):
 
 - `records_60hz = 1`, the flag the NTSC patch sets (`0x8005CCAC`). The game then runs its own 60 Hz mode: the video

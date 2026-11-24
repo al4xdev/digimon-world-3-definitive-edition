@@ -141,7 +141,7 @@ void cfg_set_fight_place(Cfg *c, int right) {
 
 void cfg_defaults(Cfg *c) {
     memset(c, 0, sizeof(*c));
-    c->hz = 50;
+    c->hz = 60; /* the game's own NTSC mode (owner, 2026-11-24; it was 50) */
     c->ff = 3;
     c->load = 3; /* faster loading on at 8x (owner, 2026-11-18; it was 4x) */
     c->bmem = 1;
@@ -382,6 +382,7 @@ static void cfg_read_settings(Cfg *c, const char *j) {
     char s[1200];
     c->fullscreen = j_bool(j, "video/fullscreen", c->fullscreen);
     c->fill = j_bool(j, "video/fill", c->fill);
+    c->hz = j_int(j, "video/refresh", c->hz) == 50 ? 50 : 60;
     if (j_str(j, "video/renderer", s, sizeof(s))) c->renderer_pc = !strcmp(s, "software");
     if (j_str(j, "video/filter", s, sizeof(s))) c->filter = idx_of(filter_names, 5, s, c->filter);
     c->widescreen = j_bool(j, "mods/widescreen/enabled", c->widescreen) && !c->renderer_pc;

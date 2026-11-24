@@ -38,7 +38,7 @@ enum {
     S_CLOUD, S_PAIR_HOST, S_PAIR_ENTER, S_DEVICES, S_REVOKE_CONFIRM, S_RENEW_CONFIRM, S_CONFLICT, S_CONFLICT_CONFIRM
 };
 enum { HI_PLAY, HI_GAME, HI_HUD, HI_CONTROLS, HI_SAVES, HI_DEBUG, HI_RESET, HI_COUNT };
-enum { GAME_LANG, GAME_FF, GAME_LOAD, GAME_SKIP, GAME_BATTLES, GAME_HIT, GAME_TOUCHPAD, GAME_DISC, GAME_N };
+enum { GAME_LANG, GAME_FF, GAME_LOAD, GAME_HZ, GAME_SKIP, GAME_BATTLES, GAME_HIT, GAME_TOUCHPAD, GAME_DISC, GAME_N };
 #define GAME_ROW_STEP 36
 enum { SAVES_SYNC, SAVES_INTERVAL, SAVES_BACKUPS, SAVES_NOW, SAVES_RESTORE, SAVES_ACCOUNT, SAVES_N };
 /* CLOUD ACCOUNT rows: the first two when this device has no live key, all four once it has one. */
@@ -453,13 +453,14 @@ static void draw_game(void) {
         disc_lbl = b ? b + 1 : disc_path;
     }
     const char *lab[GAME_N] = {
-        "LANGUAGE", "FAST-FORWARD", "FAST LOAD", "SKIP DIALOGUES", "SKIP BATTLE ANIMS",
+        "LANGUAGE", "FAST-FORWARD", "FAST LOAD", "REFRESH RATE", "SKIP DIALOGUES", "SKIP BATTLE ANIMS",
         "   HIT REACTION", "FLOATING PAD", "DISC IMAGE"
     };
     const char *val[GAME_N] = {
         lang_label[c.lang < 0 || c.lang > 7 ? 0 : c.lang],
         ff_label[c.ff],
         load_label[c.load],
+        c.hz == 60 ? "60 HZ" : "50 HZ",
         c.skip ? "ON" : "OFF",
         c.battles ? "ON" : "OFF",
         c.battles ? (c.hit ? "ON" : "OFF") : "-",
@@ -469,7 +470,7 @@ static void draw_game(void) {
     int gy = (int)(cur_y >= 0 && cur_screen == S_GAME ? cur_y : row_target_y(S_GAME, sel));
     draw_focus(32, gy, W - 64, 38, 10, 0);
     for (int i = 0; i < GAME_N; i++) {
-        int on = (i == GAME_DISC) ? (disc_path[0] != 0) : (strcmp(val[i], "OFF") != 0 && strcmp(val[i], "-") != 0);
+        int on = (i == GAME_DISC) ? (disc_path[0] != 0) : (i == GAME_HZ) ? c.hz == 60 : (strcmp(val[i], "OFF") != 0 && strcmp(val[i], "-") != 0);
         int arrows = (i != GAME_DISC);
         row_touch(76 + i * GAME_ROW_STEP, 34, lab[i], val[i], i == sel, 0, on, 0, arrows);
     }
@@ -911,6 +912,7 @@ static void activate_game_row(int row, int dir) {
     case GAME_LANG: c.lang = (c.lang + dir + 8) % 8; break;
     case GAME_FF: c.ff = (c.ff + dir + 5) % 5; break;
     case GAME_LOAD: c.load = (c.load + dir + 5) % 5; break;
+    case GAME_HZ: c.hz = c.hz == 60 ? 50 : 60; break;
     case GAME_SKIP: c.skip = !c.skip; break;
     case GAME_BATTLES: c.battles = !c.battles; break;
     case GAME_HIT: if (c.battles) c.hit = !c.hit; break;
