@@ -157,6 +157,49 @@ panel (2b), and the Tech/Item menus (part 3, if it happens). Today the only one 
   callouts' projection read: its own spike later, starting with who reads the camera.
 - **Not the message queue** either: the panel is opened and closed by the player, it never competes with messages.
 
+### The owner's pick (2026-11-24, storyboard in chat): variant A, "the frame moves, the text lights up"
+
+The game's text windows only appear, vanish or move; they never stretch or fade. So the frame (quads) carries the
+motion and each line of text appears when the frame's edge reaches it.
+
+- **Open (~10 frames at 30 fps):** INFO's word blinks; a trace in the frame's colour runs from INFO to the panel's
+  corner; the frame unfolds in width (overshoots ~4 px, settles), then in height; title, traits row, grid, legend light
+  up as the edge passes them.
+- **Close (faster, ~6 frames):** all text vanishes at once; the height folds into a bar; the bar shrinks and runs back
+  along the trace into INFO; INFO blinks. (Open questions for the owner: keep the trace? close back into INFO or just
+  fold away?)
+- Rejected for now, variant B (the finished panel slides out whole): it crosses both Digimon, and text moving in
+  whole pixels may jitter (spike question 2).
+- **Internal resolution up to 8x (4K, `video.internal_scale`):** everything is placed in whole PS1 pixels (OT
+  primitives and text windows take integers), so at 4K one step is ~9 screen pixels. Fast moves hide it; the slow
+  part (the overshoot settling) will show steps: keep it to 2-3 frames, and look at it at 1x and at 8x.
+- **Widescreen is any aspect from 4:3 to 16:9** (the picture follows the window: 16:10 gets 16:10), not just 16:9.
+  The button block moves left by `pad * FIGHTSTG_BMENU_WIDE_SHIFT / 100` and the panel right by `pad`, so the trace's
+  length changes with the aspect: origin and destination are read every frame, never a fixed distance. The trace
+  crosses the seam between the 4:3 buffer and the wide canvas (spike question 4): capture at 4:3, 16:10 and 16:9.
+- **Owner's answers (2026-11-24):** the trace stays (digital look, links the left button to the right panel) but it
+  is gone as soon as the frame starts unfolding, so it never cuts across the enemy. Closing runs back along the trace
+  into INFO (~5-6 frames); if the spike's contact sheet shows that as cluttered, simplify to folding in place.
+
+### The panel lives beside the menu, not in its way: edge cases
+
+`obj->inspect` (what is open) keeps changing at once, exactly as today; the animation is only a picture of it
+(`anim_t` moving toward 0 or 1, in `get_frame_ticks()` ticks, not frames: fast-forward and frame skip stay right).
+**No input ever waits for an animation.** The cases, from the menu's code (`fightstg_battle_menu_update`):
+
+| case | today | with the animation |
+|---|---|---|
+| INFO (or Start, the battle memory: the same panel) again mid-open / mid-close | toggles | turns around from where it is (no jump, no restart) |
+| a command chosen with the panel open or opening (`obj->press`) | closes it, the 7-tick nudge, then the menu object ENDs and its windows are freed | cut at once: a 5-6 frame close cannot outlive the object (the nudge is 7 ticks) and must not compete with the next screen |
+| a refused (grey) command | closes it, shakes, and Blast's refusal puts the notice in the same place | cut at once when a notice comes (two things in one place); without a notice, the normal close |
+| a buffered action (`port_bm_take_action`: pressed before the menu showed) | taken on the first RUN frame | INFO can open during the menu's own slide-in: the trace starts from where INFO is *now* (read every frame) |
+| the menu comes back (a new turn, a Tech/Bag submenu cancelled) | a new object, panel closed | starts closed, no animation left over |
+| INFO remapped to another button | panel opens | trace starts from that button (`fightstg_bmenu_spot`) |
+| script / auto play (`port_script_active`) | presses at script speed | same as a player: never waits |
+
+The spike drives each row with the capture rig (presses on chosen frames) and checks one frame after each press that
+the menu did what it does today.
+
 ## Method
 
 Same as part 1: own branch + worktree, UI critic (`sonnet`) on screenshots only, loop.
