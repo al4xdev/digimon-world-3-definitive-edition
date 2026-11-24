@@ -5,8 +5,10 @@
 #include "definitive_expansion.h"
 
 extern const DefExpansionSection def_persona_section;
+extern const DefExpansionSection def_respec_section;
 
 const DefExpansionSection *const def_expansion_sections[] = {
     &def_persona_section, /* the enemy personas' discovery (definitive_persona_save.c) */
+    &def_respec_section,  /* the Velvet Room pig's swaps paid, for the climbing price (definitive_respec_save.c) */
     NULL,
 };

@@ -34,6 +34,7 @@ recalibrated to the magic table (MP costs unchanged), so a physical technique or
 The technique lists show it where the game drew its red (physical) and blue (magic) class marks: a fist for a physical
 technique, the element's picture for elemental magic, the Spirit picture for magic with no element; healing and support
 keep the game's mark. An enemy using one of these techniques casts it as magic too.
+Two signature techniques that had no element as physical blows were given one (owner, 2026-11-24): WarGreymon's Terra Force (Fire) and Beelzemon's (Dark).
 
 Hitting a weakness with elemental magic **staggers** the enemy (it takes its tired pose) and gives you **one
 more** action. Each weak family gives its extra action once per round (a round starts with each normal action; an

@@ -986,7 +986,7 @@ $SupSkinSet: Done. Walk to see it.
 $SupSkinLocked: Win its hunt first.
 $SupKeysSkins: × button: Wear it<1>△ button: Leave   L1: Hunts
 # The Velvet Room's pig (port/game/definitive_velvet.c): actor 318, the one figure whose art no stage of the game uses.
-TALK05 79: <7>????<7>Someone found me in a<1>pile of unused toys<1>and put me here.<2,2><3>...It beats the box.<2,2><3>For 100,000 Bits I<1>move 100 points from<1>one stat to another.<2,2>
+TALK05 79: <7>????<7>Someone found me in a<1>pile of unused toys<1>and put me here.<2,2><3>...It beats the box.<2,2><3>From 1,000 Bits, I<1>move 100 points from<1>one stat to another.<2,2><3>The price climbs each<1>time, up to 100,000.<2,2>
 # A talk box holds 3 lines (<1>); a longer line is split into boxes (<2,2><3>), or its first lines scroll away unread.
 # Yukio Oikawa, the Velvet Room's shopkeeper (port/game/definitive_velvet.c). Entries 8, 9, 12 and 13 of the bar's talk
 # file are the letter "a" on the disc and no stage's talk reaches them. 8 and 9 are his greetings, said in turn, one
@@ -1099,12 +1099,13 @@ ITMINF 357: Raises Dark Affinity (+60).
 ITMINF 358: Raises Dark Affinity (+120).
 ITMINF 359: Raises Dark Affinity (+200).
 # The pig's stat swap (port/game/definitive_respec_screen.c): after his line (TALK05 79) his board moves 100 raw
-# points of one stat of a partner to another of the same partner for 100,000 Bits.
+# points of one stat of a partner to another of the same partner, for a price that climbs from 1,000 to 100,000 Bits.
 $RsTitle: The Pig's Stat Swap
 $RsKeysFrom: × button: Take 100 from this   △ button: Leave<1>L1/R1: Digimon
 $RsKeysTo: × button: Give 100 to this<1>△ button: Back
-$RsKeysPay: × button: Pay 100,000 Bits<1>△ button: Back
-$RsPrice: "Price 100,000 Bits   You have "
+$RsKeysPay: × button: Pay<1>△ button: Back
+$RsPrice: "Price "
+$RsPriceTail: " Bits   You have "
 $RsBits: " Bits"
 $RsArrow: " -> "
 $RsSp: " "

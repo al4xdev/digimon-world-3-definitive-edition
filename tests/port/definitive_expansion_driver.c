@@ -134,6 +134,10 @@ int main(int argc, char **argv) {
     def_persona_record_learn(3, 0, 0x05);
     def_persona_record_learn(3, 1, 0x88); /* bit 7 is not an element */
     def_persona_record_solve(7);
+    check("respec: the first swap costs 1,000", def_respec_price() == 1000);
+    def_respec_swaps_add();
+    def_respec_swaps_add();
+    def_respec_swaps_add();
     check("save: written", save(0) == 1 && exists(path));
     check("save: the card's record carries the magic and generation 1", card_gen(0) == 1 && def_expansion_gen() == 1);
     root = cJSON_Parse(slurp(path));
@@ -150,6 +154,7 @@ int main(int argc, char **argv) {
     def_bestiary_reset();
     check("a new game: nothing known", def_persona_record_known(3, 0) == 0 && !def_persona_record_solved(7));
     check("load: taken", load(0) == 1);
+    check("load: the pig's swaps back, the price with them", def_respec_swaps() == 3 && def_respec_price() == 20000);
     check("load: the personas back", def_persona_record_known(3, 0) == 5 && def_persona_record_known(3, 1) == 8 &&
                                           def_persona_record_solved(7) && !def_persona_record_solved(3));
 

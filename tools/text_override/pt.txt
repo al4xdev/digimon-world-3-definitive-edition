@@ -834,12 +834,13 @@ ITMINF 357: Afinidade de Trevas +60.
 ITMINF 358: Afinidade de Trevas +120.
 ITMINF 359: Afinidade de Trevas +200.
 # The pig's stat swap (port/game/definitive_respec_screen.c): after his line (TALK05 79) his board moves 100 raw
-# points of one stat of a partner to another of the same partner for 100,000 Bits.
+# points of one stat of a partner to another of the same partner, for a price that climbs from 1,000 to 100,000 Bits.
 $RsTitle: Troca de Status
 $RsKeysFrom: Botão ×: Tirar 100 daqui   Botão △: Sair<1>L1/R1: Digimon
 $RsKeysTo: Botão ×: Pôr 100 aqui<1>Botão △: Voltar
-$RsKeysPay: Botão ×: Pagar 100.000 Bits<1>Botão △: Voltar
-$RsPrice: "Preço 100.000 Bits   Você tem "
+$RsKeysPay: Botão ×: Pagar<1>Botão △: Voltar
+$RsPrice: "Preço "
+$RsPriceTail: " Bits   Você tem "
 $RsBits: " Bits"
 $RsArrow: " -> "
 $RsSp: " "
@@ -4131,7 +4132,7 @@ TALK05 64: <7>Gennai<7>Muito bem. A vigília<1>valeu a pena, afinal.<2,2><3>Volt
 TALK05 65: <7>Gennai<7>Hm... Forte o<1>suficiente. Por ora.<2,2><3>Mantenha seus<1>parceiros aquecidos,<1>criança.<2,2><3>Ainda vamos nos<1>ver de novo.<2,2>
 TALK05 77: <7>Guilmon<7>Pegue o Demon Bell.<1>Inimigos mais fortes,<1>rápidos e dano direto<2,2><3>cortado pela metade!<1>Domine Weak, One More<1>e Baton Pass...<2,2><3>...por 3x materiais,<1>2x XP/Bits e 2x<1>bônus de caçada.<2,2>
 TALK05 78: <7>Guilmon<7>Vai largar o Bell?<1>Tudo bem. Tudo volta<1>ao normal.<2,2>
-TALK05 79: <7>????<7>Alguém me achou numa<1>pilha de brinquedos<1>sem uso e pôs aqui.<2,2><3>...É bem melhor que<1>a caixa.<2,2><3>Por 100.000 Bits eu<1>passo 100 pontos de<1>um status a outro.<2,2>
+TALK05 79: <7>????<7>Alguém me achou numa<1>pilha de brinquedos<1>sem uso e pôs aqui.<2,2><3>...É bem melhor que<1>a caixa.<2,2><3>A partir de 1.000 Bits<1>eu passo 100 pontos de<1>um status a outro.<2,2><3>O preço sobe a cada<1>vez, até 100.000.<2,2>
 TALK05 81: <7>Gennai<7>Hm hm... As formas<1>que um Blast evoca.<1>Deixe-me vê-las.<2,2>
 TALK05 82: <7>Etemon<7>Heh heh heh! Essa<1>música... Já ouvi<1>em outro jogo!<2,2><3>Não conta pra ninguém<1>que eu falei isso!<2,2>
 TALK05 99: <7>Oikawa<7>Você veio. Igor me<1>cedeu um balcão.<1>Diz que devo a você.<2,2><3>O que vendo, o jogo<1>nunca quis dar.<1>Cristais. Dos raros.<2,2><3>Bits na frente. Sem<1>perguntas e sem<1>reembolso.<2,2>

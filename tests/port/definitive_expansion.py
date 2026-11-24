@@ -24,7 +24,8 @@ def main():
     cc = ["gcc", "-std=gnu99", "-Wall", "-Wextra", "-Werror",
           "-I", str(ROOT / "include"), "-I", str(ROOT / "psxstack/include"), "-I", str(game),
           str(game / "definitive_expansion.c"), str(game / "definitive_expansion_sections.c"),
-          str(game / "definitive_persona_save.c"), str(game / "definitive_bestiary.c"),
+          str(game / "definitive_persona_save.c"), str(game / "definitive_respec_save.c"),
+          str(game / "definitive_bestiary.c"),
           str(ROOT / "port/third_party/cjson/cJSON.c"), str(ROOT / "tests/port/definitive_super_stub.c"),
           str(ROOT / "tests/port/definitive_expansion_driver.c"), "-o", str(exe)]
     if subprocess.run(cc).returncode != 0:

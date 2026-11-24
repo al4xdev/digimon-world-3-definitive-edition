@@ -1,5 +1,5 @@
 /* The stat swap: the Velvet Room's pig (definitive_velvet.c, owner's of 2026-11-22) moves DEF_RESPEC_POINTS of one raw
- * stat of a partner into another of the same partner, for DEF_RESPEC_PRICE Bits.
+ * stat of a partner into another of the same partner, for a price that climbs with each swap (def_respec_price).
  *
  * The raw stats are the partner's, not a form's: gamestate_data.digimon[i].record.stats.values[6..18] (Strength,
  * Defense, Spirit, Wisdom, Speed, Charisma, then the seven elemental Affinities), which the memory card already saves.
@@ -38,7 +38,7 @@ extern int def_on(void);
 extern const unsigned char def_str_EvoStr[], def_str_EvoDef[], def_str_EvoSpi[], def_str_EvoWis[], def_str_EvoSpd[],
     def_str_EvoCha[], def_str_Fire[], def_str_Water[], def_str_Ice[], def_str_Wind[], def_str_Thunder[],
     def_str_Machine[], def_str_Dark[], def_str_RsTitle[], def_str_RsKeysFrom[], def_str_RsKeysTo[], def_str_RsKeysPay[],
-    def_str_RsPrice[], def_str_RsBits[], def_str_RsArrow[], def_str_RsDone[], def_str_RsNoBits[], def_str_RsLow[],
+    def_str_RsPrice[], def_str_RsPriceTail[], def_str_RsBits[], def_str_RsArrow[], def_str_RsDone[], def_str_RsNoBits[], def_str_RsLow[],
     def_str_RsFull[], def_str_RsSame[], def_str_RsSp[], def_str_RsGap[];
 
 #define RS_LAYER 0x1002 /* the field's window layer */
@@ -184,6 +184,8 @@ static void board_fill(void) {
     p = 0;
     info2[0] = 0;
     def_glyph_put(info2, &p, RS_TEXT, def_str_RsPrice);
+    def_glyph_number(info2, &p, RS_TEXT, def_respec_price());
+    def_glyph_put(info2, &p, RS_TEXT, def_str_RsPriceTail);
     def_glyph_number(info2, &p, RS_TEXT, gamestate_data.money);
     def_glyph_put(info2, &p, RS_TEXT, def_str_RsBits);
     rs.line2->set_text(rs.line2, info2, -1);
@@ -280,7 +282,7 @@ static void confirm(void) {
     int k = rs.sel;
 
     if (rs.phase == RS_PICK) {
-        if (gamestate_data.money < DEF_RESPEC_PRICE) {
+        if (gamestate_data.money < def_respec_price()) {
             refuse(def_str_RsNoBits);
         } else if (*raw(k) < DEF_RESPEC_POINTS + 1) { /* the giver keeps at least 1 */
             refuse(def_str_RsLow);
@@ -301,11 +303,12 @@ static void confirm(void) {
             rs.msg = NULL;
             sound_module.play(RS_SND_OK);
         }
-    } else if (gamestate_data.money < DEF_RESPEC_PRICE) {
+    } else if (gamestate_data.money < def_respec_price()) {
         rs.phase = RS_PICK;
         refuse(def_str_RsNoBits);
     } else {
-        gamestate_data.money -= DEF_RESPEC_PRICE;
+        gamestate_data.money -= def_respec_price();
+        def_respec_swaps_add();
         *raw(rs.src) -= DEF_RESPEC_POINTS;
         *raw(rs.dest) += DEF_RESPEC_POINTS;
         port_log("respec: partner %d, %d points from stat %d (now %d) to stat %d (now %d), %d Bits left", rs.who,

@@ -1934,12 +1934,14 @@ const unsigned char *def_message(int i) {
 }
 
 /* The records the techniques and Digimon forms change (written with the MP rows, every time: the reset restores the table). */
-/* The player's elemental physical techniques that patch_techniques makes magic, with their magic power. */
+/* The player's elemental physical techniques that patch_techniques makes magic, with their magic power. 88 (WarGreymon's
+ * special, Fire) and 103 (Beelzemon's, Dark) had no element as physical blows: patch_techniques gives them one
+ * (owner, 2026-11-24), the power set by the MP band like the rest (140 MP: 650, 250 MP: 800). */
 static const struct {
     short tech, power;
 } to_magic[] = {
     { 53, 100 },  { 66, 200 },  { 68, 210 },  { 71, 220 },  { 72, 150 },  { 82, 430 },  { 95, 440 },
-    { 98, 630 },  { 105, 90 },  { 106, 160 }, { 107, 90 },  { 108, 140 }, { 109, 90 },  { 110, 240 },
+    { 98, 630 },  { 88, 650 },  { 103, 800 }, { 105, 90 },  { 106, 160 }, { 107, 90 },  { 108, 140 }, { 109, 90 },  { 110, 240 },
     { 111, 90 },  { 112, 160 }, { 113, 130 }, { 114, 240 }, { 134, 190 }, { 136, 270 }, { 376, 500 },
 };
 
@@ -2021,6 +2023,10 @@ static void patch_techniques(void) {
             records_techniques[to_magic[k].tech - 1].element = 3;
             records_techniques[to_magic[k].tech - 1].power = (u16)to_magic[k].power;
         }
+        records_techniques[88 - 1].defense_stat = 2;   /* WarGreymon's special: Fire */
+        records_techniques[88 - 1].element_power = 56;
+        records_techniques[103 - 1].defense_stat = 8;  /* Beelzemon's special: Dark, the strongest element power of the table */
+        records_techniques[103 - 1].element_power = 72;
     }
 
     /* The technique rework: MP adjustments on support / heal / charge / field skills (all E=0) */
