@@ -26,6 +26,10 @@ typedef char card_bytes_fit[8 <= DEF_EXPANSION_CARD_BYTES ? 1 : -1];
 
 static unsigned int gen;       /* the slot's generation: the card's (and the file's entry, when they agree); 0 none */
 static unsigned char migrated; /* the card's bytes were a section's old layout: taken, the file not read */
+/* The slot's file could not be read when it was loaded (a lock, an antivirus, a sync tool: a read that fails and then
+ * works): the sections are empty only because of that, so a save must not write them over the real entry. Cleared by a
+ * new game, a card read and a load that worked. Not part of the savestate: it is the file's state, not the game's. */
+static unsigned char load_failed;
 /* Those old bytes, written back as they were until a save has put what they held in the file (a failed file write must
  * not lose them from the card too). */
 static unsigned char card_old[DEF_EXPANSION_CARD_BYTES];
@@ -54,6 +58,7 @@ void def_expansion_reset(void) {
     sections_reset();
     gen = 0;
     migrated = 0;
+    load_failed = 0;
     memset(card_old, 0, sizeof(card_old));
 }
 
@@ -238,6 +243,7 @@ static int load_text(const char *text, const char *where, int slot) {
         (*s)->reset();
         (*s)->load(cJSON_GetObjectItemCaseSensitive(entry, (*s)->name));
     }
+    load_failed = 0;
     port_log("expansion: slot %d: %s, generation %u", slot + 1, where, gen);
     cJSON_Delete(root);
     return 1;
@@ -252,7 +258,9 @@ int def_expansion_load_file(const char *path, int slot) {
     }
     text = read_file(path, &missing);
     if (text == NULL && !missing) {
-        port_log("expansion: slot %d: %s cannot be read: the slot's expansion reads as empty", slot + 1, path);
+        port_log("expansion: slot %d: %s cannot be read: the slot's expansion reads as empty, and no save writes over it", slot + 1,
+                 path);
+        load_failed = 1;
         return 0;
     }
     ok = load_text(text, path, slot);
@@ -345,6 +353,13 @@ int def_expansion_save_file(const char *path, int slot) {
     if (old == NULL && !missing) {
         port_log("expansion: slot %d: %s cannot be read: not overwritten, the card keeps generation %u", slot + 1, path,
                  gen);
+        return 0;
+    }
+    if (load_failed) { /* the file reads now, but this slot's sections are empty because it did not when it was loaded */
+        free(old);
+        port_log("expansion: slot %d: %s could not be read when the slot was loaded: not overwritten, the card keeps "
+                 "generation %u (the file's data is safe; load the slot again)",
+                 slot + 1, path, gen);
         return 0;
     }
     probe = old != NULL ? cJSON_Parse(old) : NULL;
