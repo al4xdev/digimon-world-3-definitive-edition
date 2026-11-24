@@ -3331,6 +3331,7 @@ typedef struct FightstgHudData {
     MessageWindow *stat_mod[2][3]; /* Attack, Defense, Speed buff/debuff icons */
     MessageWindow *elem_mod[2][DEF_FAMILIES];   /* Resist Down: the lowered family's picture, */
     MessageWindow *elem_arrow[2][DEF_FAMILIES]; /* and the red arrow over it */
+    MessageWindow *sheet_icon; /* the Tech / Item sheet's header glyph (fightstg_sheet_tick; empty without a sheet) */
 #endif
 } FightstgHudData; /* size 0x14 */
 
@@ -3588,6 +3589,19 @@ blast_bar_done:
     }
 }
 
+#ifdef PC_PORT
+/* The Tech / Item sheet (battle HUD part 3), defined with the Tech screen: the HUD draws it, the menus drive it. */
+static void fightstg_sheet_tick(MessageWindow *icon);
+static void fightstg_sheet_begin(s32 action, s32 ox, s32 oy, s32 plate_x, s32 plate_w);
+static void fightstg_sheet_retab(s32 action, s32 ox, s32 oy, s32 plate_x, s32 plate_w);
+static s32 fightstg_sheet_covers(s32 action, s32 x, s32 y, s32 w, s32 h);
+static s32 fightstg_sheet_action(void);
+static s32 fightstg_sheet_closing(void);
+static void fightstg_sheet_cut(void);
+static void fightstg_sheet_close(void);
+static s32 fightstg_sheet_on(void);
+#endif
+
 void fightstg_hud_update(FightstgHud *obj, FightstgHudData *data) {
     FightstgMember (*members)[3];
     s32 i;
@@ -3631,6 +3645,10 @@ void fightstg_hud_update(FightstgHud *obj, FightstgHudData *data) {
         }
         obj->update_time = 0;
         obj->update_frames = 8;
+#ifdef PC_PORT
+        data->sheet_icon = message_create_window(0x1005, 1, 0, 0);
+        fightstg_sheet_cut(); /* a sheet left by the last battle */
+#endif
         obj->base.next_state(obj);
         break;
     case OBJECT_STATE_RUN:
@@ -3638,6 +3656,9 @@ void fightstg_hud_update(FightstgHud *obj, FightstgHudData *data) {
         fightstg_hud_move_bar(&obj->bars[0]);
         fightstg_hud_move_bar(&obj->bars[1]);
         fightstg_hud_draw(obj, data);
+#ifdef PC_PORT
+        fightstg_sheet_tick(data->sheet_icon);
+#endif
         break;
     case OBJECT_STATE_DONE:
         obj->base.next_state(obj);
@@ -4775,6 +4796,9 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
         if (obj->tempt) {
             port_log("battle menu: the Blast tempts");
         }
+        if (fightstg_sheet_closing()) { /* back from Tech / Item: the sheet folds into the tab, the menu is already here */
+            obj->age = FIGHTSTG_BMENU_SLIDE;
+        }
         obj->base.next_state(obj);
         break;
     case OBJECT_STATE_RUN:
@@ -4800,10 +4824,28 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
                                                        (u8 *)(obj->tag_free ? fightstg_bmenu_tag_free_glyph
                                                                             : fightstg_inspect_empty), -1);
         }
+        x = fightstg_sheet_action(); /* the sheet's tab follows this menu's: the slide-in, a remap, widescreen */
+        if (x >= 0) {
+            fightstg_sheet_retab(x, obj->x[x] - (r * r) / 3 - wide_pad * FIGHTSTG_BMENU_WIDE_SHIFT / 100, obj->y[x],
+                                 obj->plate_x[x], obj->plate_w[x]);
+        }
         for (i = 0; i < FIGHTSTG_BMENU_ACTIONS; i++) {
             dx = -(r * r) / 3;
             dy = 0;
             glow = 0;
+            /* under the sheet (or the sheet's own tab): not drawn, its glyph hidden */
+            x = obj->x[i] + dx - wide_pad * FIGHTSTG_BMENU_WIDE_SHIFT / 100 + obj->plate_x[i];
+            if (fightstg_sheet_covers(i, x, obj->y[i] - 1, obj->plate_w[i], FIGHTSTG_BMENU_CHIP + 2)) {
+                data->icons[i]->set_visible(data->icons[i], 0);
+                if (data->labels[i] != NULL) {
+                    data->labels[i]->set_visible(data->labels[i], 0);
+                }
+                continue;
+            }
+            data->icons[i]->set_visible(data->icons[i], 1);
+            if (data->labels[i] != NULL) {
+                data->labels[i]->set_visible(data->labels[i], 1);
+            }
             if (i == obj->press) {
                 /* a nudge toward the diamond's middle that settles back: 2 3 2 1 0 0 0 */
                 dx += obj->press_age < 4 ? (obj->press_age < 2 ? 2 + obj->press_age : 4 - obj->press_age) : 0;
@@ -4826,7 +4868,9 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
             }
             fightstg_battle_menu_show(obj, data, i, dx, dy, glow);
         }
-        /* queued after the plates, so drawn under them */
+        /* queued after the plates, so drawn under them (not under the sheet: it would darken it twice) */
+        if (!fightstg_sheet_covers(-1, FIGHTSTG_BMENU_CX - wide_pad * FIGHTSTG_BMENU_WIDE_SHIFT / 100,
+                                   FIGHTSTG_BMENU_CY, FIGHTSTG_BMENU_CHIP, FIGHTSTG_BMENU_CHIP))
         fightstg_battle_menu_rhombus(FIGHTSTG_BMENU_CX + FIGHTSTG_BMENU_CHIP / 2 - (r * r) / 3 -
                                          port_video_widescreen_pad() * FIGHTSTG_BMENU_WIDE_SHIFT / 100,
                                      FIGHTSTG_BMENU_CY + FIGHTSTG_BMENU_CHIP / 2, FIGHTSTG_BMENU_STEP_X + 12,
@@ -4902,6 +4946,12 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
                 port_battle_menu_chosen(i, port_battle_menu_bit(i), 0);
                 obj->press = i;
                 obj->press_age = 0;
+                if ((i == 1 || i == 4) && fightstg_sheet_on()) { /* Tech, Item: the menu turns into their sheet */
+                    fightstg_sheet_begin(i, obj->x[i] - wide_pad * FIGHTSTG_BMENU_WIDE_SHIFT / 100, obj->y[i],
+                                         obj->plate_x[i], obj->plate_w[i]);
+                } else {
+                    fightstg_sheet_cut();
+                }
                 obj->panel_t = 0; /* cut: the menu ends in 7 ticks and frees the panel's windows */
                 for (r = 0; r < FIGHTSTG_BMENU_ACTIONS; r++) {
                     fightstg_battle_menu_paint(data, r, r == i ? FIGHTSTG_BMENU_PAL_HOT : FIGHTSTG_BMENU_PAL_GREY);
@@ -5491,9 +5541,18 @@ typedef struct FightstgItemMenuData {
     /* 0x10 */ MessageWindow *count_window; /* how many of the item */
     /* 0x14 */ MessageWindow *description; /* the item's description */
     /* 0x18 */ MessageWindow *item_windows[7]; /* the page's items */
+#ifdef PC_PORT
+    /* The sheet (battle HUD part 3): each row's count. NULL in the original's screen. */
+    MessageWindow *row_counts[7];
+#endif
 } FightstgItemMenuData; /* size 0x34 */
 
 extern FightstgCursorParams fightstg_item_menu_cursor;
+
+#ifdef PC_PORT
+static s32 fightstg_sheet_on(void); /* the sheet (battle HUD part 3), after the Tech screen's code */
+static void fightstg_item_sheet_draw(FightstgItemMenu *obj, FightstgItemMenuData *data);
+#endif
 
 void fightstg_item_menu_draw(FightstgItemMenu *obj) {
     Sprite sprite;
@@ -5501,6 +5560,12 @@ void fightstg_item_menu_draw(FightstgItemMenu *obj) {
     s32 i;
     s32 k;
 
+#ifdef PC_PORT
+    if (fightstg_sheet_on()) {
+        fightstg_item_sheet_draw(obj, (FightstgItemMenuData *)obj->base.children);
+        return;
+    }
+#endif
     sprite_init(&sprite);
     sprite.set_layer_id(0x1005, 1);
     sprite.set_vram_pos(0x140, 0);
@@ -5527,9 +5592,21 @@ void fightstg_item_menu_draw(FightstgItemMenu *obj) {
     sprite.draw(bank, 0x31, 0xB, 0xBC);
 }
 
+#ifdef PC_PORT
+static void fightstg_item_sheet_open(FightstgItemMenu *obj, FightstgItemMenuData *data);
+static void fightstg_item_sheet_show_page(FightstgItemMenu *obj, FightstgItemMenuData *data);
+#endif
+
 void fightstg_item_menu_open(FightstgItemMenu *obj, FightstgItemMenuData *data) {
     u8 *text = cdload_module.files.get_file(records_language + 0x7F);
     s32 i;
+
+#ifdef PC_PORT
+    if (fightstg_sheet_on()) {
+        fightstg_item_sheet_open(obj, data);
+        return;
+    }
+#endif
 
     data->l1_window = message_create_window(0x1005, 3, 0x1A, 0xA9);
     data->l1_window->set_text(data->l1_window, text, 0x11);
@@ -5551,6 +5628,12 @@ void fightstg_item_menu_show_page(FightstgItemMenu *obj, FightstgItemMenuData *d
     s32 k;
     s32 id;
 
+#ifdef PC_PORT
+    if (fightstg_sheet_on()) {
+        fightstg_item_sheet_show_page(obj, data);
+        return;
+    }
+#endif
     if (obj->count != 0) {
         for (i = 0; i < 7; i++) {
             k = obj->page * 7 + i;
@@ -5608,6 +5691,7 @@ void fightstg_item_menu_update(FightstgItemMenu *obj, FightstgItemMenuData *data
                 }
             }
             if (skip_item != 0) {
+                fightstg_sheet_cut();
                 port_bm_take_confirm();
                 sound_module.play(0x4001C);
                 *obj->result = skip_item;
@@ -5673,6 +5757,11 @@ void fightstg_item_menu_update(FightstgItemMenu *obj, FightstgItemMenuData *data
     case OBJECT_STATE_RUN:
         /* Evidence (class C, block placement; docs/MATCHING.md "LOOP_BLOCK and LOOP_BARRIER"): the original places the cancel block out
          * of line, after the unk_54 store. */
+#ifdef PC_PORT
+        if (fightstg_sheet_on() && data->cursor->base.step < 3) { /* as the Tech screen's: the sheet draws the cursor */
+            data->cursor->base.step = 3;
+        }
+#endif
         LOOP_BLOCK(
             fightstg_item_menu_draw(obj);
             pad = FIGHTSTG_MENU_PAD();
@@ -5704,12 +5793,18 @@ void fightstg_item_menu_update(FightstgItemMenu *obj, FightstgItemMenuData *data
             } else if (pad & 0x2000) {
                 sound_module.play(0x4001C);
                 if (obj->count != 0) {
+#ifdef PC_PORT
+                    fightstg_sheet_cut();
+#endif
                     *obj->result = obj->list[obj->page * 7 + data->cursor->sel];
                     obj->base.set_state(obj, OBJECT_STATE_END);
                     data->cursor->locked = 1;
                     break;
                 }
             } else if (pad & 0x4000) {
+#ifdef PC_PORT
+                fightstg_sheet_close();
+#endif
                 sound_module.play(0x800450BD);
                 *obj->result = -2;
                 obj->base.set_state(obj, OBJECT_STATE_END);
@@ -5755,6 +5850,8 @@ typedef struct FightstgTechMenuData {
     MessageWindow *elem_icons[6];
     MessageWindow *elem_icon;
     MessageWindow *elem_name;
+    /* The sheet (battle HUD part 3): each row's cost. NULL in the original's screen. */
+    MessageWindow *row_costs[6];
 #endif
 } FightstgTechMenuData; /* size 0x40 */
 #ifdef PC_PORT
@@ -5776,6 +5873,852 @@ static void fightstg_tech_menu_set_element(MessageWindow *icon, MessageWindow *n
         name->set_palette(name, palette);
     }
 }
+
+/* The sheet (battle HUD part 3, .plan/tasks/battle-hud-part3-tech-menu.md): the Tech and Item screens redone in the
+ * battle menu's and INFO's design, in the left half of the 4:3 screen (INFO keeps the right half, and opens over
+ * neither), in widescreen too (fightstg_sheet_x). Top to bottom: a header (the action's chip and word as on
+ * its tab, and the MP or the count), the page's rows, the page arrows, and the description, re-wrapped to the
+ * column (the game's own lines are cut for the old full-width box). */
+#define FIGHTSTG_SHEET_X 6
+#define FIGHTSTG_SHEET_W 160
+#define FIGHTSTG_SHEET_Y 70        /* under the enemy's buffs strip (FIGHTSTG_HUD_MOD_Y) */
+#define FIGHTSTG_SHEET_ROW_Y 92    /* the first row's */
+#define FIGHTSTG_SHEET_ARROWS 10   /* the page arrows' line, under the rows (Tech; Item has them in its header) */
+#define FIGHTSTG_SHEET_IN 6        /* text from the frame's sides */
+#define FIGHTSTG_SHEET_NAME_DX 20  /* a row's name, after its picture */
+#define FIGHTSTG_SHEET_DESC_FONT 1 /* the 14-pixel font, as INFO's legend (the 11-pixel one reads badly) */
+#define FIGHTSTG_SHEET_DESC_LINE 14
+
+/* A screen's layout. The description's lines: the longest re-wrapped text in the six languages takes two (measured
+ * 2026-11-24, every technique and item). Item's page arrows are in its header: its seven rows leave no line for them. */
+typedef struct FightstgSheetLayout {
+    u8 action;    /* FIGHTSTG_BMENU_*: its chip and word in the header */
+    u8 rows;
+    u8 pitch;
+    u8 arrows;    /* the arrows' own line under the rows (else in the header) */
+    u8 lines;     /* the description's */
+} FightstgSheetLayout;
+static const FightstgSheetLayout fightstg_sheet_tech = { 1, 6, 14, 1, 2 };
+static const FightstgSheetLayout fightstg_sheet_item = { 4, 7, 14, 0, 2 };
+
+static u8 fightstg_sheet_text[640]; /* the re-wrapped description (one sheet at a time; the window copies it) */
+static s32 fightstg_sheet_icon_w;    /* the header chip's glyph width (fightstg_sheet_tick measures it) */
+
+/* Entry `i` of the game's text file `file` (records_language + file). */
+static u8 *fightstg_sheet_entry(s32 file, s32 i) {
+    Font funcs;
+
+    font_init(&funcs);
+    return funcs.get_entry(cdload_module.files.get_file(records_language + file), i);
+}
+
+static s32 fightstg_sheet_on(void) {
+    return port_mod_battle_menu != 0; /* the new screens go with the new battle menu */
+}
+
+/* Inside the 4:3 picture in widescreen too (the owner, 2026-11-24): following the menu block's shift put the header's
+ * polygon word on the seam between the 4:3 buffer and the wide canvas, which cuts it. The lift carries the tab from
+ * the block into it. */
+static s32 fightstg_sheet_x(void) {
+    return FIGHTSTG_SHEET_X;
+}
+
+static s32 fightstg_sheet_row_y(const FightstgSheetLayout *l, s32 i) {
+    return FIGHTSTG_SHEET_ROW_Y + i * l->pitch;
+}
+
+static s32 fightstg_sheet_desc_y(const FightstgSheetLayout *l) {
+    return fightstg_sheet_row_y(l, l->rows) + (l->arrows ? FIGHTSTG_SHEET_ARROWS : 0) + 4;
+}
+
+static s32 fightstg_sheet_bottom(const FightstgSheetLayout *l) {
+    return fightstg_sheet_desc_y(l) + FIGHTSTG_SHEET_DESC_LINE * l->lines + 2;
+}
+
+/* Copies `src` into fightstg_sheet_text with its line breaks joined, broken again at spaces so that no line is wider
+ * than `w` pixels in font `font_i` (a word wider than a line stays whole). The game's space is the two bytes 01 01
+ * (the font's first extra glyph) and its break 02 01, as long: a break replaces a space in place. Other control codes
+ * are kept. Returns the number of lines. */
+static s32 fightstg_sheet_wrap(const u8 *src, s32 font_i, s32 w) {
+    MessageFont *font = &message_module.fonts[font_i];
+    u8 *dst = fightstg_sheet_text;
+    s32 cap = sizeof(fightstg_sheet_text) - 4;
+    s32 n = 0;
+    s32 lines = 1;
+    s32 line_w = 0;
+    s32 space = -1;   /* the last space on this line, in dst */
+    s32 space_w = 0;  /* the line's width up to and with it */
+    s32 space_adv = font->glyphs_ext[0].advance + font->glyphs_ext[0].x_offset;
+
+    while (src != NULL && *src != 0 && n < cap) {
+        s32 code = message_module.decode_char((u8 *)src, 0, font);
+        s32 type = (code >> 8) & 0xFF;
+        s32 cw = 0;
+        s32 len;
+        s32 k;
+
+        if (type == 4) {
+            break;
+        }
+        if (type == 2 && (src[1] == 1 || src[1] == 3)) { /* the game's break: a space, unless one is there */
+            src += message_module.code_lengths[src[1]];
+            if (n >= 2 && !(dst[n - 2] == 1 && dst[n - 1] == 1)) {
+                dst[n++] = 1;
+                dst[n++] = 1;
+                line_w += space_adv;
+                space = n - 2;
+                space_w = line_w;
+            }
+        } else {
+            len = type == 2 ? (src[1] <= 10 ? message_module.code_lengths[src[1]] : 2) : type == 1 ? 2 : 1;
+            if (type == 0) {
+                cw = font->glyphs[(code & 0xFF) - 4].advance + font->glyphs[(code & 0xFF) - 4].x_offset;
+            } else if (type == 1 && (code & 0xFF) <= font->ext_count && (code & 0xFF) > 0) {
+                cw = font->glyphs_ext[(code & 0xFF) - 1].advance + font->glyphs_ext[(code & 0xFF) - 1].x_offset;
+            }
+            for (k = 0; k < len && n < cap; k++) {
+                dst[n++] = *src++;
+            }
+            line_w += cw;
+            if (type == 1 && (code & 0xFF) == 1) {
+                space = n - 2;
+                space_w = line_w;
+            }
+        }
+        if (line_w > w && space >= 0) { /* break at the last space */
+            dst[space] = 2;
+            dst[space + 1] = 1;
+            line_w -= space_w;
+            space = -1;
+            lines++;
+        }
+    }
+    while (n >= 2 && dst[n - 2] == 1 && dst[n - 1] == 1) { /* a joined break at the end */
+        n -= 2;
+    }
+    dst[n] = 0;
+    return lines;
+}
+
+/* The sheet's description window: `text` (a game text, then re-wrapped) at its place. */
+static void fightstg_sheet_describe(const FightstgSheetLayout *l, MessageWindow *win, const u8 *text) {
+    fightstg_sheet_wrap(text, FIGHTSTG_SHEET_DESC_FONT, FIGHTSTG_SHEET_W - 2 * FIGHTSTG_SHEET_IN);
+    win->set_text(win, fightstg_sheet_text, -1);
+    win->set_page_lines(win, l->lines);
+}
+
+/* The header's chip and word for `action` (FIGHTSTG_BMENU_*: 1 Tech, 4 Item), the chip's glyph in `icon` (placed
+ * here, fightstg_sheet_icon_w wide), as its tab looks in the battle menu. */
+static void fightstg_sheet_head(MessageWindow *icon, s32 action, s32 x, s32 y) {
+    static const u8 white[3] = { 236, 242, 255 }, shadow[3] = { 6, 10, 34 };
+    GfxLayer *layer = gfx_module.funcs.get_layer(0x1005);
+    const char *word = fightstg_bmenu_word(action);
+    s32 chip_w = fightstg_sheet_icon_w + 4 < FIGHTSTG_BMENU_CHIP ? FIGHTSTG_BMENU_CHIP : fightstg_sheet_icon_w + 4;
+    s32 size = FIGHTSTG_BMENU_SIZE_TAB;
+    s32 wy = y + (FIGHTSTG_BMENU_CHIP - (16 * size >> 8)) / 2;
+    const u8 *tint = fightstg_bmenu_tints[fightstg_battle_menu_tint_of(icon->lines[0].text)];
+
+    if (layer == NULL) {
+        return;
+    }
+    def_poly_text(layer, 0, x + chip_w + FIGHTSTG_BMENU_GAP, wy, size, word, white);
+    def_poly_text(layer, 0, x + chip_w + FIGHTSTG_BMENU_GAP + 1, wy + 1, size, word, shadow);
+    icon->set_pos(icon, x + (chip_w - fightstg_sheet_icon_w) / 2, y + 1);
+    fightstg_battle_menu_plate(x + 1, y + 1, chip_w - 2, FIGHTSTG_BMENU_CHIP - 2, 0, -1, 16, 18, 30);
+    fightstg_battle_menu_plate(x, y, chip_w, FIGHTSTG_BMENU_CHIP, 0, -1, tint[0], tint[1], tint[2]);
+}
+
+/* Where the page arrows' pair is: the left arrow's x and y, and the right one's x. */
+static void fightstg_sheet_arrows_at(const FightstgSheetLayout *l, s32 *lx, s32 *ay, s32 *rx) {
+    s32 x = fightstg_sheet_x();
+
+    *ay = l->arrows ? fightstg_sheet_row_y(l, l->rows) + 1 : FIGHTSTG_SHEET_Y + 5;
+    *lx = l->arrows ? x + FIGHTSTG_SHEET_IN : x + FIGHTSTG_SHEET_W - FIGHTSTG_SHEET_IN - 52;
+    *rx = x + FIGHTSTG_SHEET_W - FIGHTSTG_SHEET_IN - 8;
+}
+
+/* The sheet's frame: the lines, the selected row's light, the page arrows, the backdrop. */
+static void fightstg_sheet_frame(const FightstgSheetLayout *l, s32 sel, s32 page, s32 pages) {
+    s32 x = fightstg_sheet_x();
+    s32 y = FIGHTSTG_SHEET_Y;
+    s32 w = FIGHTSTG_SHEET_W;
+    s32 h = fightstg_sheet_bottom(l) - y;
+    s32 ry = fightstg_sheet_row_y(l, sel);
+    s32 lx;
+    s32 rx;
+    s32 ay;
+
+    fightstg_sheet_arrows_at(l, &lx, &ay, &rx);
+
+    if (pages > 1 && (gfx_module.funcs.get_time() & 0x10)) {
+        Sprite sprite;
+        s32 *bank = cdload_module.get_subfile_by_id(0x4550000);
+
+        sprite_init(&sprite);
+        sprite.set_layer_id(0x1005, 0);
+        sprite.set_vram_pos(0x200, 0);
+        if (page > 0) {
+            sprite.draw(bank, 0x1F, lx, ay);
+        }
+        if (page < pages - 1) {
+            sprite.draw(bank, 0x20, rx, ay);
+        }
+    }
+    if (sel >= 0) { /* the cursor: a bar at the row's left end and the row lit, as a pressed tab is */
+        fightstg_inspect_pixels(x + 2, ry, 2, l->pitch - 1, fightstg_panel_trace_rgb[1], 0);
+        fightstg_battle_menu_quad(x + 2, ry, w - 4, l->pitch - 1, 1, 40, 110, 190);
+    }
+    fightstg_battle_menu_quad(x, y, w, 1, 1, 40, 110, 220);
+    fightstg_battle_menu_quad(x, y + h - 1, w, 1, 1, 40, 110, 220);
+    fightstg_battle_menu_quad(x, y + 1, 1, h - 2, 1, 40, 110, 220);
+    fightstg_battle_menu_quad(x + w - 1, y + 1, 1, h - 2, 1, 40, 110, 220);
+    fightstg_battle_menu_quad(x + 3, FIGHTSTG_SHEET_ROW_Y - 3, w - 6, 1, 1, 30, 70, 150);
+    fightstg_battle_menu_quad(x + 3, fightstg_sheet_desc_y(l) - 3, w - 6, 1, 1, 30, 70, 150);
+    fightstg_battle_menu_quad(x, y, w, h, 2, 190, 180, 130); /* added last: drawn first, under the rest */
+}
+
+/* The sheet's paper (the owner, 2026-11-24: "the menu itself turns into the screen, like a sheet of paper"). On Tech or
+ * Item the pressed tab lifts into the header and the block under it becomes the sheet's foot (P0, the lift); then the
+ * two panels above it unfold upwards like an accordion, each turning on its hinge from folded down (180 degrees) to
+ * flat (P1 on P0's top edge, P2 on P1's), with a small overshoot that settles. Cancelling folds it back, twice as fast,
+ * into the battle menu's tab. Purely visual: the menus' input works from their first tick (2b's rule).
+ *
+ * The paper is drawn from the HUD (fightstg_sheet_tick, from fightstg_hud_update), which runs the whole battle: the
+ * battle menu ends when the press is given and the Tech / Item menu is created frames later, and back. The menus only
+ * report (begin, hold, close, cut) and place their text windows on the panels (fightstg_sheet_place). A panel's text
+ * is squashed with it through the window's scale (message_set_scale about the hinge); a picture shows once it is
+ * nearly flat; nothing shows on a panel's back. One sheet at a time. */
+#define FIGHTSTG_SHEET_LIFT 7          /* ticks: the tab lifts and the foot grows out of it (the press's own 7 ticks) */
+#define FIGHTSTG_SHEET_P1 (FIGHTSTG_SHEET_LIFT + 9)  /* P1 is flat */
+#define FIGHTSTG_SHEET_P2_START (FIGHTSTG_SHEET_LIFT + 5)
+#define FIGHTSTG_SHEET_OPEN (FIGHTSTG_SHEET_LIFT + 14) /* P2 is flat: the static screen */
+#define FIGHTSTG_SHEET_CLOSE_SPEED 2
+#define FIGHTSTG_SHEET_LOST 6          /* frames without a menu holding the sheet: it is cut (the battle moved on) */
+
+static struct {
+    const FightstgSheetLayout *l; /* NULL: no sheet */
+    s16 t;
+    s8 dir;                       /* 1 opening, -1 closing */
+    u8 renew;                     /* the header's glyph changed: the HUD's window takes it */
+    s16 ox, oy;                   /* the tab's chip, top-left, where the battle menu draws it now */
+    s16 plate_x, plate_w;         /* its plate, from ox */
+    s16 sel, page, pages;         /* the menu's cursor and pages */
+    long seen;                    /* port_frames when a menu last held it */
+    u8 icon[4];                   /* the header chip's glyph */
+} fightstg_sheet;
+
+/* The geometry at the sheet's t. Angles in rsin's units (4096 a turn): 2048 folded down, 0 flat. */
+typedef struct FightstgSheetGeom {
+    s32 x, w, bottom;
+    s32 h0, h1;          /* the rest hinges: P0's top, P1's top (P2 from h1 up to FIGHTSTG_SHEET_Y) */
+    s32 lift;            /* 0..4096 */
+    s32 f0x0, f0x1, f0y0, f0y1; /* P0's rectangle */
+    s32 a1, a2, c1, c2;  /* the panels' angles and cosines */
+    s32 top1, top2;      /* the far (top) edges of P1 and P2 */
+    s32 top;             /* the paper's top: the header rides it */
+} FightstgSheetGeom;
+
+static s32 fightstg_sheet_lerp(s32 a, s32 b, s32 p) {
+    return a + (b - a) * p / 4096;
+}
+
+/* 0..4096 eased out over [s, e): a cubic, from fast to still. */
+static s32 fightstg_sheet_ease(s32 t, s32 s, s32 e) {
+    long long u = t <= s ? 0 : t >= e ? 4096 : (long long)(t - s) * 4096 / (e - s);
+    long long v = 4096 - u;
+
+    return (s32)(4096 - v * v / 4096 * v / 4096);
+}
+
+/* A panel's angle over [s, e): it rises from folded down, slow, fast, slow (a smoothstep) to 8 degrees past flat
+ * over the first 80%, and settles back flat over the rest (a paper's flop). */
+static s32 fightstg_sheet_angle(s32 t, s32 s, s32 e) {
+    long long u = t <= s ? 0 : t >= e ? 4096 : (long long)(t - s) * 4096 / (e - s);
+    long long k;
+
+    if (u < 3277) {
+        k = u * 4096 / 3277;
+        k = k * k / 4096 * (3 * 4096 - 2 * k) / 4096;
+        return (s32)(2048 - (2048 + 91) * k / 4096);
+    }
+    k = (u - 3277) * 4096 / (4096 - 3277);
+    k = k * k / 4096 * (3 * 4096 - 2 * k) / 4096;
+    return (s32)(-91 + 91 * k / 4096);
+}
+
+static void fightstg_sheet_geom(FightstgSheetGeom *g) {
+    const FightstgSheetLayout *l = fightstg_sheet.l;
+    s32 t = fightstg_sheet.t;
+
+    g->x = fightstg_sheet_x();
+    g->w = FIGHTSTG_SHEET_W;
+    g->bottom = fightstg_sheet_bottom(l);
+    g->h0 = fightstg_sheet_row_y(l, 3) - 2;
+    g->h1 = fightstg_sheet_row_y(l, 1) - 2;
+    g->lift = fightstg_sheet_ease(t, 0, FIGHTSTG_SHEET_LIFT);
+    g->f0x0 = fightstg_sheet_lerp(fightstg_sheet.ox + fightstg_sheet.plate_x, g->x, g->lift);
+    g->f0x1 = fightstg_sheet_lerp(fightstg_sheet.ox + fightstg_sheet.plate_x + fightstg_sheet.plate_w, g->x + g->w,
+                                  g->lift);
+    g->f0y0 = fightstg_sheet_lerp(fightstg_sheet.oy - 1, g->h0, g->lift);
+    g->f0y1 = fightstg_sheet_lerp(fightstg_sheet.oy + FIGHTSTG_BMENU_CHIP + 1, g->bottom, g->lift);
+    g->a1 = fightstg_sheet_angle(t, FIGHTSTG_SHEET_LIFT, FIGHTSTG_SHEET_P1);
+    g->a2 = fightstg_sheet_angle(t, FIGHTSTG_SHEET_P2_START, FIGHTSTG_SHEET_OPEN);
+    g->c1 = rsin(g->a1 + 1024);
+    g->c2 = rsin(g->a2 + 1024);
+    g->top1 = g->h0 - (g->h0 - g->h1) * g->c1 / 4096;
+    g->top2 = g->top1 - (g->h1 - FIGHTSTG_SHEET_Y) * g->c2 / 4096;
+    g->top = g->f0y0;
+    if (t > FIGHTSTG_SHEET_LIFT && g->c1 > 0 && g->top1 < g->top) {
+        g->top = g->top1;
+        if (g->c2 > 0 && g->top2 < g->top) {
+            g->top = g->top2;
+        }
+    }
+}
+
+/* A translucent quad with any corners (top-left, top-right, bottom-left, bottom-right): `abr` 1 adds, 2 subtracts. */
+static void fightstg_sheet_poly(s32 x0, s32 y0, s32 x1, s32 y1, s32 x2, s32 y2, s32 x3, s32 y3, s32 abr, s32 r, s32 g,
+                                s32 b) {
+    POLY_F4 *poly;
+    DR_TPAGE *tpage;
+    GfxLayer *layer = gfx_module.funcs.get_layer(0x1005);
+
+    if (layer == NULL) {
+        return;
+    }
+    poly = gfx_module.funcs.get_packet();
+    tpage = (DR_TPAGE *)(poly + 1);
+    setRGB0(poly, r < 0 ? 0 : r > 255 ? 255 : r, g < 0 ? 0 : g > 255 ? 255 : g, b < 0 ? 0 : b > 255 ? 255 : b);
+    setPolyF4(poly);
+    setSemiTrans(poly, 1);
+    setXY4(poly, x0, y0, x1, y1, x2, y2, x3, y3);
+    addPrim(layer->get_ot_entry(layer, FIGHTSTG_BMENU_PANEL_DEPTH), poly);
+    SetDrawTPage(tpage, 0, 1, getTPage(1, abr, 0, 0));
+    addPrim(layer->get_ot_entry(layer, FIGHTSTG_BMENU_PANEL_DEPTH), tpage);
+    gfx_module.funcs.set_packet(tpage + 1);
+}
+
+/* A panel turning on the hinge at `h` (its full-width edge), its far edge at `f`, at angle `a` (cosine `c`). Its face
+ * darkens the arena as the sheet does, less while it stands (it catches the light: a blue sheen); its back is the
+ * paper's lighter reverse. The far edge widens a little as it stands towards the eye. */
+static void fightstg_sheet_panel(s32 x, s32 w, s32 h, s32 f, s32 a, s32 c) {
+    s32 sn = rsin(a);
+    s32 d = w * (sn < 0 ? -sn : sn) / 4096 * 3 / 100;
+    s32 fx0 = x - d;
+    s32 fx1 = x + w + d;
+    s32 front = c > 0;
+    s32 k = front ? 2048 + c / 2 : 1434; /* the face: 0.5..1 of the sheet's darkness; the back: 0.35, lighter */
+    s32 lit = (sn < 0 ? -sn : sn) * 60 / 4096;
+
+    if (f == h) {
+        return;
+    }
+    /* the crease: lit while the panel is turned (it fades as it settles flat) */
+    if (lit > 4) {
+        fightstg_sheet_poly(x, h, x + w, h, x, h + 1, x + w, h + 1, 1, lit * 2, lit * 3, lit * 4);
+    }
+    /* the outline: the far edge and the two slanted sides */
+    fightstg_sheet_poly(fx0, f, fx1, f, fx0, f + 1, fx1, f + 1, 1, 40, 110, 220);
+    if (front) {
+        fightstg_sheet_poly(fx0, f, fx0 + 1, f, x, h, x + 1, h, 1, 40, 110, 220);
+        fightstg_sheet_poly(fx1 - 1, f, fx1, f, x + w - 1, h, x + w, h, 1, 40, 110, 220);
+        if (lit > 0) {
+            fightstg_sheet_poly(fx0, f, fx1, f, x, h, x + w, h, 1, lit / 3, lit, lit * 2);
+        }
+        fightstg_sheet_poly(fx0, f, fx1, f, x, h, x + w, h, 2, 190 * k / 4096, 180 * k / 4096, 130 * k / 4096);
+    } else {
+        fightstg_sheet_poly(x, h, x + 1, h, fx0, f, fx0 + 1, f, 1, 40, 110, 220);
+        fightstg_sheet_poly(x + w - 1, h, x + w, h, fx1 - 1, f, fx1, f, 1, 40, 110, 220);
+        fightstg_sheet_poly(x, h, x + w, h, fx0, f, fx1, f, 1, 50 + lit, 64 + lit, 96 + lit);
+        fightstg_sheet_poly(x, h, x + w, h, fx0, f, fx1, f, 2, 190 * k / 4096, 180 * k / 4096, 130 * k / 4096);
+    }
+}
+
+/* Where the content at rest line `y` is now: returns its panel's cosine (4096 flat; 0: hidden, on the back or not
+ * there yet), the hinge it turns on now (`hinge`) and how far that hinge moved from its rest place (`dy`). */
+static s32 fightstg_sheet_at(const FightstgSheetGeom *g, s32 y, s32 *hinge, s32 *dy) {
+    s32 t = fightstg_sheet.t;
+
+    *dy = 0;
+    *hinge = g->h0;
+    if (y >= g->h0) {
+        return t >= FIGHTSTG_SHEET_LIFT ? 4096 : 0;
+    }
+    if (t <= FIGHTSTG_SHEET_LIFT) {
+        return 0;
+    }
+    if (y >= g->h1) {
+        return g->c1 > 0 ? g->c1 : 0;
+    }
+    if (g->c1 <= 0 || t <= FIGHTSTG_SHEET_P2_START) {
+        return 0;
+    }
+    *hinge = g->top1;
+    *dy = g->top1 - g->h1;
+    return g->c2 > 0 ? g->c2 : 0;
+}
+
+/* A menu's text window at its rest place (x, y) on the sheet: moved and squashed with its panel, hidden on a back. */
+static void fightstg_sheet_place(MessageWindow *win, s32 x, s32 y) {
+    FightstgSheetGeom g;
+    s32 hinge;
+    s32 dy;
+    s32 c;
+
+    if (win == NULL) {
+        return;
+    }
+    if (fightstg_sheet.l == NULL) {
+        win->set_pos(win, x, y);
+        win->set_scale(win, 0x1000, 0x1000);
+        return;
+    }
+    fightstg_sheet_geom(&g);
+    c = fightstg_sheet_at(&g, y, &hinge, &dy);
+    if (c < 200) { /* edge-on or its back: nothing to read */
+        win->set_visible(win, 0);
+        return;
+    }
+    win->set_pos(win, x, y + dy);
+    win->set_center(win, x, hinge);
+    win->set_scale(win, 0x1000, c > 4000 ? 0x1000 : c);
+    win->set_visible(win, 1); /* refused by an empty window: an empty row stays empty */
+}
+
+/* Whether a picture at rest line `y` shows now (nearly flat), and how far it moved. */
+static s32 fightstg_sheet_shows(s32 y, s32 *dy) {
+    FightstgSheetGeom g;
+    s32 hinge;
+
+    *dy = 0;
+    if (fightstg_sheet.l == NULL) {
+        return 1;
+    }
+    fightstg_sheet_geom(&g);
+    return fightstg_sheet_at(&g, y, &hinge, dy) > 3900;
+}
+
+/* The battle menu pressed Tech or Item (`action`): the sheet starts from its tab. Pressed again while it folds back,
+ * it turns around instead. */
+static void fightstg_sheet_begin(s32 action, s32 ox, s32 oy, s32 plate_x, s32 plate_w) {
+    const FightstgSheetLayout *l = action == 1 ? &fightstg_sheet_tech : &fightstg_sheet_item;
+
+    if (fightstg_sheet.l != l || fightstg_sheet.dir > 0) {
+        fightstg_sheet.t = 0;
+    }
+    fightstg_sheet.l = l;
+    fightstg_sheet.dir = 1;
+    fightstg_sheet.sel = -1;
+    fightstg_sheet.pages = 0;
+    fightstg_sheet.ox = ox;
+    fightstg_sheet.oy = oy;
+    fightstg_sheet.plate_x = plate_x;
+    fightstg_sheet.plate_w = plate_w;
+    fightstg_sheet.seen = port_frames;
+    fightstg_battle_menu_icon_text(fightstg_sheet.icon, action);
+    fightstg_sheet.renew = 1;
+}
+
+/* The battle menu's tab for the sheet's action is at (ox, oy) now (it follows the slide-in, a remap, widescreen). */
+static void fightstg_sheet_retab(s32 action, s32 ox, s32 oy, s32 plate_x, s32 plate_w) {
+    if (fightstg_sheet.l == NULL || fightstg_sheet.l->action != action) {
+        return;
+    }
+    fightstg_sheet.ox = ox;
+    fightstg_sheet.oy = oy;
+    fightstg_sheet.plate_x = plate_x;
+    fightstg_sheet.plate_w = plate_w;
+    fightstg_sheet.seen = port_frames;
+}
+
+/* A Tech / Item menu holds its sheet each frame (and starts one at its foot if the battle menu gave none: a press
+ * buffered before it was drawn). */
+static void fightstg_sheet_hold(const FightstgSheetLayout *l, s32 sel, s32 page, s32 pages) {
+    if (fightstg_sheet.l != l) {
+        fightstg_sheet.l = l;
+        fightstg_sheet.t = FIGHTSTG_SHEET_LIFT;
+        fightstg_sheet.ox = fightstg_sheet_x() + 4;
+        fightstg_sheet.oy = FIGHTSTG_SHEET_Y + 2;
+        fightstg_sheet.plate_x = -4;
+        fightstg_sheet.plate_w = FIGHTSTG_SHEET_W;
+        fightstg_battle_menu_icon_text(fightstg_sheet.icon, l->action);
+        fightstg_sheet.renew = 1;
+    }
+    fightstg_sheet.dir = 1;
+    fightstg_sheet.sel = sel;
+    fightstg_sheet.page = page;
+    fightstg_sheet.pages = pages;
+    fightstg_sheet.seen = port_frames;
+}
+
+/* Cancelled: it folds back into the tab. */
+static void fightstg_sheet_close(void) {
+    if (fightstg_sheet.l != NULL) {
+        fightstg_sheet.dir = -1;
+        fightstg_sheet.sel = -1;
+        fightstg_sheet.seen = port_frames;
+    }
+}
+
+/* A choice made: it goes at once. */
+static void fightstg_sheet_cut(void) {
+    fightstg_sheet.l = NULL;
+}
+
+/* The action whose sheet is up (1 Tech, 4 Item), or -1. */
+static s32 fightstg_sheet_action(void) {
+    return fightstg_sheet.l != NULL ? fightstg_sheet.l->action : -1;
+}
+
+static s32 fightstg_sheet_closing(void) {
+    return fightstg_sheet.l != NULL && fightstg_sheet.dir < 0;
+}
+
+/* Whether the sheet covers the rectangle now (the battle menu leaves a covered action undrawn), and whether `action`'s
+ * tab is the sheet's (drawn by the sheet as its header). */
+static s32 fightstg_sheet_covers(s32 action, s32 x, s32 y, s32 w, s32 h) {
+    FightstgSheetGeom g;
+
+    if (fightstg_sheet.l == NULL) {
+        return 0;
+    }
+    if (fightstg_sheet.l->action == action) {
+        return 1;
+    }
+    fightstg_sheet_geom(&g);
+    return x < g.f0x1 && x + w > g.f0x0 && y < g.f0y1 && y + h > g.f0y0;
+}
+
+/* Each frame, from the HUD: moves the sheet and draws it, the header's glyph in the HUD's window `icon`. */
+static void fightstg_sheet_tick(MessageWindow *icon) {
+    static const u8 empty[1] = { 0 };
+    FightstgSheetGeom g;
+    s32 ticks = gfx_module.funcs.get_frame_ticks();
+    s32 hx;
+    s32 hy;
+
+    if (icon == NULL) {
+        return;
+    }
+    if (fightstg_sheet.l != NULL && port_frames - fightstg_sheet.seen > FIGHTSTG_SHEET_LOST) {
+        fightstg_sheet.l = NULL; /* no menu holds it: the turn went on */
+    }
+    if (fightstg_sheet.l == NULL) {
+        if (icon->lines[0].text != NULL && icon->lines[0].text[0] != 0) {
+            icon->set_text(icon, (u8 *)empty, -1);
+        }
+        return;
+    }
+    if (fightstg_sheet.renew) {
+        fightstg_sheet.renew = 0;
+        icon->set_text(icon, fightstg_sheet.icon, -1);
+        icon->measure(icon, 1);
+        fightstg_sheet_icon_w = icon->measured_width;
+        icon->measure(icon, 0);
+    }
+    if (fightstg_sheet.dir > 0) {
+        fightstg_sheet.t = fightstg_sheet.t + ticks > FIGHTSTG_SHEET_OPEN ? FIGHTSTG_SHEET_OPEN : fightstg_sheet.t + ticks;
+    } else {
+        fightstg_sheet.t -= ticks * FIGHTSTG_SHEET_CLOSE_SPEED;
+        if (fightstg_sheet.t <= 0) { /* back in the tab: the battle menu draws it again */
+            fightstg_sheet.l = NULL;
+            icon->set_text(icon, (u8 *)empty, -1);
+            return;
+        }
+    }
+    fightstg_sheet_geom(&g);
+    hx = fightstg_sheet_lerp(fightstg_sheet.ox, g.x + 4, g.lift);
+    hy = fightstg_sheet_lerp(fightstg_sheet.oy, g.top + 2, g.lift);
+    fightstg_sheet_head(icon, fightstg_sheet.l->action, hx, hy);
+    if (fightstg_sheet.t >= FIGHTSTG_SHEET_OPEN) {
+        fightstg_sheet_frame(fightstg_sheet.l, fightstg_sheet.pages > 0 ? fightstg_sheet.sel : -1, fightstg_sheet.page,
+                             fightstg_sheet.pages);
+        return;
+    }
+    /* the cursor's row, once its panel is flat */
+    if (fightstg_sheet.sel >= 0 && fightstg_sheet.pages > 0) {
+        s32 ry = fightstg_sheet_row_y(fightstg_sheet.l, fightstg_sheet.sel);
+        s32 dy;
+
+        if (fightstg_sheet_shows(ry, &dy)) {
+            fightstg_inspect_pixels(g.x + 2, ry + dy, 2, fightstg_sheet.l->pitch - 1, fightstg_panel_trace_rgb[1], 0);
+            fightstg_battle_menu_quad(g.x + 2, ry + dy, g.w - 4, fightstg_sheet.l->pitch - 1, 1, 40, 110, 190);
+        }
+    }
+    /* P2 over P1 over P0 (each queued before the one under it) */
+    if (fightstg_sheet.t > FIGHTSTG_SHEET_P2_START && g.c1 > 0) {
+        fightstg_sheet_panel(g.x, g.w, g.top1, g.top2, g.a2, g.c2);
+    }
+    if (fightstg_sheet.t > FIGHTSTG_SHEET_LIFT) {
+        fightstg_sheet_panel(g.x, g.w, g.h0, g.top1, g.a1, g.c1);
+    }
+    if (fightstg_sheet.t >= FIGHTSTG_SHEET_LIFT) {
+        fightstg_battle_menu_quad(g.x + 3, fightstg_sheet_desc_y(fightstg_sheet.l) - 3, g.w - 6, 1, 1, 30, 70, 150);
+    }
+    fightstg_sheet_poly(g.f0x0, g.f0y1 - 1, g.f0x1, g.f0y1 - 1, g.f0x0, g.f0y1, g.f0x1, g.f0y1, 1, 40, 110, 220);
+    fightstg_sheet_poly(g.f0x0, g.f0y0, g.f0x0 + 1, g.f0y0, g.f0x0, g.f0y1, g.f0x0 + 1, g.f0y1, 1, 40, 110, 220);
+    fightstg_sheet_poly(g.f0x1 - 1, g.f0y0, g.f0x1, g.f0y0, g.f0x1 - 1, g.f0y1, g.f0x1, g.f0y1, 1, 40, 110, 220);
+    if (fightstg_sheet.t <= FIGHTSTG_SHEET_LIFT) {
+        fightstg_sheet_poly(g.f0x0, g.f0y0, g.f0x1, g.f0y0, g.f0x0, g.f0y0 + 1, g.f0x1, g.f0y0 + 1, 1, 40, 110, 220);
+    }
+    fightstg_sheet_poly(g.f0x0, g.f0y0, g.f0x1, g.f0y0, g.f0x0, g.f0y1, g.f0x1, g.f0y1, 2, 190, 180, 130);
+}
+
+/* The page arrows' L1 / R1 windows (the 9-pixel font, as the old list's), beside the arrows; shown with two pages
+ * or more. */
+static void fightstg_sheet_page_windows(const FightstgSheetLayout *l, MessageWindow **l1, MessageWindow **r1) {
+    u8 *text = cdload_module.files.get_file(records_language + 0x7F);
+    s32 lx;
+    s32 rx;
+    s32 ay;
+
+    fightstg_sheet_arrows_at(l, &lx, &ay, &rx);
+    *l1 = message_create_window(0x1005, 3, lx + 10, ay);
+    (*l1)->set_text(*l1, text, 0x11);
+    (*l1)->set_palette(*l1, 2);
+    *r1 = message_create_window(0x1005, 3, rx - 14, ay);
+    (*r1)->set_text(*r1, text, 0x12);
+    (*r1)->set_palette(*r1, 2);
+}
+
+/* The page windows' texts: L1 / R1 with two pages or more, else empty. */
+static void fightstg_sheet_page_texts(MessageWindow *l1, MessageWindow *r1, s32 pages) {
+    u8 *text = cdload_module.files.get_file(records_language + 0x7F);
+
+    if (pages > 1) {
+        l1->set_text(l1, text, 0x11);
+        r1->set_text(r1, text, 0x12);
+    } else {
+        l1->set_text(l1, (u8 *)fightstg_inspect_empty, -1);
+        r1->set_text(r1, (u8 *)fightstg_inspect_empty, -1);
+    }
+}
+
+/* The Tech screen's windows, placed on the sheet (fightstg_tech_menu_open's, for the sheet). */
+static void fightstg_tech_sheet_open(FightstgTechMenu *obj, FightstgTechMenuData *data) {
+    const FightstgSheetLayout *l = &fightstg_sheet_tech;
+    FightstgMember *member = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
+    u8 *text = cdload_module.files.get_file(records_language + 0x7F);
+    s32 x = fightstg_sheet_x();
+    s32 right = x + FIGHTSTG_SHEET_W - FIGHTSTG_SHEET_IN;
+    s32 hy = FIGHTSTG_SHEET_Y + 6;
+    s32 i;
+
+    fightstg_sheet_page_windows(l, &data->l1_window, &data->r1_window);
+    /* MP: as in the old box (label, value right-aligned, slash, maximum right-aligned), at the header's right end */
+    data->mp_label = message_create_window(0x1005, 3, right - 76, hy);
+    data->mp_label->set_text(data->mp_label, text, 0xD);
+    data->mp = message_create_window(0x1005, 3, right - 36, hy);
+    if (member->blasted != 0) {
+        data->mp->set_text(data->mp, text, member->mp < 100 ? 0x1A : member->mp < 1000 ? 0xF : 0x24);
+    } else {
+        data->mp->set_line_number(data->mp, 0, member->mp);
+    }
+    data->mp->measure(data->mp, 1);
+    data->slash = message_create_window(0x1005, 3, right - 35, hy);
+    data->slash->set_text(data->slash, text, 0x10);
+    data->max_mp = message_create_window(0x1005, 3, right, hy);
+    data->max_mp->set_line_number(data->max_mp, 0, member->max_mp);
+    data->max_mp->measure(data->max_mp, 1);
+    for (i = 0; i < l->rows; i++) {
+        s32 y = fightstg_sheet_row_y(l, i);
+
+        data->tech_windows[i] = message_create_window(0x1005, 1, x + FIGHTSTG_SHEET_IN + FIGHTSTG_SHEET_NAME_DX, y);
+        data->row_costs[i] = message_create_window(0x1005, 1, right, y);
+        if (def_on()) {
+            data->elem_icons[i] = message_create_window(0x1005, 1, x + FIGHTSTG_SHEET_IN + 2, y);
+        }
+    }
+    data->description = message_create_window(0x1005, FIGHTSTG_SHEET_DESC_FONT, x + FIGHTSTG_SHEET_IN,
+                                              fightstg_sheet_desc_y(l));
+    /* the old box's cost line: the row shows its cost now */
+    data->cost_label = message_create_window(0x1005, 1, 0, 0);
+    data->cost = message_create_window(0x1005, 1, 0, 0);
+}
+
+/* The page's rows and the description (fightstg_tech_menu_show_page's, for the sheet). */
+static void fightstg_tech_sheet_show_page(FightstgTechMenu *obj, FightstgTechMenuData *data) {
+    const FightstgSheetLayout *l = &fightstg_sheet_tech;
+    FightstgMember *member = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
+    s32 i;
+    s32 k;
+    s32 id;
+    s32 cost;
+    s32 pal;
+
+    fightstg_sheet_page_texts(data->l1_window, data->r1_window, obj->pages);
+    if (obj->count == 0) {
+        fightstg_sheet_describe(l, data->description, fightstg_sheet_entry(0x7F, 0x13));
+        return;
+    }
+    for (i = 0; i < l->rows; i++) {
+        k = obj->page * l->rows + i;
+        if (obj->count - 1 < k) { /* emptied, not hidden: the sheet shows what has text (fightstg_sheet_place) */
+            data->tech_windows[i]->set_text(data->tech_windows[i], (u8 *)fightstg_inspect_empty, -1);
+            data->row_costs[i]->set_text(data->row_costs[i], (u8 *)fightstg_inspect_empty, -1);
+            fightstg_tech_menu_set_element(data->elem_icons[i], NULL, 0, 0);
+            continue;
+        }
+        id = obj->techniques[k];
+        cost = fightstg_rules.get_tech_cost(0, id);
+        pal = member->blasted == 0 && member->mp < cost ? 7 : id & 0x8000 ? 3 : id & 0x4000 ? 4 : 0;
+        data->tech_windows[i]->set_text(data->tech_windows[i], cdload_module.files.get_file(records_language + 0xA2),
+                                        id & 0x1FFF);
+        data->tech_windows[i]->set_palette(data->tech_windows[i], pal);
+        fightstg_tech_menu_set_element(data->elem_icons[i], NULL, id & 0x1FFF, pal == 7 ? 7 : 0);
+        if (member->blasted != 0) { /* a Blast's techniques are free */
+            data->row_costs[i]->set_text(data->row_costs[i], (u8 *)fightstg_inspect_empty, -1);
+        } else {
+            data->row_costs[i]->set_line_number(data->row_costs[i], 0, cost);
+            data->row_costs[i]->measure(data->row_costs[i], 1);
+            data->row_costs[i]->set_palette(data->row_costs[i], pal == 7 ? 7 : 0);
+        }
+    }
+    id = obj->techniques[obj->page * l->rows + data->cursor->sel];
+    cost = fightstg_rules.get_tech_cost(0, id);
+    fightstg_sheet_describe(l, data->description,
+                            member->blasted == 0 && member->mp < cost ? fightstg_sheet_entry(0x7F, 0x54)
+                                                                      : fightstg_sheet_entry(0x9B, id & 0x1FFF));
+}
+
+static void fightstg_tech_sheet_draw(FightstgTechMenu *obj, FightstgTechMenuData *data) {
+    const FightstgSheetLayout *l = &fightstg_sheet_tech;
+    s32 x = fightstg_sheet_x();
+    s32 right = x + FIGHTSTG_SHEET_W - FIGHTSTG_SHEET_IN;
+    s32 hy = FIGHTSTG_SHEET_Y + 6;
+    s32 lx;
+    s32 rx;
+    s32 ay;
+    s32 dy;
+    s32 i;
+    s32 k;
+    s32 id;
+
+    fightstg_sheet_hold(l, data->cursor->sel, obj->page, obj->count != 0 ? (obj->pages > 0 ? obj->pages : 1) : 0);
+    fightstg_sheet_arrows_at(l, &lx, &ay, &rx);
+    fightstg_sheet_place(data->l1_window, lx + 10, ay);
+    fightstg_sheet_place(data->r1_window, rx - 14, ay);
+    fightstg_sheet_place(data->mp_label, right - 76, hy);
+    fightstg_sheet_place(data->mp, right - 36, hy);
+    fightstg_sheet_place(data->slash, right - 35, hy);
+    fightstg_sheet_place(data->max_mp, right, hy);
+    for (i = 0; i < l->rows; i++) {
+        s32 y = fightstg_sheet_row_y(l, i);
+
+        fightstg_sheet_place(data->tech_windows[i], x + FIGHTSTG_SHEET_IN + FIGHTSTG_SHEET_NAME_DX, y);
+        fightstg_sheet_place(data->row_costs[i], right, y);
+        fightstg_sheet_place(data->elem_icons[i], x + FIGHTSTG_SHEET_IN + 2, y);
+    }
+    fightstg_sheet_place(data->description, x + FIGHTSTG_SHEET_IN, fightstg_sheet_desc_y(l));
+    if (!def_on()) { /* the class pictures, as the old list drew them */
+        Sprite sprite;
+        s32 *bank = cdload_module.get_subfile_by_id(0x2860000);
+
+        sprite_init(&sprite);
+        sprite.set_layer_id(0x1005, 0);
+        sprite.set_vram_pos(0x140, 0);
+        for (i = 0; i < l->rows; i++) {
+            k = obj->page * l->rows + i;
+            if (k >= obj->count || (id = obj->techniques[k] & 0x1FFF) == 0) {
+                break;
+            }
+            if (fightstg_sheet_shows(fightstg_sheet_row_y(l, i), &dy)) {
+                sprite.draw(bank, records_techniques[id - 1].element + 0x37, x + FIGHTSTG_SHEET_IN + 2,
+                            fightstg_sheet_row_y(l, i) + dy);
+            }
+        }
+    }
+}
+#endif
+
+#ifdef PC_PORT
+/* The Item screen on the sheet (fightstg_item_menu_open / _show_page / _draw's): the same mould as Tech's, each row
+ * the item's picture, name and count, the page arrows in the header. */
+static void fightstg_item_sheet_open(FightstgItemMenu *obj, FightstgItemMenuData *data) {
+    const FightstgSheetLayout *l = &fightstg_sheet_item;
+    s32 x = fightstg_sheet_x();
+    s32 right = x + FIGHTSTG_SHEET_W - FIGHTSTG_SHEET_IN;
+    s32 i;
+
+    fightstg_sheet_page_windows(l, &data->l1_window, &data->r1_window);
+    for (i = 0; i < l->rows; i++) {
+        s32 y = fightstg_sheet_row_y(l, i);
+
+        data->item_windows[i] = message_create_window(0x1005, 1, x + FIGHTSTG_SHEET_IN + FIGHTSTG_SHEET_NAME_DX, y);
+        data->row_counts[i] = message_create_window(0x1005, 1, right, y);
+    }
+    data->description = message_create_window(0x1005, FIGHTSTG_SHEET_DESC_FONT, x + FIGHTSTG_SHEET_IN,
+                                              fightstg_sheet_desc_y(l));
+    /* the old box's "x N" of the selected item: each row shows its count now */
+    data->times_label = message_create_window(0x1005, 1, 0, 0);
+    data->count_window = message_create_window(0x1005, 1, 0, 0);
+}
+
+static void fightstg_item_sheet_show_page(FightstgItemMenu *obj, FightstgItemMenuData *data) {
+    const FightstgSheetLayout *l = &fightstg_sheet_item;
+    s32 i;
+    s32 k;
+    s32 id;
+
+    fightstg_sheet_page_texts(data->l1_window, data->r1_window, obj->pages);
+    if (obj->count == 0) {
+        fightstg_sheet_describe(l, data->description, fightstg_sheet_entry(0x7F, 0x15));
+        return;
+    }
+    for (i = 0; i < l->rows; i++) {
+        k = obj->page * l->rows + i;
+        if (obj->count - 1 < k || (id = obj->list[k]) == 0) {
+            data->item_windows[i]->set_text(data->item_windows[i], (u8 *)fightstg_inspect_empty, -1);
+            data->row_counts[i]->set_text(data->row_counts[i], (u8 *)fightstg_inspect_empty, -1);
+            continue;
+        }
+        data->item_windows[i]->set_text(data->item_windows[i], cdload_module.files.get_file(records_language + 0x6A),
+                                        id);
+        data->row_counts[i]->set_line_number(data->row_counts[i], 0, gamestate_data.items[id]);
+        data->row_counts[i]->measure(data->row_counts[i], 1);
+    }
+    id = obj->list[obj->page * l->rows + data->cursor->sel];
+    fightstg_sheet_describe(l, data->description, fightstg_sheet_entry(0x63, id));
+}
+
+static void fightstg_item_sheet_draw(FightstgItemMenu *obj, FightstgItemMenuData *data) {
+    const FightstgSheetLayout *l = &fightstg_sheet_item;
+    s32 x = fightstg_sheet_x();
+    s32 right = x + FIGHTSTG_SHEET_W - FIGHTSTG_SHEET_IN;
+    Sprite sprite;
+    s32 *bank = cdload_module.get_subfile_by_id(0x2860000);
+    s32 lx;
+    s32 rx;
+    s32 ay;
+    s32 dy;
+    s32 i;
+    s32 k;
+
+    fightstg_sheet_hold(l, data->cursor->sel, obj->page, obj->count != 0 ? (obj->pages > 0 ? obj->pages : 1) : 0);
+    fightstg_sheet_arrows_at(l, &lx, &ay, &rx);
+    fightstg_sheet_place(data->l1_window, lx + 10, ay);
+    fightstg_sheet_place(data->r1_window, rx - 14, ay);
+    for (i = 0; i < l->rows; i++) {
+        s32 y = fightstg_sheet_row_y(l, i);
+
+        fightstg_sheet_place(data->item_windows[i], x + FIGHTSTG_SHEET_IN + FIGHTSTG_SHEET_NAME_DX, y);
+        fightstg_sheet_place(data->row_counts[i], right, y);
+    }
+    fightstg_sheet_place(data->description, x + FIGHTSTG_SHEET_IN, fightstg_sheet_desc_y(l));
+    sprite_init(&sprite);
+    sprite.set_layer_id(0x1005, 0);
+    sprite.set_vram_pos(0x140, 0);
+    for (i = 0; i < l->rows; i++) {
+        k = obj->page * l->rows + i;
+        if (k >= obj->count) {
+            break;
+        }
+        if (fightstg_sheet_shows(fightstg_sheet_row_y(l, i), &dy)) {
+            sprite.draw(bank, records_funcs.get_item_icon(obj->list[k]), x + FIGHTSTG_SHEET_IN + 2,
+                        fightstg_sheet_row_y(l, i) + dy);
+        }
+    }
+}
 #endif
 
 void fightstg_tech_menu_draw(FightstgTechMenu *obj) {
@@ -5785,6 +6728,12 @@ void fightstg_tech_menu_draw(FightstgTechMenu *obj) {
     s32 k;
     s32 id;
 
+#ifdef PC_PORT
+    if (fightstg_sheet_on()) {
+        fightstg_tech_sheet_draw(obj, (FightstgTechMenuData *)obj->base.children);
+        return;
+    }
+#endif
     sprite_init(&sprite);
     sprite.set_layer_id(0x1005, 1);
     sprite.set_vram_pos(0x140, 0);
@@ -5827,6 +6776,11 @@ void fightstg_tech_menu_open(FightstgTechMenu *obj, FightstgTechMenuData *data) 
     s32 i;
 #ifdef PC_PORT
     s32 wide_pad = port_video_widescreen_pad();
+
+    if (fightstg_sheet_on()) {
+        fightstg_tech_sheet_open(obj, data);
+        return;
+    }
 #endif
 
     data->l1_window = message_create_window(0x1005, 3, 0x1A, 0x9F);
@@ -5891,6 +6845,12 @@ void fightstg_tech_menu_show_page(FightstgTechMenu *obj, FightstgTechMenuData *d
     s32 id;
     s32 cost;
 
+#ifdef PC_PORT
+    if (fightstg_sheet_on()) {
+        fightstg_tech_sheet_show_page(obj, data);
+        return;
+    }
+#endif
     if (obj->count != 0) {
         for (i = 0; i < 6; i++) {
             k = obj->page * 6 + i;
@@ -6103,6 +7063,7 @@ void fightstg_tech_menu_update(FightstgTechMenu *obj, FightstgTechMenuData *data
                     if (m->blasted == 0) {
                         m->mp -= cost;
                     }
+                    fightstg_sheet_cut();
                     port_bm_take_confirm();
                     sound_module.play(0x4001C);
                     *obj->result = skip_tech & 0x1FFF;
@@ -6123,6 +7084,13 @@ void fightstg_tech_menu_update(FightstgTechMenu *obj, FightstgTechMenuData *data
     case OBJECT_STATE_RUN:
         /* Evidence (class C, block placement; docs/MATCHING.md "LOOP_BLOCK and LOOP_BARRIER"): the original places the cancel block and
          * the confirm stub (a jump into the confirm tail) out of line before case 1. */
+#ifdef PC_PORT
+        /* the sheet draws its own cursor: the old one's highlight is a VRAM copy at the old list's place, installed on
+         * its step 2, so the cursor is kept at step 3 (input only) */
+        if (fightstg_sheet_on() && data->cursor->base.step < 3) {
+            data->cursor->base.step = 3;
+        }
+#endif
         LOOP_BLOCK(
             fightstg_tech_menu_draw(obj);
             pad = FIGHTSTG_MENU_PAD();
@@ -6154,6 +7122,9 @@ void fightstg_tech_menu_update(FightstgTechMenu *obj, FightstgTechMenuData *data
                 if (obj->count != 0) {
                     member = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
                     if (member->blasted != 0) {
+#ifdef PC_PORT
+                        fightstg_sheet_cut();
+#endif
                         *obj->result = obj->techniques[obj->page * 6 + data->cursor->sel] & 0x1FFF;
                         obj->base.set_state(obj, OBJECT_STATE_END);
                         data->cursor->locked = 1;
@@ -6162,6 +7133,9 @@ void fightstg_tech_menu_update(FightstgTechMenu *obj, FightstgTechMenuData *data
                     cost = fightstg_rules.get_tech_cost(0, obj->techniques[obj->page * 6 + data->cursor->sel]);
                     if (member->mp >= cost) {
                         member->mp -= cost;
+#ifdef PC_PORT
+                        fightstg_sheet_cut();
+#endif
                         *obj->result = obj->techniques[obj->page * 6 + data->cursor->sel] & 0x1FFF;
                         obj->base.set_state(obj, OBJECT_STATE_END);
                         data->cursor->locked = 1;
@@ -6169,6 +7143,9 @@ void fightstg_tech_menu_update(FightstgTechMenu *obj, FightstgTechMenuData *data
                     }
                 }
             } else if (pad & 0x4000) {
+#ifdef PC_PORT
+                fightstg_sheet_close();
+#endif
                 sound_module.play(0x800450BD);
                 *obj->result = -2;
                 obj->base.set_state(obj, OBJECT_STATE_END);
