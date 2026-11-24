@@ -13,7 +13,7 @@ set(CMAKE_C_EXTENSIONS ON) # gnu99, as the handheld's build
 find_package(SDL3 3.2 CONFIG REQUIRED)
 message(STATUS "SDL3 ${SDL3_VERSION}: ${SDL3_DIR}")
 
-add_executable(dw2003-launcher main.c ui.c plat.c cfg.c loading.c cloud.c sha256.c update.c selfupdate.c assets/assets.c)
+add_executable(dw2003-launcher main.c ui.c plat.c cfg.c migrate.c loading.c cloud.c sha256.c update.c selfupdate.c assets/assets.c)
 
 # The running build's version for the update notice (update.h): a release's X.Y.Z, from the tag the packaging scripts
 # export as PSXSTACK_VERSION; any other build is "dev", which never asks.

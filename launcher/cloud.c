@@ -16,6 +16,7 @@
 #include <unistd.h>
 
 #include "compat.h"
+#include "migrate.h"
 #include "sha256.h"
 #include "win32.h"
 
@@ -1533,4 +1534,16 @@ int launcher_http_get(const char *url, char **body_out, size_t *len_out, int *st
     *len_out = r.body_len;
     *status_out = r.status;
     return 0;
+}
+
+int cloud_migrate_saves(CloudState *st, const char *game_dir) {
+    char card[700], before[65] = "", after[65] = "";
+    snprintf(card, sizeof(card), "%s/card1.mcd", game_dir);
+    int had = save_is_valid_mc(card, before);
+    int n = migrate_saves();
+    if (n > 0 && st && had && st->last_sha256[0] && !strcmp(before, st->last_sha256) && save_is_valid_mc(card, after)) {
+        snprintf(st->last_sha256, sizeof(st->last_sha256), "%s", after);
+        cloud_state_save(st, game_dir);
+    }
+    return n;
 }

@@ -70,7 +70,7 @@ build_one_arch() {
     # and SDL2 (Wayland/KMSDRM/portrait panels) works as a seamless fallback on ROCKNIX/Knulli/muOS/480x320.
     docker run --rm -u "$(id -u):$(id -g)" -v "$REPO:/work" -w /work "$image" bash -c "
         ${cc} -std=gnu99 -D_GNU_SOURCE -O2 -s -DDW3_TARGET_PORTMASTER -DHAVE_SDL2 \
-            -I/usr/include/SDL2 launcher/main.c launcher/ui.c launcher/plat.c launcher/cfg.c \
+            -I/usr/include/SDL2 launcher/main.c launcher/ui.c launcher/plat.c launcher/cfg.c launcher/migrate.c \
             launcher/loading.c launcher/cloud.c launcher/sha256.c launcher/assets/assets.c \
             -o ${build_sub}/dw3-launcher -lSDL2 -lm
     "

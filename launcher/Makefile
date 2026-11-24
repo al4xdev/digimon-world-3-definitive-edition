@@ -1,7 +1,7 @@
 # A desktop checkout's quick build of the launcher (Linux, SDL2): make [SDL=1]; ./dw3-launcher --sdl finds
 # build/port-sdl/dw2003. The releases build these same sources: CMakeLists.txt (Linux AppImage and Windows, SDL3),
 # .ci-cd/portmaster/build_arm.sh (PortMaster), android/CMakeLists.txt (Android).
-SRC = main.c ui.c plat.c cfg.c loading.c cloud.c sha256.c update.c assets/assets.c
+SRC = main.c ui.c plat.c cfg.c migrate.c loading.c cloud.c sha256.c update.c assets/assets.c
 CFLAGS ?= -std=gnu99 -D_GNU_SOURCE -O2 -Wall
 TARGET ?= pc
 ifeq ($(TARGET),portmaster)

@@ -379,3 +379,29 @@ everything up, music and the play-time clock included.
 
 `tests/port/hz60.py` compares the port at 60 Hz with the patched game in the emulator (`tests/port/ntsc_patch.lua`
 writes the two words at `main`'s entry; references in `tests/port/hz60/`).
+
+## Schema versions and migrations (2026-11-24)
+
+Every file that is kept between releases carries a schema number, and a release that changes one adds a step to
+`launcher/migrate.c` (from N to N+1) instead of the code reading the old shape. The launcher applies the steps in
+sequence, from the file's own number up to the current one, and keeps the old file beside it as `<file>.v<N>.bak` (the
+first copy is never overwritten).
+
+| File | Number | Current | Migrated |
+|---|---|---|---|
+| `tui.state` | `schema=N` (none: 0) | 1 | by `cfg_load`, before it reads the file. 0 -> 1: Fight at the bottom (was `bm_v=2`) and 60 Hz, for a file still on the old defaults |
+| `card1.def.json`, `card2.def.json` | `"version": N` | 2 | by `migrate_saves`, before the game starts (PC and Android). 1 -> 2: the `"respec"` section |
+| `settings.json` | `"schema": N` (the game's contract) | 1 | rewritten whole on every save: no step |
+
+A newer file than the launcher knows is left alone (the game does the same with the save); a newer `tui.state` is not
+rewritten by a save either, so a downgrade and back loses none of its keys. Files that come from outside (a restored
+backup, a cloud pull, the RecompLauncher mirror) keep their old number until the next game start, where `migrate_saves`
+runs after the cloud sync (so a pulled v1 file is migrated too). The pair's sha changes with the JSON's bytes, so
+`cloud_migrate_saves` moves the cloud state's `last_sha256` along when the local pair was the synced one: the migration is
+not a local change and cannot make a false conflict with a newer cloud save. A migrated file's old copy is
+`<file>.v<N>.bak`, or `.v<N>.2.bak` and so on when that name is taken: no copy is replaced. A version is a whole number
+(`1.5` or `-1` is not one the game wrote, and the file is left as it is). The refresh rate lives in `tui.state` (`hz`) and is
+written to `settings.json` on every start; the launcher no longer reads it back from there.
+To add a migration: raise
+`SCHEMA_*` in `migrate.h`, append the step function to the file's table in `migrate.c`, raise the game's own number when
+it writes the file (`DEF_EXPANSION_VERSION`), and add the case to the launcher's `--self-test`.
