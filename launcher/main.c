@@ -279,7 +279,7 @@ static const char *home_value(int id, int *on) {
     *on = 0;
     switch (id) {
     case HI_GAME: return "TUNING";
-    case HI_VIDEO: *on = c.widescreen; return c.widescreen ? "16:9 ON" : "SETTINGS";
+    case HI_VIDEO: *on = c.widescreen; return c.widescreen ? "AUTO" : "SETTINGS";
     case HI_HUD: return "CUSTOMIZE";
     case HI_CONTROLS: return "REMAP";
     case HI_SAVES:
@@ -395,7 +395,7 @@ static void draw_video(void) {
     if (c.scale == 0) snprintf(sc_val, sizeof(sc_val), "AUTO (%dx%d)", gw, gh);
     else snprintf(sc_val, sizeof(sc_val), "%dX (%dx%d)", c.scale, gw, gh);
     const char *v[VIDEO_N] = {
-        (c.widescreen && c.renderer_pc == 0) ? "16:9 ON" : "OFF",
+        (c.widescreen && c.renderer_pc == 0) ? "AUTO" : "OFF",
         c.fullscreen ? "ON" : "OFF",
         c.fill ? "FILL" : "INTEGER",
         sc_val,
@@ -409,7 +409,7 @@ static void draw_video(void) {
         row(90 + i * 42, lab[i], v[i], i == sel, 0, strcmp(v[i], "OFF") && strcmp(v[i], "-"), 0);
     }
     static const char *desc[VIDEO_N] = {
-        "Battles and field fill 16:9 (auto-selects GPU). Menus stay 4:3.",
+        "Battles and field follow the screen's shape, up to 16:9 (auto-selects GPU). Menus stay 4:3.",
         "Open the game in fullscreen (F11 also toggles).",
         "FILL stretches cleanly to screen height; INTEGER uses exact multiples.",
         "Window resolution scale (AUTO fits the detected monitor).",
