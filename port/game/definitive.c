@@ -1936,12 +1936,16 @@ const unsigned char *def_message(int i) {
 /* The records the techniques and Digimon forms change (written with the MP rows, every time: the reset restores the table). */
 /* The player's elemental physical techniques that patch_techniques makes magic, with their magic power. 88 (WarGreymon's
  * special, Fire) and 103 (Beelzemon's, Dark) had no element as physical blows: patch_techniques gives them one
- * (owner, 2026-11-24), the power set by the MP band like the rest (140 MP: 650, 250 MP: 800). */
+ * (owner, 2026-11-24). Their power keeps the place the physical blow had among the player's signatures of about the
+ * same MP, moved to the same place among the player's magic of that MP (medians, +-20 MP; at equal stats the physical
+ * and magic formulas both give 1x the power): WarGreymon's 480 is 1.2x the physical median of 400 at 140 MP, and the magic
+ * median there is 490, so 590; Beelzemon's 300 is 0.67x the median 450 at 250 MP, and the magic median there is 750,
+ * so 500. */
 static const struct {
     short tech, power;
 } to_magic[] = {
     { 53, 100 },  { 66, 200 },  { 68, 210 },  { 71, 220 },  { 72, 150 },  { 82, 430 },  { 95, 440 },
-    { 98, 630 },  { 88, 650 },  { 103, 800 }, { 105, 90 },  { 106, 160 }, { 107, 90 },  { 108, 140 }, { 109, 90 },  { 110, 240 },
+    { 98, 630 },  { 88, 590 },  { 103, 500 }, { 105, 90 },  { 106, 160 }, { 107, 90 },  { 108, 140 }, { 109, 90 },  { 110, 240 },
     { 111, 90 },  { 112, 160 }, { 113, 130 }, { 114, 240 }, { 134, 190 }, { 136, 270 }, { 376, 500 },
 };
 
