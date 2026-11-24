@@ -129,7 +129,11 @@ const DefPersona def_personas[] = {
     { SPECIES(42), GUARD_A, ON_STAGGER }, /* Etemon, Lv20: fechadura */
     { SPECIES(40), SPEED_X(2), DEF_PCT(60) }, /* Andromon, Lv24: relampago */
     { SPECIES(460), GUARD_A, PHASES(2) }, /* Cardmon, Lv27: mare */
-    { SPECIES(465), RED_ALWAYS }, /* Vemmon, Lv28: fechadura vermelha */
+    /* owner, 2026-11-24: the red guard's gatekeeper, a story fight of its own in the Admin Center (battle 322):
+     * the weakest Digimon of its levels brought up to the Lv28 bosses (HP 1584, Power ~415) and acting twice per
+     * action of the party (its MP-draining blow, twice: ~125 of the ~1000 MP a party has there), its two weaknesses
+     * kept so the lesson is the guard, not a lock */
+    { CAMPAIGN(322, 465), HP_PCT(200), POW_PCT(180), SPEED_X(2), RED_ALWAYS }, /* Vemmon, Lv28: fechadura vermelha+relampago (porteiro) */
     { SPECIES(13), SPEED_X(2), DEF_PCT(60) }, /* Mamemon, Lv29: relampago */
     { SPECIES(53), RESIST_ALL, DEF_PCT(60) }, /* Nanimon, Lv29: brutamontes */
     { SPECIES(173), GUARD_A, PHASES(2) }, /* Musyamon, Lv31: mare */

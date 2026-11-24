@@ -41,6 +41,8 @@ typedef struct DefPersona {
     unsigned char turns;      /* the enemy's turns a phase lasts; 0 with two phases: until it is staggered */
     unsigned char speed_x;    /* its Speed as this many times the party's; 0 its own */
     unsigned char def_pct;    /* its Defense at this percent of its own (1..100, lower only); 0 its own */
+    unsigned short hp_pct;    /* its HP at this percent of the encounter's (100..400, higher only); 0 its own */
+    unsigned short pow_pct;   /* its Power at this percent of its own (100..300, higher only); 0 its own */
     DefPersonaPhase phase[2]; /* A, B */
 } DefPersona;
 
@@ -88,6 +90,11 @@ enum { DEF_GUARD_NONE, DEF_GUARD_ORANGE, DEF_GUARD_RED };
 /* Its Defense at n% (owner, 2026-11-23: the molds that are fought hard, Brutamontes going physical and Relampago
  * hit in one go, take a lower Defense instead of the guide's lower HP, which a row cannot set). */
 #define DEF_PCT(n) .def_pct = (n)
+/* Its HP and Power raised to n% (owner, 2026-11-24: Vemmon, the first red guard, the weakest Digimon of its levels,
+ * brought up to the bosses around it as a gatekeeper). HP is set as the battle starts (def_persona_enemies_scale),
+ * so it is meant for CAMPAIGN rows: a SPECIES row would raise every encounter of the species. */
+#define HP_PCT(n) .hp_pct = (n)
+#define POW_PCT(n) .pow_pct = (n)
 
 extern const DefPersona def_personas[];
 extern const int def_persona_count;
@@ -106,6 +113,8 @@ int def_persona_own_map(const DefPersona *p);        /* 1: it changes the weakne
 int def_persona_hides_species(const DefPersona *p);  /* 1: an encounter's own map, its discovery apart (not SPECIES) */
 const DefPersona *def_persona_species(int species);  /* a common species' row, NULL none */
 int def_persona_def(const DefPersona *p, int defense); /* its Defense after DEF_PCT (at least 1) */
+int def_persona_hp(const DefPersona *p, int hp);       /* its HP after HP_PCT (at most 9999) */
+int def_persona_pow(const DefPersona *p, int power);   /* its Power after POW_PCT (at most 999) */
 int def_persona_weak(const DefPersona *p, int phase); /* the phase's weak families */
 int def_persona_guard(const DefPersona *p, int phase); /* the phase's DEF_GUARD_* */
 int def_persona_shifts_map(const DefPersona *p); /* 1: phase B has a map of its own (SHIFT changes the weaknesses) */

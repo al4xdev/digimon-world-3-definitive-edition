@@ -163,8 +163,10 @@ way round, an enemy's magic of power 100 (stat scale 16, so × 1) with Spirit 15
   cracked block). At the traits row's right end, for every enemy, the **next turns** as a queue of chips (red diamond
   the enemy, blue disc you): two diamonds before the disc is an enemy that acts twice (the old "Enemy x2" label). The values of a phase not learnt yet stay `???`.
 - **Where the red guard is** (owner, 2026-11-24): against a party that plays only physical, which no guard ever stops
-  for long, and kept rare, since magic finds it easy. Campaign commons that always have it: Vemmon (Lv28), Blossomon
-  (34), Kurisarimon (40), Tuskmon (42), Shadramon (47), Machinedramon (51), Apokarimon (56); Creepymon (55) has the
+  for long, and kept rare, since magic finds it easy. The first is its gatekeeper, the Vemmon of the Admin Center's
+  story fight (Lv28): the weakest Digimon of its levels raised to the Lv28 bosses (HP 1584, twice its own; Power
+  x1.8) and acting twice per action of yours, each blow draining 6.25% of the target's max MP (its own technique,
+  431), its two weaknesses kept, so the fight teaches the guard. Campaign commons that always have it: Blossomon (34), Kurisarimon (40), Tuskmon (42), Shadramon (47), Machinedramon (51), Apokarimon (56); Creepymon (55) has the
   orange guard in one phase and the red one in the other. The story's BK WarGreymon (Lv53) is weak to Dark alone,
   resists every other family and has the red guard, its HP untouched.
 - **Libra** reveals all of an enemy's elements at once.
