@@ -2955,6 +2955,12 @@ void fightstg_command_update(FightstgCommand *obj, FightstgCommandData *data) {
                     if (data->children[0] == NULL) {
                         data->children[0] = fightstg_hud_create();
                     }
+#ifdef PC_PORT
+                    if (def_battle_prompt_check()) {
+                        obj->base.set_substep(obj, 11);
+                        return;
+                    }
+#endif
                     if (data->children[1] == NULL) {
 #ifdef PC_PORT
                         if (port_mod_battle_menu != 0) { /* always, but under a replay script (game_mods.c) */
@@ -3135,6 +3141,11 @@ void fightstg_command_update(FightstgCommand *obj, FightstgCommandData *data) {
                 case -1:
                     obj->base.set_step(obj, 2);
                     break;
+                }
+                return;
+            case 11:
+                if (def_battle_prompt_frame() != 0) {
+                    obj->base.set_step(obj, 2);
                 }
                 return;
 #endif

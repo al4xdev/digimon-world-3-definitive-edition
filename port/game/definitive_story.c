@@ -954,6 +954,11 @@ static const unsigned char *echo_find(int file, int index) {
     }
     for (e = &def_story_echoes[lo]; lo < def_story_echo_count && e->file == file && e->index == index; e++, lo++) {
         if ((e->mode == 0 || e->mode == mode) && (e->answers >> def_record_story_answer(e->question) & 1)) {
+            const unsigned char *ret = def_is_ptbr() && e->pt_bytes != NULL ? e->pt_bytes : e->bytes;
+
+            if (ret == NULL) {
+                continue;
+            }
             static unsigned char seen[1024]; /* one log line per echo, not per frame it is drawn */
 
             if (lo < 1024 && !seen[lo]) {
@@ -961,7 +966,7 @@ static const unsigned char *echo_find(int file, int index) {
                 port_log("story: echo 0x%X %d (question %d answered %d)", file, index, e->question,
                          def_record_story_answer(e->question));
             }
-            return def_is_ptbr() && e->pt_bytes != NULL ? e->pt_bytes : e->bytes;
+            return ret;
         }
     }
     return NULL;
@@ -996,7 +1001,10 @@ const unsigned char *def_story_line(int file, int index) {
         return NULL;
     }
     if ((c = choice_find(file, index)) != NULL && (a = def_record_story_answer(c->question)) >= 1 && a <= c->count) {
-        return pt && c->lines_pt[a - 1] != NULL ? c->lines_pt[a - 1] : c->lines[a - 1]; /* what the player picked */
+        const unsigned char *picked = pt && c->lines_pt[a - 1] != NULL ? c->lines_pt[a - 1] : c->lines[a - 1];
+        if (picked != NULL) {
+            return picked;
+        }
     }
     if ((e = echo_find(file, index)) != NULL) {
         return e;
@@ -1018,21 +1026,31 @@ const unsigned char *def_story_line(int file, int index) {
     return NULL;
 }
 
+static void choice_apply_fx(const DefStoryChoice *c, int ans) {
+    int i = ans - 1;
+
+    if (i < 0 || i >= 3) {
+        return;
+    }
+    if (c->bond_ally[i] >= 0 && c->bond_delta[i] != 0) {
+        def_story_bond_add(c->bond_ally[i], c->bond_delta[i]);
+    }
+    if (c->rep_delta[i] != 0) {
+        def_story_rep_add(c->rep_delta[i]);
+    }
+}
+
 /* fieldstg_event's dialog command is about to show event text `msg` on actor `*actor`: 1 holds the script on it while
  * the hero's choice is on screen (en_choices.txt); the Kaili mode may move the balloon to the hero (`>hero`). */
 int def_story_event_dialog(s32 msg, s32 *actor) {
     s32 text = fieldstg_stage.event_text, file;
     const DefStoryChoice *c;
     const DefStoryLine *l;
+    const unsigned char *const *labels;
 
-    /* Only on the disc's English sets (records_language 1, 2: English and the Portuguese built on it), as
-     * def_text_override serves def_story_line: in French, German, Italian or Spanish the balloon keeps the disc's own
-     * line, so a choice (labels in English) would hold the scene for an answer nothing shows, and a `>hero` move would
-     * put the disc's line in the hero's mouth. No story logic reads these answers; the dreams are separate. */
     if (!story_layer_on() || text == 0 || (records_language != 1 && records_language != 2)) {
         return 0;
     }
-    /* event_text is the event's file and table with the language added to the file (fieldstg_event_start) */
     file = (((text >> 16) & 0xFFFF) - records_language) | (((text & 0xFFFF) + 1) << 16);
     if (((l = kaili_find(file, msg, def_is_ptbr())) != NULL || (l = kaili_find(file, msg, 0)) != NULL) && l->hero) {
         FieldstgActor *hero = (FieldstgActor *)heap_objects.find(5, -1, 0);
@@ -1044,16 +1062,137 @@ int def_story_event_dialog(s32 msg, s32 *actor) {
     if ((c = choice_find(file, msg)) == NULL || def_record_story_answer(c->question) != 0) {
         return 0;
     }
+    labels = def_is_ptbr() && c->labels_pt[0] != NULL ? c->labels_pt : c->labels;
+    if (labels[0] == NULL) {
+        return 0;
+    }
     if (choice.answered) {
         def_record_set_story_answer(c->question, choice.answered);
+        choice_apply_fx(c, choice.answered);
         port_log("story: frame %ld: choice %ld answered %ld", port_frames, (long)c->question, (long)choice.answered);
         choice.answered = 0;
-        return 0; /* the balloon now says the line picked (def_story_line) */
+        return 0;
     }
     if (!choice.open) {
-        choice_open(def_is_ptbr() && c->labels_pt[0] != NULL ? c->labels_pt : c->labels, c->count);
+        choice_open(labels, c->count);
     }
     return 1;
+}
+
+typedef struct DefNpcArc {
+    int npc_id;
+    int map;
+    int actor_id;
+    int min_progress;
+    int max_progress;
+    int stage;
+} DefNpcArc;
+
+/* Registered NPC mini-arcs: when progress is in [min_progress, max_progress] and the player hasn't seen `stage`,
+ * a floating thought-bubble indicator appears over the NPC's head in FIELDSTG. */
+static const DefNpcArc npc_arcs[] = {
+    /* Phase 1 (Asuka City) — 8 NPC mini-arcs across Central Park (0x200), Main Street (0x201) & Lobby (0x203) */
+    { 0, 0x200, 46, 0, 11, 0 },    /* Mika (Patamon fan) — Stage 0 (TALK00 19, Q200) */
+    { 0, 0x200, 46, 12, 999, 1 },  /* Mika — Stage 1 (TALK00 623) */
+    { 1, 0x200, 371, 12, 999, 1 }, /* Mika's Patamon — Stage 1 (TALK00 613) */
+    { 2, 0x200, 47, 0, 11, 0 },    /* Masato — Stage 0 (TALK00 15, Q201) */
+    { 2, 0x200, 47, 12, 999, 1 },  /* Masato — Stage 1 (TALK00 665) */
+    { 3, 0x200, 365, 0, 11, 0 },   /* Agumon Coach — Stage 0 (TALK00 21, Q202) */
+    { 3, 0x200, 365, 12, 999, 1 }, /* Agumon Coach — Stage 1 (TALK00 602) */
+    { 4, 0x201, 57, 0, 11, 0 },    /* Grandpa Jake — Stage 0 (TALK00 22, Q203) */
+    { 4, 0x201, 57, 12, 999, 1 },  /* Grandpa Jake — Stage 1 (TALK00 646) */
+    { 5, 0x201, 51, 0, 11, 0 },    /* Maniac Jack — Stage 0 (TALK00 11, Q204) */
+    { 5, 0x201, 51, 12, 999, 1 },  /* Maniac Jack — Stage 1 (TALK00 711) */
+    { 6, 0x203, 45, 0, 11, 0 },    /* Newbie Shiro — Stage 0 (TALK00 17, Q205) */
+    { 6, 0x203, 45, 12, 999, 1 },  /* Newbie Shiro — Stage 1 (TALK00 329) */
+    { 7, 0x203, 49, 0, 11, 0 },    /* Lazy Alan — Stage 0 (TALK00 13, Q206) */
+    { 7, 0x203, 49, 12, 999, 1 },  /* Lazy Alan — Stage 1 (TALK00 331) */
+    { 8, 0x203, 52, 0, 11, 0 },    /* Digimon Fan Mary — Stage 0 (TALK00 239, Q207) */
+    { 8, 0x203, 52, 12, 999, 1 },  /* Digimon Fan Mary — Stage 1 (TALK00 330) */
+};
+
+static const DefNpcArc *npc_arc_active(int map, int actor_id) {
+    int i, prog = gamestate_data.progress;
+
+    for (i = 0; i < (int)(sizeof(npc_arcs) / sizeof(npc_arcs[0])); i++) {
+        const DefNpcArc *a = &npc_arcs[i];
+        if (a->map == map && a->actor_id == actor_id && prog >= a->min_progress && prog <= a->max_progress) {
+            return a;
+        }
+    }
+    return NULL;
+}
+
+int def_story_npc_talk(s32 actor_id, s32 msg) {
+    s32 file;
+    const DefStoryChoice *c;
+    const unsigned char *const *labels;
+    const DefNpcArc *arc;
+
+    if (!story_layer_on() || (records_language != 1 && records_language != 2)) {
+        return 0;
+    }
+    arc = npc_arc_active(gamestate_data.funcs.get_map(), actor_id);
+    if (arc != NULL) {
+        def_story_npc_mark_seen(arc->npc_id, arc->stage);
+    }
+    if (fieldstg_stage.talk_file == 0) {
+        return 0;
+    }
+    file = fieldstg_stage.talk_file - records_language;
+    if ((c = choice_find(file, msg)) == NULL || def_record_story_answer(c->question) != 0) {
+        return 0;
+    }
+    labels = def_is_ptbr() && c->labels_pt[0] != NULL ? c->labels_pt : c->labels;
+    if (labels[0] == NULL) {
+        return 0;
+    }
+    if (choice.answered) {
+        def_record_set_story_answer(c->question, choice.answered);
+        choice_apply_fx(c, choice.answered);
+        port_log("story: frame %ld: npc choice %ld answered %ld", port_frames, (long)c->question, (long)choice.answered);
+        choice.answered = 0;
+        return 0;
+    }
+    if (!choice.open) {
+        choice_open(labels, c->count);
+    }
+    choice_frame();
+    return 1;
+}
+
+static void npc_ind_rect(GfxLayer *layer, s32 x, s32 y, s32 w, s32 h, u8 r, u8 g, u8 b) {
+    POLY_F4 *p = gfx_module.funcs.get_packet();
+
+    setPolyF4(p);
+    setRGB0(p, r, g, b);
+    setXY4(p, (s16)x, (s16)y, (s16)(x + w), (s16)y, (s16)x, (s16)(y + h), (s16)(x + w), (s16)(y + h));
+    addPrim(layer->get_ot_entry(layer, 1), p);
+    gfx_module.funcs.set_packet(p + 1);
+}
+
+void def_story_npc_indicator_draw(s32 actor_id, void *layer_ptr, s32 x, s32 y) {
+    GfxLayer *layer = (GfxLayer *)layer_ptr;
+    const DefNpcArc *arc;
+    s32 bob, bx, by, dot;
+
+    if (!story_layer_on() || !def_is_ptbr() || layer == NULL || fieldstg_stage.event_running) {
+        return;
+    }
+    arc = npc_arc_active(gamestate_data.funcs.get_map(), actor_id);
+    if (arc == NULL || def_story_npc_seen_stage(arc->npc_id) >= arc->stage) {
+        return;
+    }
+    bob = ((port_frames / 16) & 1) ? -2 : 0;
+    bx = x - 8;
+    by = y - 16 + bob;
+    dot = (int)((port_frames / 12) % 3);
+    npc_ind_rect(layer, bx + 2, by + 4, 2, 2, dot == 0 ? 255 : 70, dot == 0 ? 196 : 80, dot == 0 ? 64 : 110);
+    npc_ind_rect(layer, bx + 6, by + 4, 2, 2, dot == 1 ? 255 : 70, dot == 1 ? 196 : 80, dot == 1 ? 64 : 110);
+    npc_ind_rect(layer, bx + 10, by + 4, 2, 2, dot == 2 ? 255 : 70, dot == 2 ? 196 : 80, dot == 2 ? 64 : 110);
+    npc_ind_rect(layer, bx + 6, by + 11, 3, 2, 248, 244, 224);
+    npc_ind_rect(layer, bx + 1, by + 1, 13, 8, 248, 244, 224);
+    npc_ind_rect(layer, bx, by, 15, 10, 28, 36, 62);
 }
 
 /* The dream is over: back to the spot it took the player from (the room keeps it: dw3_velvet_leave). */

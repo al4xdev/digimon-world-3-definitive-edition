@@ -1,31 +1,56 @@
-# Portuguese choices, translated from en_choices.txt.
-Q8 DMG200:0 1@1: Deslumbre | <7><9><7>Uau...<1>Então este é o mundo<1>do Digimon Online?<2,2>
-Q8 DMG200:0 1@2: Desconfiança | <7><9><7>Então é isso.<1>Digimon Online. Parece<1>perfeito demais.<2,2>
-Q8 DMG200:0 1@3: Empolgação | <7><9><7>Finalmente. Digimon<1>Online. Vamos ver do<1>que ele é capaz.<2,2>
-Q9 DMG200:11 2@1: Orgulho | <7><9><7>Sim! Acabei de<1>receber meu Digimon!<2,2>
-Q9 DMG200:11 2@2: Modéstia | <7><9><7>Comecei agora. Ainda<1>não sei muita coisa.<2,2>
-Q9 DMG200:11 2@3: Nervosismo | <7><9><7>Tão óbvio assim?<1>...Sim. É minha<1>primeira vez.<2,2>
-Q10 DMG200:12 3@1: Título mundial. Sim. | <7><9><7>Título mundial. Sim.<1>Esse é o meu sonho.<2,2>
-Q10 DMG200:12 3@2: Talvez um dia | <7><9><7>Talvez um dia. Por<1>ora só tento<1>acompanhar.<2,2>
-Q10 DMG200:12 3@3: Quero ir pra casa | <7><9><7>Só quero ir pra<1>casa...<2,2>
-Q41 DMG200:12 7@1: Franqueza: não sei | <7><9><7>...Uma o quê?<2,2><3>Não faço ideia do<1>que é isso.<2,2>
-Q41 DMG200:12 7@2: Curiosidade: conte mais | <7><9><7>Uma Folder Bag? Não.<2,2><3>Para que serve?<2,2>
-Q41 DMG200:12 7@3: Blefe: fingindo saber | <7><9><7>Ah... uma Folder Bag.<2,2><3>...Nunca ouvi falar.<2,2>
-Q42 DMG200:21 4@1: Cautela | <7><9><7>...Sim. E quem<1>pergunta?<2,2>
-Q42 DMG200:21 4@2: Franqueza | <7><9><7>Sou eu. Quem é<1>você?<2,2>
-Q42 DMG200:21 4@3: Confissão | <7><9><7>Confesso. E você<1>é...?<2,2>
-Q11 DMG200:21 6@1: Marra | <7><9><7>É? Vamos ver quem<1>vence.<2,2>
-Q11 DMG200:21 6@2: Calma | <7><9><7>Veremos. No dia.<2,2>
-Q11 DMG200:21 6@3: Simpatia | <7><9><7>Então espero que seja<1>uma boa luta.<2,2>
-Q12 DMG200:22 1@1: Marra | <7><9><7>Venci. Quem é o<1>campeão agora?<2,2>
-Q12 DMG200:22 1@2: Elegância | <7><9><7>Boa luta. Venci,<1>mas por pouco.<2,2>
-Q12 DMG200:22 1@3: Ironia | <7><9><7>Um pra mim.<2,2>
-Q43 DMG200:22 5@1: Descaso: tanto faz | <7><9><7>Tanto faz.<2,2><3>O otário é você.<2,2>
-Q43 DMG200:22 5@2: Humor: difícil esquecer | <7><9><7>Não vou esquecer<1>você.<2,2><3>Difícil esquecer<1>alguém tão barulhento.<2,2>
-Q43 DMG200:22 5@3: Rivalidade: dê seu melhor | <7><9><7>Então até a próxima.<1>Dê o seu melhor.<2,2><3>Eu darei o meu.<2,2>
-Q14 DMG200:23 3@1: Franqueza | <7><9><7>Não é você quem tem<1>a máscara do Sepikmon?<2,2>
-Q14 DMG200:23 3@2: Educação | <7><9><7>Com licença. Por<1>acaso você tem a<1>máscara do Sepikmon?<2,2>
-Q14 DMG200:23 3@3: Malícia | <7><9><7>Coincidência: a<1>máscara do Sepikmon<1>sumiu. E você tem<2,2><3>cara de suspeito.<2,2>
+# Portuguese choices — Fase 1 revisada em tom dublagem clássica 80/90 + mini-arcos de Asuka City (Q200..Q202).
+Q8 DMG200:0 1@1: Queixinho caído [teddy:+1] | <7><9><7>Nossa Senhora...<1>Então é isso aqui o tal<1>do Digimon Online?!<2,2>
+Q8 DMG200:0 1@2: Pé atrás [ivy:+1] | <7><9><7>Bonito demais pra ser<1>verdade... Onde tá a<1>pegadinha?<2,2>
+Q8 DMG200:0 1@3: Sangue nos olhos [rep:+1] | <7><9><7>Finalmente! Digimon<1>Online! Bora ver se<1>dá caldo mesmo!<2,2>
+Q9 DMG200:11 2@1: Cheio de marra [rep:+1] | <7><9><7>Na mosca! Acabei de<1>pegar meu Digimon e<1>já tô pronto!<2,2>
+Q9 DMG200:11 2@2: Humilde [teddy:+1] | <7><9><7>Comecei agora, coroa.<1>Tô pegando o jeito<1>ainda.<2,2>
+Q9 DMG200:11 2@3: Sem graça [ivy:+1] | <7><9><7>Tô com cara de turista<1>assim?! ...É, cheguei<1>agora mesmo.<2,2>
+Q10 DMG200:12 3@1: Vou levar a taça! [rep:+1] | <7><9><7>Título mundial? Pode<1>escrever que eu vou<1>buscar essa taça!<2,2>
+Q10 DMG200:12 3@2: Quem sabe um dia [teddy:+1] | <7><9><7>Quem sabe um dia.<1>Primeiro deixa eu não<1>tomar um pau.<2,2>
+Q10 DMG200:12 3@3: Só vim passear [rep:-1] | <7><9><7>Calma, coroa! Só vim<1>curtir o jogo de boa...<2,2>
+Q41 DMG200:12 7@1: É de comer? [teddy:+1] | <7><9><7>...Uma o quê?!<2,2><3>Isso aí é de comer?<2,2>
+Q41 DMG200:12 7@2: Explica aí [rep:+1] | <7><9><7>Folder Bag? Nem tenho.<2,2><3>Serve pra quê isso?<2,2>
+Q41 DMG200:12 7@3: Blefar na cara dura [keith:+1] | <7><9><7>Ah, claro... Folder Bag.<2,2><3>...Nunca nem vi.<2,2>
+Q42 DMG200:21 4@1: Quem na fila do pão? [keith:+1] | <7><9><7>...Sou eu mesmo.<1>E você é quem na fila<1>do pão?<2,2>
+Q42 DMG200:21 4@2: Na lata [rep:+1] | <7><9><7>Sou eu. Qual foi?<2,2>
+Q42 DMG200:21 4@3: Cautela [ivy:+1] | <7><9><7>Depende... quem tá<1>perguntando?<2,2>
+Q11 DMG200:21 6@1: Senta lá, fera [keith:+1,rep:+1] | <7><9><7>Aham, senta lá.<1>Vamos ver no ringue.<2,2>
+Q11 DMG200:21 6@2: Na calma [teddy:+1] | <7><9><7>Falar é fácil. Na hora<1>H a gente descobre.<2,2>
+Q11 DMG200:21 6@3: Esportiva [lisa:+1] | <7><9><7>Beleza, então faz valer<1>o ingresso.<2,2>
+Q12 DMG200:22 1@1: Quem manda agora?! [keith:+1,rep:+1] | <7><9><7>Toma! E agora, quem é<1>que manda no pedaço?!<2,2>
+Q12 DMG200:22 1@2: Boa luta [lisa:+1] | <7><9><7>Mandou bem, hein.<1>Deu trabalho.<2,2>
+Q12 DMG200:22 1@3: Ironia seca [keith:-1] | <7><9><7>Um a zero pra mim.<1>Quer troco?<2,2>
+Q43 DMG200:22 5@1: Mané é tu! [keith:+1] | <7><9><7>Aham, sei...<2,2><3>Mané é tu, fanfarrão.<2,2>
+Q43 DMG200:22 5@2: Garganta demais [rep:+1] | <7><9><7>Difícil esquecer alguém<1>que grita tanto.<2,2>
+Q43 DMG200:22 5@3: Até a próxima [keith:+2] | <7><9><7>Então treina direito.<1>Na próxima eu quero<1>ver fogo!<2,2>
+Q14 DMG200:23 3@1: Passou a mão? [rep:+1] | <7><9><7>Não foi você que passou<1>a mão na máscara do<1>Sepikmon?<2,2>
+Q14 DMG200:23 3@2: Na educação [lisa:+1] | <7><9><7>Com licença, ô rei...<1>Por acaso a máscara do<1>Sepikmon caiu no teu bolso?<2,2>
+Q14 DMG200:23 3@3: Cara de suspeito [ivy:+1] | <7><9><7>A máscara sumiu e você<1>tá suando frio.<1>Coincidência?<2,2>
+# Fase 1: Mini-arcos de NPCs de Asuka City (TALK00, mapa 0x200)
+Q200 TALK00 19@1: Dá a dica do Ginásio [rep:+1] | <7>Mika<7>Pô, Patamon, que corpo<1>mole é esse?! Quando<1>você vira Angemon?!<2,2><3><7><9><7>Calma, menina! Sem<1>batalha e Ginásio ele<1>não evolui mesmo.<2,2>
+Q200 TALK00 19@2: Zoa o Patamon [rep:-1] | <7>Mika<7>Pô, Patamon, que corpo<1>mole é esse?! Quando<1>você vira Angemon?!<2,2><3><7><9><7>Esse pão de queijo<1>voador aí? Vai virar<1>Angemon nunca!<2,2>
+Q200 TALK00 19@3: Pede paciência [teddy:+1] | <7>Mika<7>Pô, Patamon, que corpo<1>mole é esse?! Quando<1>você vira Angemon?!<2,2><3><7><9><7>Pega leve com o bicho!<1>Na hora do aperto ele<1>vai te surpreender.<2,2>
+Q201 TALK00 15@1: Valeu, mestre! [rep:+1] | <7>Masato<7>Escuta o veterano aqui:<1>teu primeiro alvo é o<1>Líder de Seiryu, a leste.<2,2><3><7><9><7>Valeu, chefe! Vou lá<1>mostrar serviço agora.<2,2>
+Q201 TALK00 15@2: E você, já ganhou? [ivy:+1] | <7>Masato<7>Escuta o veterano aqui:<1>teu primeiro alvo é o<1>Líder de Seiryu, a leste.<2,2><3><7><9><7>Se você manja tanto,<1>tá fazendo o quê<1>plantado na praça?<2,2>
+Q201 TALK00 15@3: Derrubo antes do almoço! [keith:+1] | <7>Masato<7>Escuta o veterano aqui:<1>teu primeiro alvo é o<1>Líder de Seiryu, a leste.<2,2><3><7><9><7>Deixa comigo que eu<1>derrubo esse Líder<1>antes do almoço!<2,2>
+Q202 TALK00 21@1: Manda o treino, coach! [rep:+1] | <7>Agumon<7>Ei! Só sair no braço<1>não basta! Tem que<1>suar a camisa no Ginásio!<2,2><3><7><9><7>Pode deixar, coach!<1>Vou puxar ferro lá<1>já já!<2,2>
+Q202 TALK00 21@2: Prefiro sair na mão! [keith:+1] | <7>Agumon<7>Ei! Só sair no braço<1>não basta! Tem que<1>suar a camisa no Ginásio!<2,2><3><7><9><7>Academia nada! O meu<1>negócio é porrada<1>franca no mato!<2,2>
+Q202 TALK00 21@3: Só quero um lanche [teddy:+1] | <7>Agumon<7>Ei! Só sair no braço<1>não basta! Tem que<1>suar a camisa no Ginásio!<2,2><3><7><9><7>Treinar de barriga<1>vazia? Nem pensar!<1>Bora comer primeiro!<2,2>
+Q203 TALK00 22@1: Viraria qual, vovô? [teddy:+1] | <7>Jake<7>Eu queria virar Digimon<1>pelo menos uma vez na<1>vida! Hyo hyo hyo!<2,2><3><7><9><7>Haha, boa, vovô!<1>Qual Digimon o senhor<1>ia querer ser?<2,2>
+Q203 TALK00 22@2: Cuidado com o pedido [ivy:+1] | <7>Jake<7>Eu queria virar Digimon<1>pelo menos uma vez na<1>vida! Hyo hyo hyo!<2,2><3><7><9><7>Cuidado com o que<1>deseja nesse servidor,<1>vovô... vai que cola!<2,2>
+Q203 TALK00 22@3: Cada doido em Asuka... [rep:-1] | <7>Jake<7>Eu queria virar Digimon<1>pelo menos uma vez na<1>vida! Hyo hyo hyo!<2,2><3><7><9><7>Cada figura que a<1>gente encontra nessa<1>cidade...<2,2>
+Q204 TALK00 11@1: Manda a build, chefe! [rep:+1] | <7>Jack Maníaco<7>Equipa uma arma no teu<1>Digimon pro ataque<1>explodir! Mas cada um<2,2><3>usa um tipo diferente.<2,2><3><7><9><7>Opa, valeu a aula!<1>Vou equipar o time<1>nos trinques!<2,2>
+Q204 TALK00 11@2: Prefiro no soco limpo [keith:+1] | <7>Jack Maníaco<7>Equipa uma arma no teu<1>Digimon pro ataque<1>explodir! Mas cada um<2,2><3>usa um tipo diferente.<2,2><3><7><9><7>Arma é pra quem não<1>se garante no braço!<1>Aqui é na raça!<2,2>
+Q204 TALK00 11@3: Cadê o teu Digimon? [lisa:+1] | <7>Jack Maníaco<7>Equipa uma arma no teu<1>Digimon pro ataque<1>explodir! Mas cada um<2,2><3>usa um tipo diferente.<2,2><3><7><9><7>Beleza, mas falando<1>nisso... cadê o teu<1>Digimon?<2,2>
+Q205 TALK00 17@1: Dá um beliscão aí! [teddy:+1] | <7>Shiro Novato<7>Essa Matrix Chamber é<1>coisa de louco! Nem<1>acredito que tô na rede!<2,2><3><7><9><7>Dá um beliscão na<1>bochecha pra ter<1>certeza que não é sonho!<2,2>
+Q205 TALK00 17@2: Fica esperto com isso [ivy:+1] | <7>Shiro Novato<7>Essa Matrix Chamber é<1>coisa de louco! Nem<1>acredito que tô na rede!<2,2><3><7><9><7>Tecnologia demais e<1>explicação de menos.<1>Abre o olho, parceiro.<2,2>
+Q205 TALK00 17@3: Bem-vindo ao futuro! [rep:+1] | <7>Shiro Novato<7>Essa Matrix Chamber é<1>coisa de louco! Nem<1>acredito que tô na rede!<2,2><3><7><9><7>Show de bola, né?!<1>Bora aproveitar que o<1>jogo tá só começando!<2,2>
+Q206 TALK00 13@1: Explica direito, ué [rep:+1] | <7>Alan Preguiçoso<7>Esse treco em cima da<1>tua cabeça é um satélite.<1>Cuida dos teus dados.<2,2><3>Eu também tenho um, só<1>que não aparece.<2,2><3><7><9><7>Pô, explica direito!<1>Tu tá falando quase<1>dormindo, cara!<2,2>
+Q206 TALK00 13@2: Tá com sono, chapa? [teddy:+1] | <7>Alan Preguiçoso<7>Esse treco em cima da<1>tua cabeça é um satélite.<1>Cuida dos teus dados.<2,2><3>Eu também tenho um, só<1>que não aparece.<2,2><3><7><9><7>Eita moleza... vai<1>tomar um café antes<1>de dar tutorial!<2,2>
+Q206 TALK00 13@3: Já saquei tudo [keith:+1] | <7>Alan Preguiçoso<7>Esse treco em cima da<1>tua cabeça é um satélite.<1>Cuida dos teus dados.<2,2><3>Eu também tenho um, só<1>que não aparece.<2,2><3><7><9><7>Beleza, já saquei!<1>Não precisa se cansar<1>explicando não!<2,2>
+Q207 TALK00 239@1: Gallantmon é brabo! [rep:+1] | <7>Mary Fã de Digimon<7>Meu sonho é evoluir<1>meu Digimon para um<1>Gallantmon...<2,2><3><7><9><7>Aí sim! Gallantmon é<1>puro respeito, vai<1>fundo nessa meta!<2,2>
+Q207 TALK00 239@2: E o Beelzemon, não? [keith:+1] | <7>Mary Fã de Digimon<7>Meu sonho é evoluir<1>meu Digimon para um<1>Gallantmon...<2,2><3><7><9><7>Gallantmon é legal, mas<1>já pensou num Beelzemon?<1>Aquele sim mete medo!<2,2>
+Q207 TALK00 239@3: Começa pelo básico [lisa:+1] | <7>Mary Fã de Digimon<7>Meu sonho é evoluir<1>meu Digimon para um<1>Gallantmon...<2,2><3><7><9><7>Calma lá, fã número um!<1>Primeiro treina direito,<1>depois pensa em Mega!<2,2>
 Q16 DMG200:24 13@1: Acusar Lucky Mouse | <7><9><7>Manutenção? Duvido.<1>Isso tem cara de<1>Lucky Mouse.<2,2>
 Q16 DMG200:24 13@2: Duvidar do óbvio | <7><9><7>Talvez Lucky Mouse.<1>Ou alguém quer que a<1>gente pense isso.<2,2>
 Q16 DMG200:24 13@3: Perguntar por quê | <7><9><7>Se Lucky Mouse fez<1>isso, quero saber<1>por quê.<2,2>

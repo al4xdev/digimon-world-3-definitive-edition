@@ -42,7 +42,7 @@
 #define DEF_GUARD_PCT 30          /* percent of the party's damage a guarded boss takes until a stagger opens it (definitive.c guard_damage) */
 #define DEF_STAGGER_STATUS_BONUS 24 /* out of 128: flat bonus (after x1.5) when the target is staggered */
 #define DEF_BOSS_STATUS_CAP 100    /* out of 128 (~78%): no status is surer than this on a boss, stagger or not */
-#define DEF_POISON_WIND_DIV 6     /* Wind affinity (0..300) divided by this feeds poison damage */
+#define DEF_POISON_WIND_DIV 6     /* Wind affinity (0..400) divided by this feeds poison damage */
 #define DEF_POISON_PREC_DIV 4     /* Precision divided by this feeds poison damage */
 #define DEF_POISON_SPIRIT_DIV 4   /* Spirit divided by this feeds poison damage */
 #define DEF_SUPER_ITEM 26         /* Super Hard: the Demon Bell, a key item (a Japanese tag slot the US disc never gives) */
@@ -169,6 +169,9 @@ typedef struct DefStoryChoice {
     const unsigned char *lines[3];
     const unsigned char *labels_pt[3]; /* the Portuguese choice (pt_choices.txt): all three NULL while untranslated */
     const unsigned char *lines_pt[3];
+    signed char bond_ally[3]; /* -1: none, 0..4: Teddy, Ivy, Lisa, Keith, Kurt */
+    signed char bond_delta[3];
+    signed char rep_delta[3];
 } DefStoryChoice;
 extern const DefStoryLine def_story_lines[], def_story_lines_pt[], def_kaili_lines[], def_kaili_lines_pt[];
 extern const int def_story_line_count, def_story_line_pt_count, def_kaili_line_count, def_kaili_line_pt_count;
@@ -886,6 +889,11 @@ void def_flee_ask_close(void);
 void def_flee_ask_reset(void);
 void def_flee_ask_savestate(struct PortState *s);
 
+void def_battle_prompt_reset(void);
+int def_battle_prompt_check(void);
+int def_battle_prompt_frame(void);
+void def_battle_prompt_savestate(struct PortState *s);
+
 /* The Guide (definitive_quest.c: the rules; definitive_quest_screen.c: the screen and the field's notices). The field
  * menu gets a GUIDE entry: the main quest's current step, the missions still open and the Cargo Tower's auctions. */
 #define DEF_QUEST_NO_FLAG 0xFFFF  /* a quest row that asks for no game flag beside its story steps */
@@ -1069,8 +1077,28 @@ void def_record_set_velvet_seen(int level);
 int def_record_story(int bit);
 void def_record_set_story(int bit);
 /* The story's answers, in the order it asks them (Igor's dreams): 0 not asked yet, else the option taken (1..). */
-#define DEF_STORY_ANSWERS 160 /* 0..7 Igor's dreams, 8..159 the scenes' choices (en_choices.txt Q<n>), 1..3 each */
+#define DEF_STORY_ANSWERS 160 /* legacy memory-card slot count (0..159), mirrored with expansion save */
 #define DEF_STORY_ANSWER_BYTES (DEF_STORY_ANSWERS / 4) /* two bits an answer: what the record has room for */
+#define DEF_STORY_EXT_ANSWERS 512 /* expanded narrative save: 0..511 questions (0 = ignored/unspoken, 1..3 = choice) */
+#define DEF_STORY_BONDS 5         /* 0 Teddy, 1 Ivy, 2 Lisa, 3 Keith, 4 Kurt */
+#define DEF_STORY_NPC_SLOTS 128
+enum {
+    DEF_BOND_TEDDY = 0,
+    DEF_BOND_IVY = 1,
+    DEF_BOND_LISA = 2,
+    DEF_BOND_KEITH = 3,
+    DEF_BOND_KURT = 4,
+};
+int def_story_save_answer(int question);
+void def_story_save_set_answer(int question, int option);
+void def_story_save_import_legacy(const unsigned char *legacy, int bytes);
+void def_story_save_export_legacy(unsigned char *legacy, int bytes);
+int def_story_bond(int ally);
+void def_story_bond_add(int ally, int delta);
+int def_story_rep(void);
+void def_story_rep_add(int delta);
+int def_story_npc_seen_stage(int npc_id);
+void def_story_npc_mark_seen(int npc_id, int stage);
 int def_record_story_answer(int question);
 void def_record_set_story_answer(int question, int option);
 void def_record_set_story_gate(int stage);

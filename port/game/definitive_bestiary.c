@@ -401,6 +401,7 @@ void def_record2_write(unsigned char *out) {
     out[REC2_BLAST_QUEST + 6] = (unsigned char)story_flags;
     out[REC2_BLAST_QUEST + 7] = (unsigned char)(story_flags >> 8);
     out[REC2_BLAST_QUEST + 8] = story_gate;
+    def_story_save_export_legacy(story_answers, (int)sizeof(story_answers));
     memcpy(out + REC2_ANSWERS, story_answers, sizeof(story_answers));
     def_super_record_write(out + REC2_SUPER);
     def_skin_record_write(out + REC2_SKIN);
@@ -443,6 +444,7 @@ void def_record2_read(const unsigned char *in) {
     story_flags = (unsigned short)(in[REC2_BLAST_QUEST + 6] | in[REC2_BLAST_QUEST + 7] << 8);
     story_gate = in[REC2_BLAST_QUEST + 8];
     memcpy(story_answers, in + REC2_ANSWERS, sizeof(story_answers));
+    def_story_save_import_legacy(story_answers, (int)sizeof(story_answers));
     def_super_record_read(in + REC2_SUPER);
     def_skin_record_read(in + REC2_SKIN);
     port_log("hunt: the slot's second record read");
@@ -554,10 +556,11 @@ void def_record_set_velvet_seen(int level) {
 }
 
 int def_record_story_answer(int question) {
-    return question >= 0 && question < DEF_STORY_ANSWERS ? story_answers[question >> 2] >> ((question & 3) * 2) & 3 : 0;
+    return def_story_save_answer(question);
 }
 
 void def_record_set_story_answer(int question, int option) {
+    def_story_save_set_answer(question, option);
     if (question >= 0 && question < DEF_STORY_ANSWERS) {
         int shift = (question & 3) * 2;
 

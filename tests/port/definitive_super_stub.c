@@ -55,3 +55,11 @@ void dw3_velvet_reset(void) {
 }
 void def_time_reset(void) {
 }
+
+#include "definitive_expansion.h"
+static void bext_reset(void) {}
+static void bext_load(const struct cJSON *s) { (void)s; }
+static void bext_save(struct cJSON *s) { (void)s; }
+static int bext_any(void) { return 0; }
+static void bext_savestate(struct PortState *s) { (void)s; }
+const DefExpansionSection def_bestiary_ext_section = { "bestiary_ext", bext_reset, bext_load, bext_save, bext_any, NULL, bext_savestate };

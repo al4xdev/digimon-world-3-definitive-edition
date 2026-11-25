@@ -411,8 +411,31 @@ def render_pt(en_rows, lang_rows, tables, inv):
     return "\n".join(lines)
 
 
+ALLY_MAP = {"teddy": 0, "ivy": 1, "lisa": 2, "keith": 3, "kurt": 4}
+
+
+def parse_choice_fx(label):
+    """Extract optional `[teddy:+1,rep:-1]` tag from the end of a choice label."""
+    ally, bdelta, rdelta = -1, 0, 0
+    m = re.search(r"\s*\[([^\]]+)\]\s*$", label)
+    if m:
+        label = label[:m.start()].rstrip()
+        for part in m.group(1).split(","):
+            k, _, v = part.strip().partition(":")
+            k = k.strip().lower()
+            val = int(v.strip())
+            if k == "rep":
+                rdelta = val
+            elif k in ALLY_MAP:
+                ally = ALLY_MAP[k]
+                bdelta = val
+            else:
+                sys.exit(f"unknown choice effect {k!r} in [{m.group(1)}]")
+    return label, ally, bdelta, rdelta
+
+
 def load_choices(path=SRC_CHOICES):
-    """`Q<n> FILE[:sub] index@<k>: label | text` -> {(name, index): (n, [(k, label, text)])}."""
+    """`Q<n> FILE[:sub] index@<k>: label [fx] | text` -> {(name, index): (n, [(k, label, text, ally, bdelta, rdelta)])}."""
     out = {}
     if not path.exists():
         return out
@@ -422,13 +445,14 @@ def load_choices(path=SRC_CHOICES):
         m = re.match(r"Q(\d+)\s+(\S+)\s+(\d+)@([123]):\s*(.*?)\s*\|\s*(.*)$", line)
         if not m:
             sys.exit(f"{path.name}:{n}: expected `Q<n> FILE index@<k>: label | text`")
-        q, name, idx, k, label, text = int(m[1]), m[2].upper(), int(m[3]), int(m[4]), m[5], m[6].strip()
+        q, name, idx, k, raw_label, text = int(m[1]), m[2].upper(), int(m[3]), int(m[4]), m[5], m[6].strip()
+        label, ally, bdelta, rdelta = parse_choice_fx(raw_label)
         if len(label) > 26:
-            sys.exit(f"{path.name}:{n}: the label is longer than 26 letters")
+            sys.exit(f"{path.name}:{n}: the label is longer than 26 letters ({label!r})")
         key = (name, idx)
         if key in out and out[key][0] != q:
             sys.exit(f"{path.name}:{n}: {name} {idx} has two question numbers")
-        out.setdefault(key, (q, []))[1].append((k, label, text))
+        out.setdefault(key, (q, []))[1].append((k, label, text, ally, bdelta, rdelta))
     # a question on several entries is one scene's copies (the partner packs' DMG200:3/4/5...): one plays, the same
     # options in each
     count = {}
@@ -438,13 +462,14 @@ def load_choices(path=SRC_CHOICES):
     return out
 
 
-ECHO = re.compile(r"Q(\d+)=([123](?:,[123])*)\s+(?:(kaili)\s+)?(\S+)\s+(\d+):\s*(.*)$")
+ECHO = re.compile(r"Q(\d+)=([0123](?:,[0123])*)\s+(?:(kaili)\s+)?(\S+)\s+(\d+):\s*(.*)$")
 DREAMS = 8  # story answers 0..7 are Igor's dreams (definitive_story.c), 3 options each
+MAX_QUESTIONS = 512
 
 
 def load_echoes(choices, path=SRC_ECHOES):
     """`Q<n>=<k>[,<k>...] [kaili] FILE[:sub] index: text` -> [(name, index, n, mask, kaili, text)] in the file's order.
-    `kaili` marks the Girls Power line; without one, that mode gets the line with the names swapped."""
+    k=0 matches when the player ignored/missed the question. `kaili` marks the Girls Power line."""
     out = []
     if not path.exists():
         return out
@@ -456,8 +481,8 @@ def load_echoes(choices, path=SRC_ECHOES):
         if not m:
             sys.exit(f"{path.name}:{n}: expected `Q<n>=<k> [kaili] FILE index: text`")
         q, ks, name, idx, text = int(m[1]), [int(k) for k in m[2].split(",")], m[4].upper(), int(m[5]), m[6].strip()
-        if q >= 160 or (q >= DREAMS and q not in asked):
-            sys.exit(f"{path.name}:{n}: Q{q} is no question (en_choices.txt, or 0..{DREAMS - 1} for the dreams)")
+        if q >= MAX_QUESTIONS or (q >= DREAMS and q not in asked):
+            sys.exit(f"{path.name}:{n}: Q{q} is no question (choices, or 0..{DREAMS - 1} for the dreams)")
         if any(k > asked.get(q, 3) for k in ks):
             sys.exit(f"{path.name}:{n}: Q{q} has {asked.get(q, 3)} options")
         if (name, idx) in choices:
@@ -544,47 +569,63 @@ def render_story(tables, inv, en_rows, pt_rows):
     for (name, idx), (q, opts) in loaded.items():
         if (name, idx) in kaili_keys:
             sys.exit(f"{SRC_CHOICES.name}: Q{q} {name} {idx} has a line of its own in {SRC_KAILI.name}")
-        if any(NAMES.search(text) for _, _, text in opts):
+        if any(NAMES.search(text) for _, _, text, _, _, _ in opts):
             sys.exit(f"{SRC_CHOICES.name}: Q{q} {name} {idx} names Junior, Ivy or Kail (the Kaili mode cannot swap it)")
     loaded_pt = load_choices(SRC_CHOICES_PT)
     for (name, idx), (q, opts) in loaded_pt.items():
-        if (name, idx) not in loaded or loaded[(name, idx)][0] != q:
-            sys.exit(f"{SRC_CHOICES_PT.name}: Q{q} {name} {idx} is not a choice of {SRC_CHOICES.name}")
-        if any(NAMES.search(text) for _, _, text in opts):
+        if (name, idx) in loaded and loaded[(name, idx)][0] != q:
+            sys.exit(f"{SRC_CHOICES_PT.name}: Q{q} {name} {idx} has different question number than {SRC_CHOICES.name}")
+        if any(NAMES.search(text) for _, _, text, _, _, _ in opts):
             sys.exit(f"{SRC_CHOICES_PT.name}: Q{q} {name} {idx} names Junior, Ivy or Kail (the Kaili mode cannot swap it)")
-    choices = sorted(((jpn_id(name), idx, name, q, sorted(opts)) for (name, idx), (q, opts) in loaded.items()),
-                     key=lambda r: (r[0], r[1]))
-    pt_opts = {}  # c -> {k: (label, text)} of the Portuguese choice (all of its options, or none)
-    for c, (fid, idx, name, q, opts) in enumerate(choices):
-        for k, label, text in opts:
-            lines.append(arr(f"st_choice_{c}_label_{k}", encode(label, inv, SRC_CHOICES.name)
-                             .replace(b"\xe6", b"\x01\x09") + b"\0"))
-            lines.append(arr(f"st_choice_{c}_line_{k}", encode(text, inv, SRC_CHOICES.name) + b"\0"))
-        pq = loaded_pt.get((name, idx))
-        if pq is not None and sorted(k for k, _, _ in pq[1]) == [k for k, _, _ in opts]:
-            for k, label, text in pq[1]:
+    all_choice_keys = set(loaded.keys()) | set(loaded_pt.keys())
+    all_choices_union = dict(loaded)
+    for key, val in loaded_pt.items():
+        all_choices_union.setdefault(key, val)
+    choices = sorted(
+        (jpn_id(name), idx, name, loaded[k][0] if k in loaded else loaded_pt[k][0],
+         sorted(loaded[k][1]) if k in loaded else None,
+         sorted(loaded_pt[k][1]) if k in loaded_pt else None)
+        for k in all_choice_keys for name, idx in [k]
+    )
+    for c, (fid, idx, name, q, en_opts, pt_opts_list) in enumerate(choices):
+        if en_opts is not None:
+            for k, label, text, _, _, _ in en_opts:
+                lines.append(arr(f"st_choice_{c}_label_{k}", encode(label, inv, SRC_CHOICES.name)
+                                 .replace(b"\xe6", b"\x01\x09") + b"\0"))
+                lines.append(arr(f"st_choice_{c}_line_{k}", encode(text, inv, SRC_CHOICES.name) + b"\0"))
+        if pt_opts_list is not None and (en_opts is None or [x[0] for x in pt_opts_list] == [x[0] for x in en_opts]):
+            for k, label, text, _, _, _ in pt_opts_list:
                 lines.append(arr(f"st_choice_{c}_plabel_{k}", encode(label, inv, SRC_CHOICES_PT.name)
                                  .replace(b"\xe6", b"\x01\x09") + b"\0"))
                 lines.append(arr(f"st_choice_{c}_pline_{k}", encode(text, inv, SRC_CHOICES_PT.name) + b"\0"))
-            pt_opts[c] = True
     lines += ["", "const DefStoryChoice def_story_choices[] = {"]
-    for c, (fid, idx, name, q, opts) in enumerate(choices):
-        labels = ", ".join(f"st_choice_{c}_label_{k}" for k, _, _ in opts) + ", 0" * (3 - len(opts))
-        texts = ", ".join(f"st_choice_{c}_line_{k}" for k, _, _ in opts) + ", 0" * (3 - len(opts))
-        if c in pt_opts:
-            plabels = ", ".join(f"st_choice_{c}_plabel_{k}" for k, _, _ in opts) + ", 0" * (3 - len(opts))
-            ptexts = ", ".join(f"st_choice_{c}_pline_{k}" for k, _, _ in opts) + ", 0" * (3 - len(opts))
+    for c, (fid, idx, name, q, en_opts, pt_opts_list) in enumerate(choices):
+        ref_opts = pt_opts_list if pt_opts_list is not None else en_opts
+        n_opts = len(ref_opts)
+        if en_opts is not None:
+            labels = ", ".join(f"st_choice_{c}_label_{k}" for k, _, _, _, _, _ in en_opts) + ", 0" * (3 - len(en_opts))
+            texts = ", ".join(f"st_choice_{c}_line_{k}" for k, _, _, _, _, _ in en_opts) + ", 0" * (3 - len(en_opts))
+        else:
+            labels = texts = "0, 0, 0"
+        if pt_opts_list is not None and (en_opts is None or [x[0] for x in pt_opts_list] == [x[0] for x in en_opts]):
+            plabels = ", ".join(f"st_choice_{c}_plabel_{k}" for k, _, _, _, _, _ in pt_opts_list) + ", 0" * (3 - len(pt_opts_list))
+            ptexts = ", ".join(f"st_choice_{c}_pline_{k}" for k, _, _, _, _, _ in pt_opts_list) + ", 0" * (3 - len(pt_opts_list))
         else:
             plabels = ptexts = "0, 0, 0"
-        lines.append(f"    {{ 0x{fid:X}, {idx}, {q}, {len(opts)}, {{ {labels} }}, {{ {texts} }}, {{ {plabels} }}, "
-                     f"{{ {ptexts} }} }}, /* {name} {idx} */")
-    lines += ["    { 0, 0, 0, 0, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 } },", "};",
+        allies = ", ".join(str(x[3]) for x in ref_opts) + ", -1" * (3 - n_opts)
+        bdeltas = ", ".join(str(x[4]) for x in ref_opts) + ", 0" * (3 - n_opts)
+        rdeltas = ", ".join(str(x[5]) for x in ref_opts) + ", 0" * (3 - n_opts)
+        lines.append(f"    {{ 0x{fid:X}, {idx}, {q}, {n_opts}, {{ {labels} }}, {{ {texts} }}, {{ {plabels} }}, "
+                     f"{{ {ptexts} }}, {{ {allies} }}, {{ {bdeltas} }}, {{ {rdeltas} }} }}, /* {name} {idx} */")
+    lines += ["    { 0, 0, 0, 0, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { 0, 0, 0 }, { -1, -1, -1 }, { 0, 0, 0 }, { 0, 0, 0 } },", "};",
               f"const int def_story_choice_count = {len(choices)};", ""]
 
     # the echoes: mode 0 both heroes, 1 without Girls Power, 2 with it (its own line, or the names swapped)
-    echoes, hand_k = [], {(n, i, q, mask) for n, i, q, mask, k, _ in load_echoes(loaded) if k}
-    # Portuguese: the same keys, `kaili` marking Girls Power's own line; a missing one shows the English
-    echo_pt = {(n, i, q, mask, k): t for n, i, q, mask, k, t in load_echoes(loaded, SRC_ECHOES_PT)}
+    en_echo_list = load_echoes(loaded)
+    pt_echo_list = load_echoes(all_choices_union, SRC_ECHOES_PT)
+    echoes, hand_k = [], {(n, i, q, mask) for n, i, q, mask, k, _ in en_echo_list if k}
+    echo_pt = {(n, i, q, mask, k): t for n, i, q, mask, k, t in pt_echo_list}
+    en_echo_keys = {(n, i, q, mask) for n, i, q, mask, _, _ in en_echo_list}
 
     def pt_swapped(n, i, q, mask, mode):
         """The Portuguese text of an echo record in `mode` (2: Girls Power's own, else the names swapped), or None."""
@@ -595,12 +636,12 @@ def render_story(tables, inv, en_rows, pt_rows):
         plain = echo_pt.get((n, i, q, mask, False))
         if plain is None:
             return None
-        sw = kaili_swap(plain, 22 if plain.startswith("<7>") else 38)
+        sw = kaili_swap(plain, 22 if plain.startswith("<7>") else 38, names=NAMES_PT)
         if sw is None:
             sys.exit(f"{SRC_ECHOES_PT.name}: {n} {i} does not fit its box with the names swapped: give it a kaili line")
         return re.sub(r"^<7>.*?<7>", "<7><9><7>", sw) if (n, i) in hero_keys else sw
 
-    for order, (n, i, q, mask, k, text) in enumerate(load_echoes(loaded)):
+    for order, (n, i, q, mask, k, text) in enumerate(en_echo_list):
         if k:
             echoes.append((n, i, q, mask, 2, text, order))
             continue
@@ -617,18 +658,38 @@ def render_story(tables, inv, en_rows, pt_rows):
                 echoes.append((n, i, q, mask, 2, swapped, order))
         else:
             echoes.append((n, i, q, mask, 0, text, order))
+    # PT-BR-only echoes (not yet ported to en_echoes.txt)
+    pt_only_base = len(en_echo_list)
+    pt_hand_k = {(n, i, q, mask) for n, i, q, mask, k, _ in pt_echo_list if k}
+    for order, (n, i, q, mask, k, text) in enumerate(pt_echo_list):
+        if (n, i, q, mask) in en_echo_keys:
+            continue
+        if k:
+            echoes.append((n, i, q, mask, 2, None, pt_only_base + order))
+            continue
+        swapped = kaili_swap(text, 22 if text.startswith("<7>") else 38, names=NAMES_PT)
+        if swapped is None:
+            sys.exit(f"{SRC_ECHOES_PT.name}: {n} {i} does not fit its box with the names swapped: give it a kaili line")
+        if (n, i, q, mask) in pt_hand_k or swapped != text:
+            echoes.append((n, i, q, mask, 1, None, pt_only_base + order))
+            if (n, i, q, mask) not in pt_hand_k:
+                echoes.append((n, i, q, mask, 2, None, pt_only_base + order))
+        else:
+            echoes.append((n, i, q, mask, 0, None, pt_only_base + order))
     echoes.sort(key=lambda r: (jpn_id(r[0]), r[1], r[6]))
     pt_texts = []
     for k, (n, i, q, mask, mode, text, _) in enumerate(echoes):
-        lines.append(arr(f"st_echo_{k}", encode(text, inv, SRC_ECHOES.name) + b"\0"))
+        if text is not None:
+            lines.append(arr(f"st_echo_{k}", encode(text, inv, SRC_ECHOES.name) + b"\0"))
         ptext = pt_swapped(n, i, q, mask, mode)
         pt_texts.append(ptext)
         if ptext is not None:
             lines.append(arr(f"st_echo_pt_{k}", encode(ptext, inv, SRC_ECHOES_PT.name) + b"\0"))
     lines += ["", "const DefStoryEcho def_story_echoes[] = {"]
-    lines += [f"    {{ 0x{jpn_id(n):X}, {i}, {q}, 0x{mask:X}, {mode}, st_echo_{k}, "
+    lines += [f"    {{ 0x{jpn_id(n):X}, {i}, {q}, 0x{mask:X}, {mode}, "
+              f"{f'st_echo_{k}' if text is not None else '0'}, "
               f"{f'st_echo_pt_{k}' if pt_texts[k] is not None else '0'} }}, /* {n} {i} */"
-              for k, (n, i, q, mask, mode, _, _) in enumerate(echoes)]
+              for k, (n, i, q, mask, mode, text, _) in enumerate(echoes)]
     lines += ["    { 0, 0, 0, 0, 0, 0, 0 },", "};", f"const int def_story_echo_count = {len(echoes)};", ""]
     return "\n".join(lines)
 

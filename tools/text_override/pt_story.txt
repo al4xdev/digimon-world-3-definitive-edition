@@ -1,79 +1,79 @@
-# Portuguese (PT-BR) story rewrite, translated from en_story.txt. Same format.
-DMG200:0 1: <7><9><7>Caramba...<1>Então é esse o mundo<1>do Digimon Online?<2,2>
-DMG200:0 2: <7>Atendente de Contas<7><8,1><5,1>, boas-vindas<1>ao Servidor Asuka.<2,2><3>Por favor, retire os<1>dados do seu Digimon<1>no saguão.<2,2>
-DMG200:0 3: <7><9><7>Meu Digimon...?<2,2><3>Claro. Vou agora<1>mesmo.<2,2>
-DMG200:3 1: <7>Tamer Service<7>Vou baixar agora<1>os dados do seu<1>Digimon do satélite.<2,2><3>Aguarde sobre a marca<1>online no chão.<2,2>
-DMG200:3 2: <7><9><7>Meu próprio Digimon...<1>Depois de tanto tempo.<1>Mal posso esperar.<2,2>
-DMG200:3 4: <7><9><7>Qual é a demora,<1>vocês dois?<1>Que passo de lesma!<2,2>
-DMG200:3 5: <7>Teddy<7>A gente? Que nada!<1>Você que deu no pé<1>feito foguete!<2,2>
-DMG200:3 7: <7>Kail<7>Aqui dentro é Kail.<1>Não esqueça.<2,2>
-DMG200:3 8: <7><9><7>Kail? Esse é o seu<1>nome de conta?<2,2><3>Hm. Escolha estranha.<1>Parece nome de<1>garoto.<2,2>
-DMG200:3 9: <7>Kail<7>O apelido é meu.<1>Tá achando ruim?<2,2>
-DMG200:3 10: <7>Teddy<7>Não consegui pensar<1>em nada, então<1>continuo Teddy.<2,2>
-DMG200:3 11: <7><9><7>Ali estão eles.<1>Meus Digimon.<2,2>
-DMG200:3 12: <7>Teddy<7>Hm. Será que alguém<1>desenhou estes?<2,2>
-DMG200:3 13: <7>Kail<7>...Eu também.<2,2>
-DMG200:3 18: <7><9><7>Certo, pessoal.<1>Conto com vocês.<2,2><3>Vamos lá.<2,2>
-DMG200:3 19: <7><9><7>Estou saindo.<2,2>
-DMG200:3 20: <7>Kail<7>...Certo. Daqui a<1>gente se separa.<2,2>
-DMG200:4 1: <7>Tamer Service<7>Vou baixar agora<1>os dados do seu<1>Digimon do satélite.<2,2><3>Aguarde sobre a marca<1>online no chão.<2,2>
-DMG200:4 2: <7><9><7>Meu próprio Digimon...<1>Depois de tanto tempo.<1>Mal posso esperar.<2,2>
-DMG200:4 4: <7><9><7>Qual é a demora,<1>vocês dois?<1>Que passo de lesma!<2,2>
-DMG200:4 5: <7>Teddy<7>A gente? Que nada!<1>Você que deu no pé<1>feito foguete!<2,2>
-DMG200:4 7: <7>Kail<7>Aqui dentro é Kail.<1>Não esqueça.<2,2>
-DMG200:4 8: <7><9><7>Kail? Esse é o seu<1>nome de conta?<2,2><3>Hm. Escolha estranha.<1>Parece nome de<1>garoto.<2,2>
-DMG200:4 9: <7>Kail<7>O apelido é meu.<1>Tá achando ruim?<2,2>
-DMG200:4 10: <7>Teddy<7>Não consegui pensar<1>em nada, então<1>continuo Teddy.<2,2>
-DMG200:4 11: <7><9><7>Ali estão eles.<1>Meus Digimon.<2,2>
-DMG200:4 12: <7>Teddy<7>Hm. Será que alguém<1>desenhou estes?<2,2>
-DMG200:4 13: <7>Kail<7>...Eu também.<2,2>
-DMG200:4 18: <7><9><7>Certo, pessoal.<1>Conto com vocês.<2,2><3>Vamos lá.<2,2>
-DMG200:4 19: <7><9><7>Estou saindo.<2,2>
-DMG200:4 20: <7>Kail<7>...Certo. Daqui a<1>gente se separa.<2,2>
-DMG200:5 1: <7>Tamer Service<7>Vou baixar agora<1>os dados do seu<1>Digimon do satélite.<2,2><3>Aguarde sobre a marca<1>online no chão.<2,2>
-DMG200:5 2: <7><9><7>Meu próprio Digimon...<1>Depois de tanto tempo.<1>Mal posso esperar.<2,2>
-DMG200:5 4: <7><9><7>Qual é a demora,<1>vocês dois?<1>Que passo de lesma!<2,2>
-DMG200:5 5: <7>Teddy<7>A gente? Que nada!<1>Você que deu no pé<1>feito foguete!<2,2>
-DMG200:5 7: <7>Kail<7>Aqui dentro é Kail.<1>Não esqueça.<2,2>
-DMG200:5 8: <7><9><7>Kail? Esse é o seu<1>nome de conta?<2,2><3>Hm. Escolha estranha.<1>Parece nome de<1>garoto.<2,2>
-DMG200:5 9: <7>Kail<7>O apelido é meu.<1>Tá achando ruim?<2,2>
-DMG200:5 10: <7>Teddy<7>Não consegui pensar<1>em nada, então<1>continuo Teddy.<2,2>
-DMG200:5 11: <7><9><7>Ali estão eles.<1>Meus Digimon.<2,2>
-DMG200:5 12: <7>Teddy<7>Hm. Será que alguém<1>desenhou estes?<2,2>
-DMG200:5 13: <7>Kail<7>...Eu também.<2,2>
-DMG200:5 18: <7><9><7>Certo, pessoal.<1>Conto com vocês.<2,2><3>Vamos lá.<2,2>
-DMG200:5 19: <7><9><7>Estou saindo.<2,2>
-DMG200:5 20: <7>Kail<7>...Certo. Daqui a<1>gente se separa.<2,2>
-DMG200:11 1: <7>Tamer Genji<7>Ho ho ho. Um rosto<1>que eu nunca vi.<2,2><3>É a sua primeira vez<1>por aqui, não é?<2,2>
-DMG200:11 2: <7><9><7>Com certeza! Peguei<1>meu Digimon agora!<2,2>
-DMG200:11 3: <7>Tamer Genji<7>Então vamos batalhar.<2,2><3>Não se preocupe com<1>as regras.<2,2><3>Experiência é o que<1>importa.<2,2>
-DMG200:12 1: <7><9><7>Venci.<2,2>
-DMG200:12 2: <7>Tamer Genji<7>Nada mau para uma<1>primeira vez.<2,2><3>Você tem potencial<1>para conquistar o<1>título mundial um dia.<2,2>
-DMG200:12 3: <7><9><7>Título mundial. Sim.<1>Esse é o meu sonho.<2,2>
-DMG200:12 4: <7>Tamer Genji<7>Se quer chegar longe,<1>aprenda sobre os<1>Digimon primeiro.<2,2><3>Visite o Digi-Lab<1>antes de sair da<1>cidade.<2,2>
-DMG200:12 5: <7><9><7>O Digi-Lab. Entendi.<2,2><3>Agradeço.<2,2>
-DMG200:12 6: <7>Tamer Genji<7>E me diga, você tem<1>uma Folder Bag?<2,2>
-DMG200:12 7: <7><9><7>...Uma o quê?<2,2><3>Isso é de comer?<2,2>
-DMG200:12 8: <7>Tamer Genji<7>Entendo. Então vá ao<1>Yellow Cruiser.<2,2><3>Lá vão ensinar tudo<1>o que você precisa<1>saber sobre as<2,2><3>Batalhas de Cartas.<2,2><3>...Agora vá. Conto<1>com você, jovem.<1>Ho ho ho.<2,2>
-DMG200:21 1: <7>Jogador Misterioso<7>Ei! Você aí, jovem!<1>Espere.<2,2>
-DMG200:21 2: <7><9><7>Está falando comigo?<2,2>
-DMG200:21 3: <7>Jogador Misterioso<7>Com a parede!<2,2><3>Você é <8,1><5,1>, né?<1>Quem derrotou o<1>Líder de Seiryu.<2,2>
-DMG200:21 4: <7><9><7>...Sim. E você<1>é...?<2,2>
-DMG200:21 5: <7>Keith<7>Meu nome é Keith.<1>Grava bem!<2,2><3>Quem vai levar esse<1>torneio sou eu!<2,2>
-DMG200:21 6: <7><9><7>É? Vamos ver quem<1>vence.<2,2>
-DMG200:21 7: <7>Keith<7>Ha! Gostei da marra.<2,2><3>Então quer encarar<1>uma batalha comigo?<2,2>
-DMG200:21 8: <7><9><7>Quando quiser.<2,2>
-DMG200:21 9: <7>Keith<7>Fica o aviso:<2,2><3>eu não alivio pra<1>ninguém!<2,2>
-DMG200:22 1: <7><9><7>Venci! E agora,<1>quem é que manda?<2,2>
-DMG200:22 2: <7>Keith<7>Ha! Só peguei leve<1>pra você não chorar.<2,2>
-DMG200:22 3: <7><9><7>Você disse que não<1>pegava leve.<2,2>
-DMG200:22 4: <7>Keith<7>Não sei do que você<1>tá falando!<2,2><3>Abre o olho! Na<1>próxima não escapa!<2,2><3>Guarda esse nome.<1>Sayonara, mané!<2,2>
-DMG200:22 5: <7><9><7>Sei, sei...<2,2><3>Mané é você.<2,2>
-DMG200:23 1: <7><9><7>Etemon. Tenho uma<1>pergunta pra você.<2,2>
-DMG200:23 2: <7>Etemon<7>Manda brasa! Eu conto<1>tudo que eu souber,<1>bebê!<2,2>
-DMG200:23 3: <7><9><7>Não é você quem tem<1>a máscara do Sepikmon?<2,2>
-DMG200:23 4: <7>Etemon<7>E-eu? Sei de nada!<1>Tão armando pra mim!<2,2>
-DMG200:23 5: <7><9><7>Ei, espere!<2,2><3>Etemon está<1>escondendo algo.<2,2>
+# Portuguese (PT-BR) story rewrite — Fase 1 (Prólogo & Asuka City) em tom dublagem clássica 80/90.
+DMG200:0 1: <7><9><7>Nossa Senhora...<1>Então é isso aqui o tal<1>do Digimon Online?!<2,2>
+DMG200:0 2: <7>Atendente de Contas<7>Bem-vindo ao Servidor<1>Asuka, <8,1><5,1>!<2,2><3>Seus Digimon já estão<1>esperando no saguão.<1>É só passar lá e retirar.<2,2>
+DMG200:0 3: <7><9><7>Meus próprios Digimon?!<2,2><3>Partiu! Não vou perder<1>um segundo!<2,2>
+DMG200:3 1: <7>Tamer Service<7>Baixando os dados do<1>seu Digimon direto do<1>satélite.<2,2><3>Pisa na marca online<1>no chão e segura a<1>emoção!<2,2>
+DMG200:3 2: <7><9><7>Meu próprio Digimon...<1>Esperei tanto por isso<1>que até arrepiei!<2,2>
+DMG200:3 4: <7><9><7>Ô seus pé-de-chumbo,<1>que demora é essa?<1>Bora logo!<2,2>
+DMG200:3 5: <7>Teddy<7>Pé-de-chumbo o quê?!<1>Você que saiu vazado<1>feito foguete!<2,2>
+DMG200:3 7: <7>Kail<7>Aqui dentro me chama<1>de Kail. Vê se não<1>dá bobeira.<2,2>
+DMG200:3 8: <7><9><7>Kail? Esse é o teu<1>nick de conta?<2,2><3>Fala sério... parece<1>nome de marmanjo.<2,2>
+DMG200:3 9: <7>Kail<7>O apelido é meu!<1>Vai encarar ou vai<1>ficar de gracinha?<2,2>
+DMG200:3 10: <7>Teddy<7>Eu travei na tela de<1>nome, então ficou<1>Teddy mesmo. Fazer o quê.<2,2>
+DMG200:3 11: <7><9><7>Olha só eles aí...<1>Meus parceiros!<2,2>
+DMG200:3 12: <7>Teddy<7>Rapaz... capricharam<1>no visual, hein!<2,2>
+DMG200:3 13: <7>Kail<7>...É. Mandaram bem<1>mesmo.<2,2>
+DMG200:3 18: <7><9><7>Beleza, rapaziada.<1>Agora é eu e vocês!<2,2><3>Bora fazer história!<2,2>
+DMG200:3 19: <7><9><7>Tô saindo na frente.<2,2>
+DMG200:3 20: <7>Kail<7>...Beleza. Cada um pro<1>seu lado, mas vê se<1>não se mete em furada.<2,2>
+DMG200:4 1: <7>Tamer Service<7>Baixando os dados do<1>seu Digimon direto do<1>satélite.<2,2><3>Pisa na marca online<1>no chão e segura a<1>emoção!<2,2>
+DMG200:4 2: <7><9><7>Meu próprio Digimon...<1>Esperei tanto por isso<1>que até arrepiei!<2,2>
+DMG200:4 4: <7><9><7>Ô seus pé-de-chumbo,<1>que demora é essa?<1>Bora logo!<2,2>
+DMG200:4 5: <7>Teddy<7>Pé-de-chumbo o quê?!<1>Você que saiu vazado<1>feito foguete!<2,2>
+DMG200:4 7: <7>Kail<7>Aqui dentro me chama<1>de Kail. Vê se não<1>dá bobeira.<2,2>
+DMG200:4 8: <7><9><7>Kail? Esse é o teu<1>nick de conta?<2,2><3>Fala sério... parece<1>nome de marmanjo.<2,2>
+DMG200:4 9: <7>Kail<7>O apelido é meu!<1>Vai encarar ou vai<1>ficar de gracinha?<2,2>
+DMG200:4 10: <7>Teddy<7>Eu travei na tela de<1>nome, então ficou<1>Teddy mesmo. Fazer o quê.<2,2>
+DMG200:4 11: <7><9><7>Olha só eles aí...<1>Meus parceiros!<2,2>
+DMG200:4 12: <7>Teddy<7>Rapaz... capricharam<1>no visual, hein!<2,2>
+DMG200:4 13: <7>Kail<7>...É. Mandaram bem<1>mesmo.<2,2>
+DMG200:4 18: <7><9><7>Beleza, rapaziada.<1>Agora é eu e vocês!<2,2><3>Bora fazer história!<2,2>
+DMG200:4 19: <7><9><7>Tô saindo na frente.<2,2>
+DMG200:4 20: <7>Kail<7>...Beleza. Cada um pro<1>seu lado, mas vê se<1>não se mete em furada.<2,2>
+DMG200:5 1: <7>Tamer Service<7>Baixando os dados do<1>seu Digimon direto do<1>satélite.<2,2><3>Pisa na marca online<1>no chão e segura a<1>emoção!<2,2>
+DMG200:5 2: <7><9><7>Meu próprio Digimon...<1>Esperei tanto por isso<1>que até arrepiei!<2,2>
+DMG200:5 4: <7><9><7>Ô seus pé-de-chumbo,<1>que demora é essa?<1>Bora logo!<2,2>
+DMG200:5 5: <7>Teddy<7>Pé-de-chumbo o quê?!<1>Você que saiu vazado<1>feito foguete!<2,2>
+DMG200:5 7: <7>Kail<7>Aqui dentro me chama<1>de Kail. Vê se não<1>dá bobeira.<2,2>
+DMG200:5 8: <7><9><7>Kail? Esse é o teu<1>nick de conta?<2,2><3>Fala sério... parece<1>nome de marmanjo.<2,2>
+DMG200:5 9: <7>Kail<7>O apelido é meu!<1>Vai encarar ou vai<1>ficar de gracinha?<2,2>
+DMG200:5 10: <7>Teddy<7>Eu travei na tela de<1>nome, então ficou<1>Teddy mesmo. Fazer o quê.<2,2>
+DMG200:5 11: <7><9><7>Olha só eles aí...<1>Meus parceiros!<2,2>
+DMG200:5 12: <7>Teddy<7>Rapaz... capricharam<1>no visual, hein!<2,2>
+DMG200:5 13: <7>Kail<7>...É. Mandaram bem<1>mesmo.<2,2>
+DMG200:5 18: <7><9><7>Beleza, rapaziada.<1>Agora é eu e vocês!<2,2><3>Bora fazer história!<2,2>
+DMG200:5 19: <7><9><7>Tô saindo na frente.<2,2>
+DMG200:5 20: <7>Kail<7>...Beleza. Cada um pro<1>seu lado, mas vê se<1>não se mete em furada.<2,2>
+DMG200:11 1: <7>Tamer Genji<7>Ho ho ho! Olha só,<1>carne nova no pedaço!<2,2><3>Acabou de cair de<1>paraquedas aqui, né?<2,2>
+DMG200:11 2: <7><9><7>Na mosca! Acabei de<1>pegar meu Digimon!<2,2>
+DMG200:11 3: <7>Tamer Genji<7>Então chega mais que<1>vamos tirar um contra!<2,2><3>Esquece manual, o<1>negócio se aprende<1>levando tabefe!<2,2>
+DMG200:12 1: <7><9><7>Opa! Levei essa!<2,2>
+DMG200:12 2: <7>Tamer Genji<7>Nada mal pra quem<1>chegou ontem!<2,2><3>Olha... você tem fibra<1>pra brigar pelo título<1>mundial, moleque!<2,2>
+DMG200:12 3: <7><9><7>Título mundial? Pode<1>escrever que eu vou<1>buscar essa taça!<2,2>
+DMG200:12 4: <7>Tamer Genji<7>Calma lá, apressadinho!<1>Antes de sair no braço,<1>dá um pulo no Digi-Lab.<2,2><3>Lá você entende como<1>evoluir seus bichos<1>sem fazer besteira.<2,2>
+DMG200:12 5: <7><9><7>Digi-Lab. Anotado!<2,2><3>Valeu pela dica, coroa.<2,2>
+DMG200:12 6: <7>Tamer Genji<7>Ah, e me diz uma coisa:<1>já pegou uma Folder Bag?<2,2>
+DMG200:12 7: <7><9><7>...Uma o quê?!<2,2><3>Isso aí é de comer?<2,2>
+DMG200:12 8: <7>Tamer Genji<7>Sabia! Então passa lá<1>no Yellow Cruiser.<2,2><3>O pessoal lá te ensina<1>o bê-á-bá das Batalhas<1>de Cartas.<2,2><3>Agora vai lá, campeão.<1>Não me faça passar<1>vergonha! Ho ho ho!<2,2>
+DMG200:21 1: <7>Jogador Misterioso<7>Ei! Você aí, ô<1>cara de sono! Para aí!<2,2>
+DMG200:21 2: <7><9><7>Tá falando comigo?<2,2>
+DMG200:21 3: <7>Jogador Misterioso<7>Não, com o poste!<2,2><3>Você é <8,1><5,1>, né?<1>O folgado que derrubou<1>o Líder de Seiryu.<2,2>
+DMG200:21 4: <7><9><7>...Sou eu mesmo.<1>E você é quem na fila<1>do pão?<2,2>
+DMG200:21 5: <7>Keith<7>Meu nome é Keith!<1>Grava bem essa cara!<2,2><3>Porque o campeão desse<1>torneio aqui sou EU!<2,2>
+DMG200:21 6: <7><9><7>Aham, senta lá.<1>Vamos ver no ringue.<2,2>
+DMG200:21 7: <7>Keith<7>Ha! Gostei da marra!<2,2><3>Então bora resolver<1>isso agora, sem choro!<2,2>
+DMG200:21 8: <7><9><7>Cai dentro!<2,2>
+DMG200:21 9: <7>Keith<7>Já vou avisando:<2,2><3>eu não tenho pena de<1>novato metido!<2,2>
+DMG200:22 1: <7><9><7>Toma! E agora, quem é<1>que manda no pedaço?!<2,2>
+DMG200:22 2: <7>Keith<7>Tsc! Só peguei leve<1>pra você não sair<1>chorando pra mamãe!<2,2>
+DMG200:22 3: <7><9><7>Ué, você não falou que<1>não tinha pena?<2,2>
+DMG200:22 4: <7>Keith<7>Cala a boca que eu<1>nem lembro disso!<2,2><3>Abre o olho! Na próxima<1>eu te passo o rodo!<2,2><3>Grava meu nome!<1>Sayonara, mané!<2,2>
+DMG200:22 5: <7><9><7>Aham, sei...<2,2><3>Mané é tu, fanfarrão.<2,2>
+DMG200:23 1: <7><9><7>Ô Etemon! Chega aí que<1>temos um papo sério.<2,2>
+DMG200:23 2: <7>Etemon<7>Fala comigo, bebê!<1>O rei do balanço sabe<1>de tudo nesse servidor!<2,2>
+DMG200:23 3: <7><9><7>Não foi você que passou<1>a mão na máscara do<1>Sepikmon?<2,2>
+DMG200:23 4: <7>Etemon<7>E-eu?! Que calúnia!<1>Tão querendo queimar o<1>meu filme, bicho!<2,2>
+DMG200:23 5: <7><9><7>Ei, volta aqui!<2,2><3>Esse macaco tá com<1>cara de culpado.<2,2>
 DMG200:24 1: <7>Phillip Maníaco<7>Aleluia, alguém com<1>cara de quem sabe!<2,2><3>Tô plantado aqui<1>faz séculos!<2,2>
 DMG200:24 2: <7>Fei Preguiçoso<7>E aí, qual é a boa?<1>Quando a gente sai?<2,2>
 DMG200:24 3: <7>Tamer Service<7>Pedimos desculpas. Não<1>temos mais informações<1>no momento.<2,2>

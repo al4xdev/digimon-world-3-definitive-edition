@@ -507,10 +507,6 @@ Q10=1 DMG900:5 5: <7><9><7>Eu? O primeiro World<1>Champ?<2,2><3>...Eu disse que 
 Q10=3 DMG900:5 5: <7><9><7>Eu? O primeiro World<1>Champ?<2,2><3>...Uma vez eu quis<1>voltar pra casa.<1>Que ironia.<2,2><3>Vou dar o meu melhor.<2,2>
 Q39=1 DMG900:10 1: <7>Tamer Haruka<7>Pois bem. Dizem que<1>você quer ser o mais<1>forte de todos.<2,2><3>Tenha coragem. E<1>agradeça a minha<1>generosidade.<2,2>
 Q39=3 DMG900:11 1: <7>Tamer Poemy<7>Vá, grande Herói.<1>Que ninguém se perca<1>de novo.<2,2><3>Estarei sempre com<1>você em espírito.<2,2>
-Q10=1 TALK00 15: <7>Masato<7>Sonhando com o World<1>Champ? Sua primeira<1>meta é Seiryu City.<2,2><3>Vença o Líder dela.<1>A cidade fica logo a<1>leste daqui.<2,2>
-Q10=3 TALK00 15: <7>Masato<7>Saudade de casa? Tudo<1>bem, mas a primeira<1>meta é Seiryu City.<2,2><3>Vença o Líder dela.<1>A cidade fica logo a<1>leste daqui.<2,2>
-Q8=1 TALK00 17: <7>Shiro Novato<7>A Matrix Chamber é<1>uma máquina e tanto.<2,2><3>Até você ficou de<1>queixo caído, como eu.<2,2><3>Ainda não acredito<1>que estamos na rede.<2,2>
-Q8=2 TALK00 17: <7>Shiro Novato<7>A Matrix Chamber é<1>uma máquina e tanto.<2,2><3>É limpa demais. Você<1>sente isso?<2,2><3>Ainda não acredito<1>que estamos na rede.<2,2>
 Q41=1 TALK00 49: <7>Luke Colecionador<7>As cartas têm regras.<1>Posso ensinar você.<2,2><3>Comece pela Folder<1>Bag. Todo mundo<1>começa.<2,2>
 Q41=2 TALK00 49: <7>Luke Colecionador<7>As cartas têm regras.<1>Posso ensinar você.<2,2><3>Pergunte o que uma<1>Folder Bag faz. Eu<1>respondo.<2,2>
 Q14=1 TALK00 81: <7>Etemon<7>Você foi direto sobre<1>aquela máscara. Justo.<2,2><3>Ouvi dizer que o<1>Sepikmon fugiu para o<1>Lago Divermon.<2,2><3>Esse aí dá problema.<2,2><3>Me envergonha que a<1>gente seja do mesmo<1>tipo.<2,2>
@@ -599,3 +595,50 @@ Q12=1 TALK09 81: <7>Keith<7>Grande rival,<1><8,1><5,1>. "Quem manda<1>agora?" Vo
 Q12=2 TALK09 81: <7>Keith<7>Grande rival,<1><8,1><5,1>. Venceu "por<1>um triz" uma vez.<2,2><3>Eu treinei.<2,2><3>Você veio longe. Mas<1>sua sorte acaba aqui.<2,2><3>O Rei das Cartas, que<1>sou eu, não perde.<1>Sacou?<2,2>
 Q11=1 TALK09 83: <7>Keith<7>Viu? Bem que eu disse.<1>A gente não ia ver<1>quem vence?<2,2><3>Sou o Rei das Cartas.<2,2><3>Você não tem nível<1>pra ME vencer.<2,2>
 Q30=1 TALK09 145: <7>Líder Xuan Wu<7>Quem é você para me<1>vencer? Duas vezes.<1>Perdoou meu teste.<2,2><3>Como conseguiu tanta<1>força?<2,2><3>Se houver um programa<1>de treino secreto, eu<1>quero.<2,2>
+
+# ---- Fase 1: Mini-arcos de NPCs de Asuka City (TALK00, mapa 0x200) ----
+# Mika (Q200) — etapa seguinte na manutenção (TALK00 623) e depois (TALK00 624)
+Q200=1 TALK00 623: <7>Mika<7>Ei! Segui tua dica do<1>Ginásio e o Patamon<1>tá voando baixo!<2,2><3>Nem ligo de ficar presa<1>aqui enquanto treino<1>com ele!<2,2>
+Q200=2 TALK00 623: <7>Mika<7>Olha só quem apareceu!<1>Chamou meu Patamon de<1>pão de queijo, né?!<2,2><3>Quando ele virar Angemon<1>você vai ver só o<1>tamanho do sacode!<2,2>
+Q200=3 TALK00 623: <7>Mika<7>Sabe que você tinha<1>razão? Parei de apressar<1>o Patamon.<2,2><3>Mesmo presos aqui, tô<1>curtindo demais ficar<1>do lado dele!<2,2>
+Q200=0 TALK00 623: <7>Mika<7>Tentei botar o Patamon<1>pra correr em volta da<1>fonte pra ver se evoluía!<2,2><3>Não deu certo, mas a<1>gente riu tanto que nem<1>ligo de ficar aqui!<2,2>
+# Patamon da Mika (Q200) — reage em TALK00 613
+Q200=1 TALK00 613: <7>Patamon<7>Hehe, tô meio sem jeito...<1>Com o treino novo eu já<1>tô quase lá!<2,2>
+Q200=2 TALK00 613: <7>Patamon<7>Pão de queijo voador,<1>é?! Eu tô treinando na<1>força do ódio, viu!<2,2>
+Q200=3 TALK00 613: <7>Patamon<7>A Mika parou de me<1>cobrar tanto... Agora<1>dá gosto de treinar!<2,2>
+Q200=0 TALK00 613: <7>Patamon<7>Ufa... correr em volta<1>da fonte me deixou<1>tonto, mas valeu!<2,2>
+# Masato (Q201) — etapa seguinte na manutenção (TALK00 665 / 666)
+Q201=1 TALK00 665: <7>Masato<7>Manutenção?! Logo hoje<1>que eu tinha um encontro<1>no Mundo Real!<2,2><3>Ei, como você foi gente<1>fina antes: ouvi dizer<1>que a Matrix travou feio!<2,2>
+Q201=2 TALK00 665: <7>Masato<7>Não enche! Só não fui<1>pra Seiryu porque tinha<1>um encontro hoje!<2,2><3>E agora essa manutenção<1>me ferrou de vez!<2,2>
+Q201=3 TALK00 665: <7>Masato<7>Peraí, você derrubou o<1>Líder de Seiryu mesmo?!<2,2><3>Então resolve logo essa<1>manutenção, ô brabo!<1>Eu tenho um encontro!<2,2>
+Q201=0 TALK00 665: <7>Masato<7>Manutenção?! Ninguém<1>nunca ouve os veteranos<1>e ainda vou perder meu<1>encontro!<2,2>
+# Agumon Coach (Q202) — etapa seguinte em TALK00 602
+Q202=1 TALK00 602: <7>Agumon<7>Fala, aluno nota dez!<1>Dica de ouro: só ganha<1>EXP quem entra na luta!<2,2><3>Então reveza o time<1>todo, sem preguiça!<2,2>
+Q202=2 TALK00 602: <7>Agumon<7>E aí, valentão do mato!<1>Lembra que só ganha<1>EXP quem entra na luta!<2,2><3>Se não revezar o time,<1>o resto fica na seca!<2,2>
+Q202=3 TALK00 602: <7>Agumon<7>Falei bonito de academia,<1>mas confesso: se pintar<1>um churrasco eu largo tudo!<2,2><3>Ah, e reveza o time na<1>luta pra todos ganharem<1>EXP!<2,2>
+Q202=0 TALK00 602: <7>Agumon<7>Essa geração nova nem<1>para pra ouvir dica de<1>treino...<2,2><3>Mas anota aí: só ganha<1>EXP quem entra na luta!<2,2>
+# Vovô Jake (Q203) — etapa seguinte em TALK00 646
+Q203=1 TALK00 646: <7>Jake<7>Ainda tô decidindo que<1>Digimon eu queria ser...<2,2><3>Mas esses tais de L.o.L.<1>ou A.o.A tão atrapalhando<1>a aposentadoria!<2,2>
+Q203=2 TALK00 646: <7>Jake<7>Você me deu um gelo<1>antes, hein moleque!<2,2><3>Com essa tal de A.o.A<1>solta, melhor eu ficar<1>humano mesmo! Hyo hyo!<2,2>
+Q203=3 TALK00 646: <7>Jake<7>Humpf! Me chamou de<1>doido, mas doido mesmo<1>é esse pessoal da A.o.A!<2,2>
+Q203=0 TALK00 646: <7>Jake<7>Esses tais de L.o.L. ou<1>A.o.A... deviam parar<1>de arrumar encrenca!<2,2>
+# Maniac Jack (Q204) — etapa seguinte em TALK00 711
+Q204=1 TALK00 711: <7>Jack Maníaco<7>Fala, aprendiz! Acabei<1>me perdendo do Guilmon<1>no meio da muvuca!<2,2><3>Pelo menos tô jogando<1>de graça agora!<2,2>
+Q204=2 TALK00 711: <7>Jack Maníaco<7>E aí, brigão do soco!<1>Me perdi do Guilmon,<1>mas vê se equipa arma!<2,2><3>Soco limpo não derruba<1>chefe não, viu!<2,2>
+Q204=3 TALK00 711: <7>Jack Maníaco<7>Tu deu azar, hein!<1>Perguntou do Guilmon e<1>eu perdi o bicho de vez!<2,2><3>Mas ei: pelo menos o<1>jogo tá na faixa!<2,2>
+Q204=0 TALK00 711: <7>Jack Maníaco<7>Me separei do Guilmon<1>e ninguém para pra<1>ouvir minhas builds...<2,2><3>Pelo menos tô jogando<1>de graça!<2,2>
+# Shiro Novato (Q205) — etapa seguinte em TALK00 329
+Q205=1 TALK00 329: <7>Shiro Novato<7>...Ai! Segui teu conselho<1>e belisquei a bochecha!<2,2><3>Doeu pra caramba! Não<1>é sonho mesmo não!<2,2>
+Q205=2 TALK00 329: <7>Shiro Novato<7>...Ai! Me belisquei pra<1>acordar, mas não é sonho!<2,2><3>Você tinha razão... tem<1>coisa estranha nessa<1>máquina mesmo.<2,2>
+Q205=3 TALK00 329: <7>Shiro Novato<7>...Ai! Belisquei a cara<1>e doeu! O futuro é real<1>até demais, cara!<2,2>
+Q205=0 TALK00 329: <7>Shiro Novato<7>...Ai! Me belisquei<1>sozinho pra testar e<1>doeu! Não é sonho!<2,2>
+# Alan Preguiçoso (Q206) — etapa seguinte em TALK00 331
+Q206=1 TALK00 331: <7>Alan Preguiçoso<7>Tá, tá, vou explicar<1>direito... Cada Digimon<1>tem seu elemento.<2,2><3>Quem estuda fraqueza<1>trabalha menos na luta.<1>Anota aí... uaaah.<2,2>
+Q206=2 TALK00 331: <7>Alan Preguiçoso<7>Tomei o café que você<1>falou... agora escuta:<1>cada Digimon tem elemento!<2,2><3>Bate na fraqueza que<1>acaba mais rápido e eu<1>volto a dormir.<2,2>
+Q206=3 TALK00 331: <7>Alan Preguiçoso<7>Já que tu sabe tudo,<1>aposto que já manja de<1>fraqueza elemental, né?<2,2><3>Ótimo. Menos trabalho<1>pra mim... uaaah.<2,2>
+Q206=0 TALK00 331: <7>Alan Preguiçoso<7>Uaaah... cada Digimon<1>tem seu atributo. Um bom<1>Tamer estuda isso...<2,2>
+# Mary Fã de Digimon (Q207) — etapa seguinte em TALK00 330
+Q207=1 TALK00 330: <7>Mary Fã de Digimon<7>Você me animou com o<1>Gallantmon, mas agora<1>vi um Beelzemon!<2,2><3>Socorro! Qual dos dois<1>é mais maneiro?!<2,2>
+Q207=2 TALK00 330: <7>Mary Fã de Digimon<7>A culpa é toda sua!<1>Botou Beelzemon na minha<1>cabeça e agora travei!<2,2><3>Gallantmon ou Beelzemon?!<1>Não consigo escolher!<2,2>
+Q207=3 TALK00 330: <7>Mary Fã de Digimon<7>Tô treinando o básico<1>como você mandou, mas<1>já tô na dúvida:<2,2><3>Gallantmon ou Beelzemon?<1>Sonhar não custa nada!<2,2>
+Q207=0 TALK00 330: <7>Mary Fã de Digimon<7>Vi uma revista aqui e<1>agora travei de vez:<2,2><3>Gallantmon ou Beelzemon?<1>Qual é melhor?!<2,2>

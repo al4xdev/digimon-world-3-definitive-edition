@@ -363,6 +363,8 @@ void def_blast_overheat_turn(int slot); /* the slot's own turn begins: the overh
 int def_blast_heated(s32 id);        /* the Digimon `id` is still overheated: it fights, and tags in, as its Rookie */
 void def_blast_cool_party(void);     /* the inn's rest (Gatomon): the party's overheat is gone */
 void def_story_frame(void);          /* the Velvet Room's story hooks (definitive_story.c), each idle field frame */
+int def_story_npc_talk(s32 actor_id, s32 msg);
+void def_story_npc_indicator_draw(s32 actor_id, void *layer, s32 x, s32 y);
 void def_blast_started(s32 id);      /* the Digimon `id` took its Blast form (wfightmn_blast) */
 int def_blast_dark(void);            /* the acting party member's model is to be painted dark (a Blast form) */
 int def_blast_chosen_mode(void);     /* the quest is done: the Blast button is the Chosen Evolution */
@@ -547,6 +549,8 @@ int def_superhunt_frame(void);
 int def_respec_frame(void);
 int def_midi_frame(void);
 int def_midi_battle_music(int music); /* the player's MIDI as the random battles' music, when one is chosen */
+int def_battle_prompt_check(void);
+int def_battle_prompt_frame(void);
 int def_purify_stage_enters(int member);
 int def_purify_defeat(void);
 int def_purify_won_wave(void); /* the battle just ended was a purification's wave, won (def_log_end ran) */

@@ -3806,6 +3806,7 @@ void fieldstg_actor_draw(void *arg0, void *arg1, s32 arg) {
         /* the Velvet Room's dealer: the port's own art in this actor's place (port/game/definitive_velvet.c), drawn
          * before the sprite's packet is taken; the game's figure is then left out, its shadow kept */
         own_art = dw3_velvet_actor_art(obj, ot, pos.x, pos.y - (obj->height >> 8));
+        def_story_npc_indicator_draw(obj->base.key1, layer, pos.x, pos.y - (obj->height >> 8) + obj->frame_y);
 #endif
         poly = gfx_module.funcs.get_packet();
         pos.y -= obj->height >> 8;
@@ -4420,6 +4421,11 @@ void fieldstg_actor_run_state(FieldstgActor *obj, void **data) {
             if (!special && obj->no_turn == 0) {
                 obj->dir = (obj->talker->dir + 4) & 7;
             }
+#ifdef PC_PORT
+            if (!special && def_story_npc_talk(obj->base.key1, talk->message)) {
+                break;
+            }
+#endif
             if (obj->sprite_file != 0 && !special) {
                 data[3] = fieldstg_dialog_create_talk(obj, talk->message);
             } else {

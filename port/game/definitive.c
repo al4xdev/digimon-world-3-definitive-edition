@@ -119,6 +119,7 @@ void def_log_begin(void) {
     def_hunt_reward_done(); /* a reward a results screen never showed does not carry over */
     def_dri_battle_begin(); /* whether this battle is the DRI simulation just set up */
     def_flee_ask_reset();   /* the escape's question: a new battle's heap */
+    def_battle_prompt_reset();
     def_purify_battle_begin(); /* Blast phase 2: whether it is a purification's wave */
     def_time_battle_begin();   /* the Time Room: whether it is a trial */
     def_story_battle_begin();  /* the Oikawa's arc: whether it is his */
@@ -1118,6 +1119,7 @@ void def_savestate(struct PortState *s) {
     def_hunt_savestate(s);
     def_rush_savestate(s); /* the floating Rush's panel and the field's heap it points into */
     def_flee_ask_savestate(s); /* the escape's question and the battle's heap it points into */
+    def_battle_prompt_savestate(s);
     PORT_STATE_VAR(s, hit_class);
     PORT_STATE_VAR(s, hit_elem);
     PORT_STATE_VAR(s, hit_id);
