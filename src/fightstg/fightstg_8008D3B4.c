@@ -3338,6 +3338,12 @@ typedef struct FightstgHudData {
     MessageWindow *info_states[7]; /* and Weak / Resist / - / ??? (empty while the panel is closed) */
     MessageWindow *info_legend[DEF_TRAITS]; /* one window per trait of the enemy, two lines at most */
     MessageWindow *info_key;       /* the sheet's INFO tab: the button's glyph */
+    /* Part 4 STATUS sheet windows (crisp native bitmap font + element/tech icons) */
+    MessageWindow *p4_title;
+    MessageWindow *p4_lbl[13];
+    MessageWindow *p4_val[13];
+    MessageWindow *p4_confirm_key;
+    MessageWindow *p4_cancel_key;
 #endif
 } FightstgHudData; /* size 0x14 */
 
@@ -3608,6 +3614,1151 @@ static void fightstg_sheet_close(void);
 static s32 fightstg_sheet_on(void);
 static void fightstg_info_init(FightstgHudData *data);
 static void fightstg_info_tick(FightstgHudData *data);
+static void fightstg_info_set(s32 open);
+static s32 fightstg_info_is_open(void);
+
+enum {
+    P4_OFF = 0,
+    P4_FADE_IN = 1,
+    P4_OPEN = 2,
+    P4_FADE_OUT = 3,
+    P4_REVEAL = 4,
+    P4_SWAP_MODEL = 5,
+};
+
+#define P4_FADE_STEP 52 /* ~5 ticks to full black (255) */
+#define P4_BURST_MAX 8  /* ~8 ticks for blocks to fly out from center */
+
+typedef struct {
+    char label[32];
+    char sub[40];
+    const char *badge;
+    s16 x, y, angle;
+    u8 dim;
+    u8 kind; /* 0: P3R cobalt/cyan, 1: DNA gold, 2: Baton Pass teal-green */
+} FightstgP4Opt;
+
+static struct {
+    s32 phase;
+    s32 fade;         /* 0..255 */
+    s32 burst;        /* 0..P4_BURST_MAX */
+    s32 cam_on;       /* close-up camera active (flipped under black) */
+    s32 hud_hidden;   /* HUD & battle menu hidden (flipped under black) */
+    s32 hud_was_hid;  /* tracks transitions to restore HUD message windows */
+    s32 info_restore; /* enemy INFO was open before entering close-up */
+    s32 active_menu;  /* menu drawing a radial burst this frame */
+    s32 status_open;  /* our Digimon's STATUS sheet open */
+    s32 status_t;     /* 0..8 unfold animation */
+    s32 status_page;  /* 0: stats+elems, 1: form techs, 2: inherited techs */
+    s32 leaf_t;       /* 0: idle, 1..8: page turn leaf */
+    s32 leaf_dir;     /* +1 R1 (hinge left), -1 L1 (hinge right) */
+    s32 has_3d_base;
+    s16 base_3d_x;
+    s16 base_3d_y;
+    s32 preview_active;     /* temporary slot 1 currently holding previewed Digimon */
+    s32 preview_shown_id;   /* digimon_id currently in slot 1 (0 = active slot 0 shown) */
+    s32 preview_pending_id; /* digimon_id queued to load into slot 1 */
+    s16 preview_file;       /* queued model file id, or -1 */
+    s32 sel_pop;            /* 0..5 ticks: snappy overshoot pop when cursor changes */
+    s32 last_sel_seen;
+    s32 pulse_t;            /* subtle breathing glow counter */
+    FightstgP4Opt cache_opts[4];
+    s32 cache_n;
+    s32 cache_sel;
+    FightstgHudData *hud_data;
+    s32 st_member;
+    s32 st_form;
+    s32 st_digi;
+    s32 st_page;
+    u16 st_vis_lbl;
+    u16 st_vis_val;
+    s32 keys_inited;
+    s32 cam_sway; /* -4096..+4096 from idle camera for Persona-style parallax */
+} fightstg_p4;
+
+void fightstg_p4_set_sway(s32 sway) {
+    fightstg_p4.cam_sway = sway;
+}
+
+static void fightstg_p4_draw_ring(const FightstgP4Opt *opts, s32 n, s32 sel, s32 burst);
+static void fightstg_p4_rect(u32 *ot, s32 x, s32 y, s32 w, s32 h, s32 abr, u8 r, u8 g, u8 b);
+
+static void fightstg_p4_preview_cleanup(void) {
+    if (fightstg_p4.preview_active) {
+        FightstgSlots *slots = (FightstgSlots *)heap_objects.find(0x14, -1, -1);
+        if (slots != NULL) {
+            FightstgModelParams *p0;
+            slots->remove(slots, 1);
+            p0 = slots->get_params(slots, 0);
+            if (p0 != NULL) {
+                p0->layers[0].shown = 1;
+            }
+        }
+        fightstg_p4.preview_active = 0;
+    }
+    fightstg_p4.preview_shown_id = 0;
+    fightstg_p4.preview_pending_id = 0;
+    fightstg_p4.preview_file = -1;
+}
+
+static void fightstg_p4_preview_hover(s32 digimon_id) {
+    s32 active_id = fightstg_battle.state.members[0][fightstg_battle.state.current[0]].digimon;
+
+    if (digimon_id <= 0 || digimon_id == active_id) {
+        if (fightstg_p4.preview_active || fightstg_p4.preview_pending_id != 0) {
+            fightstg_p4_preview_cleanup();
+        }
+        return;
+    }
+    if (digimon_id == fightstg_p4.preview_shown_id || digimon_id == fightstg_p4.preview_pending_id) {
+        return;
+    }
+    {
+        FightstgModelRecordA *mrec = (FightstgModelRecordA *)fightstg_models.get(digimon_id);
+        if (mrec == NULL) {
+            return;
+        }
+        fightstg_p4.preview_pending_id = digimon_id;
+        fightstg_p4.preview_file = (s16)(mrec->model_file >> 16);
+        cdload_module.queue_file(fightstg_p4.preview_file);
+    }
+}
+
+static void fightstg_p4_preview_tick(void) {
+    if (!fightstg_p4.cam_on || fightstg_p4.preview_pending_id <= 0) {
+        return;
+    }
+    if (fightstg_p4.preview_file >= 0 && cdload_module.is_loading(fightstg_p4.preview_file) != 0) {
+        return;
+    }
+    {
+        FightstgSlots *slots = (FightstgSlots *)heap_objects.find(0x14, -1, -1);
+        if (slots != NULL) {
+            FightstgModelParams *p0 = slots->get_params(slots, 0);
+            FightstgModelParams *p1;
+            slots->add(slots, 1, fightstg_p4.preview_pending_id, 1);
+            p1 = slots->get_params(slots, 1);
+            if (p0 != NULL && p1 != NULL) {
+                p1->pos = p0->pos;
+                p1->rot = p0->rot;
+                p0->layers[0].shown = 0;
+                p1->layers[0].shown = 1;
+                fightstg_p4.preview_active = 1;
+                fightstg_p4.preview_shown_id = fightstg_p4.preview_pending_id;
+            }
+        }
+    }
+    fightstg_p4.preview_pending_id = 0;
+    fightstg_p4.preview_file = -1;
+}
+
+static void fightstg_p4_restore_3d_offset(void) {
+    if (fightstg_p4.has_3d_base) {
+        GfxLayer *layer3d = gfx_module.funcs.get_layer(0x1004);
+        if (layer3d != NULL) {
+            layer3d->set_draw_offset(layer3d, fightstg_p4.base_3d_x, fightstg_p4.base_3d_y);
+        }
+        fightstg_p4.has_3d_base = 0;
+    }
+}
+
+s32 fightstg_p4_camera_active(void) {
+    return fightstg_p4.cam_on;
+}
+
+static s32 fightstg_p4_hide_hud(void) {
+    return fightstg_p4.hud_hidden;
+}
+
+static s32 fightstg_p4_skip_bmenu_slide(void) {
+    return fightstg_p4.phase == P4_FADE_OUT || fightstg_p4.phase == P4_REVEAL;
+}
+
+static void fightstg_p4_status_hide_windows(void) {
+    FightstgHudData *d = fightstg_p4.hud_data;
+    s32 k;
+
+    if (d == NULL) {
+        return;
+    }
+    if (d->p4_title != NULL) {
+        d->p4_title->set_visible(d->p4_title, 0);
+    }
+    for (k = 0; k < 13; k++) {
+        if (d->p4_lbl[k] != NULL) {
+            d->p4_lbl[k]->set_visible(d->p4_lbl[k], 0);
+        }
+        if (d->p4_val[k] != NULL) {
+            d->p4_val[k]->set_visible(d->p4_val[k], 0);
+        }
+    }
+}
+
+static void fightstg_p4_keys_hide(void) {
+    FightstgHudData *d = fightstg_p4.hud_data;
+
+    if (d == NULL) {
+        return;
+    }
+    if (d->p4_confirm_key != NULL) {
+        d->p4_confirm_key->set_visible(d->p4_confirm_key, 0);
+    }
+    if (d->p4_cancel_key != NULL) {
+        d->p4_cancel_key->set_visible(d->p4_cancel_key, 0);
+    }
+}
+
+static void fightstg_p4_keys_init_text(void) {
+    FightstgHudData *d = fightstg_p4.hud_data;
+    u8 cbuf[4], bbuf[4];
+
+    if (d == NULL || fightstg_p4.keys_inited) {
+        return;
+    }
+    if (dw3_feat_icons) {
+        cbuf[0] = 0x0E; /* A */
+        cbuf[1] = 0;
+        bbuf[0] = 0x0F; /* B */
+        bbuf[1] = 0;
+    } else {
+        u8 cc = port_face_text_code(13);
+        u8 bc = port_face_text_code(14);
+        cbuf[0] = 1;
+        cbuf[1] = cc != 0 ? cc : 0x32;
+        cbuf[2] = 0;
+        bbuf[0] = 1;
+        bbuf[1] = bc != 0 ? bc : 0x34;
+        bbuf[2] = 0;
+    }
+    if (d->p4_confirm_key != NULL) {
+        d->p4_confirm_key->set_palette(d->p4_confirm_key, 0);
+        d->p4_confirm_key->set_text(d->p4_confirm_key, cbuf, -1);
+        d->p4_confirm_key->set_visible(d->p4_confirm_key, 0);
+    }
+    if (d->p4_cancel_key != NULL) {
+        d->p4_cancel_key->set_palette(d->p4_cancel_key, 0);
+        d->p4_cancel_key->set_text(d->p4_cancel_key, bbuf, -1);
+        d->p4_cancel_key->set_visible(d->p4_cancel_key, 0);
+    }
+    fightstg_p4.keys_inited = 1;
+}
+
+static void fightstg_p4_scene_cut(void) {
+    fightstg_p4_restore_3d_offset();
+    fightstg_p4_preview_cleanup();
+    fightstg_p4_status_hide_windows();
+    fightstg_p4_keys_hide();
+    fightstg_p4.phase = P4_OFF;
+    fightstg_p4.fade = 0;
+    fightstg_p4.burst = 0;
+    fightstg_p4.cam_on = 0;
+    fightstg_p4.hud_hidden = 0;
+    fightstg_p4.info_restore = 0;
+    fightstg_p4.active_menu = 0;
+    fightstg_p4.status_open = 0;
+    fightstg_p4.status_t = 0;
+    fightstg_p4.status_page = 0;
+    fightstg_p4.leaf_t = 0;
+    fightstg_p4.sel_pop = 0;
+    fightstg_p4.last_sel_seen = -1;
+    fightstg_p4.cache_n = 0;
+    fightstg_p4.st_page = -1;
+    fightstg_p4.keys_inited = 0;
+}
+
+static void fightstg_p4_scene_enter(void) {
+    if (fightstg_p4.cam_on) {
+        if (fightstg_p4.phase != P4_SWAP_MODEL) {
+            fightstg_p4.phase = P4_OPEN;
+        }
+        fightstg_p4.burst = 0;
+        fightstg_p4.sel_pop = 0;
+        fightstg_p4.last_sel_seen = -1;
+        return;
+    }
+    fightstg_p4.info_restore = fightstg_info_is_open();
+    if (fightstg_p4.info_restore) {
+        fightstg_info_set(0);
+    }
+    fightstg_p4.status_open = 0;
+    fightstg_p4.status_t = 0;
+    fightstg_p4.status_page = 0;
+    fightstg_p4.leaf_t = 0;
+    fightstg_p4.sel_pop = 0;
+    fightstg_p4.last_sel_seen = -1;
+    fightstg_p4.cache_n = 0;
+    fightstg_p4.phase = P4_FADE_IN;
+    fightstg_p4.burst = 0;
+}
+
+static void fightstg_p4_scene_exit(s32 confirmed) {
+    fightstg_p4.status_open = 0;
+    fightstg_p4.leaf_t = 0;
+    if (confirmed) {
+        fightstg_p4_restore_3d_offset();
+        fightstg_p4_preview_cleanup();
+        fightstg_p4.status_t = 0;
+        fightstg_p4.cam_on = 0;
+        fightstg_p4.hud_hidden = 0;
+        fightstg_p4.info_restore = 0;
+        fightstg_p4.burst = 0;
+        fightstg_p4.fade = 255;
+        fightstg_p4.phase = P4_REVEAL;
+        return;
+    }
+    if (fightstg_p4.phase == P4_FADE_IN && !fightstg_p4.cam_on) {
+        fightstg_p4_restore_3d_offset();
+        fightstg_p4.status_t = 0;
+        fightstg_p4.phase = fightstg_p4.fade > 0 ? P4_REVEAL : P4_OFF;
+        if (fightstg_p4.info_restore) {
+            fightstg_info_set(1);
+            fightstg_p4.info_restore = 0;
+        }
+        return;
+    }
+    if (fightstg_p4.cam_on) {
+        fightstg_p4.phase = P4_FADE_OUT;
+    } else {
+        fightstg_p4_restore_3d_offset();
+        fightstg_p4.status_t = 0;
+        fightstg_p4.phase = P4_OFF;
+        fightstg_p4.fade = 0;
+    }
+}
+
+static void fightstg_p4_fade_draw(s32 fade) {
+    GfxLayer *layer = gfx_module.funcs.get_layer(0x1005);
+    s32 wide_pad = port_video_widescreen_pad();
+    POLY_F4 *poly;
+    DR_TPAGE *tpage;
+    u32 *ot;
+
+    if (layer == NULL || fade <= 0) {
+        return;
+    }
+    if (fade > 255) {
+        fade = 255;
+    }
+    ot = layer->get_ot_entry(layer, 0);
+    poly = gfx_module.funcs.get_packet();
+    tpage = (DR_TPAGE *)(poly + 1);
+    setPolyF4(poly);
+    setSemiTrans(poly, 1);
+    setRGB0(poly, (u8)fade, (u8)fade, (u8)fade);
+    setXY4(poly, (s16)(-wide_pad), 0, (s16)(320 + wide_pad), 0, (s16)(-wide_pad), 240, (s16)(320 + wide_pad), 240);
+    addPrim(ot, poly);
+    SetDrawTPage(tpage, 0, 1, getTPage(1, 2, 0, 0));
+    addPrim(ot, tpage);
+    gfx_module.funcs.set_packet(tpage + 1);
+}
+
+static void fightstg_p4_hud_vis(FightstgHudData *data, s32 vis) {
+    if (data->party_name != NULL) {
+        data->party_name->set_visible(data->party_name, vis);
+    }
+    if (data->enemy_name != NULL) {
+        data->enemy_name->set_visible(data->enemy_name, vis);
+    }
+    if (data->hp != NULL) {
+        data->hp->set_visible(data->hp, vis);
+    }
+    if (data->max_hp != NULL) {
+        data->max_hp->set_visible(data->max_hp, vis);
+    }
+    if (data->slash != NULL) {
+        data->slash->set_visible(data->slash, vis);
+    }
+}
+
+static void fightstg_p4_scene_tick(FightstgHudData *data) {
+    s32 ticks = gfx_module.funcs.get_frame_ticks();
+    s32 hid;
+
+    fightstg_p4.hud_data = data;
+    if (ticks < 1) {
+        ticks = 1;
+    }
+    switch (fightstg_p4.phase) {
+    case P4_FADE_IN:
+        fightstg_p4.fade += P4_FADE_STEP * ticks;
+        if (fightstg_p4.fade >= 255) {
+            fightstg_p4.fade = 255;
+            fightstg_p4.cam_on = 1;
+            fightstg_p4.hud_hidden = 1;
+            fightstg_p4.burst = 0;
+            fightstg_p4.phase = P4_OPEN;
+            fightstg_p4_preview_tick();
+        }
+        break;
+    case P4_OPEN:
+        if (fightstg_p4.fade > 0) {
+            fightstg_p4.fade -= P4_FADE_STEP * ticks;
+            if (fightstg_p4.fade < 0) {
+                fightstg_p4.fade = 0;
+            }
+        }
+        if (fightstg_p4.burst < P4_BURST_MAX) {
+            fightstg_p4.burst += ticks;
+            if (fightstg_p4.burst > P4_BURST_MAX) {
+                fightstg_p4.burst = P4_BURST_MAX;
+            }
+        }
+        break;
+    case P4_FADE_OUT:
+        if (fightstg_p4.burst > 0) {
+            fightstg_p4.burst -= ticks * 2;
+            if (fightstg_p4.burst < 0) {
+                fightstg_p4.burst = 0;
+            }
+        }
+        fightstg_p4.fade += P4_FADE_STEP * ticks;
+        if (fightstg_p4.fade >= 255) {
+            fightstg_p4.fade = 255;
+            fightstg_p4_restore_3d_offset();
+            fightstg_p4_preview_cleanup();
+            fightstg_p4.status_t = 0;
+            fightstg_p4.cam_on = 0;
+            fightstg_p4.hud_hidden = 0;
+            if (fightstg_p4.info_restore) {
+                fightstg_info_set(1);
+                fightstg_p4.info_restore = 0;
+            }
+            fightstg_p4.phase = P4_REVEAL;
+        }
+        break;
+    case P4_SWAP_MODEL:
+        fightstg_p4.phase = P4_OPEN;
+        break;
+    case P4_REVEAL:
+        fightstg_p4.fade -= P4_FADE_STEP * ticks;
+        if (fightstg_p4.fade <= 0) {
+            fightstg_p4.fade = 0;
+            fightstg_p4.phase = P4_OFF;
+        }
+        break;
+    default:
+        break;
+    }
+
+    if (fightstg_p4.cam_on) {
+        if (fightstg_p4.status_open) {
+            if (fightstg_p4.status_t < 8) {
+                fightstg_p4.status_t += ticks;
+                if (fightstg_p4.status_t > 8) {
+                    fightstg_p4.status_t = 8;
+                }
+            }
+        } else if (fightstg_p4.status_t > 0) {
+            fightstg_p4.status_t -= ticks * 2;
+            if (fightstg_p4.status_t < 0) {
+                fightstg_p4.status_t = 0;
+            }
+        }
+        if (fightstg_p4.leaf_t > 0) {
+            fightstg_p4.leaf_t += ticks;
+            if (fightstg_p4.leaf_t > 8) {
+                fightstg_p4.leaf_t = 0;
+            }
+        }
+        if (fightstg_p4.status_t > 0) {
+            GfxLayer *layer3d = gfx_module.funcs.get_layer(0x1004);
+            if (layer3d != NULL) {
+                s32 st = fightstg_p4.status_t;
+                s32 ease = 256 - (8 - st) * (8 - st) * 256 / 64;
+                s32 slide = (68 * ease) >> 8;
+                if (!fightstg_p4.has_3d_base) {
+                    fightstg_p4.base_3d_x = layer3d->draw_x;
+                    fightstg_p4.base_3d_y = layer3d->draw_y;
+                    fightstg_p4.has_3d_base = 1;
+                }
+                layer3d->set_draw_offset(layer3d, fightstg_p4.base_3d_x - slide, fightstg_p4.base_3d_y);
+            }
+        } else {
+            fightstg_p4_restore_3d_offset();
+        }
+    } else {
+        fightstg_p4_restore_3d_offset();
+    }
+
+    hid = fightstg_p4_hide_hud();
+    if (hid) {
+        fightstg_p4_hud_vis(data, 0);
+        fightstg_p4.hud_was_hid = 1;
+    } else if (fightstg_p4.hud_was_hid) {
+        fightstg_p4_hud_vis(data, 1);
+        fightstg_p4.hud_was_hid = 0;
+    }
+
+    if (fightstg_p4.fade > 0) {
+        fightstg_p4_fade_draw(fightstg_p4.fade);
+    }
+    if (fightstg_p4.cam_on) {
+        fightstg_p4_preview_tick();
+        fightstg_p4.pulse_t += ticks;
+        if (fightstg_p4.sel_pop > 0) {
+            fightstg_p4.sel_pop -= ticks;
+            if (fightstg_p4.sel_pop < 0) {
+                fightstg_p4.sel_pop = 0;
+            }
+        }
+        if (fightstg_p4.phase == P4_FADE_OUT && fightstg_p4.cache_n > 0 && fightstg_p4.burst > 0) {
+            fightstg_p4_draw_ring(fightstg_p4.cache_opts, fightstg_p4.cache_n, fightstg_p4.cache_sel,
+                                  fightstg_p4.burst);
+        }
+        if (fightstg_p4.status_t < 7 || fightstg_p4.phase != P4_OPEN) {
+            fightstg_p4_status_hide_windows();
+        }
+        if (fightstg_p4.phase != P4_OPEN) {
+            fightstg_p4_keys_hide();
+        }
+    } else {
+        fightstg_p4_status_hide_windows();
+        fightstg_p4_keys_hide();
+    }
+}
+
+static void fightstg_p4_decode(const u8 *src, char *dst, s32 cap) {
+    s32 n = 0;
+
+    if (src == NULL || cap <= 1) {
+        if (cap > 0) {
+            dst[0] = '\0';
+        }
+        return;
+    }
+    while (*src != 0 && n < cap - 1) {
+        u8 b = *src++;
+        if (b >= 0x04 && b <= 0x0D) {
+            dst[n++] = (char)('0' + (b - 0x04));
+        } else if (b >= 0x0E && b <= 0x27) {
+            dst[n++] = (char)('A' + (b - 0x0E));
+        } else if (b >= 0x28 && b <= 0x41) {
+            dst[n++] = (char)('A' + (b - 0x28));
+        } else if (b == 0xE7) {
+            dst[n++] = '!';
+        } else if (b == 0x01 && *src != 0) {
+            u8 c = *src++;
+            if (c == 0x01) {
+                dst[n++] = ' ';
+            } else if (c == 0x05) {
+                dst[n++] = '.';
+            } else if (c == 0x07) {
+                dst[n++] = ':';
+            } else if (c == 0x09) {
+                dst[n++] = '?';
+            } else if (c == 0x0F) {
+                dst[n++] = '/';
+            } else if (c == 0x1A) {
+                dst[n++] = '-';
+            } else {
+                dst[n++] = ' ';
+            }
+        } else if (b == 0x02 && *src != 0) {
+            u8 c = *src++;
+            if (c == 0x01) {
+                dst[n++] = ' ';
+            }
+        }
+    }
+    dst[n] = '\0';
+}
+
+static void fightstg_p4_quad(u32 *ot, s32 cx, s32 cy, s32 hw, s32 hh, s32 skew, s32 angle, const u8 rgb[3]) {
+    POLY_F4 *p = gfx_module.funcs.get_packet();
+    s32 cs = rsin(angle + 1024), sn = rsin(angle);
+    const s32 lx[4] = { -hw + skew, hw + skew + 2, -hw - skew - 1, hw - skew };
+    const s32 ly[4] = { -hh, -hh - 1, hh + 1, hh };
+    s16 v[8];
+    s32 k;
+
+    for (k = 0; k < 4; k++) {
+        v[k * 2] = (s16)(cx + ((lx[k] * cs - ly[k] * sn) >> 12));
+        v[k * 2 + 1] = (s16)(cy + ((lx[k] * sn + ly[k] * cs) >> 12));
+    }
+    setPolyF4(p);
+    setRGB0(p, rgb[0], rgb[1], rgb[2]);
+    setXY4(p, v[0], v[1], v[2], v[3], v[4], v[5], v[6], v[7]);
+    addPrim(ot, p);
+    gfx_module.funcs.set_packet(p + 1);
+}
+
+static void fightstg_p4_draw_opt(GfxLayer *layer, const FightstgP4Opt *o, s32 selected, s32 ox, s32 oy, s32 raw_angle,
+                                 s32 compact) {
+    static const u8 white[3] = { 246, 252, 255 };
+    static const u8 white_soft[3] = { 226, 238, 252 };
+    static const u8 grey[3] = { 116, 126, 148 };
+    static const u8 shadow[3] = { 4, 10, 28 };
+    static const u8 navy[3] = { 8, 18, 44 };
+    static const u8 navy_sel[3] = { 6, 14, 36 };
+    static const u8 navy_sub[3] = { 12, 52, 132 };
+    static const u8 p3r_cyan[3] = { 0, 176, 255 };
+    static const u8 p3r_blue[3] = { 32, 118, 240 };
+    static const u8 p3r_ice[3] = { 160, 244, 255 };
+    static const u8 hud_gold[3] = { 255, 200, 56 };
+    static const u8 hud_gold_dim[3] = { 184, 138, 44 };
+    static const u8 hud_gold_hi[3] = { 255, 236, 156 };
+    static const u8 hud_gold_sub[3] = { 72, 46, 12 };
+    static const u8 p3r_teal[3] = { 48, 224, 168 };
+    static const u8 p3r_teal_dim[3] = { 36, 152, 116 };
+    static const u8 p3r_teal_hi[3] = { 164, 255, 220 };
+    static const u8 p3r_teal_sub[3] = { 12, 68, 56 };
+    static const u8 dim_trim[3] = { 54, 64, 88 };
+    const u8 *accent = o->kind == 1 ? hud_gold : (o->kind == 2 ? p3r_teal : p3r_cyan);
+    const u8 *hi_trim = o->kind == 1 ? hud_gold_hi : (o->kind == 2 ? p3r_teal_hi : white);
+    const u8 *sub_bg = o->kind == 1 ? hud_gold_sub : (o->kind == 2 ? p3r_teal_sub : navy_sub);
+    const u8 *sub_text = o->kind == 1 ? hud_gold_hi : (o->kind == 2 ? p3r_teal_hi : p3r_ice);
+    const u8 *unsel_trim = o->dim ? dim_trim : (o->kind == 1 ? hud_gold_dim : (o->kind == 2 ? p3r_teal_dim : p3r_blue));
+    s32 depth = selected ? 0 : 1;
+    u32 *ot = layer->get_ot_entry(layer, depth);
+    s32 size = selected ? (o->kind == 1 ? 248 : 208) : (o->kind == 1 ? 188 : 156);
+    s32 pop_extra = (selected && fightstg_p4.sel_pop > 0) ? (fightstg_p4.sel_pop * 6) : 0;
+    s32 angle = selected ? (raw_angle / 3) : raw_angle;
+    s32 max_w = compact ? (selected ? 114 : 96) : (selected ? 132 : 108);
+    s32 tw;
+    s32 hw, hh, cs, sn;
+
+    size += pop_extra;
+    tw = def_poly_text_rot(NULL, depth, 0, 0, size, angle, 1, o->label, white, NULL);
+
+    if (tw > max_w && tw > 0) {
+        size = size * max_w / tw;
+        tw = def_poly_text_rot(NULL, depth, 0, 0, size, angle, 1, o->label, white, NULL);
+    }
+    hw = tw / 2 + (selected ? 12 : 9);
+    hh = ((16 * size) >> 9) + (selected ? 6 : 5);
+    cs = rsin(angle + 1024);
+    sn = rsin(angle);
+
+    if (selected && fightstg_p4.phase == P4_OPEN && fightstg_p4.hud_data != NULL &&
+        fightstg_p4.hud_data->p4_confirm_key != NULL) {
+        FightstgHudData *hd = fightstg_p4.hud_data;
+        s32 kcx = ox + (((-hw + 6) * cs + (hh + 2) * sn) >> 12);
+        s32 kcy = oy + (((-hw + 6) * sn - (hh + 2) * cs) >> 12);
+        s32 kang = angle - 80;
+        u8 br = o->dim ? 58 : (dw3_feat_icons ? 28 : 44);
+        u8 bg = o->dim ? 66 : (dw3_feat_icons ? 196 : 144);
+        u8 bb = o->dim ? 86 : (dw3_feat_icons ? 76 : 255);
+        u8 chip_rgb[3] = { br, bg, bb };
+
+        if (kcx < 12) {
+            kcx = 12;
+        }
+        if (kcy < 12) {
+            kcy = 12;
+        }
+        fightstg_p4_keys_init_text();
+        hd->p4_confirm_key->set_pos(hd->p4_confirm_key, kcx - (dw3_feat_icons ? 4 : 6), kcy - 6);
+        hd->p4_confirm_key->set_palette(hd->p4_confirm_key, o->dim ? 7 : 0);
+        hd->p4_confirm_key->set_visible(hd->p4_confirm_key, 1);
+        fightstg_p4_quad(ot, kcx, kcy, 7, 7, 2, kang, chip_rgb);
+        fightstg_p4_quad(ot, kcx, kcy, 8, 8, 2, kang, o->dim ? dim_trim : white);
+    }
+
+    if (selected && o->sub[0] != '\0') {
+        s32 sub_size = 128;
+        s32 sw = def_poly_text_rot(NULL, depth, 0, 0, sub_size, angle, 0, o->sub, sub_text, NULL);
+        s32 off_y = hh + 10;
+        s32 scx = ox - ((off_y * sn) >> 12) + ((6 * cs) >> 12);
+        s32 scy = oy + ((off_y * cs) >> 12) + ((6 * sn) >> 12);
+
+        if (sw > 144 && sw > 0) {
+            sub_size = sub_size * 144 / sw;
+            sw = def_poly_text_rot(NULL, depth, 0, 0, sub_size, angle, 0, o->sub, sub_text, NULL);
+        }
+        def_poly_text_rot(layer, depth, scx, scy, sub_size, angle, 0, o->sub, sub_text, NULL);
+        def_poly_text_rot(layer, depth, scx + 1, scy + 1, sub_size, angle, 0, o->sub, shadow, NULL);
+        fightstg_p4_quad(ot, scx, scy, sw / 2 + 8, 7, 3, angle, sub_bg);
+        fightstg_p4_quad(ot, scx, scy, sw / 2 + 9, 8, 3, angle, accent);
+    }
+
+    if (o->badge != NULL) {
+        s32 bsize = 112;
+        s32 bw = def_poly_text_rot(NULL, depth, 0, 0, bsize, angle, 0, o->badge, white, NULL);
+        s32 bx = ox + (((hw - 6) * cs + (hh + 3) * sn) >> 12);
+        s32 by = oy + (((hw - 6) * sn - (hh + 3) * cs) >> 12);
+
+        def_poly_text_rot(layer, depth, bx, by, bsize, angle, 0, o->badge, o->dim ? grey : shadow, NULL);
+        fightstg_p4_quad(ot, bx, by, bw / 2 + 6, 6, 2, angle, o->dim ? dim_trim : hud_gold);
+    }
+
+    def_poly_text_rot(layer, depth, ox, oy, size, angle, 1, o->label,
+                      o->dim ? grey : (selected ? white : white_soft), NULL);
+    def_poly_text_rot(layer, depth, ox + 1, oy + 1, size, angle, 1, o->label, shadow, NULL);
+
+    fightstg_p4_quad(ot, ox, oy, hw, hh, 4, angle, selected ? navy_sel : navy);
+    if (selected) {
+        s32 pulse = (rsin((fightstg_p4.pulse_t * 64) & 0xFFF) + 4096) >> 11; /* 0..4 px subtle glow shift */
+
+        fightstg_p4_quad(ot, ox, oy, hw + 2, hh + 2, 4, angle, hi_trim);
+        fightstg_p4_quad(ot, ox - 4 - (pulse >> 1), oy + 4 + (pulse >> 2), hw + 4, hh + 3, 5, angle - 32, accent);
+    } else {
+        fightstg_p4_quad(ot, ox, oy, hw + 1, hh + 1, 4, angle, unsel_trim);
+    }
+}
+
+static void fightstg_p4_layout_ring(FightstgP4Opt *opts, s32 n) {
+    static const s16 pos1[1][3] = { { 160, 178, -32 } };
+    static const s16 pos2[2][3] = { { 84, 84, -108 }, { 232, 156, 108 } };
+    static const s16 pos3[3][3] = { { 84, 74, -108 }, { 222, 118, 84 }, { 94, 170, 96 } };
+    static const s16 pos4[4][3] = { { 84, 68, -112 }, { 82, 166, 96 }, { 228, 70, 112 }, { 226, 170, -96 } };
+    const s16 (*tab)[3] = n <= 1 ? pos1 : n == 2 ? pos2 : n == 3 ? pos3 : pos4;
+    s32 i;
+
+    for (i = 0; i < n && i < 4; i++) {
+        opts[i].x = tab[i][0];
+        opts[i].y = tab[i][1];
+        opts[i].angle = tab[i][2];
+    }
+}
+
+static void fightstg_p4_draw_ring(const FightstgP4Opt *opts, s32 n, s32 sel, s32 burst) {
+    GfxLayer *layer = gfx_module.funcs.get_layer(0x1005);
+    s32 cx = 160, cy = 122;
+    s32 t, ease, st, sease, i;
+    s32 stack_y0 = (224 - n * 44) / 2 + 22;
+
+    if (layer == NULL || n <= 0) {
+        return;
+    }
+    if (opts != fightstg_p4.cache_opts) {
+        if (sel != fightstg_p4.last_sel_seen) {
+            fightstg_p4.last_sel_seen = sel;
+            fightstg_p4.sel_pop = 5;
+        }
+        fightstg_p4.cache_n = n > 4 ? 4 : n;
+        fightstg_p4.cache_sel = sel;
+        for (i = 0; i < fightstg_p4.cache_n; i++) {
+            fightstg_p4.cache_opts[i] = opts[i];
+        }
+    }
+    t = burst < 0 ? 0 : (burst > P4_BURST_MAX ? P4_BURST_MAX : burst);
+    ease = 256 - (P4_BURST_MAX - t) * (P4_BURST_MAX - t) * 256 / (P4_BURST_MAX * P4_BURST_MAX);
+    st = fightstg_p4.status_t;
+    sease = st > 0 ? (256 - (8 - st) * (8 - st) * 256 / 64) : 0;
+
+    for (i = -1; i < n; i++) {
+        s32 idx = i < 0 ? sel : i;
+        s32 tx, ty, ta, ox, oy, px, py;
+        if (idx < 0 || idx >= n || (i >= 0 && idx == sel)) {
+            continue;
+        }
+        /* Persona-style parallax: foreground selected block drifts slightly more than background blocks */
+        px = (fightstg_p4.cam_sway * (idx == sel ? 5 : 2)) >> 12;
+        py = (rsin(((fightstg_p4.pulse_t * 24) + idx * 900) & 0xFFF) * (idx == sel ? 2 : 1)) >> 12;
+        tx = opts[idx].x + (((74 - opts[idx].x) * sease) >> 8) + px;
+        ty = opts[idx].y + ((((stack_y0 + idx * 44) - opts[idx].y) * sease) >> 8) + py;
+        ta = opts[idx].angle + (((-48 - opts[idx].angle) * sease) >> 8);
+        ox = cx + (((tx - cx) * ease) >> 8);
+        oy = cy + (((ty - cy) * ease) >> 8);
+        fightstg_p4_draw_opt(layer, &opts[idx], idx == sel, ox, oy, ta, sease > 128);
+    }
+}
+
+static void fightstg_p4_fmt_num(char *dst, s32 v) {
+    char tmp[12];
+    s32 n = 0, i = 0;
+
+    if (v < 0) {
+        dst[i++] = '-';
+        v = -v;
+    }
+    if (v == 0) {
+        dst[i++] = '0';
+        dst[i] = '\0';
+        return;
+    }
+    while (v > 0 && n < 10) {
+        tmp[n++] = (char)('0' + (v % 10));
+        v /= 10;
+    }
+    while (n > 0) {
+        dst[i++] = tmp[--n];
+    }
+    dst[i] = '\0';
+}
+
+static s32 fightstg_p4_status_key(u32 pad) {
+    s32 bit = port_battle_menu_bit(6);
+    u32 mask;
+
+    if (bit >= 0 && bit < 16 && !(((0x0400 | 0x0800 | 0x2000 | 0x4000 | 0x00F0 | 0x0008) >> bit) & 1)) {
+        mask = 1u << bit;
+    } else {
+        mask = 0x0008u; /* Start fallback */
+    }
+    return (pad & mask) != 0;
+}
+
+static void fightstg_p4_status_input(u32 pad) {
+    if (fightstg_p4_status_key(pad)) {
+        fightstg_p4.status_open = !fightstg_p4.status_open;
+        fightstg_p4.leaf_t = 0;
+        sound_module.play(0x4001B);
+        return;
+    }
+    if (!fightstg_p4.status_open) {
+        return;
+    }
+    if (pad & 0x0800) {
+        fightstg_p4.status_page = (fightstg_p4.status_page + 1) % 3;
+        fightstg_p4.leaf_dir = 1;
+        fightstg_p4.leaf_t = 1;
+        sound_module.play(0x4001B);
+    } else if (pad & 0x0400) {
+        fightstg_p4.status_page = (fightstg_p4.status_page + 2) % 3;
+        fightstg_p4.leaf_dir = -1;
+        fightstg_p4.leaf_t = 1;
+        sound_module.play(0x4001B);
+    }
+}
+
+static void fightstg_p4_rect(u32 *ot, s32 x, s32 y, s32 w, s32 h, s32 abr, u8 r, u8 g, u8 b) {
+    POLY_F4 *poly = gfx_module.funcs.get_packet();
+
+    setPolyF4(poly);
+    setRGB0(poly, r, g, b);
+    setXY4(poly, (s16)x, (s16)y, (s16)(x + w), (s16)y, (s16)x, (s16)(y + h), (s16)(x + w), (s16)(y + h));
+    if (abr >= 0) {
+        DR_TPAGE *tpage = (DR_TPAGE *)(poly + 1);
+        setSemiTrans(poly, 1);
+        addPrim(ot, poly);
+        SetDrawTPage(tpage, 0, 1, getTPage(1, abr, 0, 0));
+        addPrim(ot, tpage);
+        gfx_module.funcs.set_packet(tpage + 1);
+    } else {
+        addPrim(ot, poly);
+        gfx_module.funcs.set_packet(poly + 1);
+    }
+}
+
+static const char *fightstg_p4_status_key_label(void) {
+    s32 bit = port_battle_menu_bit(6);
+
+    if (bit >= 0 && bit < 16 && !(((0x0400 | 0x0800 | 0x2000 | 0x4000 | 0x00F0 | 0x0008) >> bit) & 1)) {
+        switch (bit) {
+        case 0:
+            return "SELECT";
+        case 8:
+            return "L2";
+        case 9:
+            return "R2";
+        case 12:
+            return "Y";
+        case 15:
+            return "X";
+        default:
+            return "L2";
+        }
+    }
+    return "START";
+}
+
+static void fightstg_p4_status_draw(s32 member, s32 form_idx, s32 digimon_id, s32 can_cancel) {
+    static const u8 white[3] = { 244, 250, 255 };
+    static const u8 cyan[3] = { 130, 232, 255 };
+    static const u8 grey[3] = { 126, 136, 158 };
+    static const u8 shadow[3] = { 6, 10, 34 };
+    static const u8 stat_str[6][4] = {
+        { 0x20, 0x21, 0x1F, 0 }, /* STR */
+        { 0x11, 0x12, 0x13, 0 }, /* DEF */
+        { 0x20, 0x1D, 0x21, 0 }, /* SPT */
+        { 0x24, 0x16, 0x20, 0 }, /* WIS */
+        { 0x20, 0x1D, 0x11, 0 }, /* SPD */
+        { 0x10, 0x15, 0x0E, 0 }, /* CHA */
+    };
+    static const u8 none_str[7] = { 0x01, 0x1A, 0x01, 0x1A, 0x01, 0x1A, 0 }; /* --- */
+    GfxLayer *layer = gfx_module.funcs.get_layer(0x1005);
+    FightstgHudData *d = fightstg_p4.hud_data;
+    u32 *ot0, *ot1;
+    const char *key_txt = fightstg_p4_status_key_label();
+    s32 tab_x = 236, tab_y = 218, tab_w = 78, tab_h = 15;
+    char tab_buf[20];
+    s32 tw;
+
+    if (layer == NULL || !fightstg_p4.cam_on) {
+        fightstg_p4_status_hide_windows();
+        fightstg_p4_keys_hide();
+        return;
+    }
+    ot0 = layer->get_ot_entry(layer, 0);
+    ot1 = layer->get_ot_entry(layer, 1);
+
+    /* Always show the stylized diagonal STATUS tab in the bottom-right corner. */
+    {
+        static const u8 st_navy[3] = { 8, 18, 44 };
+        static const u8 st_blue[3] = { 32, 118, 240 };
+        static const u8 st_cyan[3] = { 0, 196, 255 };
+        s32 k = 0;
+        const char *p;
+        s32 scx, scy;
+        for (p = key_txt; *p != '\0'; p++) {
+            tab_buf[k++] = *p;
+        }
+        tab_buf[k++] = ' ';
+        for (p = "STATUS"; *p != '\0'; p++) {
+            tab_buf[k++] = *p;
+        }
+        tab_buf[k] = '\0';
+        tw = def_poly_text_rot(NULL, 0, 0, 0, 120, -48, 0, tab_buf, white, NULL);
+        tab_w = tw + 16;
+        tab_x = 312 - tab_w;
+        scx = tab_x + tab_w / 2;
+        scy = tab_y + 7;
+        def_poly_text_rot(layer, 0, scx, scy, 120, -48, 0, tab_buf, fightstg_p4.status_open ? cyan : white, NULL);
+        def_poly_text_rot(layer, 0, scx + 1, scy + 1, 120, -48, 0, tab_buf, shadow, NULL);
+        fightstg_p4_quad(ot1, scx, scy, tab_w / 2, 7, 4, -48, st_navy);
+        fightstg_p4_quad(ot1, scx, scy, tab_w / 2 + 1, 8, 4, -48, fightstg_p4.status_open ? st_cyan : st_blue);
+    }
+
+    /* Stylized diagonal BACK tag right beside the STATUS tab (omitted when cancel is disallowed). */
+    if (can_cancel && fightstg_p4.phase == P4_OPEN && d != NULL && d->p4_cancel_key != NULL) {
+        static const u8 back_navy[3] = { 8, 18, 44 };
+        static const u8 back_red[3] = { 232, 46, 52 };
+        static const u8 back_blue[3] = { 32, 118, 240 };
+        s32 bw = def_poly_text_rot(NULL, 0, 0, 0, 120, -48, 0, "BACK", white, NULL);
+        s32 bcx = tab_x - bw / 2 - 16;
+        s32 bcy = tab_y + 7;
+        s32 kx = bcx - bw / 2 - 12;
+
+        fightstg_p4_keys_init_text();
+        d->p4_cancel_key->set_pos(d->p4_cancel_key, kx - (dw3_feat_icons ? 4 : 6), bcy - 6);
+        d->p4_cancel_key->set_visible(d->p4_cancel_key, 1);
+        fightstg_p4_quad(ot0, kx, bcy, 7, 7, 2, -48, back_red);
+        fightstg_p4_quad(ot0, kx, bcy, 8, 8, 2, -48, white);
+        def_poly_text_rot(layer, 0, bcx + 3, bcy, 120, -48, 0, "BACK", white, NULL);
+        def_poly_text_rot(layer, 0, bcx + 4, bcy + 1, 120, -48, 0, "BACK", shadow, NULL);
+        fightstg_p4_quad(ot1, bcx + 2, bcy, bw / 2 + 10, 7, 4, -48, back_navy);
+        fightstg_p4_quad(ot1, bcx + 2, bcy, bw / 2 + 11, 8, 4, -48, back_blue);
+    } else if (d != NULL && d->p4_cancel_key != NULL) {
+        d->p4_cancel_key->set_visible(d->p4_cancel_key, 0);
+    }
+
+    if (fightstg_p4.status_t <= 0) {
+        fightstg_p4_status_hide_windows();
+        return;
+    }
+
+    {
+        s32 st = fightstg_p4.status_t;
+        s32 ease = 256 - (8 - st) * (8 - st) * 256 / 64;
+        s32 sx = 162, sw = 152, full_h = 198;
+        s32 sh = (full_h * ease) >> 8;
+        s32 sy = 216 - sh;
+        s32 i, k;
+
+        if (st >= 7 && d != NULL) {
+            s32 fsy = 216 - full_h;
+            s32 page = fightstg_p4.status_page;
+            s32 leaf_cover = 0;
+            s32 dirty = (fightstg_p4.st_member != member || fightstg_p4.st_form != form_idx ||
+                         fightstg_p4.st_digi != digimon_id || fightstg_p4.st_page != page);
+
+            /* Header: Digimon name (native bitmap font) + page tabs */
+            def_poly_text(layer, 0, sx + 8, fsy + 22, 108, "STATS", page == 0 ? cyan : grey);
+            def_poly_text(layer, 0, sx + 54, fsy + 22, 108, "TECH", page == 1 ? cyan : grey);
+            def_poly_text(layer, 0, sx + 94, fsy + 22, 108, "LOAD", page == 2 ? cyan : grey);
+            def_poly_text(layer, 0, sx + 131, fsy + 22, 96, "L/R", grey);
+            {
+                static const s16 tab_ux[3] = { 8, 54, 94 };
+                static const s16 tab_uw[3] = { 34, 30, 30 };
+                fightstg_p4_rect(ot0, sx + tab_ux[page], fsy + 32, tab_uw[page], 2, -1, 0, 200, 255);
+            }
+            fightstg_p4_rect(ot0, sx + 6, fsy + 34, sw - 12, 1, -1, 40, 128, 240);
+            fightstg_p4_rect(ot1, sx + 2, fsy + 2, sw - 4, 32, -1, 8, 18, 44);
+
+            /* Leaf page-turn sweep over rows */
+            if (fightstg_p4.leaf_t > 0) {
+                s32 lt = fightstg_p4.leaf_t;
+                s32 c = rsin((lt * 2048) / 8 + 1024);
+                s32 lw = ((sw - 12) * (c < 0 ? -c : c)) >> 12;
+                s32 lx = fightstg_p4.leaf_dir > 0 ? (sx + 6) : (sx + sw - 6 - lw);
+                fightstg_p4_rect(ot0, lx, fsy + 36, lw, full_h - 42, 1, 40, 110, 210);
+                leaf_cover = (lt >= 2 && lt <= 6);
+            }
+
+            if (dirty) {
+                RecordsDigimon *rec = records_get_digimon_func(digimon_id);
+                fightstg_p4.st_member = member;
+                fightstg_p4.st_form = form_idx;
+                fightstg_p4.st_digi = digimon_id;
+                fightstg_p4.st_page = page;
+                fightstg_p4.st_vis_lbl = 0;
+                fightstg_p4.st_vis_val = 0;
+                fightstg_p4_status_hide_windows();
+
+                if (rec != NULL) {
+                    d->p4_title->set_pos(d->p4_title, sx + 8, fsy + 4);
+                    d->p4_title->set_palette(d->p4_title, 0);
+                    d->p4_title->set_text(d->p4_title, cdload_module.files.get_file(records_language + 0x4E),
+                                          rec->name_id);
+                }
+                if (page == 0) {
+                    GamestateStats stats;
+                    s16 forms[3];
+                    gamestate_data.funcs.get_stats(member, &stats);
+                    if (form_idx != 0) {
+                        gamestate_data.funcs.get_chosen_forms(member, forms);
+                        if (forms[form_idx - 1] >= 3) {
+                            RecordsDigimon *fd = records_get_digimon_func(forms[form_idx - 1]);
+                            if (fd != NULL) {
+                                for (k = 0; k < 6; k++) {
+                                    (&stats.values[6])[k] += fd->stats[k];
+                                }
+                                for (k = 0; k < 7; k++) {
+                                    (&stats.values[12])[k] += fd->resists[k];
+                                }
+                            }
+                        }
+                    }
+                    for (k = 0; k < 6; k++) {
+                        s32 col = k / 3;
+                        s32 row = k % 3;
+                        s32 rx = sx + 8 + col * 72;
+                        s32 ry = fsy + 40 + row * 19;
+                        s32 val = (&stats.values[6])[k];
+                        s32 pal = (val >= 1000 && def_limit_break_active(0)) ? 2 : 0;
+
+                        if (val >= 1000 && !def_limit_break_active(0)) {
+                            val = 999;
+                        }
+                        d->p4_lbl[k]->set_pos(d->p4_lbl[k], rx, ry);
+                        d->p4_lbl[k]->measure(d->p4_lbl[k], 0);
+                        d->p4_lbl[k]->set_palette(d->p4_lbl[k], 1);
+                        d->p4_lbl[k]->set_text(d->p4_lbl[k], (u8 *)stat_str[k], -1);
+
+                        d->p4_val[k]->set_pos(d->p4_val[k], rx + 64, ry);
+                        d->p4_val[k]->set_palette(d->p4_val[k], pal);
+                        d->p4_val[k]->set_line_number(d->p4_val[k], 0, val);
+                        d->p4_val[k]->measure(d->p4_val[k], 1);
+                    }
+                    for (k = 0; k < 7; k++) {
+                        s32 col = k / 4;
+                        s32 row = k % 4;
+                        s32 rx = sx + 10 + col * 72;
+                        s32 ry = fsy + 107 + row * 21;
+                        s32 val = (&stats.values[12])[k];
+
+                        if (val >= 1000) {
+                            val = 999;
+                        }
+                        d->p4_lbl[6 + k]->set_pos(d->p4_lbl[6 + k], rx, ry);
+                        d->p4_lbl[6 + k]->measure(d->p4_lbl[6 + k], 0);
+                        d->p4_lbl[6 + k]->set_palette(d->p4_lbl[6 + k], 0);
+                        d->p4_lbl[6 + k]->set_text(d->p4_lbl[6 + k], (u8 *)def_element_icon(k), -1);
+
+                        d->p4_val[6 + k]->set_pos(d->p4_val[6 + k], rx + 60, ry + 1);
+                        d->p4_val[6 + k]->set_palette(d->p4_val[6 + k], 0);
+                        d->p4_val[6 + k]->set_line_number(d->p4_val[6 + k], 0, val);
+                        d->p4_val[6 + k]->measure(d->p4_val[6 + k], 1);
+                    }
+                    fightstg_p4.st_vis_lbl = 0x1FFF;
+                    fightstg_p4.st_vis_val = 0x1FFF;
+                } else {
+                    s32 techs[6] = { 0, 0, 0, 0, 0, 0 };
+                    s32 count = 0;
+                    void *tfile = cdload_module.files.get_file(records_language + 0xA2);
+
+                    if (page == 1) {
+                        if (form_idx == 0) {
+                            techs[0] = records_digimon[member].techniques[6] & 0x1FFF;
+                            if (techs[0] != 0) {
+                                count = 1;
+                            }
+                        } else {
+                            s16 forms[3];
+                            GamestateForm frec;
+                            gamestate_data.funcs.get_chosen_forms(member, forms);
+                            if (forms[form_idx - 1] >= 3 &&
+                                gamestate_data.funcs.get_form(member, forms[form_idx - 1], &frec) >= 0) {
+                                for (i = 0; i < 6; i++) {
+                                    if ((frec.techniques[i] & 0x1FFF) != 0) {
+                                        techs[count++] = frec.techniques[i] & 0x1FFF;
+                                    }
+                                }
+                            }
+                        }
+                    } else if (form_idx != 0) {
+                        s16 forms[3];
+                        GamestateForm frec;
+                        s32 fc = gamestate_data.funcs.get_chosen_forms(member, forms);
+                        s32 j;
+                        for (j = 0; j < fc; j++) {
+                            if (j != form_idx - 1 && gamestate_data.funcs.get_form(member, forms[j], &frec) >= 0) {
+                                for (i = 0; i < 6 && count < 6; i++) {
+                                    s32 tid = frec.techniques[i];
+                                    if (tid != 0 && (tid & 0x4000)) {
+                                        s32 base_id = tid & 0x1FFF;
+                                        s32 dup = 0, u;
+                                        for (u = 0; u < count; u++) {
+                                            if (techs[u] == base_id) {
+                                                dup = 1;
+                                            }
+                                        }
+                                        if (!dup) {
+                                            techs[count++] = base_id;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (count == 0) {
+                        d->p4_lbl[0]->set_pos(d->p4_lbl[0], sx + 12, fsy + 46);
+                        d->p4_lbl[0]->measure(d->p4_lbl[0], 0);
+                        d->p4_lbl[0]->set_palette(d->p4_lbl[0], 7);
+                        d->p4_lbl[0]->set_text(d->p4_lbl[0], (u8 *)none_str, -1);
+                        fightstg_p4.st_vis_lbl = 1u;
+                    } else {
+                        for (i = 0; i < count; i++) {
+                            s32 ry = fsy + 42 + i * 24;
+                            s32 tid = techs[i];
+                            s32 cost = records_techniques[tid - 1].mp_cost;
+
+                            d->p4_lbl[i]->set_pos(d->p4_lbl[i], sx + 7, ry);
+                            d->p4_lbl[i]->measure(d->p4_lbl[i], 0);
+                            def_tech_icon(d->p4_lbl[i], tid, 0);
+
+                            d->p4_lbl[6 + i]->set_pos(d->p4_lbl[6 + i], sx + 24, ry + 1);
+                            d->p4_lbl[6 + i]->measure(d->p4_lbl[6 + i], 0);
+                            d->p4_lbl[6 + i]->set_palette(d->p4_lbl[6 + i], 0);
+                            if (tfile != NULL) {
+                                d->p4_lbl[6 + i]->set_text(d->p4_lbl[6 + i], tfile, tid);
+                            }
+
+                            d->p4_val[i]->set_pos(d->p4_val[i], sx + sw - 7, ry + 1);
+                            d->p4_val[i]->set_palette(d->p4_val[i], 1);
+                            d->p4_val[i]->set_line_number(d->p4_val[i], 0, cost);
+                            d->p4_val[i]->measure(d->p4_val[i], 1);
+                            fightstg_p4.st_vis_lbl |= (u16)((1u << i) | (1u << (6 + i)));
+                            fightstg_p4.st_vis_val |= (u16)(1u << i);
+                        }
+                    }
+                }
+            }
+
+            /* Show/hide windows cleanly around the leaf turn & page divider */
+            d->p4_title->set_pos(d->p4_title, sx + 8, fsy + 4);
+            d->p4_title->set_visible(d->p4_title, 1);
+            if (page == 0 && !leaf_cover) {
+                fightstg_p4_rect(ot0, sx + 6, fsy + 100, sw - 12, 1, -1, 32, 92, 180);
+            }
+            for (k = 0; k < 13; k++) {
+                d->p4_lbl[k]->set_visible(d->p4_lbl[k], !leaf_cover && ((fightstg_p4.st_vis_lbl >> k) & 1));
+                d->p4_val[k]->set_visible(d->p4_val[k], !leaf_cover && ((fightstg_p4.st_vis_val >> k) & 1));
+            }
+        } else {
+            fightstg_p4_status_hide_windows();
+        }
+
+        /* Paper backdrop (subtractive dark + electric blue frame, matching Tech/Bag sheet) */
+        fightstg_p4_rect(ot1, sx + 1, sy + 1, sw - 2, sh - 2, 2, 190, 180, 130);
+        fightstg_p4_rect(ot1, sx, sy, sw, 2, 1, 40, 110, 220);
+        fightstg_p4_rect(ot1, sx, sy + sh - 2, sw, 2, 1, 40, 110, 220);
+        fightstg_p4_rect(ot1, sx, sy, 2, sh, 1, 40, 110, 220);
+        fightstg_p4_rect(ot1, sx + sw - 2, sy, 2, sh, 1, 40, 110, 220);
+    }
+}
 #endif
 
 void fightstg_hud_update(FightstgHud *obj, FightstgHudData *data) {
@@ -3655,8 +4806,17 @@ void fightstg_hud_update(FightstgHud *obj, FightstgHudData *data) {
         obj->update_frames = 8;
 #ifdef PC_PORT
         data->sheet_icon = message_create_window(0x1005, 1, 0, 0);
+        data->p4_title = message_create_window(0x1005, 1, 0, 0);
+        for (i = 0; i < 13; i++) {
+            data->p4_lbl[i] = message_create_window(0x1005, 1, 0, 0);
+            data->p4_val[i] = message_create_window(0x1005, 1, 0, 0);
+        }
+        data->p4_confirm_key = message_create_window(0x1005, 1, 0, 0);
+        data->p4_cancel_key = message_create_window(0x1005, 1, 0, 0);
+        fightstg_p4.hud_data = data;
         fightstg_info_init(data);
         fightstg_sheet_cut(); /* a sheet left by the last battle (and INFO with it) */
+        fightstg_p4_scene_cut();
 #endif
         obj->base.next_state(obj);
         break;
@@ -3664,6 +4824,12 @@ void fightstg_hud_update(FightstgHud *obj, FightstgHudData *data) {
         fightstg_hud_update_hp(obj, data);
         fightstg_hud_move_bar(&obj->bars[0]);
         fightstg_hud_move_bar(&obj->bars[1]);
+#ifdef PC_PORT
+        fightstg_p4_scene_tick(data);
+        if (fightstg_p4_hide_hud()) {
+            break;
+        }
+#endif
         fightstg_hud_draw(obj, data);
 #ifdef PC_PORT
         fightstg_sheet_tick(data->sheet_icon);
@@ -4564,6 +5730,10 @@ static void fightstg_panel_trace(s32 x0, s32 y0, s32 x1, s32 y1) {
     }
 }
 
+static s32 fightstg_info_is_open(void) {
+    return fightstg_info.inspect != 0;
+}
+
 static void fightstg_info_set(s32 open) {
     FightstgHudData *data = fightstg_info_windows();
     FightstgStats *enemy;
@@ -4895,7 +6065,7 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
         if (obj->tempt) {
             port_log("battle menu: the Blast tempts");
         }
-        if (fightstg_sheet_closing()) { /* back from Tech / Item: the sheet folds into the tab, the menu is already here */
+        if (fightstg_sheet_closing() || fightstg_p4_skip_bmenu_slide()) { /* back from Tech / Item / close-up: no slide-in */
             obj->age = FIGHTSTG_BMENU_SLIDE;
         }
         obj->base.next_state(obj);
@@ -4929,6 +6099,13 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
             dx = -(r * r) / 3;
             dy = 0;
             glow = 0;
+            if (fightstg_p4_hide_hud()) {
+                data->icons[i]->set_visible(data->icons[i], 0);
+                if (data->labels[i] != NULL) {
+                    data->labels[i]->set_visible(data->labels[i], 0);
+                }
+                continue;
+            }
             /* under the sheet (or the sheet's own tab): not drawn, its glyph hidden */
             x = obj->x[i] + dx - wide_pad * FIGHTSTG_BMENU_WIDE_SHIFT / 100 + obj->plate_x[i];
             if (fightstg_sheet_covers(i, x, obj->y[i] - 1, obj->plate_w[i], FIGHTSTG_BMENU_CHIP + 2)) {
@@ -4965,7 +6142,8 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
             fightstg_battle_menu_show(obj, data, i, dx, dy, glow);
         }
         /* queued after the plates, so drawn under them (not under the sheet: it would darken it twice) */
-        if (!fightstg_sheet_covers(-1, FIGHTSTG_BMENU_CX - wide_pad * FIGHTSTG_BMENU_WIDE_SHIFT / 100,
+        if (!fightstg_p4_hide_hud() &&
+            !fightstg_sheet_covers(-1, FIGHTSTG_BMENU_CX - wide_pad * FIGHTSTG_BMENU_WIDE_SHIFT / 100,
                                    FIGHTSTG_BMENU_CY, FIGHTSTG_BMENU_CHIP, FIGHTSTG_BMENU_CHIP))
         fightstg_battle_menu_rhombus(FIGHTSTG_BMENU_CX + FIGHTSTG_BMENU_CHIP / 2 - (r * r) / 3 -
                                          port_video_widescreen_pad() * FIGHTSTG_BMENU_WIDE_SHIFT / 100,
@@ -5218,6 +6396,67 @@ void fightstg_digivolve_menu_show_names(FightstgDigivolveMenu *obj) {
     }
 }
 
+#ifdef PC_PORT
+static void fightstg_p4_fmt_lv(char *dst, s32 lv) {
+    dst[0] = 'L';
+    dst[1] = 'V';
+    dst[2] = ' ';
+    if (lv >= 10) {
+        dst[3] = (char)('0' + (lv / 10) % 10);
+        dst[4] = (char)('0' + lv % 10);
+        dst[5] = '\0';
+    } else {
+        dst[3] = (char)('0' + (lv < 0 ? 0 : lv % 10));
+        dst[4] = '\0';
+    }
+}
+
+static void fightstg_p4_digivolve_draw(FightstgDigivolveMenu *obj) {
+    FightstgP4Opt opts[4];
+    FightstgMember *m = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
+    s32 cur = m->blasted != 0 ? m->base_digimon : m->digimon;
+    void *names_file = cdload_module.files.get_file(records_language + 0x4E);
+    Font f;
+    s32 i;
+
+    if (!fightstg_p4.cam_on) {
+        return;
+    }
+    font_init(&f);
+    for (i = 0; i < obj->count && i < 4; i++) {
+        RecordsDigimon *digimon = records_get_digimon_func(obj->digimon[i]);
+        opts[i].label[0] = '\0';
+        opts[i].sub[0] = '\0';
+        opts[i].badge = NULL;
+        opts[i].dim = 0;
+        opts[i].kind = 0;
+        if (digimon != NULL && names_file != NULL) {
+            fightstg_p4_decode((const u8 *)f.get_entry(names_file, digimon->name_id), opts[i].label,
+                               sizeof(opts[i].label));
+        }
+        if (obj->digimon[i] == cur) {
+            opts[i].dim = 1;
+            opts[i].badge = "NOW";
+        } else if (i == 0) {
+            opts[i].sub[0] = 'B';
+            opts[i].sub[1] = 'A';
+            opts[i].sub[2] = 'S';
+            opts[i].sub[3] = 'E';
+            opts[i].sub[4] = '\0';
+        } else {
+            GamestateForm frec;
+            if (gamestate_data.funcs.get_form(obj->member, obj->digimon[i], &frec) >= 0) {
+                fightstg_p4_fmt_lv(opts[i].sub, frec.level);
+            }
+        }
+    }
+    fightstg_p4_preview_hover(obj->digimon[obj->cursor]);
+    fightstg_p4_layout_ring(opts, obj->count);
+    fightstg_p4_draw_ring(opts, obj->count, obj->cursor, fightstg_p4.burst);
+    fightstg_p4_status_draw(obj->member, obj->cursor, obj->digimon[obj->cursor], 1);
+}
+#endif
+
 /* The data block comes in untyped and is read through a typed local (the US decomp's shape): with a typed parameter,
  * data takes the argument's slot, its longer life puts it after `changed` in global-alloc (s3/s2, 99.5%). */
 void fightstg_digivolve_menu_update(FightstgDigivolveMenu *obj, void *arg) {
@@ -5245,6 +6484,14 @@ void fightstg_digivolve_menu_update(FightstgDigivolveMenu *obj, void *arg) {
             }
         }
         obj->count = n;
+#ifdef PC_PORT
+        if (port_mod_battle_menu != 0) {
+            obj->cursor = 0;
+            fightstg_p4_scene_enter();
+            obj->base.next_state(obj);
+            break;
+        }
+#endif
         fightstg_digivolve_menu_cursor.count = n;
         data->cursor = fightstg_cursor_create(&fightstg_digivolve_menu_cursor);
         data->status = fightstg_status_create(obj->member, obj->status_page, data->cursor->sel);
@@ -5253,6 +6500,47 @@ void fightstg_digivolve_menu_update(FightstgDigivolveMenu *obj, void *arg) {
         obj->base.next_state(obj);
         break;
     case OBJECT_STATE_RUN:
+#ifdef PC_PORT
+        if (port_mod_battle_menu != 0) {
+            s32 rep;
+
+            pad = FIGHTSTG_MENU_PAD();
+            fightstg_p4_status_input(pad);
+            rep = pad_state.get_repeat(0) | pad;
+            if ((rep & (0x10 | 0x80)) != 0) {
+                if (obj->cursor > 0) {
+                    obj->cursor--;
+                    sound_module.play(0x4001B);
+                }
+            } else if ((rep & (0x40 | 0x20)) != 0) {
+                if (obj->cursor < obj->count - 1) {
+                    obj->cursor++;
+                    sound_module.play(0x4001B);
+                }
+            }
+            if (pad & 0x2000) {
+                m = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
+                cur = m->blasted != 0 ? m->base_digimon : m->digimon;
+                sel = obj->digimon[obj->cursor];
+                if (cur != sel) {
+                    sound_module.play(0x4001C);
+                    *obj->result = sel;
+                    obj->base.set_state(obj, OBJECT_STATE_END);
+                    fightstg_p4_scene_exit(1);
+                    break;
+                }
+                sound_module.play(0x800450BD);
+            } else if (pad & 0x4000) {
+                *obj->result = -2;
+                obj->base.set_state(obj, OBJECT_STATE_END);
+                sound_module.play(0x800450BD);
+                fightstg_p4_scene_exit(0);
+                break;
+            }
+            fightstg_p4_digivolve_draw(obj);
+            break;
+        }
+#endif
         changed = 0;
         open = 1;
         /* Class C (block placement; docs/MATCHING.md "LOOP_BLOCK and LOOP_BARRIER"): the confirm branch goes out of line. */
@@ -7577,6 +8865,68 @@ void fightstg_member_menu_show(FightstgMemberMenu *obj, FightstgMemberMenuData *
  * into a local and the loop re-reads the global, case 1 keeps the cursor's sel in a local. */
 extern FightstgCursorParams fightstg_member_menu_cursor;
 
+#ifdef PC_PORT
+static void fightstg_p4_fmt_hp(char *dst, s32 hp, s32 max_hp) {
+    char a[12], b[12];
+    s32 i = 0, j;
+
+    if (hp <= 0) {
+        dst[0] = 'K';
+        dst[1] = 'O';
+        dst[2] = '\0';
+        return;
+    }
+    fightstg_p4_fmt_num(a, hp);
+    fightstg_p4_fmt_num(b, max_hp);
+    dst[i++] = 'H';
+    dst[i++] = 'P';
+    dst[i++] = ' ';
+    for (j = 0; a[j] != '\0'; j++) {
+        dst[i++] = a[j];
+    }
+    dst[i++] = '/';
+    for (j = 0; b[j] != '\0'; j++) {
+        dst[i++] = b[j];
+    }
+    dst[i] = '\0';
+}
+
+static void fightstg_p4_member_draw(FightstgMemberMenu *obj) {
+    FightstgP4Opt opts[4];
+    FightstgMember *members = fightstg_battle.state.members[0];
+    s32 active_slot = fightstg_battle.state.current[0];
+    s32 active_member = gamestate_data.funcs.get_party_member(active_slot);
+    s32 active_digi = members[active_slot].digimon;
+    void *names_file = cdload_module.files.get_file(records_language + 0x4E);
+    Font f;
+    s32 i;
+
+    if (!fightstg_p4.cam_on) {
+        return;
+    }
+    font_init(&f);
+    for (i = 0; i < obj->count && i < 2; i++) {
+        FightstgMember *m = &members[obj->members[i]];
+        RecordsDigimon *rec = records_get_digimon_func(m->digimon);
+        opts[i].label[0] = '\0';
+        opts[i].sub[0] = '\0';
+        opts[i].badge = obj->team_items[i] != 0 ? "DNA" : NULL;
+        opts[i].dim = m->hp <= 0 ? 1 : 0;
+        opts[i].kind = 0;
+        if (rec != NULL && names_file != NULL) {
+            fightstg_p4_decode((const u8 *)f.get_entry(names_file, rec->name_id), opts[i].label,
+                               sizeof(opts[i].label));
+        }
+        fightstg_p4_fmt_hp(opts[i].sub, m->hp, m->max_hp);
+    }
+    fightstg_p4_preview_hover(members[obj->members[*obj->cursor]].digimon);
+    fightstg_p4_layout_ring(opts, obj->count);
+    fightstg_p4_draw_ring(opts, obj->count, *obj->cursor, fightstg_p4.burst);
+    fightstg_p4_status_draw(gamestate_data.funcs.get_party_member(obj->members[*obj->cursor]), 0,
+                            members[obj->members[*obj->cursor]].digimon, obj->check_items != 0);
+}
+#endif
+
 void fightstg_member_menu_update(FightstgMemberMenu *obj, FightstgMemberMenuData *data) {
     Sprite sprite;
     FightstgMember *members;
@@ -7603,6 +8953,16 @@ void fightstg_member_menu_update(FightstgMemberMenu *obj, FightstgMemberMenuData
             }
         }
         if (obj->count > 0) {
+#ifdef PC_PORT
+            if (port_mod_battle_menu != 0) {
+                if (*obj->cursor < 0 || *obj->cursor >= obj->count) {
+                    *obj->cursor = 0;
+                }
+                fightstg_p4_scene_enter();
+                obj->base.next_state(obj);
+                break;
+            }
+#endif
             fightstg_member_menu_cursor.count = obj->count;
             data->cursor = fightstg_cursor_create(&fightstg_member_menu_cursor);
             data->cursor->sel = *obj->cursor;
@@ -7616,6 +8976,46 @@ void fightstg_member_menu_update(FightstgMemberMenu *obj, FightstgMemberMenuData
         }
         break;
     case OBJECT_STATE_RUN:
+#ifdef PC_PORT
+        if (port_mod_battle_menu != 0) {
+            s32 rep;
+
+            pad = FIGHTSTG_MENU_PAD();
+            fightstg_p4_status_input(pad);
+            rep = pad_state.get_repeat(0) | pad;
+            if ((rep & (0x10 | 0x80)) != 0) {
+                if (*obj->cursor > 0) {
+                    (*obj->cursor)--;
+                    sound_module.play(0x4001B);
+                }
+            } else if ((rep & (0x40 | 0x20)) != 0) {
+                if (*obj->cursor < obj->count - 1) {
+                    (*obj->cursor)++;
+                    sound_module.play(0x4001B);
+                }
+            }
+            if (obj->check_items != 0 && (pad & 0x4000)) {
+                sound_module.play(0x800450BD);
+                *obj->result = -2;
+                obj->base.set_state(obj, OBJECT_STATE_END);
+                fightstg_p4_scene_exit(0);
+                break;
+            }
+            if (pad & 0x2000) {
+                sel = *obj->cursor;
+                m = &fightstg_battle.state.members[0][obj->members[sel]];
+                if (m->hp != 0) {
+                    sound_module.play(0x4001C);
+                    *obj->result = obj->members[sel];
+                    obj->base.set_state(obj, OBJECT_STATE_END);
+                    break;
+                }
+                sound_module.play(0x800450BD);
+            }
+            fightstg_p4_member_draw(obj);
+            break;
+        }
+#endif
         fightstg_member_menu_draw(obj);
         /* Class C (block placement; docs/MATCHING.md "LOOP_BLOCK and LOOP_BARRIER"): the cancel block goes out of line. */
         LOOP_BLOCK(
@@ -7875,6 +9275,150 @@ void fightstg_switch_menu_show_actions(FightstgSwitchMenu *obj, FightstgSwitchMe
 /* The list's and the second step's parameters (fightstg_switch_menu_update). */
 extern FightstgCursorParams fightstg_switch_menu_cursors[2];
 
+#ifdef PC_PORT
+static void fightstg_p4_fmt_dna_sub(char *dst, s32 cap, s32 tech_id) {
+    void *tfile = cdload_module.files.get_file(records_language + 0xA2);
+    char tname[28], mp[8];
+    s32 cost = records_techniques[tech_id - 1].mp_cost;
+    s32 i = 0, j;
+    Font f;
+
+    tname[0] = '\0';
+    if (tfile != NULL) {
+        font_init(&f);
+        fightstg_p4_decode((const u8 *)f.get_entry(tfile, tech_id), tname, sizeof(tname));
+    }
+    fightstg_p4_fmt_num(mp, cost);
+    for (j = 0; tname[j] != '\0' && i < cap - 12; j++) {
+        dst[i++] = tname[j];
+    }
+    if (i > 0 && i < cap - 10) {
+        dst[i++] = ' ';
+        dst[i++] = ' ';
+    }
+    if (i < cap - 8) {
+        dst[i++] = 'M';
+        dst[i++] = 'P';
+        dst[i++] = ' ';
+    }
+    for (j = 0; mp[j] != '\0' && i < cap - 4; j++) {
+        dst[i++] = mp[j];
+    }
+    if (i < cap - 3) {
+        dst[i++] = '+';
+    }
+    for (j = 0; mp[j] != '\0' && i < cap - 1; j++) {
+        dst[i++] = mp[j];
+    }
+    dst[i] = '\0';
+}
+
+static void fightstg_p4_switch_draw_forms(FightstgSwitchMenu *obj) {
+    FightstgP4Opt opts[4];
+    FightstgMember *self = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
+    RecordsDigimon *own = self->blasted == 0 ? records_get_digimon_func(self->digimon) : NULL;
+    void *names_file = cdload_module.files.get_file(records_language + 0x4E);
+    Font f;
+    s32 i;
+
+    if (!fightstg_p4.cam_on) {
+        return;
+    }
+    font_init(&f);
+    for (i = 0; i < obj->count && i < 4; i++) {
+        RecordsDigimon *rec = records_get_digimon_func(obj->entries[i]);
+        opts[i].label[0] = '\0';
+        opts[i].sub[0] = '\0';
+        opts[i].badge = NULL;
+        opts[i].dim = 0;
+        opts[i].kind = 0;
+        if (rec != NULL && names_file != NULL) {
+            fightstg_p4_decode((const u8 *)f.get_entry(names_file, rec->name_id), opts[i].label,
+                               sizeof(opts[i].label));
+        }
+        if (own != NULL && rec != NULL && own->level_thresholds[6] != 0 &&
+            own->level_thresholds[6] == rec->name_id) {
+            opts[i].badge = "DNA";
+        }
+        if (i == 0) {
+            opts[i].sub[0] = 'B';
+            opts[i].sub[1] = 'A';
+            opts[i].sub[2] = 'S';
+            opts[i].sub[3] = 'E';
+            opts[i].sub[4] = '\0';
+        } else {
+            GamestateForm frec;
+            if (gamestate_data.funcs.get_form(obj->member_id, obj->entries[i], &frec) >= 0) {
+                fightstg_p4_fmt_lv(opts[i].sub, frec.level);
+            }
+        }
+    }
+    fightstg_p4_preview_hover(obj->entries[obj->picked]);
+    fightstg_p4_layout_ring(opts, obj->count);
+    fightstg_p4_draw_ring(opts, obj->count, obj->picked, fightstg_p4.burst);
+    fightstg_p4_status_draw(obj->member_id, obj->picked, obj->entries[obj->picked], 1);
+}
+
+static void fightstg_p4_switch_draw_actions(FightstgSwitchMenu *obj, s32 act_sel) {
+    FightstgP4Opt opts[4];
+    FightstgMember *self = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
+    FightstgMember *partner = &fightstg_battle.state.members[0][obj->member];
+    s32 n = 0;
+    s32 sealed = (self->status & 0x10) || (partner->status & 0x10);
+
+    if (!fightstg_p4.cam_on) {
+        return;
+    }
+    /* 0: SWITCH */
+    opts[n].label[0] = 'S'; opts[n].label[1] = 'W'; opts[n].label[2] = 'I';
+    opts[n].label[3] = 'T'; opts[n].label[4] = 'C'; opts[n].label[5] = 'H'; opts[n].label[6] = '\0';
+    {
+        const char *s = "SWAP PARTNER";
+        s32 k = 0;
+        while (s[k] != '\0') { opts[n].sub[k] = s[k]; k++; }
+        opts[n].sub[k] = '\0';
+    }
+    opts[n].badge = NULL;
+    opts[n].dim = sealed ? 1 : 0;
+    opts[n].kind = 0;
+    n++;
+
+    /* 1 (optional): DNA */
+    if (obj->action != 0) {
+        s32 cost = records_techniques[obj->action - 1].mp_cost;
+        s32 bad = (self->mp < cost || partner->mp < cost || (self->status & 0x20) || (partner->status & 0x20) ||
+                   (self->status & 8) || self->hp <= 0 || partner->hp <= 0);
+        opts[n].label[0] = 'D'; opts[n].label[1] = 'N'; opts[n].label[2] = 'A'; opts[n].label[3] = '\0';
+        fightstg_p4_fmt_dna_sub(opts[n].sub, sizeof(opts[n].sub), obj->action);
+        opts[n].badge = NULL;
+        opts[n].dim = bad ? 1 : 0;
+        opts[n].kind = 1;
+        n++;
+    }
+
+    /* Last (optional): BATON PASS */
+    if (def_on() && def_swap_free()) {
+        const char *l = "BATON PASS";
+        const char *s = "KEEPS YOUR TURN";
+        s32 k = 0;
+        while (l[k] != '\0') { opts[n].label[k] = l[k]; k++; }
+        opts[n].label[k] = '\0';
+        k = 0;
+        while (s[k] != '\0') { opts[n].sub[k] = s[k]; k++; }
+        opts[n].sub[k] = '\0';
+        opts[n].badge = NULL;
+        opts[n].dim = (self->mp < DEF_BATON_PASS_MP || sealed) ? 1 : 0;
+        opts[n].kind = 2;
+        n++;
+    }
+
+    fightstg_p4_preview_hover(obj->entries[obj->picked]);
+    fightstg_p4_layout_ring(opts, n);
+    fightstg_p4_draw_ring(opts, n, act_sel, fightstg_p4.burst);
+    fightstg_p4_status_draw(obj->member_id, obj->picked, obj->entries[obj->picked], 1);
+}
+#endif
+
 void fightstg_switch_menu_update(FightstgSwitchMenu *obj, FightstgSwitchMenuData *data) {
     FightstgMember *self;
     FightstgMember *partner;
@@ -7887,6 +9431,147 @@ void fightstg_switch_menu_update(FightstgSwitchMenu *obj, FightstgSwitchMenuData
     s32 changed;
 
 #ifdef PC_PORT
+    if (port_mod_battle_menu != 0) {
+        switch (obj->base.state) {
+        case OBJECT_STATE_INIT:
+        default:
+            id = obj->member_id;
+            gamestate_data.funcs.get_chosen_forms(id, obj->forms);
+            count = 1;
+            obj->entries[0] = records_digimon[id].id;
+            for (i = 0; i < 3; i++) {
+                if (def_blast_heated(id)) {
+                    break;
+                }
+                if (obj->forms[i] >= 3) {
+                    obj->entries[count++] = obj->forms[i];
+                }
+            }
+            obj->count = count;
+            obj->picked = 0;
+            obj->page_shown = 0; /* level-3 action cursor in P4 mode */
+            obj->action = 0;
+            fightstg_p4_scene_enter();
+            fightstg_p4_preview_hover(obj->entries[0]);
+            obj->base.next_state(obj);
+            break;
+        case OBJECT_STATE_RUN: {
+            s32 rep;
+
+            pad = FIGHTSTG_MENU_PAD();
+            fightstg_p4_status_input(pad);
+            rep = pad_state.get_repeat(0) | pad;
+            if (obj->base.step == 0) {
+                if ((rep & (0x10 | 0x80)) != 0) {
+                    if (obj->picked > 0) {
+                        obj->picked--;
+                        sound_module.play(0x4001B);
+                    }
+                } else if ((rep & (0x40 | 0x20)) != 0) {
+                    if (obj->picked < obj->count - 1) {
+                        obj->picked++;
+                        sound_module.play(0x4001B);
+                    }
+                }
+                if (pad & 0x4000) {
+                    sound_module.play(0x800450BD);
+                    *obj->result = -2;
+                    obj->base.set_state(obj, OBJECT_STATE_END);
+                    break;
+                }
+                if (pad & 0x2000) {
+                    sound_module.play(0x4001C);
+                    self = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
+                    obj->action = 0;
+                    if (self->blasted == 0 && obj->action_result != NULL) {
+                        own = records_get_digimon_func(self->digimon);
+                        rec = records_get_digimon_func(obj->entries[obj->picked]);
+                        if (own != NULL && rec != NULL && own->level_thresholds[6] != 0 &&
+                            own->level_thresholds[6] == rec->name_id) {
+                            obj->action = own->pair_technique;
+                        }
+                    }
+                    obj->page_shown = 0;
+                    fightstg_p4.burst = 0;
+                    obj->base.set_step(obj, 1);
+                    break;
+                }
+                fightstg_p4_switch_draw_forms(obj);
+            } else {
+                s32 has_dna = obj->action != 0 ? 1 : 0;
+                s32 has_baton = (def_on() && def_swap_free()) ? 1 : 0;
+                s32 act_n = 1 + has_dna + has_baton;
+                s32 baton_idx = 1 + has_dna;
+
+                if ((rep & (0x10 | 0x80)) != 0) {
+                    if (obj->page_shown > 0) {
+                        obj->page_shown--;
+                        sound_module.play(0x4001B);
+                    }
+                } else if ((rep & (0x40 | 0x20)) != 0) {
+                    if (obj->page_shown < act_n - 1) {
+                        obj->page_shown++;
+                        sound_module.play(0x4001B);
+                    }
+                }
+                if (pad & 0x4000) {
+                    sound_module.play(0x800450BD);
+                    fightstg_p4.burst = 0;
+                    obj->base.set_step(obj, 0);
+                    break;
+                }
+                if (pad & 0x2000) {
+                    self = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
+                    partner = &fightstg_battle.state.members[0][obj->member];
+                    if (obj->page_shown == 0) {
+                        if ((self->status & 0x10) || (partner->status & 0x10)) {
+                            sound_module.play(0x800450BD);
+                        } else {
+                            sound_module.play(0x4001C);
+                            *obj->result = obj->entries[obj->picked] << 4;
+                            obj->base.set_state(obj, OBJECT_STATE_END);
+                            fightstg_p4_scene_exit(1);
+                            break;
+                        }
+                    } else if (has_baton && obj->page_shown == baton_idx) {
+                        if (self->mp < DEF_BATON_PASS_MP || (self->status & 0x10) || (partner->status & 0x10)) {
+                            sound_module.play(0x800450BD);
+                        } else {
+                            sound_module.play(0x4001C);
+                            self->mp -= DEF_BATON_PASS_MP;
+                            def_baton_paid();
+                            *obj->result = obj->entries[obj->picked] << 4;
+                            obj->base.set_state(obj, OBJECT_STATE_END);
+                            fightstg_p4_scene_exit(1);
+                            break;
+                        }
+                    } else if (has_dna) {
+                        s32 cost = records_techniques[obj->action - 1].mp_cost;
+                        if (self->mp < cost || partner->mp < cost || (self->status & 0x20) ||
+                            (partner->status & 0x20) || (self->status & 8) || self->hp <= 0 || partner->hp <= 0) {
+                            sound_module.play(0x800450BD);
+                        } else {
+                            sound_module.play(0x4001C);
+                            self->mp -= cost;
+                            partner->mp -= cost;
+                            *obj->result = 1 | (obj->entries[obj->picked] << 4);
+                            *obj->action_result = obj->action;
+                            obj->base.set_state(obj, OBJECT_STATE_END);
+                            fightstg_p4_scene_exit(1);
+                            break;
+                        }
+                    }
+                }
+                fightstg_p4_switch_draw_actions(obj, obj->page_shown);
+            }
+            break;
+        }
+        case OBJECT_STATE_DONE:
+        case OBJECT_STATE_END:
+            break;
+        }
+        return;
+    }
     if (fightstg_baton_intercept(obj, data)) {
         return;
     }

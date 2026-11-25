@@ -598,6 +598,8 @@ void def_callout_frame(void);
 struct GfxLayer;
 int def_poly_text(struct GfxLayer *layer, s32 depth, int x, int y, int size, const char *text, const u8 *rgb);
 int def_poly_text_width(int size, const char *text);
+int def_poly_text_rot(struct GfxLayer *layer, s32 depth, int cx, int cy, int size, int angle, int jagged,
+                      const char *text, const u8 *rgb, const u8 *chip_rgb);
 /* The enemy table: overrides the resists of an enemy record (FightstgEnemyRecord) by the port's table, if the species
  * has a row. */
 struct FightstgEnemyRecord;

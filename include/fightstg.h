@@ -565,4 +565,9 @@ typedef struct FightstgPoisonArgs {
 
 FightstgStats *fightstg_rules_get_stats(u8 side, s32 first, s32 member);
 
+#ifdef PC_PORT
+s32 fightstg_p4_camera_active(void);
+void fightstg_p4_set_sway(s32 sway);
+#endif
+
 #endif /* FIGHTSTG_H */

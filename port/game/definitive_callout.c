@@ -11,6 +11,7 @@
  * Purely visual: no random number, nothing the battle reads. A save state carries it so a battle loaded mid-callout
  * finishes the word it showed, instead of the one the loading run happened to be drawing. */
 #include "common.h"
+#include "psyq/libgte.h"
 #include "object.h"
 #include "heap.h"
 #include "gfx.h"
@@ -94,6 +95,10 @@ static const Glyph glyphs[] = {
                     { 12, 1, 10, 16, 1, 10 } } },
     { '%', 12, 3, { { 0, 0, 4, 5, 0, 4 }, { 0, 8, 12, 16, 0, 4 }, { 11, 8, 12, 16, 8, 12 } } },
     { ':', 4, 2, { { 3, 0, 4, 7, 0, 4 }, { 10, 0, 4, 14, 0, 4 } } },
+    { '+', 10, 2, { { 6, 0, 10, 10, 0, 10 }, { 3, 3, 7, 13, 3, 7 } } },
+    { '-', 9, 1, { { 6, 0, 9, 10, 0, 9 } } },
+    { '.', 4, 1, { { 12, 0, 4, 16, 0, 4 } } },
+    { '/', 10, 1, { { 0, 6, 10, 16, 0, 4 } } },
 };
 #define SPACE_W 6
 
@@ -153,6 +158,9 @@ typedef struct {
 static const Glyph *glyph_of(char c) {
     unsigned i;
 
+    if (c >= 'a' && c <= 'z') {
+        c = (char)(c - 'a' + 'A');
+    }
     for (i = 0; i < sizeof(glyphs) / sizeof(glyphs[0]); i++) {
         if (glyphs[i].c == c) {
             return &glyphs[i];
@@ -538,6 +546,96 @@ int def_poly_text_width(int size, const char *text) {
     int w = def_poly_text(NULL, 0, 0, 0, size, text, NULL);
 
     return w <= 0 ? 0 : w - (GLYPH_GAP * size >> 8) + (GLYPH_H * ITALIC * size >> 16);
+}
+
+static POLY_F4 *poly_slab_rot(POLY_F4 *poly, u32 *ot, const int px[4], const int py[4], int gw, int gcx8, int gcy8,
+                              int eff_size, int lcs, int lsn, const u8 *rgb) {
+    short v[8];
+    int k;
+
+    for (k = 0; k < 4; k++) {
+        int lx8 = (px[k] * 2 - gw) * 128 + (GLYPH_H - py[k] * 2) * (ITALIC / 2);
+        int ly8 = (py[k] * 2 - GLYPH_H) * 128;
+        int sx8 = (lx8 * eff_size) >> 8;
+        int sy8 = (ly8 * eff_size) >> 8;
+        v[k * 2] = (short)((gcx8 + ((sx8 * lcs - sy8 * lsn) >> 12) + 128) >> 8);
+        v[k * 2 + 1] = (short)((gcy8 + ((sx8 * lsn + sy8 * lcs) >> 12) + 128) >> 8);
+    }
+    setPolyF4(poly);
+    setRGB0(poly, rgb[0], rgb[1], rgb[2]);
+    setXY4(poly, v[0], v[1], v[2], v[3], v[4], v[5], v[6], v[7]);
+    addPrim(ot, poly);
+    return poly + 1;
+}
+
+int def_poly_text_rot(GfxLayer *layer, s32 depth, int cx, int cy, int size, int angle, int jagged, const char *text,
+                      const u8 *rgb, const u8 *chip_rgb) {
+    static const u16 jag_scale[8] = { 268, 244, 264, 248, 272, 240, 260, 248 };
+    static const s8 jag_tilt[8] = { -28, 36, -22, 30, -34, 26, -18, 32 };
+    static const s8 jag_dy[8] = { -1, 1, -1, 0, 1, -1, 1, 0 };
+    static const u8 ink_dark[3] = { 16, 16, 20 };
+    u32 *ot = layer != NULL ? layer->get_ot_entry(layer, depth) : NULL;
+    POLY_F4 *poly = layer != NULL ? gfx_module.funcs.get_packet() : NULL;
+    int total_pen = 0, pen = 0, len, accent, idx = 0;
+    int cs = rsin(angle + 1024), sn = rsin(angle);
+    const char *p;
+
+    for (p = text; *p != '\0'; p += len) {
+        const Glyph *g = glyph_at(p, &len, &accent);
+        total_pen += (g != NULL ? g->w : SPACE_W) + GLYPH_GAP;
+    }
+    if (total_pen > 0) {
+        total_pen -= GLYPH_GAP;
+    }
+    if (poly == NULL) {
+        return (total_pen * size) >> 8;
+    }
+    for (p = text; *p != '\0'; p += len) {
+        const Glyph *g = glyph_at(p, &len, &accent);
+        int lscale, la, ldy, inv, eff_size, lcs, lsn;
+        int wcx, wcy, gcx8, gcy8, i;
+        const u8 *letter_rgb;
+
+        if (g == NULL) {
+            pen += SPACE_W + GLYPH_GAP;
+            continue;
+        }
+        lscale = jagged ? jag_scale[idx & 7] : 256;
+        la = angle + (jagged ? jag_tilt[idx & 7] : 0);
+        ldy = jagged ? jag_dy[idx & 7] : 0;
+        inv = (jagged && chip_rgb != NULL && (idx == 1 || (idx >= 5 && (idx % 4) == 1)));
+        eff_size = (size * lscale) >> 8;
+        lcs = rsin(la + 1024);
+        lsn = rsin(la);
+        wcx = ((pen * 2 + g->w - total_pen) * size) >> 1;
+        wcy = ldy * size;
+        gcx8 = (cx << 8) + ((wcx * cs - wcy * sn) >> 12);
+        gcy8 = (cy << 8) + ((wcx * sn + wcy * cs) >> 12);
+        letter_rgb = inv ? ink_dark : rgb;
+
+        for (i = 0; i < g->n; i++) {
+            const Slab *s = &g->s[i];
+            const int px[4] = { s->tl, s->tr, s->bl, s->br };
+            const int py[4] = { s->y0, s->y0, s->y1, s->y1 };
+            poly = poly_slab_rot(poly, ot, px, py, g->w, gcx8, gcy8, eff_size, lcs, lsn, letter_rgb);
+        }
+        for (i = 0; accent != ACCENT_NONE && i < accents[accent].n; i++) {
+            const Slab *s = &accents[accent].s[i];
+            int mid = g->w / 2;
+            const int px[4] = { mid + s->tl, mid + s->tr, mid + s->bl, mid + s->br };
+            const int py[4] = { s->y0, s->y0, s->y1, s->y1 };
+            poly = poly_slab_rot(poly, ot, px, py, g->w, gcx8, gcy8, eff_size, lcs, lsn, letter_rgb);
+        }
+        if (inv) {
+            const int cpx[4] = { -1, g->w + 1, -1, g->w + 1 };
+            const int cpy[4] = { -1, -1, GLYPH_H + 1, GLYPH_H + 1 };
+            poly = poly_slab_rot(poly, ot, cpx, cpy, g->w, gcx8, gcy8, eff_size, lcs, lsn, chip_rgb);
+        }
+        pen += g->w + GLYPH_GAP;
+        idx++;
+    }
+    gfx_module.funcs.set_packet(poly);
+    return (total_pen * size) >> 8;
 }
 
 /* A battle loaded mid-callout finishes it (no pointers: the word is drawn from the table each frame). */

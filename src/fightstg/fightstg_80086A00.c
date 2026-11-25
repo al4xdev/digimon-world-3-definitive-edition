@@ -432,9 +432,20 @@ OBJECT_V0(Object *) fightstg_entry(void) {
  * followed by one of three others (fightstg_idle_camera_next), starting with sequence 3. Modes turn the
  * camera round the scene or show either side. */
 void fightstg_idle_camera_update(FightstgIdleCamera *obj) {
+#ifdef PC_PORT
+    static s32 p4_cam_was;
+    static s32 p4_cam_tick;
+    static s32 p4_cam_model;
+    static s32 p4_cam_base_rot;
+#endif
     switch (obj->base.state) {
     case OBJECT_STATE_INIT:
     default:
+#ifdef PC_PORT
+        p4_cam_was = 0;
+        p4_cam_model = -1;
+        p4_cam_tick = 0;
+#endif
         obj->base.next_state(obj);
         obj->sequence = 3;
         obj->step = 0;
@@ -446,6 +457,48 @@ void fightstg_idle_camera_update(FightstgIdleCamera *obj) {
         obj->angle = obj->setting->rot[1];
         break;
     case OBJECT_STATE_RUN:
+#ifdef PC_PORT
+        if (fightstg_p4_camera_active()) {
+            s32 show_slot = obj->slots->get_params(obj->slots, 1) != NULL ? 1 : 0;
+            s32 cur_model = obj->slots->get_model_id(obj->slots, show_slot);
+            s32 sway;
+
+            if (!p4_cam_was || cur_model != p4_cam_model) {
+                if (!p4_cam_was) {
+                    p4_cam_tick = 0;
+                }
+                p4_cam_was = 1;
+                p4_cam_model = cur_model;
+                obj->slots->get_params(obj->slots, 0x10)->layers[0].shown = 0;
+                if (show_slot == 0) {
+                    obj->slots->get_params(obj->slots, 0)->layers[0].shown = 1;
+                }
+                obj->setting = obj->camera->get_preset(obj->camera, show_slot, 8);
+                obj->setting->trans[2] -= 0x1400;
+                obj->setting->eye[2] += 0x1400;
+                obj->setting->target[2] += 0x1400;
+                p4_cam_base_rot = (obj->setting->rot[1] + 0x40) & 0xFFF;
+            }
+            p4_cam_tick += gfx_module.funcs.get_frame_ticks();
+            sway = rsin((p4_cam_tick * 16) & 0xFFF); /* -4096..+4096 gentle front horizontal sway */
+            fightstg_p4_set_sway(sway);
+            if (obj->setting != NULL) {
+                obj->setting->rot[1] = (p4_cam_base_rot + (sway >> 5)) & 0xFFF;
+                obj->camera->set(obj->camera, obj->setting);
+            }
+            break;
+        } else if (p4_cam_was) {
+            p4_cam_was = 0;
+            p4_cam_model = -1;
+            fightstg_p4_set_sway(0);
+            obj->slots->get_params(obj->slots, 0)->layers[0].shown = 1;
+            obj->slots->get_params(obj->slots, 0x10)->layers[0].shown = 1;
+            obj->sequence = 3;
+            obj->step = 0;
+            obj->frames = fightstg_idle_camera_steps[3][0].frames;
+            obj->base.set_step(obj, fightstg_idle_camera_steps[3][0].mode);
+        }
+#endif
         if (obj->frames <= 0) {
             obj->slots->get_params(obj->slots, 0)->layers[0].shown = 1;
             obj->slots->get_params(obj->slots, 0x10)->layers[0].shown = 1;
@@ -599,6 +652,10 @@ void fightstg_idle_camera_update(FightstgIdleCamera *obj) {
         obj->frames -= gfx_module.funcs.get_frame_ticks();
         break;
     case OBJECT_STATE_END:
+#ifdef PC_PORT
+        p4_cam_was = 0;
+        p4_cam_model = -1;
+#endif
         obj->slots->get_params(obj->slots, 0)->layers[0].shown = 1;
         obj->slots->get_params(obj->slots, 0x10)->layers[0].shown = 1;
         obj->setting = obj->camera->get_default(obj->camera);
