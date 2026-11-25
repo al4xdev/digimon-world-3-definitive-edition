@@ -16,7 +16,7 @@
         android:icon="@mipmap/ic_launcher"
         android:appCategory="game"
         android:isGame="true"
-        android:label="@string/app_name">
+        android:label="${appLabel}">
 
         <activity
             android:name=".Dw3Activity"

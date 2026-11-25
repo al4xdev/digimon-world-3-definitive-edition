@@ -34,13 +34,19 @@ static int android_pick_disc_files(void) { return -1; }
 #endif
 
 enum {
-    S_SPLASH, S_HOME, S_GAME, S_HUD, S_CONTROLS, S_SAVES, S_BACKUPS, S_BACKUP_CONFIRM,
+    S_SPLASH, S_HOME, S_GAME, S_VIDEO, S_HUD, S_CONTROLS, S_SAVES, S_BACKUPS, S_BACKUP_CONFIRM,
     S_DEBUG, S_BROWSE, S_RESET, S_CLEAN, S_LOADING, S_ERROR,
-    S_CLOUD, S_PAIR_HOST, S_PAIR_ENTER, S_DEVICES, S_REVOKE_CONFIRM, S_RENEW_CONFIRM, S_CONFLICT, S_CONFLICT_CONFIRM
+    S_CLOUD, S_PAIR_HOST, S_PAIR_ENTER, S_DEVICES, S_REVOKE_CONFIRM, S_RENEW_CONFIRM, S_CONFLICT, S_CONFLICT_CONFIRM,
+    S_SAVE_NOTICE, S_SAVE_NOTICE_CONFIRM
 };
-enum { HI_PLAY, HI_GAME, HI_HUD, HI_CONTROLS, HI_SAVES, HI_DEBUG, HI_RESET, HI_COUNT };
-enum { GAME_LANG, GAME_FF, GAME_LOAD, GAME_HZ, GAME_SKIP, GAME_BATTLES, GAME_HIT, GAME_TOUCHPAD, GAME_DISC, GAME_N };
-#define GAME_ROW_STEP 36
+enum { HI_PLAY, HI_GAME, HI_VIDEO, HI_HUD, HI_CONTROLS, HI_SAVES, HI_DEBUG, HI_RESET, HI_COUNT };
+#define HOME_ROW_Y 74
+#define HOME_ROW_STEP 43
+enum { GAME_LANG, GAME_FF, GAME_LOAD, GAME_SKIP, GAME_BATTLES, GAME_HIT, GAME_TOUCHPAD, GAME_DISC, GAME_N };
+#define GAME_ROW_STEP 40
+enum { VIDEO_WIDESCREEN, VIDEO_SCALING, VIDEO_HZ, VIDEO_RENDERER, VIDEO_FILTER, VIDEO_RESOLUTION, VIDEO_SUBPIXEL, VIDEO_N };
+#define VIDEO_ROW_Y 76
+#define VIDEO_ROW_STEP 42
 enum { SAVES_SYNC, SAVES_INTERVAL, SAVES_BACKUPS, SAVES_NOW, SAVES_RESTORE, SAVES_ACCOUNT, SAVES_N };
 /* CLOUD ACCOUNT rows: the first two when this device has no live key, all four once it has one. */
 enum { CLOUD_REGISTER_OR_ADD, CLOUD_LINK, CLOUD_DEVICES, CLOUD_RENEW };
@@ -116,8 +122,12 @@ static const char *load_label[5] = {"OFF", "2X", "4X", "8X", "INSTANT"};
 static const char *buf_label[3] = {"OFF", "SHORT", "LONG"};
 static const char *log_label[3] = {"OFF", "SOFT", "HEAVY"};
 static const char *lay_label[4] = {"PS1", "XBOX", "NINTENDO", "CUSTOM"};
+static const char *filt_label[5] = {"NONE", "SHARP", "SCANLINES", "CRT", "SMOOTH"};
+static const char *vert_label[3] = {"PS1", "SMOOTH", "SMOOTH + TEXTURES"};
 static const char *act_label[A_COUNT] = {"CONFIRM / CROSS", "CARD / SQUARE", "BACK / CIRCLE", "MENU / TRIANGLE", "PREV / L1", "NEXT / R1", "START", "SELECT"};
 static const int act_order[A_COUNT] = {A_CROSS, A_CIRCLE, A_TRIANGLE, A_SQUARE, A_L1, A_R1, A_START, A_SELECT};
+static int notice_step;
+static long notice_tap_ms;
 static const char *hud_label[H_COUNT] = {"FIGHT", "TECH", "DIGIVOLVE", "TAG", "BAG", "RUN", "INFO", "BLAST"};
 /* the "Fight button" row (cfg_fight_place + 1): neither layout reads CUSTOM, and choosing on it gives the bottom */
 static const char *fight_label[] = {"CUSTOM", "BOTTOM", "RIGHT"};
@@ -188,8 +198,9 @@ static void footer_touch(int show_play, int show_back, const char *mid_label) {
 
 static int row_target_y(int s, int idx) {
     switch (s) {
-    case S_HOME: return 78 + idx * 48;
+    case S_HOME: return HOME_ROW_Y + idx * HOME_ROW_STEP;
     case S_GAME: return 76 + idx * GAME_ROW_STEP;
+    case S_VIDEO: return VIDEO_ROW_Y + idx * VIDEO_ROW_STEP;
     case S_HUD: return 174 + idx * 23; /* 23, not 25: the eleventh row (Fight button) clears the footer */
     case S_CONTROLS: return idx == 0 ? 74 : 122 + (idx - 1) * 37;
     case S_SAVES: return 86 + idx * 52;
@@ -198,6 +209,7 @@ static int row_target_y(int s, int idx) {
     case S_DEBUG: return 86 + idx * 54;
     case S_CLOUD: return CLOUD_ROW_Y + idx * CLOUD_ROW_STEP;
     case S_DEVICES: return 114 + (idx - dev_scroll) * 44;
+    case S_SAVE_NOTICE: return 226 + idx * 54;
     }
     return -1;
 }
@@ -402,11 +414,12 @@ static void toggle_update_check(void) {
 static void draw_home(void) {
     header_touch("ANDROID TOUCH", 0);
     static const char *const names[HI_COUNT] = {
-        "PLAY", "GAME", "BATTLE HUD", "CONTROLS", "SAVES & CLOUD", "DEBUG", "RESET SETTINGS"
+        "PLAY", "GAME", "VIDEO", "BATTLE HUD", "CONTROLS", "SAVES & CLOUD", "DEBUG", "RESET SETTINGS"
     };
     static const char *const hints[HI_COUNT] = {
         "Start Digimon World 3 with your saved settings.",
         "Language, fast-forward, skipping and battle text.",
+        "Widescreen, GPU resolution, filters and 3D vertices.",
         "Where each battle action sits on your pad.",
         "Your buttons, and the letters the game shows.",
         "Cloud cross-play sync, 1-100 local save rotation and backup restore.",
@@ -414,7 +427,7 @@ static void draw_home(void) {
         "Put every setting back to the tuned defaults."
     };
     int gy = (int)(cur_y >= 0 && cur_screen == S_HOME ? cur_y : row_target_y(S_HOME, sel));
-    draw_focus(32, gy, W - 64, 42, 10, 0);
+    draw_focus(32, gy, W - 64, 38, 10, 0);
     for (int i = 0; i < HI_COUNT; i++) {
         char sv[32];
         const char *val = NULL;
@@ -422,6 +435,10 @@ static void draw_home(void) {
         switch (i) {
         case HI_PLAY: val = disc_path[0] ? "DISC READY" : "BROWSE..."; on = disc_path[0] != 0; break;
         case HI_GAME: val = "TUNING"; break;
+        case HI_VIDEO:
+            if (c.renderer_pc) val = "SOFTWARE";
+            else { snprintf(sv, sizeof(sv), "GPU %dX", c.iscale); val = sv; on = 1; }
+            break;
         case HI_HUD: val = "CUSTOMIZE"; break;
         case HI_CONTROLS: val = "REMAP"; break;
         case HI_SAVES:
@@ -432,7 +449,7 @@ static void draw_home(void) {
         case HI_DEBUG: val = "SETTINGS"; break;
         case HI_RESET: val = "ASK"; break;
         }
-        row_touch(78 + i * 48, 42, names[i], val, i == sel, (i == HI_PLAY && !disc_path[0]), on, 0, 0);
+        row_touch(HOME_ROW_Y + i * HOME_ROW_STEP, 38, names[i], val, i == sel, (i == HI_PLAY && !disc_path[0]), on, 0, 0);
     }
     rect(0, H - 56, W, 56, C_BG0, 210);
     rect(0, H - 56, W, 1, C_EDGE, 256);
@@ -447,6 +464,93 @@ static void draw_home(void) {
     }
 }
 
+static void draw_video(void) {
+    header_touch("VIDEO", 1);
+    char res_val[24];
+    snprintf(res_val, sizeof(res_val), c.iscale == 1 ? "1X (PS1)" : "%dX", c.iscale);
+    const char *lab[VIDEO_N] = {
+        "WIDESCREEN", "SCALING", "REFRESH RATE", "RENDERER", "FILTER", "RESOLUTION", "3D VERTICES"
+    };
+    const char *val[VIDEO_N] = {
+        (c.widescreen && c.renderer_pc == 0) ? "AUTO" : "OFF",
+        c.fill ? "FILL" : "INTEGER",
+        c.hz == 60 ? "60 HZ" : "50 HZ",
+        c.renderer_pc ? "SOFTWARE" : "GPU",
+        c.renderer_pc ? "-" : filt_label[c.filter],
+        c.renderer_pc ? "-" : res_val,
+        (c.renderer_pc || c.iscale == 1) ? "-" : vert_label[c.subpixel]
+    };
+    static const char *const desc[VIDEO_N] = {
+        "16:9 widescreen on the GPU renderer.",
+        "Fill screen preserving aspect, or exact integer pixels.",
+        "60 Hz NTSC speed or 50 Hz PAL original timing.",
+        "GPU for widescreen, filters and high-res 3D; Software for classic PS1.",
+        "Image shader applied on the GPU renderer.",
+        "Internal 3D resolution (1X PS1 up to 8X).",
+        "Smooth 3D vertices and perspective textures above 1X."
+    };
+    int gy = (int)(cur_y >= 0 && cur_screen == S_VIDEO ? cur_y : row_target_y(S_VIDEO, sel));
+    draw_focus(32, gy, W - 64, 38, 10, 0);
+    for (int i = 0; i < VIDEO_N; i++) {
+        int on = i == VIDEO_HZ ? c.hz == 60
+               : i == VIDEO_RESOLUTION ? c.iscale > 1
+               : i == VIDEO_SUBPIXEL ? c.subpixel > 0
+               : (strcmp(val[i], "OFF") != 0 && strcmp(val[i], "-") != 0);
+        int arrows = strcmp(val[i], "-") != 0;
+        row_touch(VIDEO_ROW_Y + i * VIDEO_ROW_STEP, 38, lab[i], val[i], i == sel, 0, on && arrows, 0, arrows);
+    }
+    text(36, 384, S(desc[sel < VIDEO_N ? sel : 0]), 13, C_NOTE);
+    footer_touch(1, 1, "CHANGE");
+}
+
+static int has_existing_save(void) {
+    char p[1024];
+    snprintf(p, sizeof(p), "%s/card1.mcd", game_dir);
+    return save_is_valid_mc(p, NULL);
+}
+
+static void fresh_save_reset(void) {
+    char card_p[1024], ext_p[1024];
+    save_backup_rotate(game_dir, "card1.mcd", c.backup_max);
+    snprintf(card_p, sizeof(card_p), "%s/card1.mcd", game_dir);
+    snprintf(ext_p, sizeof(ext_p), "%s/card1.def.json", game_dir);
+    unlink(card_p);
+    unlink(ext_p);
+    c.v091_save_ok = 1;
+    cfg_save(&c);
+}
+
+static void draw_save_notice(void) {
+    header_touch("NEW STORY UPDATE (v0.9.1)", 0);
+    rrect(36, 74, W - 72, 134, 12, C_PANEL, 256);
+    rrect_line(36, 74, W - 72, 134, 12, C_GOLD);
+    text(56, 86, S("FRESH SAVE RECOMMENDED"), 20, C_GOLD);
+    text(56, 114, S("v0.9.1 overhauls the campaign story, NPC mini-arcs and ally bonds."), 14, C_TEXT);
+    text(56, 136, S("Continuing an old save can negatively affect the new experience."), 14, C_TEXT);
+    text(56, 160, S("Starting fresh backs up your current card1.mcd into saves_backup/."), 13, C_GREEN);
+    text(56, 182, S("You can restore it anytime under SAVES & CLOUD > RESTORE BACKUP."), 13, C_NOTE);
+
+    int gy = (int)(cur_y >= 0 && cur_screen == S_SAVE_NOTICE ? cur_y : row_target_y(S_SAVE_NOTICE, sel));
+    draw_focus(32, gy, W - 64, 46, 10, sel == 1);
+    row_touch(226, 46, "START FRESH (RECOMMENDED)", "BACKUP + NEW", sel == 0, 0, 1, 0, 0);
+    row_touch(280, 46, "KEEP OLD SAVE", "NOT ADVISED", sel == 1, 1, 0, 0, 0);
+    footer_touch(0, 0, "SELECT");
+}
+
+static void draw_save_notice_confirm(void) {
+    draw_save_notice();
+    rrect(56, 108, W - 112, 256, 14, C_PANEL, 256);
+    rrect_line(56, 108, W - 112, 256, 14, C_RED);
+    text_c(W / 2, 128, S("KEEP OLD SAVE ANYWAY?"), 22, C_RED);
+    text_c(W / 2, 166, S("Old saves miss opening choices, NPC mini-arcs and ally bonds."), 14, C_TEXT);
+    text_c(W / 2, 190, S("This may negatively affect your v0.9.1 experience."), 14, C_GOLD);
+    char pill[64];
+    int step = notice_step < 3 ? notice_step + 1 : 3;
+    snprintf(pill, sizeof(pill), "%s (%d/3)", S("CONFIRM"), step);
+    draw_touch_pill(86, 294, 214, 44, pill, RGB(88, 22, 28), C_RED);
+    draw_touch_pill(340, 294, 214, 44, S("BACK"), RGB(18, 52, 42), C_GREEN);
+}
+
 static void draw_game(void) {
     header_touch("GAME", 1);
     const char *disc_lbl = "BROWSE...";
@@ -455,14 +559,13 @@ static void draw_game(void) {
         disc_lbl = b ? b + 1 : disc_path;
     }
     const char *lab[GAME_N] = {
-        "LANGUAGE", "FAST-FORWARD", "FAST LOAD", "REFRESH RATE", "SKIP DIALOGUES", "SKIP BATTLE ANIMS",
+        "LANGUAGE", "FAST-FORWARD", "FAST LOAD", "SKIP DIALOGUES", "SKIP BATTLE ANIMS",
         "   HIT REACTION", "FLOATING PAD", "DISC IMAGE"
     };
     const char *val[GAME_N] = {
         lang_label[c.lang < 0 || c.lang > 7 ? 0 : c.lang],
         ff_label[c.ff],
         load_label[c.load],
-        c.hz == 60 ? "60 HZ" : "50 HZ",
         c.skip ? "ON" : "OFF",
         c.battles ? "ON" : "OFF",
         c.battles ? (c.hit ? "ON" : "OFF") : "-",
@@ -472,9 +575,9 @@ static void draw_game(void) {
     int gy = (int)(cur_y >= 0 && cur_screen == S_GAME ? cur_y : row_target_y(S_GAME, sel));
     draw_focus(32, gy, W - 64, 38, 10, 0);
     for (int i = 0; i < GAME_N; i++) {
-        int on = (i == GAME_DISC) ? (disc_path[0] != 0) : (i == GAME_HZ) ? c.hz == 60 : (strcmp(val[i], "OFF") != 0 && strcmp(val[i], "-") != 0);
+        int on = (i == GAME_DISC) ? (disc_path[0] != 0) : (strcmp(val[i], "OFF") != 0 && strcmp(val[i], "-") != 0);
         int arrows = (i != GAME_DISC);
-        row_touch(76 + i * GAME_ROW_STEP, 34, lab[i], val[i], i == sel, 0, on, 0, arrows);
+        row_touch(76 + i * GAME_ROW_STEP, 36, lab[i], val[i], i == sel, 0, on, 0, arrows);
     }
     footer_touch(1, 1, "CHANGE");
 }
@@ -833,6 +936,7 @@ static void draw_screen(void) {
     case S_SPLASH: draw_splash(); break;
     case S_HOME: draw_home(); break;
     case S_GAME: draw_game(); break;
+    case S_VIDEO: draw_video(); break;
     case S_HUD: draw_hud(); break;
     case S_CONTROLS: draw_controls(); break;
     case S_SAVES: draw_saves(); break;
@@ -881,6 +985,8 @@ static void draw_screen(void) {
                         "The current one is backed up first.", "", "YES, DOWNLOAD", "CANCEL", C_ORANGE);
         }
         break;
+    case S_SAVE_NOTICE: draw_save_notice(); break;
+    case S_SAVE_NOTICE_CONFIRM: draw_save_notice_confirm(); break;
     default: draw_home(); break;
     }
 }
@@ -914,7 +1020,6 @@ static void activate_game_row(int row, int dir) {
     case GAME_LANG: c.lang = (c.lang + dir + 8) % 8; break;
     case GAME_FF: c.ff = (c.ff + dir + 5) % 5; break;
     case GAME_LOAD: c.load = (c.load + dir + 5) % 5; break;
-    case GAME_HZ: c.hz = c.hz == 60 ? 50 : 60; break;
     case GAME_SKIP: c.skip = !c.skip; break;
     case GAME_BATTLES: c.battles = !c.battles; break;
     case GAME_HIT: if (c.battles) c.hit = !c.hit; break;
@@ -924,10 +1029,36 @@ static void activate_game_row(int row, int dir) {
     cfg_save(&c);
 }
 
+static void activate_video_row(int row, int dir) {
+    switch (row) {
+    case VIDEO_WIDESCREEN: c.widescreen = !c.widescreen; if (c.widescreen) c.renderer_pc = 0; break;
+    case VIDEO_SCALING: c.fill = !c.fill; break;
+    case VIDEO_HZ: c.hz = c.hz == 60 ? 50 : 60; break;
+    case VIDEO_RENDERER: c.renderer_pc = !c.renderer_pc; if (c.renderer_pc) c.widescreen = 0; break;
+    case VIDEO_FILTER: if (!c.renderer_pc) c.filter = (c.filter + dir + 5) % 5; break;
+    case VIDEO_RESOLUTION: if (!c.renderer_pc) c.iscale = (c.iscale - 1 + dir + 8) % 8 + 1; break;
+    case VIDEO_SUBPIXEL: if (!c.renderer_pc && c.iscale > 1) c.subpixel = (c.subpixel + dir + 3) % 3; break;
+    }
+    cfg_save(&c);
+}
+
+static void notice_confirm_tap(void) {
+    long now = plat_now_ms();
+    if (notice_step > 0 && now - notice_tap_ms < 220) return;
+    notice_tap_ms = now;
+    notice_step++;
+    if (notice_step >= 3) {
+        c.v091_save_ok = 1;
+        cfg_save(&c);
+        go(S_HOME, 0, +1);
+    }
+}
+
 static void activate_home_row(int row) {
     switch (row) {
     case HI_PLAY: start_game_flow(); break;
     case HI_GAME: go(S_GAME, 0, +1); break;
+    case HI_VIDEO: go(S_VIDEO, 0, +1); break;
     case HI_HUD: go(S_HUD, 0, +1); break;
     case HI_CONTROLS: go(S_CONTROLS, 0, +1); break;
     case HI_SAVES: status[0] = 0; go(S_SAVES, 0, +1); break;
@@ -1186,7 +1317,7 @@ static void on_back(void);
 
 static void on_touch(int code, int x, int y) {
     if (screen == S_SPLASH) {
-        if (code == K_TOUCH_DOWN) go(S_HOME, 0, +1);
+        if (code == K_TOUCH_DOWN) go((!c.v091_save_ok && has_existing_save()) ? S_SAVE_NOTICE : S_HOME, 0, +1);
         return;
     }
     if (screen == S_LOADING) {
@@ -1267,6 +1398,27 @@ static void on_touch(int code, int x, int y) {
         return;
     }
 
+    if (screen == S_SAVE_NOTICE_CONFIRM) {
+        if (in_rect(x, y, 86, 294, 214, 44)) {
+            notice_confirm_tap();
+        } else if (in_rect(x, y, 340, 294, 214, 44)) {
+            notice_step = 0;
+            go(S_SAVE_NOTICE, 0, -1);
+        }
+        return;
+    }
+    if (screen == S_SAVE_NOTICE) {
+        if (in_rect(x, y, 32, 226, W - 64, 46) || (in_rect(x, y, 240, H - 46, 160, 36) && sel == 0)) {
+            fresh_save_reset();
+            go(S_HOME, 0, +1);
+        } else if (in_rect(x, y, 32, 280, W - 64, 46) || (in_rect(x, y, 240, H - 46, 160, 36) && sel == 1)) {
+            sel = 1;
+            notice_step = 0;
+            go(S_SAVE_NOTICE_CONFIRM, 0, +1);
+        }
+        return;
+    }
+
     if (screen != S_HOME && (in_rect(x, y, 520, 14, 98, 36) || in_rect(x, y, 28, H - 46, 126, 36))) {
         if (is_cloud_screen(screen)) on_back();
         else if (screen == S_BROWSE) go(S_GAME, GAME_DISC, -1);
@@ -1277,7 +1429,7 @@ static void on_touch(int code, int x, int y) {
     }
     if (screen == S_HOME && in_rect(x, y, 452, 14, 166, 36) && open_update_page()) return;
     if (in_rect(x, y, 486, H - 46, 126, 36)) {
-        if (screen == S_HOME || screen == S_GAME || screen == S_DEBUG) {
+        if (screen == S_HOME || screen == S_GAME || screen == S_VIDEO || screen == S_DEBUG) {
             start_game_flow();
             return;
         }
@@ -1285,7 +1437,7 @@ static void on_touch(int code, int x, int y) {
 
     if (screen == S_HOME) {
         for (int i = 0; i < HI_COUNT; i++) {
-            if (in_rect(x, y, 32, 78 + i * 48, W - 64, 44)) {
+            if (in_rect(x, y, 32, HOME_ROW_Y + i * HOME_ROW_STEP, W - 64, 40)) {
                 sel = i;
                 activate_home_row(i);
                 return;
@@ -1301,6 +1453,16 @@ static void on_touch(int code, int x, int y) {
             }
         }
         if (in_rect(x, y, 240, H - 46, 160, 36)) activate_game_row(sel, +1);
+    } else if (screen == S_VIDEO) {
+        for (int i = 0; i < VIDEO_N; i++) {
+            if (in_rect(x, y, 32, VIDEO_ROW_Y + i * VIDEO_ROW_STEP, W - 64, 40)) {
+                sel = i;
+                int dir = (x >= 380 && x < 490) ? -1 : +1;
+                activate_video_row(i, dir);
+                return;
+            }
+        }
+        if (in_rect(x, y, 240, H - 46, 160, 36)) activate_video_row(sel, +1);
     } else if (screen == S_HUD) {
         if (in_rect(x, y, 240, H - 46, 160, 36)) {
             unsigned dm = 0;
@@ -1460,7 +1622,8 @@ static void on_touch(int code, int x, int y) {
 static void on_back(void) {
     if (capture) { capture = 0; return; }
     switch (screen) {
-    case S_SPLASH: case S_HOME: case S_LOADING: return;
+    case S_SPLASH: case S_HOME: case S_LOADING: case S_SAVE_NOTICE: return;
+    case S_SAVE_NOTICE_CONFIRM: notice_step = 0; go(S_SAVE_NOTICE, 0, -1); return;
     case S_RESET: go(S_HOME, HI_RESET, -1); return;
     case S_BACKUP_CONFIRM: go(S_BACKUPS, sel, -1); return;
     case S_CLEAN: go(S_DEBUG, DEBUG_CLEAN_LOGS, -1); return;
@@ -1481,7 +1644,7 @@ static void on_back(void) {
 
 static void on_key(int code) {
     if (code == K_BACK) { on_back(); return; }
-    if (screen == S_SPLASH) { go(S_HOME, 0, +1); return; }
+    if (screen == S_SPLASH) { go((!c.v091_save_ok && has_existing_save()) ? S_SAVE_NOTICE : S_HOME, 0, +1); return; }
     if (screen == S_LOADING) { load_press(code); return; }
     if (capture) {
         /* As the desktop launcher's (main.c, on_press): a face button, a shoulder, Start or Select binds, the d-pad
@@ -1516,19 +1679,19 @@ static void on_key(int code) {
         if (code == btn_ok() || code == K_SOUTH) { conflict_choose(conflict_sel); return; }
     }
     if (code == K_UP) {
-        int n = screen == S_HOME ? HI_COUNT : screen == S_GAME ? GAME_N : screen == S_HUD ? HUD_ROWS :
-                screen == S_CONTROLS ? (A_COUNT + 1) : screen == S_SAVES ? SAVES_N : screen == S_DEBUG ? DEBUG_N :
-                screen == S_BROWSE ? b_count : screen == S_BACKUPS ? bk_count : screen == S_CLOUD ? cloud_n() :
-                screen == S_DEVICES ? dev_count : 1;
+        int n = screen == S_HOME ? HI_COUNT : screen == S_GAME ? GAME_N : screen == S_VIDEO ? VIDEO_N :
+                screen == S_HUD ? HUD_ROWS : screen == S_CONTROLS ? (A_COUNT + 1) : screen == S_SAVES ? SAVES_N :
+                screen == S_DEBUG ? DEBUG_N : screen == S_BROWSE ? b_count : screen == S_BACKUPS ? bk_count :
+                screen == S_CLOUD ? cloud_n() : screen == S_DEVICES ? dev_count : screen == S_SAVE_NOTICE ? 2 : 1;
         if (n > 0) sel = (sel - 1 + n) % n;
         if (screen == S_BROWSE && sel < b_scroll) b_scroll = sel;
         if (screen == S_BACKUPS && sel < bk_scroll) bk_scroll = sel;
         if (screen == S_DEVICES && sel < dev_scroll) dev_scroll = sel;
     } else if (code == K_DOWN) {
-        int n = screen == S_HOME ? HI_COUNT : screen == S_GAME ? GAME_N : screen == S_HUD ? HUD_ROWS :
-                screen == S_CONTROLS ? (A_COUNT + 1) : screen == S_SAVES ? SAVES_N : screen == S_DEBUG ? DEBUG_N :
-                screen == S_BROWSE ? b_count : screen == S_BACKUPS ? bk_count : screen == S_CLOUD ? cloud_n() :
-                screen == S_DEVICES ? dev_count : 1;
+        int n = screen == S_HOME ? HI_COUNT : screen == S_GAME ? GAME_N : screen == S_VIDEO ? VIDEO_N :
+                screen == S_HUD ? HUD_ROWS : screen == S_CONTROLS ? (A_COUNT + 1) : screen == S_SAVES ? SAVES_N :
+                screen == S_DEBUG ? DEBUG_N : screen == S_BROWSE ? b_count : screen == S_BACKUPS ? bk_count :
+                screen == S_CLOUD ? cloud_n() : screen == S_DEVICES ? dev_count : screen == S_SAVE_NOTICE ? 2 : 1;
         if (n > 0) sel = (sel + 1) % n;
         if (screen == S_BROWSE && sel >= b_scroll + BROWSE_VIS) b_scroll = sel - BROWSE_VIS + 1;
         if (screen == S_BACKUPS && sel >= bk_scroll + LIST_VIS) bk_scroll = sel - LIST_VIS + 1;
@@ -1536,6 +1699,7 @@ static void on_key(int code) {
     } else if (code == K_LEFT || code == K_RIGHT) {
         int dir = code == K_LEFT ? -1 : +1;
         if (screen == S_GAME) activate_game_row(sel, dir);
+        else if (screen == S_VIDEO) activate_video_row(sel, dir);
         else if (screen == S_SAVES && (sel == SAVES_INTERVAL || sel == SAVES_BACKUPS)) activate_saves_row(sel, dir);
         else if (screen == S_HUD && sel < H_COUNT) { c.hud[sel] = hud_cycle(c.hud[sel], dir); cfg_save(&c); }
         else if (screen == S_HUD && sel == HUD_ROWS - 1) { cfg_set_fight_place(&c, cfg_fight_place(&c) != 1); cfg_save(&c); }
@@ -1547,6 +1711,12 @@ static void on_key(int code) {
     } else if (code == btn_ok() || code == K_SOUTH) {
         if (screen == S_HOME) activate_home_row(sel);
         else if (screen == S_GAME) activate_game_row(sel, +1);
+        else if (screen == S_VIDEO) activate_video_row(sel, +1);
+        else if (screen == S_SAVE_NOTICE) {
+            if (sel == 0) { fresh_save_reset(); go(S_HOME, 0, +1); }
+            else { notice_step = 0; go(S_SAVE_NOTICE_CONFIRM, 0, +1); }
+        }
+        else if (screen == S_SAVE_NOTICE_CONFIRM) notice_confirm_tap();
         else if (screen == S_SAVES) activate_saves_row(sel, +1);
         else if (screen == S_CLOUD) activate_cloud_row(sel);
         else if (screen == S_PAIR_HOST && !pair_done && !strcmp(pair_st.status, "awaiting_approval")) pair_host_answer(1);
@@ -1559,10 +1729,11 @@ static void on_key(int code) {
             else if (sel == DEBUG_UPDATES) toggle_update_check();
         }
     } else if (code == btn_back() || code == K_EAST) {
-        if (is_cloud_screen(screen) || screen == S_REVOKE_CONFIRM || screen == S_RENEW_CONFIRM || screen == S_CONFLICT_CONFIRM) on_back();
+        if (is_cloud_screen(screen) || screen == S_REVOKE_CONFIRM || screen == S_RENEW_CONFIRM ||
+            screen == S_CONFLICT_CONFIRM || screen == S_SAVE_NOTICE || screen == S_SAVE_NOTICE_CONFIRM) on_back();
         else if (screen != S_HOME) { cfg_save(&c); go(S_HOME, 0, -1); }
     } else if (code == btn_start()) {
-        start_game_flow();
+        if (screen != S_SAVE_NOTICE && screen != S_SAVE_NOTICE_CONFIRM) start_game_flow();
     }
 }
 
@@ -1590,7 +1761,7 @@ int dw3_android_launcher_run(int kind, const char *script, int *out_touch_pad, i
 
     while (!android_done) {
         if (screen == S_SPLASH && splash_t0 >= 0 && plat_now_ms() - splash_t0 >= SPLASH_MS) {
-            go(S_HOME, 0, +1);
+            go((!c.v091_save_ok && has_existing_save()) ? S_SAVE_NOTICE : S_HOME, 0, +1);
         }
         if (screen == S_LOADING) {
             long now = plat_now_ms();

@@ -82,6 +82,8 @@ EOF
     DW3_COMMIT=$(git -C "$REPO" rev-parse HEAD 2>/dev/null || echo unknown)
     docker run --rm -u "$(id -u):$(id -g)" \
         -e DW3_VERSION \
+        -e DW3_ANDROID_APP_SUFFIX \
+        -e DW3_ANDROID_APP_LABEL \
         -e PSXSTACK_VERSION="$DW3_VERSION" \
         -e PSXSTACK_COMMIT="$DW3_COMMIT" \
         "${KEY_ARGS[@]}" \

@@ -17,6 +17,8 @@ def dw3VersionCode = dw3Semver.find() ? (dw3Semver.group(1).toInteger() * 10000 
 // key of the machine that built it, which a phone refuses as an update of an APK signed with any other key.
 def releaseKeystore = System.getenv("DW3_ANDROID_KEYSTORE")
 def hasReleaseKey = releaseKeystore && file(releaseKeystore).isFile()
+def dw3AppSuffix = System.getenv("DW3_ANDROID_APP_SUFFIX") ?: ""
+def dw3AppLabel = System.getenv("DW3_ANDROID_APP_LABEL") ?: ""
 
 android {
     namespace 'com.al4xdev.dw2003'
@@ -24,7 +26,8 @@ android {
     ndkVersion '27.2.12479018'
 
     defaultConfig {
-        applicationId 'com.al4xdev.dw2003'
+        applicationId "com.al4xdev.dw2003${dw3AppSuffix}"
+        manifestPlaceholders = [appLabel: dw3AppLabel ?: "@string/app_name"]
         minSdk 24
         targetSdk 34
         versionCode dw3VersionCode

@@ -155,7 +155,7 @@ void cfg_defaults(Cfg *c) {
     c->scale = (is_pc || is_android) ? 0 : 2;
     c->renderer_pc = 0; /* gpu */
     c->filter = 1;      /* sharp */
-    c->iscale = is_pc ? 3 : 1; /* 3X (720p in 16:9) + smooth 3D vertices on PC */
+    c->iscale = is_pc ? 3 : is_android ? 2 : 1; /* 3X on PC, 2X on Android, 1X on handheld */
     c->subpixel = 1;
     c->backup_max = 10;
     c->update_check = 1;
@@ -517,7 +517,7 @@ void cfg_load(Cfg *c) {
             if (json_str(j, "\"preset_language\"", "language", lstr, sizeof(lstr)))
                 c->lang = idx_of(lang_names, 8, lstr, 0);
         }
-        if (is_pc) cfg_read_settings(c, j);
+        if (is_pc || is_android) cfg_read_settings(c, j);
         free(j);
     }
 }
@@ -526,7 +526,7 @@ static int write_settings(const Cfg *c) {
     char path[600], renderer[16] = "";
     path_of(path, sizeof(path), "settings.json");
     if (is_pc || is_android) {
-        snprintf(renderer, sizeof(renderer), "%s", is_android ? "gpu" : (c->renderer_pc ? "software" : "gpu"));
+        snprintf(renderer, sizeof(renderer), "%s", c->renderer_pc ? "software" : "gpu");
     } else {
         char *old = slurp(path);
         if (old) {
@@ -564,12 +564,12 @@ static int write_settings(const Cfg *c) {
     }
     int vscale = is_pc ? (c->scale > 0 ? c->scale : cfg_auto_scale(c)) : 2;
     int vfull = is_pc ? c->fullscreen : 1;
-    int vfill = is_android ? 1 : (is_pc && c->fill);
-    int vw = is_pc ? (c->widescreen && c->renderer_pc == 0) : (is_android ? 1 : 0);
-    const char *vfilt = (is_pc || is_android) ? filter_names[c->filter] : "none";
-    /* Only the PC has the choice; a build without it leaves the engine's defaults (1, "on") alone. */
+    int vfill = (is_pc || is_android) && c->fill;
+    int vw = (is_pc || is_android) ? (c->widescreen && c->renderer_pc == 0) : 0;
+    const char *vfilt = (is_pc || is_android) && c->renderer_pc == 0 ? filter_names[c->filter] : "none";
     char vres[64] = "";
-    if (is_pc) snprintf(vres, sizeof(vres), ", \"internal_scale\": %d, \"subpixel\": \"%s\"", c->iscale, subpixel_names[c->subpixel]);
+    if ((is_pc || is_android) && c->renderer_pc == 0)
+        snprintf(vres, sizeof(vres), ", \"internal_scale\": %d, \"subpixel\": \"%s\"", c->iscale, subpixel_names[c->subpixel]);
     char text[6400];
     snprintf(text, sizeof(text),
         "{\n  \"schema\": 1,\n  \"disc\": { \"path\": \"%s\" },\n"
