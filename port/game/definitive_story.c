@@ -991,6 +991,30 @@ static const DefStoryLine *kaili_find(int file, int index, int pt) {
     return l;
 }
 
+static struct {
+    s32 phase; /* 0 none, 1 NPC speaking, 2 choosing, 3 hero replying */
+    s32 actor;
+    s32 file;
+    s32 msg;
+    s32 map;
+    unsigned char prompt_buf[256];
+} npc_choice;
+
+static const unsigned char *find_hero_reply_sep(const unsigned char *s) {
+    int i;
+
+    if (s == NULL) {
+        return NULL;
+    }
+    for (i = 0; s[i] != 0; i++) {
+        if (s[i] == 0x02 && s[i + 1] == 0x03 && s[i + 2] == 0x02 && s[i + 3] == 0x07 &&
+            s[i + 4] == 0x02 && s[i + 5] == 0x09 && s[i + 6] == 0x02 && s[i + 7] == 0x07) {
+            return &s[i];
+        }
+    }
+    return NULL;
+}
+
 const unsigned char *def_story_line(int file, int index) {
     const DefStoryChoice *c;
     const DefStoryLine *l;
@@ -1000,9 +1024,29 @@ const unsigned char *def_story_line(int file, int index) {
     if (!story_layer_on()) {
         return NULL;
     }
+    if (npc_choice.phase == 1 && file == npc_choice.file && index == npc_choice.msg &&
+        (c = choice_find(file, index)) != NULL) {
+        const unsigned char *first = pt && c->lines_pt[0] != NULL ? c->lines_pt[0] : c->lines[0];
+        const unsigned char *sep = find_hero_reply_sep(first);
+
+        if (sep != NULL) {
+            int len = (int)(sep - first);
+            if (len > 0 && len < (int)sizeof(npc_choice.prompt_buf) - 1) {
+                memcpy(npc_choice.prompt_buf, first, (size_t)len);
+                npc_choice.prompt_buf[len] = 0;
+                return npc_choice.prompt_buf;
+            }
+        }
+    }
     if ((c = choice_find(file, index)) != NULL && (a = def_record_story_answer(c->question)) >= 1 && a <= c->count) {
         const unsigned char *picked = pt && c->lines_pt[a - 1] != NULL ? c->lines_pt[a - 1] : c->lines[a - 1];
         if (picked != NULL) {
+            if (npc_choice.phase == 3 && file == npc_choice.file && index == npc_choice.msg) {
+                const unsigned char *sep = find_hero_reply_sep(picked);
+                if (sep != NULL) {
+                    return sep + 2; /* start at <7><9><7> hero reply */
+                }
+            }
             return picked;
         }
     }
@@ -1203,17 +1247,53 @@ int def_story_npc_talk(s32 actor_id, s32 msg) {
     if (labels[0] == NULL) {
         return 0;
     }
+    /* Show the NPC's own speech bubble first; the 3-way choice opens in def_story_npc_after_dialog(). */
+    npc_choice.phase = 1;
+    npc_choice.actor = actor_id;
+    npc_choice.file = file;
+    npc_choice.msg = msg;
+    npc_choice.map = gamestate_data.funcs.get_map();
+    return 0;
+}
+
+int def_story_npc_after_dialog(s32 actor_id, s32 *msg_out) {
+    const DefStoryChoice *c;
+    const unsigned char *const *labels;
+
+    if (npc_choice.phase == 0 || npc_choice.actor != actor_id) {
+        return 0;
+    }
+    if (npc_choice.phase == 3) {
+        npc_choice.phase = 0;
+        return 0;
+    }
+    c = choice_find(npc_choice.file, npc_choice.msg);
+    if (c == NULL) {
+        npc_choice.phase = 0;
+        return 0;
+    }
+    labels = def_is_ptbr() && c->labels_pt[0] != NULL ? c->labels_pt : c->labels;
+    if (labels[0] == NULL) {
+        npc_choice.phase = 0;
+        return 0;
+    }
+    if (npc_choice.phase == 1) {
+        choice.answered = 0;
+        choice_open(labels, c->count);
+        npc_choice.phase = 2;
+        return 1;
+    }
     if (choice.answered) {
         def_record_set_story_answer(c->question, choice.answered);
         choice_apply_fx(c, choice.answered);
         port_log("story: frame %ld: npc choice %ld answered %ld", port_frames, (long)c->question, (long)choice.answered);
         choice.answered = 0;
-        return 0;
+        npc_choice.phase = 3;
+        if (msg_out != NULL) {
+            *msg_out = npc_choice.msg;
+        }
+        return 2;
     }
-    if (!choice.open) {
-        choice_open(labels, c->count);
-    }
-    choice_frame();
     return 1;
 }
 
@@ -1232,7 +1312,7 @@ void def_story_npc_indicator_draw(s32 actor_id, void *layer_ptr, s32 x, s32 y) {
     const DefNpcArc *arc;
     s32 bob, bx, by, dot;
 
-    if (!story_layer_on() || !def_is_ptbr() || layer == NULL || fieldstg_stage.event_running) {
+    if (!story_layer_on() || (records_language != 1 && records_language != 2) || layer == NULL || fieldstg_stage.event_running) {
         return;
     }
     arc = npc_arc_active(gamestate_data.funcs.get_map(), actor_id);
@@ -1619,6 +1699,12 @@ void def_story_frame(void) {
     if ((story.count != 0 || story.releasing) && story.map != gamestate_data.funcs.get_map()) {
         memset(&story, 0, sizeof(story)); /* the map left under the talk: its dialog went with the heap */
     }
+    if (npc_choice.phase != 0 && npc_choice.map != gamestate_data.funcs.get_map()) {
+        if (choice.open) {
+            choice_close();
+        }
+        memset(&npc_choice, 0, sizeof(npc_choice));
+    }
     if (story.releasing) {
         story_release();
         if (!story.releasing && dream.phase == DR_REPLY) {
@@ -1677,6 +1763,7 @@ void def_story_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, st_igor_text);
     PORT_STATE_VAR(s, dream);
     PORT_STATE_VAR(s, choice);
+    PORT_STATE_VAR(s, npc_choice);
     PORT_STATE_VAR(s, st_galactic);
     PORT_STATE_VAR(s, oik);
     PORT_STATE_VAR(s, ok_talks);

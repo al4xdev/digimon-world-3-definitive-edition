@@ -194,7 +194,7 @@ static void ms_panel(s32 x, s32 y, s32 w, s32 h, s32 band) {
 
 static void jukebox_queue(s32 key) {
     if (sound_module.current != 0) {
-        sound_module.stop(sound_module.current);
+        ((void (*)(s32))sound_module.stop)(sound_module.current);
     }
     if (!sound_module.is_loading()) {
         sound_module.load_extra_bank((key >> 18) & 0x7F);
@@ -235,7 +235,7 @@ static void preview_stop(void) {
         ms.pending_load = 0;
         ms.pending_play = 0;
         if (sound_module.current != 0) {
-            sound_module.stop(sound_module.current);
+            ((void (*)(s32))sound_module.stop)(sound_module.current);
         }
     }
 }

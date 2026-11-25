@@ -364,6 +364,7 @@ int def_blast_heated(s32 id);        /* the Digimon `id` is still overheated: it
 void def_blast_cool_party(void);     /* the inn's rest (Gatomon): the party's overheat is gone */
 void def_story_frame(void);          /* the Velvet Room's story hooks (definitive_story.c), each idle field frame */
 int def_story_npc_talk(s32 actor_id, s32 msg);
+int def_story_npc_after_dialog(s32 actor_id, s32 *msg_out);
 void def_story_npc_indicator_draw(s32 actor_id, void *layer, s32 x, s32 y);
 void def_blast_started(s32 id);      /* the Digimon `id` took its Blast form (wfightmn_blast) */
 int def_blast_dark(void);            /* the acting party member's model is to be painted dark (a Blast form) */

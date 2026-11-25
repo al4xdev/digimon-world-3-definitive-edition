@@ -3068,7 +3068,9 @@ int main(int argc, char **argv) {
      * still happens (the backup, the cloud sync, a save conflict's screen); a missing disc or game lands on the
      * menu's own screens, and a normal end of the game ends the launcher, as after PLAY. */
     if (play_now && kind != PLAT_NULL) {
+#ifdef DW3_TARGET_PC
         update_asked = 1; /* "Skip" means no menu in between */
+#endif
         screen = S_HOME;
         cur_screen = S_HOME;
         cur_y = (float)row_target_y(S_HOME, 0);

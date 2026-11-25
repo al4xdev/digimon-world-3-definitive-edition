@@ -4439,6 +4439,19 @@ void fieldstg_actor_run_state(FieldstgActor *obj, void **data) {
             break;
         case 1:
             if (data[3] == NULL) {
+#ifdef PC_PORT
+                if (!special) {
+                    s32 npc_msg = 0;
+                    int npc_act = def_story_npc_after_dialog(obj->base.key1, &npc_msg);
+                    if (npc_act == 1) {
+                        break;
+                    }
+                    if (npc_act == 2) {
+                        data[3] = fieldstg_dialog_create_talk(obj->talker, npc_msg);
+                        break;
+                    }
+                }
+#endif
                 if (!special) {
                     obj->base.set_step(obj, 1);
                 } else {
