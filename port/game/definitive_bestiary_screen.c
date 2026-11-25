@@ -262,7 +262,8 @@ static s32 bs_cat_palette(int cat) {
 
 static void bs_unload_model(BestiaryStage *obj, s32 next_model_file, s32 next_anim_file) {
     if (obj->model != NULL) {
-        obj->model->base.set_state(obj->model, OBJECT_STATE_END);
+        /* Object's set_state has no prototype (the decomp header, kept for the match); clang -Werror refuses the call */
+        ((void (*)(Object *, s32))obj->model->base.set_state)((Object *)obj->model, OBJECT_STATE_END);
         obj->model = (FightstgModel *)heap_objects.try_run((Object *)obj->model);
     }
     def_recolor_set_model(NULL, DEF_RECOLOR_NONE, 0);
@@ -796,7 +797,7 @@ static void bs_stage_update(BestiaryStage *obj) {
         obj->cam_zoom = 100;
         obj->auto_rot = 1;
         obj->step = 0;
-        obj->base.next_state(obj);
+        ((void (*)(Object *))obj->base.next_state)((Object *)obj);
         break;
     }
     case OBJECT_STATE_RUN:
@@ -821,7 +822,7 @@ static void bs_stage_update(BestiaryStage *obj) {
             if (PAD_PRESSED(14)) {
                 sound_module.play(BS_SND_BACK);
                 bs_unload_model(obj, 0, 0);
-                gamestate_data.funcs.set_next_map(gamestate_data.field_map, 0);
+                ((void (*)(s32, s32))gamestate_data.funcs.set_next_map)(gamestate_data.field_map, 0);
                 obj->step = 2;
                 break;
             }
