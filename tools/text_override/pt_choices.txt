@@ -296,7 +296,7 @@ Q111 DMG600:28 4@2: Cortês: segurar a linha | <7><9><7>Segurar o forte também<
 Q111 DMG600:28 4@3: Sincero: aceito ajuda | <7><9><7>Valeu. Sinceramente,<1>eu aceito toda a ajuda<1>que houver.<2,2>
 Q40 DMG700:0 7@1: Bronca: vinte minutos | <7><9><7>Já era hora, Teddy.<2,2><3>Vinte minutos. Contei<1>cada um.<2,2>
 Q40 DMG700:0 7@2: Na boa: chegou | <7><9><7>Você chegou. É o que<1>importa.<2,2><3>Da próxima vez, ponha<1>um despertador.<2,2>
-Q40 DMG700:0 7@3: Ironia: que gentileza | <7><9><7>Que gentileza sua se<1>juntar a nós, Teddy.<2,2><3>Vinte minutos. Quase<1>fomos embora.<2,2>
+Q40 DMG700:0 7@3: Ironia: que gentileza | <7><9><7>Que gentileza sua<1>aparecer, Teddy.<2,2><3>Vinte minutos. Quase<1>fui embora.<2,2>
 Q117 DMG700:10 2@1: Impaciência | <7><9><7>Você não pode estar<1>falando sério. Não<1>tenho tempo pra isso.<2,2>
 Q117 DMG700:10 2@2: Orgulho: não sou criança | <7><9><7>Criança? Eu vim de<1>muito longe. Tente<1>com mais força.<2,2>
 Q117 DMG700:10 2@3: Ironia: eu queria | <7><9><7>Voltar pra casa? Pode<1>acreditar, eu queria.<1>Ainda não.<2,2>

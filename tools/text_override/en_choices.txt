@@ -112,7 +112,7 @@ Q39 DMG900:5 7@3: Bittersweet: no one lost | <7><9><7>I'll be strong.<1>Strong e
 # round 2, chapter 1
 Q40 DMG700:0 7@1: Sharp: twenty minutes | <7><9><7>About time, Teddy.<2,2><3>Twenty minutes. I<1>counted every one.<2,2>
 Q40 DMG700:0 7@2: Easygoing: you're here | <7><9><7>You made it. That's<1>what matters.<2,2><3>Next time, set an<1>alarm.<2,2>
-Q40 DMG700:0 7@3: Wry: nice of you | <7><9><7>Nice of you to join<1>us, Teddy.<2,2><3>Twenty minutes. We<1>almost left.<2,2>
+Q40 DMG700:0 7@3: Wry: nice of you | <7><9><7>Nice of you to show<1>up, Teddy.<2,2><3>Twenty minutes. I<1>almost left.<2,2>
 Q41 DMG200:12 7@1: Honest: no idea | <7><9><7>...A what?<2,2><3>I have no idea what<1>that is.<2,2>
 Q41 DMG200:12 7@2: Curious: tell me more | <7><9><7>A Folder Bag? No.<2,2><3>What does it do?<2,2>
 Q41 DMG200:12 7@3: Sheepish: bluffing | <7><9><7>Ah... a Folder Bag.<2,2><3>...Never heard of it.<2,2>
