@@ -256,7 +256,7 @@ def main():
     open(h + ".c", "w").write(HARNESS)
     subprocess.run(["gcc", "-std=gnu99", "-D_GNU_SOURCE", "-Wall", "-DDW3_TARGET_PC", "-I" + ROOT + "/launcher", h + ".c",
                     ROOT + "/launcher/selfupdate.c", ROOT + "/launcher/cloud.c", ROOT + "/launcher/cfg.c",
-                    ROOT + "/launcher/sha256.c", "-o", h, "-lm", "-lpthread"], check=True, stderr=subprocess.DEVNULL)
+                    ROOT + "/launcher/sha256.c", ROOT + "/launcher/migrate.c", "-o", h, "-lm", "-lpthread"], check=True, stderr=subprocess.DEVNULL)
     for mode in ("go", "cancel"):
         base = os.path.join(tmp, "ai-" + mode)
         os.makedirs(base + "/usr/bin"); os.makedirs(base + "/home")
