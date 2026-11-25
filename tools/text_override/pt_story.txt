@@ -625,29 +625,29 @@ DMG400:44 2: <7><9><7>...O quê? Ah... sim.<1>Sim, claro.<2,2><3>O uniforme cham
 DMG400:44 3: <7>Soldado <7>Notável, Chefe.<1>Sempre trabalhando,<1>mesmo à paisana.<2,2>
 DMG400:44 4: <7><9><7>...Passou raspando!<2,2><3>Agora eu entro em<1>Zhu Que City.<2,2>
 DMG400:44 5: <7>Soldado<7>Claro. Por favor,<1>pode entrar.<2,2>
-DMG500:0 1: <7>Mulher<7>Ei, você...<2,2><3>Você aí!<2,2>
-DMG500:0 2: <7><9><7>Hã... eu?<2,2>
-DMG500:0 3: <7>Mulher<7>Oie! Eu sou a Lisa.<1>Muito prazer!<2,2><3>E você, como se<1>chama?<2,2>
-DMG500:0 4: <7><9><7>Ah... hã. Meu nome<1>é <8,1><5,1>...<2,2>
-DMG500:0 5: <7>Lisa<7><8,1><5,1>. Vou lembrar.<2,2><3>Aliás, <8,2><5,2>, você<1>viu um Digimon verde<1>fofinho?<2,2>
-DMG500:0 6: <7><9><7>Verde...<2,2><3>Será que é o Monmon?<1>Ou o Terriermon?<2,2>
-DMG500:0 7: <7>Lisa<7>Bem... hmm, não sei.<2,2><3>O que você acha que<1>é, <8,1><5,1>?<2,2>
-DMG500:0 8: <7><9><7>...bem... hã...<2,2><3>???<2,2>
-DMG500:0 9: <7>Lisa<7>...Eureka! É o<1>Ogremon! Só pode!<2,2><3>Já vou na caça do<1>Ogremon agora mesmo!<2,2>
-DMG500:0 10: <7><9><7>Que figura...<2,2><3>Essa aí tá batendo<1>bem da cabeça?<2,2>
-DMG500:0 11: <7>Lisa<7>Foi bom conversar com<1>você, <8,1><5,1>.<2,2>
-DMG500:1 1: <7>Líder Suzaku<7>Então, tudo pronto pra<1>entrar na minha arena?<2,2>
-DMG500:1 2: <7><9><7>Claro.<2,2>
-DMG500:1 3: <7>Líder Suzaku<7>Quanta marra!<2,2><3>Não me subestime por<1>ser mulher.<2,2><3>Quem tirou onda<1>acabou no chão!<2,2>
-DMG500:2 1: <7>Líder Suzaku<7>Meu parceiro caiu.<1>Hm.<2,2><3>Bem. Acontece. Mas<1>quem me venceu? Qual é<1>o seu nome?<2,2>
+DMG500:0 1: <7>Mulher<7>Ei, psiu...<2,2><3>Você aí mesmo!<2,2>
+DMG500:0 2: <7><9><7>Hã... tá falando comigo?<2,2>
+DMG500:0 3: <7>Mulher<7>Oie! Prazer, sou a Lisa!<1>Cheguei chegando!<2,2><3>E qual é a tua graça?<2,2>
+DMG500:0 4: <7><9><7>Ah... sou <8,1><5,1>.<2,2>
+DMG500:0 5: <7>Lisa<7><8,1><5,1>! Nome chique.<1>Vou guardar.<2,2><3>Escuta, <8,2><5,2>, viu<1>um Digimon verdinho<1>e super fofo por aí?<2,2>
+DMG500:0 6: <7><9><7>Verde e fofo...<2,2><3>Tipo um Monmon? Ou<1>um Terriermon?<2,2>
+DMG500:0 7: <7>Lisa<7>Hmm... acho que não,<1>sabe?<2,2><3>Chuta outro, <8,1><5,1>!<2,2>
+DMG500:0 8: <7><9><7>...sei lá, ué...<2,2><3>Não faço ideia!<2,2>
+DMG500:0 9: <7>Lisa<7>...EUREKA! É um Ogremon!<1>Só pode ser ele!<2,2><3>Tô indo caçar esse<1>fofinho agora! Tchau!<2,2>
+DMG500:0 10: <7><9><7>Ogremon... fofinho?!<2,2><3>Essa aí bateu a cabeça<1>ou tá aprontando alguma?<2,2>
+DMG500:0 11: <7>Lisa<7>Adorei o papo, <8,1><5,1>!<1>A gente se esbarra!<2,2>
+DMG500:1 1: <7>Líder Suzaku<7>Então criou coragem pra<1>pisar na minha arena?<2,2>
+DMG500:1 2: <7><9><7>Com certeza.<2,2>
+DMG500:1 3: <7>Líder Suzaku<7>Gosto assim, sem medo!<2,2><3>Mas já vou avisando:<1>quem me subestimou<1>acabou beijando o chão!<2,2>
+DMG500:2 1: <7>Líder Suzaku<7>Olha só... derrubou<1>meu parceiro mesmo.<2,2><3>Mando a real: você tem<1>talento. Qual é teu nome?<2,2>
 DMG500:2 2: <7><9><7>Meu nome é <8,1><5,1>.<2,2>
-DMG500:2 3: <7>Líder Suzaku<7>Um nome que vale<1>lembrar.<2,2><3>Tome. Você mereceu.<2,2>
-DMG500:2 4: <7><9><7>A Insígnia Suzaku.<2,2><3>Falta só uma: a<1>Insígnia Byakko.<2,2>
-DMG500:2 5: <7>Líder Suzaku<7>O Setor Oeste fica<1>além do oceano.<1>Poucos chegam lá.<2,2><3>Só há um jeito:<1>chamar Submarimon.<2,2><3>E Submarimon só<1>atende ao Digi-Egg da<1>Sinceridade.<2,2><3>Pergunte por aí neste<1>setor. Alguém sabe<1>onde está.<2,2><3>É tudo que posso<1>oferecer. Boa sorte.<1>Você vai precisar.<2,2>
-DMG500:3 1: <7>Kail<7>...Ei, <8,1><5,1>.<1>Chegou na hora.<2,2><3>Estamos aqui fora há<1>um tempão. Não é hora<1>de voltar?<2,2>
-DMG500:3 2: <7><9><7>Dois Líderes caíram.<1>Já é alguma coisa.<2,2><3>Mas Teddy... Temos<1>que achar Teddy.<2,2>
-DMG500:3 3: <7>Kail<7>Teddy está bem. Está<1>em Asuka City, no<1>Centro Administrativo.<2,2><3>Quando o vi pela<1>última vez, ele disse<1>que ia pra lá.<2,2>
-DMG500:3 4: <7><9><7>Centro Administrativo.<1>Então, de volta a<1>Asuka City. Rápido.<2,2>
+DMG500:2 3: <7>Líder Suzaku<7>Vou guardar esse nome.<2,2><3>Toma. Você fez por<1>merecer com sobra.<2,2>
+DMG500:2 4: <7><9><7>A Insígnia Suzaku!<2,2><3>Agora falta a Insígnia<1>Byakko!<2,2>
+DMG500:2 5: <7>Líder Suzaku<7>O Setor Oeste fica do<1>outro lado do oceano.<1>Não é qualquer um que vai.<2,2><3>Você precisa chamar o<1>Submarimon.<2,2><3>E ele só atende ao<1>Digi-Egg da Sinceridade.<2,2><3>Sonda o pessoal por aqui<1>que alguém sabe onde tá.<2,2><3>Boa sorte, desafiante.<1>Lá fora o caldo engrossa.<2,2>
+DMG500:3 1: <7>Kail<7>...Ei, <8,1><5,1>.<1>Até que enfim!<2,2><3>A gente rodou esse setor<1>todo. Hora de voltar.<2,2>
+DMG500:3 2: <7><9><7>Dois Líderes já caíram.<1>Pelo menos avançamos.<2,2><3>Mas e o Teddy? A gente<1>precisa achar ele logo.<2,2>
+DMG500:3 3: <7>Kail<7>Fica firme: o Teddy foi<1>pro Centro Administrativo<1>em Asuka City.<2,2><3>Foi o último lugar que<1>ele disse que ia checar.<2,2>
+DMG500:3 4: <7><9><7>Centro Administrativo...<1>Então partiu Asuka City.<1>Sem perder tempo!<2,2>
 DMG500:4 1: <7>Numemon<7>...Você vai pra<1>Byakko City?<2,2>
 DMG500:4 2: <7><9><7>É o plano.<2,2>
 DMG500:4 3: <7>Numemon<7>É melhor não.<2,2>

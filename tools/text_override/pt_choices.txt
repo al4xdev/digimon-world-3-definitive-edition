@@ -380,3 +380,17 @@ Q212 TALK01 78@3: Tá perdendo tempo aqui [keith:+1] | <7>Srta. Olivia<7>Ai, por
 Q213 TALK01 15@1: Ventania braba aqui! [teddy:+1] | <7>Agumon<7>Bem-vindo a Seiryu,<1>a Cidade do Vento!<1>Fique à vontade!<2,2><3><7><9><7>Ôpa, valeu! Só segura<1>o boné que o vento aqui<1>não brinca em serviço!<2,2>
 Q213 TALK01 15@2: Cadê o Líder daqui? [rep:+1] | <7>Agumon<7>Bem-vindo a Seiryu,<1>a Cidade do Vento!<1>Fique à vontade!<2,2><3><7><9><7>Valeu, mas tô com pressa:<1>onde eu acho o Líder<1>daqui pra desafiar?<2,2>
 Q213 TALK01 15@3: Já vi cidades melhores [rep:-1] | <7>Agumon<7>Bem-vindo a Seiryu,<1>a Cidade do Vento!<1>Fique à vontade!<2,2><3><7><9><7>Hm, bonitinha... mas<1>Asuka ainda bota isso<1>aqui no bolso.<2,2>
+
+# Fase 3: Mini-arcos de NPCs de Suzaku City (TALK01, mapas 0x23E / 0x240)
+Q214 TALK01 112@1: Esse cara é herói? [rep:+1] | <7>Lena<7>Ficou sabendo?! O famoso<1>Lucky Mouse voltou pro<1>servidor!<2,2><3><7><9><7>Lucky Mouse? Esse cara<1>é tipo um justiceiro<1>por aqui?<2,2>
+Q214 TALK01 112@2: Tem cheiro de encrenca [ivy:+1] | <7>Lena<7>Ficou sabendo?! O famoso<1>Lucky Mouse voltou pro<1>servidor!<2,2><3><7><9><7>Hacker famoso voltando<1>do nada? Isso aí tem<1>cheiro de encrenca.<2,2>
+Q214 TALK01 112@3: Nunca nem ouvi falar [teddy:+1] | <7>Lena<7>Ficou sabendo?! O famoso<1>Lucky Mouse voltou pro<1>servidor!<2,2><3><7><9><7>Quem?! Nunca nem ouvi<1>falar desse rato aí!<2,2>
+Q215 TALK01 113@1: Zanbamon nem suou! [keith:+1,rep:+1] | <7>Kyle Fortão<7>Se chegou até aqui,<1>derrubou o Zanbamon!<1>Tu manda muito, hein!<2,2><3><7><9><7>Aquele espadachim? Não<1>deu nem pro aquecimento!<2,2>
+Q215 TALK01 113@2: Foi no limite, viu! [teddy:+1] | <7>Kyle Fortão<7>Se chegou até aqui,<1>derrubou o Zanbamon!<1>Tu manda muito, hein!<2,2><3><7><9><7>Fala sério, foi no<1>sufoco! Quase virei<1>fatiado lá atrás.<2,2>
+Q215 TALK01 113@3: Qual Digimon é brabo? [lisa:+1] | <7>Kyle Fortão<7>Se chegou até aqui,<1>derrubou o Zanbamon!<1>Tu manda muito, hein!<2,2><3><7><9><7>Valeu! E na tua opinião,<1>qual é o Digimon mais<1>forte de todos?<2,2>
+Q216 TALK01 147@1: Cheguei pra vencer! [rep:+1] | <7>Renamon<7>Só Tamers fortes passam<1>daqui. Pode sentir<1>orgulho disso.<2,2><3><7><9><7>Valeu, mas não vim só<1>passear: vim levar a<1>insígnia!<2,2>
+Q216 TALK01 147@2: A Líder é braba mesmo? [lisa:+1] | <7>Renamon<7>Só Tamers fortes passam<1>daqui. Pode sentir<1>orgulho disso.<2,2><3><7><9><7>A Líder daqui é tudo<1>isso mesmo que o povo<1>fala?<2,2>
+Q216 TALK01 147@3: Só quero a insígnia [keith:+1] | <7>Renamon<7>Só Tamers fortes passam<1>daqui. Pode sentir<1>orgulho disso.<2,2><3><7><9><7>Sem papo furado: me diz<1>onde tá a Líder que<1>eu resolvo rápido.<2,2>
+Q217 TALK01 151@1: Quero entrar no clube! [teddy:+1] | <7>Patamon<7>A Líder de Suzaku não é<1>uma fofa?! Entrei pro<1>fã-clube dela também!<2,2><3><7><9><7>Haha, tem carteirinha<1>sobrando aí? Quero ver<1>se é isso tudo!<2,2>
+Q217 TALK01 151@2: Ela parece perigosa... [ivy:+1] | <7>Patamon<7>A Líder de Suzaku não é<1>uma fofa?! Entrei pro<1>fã-clube dela também!<2,2><3><7><9><7>Fofa? Sei não, tem cara<1>de quem não alivia na<1>arena!<2,2>
+Q217 TALK01 151@3: Vai treinar dança, vai! [rep:+1] | <7>Patamon<7>A Líder de Suzaku não é<1>uma fofa?! Entrei pro<1>fã-clube dela também!<2,2><3><7><9><7>Pra chamar atenção no<1>fã-clube tu precisa de<1>coreografia, rapaz!<2,2>

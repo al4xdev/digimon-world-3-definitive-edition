@@ -674,3 +674,25 @@ Q213=1 TALK01 12: <7>Agumon<7>Ufa... treinei nessa<1>ventania o dia todo!<1>Tô 
 Q213=2 TALK01 12: <7>Agumon<7>E aí, achou o Líder?<1>Eu treinei tanto hoje<1>que tô pregado!<2,2>
 Q213=3 TALK01 12: <7>Agumon<7>Tô só o pó do treino,<1>mas vê se respeita<1>Seiryu, ô turista!<2,2>
 Q213=0 TALK01 12: <7>Agumon<7>Chega de treino por<1>hoje... tô acabado!<2,2>
+
+# ---- Fase 3: Mini-arcos de NPCs de Suzaku City (TALK01, mapas 0x23E / 0x240) ----
+# Lena (Q214) — etapa seguinte em TALK01 114
+Q214=1 TALK01 114: <7>Lena<7>A gente tá preso sem<1>voltar pro Mundo Real!<2,2><3>Você perguntou se ele era<1>herói... será que foi o<1>Lucky Mouse mesmo?!<2,2>
+Q214=2 TALK01 114: <7>Lena<7>A gente não consegue<1>voltar pro Mundo Real!<2,2><3>Você falou que tinha<1>cheiro de encrenca...<1>e deu ruim mesmo!<2,2>
+Q214=3 TALK01 114: <7>Lena<7>Agora você vai conhecer<1>o nome dele: travaram a<1>saída pro Mundo Real!<2,2><3>Todo mundo tá culpando<1>o Lucky Mouse!<2,2>
+Q214=0 TALK01 114: <7>Lena<7>Não dá pra voltar pro<1>Mundo Real! Será que foi<1>obra do Lucky Mouse?!<2,2>
+# Kyle Fortão (Q215) — etapa seguinte em TALK01 121
+Q215=1 TALK01 121: <7>Kyle Fortão<7>Com essa marra toda:<1>Imperialdramon Fighter<1>Mode é absurdo!<2,2><3>Mas Marsmon também<1>quebra tudo no braço!<2,2>
+Q215=2 TALK01 121: <7>Kyle Fortão<7>Se achou Zanbamon tenso,<1>imagina Imperialdramon<1>Fighter Mode ou Marsmon!<2,2>
+Q215=3 TALK01 121: <7>Kyle Fortão<7>Pensei na tua pergunta!<1>Imperialdramon Fighter<1>Mode é insano...<2,2><3>Mas meu coração ainda<1>bate pelo Marsmon!<2,2>
+Q215=0 TALK01 121: <7>Kyle Fortão<7>Imperialdramon Fighter<1>Mode é forte... mas<1>Marsmon também arrebenta!<2,2>
+# Renamon de Suzaku (Q216) — etapa seguinte em TALK01 150
+Q216=1 TALK01 150: <7>Renamon<7>Gosto dessa tua postura.<1>Quer ir mais fundo?<1>Tudo bem, mas olho vivo.<2,2>
+Q216=2 TALK01 150: <7>Renamon<7>Ainda com curiosidade<1>sobre a Líder? Pode<1>entrar, mas olho vivo.<2,2>
+Q216=3 TALK01 150: <7>Renamon<7>Sempre na pressa, né?<1>Pode passar, mas toma<1>cuidado aí na frente.<2,2>
+Q216=0 TALK01 150: <7>Renamon<7>Quer seguir adiante?<1>Tudo bem, mas tenha<1>muito cuidado.<2,2>
+# Patamon Fã-Clube (Q217) — etapa seguinte em TALK01 154
+Q217=1 TALK01 154: <7>Patamon<7>Un, deux, trois! Oi,<1>colega de fã-clube!<2,2><3>A Floramon tá me<1>ensinando a dançar pra<1>torcer pela Líder!<2,2>
+Q217=2 TALK01 154: <7>Patamon<7>Un, deux, trois! Nada de<1>perigosa, ela é incrível!<2,2><3>A Floramon tá me<1>ensinando os passinhos!<2,2>
+Q217=3 TALK01 154: <7>Patamon<7>Un, deux, trois! Segui<1>tua ideia da coreografia!<2,2><3>A Floramon tá me dando<1>aula de dança! Olha só!<2,2>
+Q217=0 TALK01 154: <7>Patamon<7>Un, deux, trois! A<1>Floramon tá me ensinando<1>a dançar pro fã-clube!<2,2>

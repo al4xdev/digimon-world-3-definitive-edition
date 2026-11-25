@@ -1122,6 +1122,15 @@ static const DefNpcArc npc_arcs[] = {
     { 13, 0x230, 54, 12, 999, 1 }, /* Ms. Olivia — Stage 1 (TALK01 82) */
     { 14, 0x22E, 365, 0, 11, 0 },  /* Seiryu Agumon — Stage 0 (TALK01 15, Q213) */
     { 14, 0x22E, 365, 12, 999, 1 },/* Seiryu Agumon — Stage 1 (TALK01 12) */
+    /* Phase 3 (Suzaku City) — 4 NPC mini-arcs across Suzaku Plaza (0x23E) & Suzaku Hall (0x240) */
+    { 15, 0x23E, 50, 0, 19, 0 },   /* Lena (Lucky Mouse fan) — Stage 0 (TALK01 112, Q214) */
+    { 15, 0x23E, 50, 20, 999, 1 }, /* Lena — Stage 1 (TALK01 114) */
+    { 16, 0x23E, 45, 0, 19, 0 },   /* Strongman Kyle — Stage 0 (TALK01 113, Q215) */
+    { 16, 0x23E, 45, 20, 999, 1 }, /* Strongman Kyle — Stage 1 (TALK01 121) */
+    { 17, 0x240, 65, 0, 19, 0 },   /* Suzaku Renamon — Stage 0 (TALK01 147, Q216) */
+    { 17, 0x240, 65, 20, 999, 1 }, /* Suzaku Renamon — Stage 1 (TALK01 150) */
+    { 18, 0x240, 66, 0, 19, 0 },   /* Suzaku Patamon (fan club) — Stage 0 (TALK01 151, Q217) */
+    { 18, 0x240, 66, 20, 999, 1 }, /* Suzaku Patamon — Stage 1 (TALK01 154) */
 };
 
 static const DefNpcArc *npc_arc_active(int map, int actor_id) {

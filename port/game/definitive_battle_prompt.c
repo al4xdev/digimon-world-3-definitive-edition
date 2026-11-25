@@ -157,6 +157,30 @@ static const DefBattlePrompt prompts[] = {
             },
         },
     },
+    /* Phase 3: Batalha contra Lider de Suzaku (progress 10..18, tipo Tamer/Lider) */
+    {
+        4, 224, -1, 10, 18, 1, 50,
+        "LIDER DE SUZAKU",
+        "Hmph! Aguentou ate aqui, mas agora vai sentir calor!",
+        3,
+        {
+            {
+                "Entao aumenta esse fogo! (ATK +2)",
+                "CHAMAS ACESAS! Seu ATK subiu (ATK +2)!",
+                BP_FX_MOD, 0, 0, 2, 3, DEF_BOND_KEITH, 1, 2
+            },
+            {
+                "Vou achar a brecha dela! (Libra)",
+                "LIBRA! Fraquezas da Lider reveladas!",
+                BP_FX_LIBRA, 1, 0, 0, 0, DEF_BOND_LISA, 1, 1
+            },
+            {
+                "Calma, pega leve ai...",
+                "BAIXOU A GUARDA! Sua defesa caiu (DEF -1)!",
+                BP_FX_MOD, 0, 1, -1, 2, DEF_BOND_IVY, -1, -1
+            },
+        },
+    },
 };
 
 static struct {
