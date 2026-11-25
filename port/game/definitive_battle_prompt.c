@@ -63,7 +63,7 @@ static const DefBattlePrompt prompts[] = {
     {
         0, 220, 188, 100,
         "TAMER GENJI",
-        "Ho ho! Vamos ver se já sabe se virar!",
+        "Ho ho! Mostra se tem fibra de Tamer!",
         3,
         {
             {
@@ -87,12 +87,12 @@ static const DefBattlePrompt prompts[] = {
     {
         1, 221, 200, 100,
         "KEITH",
-        "Acha que só ganhar de Seiryu te faz bom?",
+        "Venceu Seiryu na sorte e já tá se achando?!",
         3,
         {
             {
                 "Cai dentro e descobre! (ATK +2)",
-                "Clima esquentou! Ataque subiu (+2)!",
+                "Sangue ferveu! Ataque subiu (+2)!",
                 BP_FX_MOD, 0, 0, 2, 3, DEF_BOND_KEITH, 1, 1
             },
             {
@@ -101,7 +101,7 @@ static const DefBattlePrompt prompts[] = {
                 BP_FX_LIBRA, 1, 0, 0, 0, DEF_BOND_TEDDY, 1, 1
             },
             {
-                "Segura a onda, fecha a guarda! (DEF +2)",
+                "Fecha a guarda e espera! (DEF +2)",
                 "Postura firme! Defesa subiu (+2)!",
                 BP_FX_MOD, 0, 1, 2, 3, DEF_BOND_LISA, 1, 0
             },
@@ -111,11 +111,11 @@ static const DefBattlePrompt prompts[] = {
     {
         2, 222, 2, 50,
         "MASTERTYRANNO",
-        "Nada mal! Mas agora o bicho vai pegar!",
+        "Bate bem, mas ainda não digeri o almoço!",
         3,
         {
             {
-                "Aguenta o tranco então! (DEF foe -1)",
+                "Aguenta essa então! (DEF alvo -1)",
                 "Quebrou o ritmo dele! Defesa caiu (-1)!",
                 BP_FX_MOD, 1, 1, -1, 3, -1, 0, 2
             },
@@ -150,7 +150,7 @@ static const DefBattlePrompt prompts[] = {
             },
             {
                 "Esse ventinho não assusta ninguém!",
-                "Provocou demais! Líder ficou furioso (+1)!",
+                "Provocou demais! Ataque dele subiu (+1)!",
                 BP_FX_MOD, 1, 0, 1, 2, DEF_BOND_KEITH, 1, -1
             },
         },
@@ -159,7 +159,7 @@ static const DefBattlePrompt prompts[] = {
     {
         4, 224, 4, 50,
         "LÍDER DE SUZAKU",
-        "Chegou longe, mas agora vai sentir calor!",
+        "Não me subestime! Minhas chamas não perdoam!",
         3,
         {
             {
@@ -168,7 +168,7 @@ static const DefBattlePrompt prompts[] = {
                 BP_FX_MOD, 0, 0, 2, 3, DEF_BOND_KEITH, 1, 2
             },
             {
-                "Vou achar a tua brecha! (Libra)",
+                "Hora de ler seu jogo! (Libra)",
                 "Libra revelou as fraquezas da Líder!",
                 BP_FX_LIBRA, 1, 0, 0, 0, DEF_BOND_LISA, 1, 1
             },
@@ -179,26 +179,26 @@ static const DefBattlePrompt prompts[] = {
             },
         },
     },
-    /* Fase 4: Emboscada em Byakko (wstag675, battle 5) */
+    /* Fase 4: Duelo em Byakko (wstag675, battle 5) */
     {
         5, 225, 5, 100,
         "LÍDER DE BYAKKO",
-        "Acha mesmo que sai vivo dessa arena?!",
+        "Mostre sua força... mas não espere piedade!",
         3,
         {
             {
-                "Vocês que caíram na minha! (ATK +2)",
+                "Não vim pra brincar de lutar! (ATK +2)",
                 "Sangue frio! Ataque subiu (+2)!",
                 BP_FX_MOD, 0, 0, 2, 3, DEF_BOND_KEITH, 1, 2
             },
             {
-                "Analisa esse golpe deles! (Libra)",
-                "Libra revelou as fraquezas do chefe!",
+                "Tem algo estranho nesse estilo! (Libra)",
+                "Libra revelou as fraquezas do Líder!",
                 BP_FX_LIBRA, 1, 0, 0, 0, DEF_BOND_LISA, 1, 1
             },
             {
-                "Espera... era cilada mesmo?!",
-                "Hesitou na emboscada! Defesa caiu (-1)!",
+                "Esse sorrisinho tá suspeito demais...",
+                "Hesitou na arena! Defesa caiu (-1)!",
                 BP_FX_MOD, 0, 1, -1, 2, DEF_BOND_TEDDY, -1, -1
             },
         },
@@ -207,7 +207,7 @@ static const DefBattlePrompt prompts[] = {
     {
         6, 228, 10, 50,
         "GAME MASTER",
-        "Ainda de pé?! Ninguém detém a A.o.A!",
+        "Teimosia adorável... Pena que acaba aqui.",
         3,
         {
             {
@@ -221,8 +221,8 @@ static const DefBattlePrompt prompts[] = {
                 BP_FX_MOD, 0, 1, 2, 3, DEF_BOND_LISA, 1, 1
             },
             {
-                "Cala a boca! Vou acabar contigo!",
-                "Perdeu a calma! Inimigo acelerou (+1)!",
+                "Cala a boca! Eu acabo com você!",
+                "Perdeu a cabeça! Ela acelerou (+1)!",
                 BP_FX_MOD, 1, 2, 1, 2, DEF_BOND_IVY, -1, -1
             },
         },
