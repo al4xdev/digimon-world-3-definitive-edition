@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="700" viewBox="0 0 900 700" role="img" aria-labelledby="title desc">
 <title id="title">From the hunt to your gear</title>
-<desc id="desc">Random battles: each enemy defeated has a 25% chance to leave its common material, 16 tiers from Bit Shard to Obsidian Digizoid by the enemy's level. Rare Targets drop rare Cores, one per region, 71 in all. The forge in every shop asks for a common on every piece of gear (2 to 40) and also a Core from 9,500 Bits, two from 50,000: it gives the shop's equipment, some reworked as Speed, Elemental, Tank or Trade-off variants. The Black Market trades one Core for 12 commons, sells 16 Legendary replicas for 2 Cores plus 20,000 to 40,000 Bits, and the Hunter's Mark for 2 Cores plus 50,000 Bits, which doubles rare drops. The DRI Gauntlet's 5 evolution lines, unlocked once with commons and Cores, give the Power accessories in tiers 1, 2 and S.</desc>
+<desc id="desc">Random battles: each enemy defeated has a 25% chance to leave its common material, 16 tiers from Bit Shard to Obsidian Digizoid by the enemy's level. Rare Targets drop rare Cores, one per region, 71 in all. The forge in every shop asks for a common on every piece of gear (2 to 40) and also a Core from 9,500 Bits, two from 50,000: it gives the shop's equipment, some reworked as Speed, Elemental, Tank or Trade-off variants. The Black Market trades one Core for 12 commons, sells 32 Legendary replicas for 2 Cores plus 20,000 to 80,000 Bits, and the Hunter's Mark for 2 Cores plus 50,000 Bits, which doubles rare drops. The DRI Gauntlet's 16 evolution lines, unlocked once with commons and Cores, give the Power accessories in tiers 1, 2 and S.</desc>
 <defs>
 <style>text{font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,&quot;Liberation Sans&quot;,sans-serif}
 .sx{transform-box:fill-box;transform-origin:center}
@@ -83,14 +83,14 @@
 <text x="394" y="330" font-size="17" fill="#f0efec" font-weight="700">Black Market</text>
 <text x="348" y="366" font-size="14.5" fill="#f0efec" font-weight="700">1 Core → 12 commons</text>
 <text x="348" y="388" font-size="14.5" fill="#f0efec" font-weight="700">Replica: 2 Cores + Bits</text>
-<text x="348" y="410" font-size="14.5" fill="#9a9a94">(20,000 to 40,000)</text>
+<text x="348" y="410" font-size="14.5" fill="#9a9a94">(20,000 to 80,000)</text>
 <text x="348" y="432" font-size="14.5" fill="#f0efec" font-weight="700">Hunter's Mark: 2 Cores + 50,000</text>
 <rect x="330" y="478" width="260" height="150" rx="12" fill="#232a3a" stroke="#30374a" stroke-width="1.5"/>
 <rect x="346" y="492" width="36" height="36" rx="9" fill="#2a3040"/>
 <use href="#i-chip" x="352.0" y="498.0" width="24" height="24" color="#f0efec"/>
 <text x="394" y="516" font-size="17" fill="#f0efec" font-weight="700">DRI Gauntlet</text>
-<text x="348" y="552" font-size="14.5" fill="#c3c2b7">5 evolution lines. In one battle:</text>
-<text x="348" y="574" font-size="14.5" fill="#c3c2b7">Champion → Ultimate → Mega</text>
+<text x="348" y="552" font-size="14.5" fill="#c3c2b7">16 evolution lines. In one battle:</text>
+<text x="348" y="574" font-size="14.5" fill="#c3c2b7">four stages, Rookie to Mega</text>
 <text x="348" y="596" font-size="14.5" fill="#f0efec" font-weight="700">Unlock once: commons + Cores</text>
 <rect x="660" y="126" width="210" height="150" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/>
 <rect x="660" y="140" width="4" height="122" rx="2" fill="#c3c2b7"/>
@@ -101,7 +101,7 @@
 <text x="680" y="247" font-size="14.5" fill="#c3c2b7">or Trade-off variants</text>
 <rect x="660" y="292" width="210" height="170" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/>
 <rect x="660" y="306" width="4" height="142" rx="2" fill="#f2c230"/>
-<text x="680" y="324" font-size="16.5" fill="#f0efec" font-weight="700">16 Legendary replicas</text>
+<text x="680" y="324" font-size="16.5" fill="#f0efec" font-weight="700">32 Legendary replicas</text>
 <text x="680" y="350" font-size="14.5" fill="#c3c2b7">no shop sells them, as</text>
 <text x="680" y="371" font-size="14.5" fill="#c3c2b7">good as the original</text>
 <line x1="680" y1="396" x2="852" y2="396" stroke="#30374a" stroke-width="1.5"/>
@@ -110,8 +110,8 @@
 <rect x="660" y="478" width="210" height="150" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/>
 <rect x="660" y="492" width="4" height="122" rx="2" fill="#9085e9"/>
 <text x="680" y="510" font-size="16.5" fill="#f0efec" font-weight="700">Power accessories</text>
-<text x="680" y="536" font-size="14.5" fill="#c3c2b7">Metal, Bolt, Wind, Fire</text>
-<text x="680" y="557" font-size="14.5" fill="#c3c2b7">and Dark Power:</text>
+<text x="680" y="536" font-size="14.5" fill="#c3c2b7">Fire, Water, Ice, Wind, Bolt,</text>
+<text x="680" y="557" font-size="14.5" fill="#c3c2b7">Metal and Dark Power:</text>
 <text x="680" y="578" font-size="14.5" fill="#c3c2b7">tiers 1, 2 and S</text>
 <path d="M260,246 C295.0,246 295.0,201 330,201" fill="none" stroke="#a3b2c4" stroke-opacity="0.32" stroke-width="2.5"/>
 <path d="M321,195.5 L329,201.0 L321,206.5 Z" fill="#a3b2c4"/>

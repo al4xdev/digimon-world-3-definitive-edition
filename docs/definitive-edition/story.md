@@ -208,3 +208,45 @@ idle step: `def_story_frame`, `dw3_velvet_frame`, `dw3_velvet_draw`); `src/field
 `src/wfightmn/wfightmn_800A6440.c` (`def_time_won` skips the results; `def_time_defeat`, `def_story_defeat`: no game over);
 `port/game/definitive.c` (`def_time_battle_begin/_end`, `def_story_battle_begin/_end` with the other battle hooks;
 `def_story_savestate`, `def_time_savestate` in `def_savestate`); declarations in `include/port.h` and `definitive.h`.
+
+## The Extended Final Act and the farewell (spoilers)
+
+**Status: implemented and committed** (`cf2d207`; fixes `8fc54b8`, `acb4ade`, `7b4aa45`, `c7bee86`, `7e23a70`).
+`port/game/definitive_finale.c`, story bits `DEF_STORY_FINALE_DONE` and `DEF_STORY_IGOR_GONE`. Off in a replay script.
+
+**For the player, in short:** beating Galacticmon is no longer the end of the fight. It rises again as a dark form you
+cannot beat; the room pulls you in one last time, Igor hands back the key changed, and the door above opens on a blue
+room where the friends you made along the way speak to you. Then you go back in with one partner, as a Rookie, and the
+Blast is the only way forward: it becomes the **Super Chosen Evolution**, every partner you raised fusing into one golden
+form for the last battle. After the credits, the next visit to the Velvet Room is Igor's goodbye, and a small friend
+takes his place to read your partners' DNA bonds.
+
+How it is built, phase by phase:
+
+1. **Classic.** The disc's Galacticmon (battle type 6, species 442 / 466 / 467, each phase at 150% of the disc's HP,
+   `DEF_FINAL_HP_PCT`) falls as in the game.
+2. **Dark Galacticmon, a scripted defeat.** `wfightmn_knockout` revives it as a dark Mega (species 467,
+   `DEF_RECOLOR_BLACK`, stats around 2000). The defeat is scripted: no Game Over; the player is back on the map for a
+   moment and `dw3_velvet_pull_by` takes them into the last Velvet Room.
+3. **The last Velvet Room and the Blue Room.** Igor asks for the Velvet Key, says it has changed and gives it back with the
+   item sparkle. The upper door (0x20A) opens on the solid-blue **Bonds Room**: the screen blinks black through lines
+   from the journey's allies, then they gather around the hero. The controls are locked there and the room's state is
+   reset before phase 4 (`7e23a70`).
+4. **Super Chosen Evolution.** The strongest partner who joined (a random pick on a tie) goes back in against Dark
+   Galacticmon in its Rookie form, with only the Blast open (the tutorial's lock). Setting the Blast off announces the
+   Super Chosen Evolution and chains DNA fusions across every Digimon who joined (party and Digi-Lab, odd counts
+   included) into a golden Imperialdramon Paladin Mode (0x17D, `DEF_RECOLOR_GOLD`, Omega Blade only, high HP; the boss's
+   HP is calibrated for it). Where the build carries the Adventure score (`definitive_adventure_music.c`, generated from
+   the owner's local MIDI and not committed: without it the hook does nothing), Butter-Fly plays. Winning sets
+   `DEF_STORY_FINALE_DONE` and the credits roll (0xE0B).
+5. **After the credits** (progress 0x2D, `DEF_STORY_IGOR_GONE` clear): the Velvet Room opens on the Blue Room, Igor says
+   goodbye (`$FinIgorBye`: "a prison, a limousine... or perhaps an elevator") and leaves; **Pipimon** (Oikawa's partner)
+   takes his place as the DNA oracle for the late game (`$PipimonMeet`, `$PipimonBack`).
+
+## Small things the story layer does
+
+- **A choice asks twice** (`1d86a1c`, `a7e2121`): on the story's answer panel the first press picks a row, the second
+  confirms it, and the second press is only read 350 ms after the first, so a held or doubled button cannot answer for
+  you.
+- **The Guardromon network's lore** (`6f4281b`): the first time you register a Guardromon it tells, in two pages, why
+  the network opens to a Tamer who walked up to it, with a pop-culture joke for each of the 13 places (English only).

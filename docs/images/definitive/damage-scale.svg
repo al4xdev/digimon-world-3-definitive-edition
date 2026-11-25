@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="900" height="566" viewBox="0 0 900 566" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="590" viewBox="0 0 900 590" role="img" aria-labelledby="title desc">
 <title id="title">The damage multiplier</title>
-<desc id="desc">The multiplier on your elemental techniques, lowest to highest: resisted 0.5; neutral 1.0; a blow with no element on a staggered target 1.2; a neutral element on a staggered target 1.2 to 1.8; a weakness 1.5 to 2.1; a weakness on a staggered target 1.7 to 2.9. Each bar stacks the 1.0 base, +0.5 for a weakness, +0.2 for a staggered target and the affinity, which comes from your Digimon's old elemental stats: up to 0.3 for Fire and Wind, up to 0.6 for Water + Ice, Thunder + Machine and Dark.</desc>
+<desc id="desc">The multiplier on your elemental techniques, lowest to highest: resisted 0.5; neutral 1.0; a blow with no element on a staggered target 1.2; a neutral element on a staggered target 1.2 to 2.0; a weakness 1.5 to 2.3; a weakness on a staggered target 1.7 to 3.3. Each bar stacks the 1.0 base, +0.5 for a weakness, +0.2 for a staggered target and the affinity, which comes from your Digimon's old elemental stats and grows with the square of the stat: up to 0.4 for Fire and Wind, up to 0.8 for Water + Ice, Thunder + Machine and Dark, so the strongest hit is 2.5 or 3.3.</desc>
 <defs>
 <style>text{font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,&quot;Liberation Sans&quot;,sans-serif}
 .cx{transform-box:fill-box;transform-origin:center}
@@ -39,7 +39,8 @@
 <linearGradient id="shineg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".38"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
 </defs>
 
-<rect width="900" height="566" rx="16" fill="#171a21"/>
+
+<rect width="900" height="590" rx="16" fill="#171a21"/>
 <text x="30" y="46" font-size="26" fill="#f0efec" font-weight="800">How hard a technique lands</text>
 <text x="30" y="74" font-size="15.5" fill="#c3c2b7">The multiplier on your elemental techniques. Solid parts are fixed; the hatched part is your affinity.</text>
 <rect x="30" y="96" width="14" height="14" rx="3" fill="#4a4f5c"/>
@@ -49,92 +50,97 @@
 <rect x="272" y="96" width="14" height="14" rx="3" fill="#199e70"/>
 <text x="293" y="108" font-size="14" fill="#c3c2b7">+0.2 staggered</text>
 <rect x="410" y="96" width="14" height="14" rx="3" fill="url(#hatch)"/>
-<text x="431" y="108" font-size="14" fill="#c3c2b7">+ affinity, up to 0.6</text>
-<rect x="574" y="96" width="14" height="14" rx="3" fill="#3987e5"/>
-<text x="595" y="108" font-size="14" fill="#c3c2b7">resisted: 0.5, flat</text>
-<line x1="96" y1="384.0" x2="870" y2="384.0" stroke="#3a4257" stroke-width="1.5"/>
-<text x="84" y="389" font-size="13.5" fill="#9a9a94" text-anchor="end">0.0</text>
-<line x1="96" y1="344.0" x2="870" y2="344.0" stroke="#262c3a" stroke-width="1"/>
-<text x="84" y="349" font-size="13.5" fill="#9a9a94" text-anchor="end">0.5</text>
-<line x1="96" y1="304.0" x2="870" y2="304.0" stroke="#262c3a" stroke-width="1"/>
-<text x="84" y="309" font-size="13.5" fill="#9a9a94" text-anchor="end">1.0</text>
+<text x="431" y="108" font-size="14" fill="#c3c2b7">+ affinity, up to 0.8</text>
+<rect x="590" y="96" width="14" height="14" rx="3" fill="#3987e5"/>
+<text x="611" y="108" font-size="14" fill="#c3c2b7">resisted: 0.5, flat</text>
+<line x1="96" y1="408.0" x2="870" y2="408.0" stroke="#3a4257" stroke-width="1.5"/>
+<text x="84" y="413.0" font-size="13.5" fill="#9a9a94" text-anchor="end">0.0</text>
+<line x1="96" y1="372.0" x2="870" y2="372.0" stroke="#262c3a" stroke-width="1"/>
+<text x="84" y="377.0" font-size="13.5" fill="#9a9a94" text-anchor="end">0.5</text>
+<line x1="96" y1="336.0" x2="870" y2="336.0" stroke="#262c3a" stroke-width="1"/>
+<text x="84" y="341.0" font-size="13.5" fill="#9a9a94" text-anchor="end">1.0</text>
+<line x1="96" y1="300.0" x2="870" y2="300.0" stroke="#262c3a" stroke-width="1"/>
+<text x="84" y="305.0" font-size="13.5" fill="#9a9a94" text-anchor="end">1.5</text>
 <line x1="96" y1="264.0" x2="870" y2="264.0" stroke="#262c3a" stroke-width="1"/>
-<text x="84" y="269" font-size="13.5" fill="#9a9a94" text-anchor="end">1.5</text>
-<line x1="96" y1="224.0" x2="870" y2="224.0" stroke="#262c3a" stroke-width="1"/>
-<text x="84" y="229" font-size="13.5" fill="#9a9a94" text-anchor="end">2.0</text>
-<line x1="96" y1="184.0" x2="870" y2="184.0" stroke="#262c3a" stroke-width="1"/>
-<text x="84" y="189" font-size="13.5" fill="#9a9a94" text-anchor="end">2.5</text>
-<line x1="96" y1="144.0" x2="870" y2="144.0" stroke="#262c3a" stroke-width="1"/>
-<text x="84" y="149" font-size="13.5" fill="#9a9a94" text-anchor="end">3.0</text>
+<text x="84" y="269.0" font-size="13.5" fill="#9a9a94" text-anchor="end">2.0</text>
+<line x1="96" y1="228.0" x2="870" y2="228.0" stroke="#262c3a" stroke-width="1"/>
+<text x="84" y="233.0" font-size="13.5" fill="#9a9a94" text-anchor="end">2.5</text>
+<line x1="96" y1="192.0" x2="870" y2="192.0" stroke="#262c3a" stroke-width="1"/>
+<text x="84" y="197.0" font-size="13.5" fill="#9a9a94" text-anchor="end">3.0</text>
 <g class="gr g0">
-<path d="M133.0,384.0 V348.0 Q133.0,344.0 137.0,344.0 H191.0 Q195.0,344.0 195.0,348.0 V384.0 Z" fill="#3987e5"/>
+<path d="M133,408.0 V376.0 Q133,372.0 137,372.0 H191 Q195,372.0 195,376.0 V408.0 Z" fill="#3987e5"/>
 </g>
-<g class="gr l0"><text x="164" y="332" font-size="17" fill="#f0efec" font-weight="800" text-anchor="middle">0.5</text></g>
-<text x="164" y="408" font-size="14.5" fill="#f0efec" font-weight="600" text-anchor="middle">Resisted</text>
+<g class="gr l0"><text x="164" y="360.0" font-size="17" fill="#f0efec" font-weight="800" text-anchor="middle">0.5</text></g>
+<text x="164" y="432" font-size="14.5" fill="#f0efec" font-weight="600" text-anchor="middle">Resisted</text>
 <g class="gr g1">
-<path d="M261.0,384.0 V308.0 Q261.0,304.0 265.0,304.0 H319.0 Q323.0,304.0 323.0,308.0 V384.0 Z" fill="#4a4f5c"/>
+<path d="M261,408.0 V340.0 Q261,336.0 265,336.0 H319 Q323,336.0 323,340.0 V408.0 Z" fill="#4a4f5c"/>
 </g>
-<g class="gr l1"><text x="292" y="292" font-size="17" fill="#f0efec" font-weight="800" text-anchor="middle">1.0</text></g>
-<text x="292" y="408" font-size="14.5" fill="#f0efec" font-weight="600" text-anchor="middle">Neutral</text>
+<g class="gr l1"><text x="292" y="324.0" font-size="17" fill="#f0efec" font-weight="800" text-anchor="middle">1.0</text></g>
+<text x="292" y="432" font-size="14.5" fill="#f0efec" font-weight="600" text-anchor="middle">Neutral</text>
 <g class="gr g2">
-<rect x="389.0" y="304.0" width="62" height="80.0" fill="#4a4f5c"/>
-<path d="M389.0,304.0 V292.0 Q389.0,288.0 393.0,288.0 H447.0 Q451.0,288.0 451.0,292.0 V304.0 Z" fill="#199e70"/>
+<rect x="389" y="336.0" width="62" height="72.0" fill="#4a4f5c"/>
+<path d="M389,336.0 V325.6 Q389,321.6 393,321.6 H447 Q451,321.6 451,325.6 V336.0 Z" fill="#199e70"/>
 </g>
-<g class="gr l2"><text x="420" y="276" font-size="17" fill="#f0efec" font-weight="800" text-anchor="middle">1.2</text></g>
-<text x="420" y="408" font-size="14.5" fill="#f0efec" font-weight="600" text-anchor="middle">No element,</text>
-<text x="420" y="426" font-size="14.5" fill="#c3c2b7" text-anchor="middle">staggered</text>
+<g class="gr l2"><text x="420" y="309.6" font-size="17" fill="#f0efec" font-weight="800" text-anchor="middle">1.2</text></g>
+<text x="420" y="432" font-size="14.5" fill="#f0efec" font-weight="600" text-anchor="middle">No element,</text>
+<text x="420" y="450" font-size="14.5" fill="#c3c2b7" font-weight="400" text-anchor="middle">staggered</text>
 <g class="gr g3">
-<rect x="517.0" y="304.0" width="62" height="80.0" fill="#4a4f5c"/>
-<rect x="517.0" y="290.0" width="62" height="14.0" fill="#199e70"/>
-<rect x="517.75" y="240.75" width="60.5" height="46.5" rx="4" fill="none" stroke="#9085e9" stroke-opacity=".55" stroke-width="1.5" stroke-dasharray="4 3"/>
-<clipPath id="ac3"><rect x="517.0" y="240.0" width="62" height="46.0" rx="4"/></clipPath>
-<g class="br"><g clip-path="url(#ac3)"><rect x="517.0" y="240.0" width="62" height="46.0" fill="url(#hatch)"/><rect class="sh" x="517.0" y="240.0" width="62" height="60" fill="url(#shineg)"/></g></g>
+<rect x="517" y="336.0" width="62" height="72.0" fill="#4a4f5c"/>
+<rect x="517" y="321.6" width="62" height="12.4" fill="#199e70"/>
+<rect x="517.75" y="264.8" width="60.5" height="56.1" rx="4" fill="none" stroke="#9085e9" stroke-opacity=".55" stroke-width="1.5" stroke-dasharray="4 3"/>
+<clipPath id="ac312"><rect x="517" y="264.0" width="62" height="55.6" rx="4"/></clipPath>
+<g class="br"><g clip-path="url(#ac312)"><rect x="517" y="264.0" width="62" height="55.6" fill="url(#hatch)"/><rect class="sh" x="517" y="264.0" width="62" height="60" fill="url(#shineg)"/></g></g>
+<line x1="520" y1="292.8" x2="576" y2="292.8" stroke="#f0efec" stroke-opacity=".7" stroke-width="1.5" stroke-dasharray="3 3"/>
 </g>
-<g class="gr l3"><text x="548" y="228" font-size="17" fill="#f0efec" font-weight="800" text-anchor="middle">1.2–1.8</text></g>
-<text x="548" y="408" font-size="14.5" fill="#f0efec" font-weight="600" text-anchor="middle">Neutral,</text>
-<text x="548" y="426" font-size="14.5" fill="#c3c2b7" text-anchor="middle">staggered</text>
+<g class="gr l3"><text x="548" y="252.0" font-size="17" fill="#f0efec" font-weight="800" text-anchor="middle">1.2–2.0</text></g>
+<text x="548" y="432" font-size="14.5" fill="#f0efec" font-weight="600" text-anchor="middle">Neutral,</text>
+<text x="548" y="450" font-size="14.5" fill="#c3c2b7" font-weight="400" text-anchor="middle">staggered</text>
 <g class="gr g4">
-<rect x="645.0" y="304.0" width="62" height="80.0" fill="#4a4f5c"/>
-<rect x="645.0" y="266.0" width="62" height="38.0" fill="#e0662f"/>
-<rect x="645.75" y="216.75" width="60.5" height="46.5" rx="4" fill="none" stroke="#9085e9" stroke-opacity=".55" stroke-width="1.5" stroke-dasharray="4 3"/>
-<clipPath id="ac4"><rect x="645.0" y="216.0" width="62" height="46.0" rx="4"/></clipPath>
-<g class="br"><g clip-path="url(#ac4)"><rect x="645.0" y="216.0" width="62" height="46.0" fill="url(#hatch)"/><rect class="sh" x="645.0" y="216.0" width="62" height="60" fill="url(#shineg)"/></g></g>
+<rect x="645" y="336.0" width="62" height="72.0" fill="#4a4f5c"/>
+<rect x="645" y="300.0" width="62" height="34.0" fill="#e0662f"/>
+<rect x="645.75" y="243.2" width="60.5" height="56.1" rx="4" fill="none" stroke="#9085e9" stroke-opacity=".55" stroke-width="1.5" stroke-dasharray="4 3"/>
+<clipPath id="ac415"><rect x="645" y="242.4" width="62" height="55.6" rx="4"/></clipPath>
+<g class="br"><g clip-path="url(#ac415)"><rect x="645" y="242.4" width="62" height="55.6" fill="url(#hatch)"/><rect class="sh" x="645" y="242.4" width="62" height="60" fill="url(#shineg)"/></g></g>
+<line x1="648" y1="271.2" x2="704" y2="271.2" stroke="#f0efec" stroke-opacity=".7" stroke-width="1.5" stroke-dasharray="3 3"/>
 </g>
-<g class="gr l4"><text x="676" y="204" font-size="17" fill="#f0efec" font-weight="800" text-anchor="middle">1.5–2.1</text></g>
-<text x="676" y="408" font-size="14.5" fill="#f0efec" font-weight="600" text-anchor="middle">Weakness</text>
+<g class="gr l4"><text x="676" y="230.4" font-size="17" fill="#f0efec" font-weight="800" text-anchor="middle">1.5–2.3</text></g>
+<text x="676" y="432" font-size="14.5" fill="#f0efec" font-weight="600" text-anchor="middle">Weakness</text>
 <g class="gr g5">
-<rect x="773.0" y="304.0" width="62" height="80.0" fill="#4a4f5c"/>
-<rect x="773.0" y="266.0" width="62" height="38.0" fill="#e0662f"/>
-<rect x="773.0" y="250.0" width="62" height="14.0" fill="#199e70"/>
-<rect x="773.75" y="152.75" width="60.5" height="94.5" rx="4" fill="none" stroke="#9085e9" stroke-opacity=".55" stroke-width="1.5" stroke-dasharray="4 3"/>
-<clipPath id="ac5"><rect x="773.0" y="152.0" width="62" height="94.0" rx="4"/></clipPath>
-<g class="br"><g clip-path="url(#ac5)"><rect x="773.0" y="152.0" width="62" height="94.0" fill="url(#hatch)"/><rect class="sh" x="773.0" y="152.0" width="62" height="60" fill="url(#shineg)"/></g></g>
-<rect x="787.0" y="188.0" width="34" height="22" rx="11" fill="#171a21" fill-opacity=".85"/>
-<text x="804" y="204" font-size="14.5" fill="#f0efec" font-weight="800" text-anchor="middle">2×</text>
+<rect x="773" y="336.0" width="62" height="72.0" fill="#4a4f5c"/>
+<rect x="773" y="300.0" width="62" height="34.0" fill="#e0662f"/>
+<rect x="773.75" y="243.2" width="60.5" height="56.1" rx="4" fill="none" stroke="#9085e9" stroke-opacity=".55" stroke-width="1.5" stroke-dasharray="4 3"/>
+<clipPath id="ac515"><rect x="773" y="242.4" width="62" height="55.6" rx="4"/></clipPath>
+<g class="br"><g clip-path="url(#ac515)"><rect x="773" y="242.4" width="62" height="55.6" fill="url(#hatch)"/><rect class="sh" x="773" y="242.4" width="62" height="60" fill="url(#shineg)"/></g></g>
+<line x1="776" y1="271.2" x2="832" y2="271.2" stroke="#f0efec" stroke-opacity=".7" stroke-width="1.5" stroke-dasharray="3 3"/>
+<rect x="773" y="228.0" width="62" height="12.4" fill="#199e70"/>
+<rect x="773.75" y="171.2" width="60.5" height="56.1" rx="4" fill="none" stroke="#9085e9" stroke-opacity=".55" stroke-width="1.5" stroke-dasharray="4 3"/>
+<clipPath id="ac525"><rect x="773" y="170.4" width="62" height="55.6" rx="4"/></clipPath>
+<g class="br"><g clip-path="url(#ac525)"><rect x="773" y="170.4" width="62" height="55.6" fill="url(#hatch)"/><rect class="sh" x="773" y="170.4" width="62" height="60" fill="url(#shineg)"/></g></g>
+<line x1="776" y1="199.2" x2="832" y2="199.2" stroke="#f0efec" stroke-opacity=".7" stroke-width="1.5" stroke-dasharray="3 3"/>
 </g>
-<g class="gr l5"><text x="804" y="140" font-size="17" fill="#f0efec" font-weight="800" text-anchor="middle">1.7–2.9</text></g>
-<text x="804" y="408" font-size="14.5" fill="#f0efec" font-weight="600" text-anchor="middle">Weakness,</text>
-<text x="804" y="426" font-size="14.5" fill="#c3c2b7" text-anchor="middle">staggered</text>
-<rect x="30" y="446" width="840" height="96" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/>
-<rect x="30" y="460" width="4" height="68" rx="2" fill="#9085e9"/>
-<text x="54" y="480" font-size="17.5" fill="#f0efec" font-weight="700">Affinity: your old elemental stats now power your attacks.</text>
-<text x="54" y="506" font-size="14.5" fill="#c3c2b7">Added once for a weakness and once for a staggered target,</text>
-<text x="54" y="526" font-size="14.5" fill="#c3c2b7">never on a plain neutral hit. Ceiling per family:</text>
-<rect x="472" y="506" width="66" height="28" rx="14" fill="#262c3c" stroke="#3a4257" stroke-width="1"/>
-<use href="#i-fire" x="480" y="512" width="16" height="16" color="#ef6a3a"/>
-<text x="527" y="525" font-size="14.5" fill="#f0efec" font-weight="700" text-anchor="end">0.3</text>
-<rect x="544" y="506" width="84" height="28" rx="14" fill="#262c3c" stroke="#3a4257" stroke-width="1"/>
-<use href="#i-water" x="552" y="512" width="16" height="16" color="#3d8fe8"/>
-<use href="#i-ice" x="570" y="512" width="16" height="16" color="#8fd3f0"/>
-<text x="617" y="525" font-size="14.5" fill="#f0efec" font-weight="700" text-anchor="end">0.6</text>
-<rect x="634" y="506" width="66" height="28" rx="14" fill="#262c3c" stroke="#3a4257" stroke-width="1"/>
-<use href="#i-wind" x="642" y="512" width="16" height="16" color="#3fbf7f"/>
-<text x="689" y="525" font-size="14.5" fill="#f0efec" font-weight="700" text-anchor="end">0.3</text>
-<rect x="706" y="506" width="84" height="28" rx="14" fill="#262c3c" stroke="#3a4257" stroke-width="1"/>
-<use href="#i-thunder" x="714" y="512" width="16" height="16" color="#f2c230"/>
-<use href="#i-machine" x="732" y="512" width="16" height="16" color="#a7adb8"/>
-<text x="779" y="525" font-size="14.5" fill="#f0efec" font-weight="700" text-anchor="end">0.6</text>
-<rect x="796" y="506" width="66" height="28" rx="14" fill="#262c3c" stroke="#3a4257" stroke-width="1"/>
-<use href="#i-dark" x="804" y="512" width="16" height="16" color="#a58bf5"/>
-<text x="851" y="525" font-size="14.5" fill="#f0efec" font-weight="700" text-anchor="end">0.6</text>
+<g class="gr l5"><text x="804" y="158.4" font-size="17" fill="#f0efec" font-weight="800" text-anchor="middle">1.7–3.3</text></g>
+<text x="804" y="432" font-size="14.5" fill="#f0efec" font-weight="600" text-anchor="middle">Weakness,</text>
+<text x="804" y="450" font-size="14.5" fill="#c3c2b7" font-weight="400" text-anchor="middle">staggered</text>
+<rect x="30" y="468" width="840" height="104" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/>
+<rect x="30" y="482" width="4" height="76" rx="2" fill="#9085e9"/>
+<text x="54" y="502" font-size="17.5" fill="#f0efec" font-weight="700">Affinity: your old elemental stats now power your attacks.</text>
+<text x="54" y="528" font-size="14.5" fill="#c3c2b7">It grows with the square of the stat: the top only comes near 999.</text>
+<text x="54" y="550" font-size="14.5" fill="#c3c2b7">Dashed line: where Fire and Wind stop. Ceiling per family:</text>
+<rect x="472" y="530" width="66" height="28" rx="14" fill="#262c3c" stroke="#3a4257" stroke-width="1"/>
+<use href="#i-fire" x="480" y="536" width="16" height="16" color="#ef6a3a"/>
+<text x="527" y="549" font-size="14.5" fill="#f0efec" font-weight="700" text-anchor="end">0.4</text>
+<rect x="544" y="530" width="84" height="28" rx="14" fill="#262c3c" stroke="#3a4257" stroke-width="1"/>
+<use href="#i-water" x="552" y="536" width="16" height="16" color="#3d8fe8"/>
+<use href="#i-ice" x="570" y="536" width="16" height="16" color="#8fd3f0"/>
+<text x="617" y="549" font-size="14.5" fill="#f0efec" font-weight="700" text-anchor="end">0.8</text>
+<rect x="634" y="530" width="66" height="28" rx="14" fill="#262c3c" stroke="#3a4257" stroke-width="1"/>
+<use href="#i-wind" x="642" y="536" width="16" height="16" color="#3fbf7f"/>
+<text x="689" y="549" font-size="14.5" fill="#f0efec" font-weight="700" text-anchor="end">0.4</text>
+<rect x="706" y="530" width="84" height="28" rx="14" fill="#262c3c" stroke="#3a4257" stroke-width="1"/>
+<use href="#i-thunder" x="714" y="536" width="16" height="16" color="#f2c230"/>
+<use href="#i-machine" x="732" y="536" width="16" height="16" color="#a7adb8"/>
+<text x="779" y="549" font-size="14.5" fill="#f0efec" font-weight="700" text-anchor="end">0.8</text>
+<rect x="796" y="530" width="66" height="28" rx="14" fill="#262c3c" stroke="#3a4257" stroke-width="1"/>
+<use href="#i-dark" x="804" y="536" width="16" height="16" color="#a58bf5"/>
+<text x="851" y="549" font-size="14.5" fill="#f0efec" font-weight="700" text-anchor="end">0.8</text>
 </svg>

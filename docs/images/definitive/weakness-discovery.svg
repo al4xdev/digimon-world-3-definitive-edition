@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520" role="img" aria-labelledby="title desc">
 <title id="title">Learning an enemy's weaknesses</title>
-<desc id="desc">Inspect shows only what you have found out. An example enemy starts with all five families unknown (???). A Fire technique: RESIST!, Fire is learnt as resisted. An Ice technique: WEAK!, and Water + Ice are learnt together because a pair shares one value. Resist Down lowers your best family, here Wind, by 80: 110 becomes 30, a new weakness. A Wind technique: WEAK!, Wind is learnt as weak. Libra reveals the rest at once: Thunder + Machine weak, Dark neutral.</desc>
+<desc id="desc">INFO shows only what you have found out. An example enemy starts with all five families unknown (???). A Fire technique: RESIST!, Fire is learnt as resisted. An Ice technique: WEAK!, and Water + Ice are learnt together because a pair shares one value. Resist Down lowers your best family, here Wind, by 80: 110 becomes 30, a new weakness. A Wind technique: WEAK!, Wind is learnt as weak. Libra reveals the rest at once: Thunder + Machine weak, Dark neutral.</desc>
 <defs>
 <style>text{font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,&quot;Liberation Sans&quot;,sans-serif}
 .cx{transform-box:fill-box;transform-origin:center}
@@ -60,7 +60,7 @@
 
 <rect width="900" height="520" rx="16" fill="#171a21"/>
 <text x="30" y="46" font-size="26" fill="#f0efec" font-weight="800">Learn the enemy as you fight</text>
-<text x="30" y="74" font-size="15.5" fill="#c3c2b7">Inspect (L2, no turn spent) shows only what you have found out. Hitting a weakness or a</text>
+<text x="30" y="74" font-size="15.5" fill="#c3c2b7">INFO (L2, no turn spent) shows only what you have found out. Hitting a weakness or a</text>
 <text x="30" y="96" font-size="15.5" fill="#c3c2b7">resistance with an elemental technique teaches its whole family. Everything else stays ???.</text>
 <line x1="56" y1="155.0" x2="56" y2="419.0" stroke="#3a4257" stroke-width="2"/>
 <rect class="an b0" x="30" y="126" width="452" height="58" rx="10" fill="#ef6a3a" fill-opacity=".09" stroke="#ef6a3a" stroke-opacity=".7" stroke-width="1.5" opacity="0"/>
@@ -90,7 +90,7 @@
 <rect x="506" y="122" width="364" height="332" rx="14" fill="#1b202c" stroke="#3a4257" stroke-width="1.5"/>
 <path d="M506,166 H870" stroke="#30374a" stroke-width="1.5"/>
 <use href="#u-eye" x="521" y="134" width="22" height="22" color="#c9c4ff"/>
-<text x="552" y="151" font-size="15" fill="#f0efec" font-weight="800" letter-spacing="3">INSPECT</text>
+<text x="552" y="151" font-size="15" fill="#f0efec" font-weight="800" letter-spacing="3">INFO</text>
 <g transform="translate(842,148) scale(.42)"><path d="M-24,20 C-29,3 -25,-13 -13,-20 C-6,-24 6,-24 13,-20 C25,-13 29,3 24,20 Q0,27 -24,20 Z" fill="#3b4460" stroke="#6a7698" stroke-width="2"/><path d="M-12,-19 L-21,-34 L-4,-22 Z M12,-19 L21,-34 L4,-22 Z" fill="#6a7698"/><path d="M-15,-7 L-4,-3 L-5,2 L-15,0 Z M15,-7 L4,-3 L5,2 L15,0 Z" fill="#f2c230"/><path d="M-9,11 Q0,7 9,11" fill="none" stroke="#1a1e2a" stroke-width="2.4" stroke-linecap="round"/></g>
 <text x="818" y="151" font-size="14" fill="#9a9a94" text-anchor="end">the enemy</text>
 <clipPath id="cardclip"><rect x="506" y="167" width="364" height="286" rx="14"/></clipPath>
@@ -123,5 +123,5 @@
 <g class="an rDark"><rect x="752" y="398" width="102" height="30" rx="7" fill="#4a4f5c"/><text x="803.0" y="418.5" font-size="15" fill="#e6e5e0" font-weight="800" text-anchor="middle" letter-spacing="1.5">NEUTRAL</text></g>
 <g clip-path="url(#cardclip)"><g class="an scan" style="opacity:0"><rect x="506" y="162" width="364" height="2" fill="#c9c4ff" opacity=".8"/><rect x="506" y="126" width="364" height="36" fill="#9085e9" opacity=".12"/></g></g>
 <line x1="30" y1="468" x2="870" y2="468" stroke="#30374a" stroke-width="1"/>
-<text x="30" y="496" font-size="14.5" fill="#9a9a94">Inspect shows a family's state now, debuffs counted. The Bestiary keeps what you learnt of every species.</text>
+<text x="30" y="496" font-size="14.5" fill="#9a9a94">INFO shows a family's state now, debuffs counted. The Bestiary keeps what you learnt of every species.</text>
 </svg>

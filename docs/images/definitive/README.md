@@ -9,13 +9,14 @@ show.
 |---|---|---|
 | `hero.svg` | the title banner: the tagline, a WEAK! slash, the five element families | README top |
 | `combat-loop.svg` | hit a weakness → stagger → act again → another weak family, Baton Pass or any other blow; OVERFINISH | README, combat |
-| `weakness-discovery.svg` | Inspect learning a foe's families from `???`, the pair rule, Resist Down opening a weakness, Libra | README, combat |
-| `damage-scale.svg` | the multiplier ladder from 0.5 to 2.9 and what affinity adds | README, combat |
+| `weakness-discovery.svg` | INFO (the old Inspect) learning a foe's families from `???`, the pair rule, Resist Down opening a weakness, Libra | README, combat |
+| `damage-scale.svg` | the multiplier ladder from 0.5 to 3.3 and what affinity adds (convex, up to 0.4 / 0.8) | README, combat |
 | `buffs.svg` | buff and debuff tiers and the no-stacking rule | README, combat |
 | `hud.svg` | the direct-button battle HUD as a pad diagram | README, combat |
 | `progression.svg` | total TP by level, the Definitive Edition against the original | README, progression |
 | `hunt-chain.svg` | the regional chain, the Rare Target, its rewards, what resets the chain | README; `hunt-and-economy.md` |
 | `economy-flow.svg` | commons and Cores flowing into the forge, the Black Market and the DRI Gauntlet | README; `hunt-and-economy.md` |
+| `npc-time.svg` | everyone has their own time: the main quest and three people's stories moving on with it, visited or not | README, story |
 | `velvet-room.svg` | the room's guests arriving with the story, the way in, Igor, the dreams, the Time Room | README, Velvet Room |
 | `blast.svg` | the Blast arc: unlock, gauge, dark forms, the price, Purify, the Chosen Evolution | README, Blast |
 | `super-rare-compass.svg` | the temperature compass, the flee and return, the 13 hunts, crystals and skins | README, Super Rares |
@@ -32,10 +33,11 @@ Velvet Room's story bits set to its fullest); the behaviour shown is the game's 
 
 | File | What it shows |
 |---|---|
-| `battle-weak.gif` | a Thunder technique on a weakness: WEAK!, the stagger, the HUD back for the extra action, Inspect |
+| `battle-weak.gif` | a Thunder technique on a weakness: WEAK!, the stagger, the HUD back for the extra action, INFO |
 | `battle-baton-pass.gif`, `battle-baton-pass-menu.png` | Baton Pass while the enemy is staggered |
 | `battle-overfinish.gif` | OVERFINISH! on a knocked-out enemy |
-| `battle-inspect.png`, `battle-hud.png` | the direct-button HUD and the Inspect panel |
+| `battle-inspect.png`, `battle-hud.png` | the direct-button HUD and the INFO panel |
+| `battle-persona.png` | INFO on an enemy with a persona: the `!` mark, SHIFT and the guard explained at the foot (2026-11-25, Woodmon on map 0x23B) |
 | `overlevel-rush.gif`, `overlevel-rush-panel.png` | the Rush prompt while walking and its rewards panel |
 | `velvet-way-in.gif` | an inn's blue light, the prompt, the VELVET / SERVER card, the room |
 | `velvet-room.png` | the room at its highest guest level |
@@ -52,7 +54,7 @@ widescreen GPU renderer and the launcher.
 |---|---|
 | `weakness.svg` | the five families; weak / neutral / resisted / not learnt; one value per family; Resist Down's −80 |
 | `stagger.svg` | weakness → stagger → one more, once per weak family a round; OVERFINISH |
-| `damage.svg` | the multiplier part by part and each family's affinity ceiling |
+| `damage.svg` | the multiplier part by part and each family's affinity ceiling (0.4 Fire/Wind, 0.8 pairs and Dark) |
 | `damage-pipeline.svg` | where the multiplier sits among the game's own damage steps |
 | `definitive_ui.png` | a capture: the bestiary, the five-family weakness panel, the technique menu's element |
 | `banner.svg` | the previous title banner (no longer shown) |

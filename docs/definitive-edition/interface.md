@@ -26,7 +26,10 @@
   loading minigame (Kumamon, Guilmon and Agumon) while the disc verifies.
 - **The Blast Gauge is saved** (eight s16 values in the slot's tail) and is now the game's Blast button; see
   [Blast, Purify and Chosen Evolution](blast.md#blast-purify-and-chosen-evolution).
-- **Battle text that does not stop the fight**: message boxes skip by default (`BATTLE TEXT: SKIP`) without waiting for a button.
+- **Battle text that does not stop the fight**: message boxes always skip without waiting for a button (the old
+  `BATTLE TEXT` option and its `battle_text` mod are gone, `e3ffde1`; the behaviour is the constant `BT_SKIP`).
+- **Running away asks first**: choosing RUN opens a question (confirm flees, back returns to the menu; no timer,
+  `definitive_flee_ask.c`), so one slip of the button no longer ends a fight.
 - **Overlevel Rush**: when your strongest Digimon is 3 or more levels above every enemy of a random battle, the game
   offers to skip it, at the top of the screen while you keep walking (confirm takes it, back or five seconds fights).
   Take it and the rewards a win by your lead Digimon would give (experience, Bits, the drop and Hunt Materials) are
@@ -35,11 +38,23 @@
   still ends on the results screen.
 - **A Guardromon network**: at any Guardromon, `SAVE` or `TELEPORT` to the others you have met, a **map objective
   marker**, **fast-forward**, button glyphs that match your pad, and full remapping.
-- **50/60 Hz support**: `--refresh 60` / `video.refresh: 60` engages the game's compensated 60 Hz mode (`records_60hz`).
+- **60 Hz by default**: the European disc runs at 50 Hz; the launcher's `GAME > REFRESH RATE` row (PC and Android) starts
+  at 60, the game's own speed-compensated 60 Hz mode (`video.refresh: 60`, `--refresh 60`, `records_60hz`). An old
+  launcher state takes 60 Hz once when it migrates (`a5407b0`).
+- **Video on PC**: `RESOLUTION` (internal resolution, default 3X: 720p in 16:9) and `3D VERTICES` (smooth by default) on
+  the VIDEO screen; **Widescreen AUTO**: the wide picture follows the window's shape from 4:3 to 16:9, so a 16:10 screen
+  (a Steam Deck, a laptop) is filled; wider than 16:9 keeps 16:9 with side bars.
+- **The launcher updates itself** on Windows and in the Linux AppImage: `NEW VERSION` (DEBUG) downloads the release,
+  checks its size and SHA-256, and swaps the files after you confirm. PortMaster, RecompLauncher and a source checkout
+  still open the release page; Android tells you a newer APK is out.
+- **Fast-forward anywhere**: Select + R1 on a pad, Tab on a PC keyboard, and a two-chevron button in the corner of the
+  Android touch pad.
 
 ## Battle HUD and launcher options
 
-Buttons: Item L1, Tech R1, Fight B (east), Run X, Digivolve Y, Tag A, Inspect L2, Blast R2. The `battle_menu` options are
+Buttons (default, Xbox names): Bag (items) L1, Tech R1, Fight A (south), Run X (west), Digivolve Y (north), Tag B (east),
+Info L2, Blast R2 (`bm_default_places` in `port/game/game_mods.c`, `launcher/cfg.c`; Fight moved to the bottom face and
+Tag to the right in `c909142`, with a launcher option and migration for the old layout). The `battle_menu` options are
 `fight`, `tech`, `digivolve`, `tag`, `item`, `run`, `inspect`, `blast` (a place on the pad: `south` `west` `north` `east`
 `l1` `r1` `l2` `r2`), `remember_cursor` (default true) and `buffer_input` (`off`, `short` 1.0 s, `long` 1.5 s). The options
 name a place, not a PS1 button; `pad.map` (`dw3_pad_permute`) decides which bit that place delivers, so remapping moves the
@@ -96,5 +111,5 @@ raised from 8 to 12 for the `inspect` option. Details: [`docs/LAUNCHER.md`](../L
   at boot. Architecture suggested: `ui_draw` (RGBA buffer, rounded rectangles, gradients, alpha, stb_truetype, stb_image, 1-bit blitter), `loading_game`, `platform_fbdev.c` (handhelds: `/dev/fb0` + `/dev/input/event*`),
   `platform_sdl2.c` (Linux PC, Windows, Wayland/KMS CFWs), `config.c` (atomic `settings.json`/`pad.map` via `psxstack/runtime/json.c`, drafts in memory until Save & Back or Play), `runner.c` (spawns `./dw2003` with a pipe);
   `Digimon World 3.sh` still detects the environment (`control.txt`, `fbdev` vs `sdl2`, cpu_part 0xd04 -> gles) and calls `dw3-launcher`. The ARM test console used was an XF35H on EmuELEC (address in the owner's notes).
-  Icons planned (`assets/icons/`): digi_crest, play, gamepad_gear, crosshair_hud, dpad, led_wave, bug_wrench, reset_arrow; face_a/b/x/y, ps_cross/circle/square/triangle, l1/r1/l2/r2, start, select, dpad_lr;
-  warn_triangle, check_on, fast_forward, eye_inspect, sword_fight, bolt_tech, dna_dv, arrows_tag, potion_item, wing_run, obstacle_spike. `tools/gen_assets.py` makes `launcher/assets/assets.c`.
+  Icons the plan listed for `assets/icons/` (never drawn: `launcher/assets/` holds only the runner's sprites and the font, from `launcher/tools/gen_assets.py`): digi_crest, play, gamepad_gear, crosshair_hud, dpad, led_wave, bug_wrench, reset_arrow; face_a/b/x/y, ps_cross/circle/square/triangle, l1/r1/l2/r2, start, select, dpad_lr;
+  warn_triangle, check_on, fast_forward, eye_inspect, sword_fight, bolt_tech, dna_dv, arrows_tag, potion_item, wing_run, obstacle_spike.

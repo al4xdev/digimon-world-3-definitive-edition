@@ -11,7 +11,7 @@ matching, performance, the GPU work) stay in [`docs/`](../README.md).
 
 | Page | What it covers |
 |---|---|
-| [Combat](combat.md) | weaknesses, stagger, One More, the whole damage calculation with a worked example, buffs and debuffs, Inspect, techniques and MP, the combat layers 0-10, constants, the combat design record, buff and debuff tiers, the status/poison/revive rework and its balance measurements, turn order and the progression numbers |
+| [Combat](combat.md) | weaknesses, stagger, One More, the whole damage calculation with a worked example, buffs and debuffs, INFO (the old Inspect), techniques and MP, the combat layers 0-10, constants, the combat design record, buff and debuff tiers, the status/poison/revive rework and its balance measurements, turn order and the progression numbers |
 | [Progression and difficulty](progression.md) | training points, guaranteed training, experience, digivolution hints and short animations, Hard Mode, Super Hard Mode (the Demon Bell) |
 | [The hunt and the economy](hunt-and-economy.md) | the regional chain, Rare Targets, Hunt Materials, prices, the forge, equipment variants, the Black Market, the DRI Gauntlet, the Guide, the Guardromon network, the Overlevel Rush, and the hunt/forge/DRI design record |
 | [The Velvet Room](velvet-room.md) | the room, its ways in (the inns' lights), its guests and music, details, decisions and history |
@@ -42,5 +42,6 @@ The figures these pages show live in [`docs/images/definitive/`](../images/defin
   `definitive_recolor.c`, `definitive_skins.c`, `definitive_travel.c`, `definitive_evohint.c`, `definitive_callout.c`,
   `definitive_text.c` / `definitive_text_lang.inc`, `girls_power.c`, `game_mods.c`.
 - Rules every layer keeps: an old save opens and plays; the player's MP stays limited (Relay and technique costs are
-  real); a boss is immune to status (poison, sleep and the like) but not to stat debuffs nor to elemental damage. New
+  real); a boss resists status (Poison, Sleep and Confusion at 60% of their chance, capped; Paralysis never) but takes
+  stat debuffs and elemental damage in full. New
   code never assumes three party members: ask `gamestate_data.funcs.get_party_member` (Hard Mode runs with two).

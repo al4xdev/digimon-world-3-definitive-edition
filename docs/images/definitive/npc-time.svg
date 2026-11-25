@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560" role="img" aria-labelledby="title desc">
+<title id="title">Everyone has their own time</title>
+<desc id="desc">The main quest runs from Asuka to Amaterasu, and every person you meet has a story that moves on with it, with or without you. Three examples: someone you talked to at every stop ends with a bond; someone you saw now and then goes their own way, shaped by the times you were there; someone you never visited still lived their story, and later you hear how it went. You will not bond with everyone, and you are not meant to.</desc>
+<defs><style>text{font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,&quot;Liberation Sans&quot;,sans-serif}
+@keyframes sw{0%{transform:scaleX(0)}4.167%{transform:scaleX(0)}70.833%{transform:scaleX(1)}93.333%{transform:scaleX(1)}98.333%{transform:scaleX(0)}100%{transform:scaleX(0)}}
+.sw{transform-box:fill-box;transform-origin:0 50%;animation:sw 12s linear infinite}
+@keyframes d0{0%{opacity:.15}4.167%{opacity:.15}6.250%{opacity:1}93.333%{opacity:1}98.333%{opacity:.15}100%{opacity:.15}}
+.d0{animation:d0 12s ease-out infinite}
+@keyframes d1{0%{opacity:.15}17.500%{opacity:.15}19.583%{opacity:1}93.333%{opacity:1}98.333%{opacity:.15}100%{opacity:.15}}
+.d1{animation:d1 12s ease-out infinite}
+@keyframes d2{0%{opacity:.15}30.833%{opacity:.15}32.917%{opacity:1}93.333%{opacity:1}98.333%{opacity:.15}100%{opacity:.15}}
+.d2{animation:d2 12s ease-out infinite}
+@keyframes d3{0%{opacity:.15}44.167%{opacity:.15}46.250%{opacity:1}93.333%{opacity:1}98.333%{opacity:.15}100%{opacity:.15}}
+.d3{animation:d3 12s ease-out infinite}
+@keyframes d4{0%{opacity:.15}57.500%{opacity:.15}59.583%{opacity:1}93.333%{opacity:1}98.333%{opacity:.15}100%{opacity:.15}}
+.d4{animation:d4 12s ease-out infinite}
+@keyframes d5{0%{opacity:.15}70.833%{opacity:.15}72.917%{opacity:1}93.333%{opacity:1}98.333%{opacity:.15}100%{opacity:.15}}
+.d5{animation:d5 12s ease-out infinite}
+@keyframes e{0%{opacity:0}71.667%{opacity:0}76.667%{opacity:1}93.333%{opacity:1}98.333%{opacity:0}100%{opacity:0}}
+.e{animation:e 12s ease-out infinite}
+@media (prefers-reduced-motion: reduce){*{animation:none!important}}</style>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1b1f2b"/><stop offset="1" stop-color="#141720"/></linearGradient>
+<linearGradient id="main" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7c6cf0"/><stop offset="1" stop-color="#c3b8ff"/></linearGradient>
+</defs>
+<rect width="900" height="560" rx="16" fill="url(#bg)"/>
+<text x="30" y="40" font-size="14" fill="#cfc9ff" font-weight="700" letter-spacing="6">A STORY THAT LISTENS</text>
+<text x="30" y="74" font-size="26" fill="#f0efec" font-weight="800">Everyone has their own time</text>
+<text x="30" y="102" font-size="15.5" fill="#c3c2b7">The people you meet live their own stories, and those stories move on with the main quest,</text>
+<text x="30" y="124" font-size="15.5" fill="#c3c2b7">with you or without you.</text>
+<text x="30" y="174" font-size="15" fill="#f0efec" font-weight="700">The main quest</text>
+<text x="30" y="194" font-size="13.5" fill="#9a9a94">it never waits</text>
+<rect x="285" y="176" width="545" height="4" rx="2" fill="#2c3040"/>
+<rect class="sw" x="285" y="176" width="545" height="4" rx="2" fill="url(#main)"/>
+<g class="d0"><circle cx="285" cy="178" r="8" fill="#a99cff"/></g>
+<text x="285" y="160" font-size="13.5" fill="#cfc9ff" text-anchor="middle" font-weight="700">Asuka</text>
+<g class="d1"><circle cx="394" cy="178" r="8" fill="#a99cff"/></g>
+<text x="394" y="160" font-size="13.5" fill="#cfc9ff" text-anchor="middle" font-weight="700">Seiryu</text>
+<g class="d2"><circle cx="503" cy="178" r="8" fill="#a99cff"/></g>
+<text x="503" y="160" font-size="13.5" fill="#cfc9ff" text-anchor="middle" font-weight="700">Suzaku</text>
+<g class="d3"><circle cx="612" cy="178" r="8" fill="#a99cff"/></g>
+<text x="612" y="160" font-size="13.5" fill="#cfc9ff" text-anchor="middle" font-weight="700">Byakko</text>
+<g class="d4"><circle cx="721" cy="178" r="8" fill="#a99cff"/></g>
+<text x="721" y="160" font-size="13.5" fill="#cfc9ff" text-anchor="middle" font-weight="700">Genbu</text>
+<g class="d5"><circle cx="830" cy="178" r="8" fill="#a99cff"/></g>
+<text x="830" y="160" font-size="13.5" fill="#cfc9ff" text-anchor="middle" font-weight="700">Amaterasu</text>
+<text x="30" y="258" font-size="15" fill="#f0efec" font-weight="700">Someone you kept visiting</text>
+<text x="30" y="278" font-size="13.5" fill="#9a9a94">talked to at every stop</text>
+<line x1="285" y1="262" x2="830" y2="262" stroke="#2c3040" stroke-width="3" stroke-dasharray="2 6" stroke-linecap="round"/>
+<rect class="sw" x="285" y="260.5" width="545" height="3" rx="1.5" fill="#3fc6a8" fill-opacity="0.55"/>
+<g class="d0"><circle cx="285" cy="262" r="9" fill="#3fc6a8"/><path d="M281 262 l3 3 l5 -6" stroke="#10131a" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g class="d1"><circle cx="394" cy="262" r="9" fill="#3fc6a8"/><path d="M390 262 l3 3 l5 -6" stroke="#10131a" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g class="d2"><circle cx="503" cy="262" r="9" fill="#3fc6a8"/><path d="M499 262 l3 3 l5 -6" stroke="#10131a" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g class="d3"><circle cx="612" cy="262" r="9" fill="#3fc6a8"/><path d="M608 262 l3 3 l5 -6" stroke="#10131a" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g class="d4"><circle cx="721" cy="262" r="9" fill="#3fc6a8"/><path d="M717 262 l3 3 l5 -6" stroke="#10131a" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g class="d5"><circle cx="830" cy="262" r="9" fill="#3fc6a8"/><path d="M826 262 l3 3 l5 -6" stroke="#10131a" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g class="e"><text x="846" y="267" font-size="13.5" fill="#3fc6a8" font-weight="700" text-anchor="end" dx="-28" dy="26">a bond</text></g>
+<text x="30" y="340" font-size="15" fill="#f0efec" font-weight="700">Someone you saw now and then</text>
+<text x="30" y="360" font-size="13.5" fill="#9a9a94">talked to twice</text>
+<line x1="285" y1="344" x2="830" y2="344" stroke="#2c3040" stroke-width="3" stroke-dasharray="2 6" stroke-linecap="round"/>
+<rect class="sw" x="285" y="342.5" width="545" height="3" rx="1.5" fill="#f0a93a" fill-opacity="0.55"/>
+<g class="d0"><circle cx="285" cy="344" r="9" fill="#f0a93a"/><path d="M281 344 l3 3 l5 -6" stroke="#10131a" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g class="d1"><circle cx="394" cy="344" r="8" fill="#171a21" stroke="#f0a93a" stroke-width="2.2"/></g>
+<g class="d2"><circle cx="503" cy="344" r="8" fill="#171a21" stroke="#f0a93a" stroke-width="2.2"/></g>
+<g class="d3"><circle cx="612" cy="344" r="9" fill="#f0a93a"/><path d="M608 344 l3 3 l5 -6" stroke="#10131a" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g class="d4"><circle cx="721" cy="344" r="8" fill="#171a21" stroke="#f0a93a" stroke-width="2.2"/></g>
+<g class="d5"><circle cx="830" cy="344" r="8" fill="#171a21" stroke="#f0a93a" stroke-width="2.2"/></g>
+<g class="e"><text x="846" y="349" font-size="13.5" fill="#f0a93a" font-weight="700" text-anchor="end" dx="-28" dy="26">their own way</text></g>
+<text x="30" y="422" font-size="15" fill="#f0efec" font-weight="700">Someone you never visited</text>
+<text x="30" y="442" font-size="13.5" fill="#9a9a94">their story went on anyway</text>
+<line x1="285" y1="426" x2="830" y2="426" stroke="#2c3040" stroke-width="3" stroke-dasharray="2 6" stroke-linecap="round"/>
+<rect class="sw" x="285" y="424.5" width="545" height="3" rx="1.5" fill="#8a8f9e" fill-opacity="0.55"/>
+<g class="d0"><circle cx="285" cy="426" r="8" fill="#171a21" stroke="#8a8f9e" stroke-width="2.2"/></g>
+<g class="d1"><circle cx="394" cy="426" r="8" fill="#171a21" stroke="#8a8f9e" stroke-width="2.2"/></g>
+<g class="d2"><circle cx="503" cy="426" r="8" fill="#171a21" stroke="#8a8f9e" stroke-width="2.2"/></g>
+<g class="d3"><circle cx="612" cy="426" r="8" fill="#171a21" stroke="#8a8f9e" stroke-width="2.2"/></g>
+<g class="d4"><circle cx="721" cy="426" r="8" fill="#171a21" stroke="#8a8f9e" stroke-width="2.2"/></g>
+<g class="d5"><circle cx="830" cy="426" r="8" fill="#171a21" stroke="#8a8f9e" stroke-width="2.2"/></g>
+<g class="e"><text x="846" y="431" font-size="13.5" fill="#8a8f9e" font-weight="700" text-anchor="end" dx="-28" dy="26">you hear how it went</text></g>
+<circle cx="38" cy="495" r="8" fill="#3fc6a8"/><path d="M34 495 l3 3 l5 -6" stroke="#10131a" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="54" y="500" font-size="14" fill="#c3c2b7">you were there</text>
+<circle cx="198" cy="495" r="7" fill="#171a21" stroke="#8a8f9e" stroke-width="2.2"/>
+<text x="214" y="500" font-size="14" fill="#c3c2b7">you were not: their story moved on all the same</text>
+<text x="30" y="534" font-size="14.5" fill="#f0efec" font-weight="700">Spend your time with them while you can. You will not bond with everyone, and you are not meant to.</text>
+</svg>

@@ -123,11 +123,13 @@ Tested devices, install details and known issues: [`.ci-cd/portmaster/README.md`
 1. Unpack the PC release (an AppImage on Linux, a `.zip` on Windows), or run `./launcher/dw3-launcher --sdl` from a
    built checkout.
 2. Pick your `.cue` / `.bin` on first launch (change it any time under `GAME > DISC IMAGE`).
-3. Open `VIDEO` for **Widescreen (16:9)**, **Fullscreen**, **`FILL` or `INTEGER`** scaling, the **GPU** or software
-   renderer and the screen **filters**.
+3. Open `VIDEO` for **Widescreen** (it follows your screen's shape, up to 16:9), **Fullscreen**, **`FILL` or
+   `INTEGER`** scaling, the internal **resolution** (3X by default), the **GPU** or software renderer and the screen
+   **filters**. The launcher updates itself when a new release is out.
 
 **Coming from an older version?** Your save opens and plays. To give it the new MP and TP tables, run
-`tools/convert_save_mp.py card1.mcd` once (it keeps a backup).
+`tools/convert_save_mp.py card1.mcd` once (it keeps a backup). The launcher brings its settings and the expansion
+save beside the card (`card1.def.json`) up to date by itself, keeping the old file as a backup.
 
 ---
 
@@ -162,28 +164,47 @@ physical blow and the element's picture for magic.
 </tr>
 </table>
 
-<p align="center"><img src="docs/images/definitive/weakness-discovery.svg" width="800" alt="Inspect starts at ???. A Fire hit shows RESIST, an Ice hit shows Water + Ice WEAK, Resist Down turns neutral Wind into a weakness, and Libra reveals the rest."></p>
+<p align="center"><img src="docs/images/definitive/weakness-discovery.svg" width="800" alt="INFO starts at ???. A Fire hit shows RESIST, an Ice hit shows Water + Ice WEAK, Resist Down turns neutral Wind into a weakness, and Libra reveals the rest."></p>
 
-**Knowing your enemy.** Nothing is hidden, but you have to find it out. **Inspect** (`L2`) shows the enemy's five
-families as you learn them, `???` until then; **Libra** reveals them all at once; the **Bestiary** keeps what you have
-learnt about every species, with its Hunt Materials. Every technique list marks each technique (a fist, or its element), and every
+**Knowing your enemy.** Nothing is hidden, but you have to find it out. **INFO** (`L2`) shows the enemy's five
+families as you learn them, `???` until then, and who acts next; **Libra** reveals them all at once; the **Bestiary**,
+a screen of its own with each Digimon turning in 3D, keeps what you have learnt about every species, Rare Target, Super
+Rare and DRI line, with its Hunt Materials. Every technique list marks each technique (a fist, or its element), and every
 description was rewritten from what the technique really does ("Fire magic. Sleep chance.").
 
 **Your stats changed jobs.** Your Digimon's old elemental "tolerance" stats became **affinity**: they no longer
 defend, they power your attacks of that element against a weakness or a staggered foe. **Defense** now guards against
 magic, and **Spirit** is purely your magic attack.
 
-<p align="center"><img src="docs/images/definitive/damage-scale.svg" width="800" alt="Multiplier: resisted 0.5, neutral 1.0, no element staggered 1.2, neutral staggered 1.2 to 1.8, weakness 1.5 to 2.1, weakness staggered 1.7 to 2.9. Affinity: your old elemental stats now power your attacks."></p>
+<p align="center"><img src="docs/images/definitive/damage-scale.svg" width="800" alt="Multiplier: resisted 0.5, neutral 1.0, no element staggered 1.2, neutral staggered 1.2 to 2.0, weakness 1.5 to 2.3, weakness staggered 1.7 to 3.3. Affinity: your old elemental stats now power your attacks, up to 0.4 for Fire and Wind and 0.8 for the pairs and Dark."></p>
 
 **Buffs that make a plan.** Buffs and debuffs come in three fixed tiers and never stack, so the strongest one wins.
-Bosses are immune to status, **not** to debuffs: **Resist Down** and **Mega Break** can open a weakness that was
-not there. Four techniques were remade for this (Libra, Relay, Resist Down, Mega Break), and the rookies that were
-starved of MP are not any more.
+Debuffs land on bosses in full: **Resist Down** and **Mega Break** can open a weakness that was not there. Four
+techniques were remade for this (Libra, Relay, Resist Down, Mega Break), and the rookies that were starved of MP are
+not any more.
 
-<p align="center"><img src="docs/images/definitive/hud.svg" width="800" alt="Battle HUD: Item L1, Tech R1, Fight B, Run X, Digivolve Y, Tag A, Inspect L2, Blast R2. Rebindable from BATTLE HUD in the launcher."></p>
+**Status that is worth a turn.** Poison, Sleep and Confusion land more often the more your **Wisdom** passes the
+target's, and much more often on a **staggered** target. Bosses are no longer immune: they take them at a reduced chance
+(Paralysis still never lands on one). **Poison** now bites every turn for a set amount built from the technique, your
+Wisdom, your Spirit and your Wind affinity, up to 8% of an enemy's max HP a turn. Sleep and Confusion hold an enemy for
+two turns: use them to heal or set up the stagger. The rules and a worked example are in
+[the combat reference](docs/definitive-edition/combat.md#status-and-poison-for-the-player).
 
-**A battle HUD with a button per action**, in a pad-shaped layout and rebindable from the launcher. It remembers your
-last technique and item, buffers early presses, and battle text no longer stops the fight.
+**Enemies with a rule of their own.** Rare Targets, Super Rares, the DRI lines, some story bosses and, from level 10,
+about half the common species bring a twist: a **guard** that takes only 30% of your damage until you stagger it, a
+**red guard** that only a blow on its weakness gets through, a **SHIFT** that changes its weakness (and its colours)
+every few turns, a **speed** two or three times yours, or resistance to everything with a soft Defense. INFO marks them
+with a `!` and draws one picture per rule, explained in plain words at its foot. What you learn of one is saved, and
+the next time you meet it, INFO remembers.
+
+<p align="center"><img src="docs/images/definitive/shots/battle-persona.png" width="640" alt="INFO on a Woodmon marked with !: two rules, SHIFT every 2 turns and a guard that takes only 30% until staggered."></p>
+
+<p align="center"><img src="docs/images/definitive/hud.svg" width="800" alt="Battle HUD: Bag L1, Tech R1, Fight A, Run X, Digivolve Y, Tag B, Info L2, Blast R2. Rebindable from BATTLE HUD in the launcher."></p>
+
+**A battle HUD with a button per action**, drawn as your pad and rebindable from the launcher. Tech and Bag unfold
+as a sheet beside the enemy's INFO, Tag and Digivolve open a close-up of your partner with a ring of choices and a live
+3D preview, the Blast button is the gauge itself, and Run asks before you flee. It remembers your last technique and
+item, buffers early presses, and battle text never stops the fight.
 
 <p align="center"><img src="docs/images/definitive/shots/battle-inspect.png" width="640" alt="The direct-button battle HUD and the Inspect panel showing the weaknesses found so far."></p>
 
@@ -219,11 +240,13 @@ example, is in [the combat reference](docs/definitive-edition/combat.md).
 - **The party grows together**: a partner on the bench earns the same experience, and each Digimon's three chosen
   forms earn form experience whether they fought or not.
 - **Requirements on screen**: the Digi-Lab shows what each next form needs and how far you are ("Greymon Lv 5 (3/5)").
+  Fast form levels do not skip the journey: a Perfect form waits for your Digimon's level 20, a Mega for level 40.
   The digivolution animation plays in full once, then short; hold a button to skip it.
 - **Card boosters drop 15 at a time**, so building a deck does not take a second playthrough.
 - **Hard Mode**, chosen on New Game: your party is two Digimon instead of three, for the whole game.
 - **Super Hard**, any time: carry the Demon Bell from the Velvet Room and enemies get 50% more speed and hit 25% harder
-  while your blows deal half, but pay double Bits and materials. Hand it back to turn it off.
+  while your blows deal half, but pay double Bits and experience and triple the common materials. Hand it back to turn
+  it off.
 
 ## The hunt
 
@@ -242,11 +265,12 @@ collection.
   description shows what you have and what you lack.
 - **41 equipment variants** built around a style: Speed weapons, Elemental gear that raises your affinity, Tank armour,
   Trade-off accessories.
-- **The Black Market**: trade a Core for twelve commons, or two bosses' Cores for one of sixteen **replicas** no shop
-  sells (and, at the very end of the list, a mark every hunter wants).
+- **The Black Market**: trade a Core for twelve commons, or two bosses' Cores for one of 32 **replicas** no shop
+  sells, from the Power S accessories to five ultimate weapons (and, at the very end of the list, a mark every hunter
+  wants).
 - **The DRI Gauntlet**: the DRI Agents replay classic Tamers' battles, sixteen lines in all. One fight, four stages,
   Rookie to Champion to Ultimate to Mega with a **DIGIVOLVE!** between them, and a Power accessory for the Champion,
-  the Ultimate and the Mega you fell.
+  the Ultimate and the Mega you fell. A Power accessory raises its element's stat by 60, 120 or 200: more affinity.
 - **Prices** of advanced gear went up and resale went down, so a lucky find no longer sells for a fortune and the Bits
   from OVERFINISH have somewhere to go.
 
@@ -305,8 +329,8 @@ The room **grows with the story**. Its guests arrive one by one:
 | **The Sepikmon** | the hunts' master: Super Rare hunts, their crystals and the hero skins they unlock |
 | **Gennai** | the Blast quest and the Chosen Evolution |
 | **Guilmon** | keeps the Demon Bell, Super Hard on demand |
-| **Etemon** | at the piano. He has heard this music in another game |
-| **The pig** | an actor the game shipped and never used, at last on stage; moves 100 points from one stat (or Affinity) of a partner to another for 100,000 Bits |
+| **Etemon** | at the piano. He has heard this music in another game, and he will play your own MIDI files in random battles, each at its own volume |
+| **The pig** | an actor the game shipped and never used, at last on stage; moves 100 points from one stat (or Affinity) of a partner to another, for a price that climbs with each swap (1,000 Bits the first time, 100,000 from the tenth) |
 | **Oikawa** | behind the counter, once you have earned it: the Black Market |
 
 The room has its own arrangement of the music, and a **Guardromon network** ties the inns together: save or teleport
@@ -316,14 +340,21 @@ from any Guardromon to the ones you have met.
 
 The Definitive Edition does not change where the story goes. It changes how it is told, and gives you a voice in it.
 
+<p align="center"><img src="docs/images/definitive/npc-time.svg" width="800" alt="The main quest runs from Asuka to Amaterasu; three people at its side: one you kept visiting ends with a bond, one you saw now and then goes their own way, one you never visited lived their story anyway. You will not bond with everyone, and you are not meant to."></p>
+
+- **Everyone has their own time.** The people you meet live their own stories, and those stories move on with the
+  main quest, with or without you. Spend your time with them while you can: you will not bond with everyone, and you
+  are not meant to. Whoever you leave behind carries on without you, and you will see where it took them.
 - **Igor's dreams.** At a few turning points he pulls you into the room alone and asks you something. There is no
   wrong answer, and he remembers what you said.
 - **Your choices, and their echoes.** 111 scenes now let the hero answer in their own words, and some 600 later lines
   change with what you chose.
-- **A rewritten script** (English): the childish lines grown up, the order and the quests untouched, and the hero
-  written for whoever is playing.
+- **A rewritten script** (English and Brazilian Portuguese): the childish lines grown up, the order and the quests
+  untouched, and the hero written for whoever is playing. In Portuguese, a good part of the banter speaks like the
+  classic Brazilian anime dubs.
 - **A hooded figure** blocks the way in the Bug Maze, and **a room where time stands still** waits before the point of
   no return, to make sure you are ready.
+- **The last battle is not where it used to end.** No more on that here.
 
 ## Blast and the Chosen Evolution
 
@@ -355,9 +386,10 @@ swap. Thirteen **hero skins** from the Super Rare hunts recolour your hero's hai
   to an open one. A banner slides in when an objective changes.
 - **Overlevel Rush**: when your strongest Digimon is 3 or more levels above every enemy of a random battle, the game offers to skip it
   while you keep walking, and the rewards slide in at the top of the screen.
-- **Battle text that does not stop the fight**, a map objective marker, fast-forward, button glyphs that match your
-  pad (Xbox, Nintendo, PS1) and full remapping.
-- **60 Hz mode**: the European disc runs at 50 Hz; the game's own speed-compensated 60 Hz mode is one setting away.
+- **Battle text that does not stop the fight**, a map objective marker, fast-forward (also a button on the Android
+  touch pad), button glyphs that match your pad (Xbox, Nintendo, PS1) and full remapping.
+- **60 Hz by default**: the European disc runs at 50 Hz; the game's own speed-compensated 60 Hz mode is on from the
+  start (`GAME > REFRESH RATE` brings 50 Hz back).
 
 <table>
 <tr>
@@ -371,7 +403,7 @@ swap. Thirteen **hero skins** from the Super Rare hunts recolour your hero's hai
 | Where | What you get |
 |---|---|
 | **RK3326 handhelds** through PortMaster (the XF35H, the R36S and similar devices) | tuned end to end on a real XF35H: direct framebuffer present, a GLES renderer, full-speed movies, the LED bar. Every custom firmware of the test matrix was run under emulation; real-device reports are welcome |
-| **Linux and Windows PC** | SDL3 GPU renderer (Vulkan, D3D12), **16:9 widescreen** in battles and the field, HighDPI fullscreen with `FILL` scaling, `SHARP` / `SCANLINES` / `CRT` / `SMOOTH` filters, fast-forward up to 8× |
+| **Linux and Windows PC** | SDL3 GPU renderer (Vulkan, D3D12), **widescreen** in battles and the field that follows your screen (16:10 or 16:9), internal resolution from 1X (PS1) to 8X (3X by default) with smooth 3D vertices, HighDPI fullscreen with `FILL` scaling, `SHARP` / `SCANLINES` / `CRT` / `SMOOTH` filters, fast-forward up to 8×, and a launcher that updates itself |
 | **Android** (arm64) | an APK with **16:9 widescreen**, big touch controls you can move and resize on screen (or hide), any USB or Bluetooth gamepad, and a disc picker that copies your image into the app |
 
 <p align="center"><img src="docs/images/definitive/cross-play.svg" width="800" alt="Cross-Play cloud sync: the launcher syncs card1.mcd between handhelds and PC through a free Cloudflare Worker. Pair a device with a 6-digit code the host approves, choose a side when both changed, and keep 1 to 100 rotating local snapshots."></p>
@@ -394,13 +426,7 @@ it has only been played through a few times, so expect rough edges and frequent 
   clumsy lines and a few labels too wide for their box). The rewritten story is only in English and Portuguese; in the
   other three languages the disc's original campaign plays.
 - **Overall game balance.** So far it was balanced by calculation only. I am playing through it in parallel and
-  shipping hotfixes as I go.
-- **Special attacks still being tuned.** A few forms' special/signature attacks in the DRI Gauntlet and the Chosen
-  Evolution purification simulator.
-- **Still being playtested.** Chosen Evolution and a few secret endgame battles.
-- **The expansion save's schema migration.** The new save file beside the memory card (`card1.def.json`, the enemy
-  weaknesses you have discovered) travels with the card in backups, restore and cloud sync, and has a schema version.
-  The next update that changes that schema brings a launcher screen that migrates the file.
+  shipping hotfixes as I go, the Chosen Evolution and the endgame's secret battles included.
 
 Nothing else is planned: from here on the work is hotfixes. Bugs go to the
 [issue tracker](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues).

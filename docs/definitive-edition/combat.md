@@ -28,7 +28,7 @@ Each family has one resistance value: 80 or less is a weakness, 250 or more is r
 at the moment of the hit, so a debuff that takes a neutral family to 80 or less adds one in the middle of a fight (see
 [Buffs and debuffs](#buffs-and-debuffs)).
 
-<p align="center"><img src="../images/definitive/weakness.svg" width="800" alt="The five element families. An example enemy resists Fire and is weak to Water and Ice; after a Fire hit and an Ice hit, Inspect shows Fire resisted, Water + Ice weak and the rest ???."></p>
+<p align="center"><img src="../images/definitive/weakness.svg" width="800" alt="The five element families. An example enemy resists Fire and is weak to Water and Ice; after a Fire hit and an Ice hit, INFO shows Fire resisted, Water + Ice weak and the rest ???."></p>
 
 ### Stagger and One More
 
@@ -77,17 +77,31 @@ elemental resistances, and adds a stagger bonus for blows with no element.
 
 **Affinity** is what your Digimon's old elemental "tolerance" stats became: they no longer defend, they strengthen your
 attacks of that element. It is added once for a weakness and once for a staggered target, and never otherwise: on a
-neutral hit against an enemy that is not staggered it does nothing. Each family has a ceiling, scaled by the stat's
-square of its share of the maximum, 999 (so 555 is under a third of the ceiling, and the last 100 points are worth
-a fifth of it): Fire and Wind count on their own, up to 0.4; Water with Ice and Thunder with Machine count as pairs, on
-the mean of the two stats' squares, up to 0.8 (a Water and an Ice technique get the same affinity; 999+0 is half);
-Dark counts on its own, up to 0.8. The strongest hit there is, a weakness on a staggered target with full affinity, is
-2.5 for Fire or Wind and 3.3 for the pairs and Dark.
+neutral hit against an enemy that is not staggered it does nothing. Affinity = the family's ceiling × (stat ÷ 999)²,
+the stat counting up to 999. Fire and Wind count on their own stat, up to 0.4; Water with Ice and Thunder with Machine
+count as pairs, on the mean of the two stats' squares, up to 0.8 (a Water and an Ice technique get the same affinity;
+999 + 0 is half the ceiling, 999 + 999 all of it); Dark counts on its own stat, up to 0.8. The strongest hit there is,
+a weakness on a staggered target with full affinity, is 2.5 for Fire or Wind and 3.3 for the pairs and Dark (it was
+2.3 and 2.9 when affinity grew in a straight line up to 0.3 / 0.6).
+
+Because it grows with the square, the ceiling only shows near 999: the middle of the road pays about what it did
+before, and the last 100 points are worth almost a fifth of the ceiling.
+
+| Stat | Fire, Wind | A pair with both stats at this value, Dark |
+|---|---|---|
+| 300 | 0.036 | 0.072 |
+| 555 | 0.123 | 0.246 |
+| 700 | 0.196 | 0.392 |
+| 800 | 0.256 | 0.513 |
+| 900 | 0.324 | 0.649 |
+| 999 | 0.4 | 0.8 |
+
+(`def_affinity`, thousandths rounded down: 800 gives 513 and 900 gives 649.)
 
 One stat defends against everything: enemy magic is resisted by your **Defense**, and Spirit is purely your magic
 attack. Your elemental stats no longer cut the damage enemy elements do to you.
 
-<p align="center"><img src="../images/definitive/damage.svg" width="800" alt="The multiplier: resisted 0.5, neutral 1.0, weakness 1.5 to 2.1, neutral element on a staggered target 1.2 to 1.8, weakness on a staggered target 1.7 to 2.9, no element on a staggered target 1.2. Affinity ceilings: Fire 0.3, Water + Ice 0.6, Wind 0.3, Thunder + Machine 0.6, Dark 0.6."></p>
+<p align="center"><img src="../images/definitive/damage.svg" width="800" alt="The multiplier: resisted 0.5, neutral 1.0, weakness 1.5 to 2.3, neutral element on a staggered target 1.2 to 2.0, weakness on a staggered target 1.7 to 3.3, no element on a staggered target 1.2. Affinity is the ceiling times (stat / 999) squared; ceilings: Fire 0.4, Water + Ice 0.8, Wind 0.4, Thunder + Machine 0.8, Dark 0.8."></p>
 
 #### The whole calculation
 
@@ -124,11 +138,12 @@ critical hit.
 | Step | Calculation | Result |
 |---|---|---|
 | Base | 100 × (180 × 50 ÷ 120 + 50) ÷ 100 = 100 × (75 + 50) ÷ 100 | 125 |
-| Affinity | 0.3 × 333 ÷ 999 | 0.1 |
-| First hit, a weakness | 125 × (1.0 + 0.5 + 0.1) = 125 × 1.6 | **200** |
-| The One More: the same technique on the staggered enemy | 125 × (1.0 + 0.5 + 0.1 + 0.2 + 0.1) = 125 × 1.9 = 237.5 | **237** |
+| Affinity | 0.4 × (333 ÷ 999)² = 0.4 × 0.111 | 0.044 |
+| First hit, a weakness | 125 × (1.0 + 0.5 + 0.044) = 125 × 1.544 = 193 | **193** |
+| The One More: the same technique on the staggered enemy | 125 × (1.0 + 0.5 + 0.044 + 0.2 + 0.044) = 125 × 1.788 = 223.5 | **223** |
 | The same hit if Fire were neutral, or resisted | 125 × 1.0, or 125 × 0.5 = 62.5 | 125, or 62 |
 
+With the Fire stat at 999 the same two hits would be 125 × 1.9 = **237** and 125 × 2.5 = **312**.
 The second hit gives no further action (Fire already gave this round's), but it keeps the enemy staggered. The other
 way round, an enemy's magic of power 100 (stat scale 16, so × 1) with Spirit 150 against your Defense 120 does
 100 × (150 × 50 ÷ 120 + 50) ÷ 100 = 100 × (62 + 50) ÷ 100 = **112**, whatever your elemental stats.
@@ -137,8 +152,9 @@ way round, an enemy's magic of power 100 (stat scale 16, so × 1) with Spirit 15
 
 - An **attack buff** raises physical and magic damage alike; a **defense buff or debuff** counts against both kinds of
   hit. A magic party gets as much from them as a physical one.
-- **Bosses are immune to status** (poison, sleep and the like) **but not to debuffs**: lowering a boss's defense or
-  elemental resistance is part of the plan.
+- **Bosses resist status but are not immune to it**: Poison, Sleep and Confusion land on a boss at 60% of their
+  usual chance, never above 78% (Paralysis still never lands on a boss; see [Status and poison](#status-and-poison-for-the-player)).
+  **Debuffs** land in full: lowering a boss's defense or elemental resistance is part of the plan.
 - **Resist Down** lowers the enemy's resistance to your strongest family (the one with your highest affinity, a pair
   counting both its elements) by 80, and **Mega Break** your two strongest families by 100 each, for three of the
   enemy's turns. On a neutral family that opens a weakness that was not there; a resisted one (300) only drops to
@@ -147,13 +163,42 @@ way round, an enemy's magic of power 100 (stat scale 16, so × 1) with Spirit 15
 - The HUD shows every active buff and debuff as an up or down arrow beside the Digimon, on both sides; a lowered
   elemental resistance shows as a down arrow in the element's colour, one per family.
 
+### Enemies with a rule of their own (personas)
+
+<p align="center"><img src="../images/definitive/shots/battle-persona.png" width="640" alt="INFO on a Woodmon marked with !: its weaknesses still ???, and two rules explained at the foot: SHIFT every 2 turns, guard on/off; takes only 30% until staggered."></p>
+
+Some enemies are a puzzle instead of a bigger HP bar. Every Super Rare, every DRI Gauntlet line, every region's Rare
+Target, a few story bosses and, from level 10 on, about half of the common species carry one or more of these rules:
+
+| Rule | What you see | What it means for you |
+|---|---|---|
+| **Guard** | an orange shield; `GUARDED` over the enemy when a blow is cut | it takes only 30% of your damage until you stagger it. Some are guarded all fight, some only in one phase |
+| **Red guard** | the shield on a red field; `GUARDED` in red | 30% of every blow, except a blow on its weakness, which goes through whole. No stagger ever opens it, and physical blows always take 30%: find the weakness with magic |
+| **SHIFT** | `SHIFT!` over the enemy, and its colours change | every few of its turns (or each time you stagger it) it changes weakness, guard or both. Each colour keeps its own weakness for the whole fight |
+| **Speed** | two chevrons | its Speed is two or three times your party's, so it acts more than once per turn of yours |
+| **A wall that is soft** | resists every family | elemental magic does half, but its Defense is lowered (INFO says it "takes more damage"): hit it hard and physical |
+| **One way in** | a single weakness, sometimes Dark | only one family staggers it |
+
+**How to read it in battle.** An enemy with a rule of its own has a `!` before its name in INFO (`L2`). Under the name,
+one picture per rule, explained by a legend at the panel's foot with that enemy's own numbers ("SHIFT every 2 turns",
+"Takes only 30% until staggered"); for a SHIFT, the phase it is in is lit, with one pip per enemy turn left before the
+next. At the row's right end, the **next turns** as chips (red diamond the enemy, blue disc you): two diamonds before
+the disc mean it acts twice. Weaknesses you have not found are `???`, phase by phase.
+
+**It remembers.** What you learn of a special enemy's map is saved with your game, for that encounter, and shown again
+the next time you meet it, until you have found every weakness: then the whole map shows from the start. What you learn
+of a common species goes to its Bestiary entry.
+
+The first red guard is a gatekeeper: the Vemmon of the Admin Center's story fight (Lv28), twice as fast as your party,
+draining MP with every blow, to teach you the rule.
+
 ### Knowing your enemy
 
-- **Inspect** (a seventh button on the battle HUD, L2 by default) and **Start** show the enemy's five element families,
+- **INFO** (the old Inspect: a seventh button on the battle HUD, L2 by default) and **Start** show the enemy's five element families,
   but only what you have found out: hitting a weakness or a resistance with an elemental technique teaches both
-  elements of its family, everything else shows `???`. In Inspect a family you know shows its current state (weak,
+  elements of its family, everything else shows `???`. In INFO a family you know shows its current state (weak,
   neutral or resisted, with a Resist Down or Mega Break already counted), not the state it had when you learnt it.
-- Inspect also says **what kind of enemy** it is, under its name: one picture per trait of its persona, each explained
+- INFO also says **what kind of enemy** it is, under its name: one picture per trait of its persona, each explained
   by a legend at the panel's foot with the row's own values (nothing else explains them: no help screen). **SHIFT**
   (two halves, the phase it is in lit, and one pip per enemy turn left before the next SHIFT when it counts turns):
   every n turns or at each stagger its weakness, its guard or both change, which is when the `SHIFT!` callout pops; the
@@ -189,9 +234,26 @@ way round, an enemy's magic of power 100 (stat scale 16, so × 1) with Spirit 15
 
 ### Battle HUD
 
-A direct-button HUD replaces the battle's list menu: each action has its own button in a pad-shaped layout (**Item** on `L1` left, **Tech** on `R1` right, **Fight** on `B`, **Run** on `X`, **Digivolve** on `Y`, **Tag** on `A`, **Inspect** on `L2`, **Blast** on `R2`), rebindable from `BATTLE HUD` in the launcher. It remembers the last technique and item, buffers presses made just before the menu opens, and skips battle message boxes by default (`BATTLE TEXT: SKIP`). Controls use the modern **Circle ↔ Triangle** rotation by default (`Confirm` at the bottom, `Back` on the right), with selectable **Xbox / Nintendo / PS1** button glyphs.
+A direct-button HUD replaces the battle's list menu: each action has its own button, drawn as one compact block shaped
+like the pad in the left middle of the screen, each command written on the spot of the button it is on (defaults with
+Xbox glyphs: **FIGHT** on `A`, **TECH** on `R1`, **DIGIVOLVE** on `Y`, **TAG** on `B`, **BAG** on `L1`, **RUN** on `X`,
+**INFO** on `L2`, **BLAST** on `R2`), rebindable from `BATTLE HUD` in the launcher. The BLAST tab is the gauge itself:
+it fills as the gauge charges and flashes amber when it is full and ready.
 
-![The direct-button battle HUD and the Inspect panel](../images/definitive/shots/battle-inspect.png)
+- **TECH and BAG** unfold out of the menu as a sheet on the left half of the screen (`L1` / `R1` turn its pages), with
+  each technique's or item's picture, cost or count, and its description; INFO can stay open beside it.
+- **TAG and DIGIVOLVE** open a close-up of your Digimon with a ring of choices around it and a live 3D preview of the
+  partner or form under the cursor.
+- **INFO** opens the enemy panel: its families as you learnt them, its traits and the next turns (see
+  [Knowing your enemy](#knowing-your-enemy)). It spends no turn.
+- **RUN asks first**: a slip of the button no longer ends the fight.
+- It remembers the last technique and item, buffers presses made just before the menu opens, and battle messages never
+  stop the fight (they are always skipped).
+
+Controls use the modern **Circle ↔ Triangle** rotation by default (`Confirm` at the bottom, `Back` on the right), with
+selectable **Xbox / Nintendo / PS1** button glyphs.
+
+![The direct-button battle HUD and the INFO panel](../images/definitive/shots/battle-inspect.png)
 
 ### The combat layers, with the owner's decisions
 
@@ -298,8 +360,9 @@ Working rules of the PRDs (kept because they explain why the code looks as it do
   only by the player's hits and free swaps in `definitive_mask.c`). The staggered pose comes from the flag on the enemy side (never from HP;
   the low-HP pose is removed on the player side), and the final boss shows its tired pose when `final_phase || staggered`.
   The Tag button shows a different icon while a free swap is available. A save state in the middle of a chain restores equal.
-- **Layer 5 acceptance cases** used by the host test: neutral 1.0; weakness 1.5; weakness + stagger with full Fire affinity
-  1.0 + 0.5 + 0.2 + 0.3 + 0.3 = 2.3; the Water + Ice pair with 999 + 0 gives 0.3 of affinity. The magic clamp
+- **Layer 5 acceptance cases** used by the host test (`tests/port/definitive_driver.c`): neutral 1.0; weakness 1.5;
+  weakness + stagger with full Fire affinity 1.0 + 0.5 + 0.2 + 0.4 + 0.4 = 2.5; the Water + Ice pair with 999 + 0 gives
+  0.4 of affinity (half the pair's 0.8), 999 + 999 gives 0.8. The magic clamp
   `[power/2, 2 x power]` was deliberately not changed. Status rolls still read the player's resists as before.
 - **Layer 5 hook points.** With `def_on` the multiplier replaces the element step of `fightstg_rules_scale_damage`
   (physical, `def_scale_physical`) and the resist bands of `fightstg_rules_get_special_damage` (magic, `def_scale_magic`)
@@ -400,12 +463,60 @@ speed), not an accumulating sum:
 - Per-technique specs live in `def_mod_tech_spec` (`definitive.c`): 198 and 200 are +2 for 4 turns, 199 and 201 are +3,
   194, 205, 134, 81 and 136 are -2, 195, 204 and 206 are -3, and 132, 108 and 131 are -1 for 2 turns. Only technique IDs
   with the enemy bit clear are changed, so enemy techniques keep their roles.
-- Bosses are immune to status but not to debuffs (`DEF_BOSS_DEBUFF_PCT` 100).
+- Bosses take debuffs in full (`DEF_BOSS_DEBUFF_PCT` 100); status lands on them at a reduced chance (see below).
 - Every description in `SKLINF` states effect, tier and turns (34 characters at most), e.g. "User Atk+2 (phys/mag), 3
   turns.".
 - Tests: `tests/port/definitive_buffs.py` (+ driver) checks the tiers, the no-stack rule and the expiry.
 
 ## Status, Poison and revive rework
+
+### Status and poison, for the player
+
+**Will it land?** Every Poison, Sleep or Confusion technique has a base chance. Then:
+
+- **Wisdom against Wisdom.** For every 8 points of Wisdom you have over the target, the chance goes up by about 0.8%
+  (1 in 128); for every 8 points under, it goes down as much.
+- **The target's resistance.** Its resistance to that status, plus its value in one element family, takes the chance
+  down by 0.8% per 8 points. Poison and Sleep read the target's **Water + Ice** family and Confusion its **Wind** family,
+  so an enemy weak to Water + Ice (60) is much easier to poison or put to sleep than one that resists it (300), and a
+  Resist Down on that family helps your status too.
+- **Stagger first.** On a staggered target the chance is multiplied by 1.5 and then gets about 19% more (24 in 128).
+- **Bosses** used to be immune. Now Poison, Sleep and Confusion land on them at 60% of the chance, and never above 78%,
+  stagger or not. Paralysis still never lands on a boss.
+- Nothing is ever certain or impossible: the chance stays between 1 and 127 in 128.
+
+**Poison** is now damage that bites every turn, fixed when it lands:
+
+> damage per turn = the technique's power ÷ 2 + Wind affinity × 1000 ÷ 6 + your Wisdom ÷ 4 + your Spirit ÷ 4
+
+(each 0.1 of Wind affinity is about 17 more a turn). It never takes more than a quarter of the target's max HP in one
+turn, and on an enemy never more than 8% of its max HP, so a poison build wears a boss down instead of melting it.
+
+**Sleep and Confusion** hold an enemy for two of its turns, and any hit wakes it. A sleeping enemy gets back 6% of its
+max HP each turn, and a confused one comes out of it angry: Attack +2 (+35%) for three turns. They are for buying a
+heal or setting up the stagger, not for the damage turn.
+
+**What feeds what:** Wisdom decides whether a status lands, adds to poison damage and powers your heals; Spirit adds to
+poison damage (and is your magic attack); your Wind stat adds to poison damage through its affinity (and to your Wind
+magic).
+
+**A worked example**, checked against the port's code (`def_status_chance_calc`, `def_poison_dot_calc`,
+`def_poison_tick`). Your Digimon has Wisdom 400, Spirit 300 and a Wind stat of 600 (Wind affinity 0.4 × (600 ÷ 999)² =
+0.144). It casts a poison spell of power 127 and base chance 112 in 128.
+
+| | Calculation | Result |
+|---|---|---|
+| Poison per turn | 127 ÷ 2 + 144 ÷ 6 + 400 ÷ 4 + 300 ÷ 4 = 63 + 24 + 100 + 75 | **262** |
+| ... on an enemy with 3000 max HP | capped at 8% of 3000 | **240** |
+| ... on an enemy with 5000 max HP | under its cap of 400 | **262** |
+| Chance on a common enemy (Wisdom 300, poison resistance + Water value 150) | 112 + (400 − 300) ÷ 8 − 150 ÷ 8 = 112 + 12 − 18 = 106 in 128 | **83%** |
+| ... staggered | 106 × 1.5 + 24, capped at 127 | **99%** |
+| Chance on a boss (Wisdom 738, resistance sum 163) | (112 − 42 − 20) × 0.6 = 30 in 128 | **23%** |
+| ... staggered | 30 × 1.5 + 24 = 69 in 128 (under the boss cap of 100) | **54%** |
+
+Stagger the boss first and the same spell lands more than twice as often.
+
+### The formulas (reference)
 
 Measured in `.plan/tasks/status-balance-report.md` (a level-50 Digimon has median Wisdom 338, Spirit 316 and max HP 3383;
 training gives about 4.1 points per TP).
@@ -421,25 +532,26 @@ training gives about 4.1 points per TP).
 
 | Item | Chance | HP returned | Rated max HP | Price |
 |---|---|---|---|---|
-| Revive Disk (item 67) | 60% | 30% | 1500 | 400 buy, 200 sell |
-| Life Disk (item 70) | 85% | 60% | 4000 | 2500 buy, 1250 sell |
+| Revive Disk (item 67) | 40% | 30% | 1500 | 2000 buy, 1000 sell |
+| Life Disk (item 70) | 65% | 60% | 4000 | 10000 buy, 5000 sell |
 | Max Charge (item 46) | 100% | 100% | 9999 | 3000 sell |
 
-The chance scales down by rated max HP / the target's max HP when its max HP is above the rating (never under 20%,
-`DEF_REVIVE_MIN_CHANCE`; `def_revive_chance`). By the fallen ally's max HP (computed from that rule, not measured):
+The chance scales down by rated max HP / the target's max HP when its max HP is above the rating (never under 15%,
+`DEF_REVIVE_MIN_CHANCE`; `def_revive_chance`; the revives were made scarcer in `d6c9675`). By the fallen ally's max HP
+(computed from that rule, not measured):
 
 | Max HP | Revive Disk | Life Disk |
 |---|---|---|
-| 300 | 60%, 90 HP | 85%, 180 HP |
-| 800 | 60%, 240 | 85%, 480 |
-| 1500 | 60%, 450 | 85%, 900 |
-| 2000 | 45%, 600 | 85%, 1200 |
-| 3000 | 30%, 900 | 85%, 1800 |
-| 4000 | 22%, 1200 | 85%, 2400 |
-| 6000 | 20% (floor), 1800 | 56%, 3600 |
+| 300 | 40%, 90 HP | 65%, 180 HP |
+| 800 | 40%, 240 | 65%, 480 |
+| 1500 | 40%, 450 | 65%, 900 |
+| 2000 | 30%, 600 | 65%, 1200 |
+| 3000 | 20%, 900 | 65%, 1800 |
+| 4000 | 15%, 1200 | 65%, 2400 |
+| 6000 | 15% (floor), 1800 | 43%, 3600 |
 
-Max Charge is 100% at any max HP. On a 3000 max HP ally a success costs about 1330 Bits in Revive Disks (3.3 of them)
-or 2940 in Life Disks (1.2).
+Max Charge is 100% at any max HP. On a 3000 max HP ally a success costs about 10,000 Bits in Revive Disks (5 of them)
+or 15,400 in Life Disks (1.5).
 
 ### Balance measurements behind the status rework (`status-balance-report.md`, simulated from the disc tables and the port's formulas)
 
@@ -454,7 +566,9 @@ Poison reads Wisdom + Spirit + Wind affinity.
   The report assumed the original +5 TP per level (245 TP, about 1001 points); with the Definitive TP table (613 by level 50)
   there is more to spend. Reaching 999 Wisdom from the median 338 costs 661 points = 161 TP of the original 245 (66%), the rest
   buys about 340 Spirit or Wind resist (153 TP for the best-growth species): 999 Wisdom is reachable at 50 but eats most TP.
-  Profiles used: casual (Wis 250 / Spirit 250), focused (600 / 400), pure (999 / 656, Wind resist about 300 -> affinity 90).
+  Profiles used: casual (Wis 250 / Spirit 250), focused (600 / 400), pure (999 / 656, Wind resist about 300 -> affinity 90
+  on the report's straight-line affinity; the convex curve of `a878bc6` gives 36, so the pure profile's poison tick below
+  is about 9 lower today).
 - **Bosses** (kind 2 with at least 9 of 12 `blocked` flags): 48 battles, 47 at level >= 30, 41 at >= 45. Level >= 30: HP p10/
   median/p90 1776 / 3120 / 5040, precision (Wisdom x scale) 400 / 738 / 1053, median poison resist sum 163. Level >= 45: HP
   2052 / 3360 / 5040, precision 552 / 750 / 1053, resist sum 164.

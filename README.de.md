@@ -124,11 +124,13 @@ Getestete Geräte, Installationsdetails und bekannte Probleme: [`.ci-cd/portmast
 1. Entpacke das PC-Release (ein AppImage unter Linux, eine `.zip` unter Windows) oder starte
    `./launcher/dw3-launcher --sdl` aus einem gebauten Checkout.
 2. Wähle beim ersten Start deine `.cue` / `.bin` (jederzeit änderbar unter `GAME > DISC IMAGE`).
-3. Öffne `VIDEO` für **Widescreen (16:9)**, **Fullscreen**, die Skalierung **`FILL` oder `INTEGER`**, den **GPU**- oder
-   Software-Renderer und die Bildschirm-**Filter**.
+3. Öffne `VIDEO` für **Widescreen** (folgt der Form deines Bildschirms, bis 16:9), **Fullscreen**, die Skalierung **`FILL` oder
+   `INTEGER`**, die interne **Auflösung** (standardmäßig 3X), den **GPU**- oder Software-Renderer und die
+   Bildschirm-**Filter**. Der Launcher aktualisiert sich selbst, sobald eine neue Version erscheint.
 
 **Du kommst von einer älteren Version?** Dein Spielstand lässt sich öffnen und spielen. Um ihm die neuen MP- und
-TP-Tabellen zu geben, führe einmal `tools/convert_save_mp.py card1.mcd` aus (es legt ein Backup an).
+TP-Tabellen zu geben, führe einmal `tools/convert_save_mp.py card1.mcd` aus (es legt ein Backup an). Der Launcher bringt seine Einstellungen und den Erweiterungsspielstand neben der
+Karte (`card1.def.json`) selbst auf den neuesten Stand und behält die alte Datei als Backup.
 
 ---
 
@@ -165,29 +167,48 @@ sind hier Elementmagie. Die Techniklisten zeigen es auf einen Blick: Wo das Spie
 </tr>
 </table>
 
-<p align="center"><img src="docs/images/definitive/weakness-discovery.svg" width="800" alt="Inspect beginnt bei ???. Ein Fire-Treffer zeigt RESIST, ein Ice-Treffer zeigt Water + Ice WEAK, Resist Down macht neutrales Wind zur Schwäche, und Libra deckt den Rest auf."></p>
+<p align="center"><img src="docs/images/definitive/weakness-discovery.svg" width="800" alt="INFO beginnt bei ???. Ein Fire-Treffer zeigt RESIST, ein Ice-Treffer zeigt Water + Ice WEAK, Resist Down macht neutrales Wind zur Schwäche, und Libra deckt den Rest auf."></p>
 
-**Kenne deinen Gegner.** Nichts ist verborgen, aber du musst es herausfinden. **Inspect** (`L2`) zeigt die fünf
-Familien des Gegners, sobald du sie erfährst, bis dahin `???`; **Libra** deckt alle auf einmal auf; das **Bestiary**
-bewahrt auf, was du über jede Art gelernt hast, samt ihren Hunt Materials. Jede Technikliste markiert jede Technik (eine Faust oder ihr Element), und jede Beschreibung wurde danach neu geschrieben, was die Technik wirklich tut ("Feuermagie. Chance auf
+**Kenne deinen Gegner.** Nichts ist verborgen, aber du musst es herausfinden. **INFO** (`L2`) zeigt die fünf
+Familien des Gegners, sobald du sie erfährst, bis dahin `???`, und wer als Nächstes handelt; **Libra** deckt alle auf
+einmal auf; das **Bestiary**, ein eigener Bildschirm, auf dem sich jedes Digimon in 3D dreht, bewahrt auf, was du über
+jede Art, jedes Rare Target, jeden Super Rare und jede DRI-Linie gelernt hast, samt ihren Hunt Materials. Jede Technikliste markiert jede Technik (eine Faust oder ihr Element), und jede Beschreibung wurde danach neu geschrieben, was die Technik wirklich tut ("Feuermagie. Chance auf
 Schlaf.").
 
 **Deine Werte haben neue Aufgaben.** Die alten elementaren "Toleranz"-Werte deines Digimon sind zur **Affinity**
 geworden: Sie verteidigen nicht mehr, sondern verstärken deine Angriffe dieses Elements gegen eine Schwäche oder einen
 wankenden Gegner. **Defense** schützt jetzt vor Magie, und **Spirit** ist rein dein magischer Angriff.
 
-<p align="center"><img src="docs/images/definitive/damage-scale.svg" width="800" alt="Multiplikator: resistiert 0.5, neutral 1.0, ohne Element wankend 1.2, neutral wankend 1.2 bis 1.8, Schwäche 1.5 bis 2.1, Schwäche wankend 1.7 bis 2.9. Affinity: deine alten Elementwerte verstärken jetzt deine Angriffe."></p>
+<p align="center"><img src="docs/images/definitive/damage-scale.svg" width="800" alt="Multiplikator: resistiert 0.5, neutral 1.0, ohne Element wankend 1.2, neutral wankend 1.2 bis 2.0, Schwäche 1.5 bis 2.3, Schwäche wankend 1.7 bis 3.3. Affinity: deine alten Elementwerte verstärken jetzt deine Angriffe."></p>
 
 **Buffs, die einen Plan ergeben.** Buffs und Debuffs gibt es in drei festen Stufen, und sie stapeln sich nie: Die
-stärkste gewinnt. Bosse sind immun gegen Statuseffekte, **nicht** gegen Debuffs: **Resist Down** und **Mega Break**
+stärkste gewinnt. Debuffs treffen Bosse voll: **Resist Down** und **Mega Break**
 können eine Schwäche öffnen, die vorher nicht da war. Vier Techniken wurden dafür neu gemacht (Libra, Relay, Resist
 Down, Mega Break), und die Rookies, die bisher an MP darbten, tun das nicht mehr.
 
-<p align="center"><img src="docs/images/definitive/hud.svg" width="800" alt="Kampf-HUD: Item L1, Tech R1, Fight B, Run X, Digivolve Y, Tag A, Inspect L2, Blast R2. Umbelegbar unter BATTLE HUD im Launcher."></p>
+**Statuseffekte, die einen Zug wert sind.** Poison, Sleep und Confusion greifen umso öfter, je weiter deine **Wisdom**
+die des Ziels übertrifft, und viel öfter bei einem **wankenden** Ziel. Bosse sind nicht mehr immun: Sie bekommen sie mit
+verringerter Chance ab (Paralysis greift bei einem Boss weiterhin nie). **Gift** beißt jetzt jede Runde mit einem festen
+Betrag aus Technik, Wisdom, Spirit und deiner Wind-Affinity, bis zu 8% der maximalen HP eines Gegners pro Runde. Sleep
+und Confusion halten einen Gegner zwei Runden fest: Nutze sie zum Heilen oder um das Wanken vorzubereiten. Regeln und
+ein Rechenbeispiel stehen in [der Kampfreferenz](docs/definitive-edition/combat.md#status-and-poison-for-the-player).
 
-**Ein Kampf-HUD mit einer Taste pro Aktion**, in einem Layout in Form eines Controllers und im Launcher umbelegbar. Es
+**Gegner mit einer eigenen Regel.** Rare Targets, Super Rares, die DRI-Linien, einige Story-Bosse und ab Level 10 etwa
+die Hälfte der gewöhnlichen Arten haben einen Kniff: eine **Wache**, die nur 30% deines Schadens durchlässt, bis du sie
+ins Wanken bringst, eine **rote Wache**, die nur ein Treffer auf die Schwäche durchbricht, ein **SHIFT**, der Schwäche
+(und Farben) alle paar Runden wechselt, ein **Tempo** zwei- oder dreimal so hoch wie deins, oder Resistenz gegen alles
+bei weicher Defense. INFO markiert sie mit einem `!` und zeichnet ein Bild pro Regel, unten in einfachen Worten erklärt.
+Was du über einen lernst, wird gespeichert, und beim nächsten Treffen erinnert sich INFO.
+
+<p align="center"><img src="docs/images/definitive/shots/battle-persona.png" width="640" alt="INFO bei einem mit ! markierten Woodmon: zwei Regeln, SHIFT alle 2 Runden und eine Wache, die nur 30% durchlässt, bis er wankt."></p>
+
+<p align="center"><img src="docs/images/definitive/hud.svg" width="800" alt="Kampf-HUD: Bag L1, Tech R1, Fight A, Run X, Digivolve Y, Tag B, Info L2, Blast R2. Umbelegbar unter BATTLE HUD im Launcher."></p>
+
+**Ein Kampf-HUD mit einer Taste pro Aktion**, gezeichnet wie dein Controller und im Launcher umbelegbar. Tech und Bag
+klappen als Blatt neben dem INFO des Gegners auf, Tag und Digivolve öffnen eine Nahaufnahme deines Partners mit einem
+Ring aus Optionen und einer 3D-Vorschau, die Blast-Taste ist die Leiste selbst, und Run fragt vor der Flucht nach. Es
 merkt sich deine letzte Technik und deinen letzten Gegenstand, puffert zu frühe Tastendrücke, und Kampftext hält den
-Kampf nicht mehr an.
+Kampf nie an.
 
 <p align="center"><img src="docs/images/definitive/shots/battle-inspect.png" width="640" alt="Das Kampf-HUD mit Direkttasten und das Inspect-Fenster, das die bisher gefundenen Schwächen zeigt."></p>
 
@@ -203,8 +224,8 @@ Kampf nicht mehr an.
 | Schwäche, wankendes Ziel | 1.7 + 2 × affinity |
 | Kein Element, wankendes Ziel | 1.2 |
 
-Die Affinity beträgt bis zu 0.3 für Fire und Wind und bis zu 0.6 für die Paare und Dark, der stärkste Treffer liegt
-also bei 2.3 oder 2.9. Die Buff-Stufen sind +20 / +35 / +50%, die Debuff-Stufen −15 / −25 / −35%. Die gesamte
+Die Affinity wächst mit dem Quadrat des Werts und erreicht 0.4 für Fire und Wind und 0.8 für die Paare und Dark, der
+stärkste Treffer liegt also bei 2.5 oder 3.3. Die Buff-Stufen sind +20 / +35 / +50%, die Debuff-Stufen −15 / −25 / −35%. Die gesamte
 Berechnung, Schritt für Schritt mit einem durchgerechneten Beispiel, steht in [der Kampfreferenz](docs/definitive-edition/combat.md).
 
 <p align="center"><img src="docs/images/definitive/buffs.svg" width="800" alt="Buffs +20/+35/+50%, Debuffs -15/-25/-35%, Dauer 2 bis 4 Runden. Sie stapeln sich nie: Die stärkere Stufe gewinnt, und das entgegengesetzte Vorzeichen überschreibt."></p>
@@ -223,12 +244,14 @@ Berechnung, Schritt für Schritt mit einem durchgerechneten Beispiel, steht in [
 - **Das Team wächst gemeinsam**: Ein Partner auf der Bank erhält dieselbe Erfahrung, und die drei gewählten Formen
   jedes Digimon sammeln Formerfahrung, ob sie gekämpft haben oder nicht.
 - **Voraussetzungen auf dem Bildschirm**: Das Digi-Lab zeigt, was jede nächste Form braucht und wie weit du bist
-  ("Greymon Lv 5 (3/5)"). Die Digivolutionsanimation läuft einmal komplett, danach kurz; halte eine Taste gedrückt, um
+  ("Greymon Lv 5 (3/5)"). Schnelle Formstufen überspringen den Weg nicht: Eine Perfect-Form wartet auf Level 20 deines
+  Digimon, eine Mega auf Level 40. Die Digivolutionsanimation läuft einmal komplett, danach kurz; halte eine Taste gedrückt, um
   sie zu überspringen.
 - **Card Booster fallen zu je 15**, sodass der Deckbau keinen zweiten Durchlauf braucht.
 - **Hard Mode**, bei New Game gewählt: Dein Team besteht aus zwei Digimon statt drei, für das ganze Spiel.
 - **Super Hard**, jederzeit: Trage den Demon Bell aus dem Velvet Room bei dir, und Gegner erhalten 50% mehr Tempo und
-  treffen 25% härter, während deine Treffer nur halb so viel Schaden machen, zahlen dafür aber doppelt so viele Bits und Materialien. Gib ihn zurück, um es auszuschalten.
+  treffen 25% härter, während deine Treffer nur halb so viel Schaden machen, zahlen dafür aber doppelt so viele Bits
+  und Erfahrung und dreimal so viele gewöhnliche Materialien. Gib ihn zurück, um es auszuschalten.
 
 ## Die Jagd
 
@@ -239,7 +262,7 @@ dich befindest. Nach fünf Siegen kann die nächste Begegnung das **Rare Target*
 zäherer Boss, ganz allein, sicher beim zehnten Sieg. Jede der 71 Regionen hat ihre eigene Art, und jede lässt ihren
 eigenen **Core** für deine Sammlung fallen.
 
-<p align="center"><img src="docs/images/definitive/economy-flow.svg" width="800" alt="Von der Jagd zu deiner Ausrüstung: gewöhnliche Materialien aus Zufallskämpfen und seltene Cores von Rare Targets gehen an die Schmiede in jedem Laden, den Black Market und das DRI Gauntlet, die Laden-Ausrüstung, 16 Repliken und die Power-Accessoires geben."></p>
+<p align="center"><img src="docs/images/definitive/economy-flow.svg" width="800" alt="Von der Jagd zu deiner Ausrüstung: gewöhnliche Materialien aus Zufallskämpfen und seltene Cores von Rare Targets gehen an die Schmiede in jedem Laden, den Black Market und das DRI Gauntlet, die Laden-Ausrüstung, 32 Repliken und die Power-Accessoires geben."></p>
 
 - **Hunt Materials**: sechzehn gewöhnliche nach Levelbereich, vom Bit Shard bis zum Obsidian Digizoid, und 71 seltene
   Cores. Das Bestiary sagt dir, wer was fallen lässt.
@@ -247,11 +270,12 @@ eigenen **Core** für deine Sammlung fallen.
   Umgebung. Die Beschreibung zeigt, was du hast und was dir fehlt.
 - **41 Ausrüstungsvarianten**, um einen Stil herum gebaut: Speed-Waffen, Elemental-Ausrüstung, die deine Affinity
   erhöht, Tank-Rüstungen, Trade-off-Accessoires.
-- **Der Black Market**: Tausche einen Core gegen zwölf gewöhnliche, oder die Cores zweier Bosse gegen eine von sechzehn
-  **Repliken**, die kein Laden verkauft (und, ganz am Ende der Liste, ein Zeichen, das jeder Jäger will).
+- **Der Black Market**: Tausche einen Core gegen zwölf gewöhnliche, oder die Cores zweier Bosse gegen eine von 32
+  **Repliken**, die kein Laden verkauft, von den Power-S-Accessoires bis zu fünf ultimativen Waffen (und, ganz am Ende der Liste, ein Zeichen, das jeder Jäger will).
 - **Das DRI Gauntlet**: Die DRI Agents spielen klassische Tamer-Kämpfe nach, insgesamt sechzehn Linien. Ein Kampf,
   vier Stufen, von Rookie über Champion und Ultimate zu Mega mit einem **DIGIVOLVE!** dazwischen, und ein
-  Power-Accessoire für den Champion, den Ultimate und den Mega, die du bezwingst.
+  Power-Accessoire für den Champion, den Ultimate und den Mega, die du bezwingst. Ein Power-Accessoire hebt den Wert
+  seines Elements um 60, 120 oder 200: mehr Affinity.
 - **Die Preise** fortgeschrittener Ausrüstung sind gestiegen und der Wiederverkauf gesunken, sodass ein Glücksfund
   nicht mehr ein Vermögen einbringt und die Bits aus OVERFINISH einen Verwendungszweck haben.
 
@@ -311,8 +335,8 @@ Der Raum **wächst mit der Geschichte**. Seine Gäste treffen nach und nach ein:
 | **Der Sepikmon** | der Jagdmeister: Super-Rare-Jagden, ihre Kristalle und die Heldenskins, die sie freischalten |
 | **Gennai** | die Blast-Quest und die Chosen Evolution |
 | **Guilmon** | verwahrt den Demon Bell, Super Hard auf Wunsch |
-| **Etemon** | am Klavier. Er hat diese Musik schon in einem anderen Spiel gehört |
-| **Das Schwein** | ein Darsteller, den das Spiel mitlieferte und nie einsetzte, endlich auf der Bühne; verschiebt 100 Punkte von einem Wert (oder einer Affinität) eines Partners auf einen anderen für 100.000 Bits |
+| **Etemon** | am Klavier. Er hat diese Musik schon in einem anderen Spiel gehört, und er spielt deine eigenen MIDI-Dateien in Zufallskämpfen, jede in ihrer eigenen Lautstärke |
+| **Das Schwein** | ein Darsteller, den das Spiel mitlieferte und nie einsetzte, endlich auf der Bühne; verschiebt 100 Punkte von einem Wert (oder einer Affinität) eines Partners auf einen anderen, zu einem Preis, der mit jedem Tausch steigt (1.000 Bits beim ersten, 100.000 ab dem zehnten) |
 | **Oikawa** | hinter dem Tresen, sobald du es dir verdient hast: der Black Market |
 
 Der Raum hat sein eigenes Arrangement der Musik, und ein **Guardromon-Netzwerk** verbindet die Gasthäuser: Speichere
@@ -323,14 +347,22 @@ oder teleportiere dich von jedem Guardromon zu denen, die du getroffen hast.
 Die Definitive Edition ändert nicht, wohin die Geschichte führt. Sie ändert, wie sie erzählt wird, und gibt dir eine
 Stimme darin.
 
+<p align="center"><img src="docs/images/definitive/npc-time.svg" width="800" alt="Die Hauptquest führt von Asuka nach Amaterasu; drei Menschen an ihrer Seite: wen du immer besucht hast, endet mit einer Bindung, wen du ab und zu gesehen hast, geht seinen eigenen Weg, wen du nie besucht hast, hat seine Geschichte trotzdem gelebt. Du wirst nicht mit allen eine Bindung eingehen, und das sollst du auch nicht."></p>
+
+- **Jeder hat seine eigene Zeit.** Die Menschen, denen du begegnest, leben ihre eigenen Geschichten, und die gehen
+  mit der Hauptquest weiter, mit dir oder ohne dich. Nutze die Zeit mit ihnen, solange du kannst: Du wirst nicht mit
+  allen eine Bindung eingehen, und das sollst du auch nicht. Wen du zurücklässt, macht ohne dich weiter, und du wirst
+  sehen, wohin es ihn geführt hat.
 - **Igors Träume.** An ein paar Wendepunkten zieht er dich allein in den Raum und stellt dir eine Frage. Es gibt keine
   falsche Antwort, und er merkt sich, was du gesagt hast.
 - **Deine Entscheidungen und ihr Echo.** In 111 Szenen darf der Held jetzt mit eigenen Worten antworten, und rund 600
   spätere Zeilen ändern sich je nach deiner Wahl.
-- **Ein neu geschriebenes Drehbuch**: die kindischen Zeilen erwachsen geworden, Reihenfolge und Quests unangetastet,
+- **Ein neu geschriebenes Drehbuch** (auf Englisch und Portugiesisch, wie die Entscheidungen und ihre Echos; auf
+  Deutsch läuft die Originalkampagne der Disc): die kindischen Zeilen erwachsen geworden, Reihenfolge und Quests unangetastet,
   und der Held so geschrieben, dass er zu jedem passt, der gerade spielt.
 - **Eine Gestalt mit Kapuze** versperrt im Bug Maze den Weg, und **ein Raum, in dem die Zeit stillsteht**, wartet vor
   dem Point of no Return, um sicherzugehen, dass du bereit bist.
+- **Der letzte Kampf endet nicht mehr dort, wo er endete.** Mehr wird hier nicht verraten.
 
 ## Blast und die Chosen Evolution
 
@@ -364,10 +396,10 @@ und Kleidung deines Helden um.
   Sprung direkt zu einer offenen. Ein Banner gleitet ein, wenn sich ein Ziel ändert.
 - **Overlevel Rush**: Wenn dein stärkstes Digimon 3 oder mehr Level über jedem Gegner eines Zufallskampfs liegt, bietet
   das Spiel an, ihn zu überspringen, während du weiterläufst, und die Belohnungen gleiten oben im Bild ein.
-- **Kampftext, der den Kampf nicht anhält**, eine Zielmarkierung auf der Karte, Vorspulen, Tastensymbole passend zu
+- **Kampftext, der den Kampf nicht anhält**, eine Zielmarkierung auf der Karte, Vorspulen (auf Android auch als Taste im Touch-Pad), Tastensymbole passend zu
   deinem Controller (Xbox, Nintendo, PS1) und vollständige Tastenbelegung.
-- **60-Hz-Modus**: Die europäische Disc läuft mit 50 Hz; der spieleigene, geschwindigkeitskompensierte 60-Hz-Modus ist
-  nur eine Einstellung entfernt.
+- **60 Hz als Standard**: Die europäische Disc läuft mit 50 Hz; der spieleigene, geschwindigkeitskompensierte
+  60-Hz-Modus ist von Anfang an aktiv (`GAME > REFRESH RATE` holt 50 Hz zurück).
 
 <table>
 <tr>
@@ -381,7 +413,7 @@ und Kleidung deines Helden um.
 | Wo | Was du bekommst |
 |---|---|
 | **RK3326-Handhelds** über PortMaster (der XF35H, der R36S und ähnliche Geräte) | von Anfang bis Ende auf einem echten XF35H abgestimmt: direkte Framebuffer-Ausgabe, ein GLES-Renderer, Videos in voller Geschwindigkeit, die LED-Leiste. Jede Custom Firmware der Testmatrix lief unter Emulation; Berichte von echten Geräten sind willkommen |
-| **Linux- und Windows-PC** | SDL3-GPU-Renderer (Vulkan, D3D12), **16:9-Widescreen** in Kämpfen und im Feld, HighDPI-Vollbild mit `FILL`-Skalierung, Filter `SHARP` / `SCANLINES` / `CRT` / `SMOOTH`, Vorspulen bis 8× |
+| **Linux- und Windows-PC** | SDL3-GPU-Renderer (Vulkan, D3D12), **Widescreen** in Kämpfen und im Feld, das deinem Bildschirm folgt (16:10 oder 16:9), interne Auflösung von 1X (PS1) bis 8X (standardmäßig 3X) mit glatten 3D-Vertices, HighDPI-Vollbild mit `FILL`-Skalierung, Filter `SHARP` / `SCANLINES` / `CRT` / `SMOOTH`, Vorspulen bis 8× und ein Launcher, der sich selbst aktualisiert |
 | **Android** (arm64) | ein APK mit **16:9-Breitbild**, großen Touch-Steuerelementen, die du auf dem Bildschirm verschieben und skalieren (oder ausblenden) kannst, jedem USB- oder Bluetooth-Gamepad und einer Disc-Auswahl, die dein Image in die App kopiert |
 
 <p align="center"><img src="docs/images/definitive/cross-play.svg" width="800" alt="Cross-Play-Cloud-Sync: Der Launcher synchronisiert card1.mcd zwischen Handhelds und PC über einen kostenlosen Cloudflare Worker. Koppele ein Gerät mit einem 6-stelligen Code, den der Host bestätigt, wähle eine Seite, wenn beide sich geändert haben, und behalte 1 bis 100 rotierende lokale Snapshots."></p>
@@ -401,13 +433,7 @@ Das Spiel ist von Anfang bis Ende spielbar, und jedes oben beschriebene System i
 Manches wurde erst ein paar Mal durchgespielt, rechne also mit Ecken und Kanten und häufigen Hotfixes. Was bleibt:
 
 - **Die allgemeine Spielbalance.** Bisher wurde sie nur rechnerisch ausbalanciert. Ich spiele es parallel durch und
-  liefere Hotfixes nach, sobald sie fertig sind.
-- **Spezialangriffe werden noch abgestimmt.** Die Spezial-/Signaturangriffe einiger Formen im DRI Gauntlet und im
-  Läuterungssimulator der Auserwählten Evolution.
-- **Noch im Playtest.** Die Auserwählte Evolution und einige geheime Endgame-Kämpfe.
-- **Die Schemamigration des Erweiterungsspielstands.** Die neue Speicherdatei neben der Memory Card (`card1.def.json`,
-  die entdeckten Gegnerschwächen) reist mit der Karte in Backups, Wiederherstellung und Cloud-Sync und hat eine
-  Schemaversion. Das nächste Update, das dieses Schema ändert, bringt einen Launcher-Bildschirm, der die Datei migriert.
+  liefere Hotfixes nach, sobald sie fertig sind, die Chosen Evolution und die geheimen Endgame-Kämpfe eingeschlossen.
 
 Sonst ist nichts geplant: ab jetzt besteht die Arbeit aus Hotfixes. Fehler gehören in den
 [Issue Tracker](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues).

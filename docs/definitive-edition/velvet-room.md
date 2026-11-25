@@ -76,6 +76,11 @@ regard to case, those that do not convert left out. The chosen row is green. The
 (`fieldstg_encounter_start`: the Rare Targets and the Rush's pick are the same encounter). Scripted battles, bosses, the Super Rares
 and the Time Room keep their own music. Pick the first row, or delete the file, and the game's music is back, with no message.
 
+**Volume and preview** (`96c466d`, `fd42861`). Each file has its own volume: left and right move it in steps of 10%, from
+0 up to 400%; it starts at 50% (a loud MIDI file is the common case, and the screen says so: "Starts quiet (50%) for
+safety. L/R to 400%."), and the bar under the list shows it. Square (X on an Xbox pad) plays the file under the cursor
+right there in the room, so the level can be set by ear; L1 / R1 jump a page.
+
 **Where the files live.** A `midi` folder beside the settings file (`settings.json`, the memory cards `card1.mcd`/`card2.mcd`: the
 launcher owns that folder, psxstack's `port_settings.dir`), or the folder named by `DW3_MIDI_DIR` (tests, power users). The port
 makes it when the list is first opened and the list shows its tail, so a player finds it from the game.

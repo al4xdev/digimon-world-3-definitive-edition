@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="506" viewBox="0 0 900 506" role="img" aria-labelledby="title desc">
 <title id="title">The battle HUD</title>
-<desc id="desc">The direct-button battle HUD, default layout with Xbox glyphs: Item on L1, Tech on R1, Fight on B, Run on X, Digivolve on Y, Tag on A, Inspect on L2 (it spends no turn), Blast on R2. Every action can be rebound from BATTLE HUD in the launcher.</desc>
+<desc id="desc">The direct-button battle HUD, default layout with Xbox glyphs: Bag (items) on L1, Tech on R1, Fight on A, Run on X, Digivolve on Y, Tag on B, Info on L2 (the enemy's weaknesses, traits and the next turns; it spends no turn), Blast on R2. Every action can be rebound from BATTLE HUD in the launcher.</desc>
 <defs>
 <style>text{font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,&quot;Liberation Sans&quot;,sans-serif}
 .cx{transform-box:fill-box;transform-origin:center}
@@ -62,22 +62,22 @@
 <rect x="216" y="226" width="16" height="8" rx="4" fill="#3a4257"/><rect x="248" y="226" width="16" height="8" rx="4" fill="#3a4257"/>
 <g class="an p4 cx"><circle cx="358" cy="210" r="17" fill="#1b202c" stroke="#e0b02a" stroke-width="2"/><text x="358" y="215.5" font-size="16" fill="#e0b02a" font-weight="800" text-anchor="middle">Y</text><g class="an h4" style="opacity:0"><circle cx="358" cy="210" r="22" fill="#e0b02a" opacity=".25"/><circle cx="358" cy="210" r="17" fill="#e0b02a" stroke="#fff" stroke-width="1.5"/><text x="358" y="215.5" font-size="16" fill="#14161c" font-weight="800" text-anchor="middle">Y</text></g></g>
 <g class="an p3 cx"><circle cx="324" cy="244" r="17" fill="#1b202c" stroke="#3987e5" stroke-width="2"/><text x="324" y="249.5" font-size="16" fill="#3987e5" font-weight="800" text-anchor="middle">X</text><g class="an h3" style="opacity:0"><circle cx="324" cy="244" r="22" fill="#3987e5" opacity=".25"/><circle cx="324" cy="244" r="17" fill="#3987e5" stroke="#fff" stroke-width="1.5"/><text x="324" y="249.5" font-size="16" fill="#14161c" font-weight="800" text-anchor="middle">X</text></g></g>
-<g class="an p2 cx"><circle cx="392" cy="244" r="17" fill="#1b202c" stroke="#e34948" stroke-width="2"/><text x="392" y="249.5" font-size="16" fill="#e34948" font-weight="800" text-anchor="middle">B</text><g class="an h2" style="opacity:0"><circle cx="392" cy="244" r="22" fill="#e34948" opacity=".25"/><circle cx="392" cy="244" r="17" fill="#e34948" stroke="#fff" stroke-width="1.5"/><text x="392" y="249.5" font-size="16" fill="#14161c" font-weight="800" text-anchor="middle">B</text></g></g>
-<g class="an p5 cx"><circle cx="358" cy="278" r="17" fill="#1b202c" stroke="#199e70" stroke-width="2"/><text x="358" y="283.5" font-size="16" fill="#199e70" font-weight="800" text-anchor="middle">A</text><g class="an h5" style="opacity:0"><circle cx="358" cy="278" r="22" fill="#199e70" opacity=".25"/><circle cx="358" cy="278" r="17" fill="#199e70" stroke="#fff" stroke-width="1.5"/><text x="358" y="283.5" font-size="16" fill="#14161c" font-weight="800" text-anchor="middle">A</text></g></g>
-<g class="an h0" style="opacity:0"><rect x="160" y="396" width="160" height="38" rx="19" fill="#262c3c" stroke="#7fd0a8" stroke-width="1.5"/><use href="#u-flask" x="178" y="405" width="20" height="20" color="#7fd0a8"/><text x="250" y="421" font-size="15" fill="#f0efec" font-weight="800" text-anchor="middle" letter-spacing="1.5">ITEM</text></g>
+<g class="an p5 cx"><circle cx="392" cy="244" r="17" fill="#1b202c" stroke="#e34948" stroke-width="2"/><text x="392" y="249.5" font-size="16" fill="#e34948" font-weight="800" text-anchor="middle">B</text><g class="an h5" style="opacity:0"><circle cx="392" cy="244" r="22" fill="#e34948" opacity=".25"/><circle cx="392" cy="244" r="17" fill="#e34948" stroke="#fff" stroke-width="1.5"/><text x="392" y="249.5" font-size="16" fill="#14161c" font-weight="800" text-anchor="middle">B</text></g></g>
+<g class="an p2 cx"><circle cx="358" cy="278" r="17" fill="#1b202c" stroke="#199e70" stroke-width="2"/><text x="358" y="283.5" font-size="16" fill="#199e70" font-weight="800" text-anchor="middle">A</text><g class="an h2" style="opacity:0"><circle cx="358" cy="278" r="22" fill="#199e70" opacity=".25"/><circle cx="358" cy="278" r="17" fill="#199e70" stroke="#fff" stroke-width="1.5"/><text x="358" y="283.5" font-size="16" fill="#14161c" font-weight="800" text-anchor="middle">A</text></g></g>
+<g class="an h0" style="opacity:0"><rect x="160" y="396" width="160" height="38" rx="19" fill="#262c3c" stroke="#7fd0a8" stroke-width="1.5"/><use href="#u-flask" x="178" y="405" width="20" height="20" color="#7fd0a8"/><text x="250" y="421" font-size="15" fill="#f0efec" font-weight="800" text-anchor="middle" letter-spacing="1.5">BAG</text></g>
 <g class="an h1" style="opacity:0"><rect x="160" y="396" width="160" height="38" rx="19" fill="#262c3c" stroke="#f2c230" stroke-width="1.5"/><use href="#u-spark" x="178" y="405" width="20" height="20" color="#f2c230"/><text x="250" y="421" font-size="15" fill="#f0efec" font-weight="800" text-anchor="middle" letter-spacing="1.5">TECH</text></g>
 <g class="an h2" style="opacity:0"><rect x="160" y="396" width="160" height="38" rx="19" fill="#262c3c" stroke="#f3a27e" stroke-width="1.5"/><use href="#u-sword" x="178" y="405" width="20" height="20" color="#f3a27e"/><text x="250" y="421" font-size="15" fill="#f0efec" font-weight="800" text-anchor="middle" letter-spacing="1.5">FIGHT</text></g>
 <g class="an h3" style="opacity:0"><rect x="160" y="396" width="160" height="38" rx="19" fill="#262c3c" stroke="#9fb4d8" stroke-width="1.5"/><use href="#u-run" x="178" y="405" width="20" height="20" color="#9fb4d8"/><text x="250" y="421" font-size="15" fill="#f0efec" font-weight="800" text-anchor="middle" letter-spacing="1.5">RUN</text></g>
 <g class="an h4" style="opacity:0"><rect x="160" y="396" width="160" height="38" rx="19" fill="#262c3c" stroke="#8fd3f0" stroke-width="1.5"/><use href="#u-dv" x="178" y="405" width="20" height="20" color="#8fd3f0"/><text x="250" y="421" font-size="15" fill="#f0efec" font-weight="800" text-anchor="middle" letter-spacing="1.5">DIGIVOLVE</text></g>
 <g class="an h5" style="opacity:0"><rect x="160" y="396" width="160" height="38" rx="19" fill="#262c3c" stroke="#7fb3f0" stroke-width="1.5"/><use href="#u-swap" x="178" y="405" width="20" height="20" color="#7fb3f0"/><text x="250" y="421" font-size="15" fill="#f0efec" font-weight="800" text-anchor="middle" letter-spacing="1.5">TAG</text></g>
-<g class="an h6" style="opacity:0"><rect x="160" y="396" width="160" height="38" rx="19" fill="#262c3c" stroke="#c9c4ff" stroke-width="1.5"/><use href="#u-eye" x="178" y="405" width="20" height="20" color="#c9c4ff"/><text x="250" y="421" font-size="15" fill="#f0efec" font-weight="800" text-anchor="middle" letter-spacing="1.5">INSPECT</text></g>
+<g class="an h6" style="opacity:0"><rect x="160" y="396" width="160" height="38" rx="19" fill="#262c3c" stroke="#c9c4ff" stroke-width="1.5"/><use href="#u-eye" x="178" y="405" width="20" height="20" color="#c9c4ff"/><text x="250" y="421" font-size="15" fill="#f0efec" font-weight="800" text-anchor="middle" letter-spacing="1.5">INFO</text></g>
 <g class="an h7" style="opacity:0"><rect x="160" y="396" width="160" height="38" rx="19" fill="#262c3c" stroke="#a58bf5" stroke-width="1.5"/><use href="#i-dark" x="178" y="405" width="20" height="20" color="#a58bf5"/><text x="250" y="421" font-size="15" fill="#f0efec" font-weight="800" text-anchor="middle" letter-spacing="1.5">BLAST</text></g>
 <text x="240" y="470" font-size="14" fill="#9a9a94" text-anchor="middle">The d-pad and sticks stay free for the cursor.</text>
 <rect x="472" y="98" width="398" height="332" rx="12" fill="#1f2430" stroke="#30374a" stroke-width="1.5"/>
 <rect class="an h0" x="480" y="107" width="382" height="34" rx="8" fill="#7fd0a8" fill-opacity=".12" stroke="#7fd0a8" stroke-opacity=".6" opacity="0"/>
 <rect x="486" y="112.0" width="36" height="24" rx="8" fill="#3a4152" stroke="#566079"/><text x="504" y="129.0" font-size="13.5" fill="#f0efec" font-weight="800" text-anchor="middle">L1</text>
 <use href="#u-flask" x="536" y="114" width="20" height="20" color="#7fd0a8"/>
-<text x="566" y="129.5" font-size="16" fill="#f0efec" font-weight="700">Item</text>
+<text x="566" y="129.5" font-size="16" fill="#f0efec" font-weight="700">Bag</text>
 <text x="850" y="129.5" font-size="14" fill="#9a9a94" text-anchor="end">last item remembered</text>
 <rect class="an h1" x="480" y="147" width="382" height="34" rx="8" fill="#f2c230" fill-opacity=".12" stroke="#f2c230" stroke-opacity=".6" opacity="0"/>
 <rect x="486" y="152.0" width="36" height="24" rx="8" fill="#3a4152" stroke="#566079"/><text x="504" y="169.0" font-size="13.5" fill="#f0efec" font-weight="800" text-anchor="middle">R1</text>
@@ -85,7 +85,7 @@
 <text x="566" y="169.5" font-size="16" fill="#f0efec" font-weight="700">Tech</text>
 <text x="850" y="169.5" font-size="14" fill="#9a9a94" text-anchor="end">last technique remembered</text>
 <rect class="an h2" x="480" y="187" width="382" height="34" rx="8" fill="#f3a27e" fill-opacity=".12" stroke="#f3a27e" stroke-opacity=".6" opacity="0"/>
-<circle cx="504" cy="204.0" r="13" fill="#1b202c" stroke="#e34948" stroke-width="2"/><text x="504" y="209.0" font-size="14" fill="#e34948" font-weight="800" text-anchor="middle">B</text>
+<circle cx="504" cy="204.0" r="13" fill="#1b202c" stroke="#199e70" stroke-width="2"/><text x="504" y="209.0" font-size="14" fill="#199e70" font-weight="800" text-anchor="middle">A</text>
 <use href="#u-sword" x="536" y="194" width="20" height="20" color="#f3a27e"/>
 <text x="566" y="209.5" font-size="16" fill="#f0efec" font-weight="700">Fight</text>
 <text x="850" y="209.5" font-size="14" fill="#9a9a94" text-anchor="end">a basic attack</text>
@@ -93,22 +93,22 @@
 <circle cx="504" cy="244.0" r="13" fill="#1b202c" stroke="#3987e5" stroke-width="2"/><text x="504" y="249.0" font-size="14" fill="#3987e5" font-weight="800" text-anchor="middle">X</text>
 <use href="#u-run" x="536" y="234" width="20" height="20" color="#9fb4d8"/>
 <text x="566" y="249.5" font-size="16" fill="#f0efec" font-weight="700">Run</text>
-<text x="850" y="249.5" font-size="14" fill="#9a9a94" text-anchor="end">try to flee</text>
+<text x="850" y="249.5" font-size="14" fill="#9a9a94" text-anchor="end">asks first, then flees</text>
 <rect class="an h4" x="480" y="267" width="382" height="34" rx="8" fill="#8fd3f0" fill-opacity=".12" stroke="#8fd3f0" stroke-opacity=".6" opacity="0"/>
 <circle cx="504" cy="284.0" r="13" fill="#1b202c" stroke="#e0b02a" stroke-width="2"/><text x="504" y="289.0" font-size="14" fill="#e0b02a" font-weight="800" text-anchor="middle">Y</text>
 <use href="#u-dv" x="536" y="274" width="20" height="20" color="#8fd3f0"/>
 <text x="566" y="289.5" font-size="16" fill="#f0efec" font-weight="700">Digivolve</text>
 <text x="850" y="289.5" font-size="14" fill="#9a9a94" text-anchor="end">change form</text>
 <rect class="an h5" x="480" y="307" width="382" height="34" rx="8" fill="#7fb3f0" fill-opacity=".12" stroke="#7fb3f0" stroke-opacity=".6" opacity="0"/>
-<circle cx="504" cy="324.0" r="13" fill="#1b202c" stroke="#199e70" stroke-width="2"/><text x="504" y="329.0" font-size="14" fill="#199e70" font-weight="800" text-anchor="middle">A</text>
+<circle cx="504" cy="324.0" r="13" fill="#1b202c" stroke="#e34948" stroke-width="2"/><text x="504" y="329.0" font-size="14" fill="#e34948" font-weight="800" text-anchor="middle">B</text>
 <use href="#u-swap" x="536" y="314" width="20" height="20" color="#7fb3f0"/>
 <text x="566" y="329.5" font-size="16" fill="#f0efec" font-weight="700">Tag</text>
 <text x="850" y="329.5" font-size="14" fill="#9a9a94" text-anchor="end">switch, or Baton Pass</text>
 <rect class="an h6" x="480" y="347" width="382" height="34" rx="8" fill="#c9c4ff" fill-opacity=".12" stroke="#c9c4ff" stroke-opacity=".6" opacity="0"/>
 <rect x="486" y="352.0" width="36" height="24" rx="8" fill="#3a4152" stroke="#566079"/><text x="504" y="369.0" font-size="13.5" fill="#f0efec" font-weight="800" text-anchor="middle">L2</text>
 <use href="#u-eye" x="536" y="354" width="20" height="20" color="#c9c4ff"/>
-<text x="566" y="369.5" font-size="16" fill="#f0efec" font-weight="700">Inspect</text>
-<text x="850" y="369.5" font-size="14" fill="#9a9a94" text-anchor="end">weaknesses; spends no turn</text>
+<text x="566" y="369.5" font-size="16" fill="#f0efec" font-weight="700">Info</text>
+<text x="850" y="369.5" font-size="14" fill="#9a9a94" text-anchor="end">weaknesses, traits, turns; free</text>
 <rect class="an h7" x="480" y="387" width="382" height="34" rx="8" fill="#a58bf5" fill-opacity=".12" stroke="#a58bf5" stroke-opacity=".6" opacity="0"/>
 <rect x="486" y="392.0" width="36" height="24" rx="8" fill="#3a4152" stroke="#566079"/><text x="504" y="409.0" font-size="13.5" fill="#f0efec" font-weight="800" text-anchor="middle">R2</text>
 <use href="#i-dark" x="536" y="394" width="20" height="20" color="#a58bf5"/>

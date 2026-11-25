@@ -13,14 +13,20 @@
 - **PT-BR is a 6th language**, falling back to English per entry (`port_language_ptbr`; `records_language` stays 2). The
   other languages (FR/IT/DE/ES) show the disc's text for the original entries, their own translation (`fr.txt`, `de.txt`,
   `it.txt`, `es.txt`, 854 entries each, 2026-11-20) for the Definitive delta and English for what is not translated
-  (the story rewrite, `dw3_velvet_text_own` entries without a line). The language is `def_lang()` (0 en, 1 pt, 2 fr, 3 de,
+  (`dw3_velvet_text_own` entries without a line); the story rewrite is not shown there at all (see below). The language is `def_lang()` (0 en, 1 pt, 2 fr, 3 de,
   4 it, 5 es: from the preset or `DW3_LANG=pt`, else `records_language`); `def_text_overrides_of(lang)` gives the table
   and `def_pick()` picks among six C literals (title questions, Rush and flee prompts, compass). The callout font
   (`def_poly_text`) draws capitals only: no apostrophe, `¿ ¡` or `ß` (write SS). The EU disc already has the original campaign in FR/DE/IT/ES; only the definitive
   delta (the guide, bestiary, hunt, forge, Black Market, DRI, `SKLINF`, Velvet Room, Super Rare screens) is missing there.
-- **The story rewrite** (`en_story.txt`, `en_kaili.txt`, `pt_kaili.txt`, `en_choices.txt`, `en_echoes.txt`, generated into
-  `port/game/definitive_story_text.c`, checked by `tools/check_story_text.py`) is English only; formats, counts and the
-  lookup order are in [The story layer](story.md#the-story-layer-velvet-room-in-the-main-story).
+- **The story rewrite** (`en_story.txt`, `en_kaili.txt`, `en_choices.txt`, `en_echoes.txt` and their Portuguese
+  `pt_story.txt`, `pt_kaili.txt`, `pt_choices.txt`, `pt_echoes.txt` since `4fd8d39`, generated into
+  `port/game/definitive_story_text.c`, checked by `tools/check_story_text.py`) is in English and Brazilian Portuguese; in
+  French, German, Italian and Spanish the disc's own campaign plays and the hero's choice panel stays shut (`8244649`).
+  Formats, counts and the lookup order are in [The story layer](story.md#the-story-layer-velvet-room-in-the-main-story).
+- **PT-BR with the flavour of the classic dubs** (`8dfd4e8`): about one story line in seven (381 of 2750) and one NPC line
+  in eight (200 of 1606) carry the slang and catchphrases of the 90s/2000s Brazilian anime dubs (rivals' taunts, boasts,
+  scares, wins, the friends' banter). What to do, where to go, names, items and numbers are unchanged, nothing gendered
+  was added for the hero, and every line keeps its control codes and fits its box (`tools/check_pt_text.py`).
 - PT pipeline: `tools/translate_ptbr.py` talks to a local Gemma server (no sampling parameters sent; `--benchmark` compares
   reasoning low vs medium on 20 real strings; `--tier p0|all`; `--export`). Glossary: keep in English `WEAK`, `RESIST`,
   `OVERFINISH`, `Baton Pass`, `Relay`, `Libra`, `Digimon`, `Digi-Lab`, `Load Tech`, `Blast Gauge`, `Bits`, `TP`, `MP`, `HP`

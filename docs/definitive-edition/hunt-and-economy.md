@@ -58,7 +58,7 @@ There are two kinds, and they do different jobs:
 What you collect pays for better gear: every shop is also a forge, a trader in the first town runs a Black Market,
 and the DRI Agents open the Gauntlet.
 
-<p align="center"><img src="../images/definitive/economy-flow.svg" width="800" alt="From the hunt to your gear: commons from random battles and rare Cores from Rare Targets go to the forge in every shop, the Black Market (1 Core for 12 commons, replicas for 2 Cores plus Bits, the Hunter's Mark) and the DRI Gauntlet, which give shop equipment, 16 replicas and the Power accessories."></p>
+<p align="center"><img src="../images/definitive/economy-flow.svg" width="800" alt="From the hunt to your gear: commons from random battles and rare Cores from Rare Targets go to the forge in every shop, the Black Market (1 Core for 12 commons, replicas for 2 Cores plus Bits, the Hunter's Mark) and the DRI Gauntlet, which give shop equipment, 32 replicas and the Power accessories."></p>
 
 ### Prices
 
@@ -122,12 +122,16 @@ see [The Velvet Room](velvet-room.md#the-velvet-room)) runs the Black Market. Ta
 to them opens two tabs (L1/R1):
 
 - **Exchange**: one rare item for 12 of any common material you pick, as long as all 12 fit under the 99 cap.
-- **Replicas**: 16 pieces of equipment no shop sells, as good as the original: the seven Power S accessories,
-  Machinegun, Magician Rod, Ghost Fang, Pulse Guard, Drill Horn, Chain Saw, Naginata, Recover Crest and MP Mega Proxy.
+- **Replicas**: 32 pieces of equipment no shop sells, as good as the original: the seven Power S accessories,
+  Machinegun, Magician Rod, Ghost Fang, Pulse Guard, Drill Horn, Chain Saw, Naginata, Recover Crest and MP Mega Proxy;
+  since `9abf5bd` also eleven accessories no shop or chest gives (Multi Crest, Search Crest, HP Mega Proxy, Over Load,
+  EXP Adapter, BIT Adapter, Power Brace, Goggles, Dance Wing, Hack System, Runner Shoes) and five ultimate weapons
+  (Muramasa, Super Nova, Punishment, Eternally, Invincible).
   Each costs one Core of each of its own two bosses, chosen by its theme and strength (the Fire Power S takes Deltamon
   and BK WarGrowlmon, the Machinegun Megadramon and Puppetmon), shown with what you hold ("Takes: Deltamon 1/1,
-  BK WarGrowlmon 0/1", orange while one is missing), plus 20 times the original's selling price in Bits: 20,000 to
-  40,000. No boss serves two replicas.
+  BK WarGrowlmon 0/1", orange while one is missing), plus Bits: 20 times the original's selling price for the first
+  sixteen (20,000 to 40,000), 25,000 to 50,000 for the exclusive accessories and 80,000 for each ultimate weapon. No boss
+  serves two replicas.
   A replica resells for 0 Bits, so the shop does not even offer to buy it.
 
 ### The DRI Gauntlet
@@ -169,6 +173,13 @@ the Mega tier S, even if you lose afterwards. Each tier is given once, the first
 clear gives all three; the list keeps your best stage. A replay pays the battle's experience and Bits, but no
 accessory.
 
+**What a Power accessory does now** (`bd5e2c1`): the seven Elemental Powers (Fire, Water, Ice, Wind, Bolt, Metal and
+Dark Power, tiers 1, 2 and S) no longer lend your basic attack an element, which would break the rule that only magic
+carries one. Each raises its element's stat by **+60, +120 or +200** instead, and that stat is your affinity
+([Combat: damage](combat.md#damage)), so a Power accessory makes that element's magic hit harder on weaknesses and
+staggered foes. In the same pass the Counter Crest's free counter was cut to 1% of its damage (counter techniques and
+enemy counters are untouched).
+
 ## The hunt: constants and hooks
 
 - Chain: `DEF_HUNT_CHAIN_MIN` 5, sure at 10, cap 255; 20% at 6 wins, +20% per win.
@@ -188,8 +199,8 @@ accessory.
   Digimon is lowered in a weak place) times `DEF_HUNT_RARE_HP_MULT`, capped at `DEF_HUNT_HP_MAX`; `stat_scale` is left
   as it is.
 - Economy constants (`definitive.h`): `DEF_HUNT_MATERIALS` 16 and `DEF_HUNT_MATERIAL_CAP` 99 (one u8 each,
-  `REC_EXTRA + 10..25`), `DEF_HUNT_RARES` 128 slots and `DEF_HUNT_RARE_CAP` 99 (record 2), `DEF_REPLICAS` 16 (bits at
-  `REC_EXTRA + 26..27`), `DEF_DRI_CHALLENGES` 16 (an unlocked bit and a 2-bit best stage each, record 2); prices
+  `REC_EXTRA + 10..25`), `DEF_HUNT_RARES` 128 slots and `DEF_HUNT_RARE_CAP` 99 (record 2), `DEF_REPLICAS` 32 (bits at
+  `REC_EXTRA + 26..29`), `DEF_DRI_CHALLENGES` 16 (an unlocked bit and a 2-bit best stage each, record 2); prices
   `DEF_PRICE_KNEE` 10000, `DEF_PRICE_DRAIN_PCT` 150, `DEF_SELL_BASE` 5000, `DEF_SELL_ABOVE_PCT` 8; forge
   `DEF_RECIPE_REACH` 4 exits, `DEF_RECIPE_OVER` 6 levels, `DEF_RECIPE_RARE_FROM` 9500, `DEF_RECIPE_TWO_RARES` 50000;
   Rush panel `DEF_RUSH_FLOAT_FRAMES` 175 ticks.
@@ -294,10 +305,12 @@ accessory.
 - Trader: actor 42 on maps 0x20C and 0x27B, and now also `{0x20F, 42}` in the Velvet Room
   (`port/game/definitive_market_screen.c`, `traders[]`). Two tabs (L1/R1).
 - Exchange: 1 rare for 12 commons, only if all 12 fit under the 99 cap.
-- Replicas: 16 items, one Core of each of its own two Rare Targets (`DefReplica.cores`, hand-picked in the generator's
-  `CORES`, none shared) plus 20x the original sell price in Bits (20-40k); resale 0, using one
-  bit per replica (record 1, REC_EXTRA 26-27). List: Power S x7, Machinegun, Magician Rod, Ghost Fang, Pulse Guard, Drill
-  Horn, Chain Saw, Naginata, Recover Crest, MP Mega Proxy. Generator: `tools/gen_replicas.py --check`.
+- Replicas: 32 items, one Core of each of its own two Rare Targets (`DefReplica.cores`, hand-picked in the generator's
+  `CORES`, none shared) plus Bits (20-80k); resale 0, using one bit per replica (record 1, REC_EXTRA 26-29; the first 16
+  bits keep their place, so old saves still match). List: Power S x7, Machinegun, Magician Rod, Ghost Fang, Pulse Guard,
+  Drill Horn, Chain Saw, Naginata, Recover Crest, MP Mega Proxy, then (`9abf5bd`) Multi Crest, Search Crest, HP Mega
+  Proxy, Over Load, EXP Adapter, BIT Adapter, Power Brace, Goggles, Dance Wing, Hack System, Runner Shoes, Muramasa,
+  Super Nova, Punishment, Eternally, Invincible. Generator: `tools/gen_replicas.py --check`.
 - **UX pass:** everything uses the dialogue font 1; white text, orange cursor and shortfall, green success, grey
   explanation lines; rows show "have/99"; the detail lines give description, type/stats, who can equip and which Cores.
 - Pitfall: a **colon renders as "0"** in the 14px font (30 other port strings are affected; the 11px font has no
