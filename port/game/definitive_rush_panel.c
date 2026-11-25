@@ -27,6 +27,7 @@
 #include "message.h"
 #include "pad.h"
 #include "psyq/libgpu.h"
+#include "psyq/libgte.h"
 #include "records.h"
 
 #include "psxstack/savestate.h"
@@ -65,6 +66,10 @@ extern const unsigned char def_str_RushAskYes[], def_str_RushAskNo[];
 #define RA_PAD 14
 #define RA_MIN_W 208
 
+#define RP_STAMP_FRAMES 5   /* slam from 2.2x to 1.0x */
+#define RP_HOLD_FRAMES 13   /* brief beat after impact before expanding */
+#define RP_EXPAND_FRAMES 22 /* downward ease-out expansion finished */
+
 /* The tests read rush_panel.clock (left, opened) first. */
 static struct {
     DefRushClock clock;
@@ -75,10 +80,16 @@ static struct {
     s32 item_row; /* the item's row, still waiting for the item names' file; -1: none */
     MessageWindow *left[DEF_RUSH_ROWS], *right[DEF_RUSH_ROWS];
     s32 left_w[DEF_RUSH_ROWS], right_w[DEF_RUSH_ROWS];
-    /* the question's answers: their window, its width and its text (a window keeps the pointer it is given) */
+    /* the question's answers: split into Yes (pulsing A chip) and No (steady B chip) */
     MessageWindow *keys;
     s32 keys_w;
     unsigned char keys_text[64];
+    MessageWindow *key_yes, *key_no, *lbl_yes, *lbl_no;
+    s32 lbl_yes_w, lbl_no_w;
+    unsigned char sym_yes[4], sym_no[4];
+    s32 ask_w;        /* width of the ask plate at confirmation, for seamless transition */
+    s32 ask_bar_perm; /* 0..1000 frozen timer bar ratio at confirmation */
+    s32 ask_ticks;    /* animation clock for pulsing confirm badge */
 } rush_panel;
 
 int def_rush_float_mode = -1; /* -1: DW3_RUSH_FLOAT not read yet (a debug session may set it directly) */
@@ -204,11 +215,67 @@ static void rp_quad(GfxLayer *layer, s32 x, s32 y, s32 w, s32 h, s32 abr, u8 r, 
     gfx_module.funcs.set_packet(tpage + 1);
 }
 
-/* The panel's frame and fill (queued after what goes on it: under it). */
-static void rp_box(GfxLayer *layer, s32 x, s32 y, s32 w, s32 h) {
-    rp_quad(layer, x, y, w, 1, 1, 60, 130, 230);
-    rp_quad(layer, x, y + h - 1, w, 1, 1, 60, 130, 230);
-    rp_quad(layer, x, y, w, h, 2, 225, 215, 160);
+static void rp_slanted_quad(GfxLayer *layer, s32 cx, s32 cy, s32 hw, s32 hh, s32 skew, s32 angle, s32 abr, u8 r, u8 g,
+                            u8 b) {
+    POLY_F4 *poly = gfx_module.funcs.get_packet();
+    u32 *ot = layer->get_ot_entry(layer, 0);
+    s32 cs = rsin(angle + 1024), sn = rsin(angle);
+    const s32 lx[4] = { -hw + skew, hw + skew + 2, -hw - skew - 1, hw - skew };
+    const s32 ly[4] = { -hh, -hh - 1, hh + 1, hh };
+    s16 v[8];
+    s32 k;
+
+    for (k = 0; k < 4; k++) {
+        v[k * 2] = (s16)(cx + ((lx[k] * cs - ly[k] * sn) >> 12));
+        v[k * 2 + 1] = (s16)(cy + ((lx[k] * sn + ly[k] * cs) >> 12));
+    }
+    setPolyF4(poly);
+    setSemiTrans(poly, abr >= 0);
+    setRGB0(poly, r, g, b);
+    setXY4(poly, v[0], v[1], v[2], v[3], v[4], v[5], v[6], v[7]);
+    addPrim(ot, poly);
+    if (abr >= 0) {
+        DR_TPAGE *tpage = (DR_TPAGE *)(poly + 1);
+        SetDrawTPage(tpage, 0, 1, getTPage(1, abr, 0, 0));
+        addPrim(ot, tpage);
+        gfx_module.funcs.set_packet(tpage + 1);
+    } else {
+        gfx_module.funcs.set_packet(poly + 1);
+    }
+}
+
+/* The P3R-styled slanted panel frame and fill (queued after what goes on it: under it). */
+static void rp_box(GfxLayer *layer, s32 x, s32 y, s32 w, s32 h, s32 head_h) {
+    s32 skew = 5;
+
+    /* Bright electric cyan top edge + P3R cobalt header strip */
+    rp_quad(layer, x + skew, y, w, 2, -1, 0, 196, 255);
+    rp_quad(layer, x - skew, y + h - 1, w, 1, 1, 40, 118, 240);
+    if (head_h > 0) {
+        rp_quad(layer, x + 2, y + head_h, w - 4, 1, -1, 0, 176, 255);
+        rp_quad(layer, x + 2, y + 2, w - 4, head_h - 2, -1, 8, 18, 44);
+    }
+    /* Main slanted dark plate + crisp outer blue trim + subtle cyan slash backing */
+    rp_slanted_quad(layer, x + w / 2, y + h / 2, w / 2, h / 2, skew, 0, 2, 210, 200, 145);
+    rp_slanted_quad(layer, x + w / 2, y + h / 2, w / 2 + 1, h / 2 + 1, skew, 0, 1, 36, 112, 232);
+    rp_slanted_quad(layer, x + w / 2 - 4, y + h / 2 + 3, w / 2 + 2, h / 2, skew + 1, 0, 1, 0, 128, 210);
+}
+
+/* The "RUSH!" stamp slammed into the top-right corner of the panel. */
+static void rp_stamp(GfxLayer *layer, s32 cx, s32 cy, s32 scale_8_8) {
+    static const u8 white[3] = { 250, 252, 255 };
+    static const u8 gold[3] = { 255, 216, 64 };
+    static const u8 shadow[3] = { 16, 8, 24 };
+    s32 angle = -168;
+    s32 tw = def_poly_text_rot(NULL, 0, 0, 0, scale_8_8, angle, 0, "RUSH!", gold, NULL);
+    s32 hw = tw / 2 + ((7 * scale_8_8) >> 8);
+    s32 hh = ((16 * scale_8_8) >> 9) + ((4 * scale_8_8) >> 8);
+
+    def_poly_text_rot(layer, 0, cx, cy, scale_8_8, angle, 0, "RUSH!", gold, NULL);
+    def_poly_text_rot(layer, 0, cx + 1, cy + 1, scale_8_8, angle, 0, "RUSH!", shadow, NULL);
+    rp_slanted_quad(layer, cx, cy, hw, hh, 3, angle, -1, 14, 24, 56);
+    rp_slanted_quad(layer, cx, cy, hw + 2, hh + 2, 3, angle, -1, 0, 196, 255);
+    rp_slanted_quad(layer, cx, cy, hw + 3, hh + 3, 3, angle, -1, white[0], white[1], white[2]);
 }
 
 /* A heading in the callouts' letters with the dark edge the title screen's questions have, centred on the screen. */
@@ -264,7 +331,8 @@ void def_rush_panel_frame(void) {
     static const u8 gold[3] = { 255, 208, 64 };
     Object *mgr;
     GfxLayer *layer;
-    s32 held, x, y, i, ty, shown;
+    s32 held, x, y, i, ty, shown, cur_w, cur_h, jolt_y = 0, flash = 0, stamp_scale;
+    s32 expand_t;
 
     if (rush_panel.clock.left <= 0) {
         return;
@@ -282,53 +350,117 @@ void def_rush_panel_frame(void) {
         rush_panel.item_row = -1;
         rp_size();
     }
-    /* in at the top as the jingle starts, back out as it ends */
     shown = DEF_RUSH_FLOAT_FRAMES - rush_panel.clock.left;
-    if (rush_panel.clock.left < shown) {
-        shown = rush_panel.clock.left;
+
+    /* Fast dismiss on Confirm press once expanded, so the player keeps their field rhythm. */
+    if (!held && shown >= RP_EXPAND_FRAMES && rush_panel.clock.left > RP_SLIDE) {
+        u32 confirm_mask = 1u << pad_state.get_button_map(0, 13);
+        if ((pad_state.get_pressed(0) & confirm_mask) != 0) {
+            rush_panel.clock.left = RP_SLIDE;
+        }
     }
-    x = RP_CENTRE - rush_panel.w / 2;
-    y = rp_slide_y(shown, rush_panel.h);
+
+    /* Height & width animate from the ask plate (RA_H) down into the full results plate. */
+    cur_w = rush_panel.w;
+    if (rush_panel.ask_w > cur_w) {
+        cur_w = rush_panel.ask_w;
+    }
+    if (shown < RP_HOLD_FRAMES) {
+        cur_h = RA_H;
+        expand_t = 0;
+    } else if (shown < RP_EXPAND_FRAMES) {
+        s32 u = shown - RP_HOLD_FRAMES;
+        s32 span = RP_EXPAND_FRAMES - RP_HOLD_FRAMES;
+        expand_t = 256 - (span - u) * (span - u) * 256 / (span * span);
+        cur_h = RA_H + (((rush_panel.h - RA_H) * expand_t) >> 8);
+    } else {
+        cur_h = rush_panel.h;
+        expand_t = 256;
+    }
+
+    /* Micro-jolt & 2-frame white flash on the exact frame the stamp slams in. */
+    if (shown == RP_STAMP_FRAMES) {
+        jolt_y = 3;
+        flash = 1;
+    } else if (shown == RP_STAMP_FRAMES + 1) {
+        jolt_y = 2;
+        flash = 1;
+    } else if (shown == RP_STAMP_FRAMES + 2) {
+        jolt_y = 1;
+    }
+
+    x = RP_CENTRE - cur_w / 2;
+    if (rush_panel.clock.left < RP_SLIDE) {
+        y = rp_slide_y(rush_panel.clock.left, cur_h);
+    } else {
+        y = RP_Y + jolt_y;
+    }
+
+    /* 2-frame impact white flash over the whole plate */
+    if (flash) {
+        rp_slanted_quad(layer, x + cur_w / 2, y + cur_h / 2, cur_w / 2, cur_h / 2, 5, 0, 1, 200, 224, 255);
+    }
+
+    /* "RUSH!" stamp slamming from 2.2x -> 1.0x and staying pinned at the top-right corner */
+    if (shown < RP_STAMP_FRAMES) {
+        stamp_scale = 380 - (380 - 156) * shown / RP_STAMP_FRAMES;
+    } else {
+        stamp_scale = 156;
+    }
+    rp_stamp(layer, x + cur_w - 22, y + 11, stamp_scale);
+
     rp_heading(layer, y + RP_TITLE_Y, RP_TITLE, rp_title(), gold);
-    for (i = 0; i < rush_panel.count; i++) {
-        ty = y + RP_HEAD + i * RP_LINE;
-        if (rush_panel.left[i] != NULL) {
-            rush_panel.left[i]->set_pos(rush_panel.left[i], x + RP_PAD + rush_panel.left_w[i], ty);
-            rush_panel.left[i] = (MessageWindow *)heap_objects.try_run((Object *)rush_panel.left[i]);
-        }
-        if (rush_panel.right[i] != NULL) {
-            rush_panel.right[i]->set_pos(rush_panel.right[i], x + rush_panel.w - RP_PAD, ty);
-            rush_panel.right[i] = (MessageWindow *)heap_objects.try_run((Object *)rush_panel.right[i]);
+
+    if (shown < RP_HOLD_FRAMES && rush_panel.ask_bar_perm > 0) {
+        /* Frozen timer bar during stamp slam + short breath */
+        s32 bar = (cur_w - RA_PAD * 2) * rush_panel.ask_bar_perm / 1000;
+        rp_quad(layer, x + RA_PAD, y + RA_BAR_Y, bar, RA_BAR_H, -1, 255, 208, 64);
+        rp_quad(layer, x + RA_PAD, y + RA_BAR_Y, cur_w - RA_PAD * 2, RA_BAR_H, 1, 40, 48, 72);
+    } else {
+        for (i = 0; i < rush_panel.count; i++) {
+            ty = y + RP_HEAD + i * RP_LINE;
+            if (ty + RP_LINE > y + cur_h - 1) {
+                continue;
+            }
+            if (rush_panel.left[i] != NULL) {
+                rush_panel.left[i]->set_pos(rush_panel.left[i], x + RP_PAD + rush_panel.left_w[i], ty);
+                rush_panel.left[i] = (MessageWindow *)heap_objects.try_run((Object *)rush_panel.left[i]);
+            }
+            if (rush_panel.right[i] != NULL) {
+                rush_panel.right[i]->set_pos(rush_panel.right[i], x + cur_w - RP_PAD, ty);
+                rush_panel.right[i] = (MessageWindow *)heap_objects.try_run((Object *)rush_panel.right[i]);
+            }
         }
     }
-    rp_quad(layer, x + RP_PAD, y + RP_RULE_Y, rush_panel.w - RP_PAD * 2, 1, 1, 60, 130, 230);
-    rp_box(layer, x, y, rush_panel.w, rush_panel.h);
+    rp_box(layer, x, y, cur_w, cur_h, RP_RULE_Y);
 }
 
-/* The question's answers in the game's font: each answer's button as the symbol of the bit the question reads (the
- * player's own letter, pad.map's, when there is one: message.c swaps it in), then its word. */
+/* The question's answers split into separate windows so the green Confirm badge pulses independently while the rest
+ * stays rock-steady for instant reading. */
 static void ra_keys_open(void) {
-    static const unsigned char space[] = { 0x01, 0x01, 0x00 };
-    unsigned char sym[3] = { 0x01, 0x00, 0x00 };
-    unsigned char *t = rush_panel.keys_text;
-    int p = 0, i;
+    s32 dummy;
 
-    sym[1] = port_face_text_code(pad_state.get_button_map(0, 13));
-    if (sym[1] != 0) {
-        def_glyph_put(t, &p, sizeof(rush_panel.keys_text), sym);
-        def_glyph_put(t, &p, sizeof(rush_panel.keys_text), space);
+    if (dw3_feat_icons) {
+        rush_panel.sym_yes[0] = 0x0E; /* A */
+        rush_panel.sym_yes[1] = 0;
+        rush_panel.sym_no[0] = 0x0F; /* B */
+        rush_panel.sym_no[1] = 0;
+    } else {
+        u8 cy = port_face_text_code(pad_state.get_button_map(0, 13));
+        u8 cn = port_face_text_code(pad_state.get_button_map(0, 14));
+        rush_panel.sym_yes[0] = 1;
+        rush_panel.sym_yes[1] = cy != 0 ? cy : 0x32;
+        rush_panel.sym_yes[2] = 0;
+        rush_panel.sym_no[0] = 1;
+        rush_panel.sym_no[1] = cn != 0 ? cn : 0x34;
+        rush_panel.sym_no[2] = 0;
     }
-    def_glyph_put(t, &p, sizeof(rush_panel.keys_text), def_str_RushAskYes);
-    for (i = 0; i < 5; i++) {
-        def_glyph_put(t, &p, sizeof(rush_panel.keys_text), space);
-    }
-    sym[1] = port_face_text_code(pad_state.get_button_map(0, 14));
-    if (sym[1] != 0) {
-        def_glyph_put(t, &p, sizeof(rush_panel.keys_text), sym);
-        def_glyph_put(t, &p, sizeof(rush_panel.keys_text), space);
-    }
-    def_glyph_put(t, &p, sizeof(rush_panel.keys_text), def_str_RushAskNo);
-    rush_panel.keys = rp_window(t, RP_PAL_TEXT, &rush_panel.keys_w);
+    rush_panel.key_yes = rp_window(rush_panel.sym_yes, RP_PAL_TEXT, &dummy);
+    rush_panel.key_no = rp_window(rush_panel.sym_no, RP_PAL_TEXT, &dummy);
+    rush_panel.lbl_yes = rp_window(def_str_RushAskYes, RP_PAL_TEXT, &rush_panel.lbl_yes_w);
+    rush_panel.lbl_no = rp_window(def_str_RushAskNo, RP_PAL_TEXT, &rush_panel.lbl_no_w);
+    rush_panel.keys_w = 18 + rush_panel.lbl_yes_w + 26 + 18 + rush_panel.lbl_no_w;
+    rush_panel.ask_ticks = 0;
 }
 
 void def_rush_ask_frame(int waited, int total) {
@@ -336,14 +468,15 @@ void def_rush_ask_frame(int waited, int total) {
     GfxLayer *layer = gfx_module.funcs.get_layer(RP_LAYER);
     const char *title = def_pick("EASY FIGHT! RUSH IT?", "LUTA FÁCIL! ATROPELAR?", "COMBAT FACILE! FONCER?",
                                  "LEICHTER KAMPF! RUSH?", "SCONTRO FACILE! TRAVOLGERLO?", "COMBATE FÁCIL! ARROLLAR?");
-    s32 w, x, y, left, bar;
+    s32 w, x, y, left, bar, row_x, yes_cx, yes_cy, no_cx, no_cy, pulse, shake;
 
     if (layer == NULL) {
         return;
     }
-    if (rush_panel.keys == NULL) {
+    if (rush_panel.lbl_yes == NULL) {
         ra_keys_open();
     }
+    rush_panel.ask_ticks += gfx_module.funcs.get_frame_ticks();
     w = def_poly_text_width(RP_TITLE, title) + RA_PAD * 2;
     if (w < rush_panel.keys_w + RA_PAD * 2) {
         w = rush_panel.keys_w + RA_PAD * 2;
@@ -356,11 +489,44 @@ void def_rush_ask_frame(int waited, int total) {
     left = total - waited;
     left = left < 0 ? 0 : left;
     bar = (w - RA_PAD * 2) * left / total;
+    rush_panel.ask_w = w;
+    rush_panel.ask_bar_perm = total > 0 ? (left * 1000 / total) : 0;
+
     rp_heading(layer, y + RP_TITLE_Y, RP_TITLE, title, gold);
-    if (rush_panel.keys != NULL) {
-        rush_panel.keys->set_pos(rush_panel.keys, RP_CENTRE + rush_panel.keys_w / 2, y + RA_KEYS_Y);
-        rush_panel.keys = (MessageWindow *)heap_objects.try_run((Object *)rush_panel.keys);
+
+    row_x = RP_CENTRE - rush_panel.keys_w / 2;
+    pulse = (rsin((rush_panel.ask_ticks * 120) & 0xFFF) + 4096) >> 12; /* 0..1 gentle pop */
+    shake = ((rush_panel.ask_ticks % 28) < 4) ? ((rush_panel.ask_ticks & 1) ? 1 : -1) : 0;
+    yes_cx = row_x + 7 + shake;
+    yes_cy = y + RA_KEYS_Y + 6;
+    no_cx = row_x + 18 + rush_panel.lbl_yes_w + 26 + 7;
+    no_cy = y + RA_KEYS_Y + 6;
+
+    if (rush_panel.key_yes != NULL) {
+        rush_panel.key_yes->set_pos(rush_panel.key_yes, yes_cx + (dw3_feat_icons ? 4 : 6), yes_cy - 6);
+        rush_panel.key_yes = (MessageWindow *)heap_objects.try_run((Object *)rush_panel.key_yes);
     }
+    if (rush_panel.lbl_yes != NULL) {
+        rush_panel.lbl_yes->set_pos(rush_panel.lbl_yes, row_x + 18 + rush_panel.lbl_yes_w, y + RA_KEYS_Y);
+        rush_panel.lbl_yes = (MessageWindow *)heap_objects.try_run((Object *)rush_panel.lbl_yes);
+    }
+    if (rush_panel.key_no != NULL) {
+        rush_panel.key_no->set_pos(rush_panel.key_no, no_cx + (dw3_feat_icons ? 4 : 6), no_cy - 6);
+        rush_panel.key_no = (MessageWindow *)heap_objects.try_run((Object *)rush_panel.key_no);
+    }
+    if (rush_panel.lbl_no != NULL) {
+        rush_panel.lbl_no->set_pos(rush_panel.lbl_no, row_x + 18 + rush_panel.lbl_yes_w + 26 + 18 + rush_panel.lbl_no_w,
+                                   y + RA_KEYS_Y);
+        rush_panel.lbl_no = (MessageWindow *)heap_objects.try_run((Object *)rush_panel.lbl_no);
+    }
+
+    /* Pulsing/shivering green A (or blue X) badge calling the click + steady red B badge */
+    rp_slanted_quad(layer, yes_cx, yes_cy, 6 + pulse, 6 + pulse, 2, -64, -1, (u8)(dw3_feat_icons ? 28 : 44),
+                    (u8)(dw3_feat_icons ? 196 : 144), (u8)(dw3_feat_icons ? 76 : 255));
+    rp_slanted_quad(layer, yes_cx, yes_cy, 7 + pulse, 7 + pulse, 2, -64, -1, 246, 252, 255);
+    rp_slanted_quad(layer, no_cx, no_cy, 6, 6, 2, -48, -1, 224, 46, 52);
+    rp_slanted_quad(layer, no_cx, no_cy, 7, 7, 2, -48, -1, 246, 252, 255);
+
     /* the time left, gold turning red in its last third, over its empty track */
     if (left * 3 > total) {
         rp_quad(layer, x + RA_PAD, y + RA_BAR_Y, bar, RA_BAR_H, -1, 255, 208, 64);
@@ -368,12 +534,18 @@ void def_rush_ask_frame(int waited, int total) {
         rp_quad(layer, x + RA_PAD, y + RA_BAR_Y, bar, RA_BAR_H, -1, 255, 88, 56);
     }
     rp_quad(layer, x + RA_PAD, y + RA_BAR_Y, w - RA_PAD * 2, RA_BAR_H, 1, 40, 48, 72);
-    rp_box(layer, x, y, w, RA_H);
+    rp_box(layer, x, y, w, RA_H, RP_RULE_Y - 2);
 }
 
 void def_rush_ask_close(void) {
     heap_objects.stop((Object *)rush_panel.keys);
+    heap_objects.stop((Object *)rush_panel.key_yes);
+    heap_objects.stop((Object *)rush_panel.key_no);
+    heap_objects.stop((Object *)rush_panel.lbl_yes);
+    heap_objects.stop((Object *)rush_panel.lbl_no);
     rush_panel.keys = NULL;
+    rush_panel.key_yes = rush_panel.key_no = NULL;
+    rush_panel.lbl_yes = rush_panel.lbl_no = NULL;
     rush_panel.keys_w = 0;
 }
 
@@ -387,7 +559,11 @@ void def_rush_panel_reset(void) {
     rush_panel.item_row = -1;
     rush_panel.clock.left = 0;
     rush_panel.keys = NULL;
-    rush_panel.keys_w = 0;
+    rush_panel.key_yes = rush_panel.key_no = NULL;
+    rush_panel.lbl_yes = rush_panel.lbl_no = NULL;
+    rush_panel.ask_w = 0;
+    rush_panel.ask_bar_perm = 0;
+    rush_panel.ask_ticks = 0;
 }
 
 void def_rush_savestate(struct PortState *s) {
