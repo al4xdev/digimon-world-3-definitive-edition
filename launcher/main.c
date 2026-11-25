@@ -112,6 +112,7 @@ static const char *fight_label[] = {"CUSTOM", "BOTTOM", "RIGHT"};
 static const char *log_label[] = {"OFF", "SOFT", "HEAVY"};
 static const char *lay_label[] = {"PS1", "XBOX", "NINTENDO", "CUSTOM"};
 static const char *filt_label[] = {"NONE", "SHARP", "SCANLINES", "CRT", "SMOOTH"};
+static const char *vert_label[] = {"PS1", "SMOOTH", "SMOOTH + TEXTURES"};
 static const char *act_label[A_COUNT] = {"CONFIRM", "CARD", "BACK", "MENU", "L1", "R1", "START", "SELECT"};
 static const char *hud_label[H_COUNT] = {"FIGHT", "TECH", "DIGIVOLVE", "TAG", "BAG", "RUN", "INFO", "BLAST"};
 /* On-screen order of the pad rows follows the pad: confirm, back, menu, card first. */
@@ -212,11 +213,12 @@ static void foot_back(const char *lb) {
     footer(k, w, 1);
 }
 
+#define VIDEO_STEP 30 /* eight rows, like GAME */
 static int row_target_y(int s, int idx) {
     switch (s) {
     case S_HOME: return 92 + idx * home_step() - 4;
     case S_GAME: return 90 + idx * game_step() - 4;
-    case S_VIDEO: return 90 + idx * 42 - 4;
+    case S_VIDEO: return 90 + idx * VIDEO_STEP - 4;
     case S_DEBUG: return 92 + idx * 48 - 4;
     case S_SAVES: return 86 + idx * 46 - 4;
     case S_CLOUD: return 206 + idx * 44 - 4;
@@ -388,7 +390,7 @@ static void draw_home(void) {
     footer(k, w, 3);
 }
 
-#define VIDEO_N 6
+#define VIDEO_N 8
 static void draw_video(void) {
     header("DIGIMON WORLD 3", "VIDEO");
     int dw = 1280, dh = 720;
@@ -398,6 +400,8 @@ static void draw_video(void) {
     char sc_val[48], mon[48];
     if (c.scale == 0) snprintf(sc_val, sizeof(sc_val), "AUTO (%dx%d)", gw, gh);
     else snprintf(sc_val, sizeof(sc_val), "%dX (%dx%d)", c.scale, gw, gh);
+    char res_val[24];
+    snprintf(res_val, sizeof(res_val), c.iscale == 1 ? "1X (PS1)" : "%dX", c.iscale);
     const char *v[VIDEO_N] = {
         (c.widescreen && c.renderer_pc == 0) ? "AUTO" : "OFF",
         c.fullscreen ? "ON" : "OFF",
@@ -405,12 +409,17 @@ static void draw_video(void) {
         sc_val,
         c.renderer_pc ? "SOFTWARE" : "GPU",
         c.renderer_pc ? "-" : filt_label[c.filter],
+        c.renderer_pc ? "-" : res_val,
+        (c.renderer_pc || c.iscale == 1) ? "-" : vert_label[c.subpixel],
     };
-    const char *lab[VIDEO_N] = {"WIDESCREEN", "FULLSCREEN", "SCALING", "WINDOW SCALE", "RENDERER", "FILTER"};
+    const char *lab[VIDEO_N] = {"WIDESCREEN", "FULLSCREEN", "SCALING", "WINDOW SCALE", "RENDERER", "FILTER",
+                                "RESOLUTION", "3D VERTICES"};
     int gy = (int)(cur_y >= 0 && cur_screen == S_VIDEO ? cur_y : row_target_y(S_VIDEO, sel));
-    draw_focus(40, gy, W - 80, 36, 8, 0);
+    draw_focus(40, gy, W - 80, 34, 8, 0);
     for (int i = 0; i < VIDEO_N; i++) {
-        row(90 + i * 42, lab[i], v[i], i == sel, 0, strcmp(v[i], "OFF") && strcmp(v[i], "-"), 0);
+        /* Green means "changed from the PS1's picture": 1X and the PS1 vertices are the console's own. */
+        int on = i == 6 ? c.iscale > 1 : i == 7 ? c.subpixel > 0 : (strcmp(v[i], "OFF") && strcmp(v[i], "-"));
+        row(90 + i * VIDEO_STEP, lab[i], v[i], i == sel, 0, on && strcmp(v[i], "-"), 0);
     }
     static const char *desc[VIDEO_N] = {
         "Battles and field follow the screen's shape, up to 16:9 (auto-selects GPU). Menus stay 4:3.",
@@ -418,7 +427,9 @@ static void draw_video(void) {
         "FILL stretches cleanly to screen height; INTEGER uses exact multiples.",
         "Window resolution scale (AUTO fits the detected monitor).",
         "GPU enables widescreen and shaders; SOFTWARE is exact PS1.",
-        "GPU screen filter (SHARP keeps crisp pixels)."
+        "GPU screen filter (SHARP keeps crisp pixels).",
+        "Draws the game at 1X to 8X the PS1's resolution (GPU only), without dithering.",
+        "Above 1X: PS1 wobbles as the console did; SMOOTH steadies it; + TEXTURES fixes swimming."
     };
     rect(40, 346, W - 80, 1, C_EDGE, 256);
     text(44, 358, desc[sel], 15, C_NOTE);
@@ -1815,6 +1826,8 @@ static void on_press(int code) {
             }
             case 4: c.renderer_pc = !c.renderer_pc; if (c.renderer_pc) c.widescreen = 0; break;
             case 5: if (!c.renderer_pc) c.filter = (c.filter + s + 5) % 5; break;
+            case 6: if (!c.renderer_pc) c.iscale = (c.iscale - 1 + s + 8) % 8 + 1; break;
+            case 7: if (!c.renderer_pc && c.iscale > 1) c.subpixel = (c.subpixel + s + 3) % 3; break;
             }
         }
         break;

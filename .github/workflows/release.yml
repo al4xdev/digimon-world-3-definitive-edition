@@ -7,7 +7,8 @@
 #   - a pushed tag vX.Y.Z (v0.3.0, also v0.3.0-rc1; not the decomp's milestone tags such as v0.1-matching-closed):
 #     all three packages, then a GitHub Release for the tag with every file and generated notes, published (a
 #     pre-release when the tag has a suffix; a draft instead when the repository variable RELEASE_DRAFT is "true"),
-#     and (when PORTMASTER_REPO_TOKEN is set) synced to al4xdev/PortMaster-MV-New + its release workflow triggered;
+#     and (when PORTMASTER_REPO_TOKEN is set) synced to al4xdev/PortMaster-MV-New + its release workflow triggered,
+#     except for a tag with a suffix (v0.8.18-beta1): a pre-release never reaches PortMaster unless `sync_portmaster` is set;
 #   - by hand (Actions > Release > Run workflow; `gh workflow run release.yml --ref <branch> [-f tag=v0.3.0]`): all
 #     three packages as the run's artifacts (kept 30 days); with `tag`, the release too, the tag created on the run's
 #     commit when the repository has none. `sync_portmaster=true` also syncs PortMaster-MV-New on a manual run.
@@ -471,7 +472,7 @@ jobs:
   sync-portmaster:
     name: Sync to PortMaster-MV-New
     needs: [portmaster, release]
-    if: ${{ !cancelled() && needs.portmaster.result == 'success' && needs.release.result != 'failure' && (github.ref_type == 'tag' || inputs.tag != '' || inputs.sync_portmaster) }}
+    if: ${{ !cancelled() && needs.portmaster.result == 'success' && needs.release.result != 'failure' && ((github.ref_type == 'tag' && !contains(github.ref_name, '-')) || (inputs.tag != '' && !contains(inputs.tag, '-')) || inputs.sync_portmaster) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     env:

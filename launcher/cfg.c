@@ -155,6 +155,8 @@ void cfg_defaults(Cfg *c) {
     c->scale = (is_pc || is_android) ? 0 : 2;
     c->renderer_pc = 0; /* gpu */
     c->filter = 1;      /* sharp */
+    c->iscale = 1;      /* the engine's own defaults: the PS1's picture until the player raises it */
+    c->subpixel = 1;
     c->backup_max = 10;
     c->update_check = 1;
     c->sync_enabled = 1;
@@ -358,6 +360,7 @@ static const char *lang_names[] = {"english", "portuguese", "french", "german", 
 static const char *bbuf_names[] = {"off", "short", "long"};
 static const char *log_names[] = {"off", "soft", "heavy"};
 static const char *filter_names[] = {"none", "sharp", "scanlines", "crt", "smooth"};
+static const char *subpixel_names[] = {"off", "on", "perspective"};
 
 int cfg_auto_scale(const Cfg *c) {
     int dw = 1280, dh = 720;
@@ -385,6 +388,9 @@ static void cfg_read_settings(Cfg *c, const char *j) {
     c->fill = j_bool(j, "video/fill", c->fill);
     if (j_str(j, "video/renderer", s, sizeof(s))) c->renderer_pc = !strcmp(s, "software");
     if (j_str(j, "video/filter", s, sizeof(s))) c->filter = idx_of(filter_names, 5, s, c->filter);
+    c->iscale = j_int(j, "video/internal_scale", c->iscale);
+    c->iscale = c->iscale < 1 ? 1 : c->iscale > 8 ? 8 : c->iscale;
+    if (j_str(j, "video/subpixel", s, sizeof(s))) c->subpixel = idx_of(subpixel_names, 3, s, c->subpixel);
     c->widescreen = j_bool(j, "mods/widescreen/enabled", c->widescreen) && !c->renderer_pc;
     /* the window scale: AUTO stays AUTO while the file holds what AUTO gives on this monitor */
     int sc = j_int(j, "video/scale", 0);
@@ -442,6 +448,8 @@ void cfg_load(Cfg *c) {
         else if (!strcmp(line, "scale")) c->scale = n < 0 ? 0 : n > 8 ? 8 : n;
         else if (!strcmp(line, "renderer_pc")) c->renderer_pc = n != 0;
         else if (!strcmp(line, "filter")) c->filter = n < 0 ? 0 : n > 4 ? 4 : n;
+        else if (!strcmp(line, "iscale")) c->iscale = n < 1 ? 1 : n > 8 ? 8 : n;
+        else if (!strcmp(line, "subpixel")) c->subpixel = n < 0 ? 0 : n > 2 ? 2 : n;
         else if (!strcmp(line, "backup_max")) c->backup_max = n < 1 ? 1 : n > 100 ? 100 : n;
         else if (!strcmp(line, "sync_enabled")) c->sync_enabled = n != 0;
         else if (!strcmp(line, "update_check")) c->update_check = n != 0;
@@ -558,10 +566,13 @@ static int write_settings(const Cfg *c) {
     int vfill = is_android ? 1 : (is_pc && c->fill);
     int vw = is_pc ? (c->widescreen && c->renderer_pc == 0) : (is_android ? 1 : 0);
     const char *vfilt = (is_pc || is_android) ? filter_names[c->filter] : "none";
+    /* Only the PC has the choice; a build without it leaves the engine's defaults (1, "on") alone. */
+    char vres[64] = "";
+    if (is_pc) snprintf(vres, sizeof(vres), ", \"internal_scale\": %d, \"subpixel\": \"%s\"", c->iscale, subpixel_names[c->subpixel]);
     char text[6400];
     snprintf(text, sizeof(text),
         "{\n  \"schema\": 1,\n  \"disc\": { \"path\": \"%s\" },\n"
-        "  \"video\": { \"window\": true, \"scale\": %d, \"fullscreen\": %s, \"fill\": %s, \"refresh\": %d, \"renderer\": \"%s\", \"filter\": \"%s\" },\n"
+        "  \"video\": { \"window\": true, \"scale\": %d, \"fullscreen\": %s, \"fill\": %s, \"refresh\": %d, \"renderer\": \"%s\", \"filter\": \"%s\"%s },\n"
         "  \"audio\": { \"mute\": false },\n  \"memcard1\": \"card1.mcd\",\n  \"memcard2\": \"card2.mcd\",\n"
         "  \"watchdog\": 0,\n  \"debug\": { \"logs\": \"%s\" },\n  \"mods\": {\n"
         "    \"fast_forward\": { \"enabled\": %s, \"speed\": \"%s\", \"mute\": true, \"hold\": \"%s\", "
@@ -574,7 +585,7 @@ static int write_settings(const Cfg *c) {
         "    \"battle_menu\": { \"enabled\": true, \"fight\": \"%s\", \"tech\": \"%s\", \"digivolve\": \"%s\", \"tag\": \"%s\", "
         "\"item\": \"%s\", \"run\": \"%s\", \"inspect\": \"%s\", \"blast\": \"%s\", \"remember_cursor\": %s, \"buffer_input\": \"%s\" },\n"
         "    \"led_bar\": { \"enabled\": %s }\n  },\n%s  \"input\": { \"gamepad\": %s }\n}\n",
-        disc_esc, vscale, vfull ? "true" : "false", vfill ? "true" : "false", c->hz, renderer, vfilt,
+        disc_esc, vscale, vfull ? "true" : "false", vfill ? "true" : "false", c->hz, renderer, vfilt, vres,
         log_names[c->logs], c->ff ? "true" : "false", ff_names[c->ff ? c->ff : 3],
         /* Hold Tab on a PC keyboard; SELECT + R1 (the player's buttons for them) turns it on and off on
          * every build: the runtime's toggle binding, a chord, so neither button reaches the game once both are down.
@@ -596,9 +607,9 @@ int cfg_save(const Cfg *c) {
     char path[600], text[3600] = "", line[1400];
     int rc = 0;
     snprintf(text, sizeof(text), "hz=%d\nff=%d\nff_speed=%s\nload=%d\nskip=%d\nbattles=%d\nhit=%d\nsaveany=1\nbmenu=1\nschema=%d\n"
-             "bmem=%d\nbbuf=%d\nwidescreen=%d\nfullscreen=%d\ntouch_pad=%d\nfill=%d\nscale=%d\nrenderer_pc=%d\nfilter=%d\n",
+             "bmem=%d\nbbuf=%d\nwidescreen=%d\nfullscreen=%d\ntouch_pad=%d\nfill=%d\nscale=%d\nrenderer_pc=%d\nfilter=%d\niscale=%d\nsubpixel=%d\n",
              c->hz, c->ff ? 1 : 0, ff_names[c->ff ? c->ff : 3], c->load, c->skip, c->battles, c->hit, SCHEMA_TUI_STATE,
-             c->bmem, c->bbuf, c->widescreen, c->fullscreen, c->touch_pad, c->fill, c->scale, c->renderer_pc, c->filter);
+             c->bmem, c->bbuf, c->widescreen, c->fullscreen, c->touch_pad, c->fill, c->scale, c->renderer_pc, c->filter, c->iscale, c->subpixel);
     if (disc_path[0]) {
         snprintf(line, sizeof(line), "disc=%s\n", disc_path);
         strcat(text, line);

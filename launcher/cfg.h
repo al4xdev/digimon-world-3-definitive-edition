@@ -29,6 +29,8 @@ typedef struct Cfg {
     int scale;               /* PC window scale: 0 = auto from monitor, 2..6 manual */
     int renderer_pc;         /* 0 gpu, 1 software (PC only) */
     int filter;              /* 0 none, 1 sharp, 2 scanlines, 3 crt, 4 smooth (PC GPU) */
+    int iscale;              /* video.internal_scale: 1..8 times the PS1's resolution (PC GPU) */
+    int subpixel;            /* video.subpixel: 0 off, 1 on, 2 perspective (PC GPU, above iscale 1) */
     int backup_max;          /* 1..100 local rotating card1.mcd snapshots */
     int sync_enabled;        /* 0 off, 1 cloud cross-play sync active */
     int sync_interval_min;   /* 0 = start/exit only, else 5, 10, 15, 20, 30 min */
