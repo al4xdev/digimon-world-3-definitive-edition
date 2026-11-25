@@ -684,18 +684,15 @@ void fieldmenu_update(Fieldmenu *obj, FieldmenuWindows *data) {
                 }
 #ifdef PC_PORT
                 if (obj->bestiary && obj->cursor == obj->option_count - 1) {
-                    obj->bs_mat = 0;
-                    fieldmenu_bestiary_open(obj, data);
-                    obj->base.step = BS_STEP;
-                    break;
-                }
-                if (obj->materials && obj->cursor == obj->materials_at) {
+                    obj->bs_mat = 2;
+                    done = 1;
+                    obj->base.substep = 0;
+                } else if (obj->materials && obj->cursor == obj->materials_at) {
                     obj->bs_mat = 1;
                     fieldmenu_bestiary_open(obj, data);
                     obj->base.step = BS_STEP;
                     break;
-                }
-                if (obj->guide && obj->cursor == obj->guide_at) {
+                } else if (obj->guide && obj->cursor == obj->guide_at) {
                     /* the menu closes as on a cancel (on the field substep 1 ends it without a map change; in STSTATUS
                      * substep 0 goes back to the field), and the field's next idle frame opens the Guide */
                     def_guide_request();
@@ -923,6 +920,13 @@ void fieldmenu_update(Fieldmenu *obj, FieldmenuWindows *data) {
             }
             break;
         case 6:
+#ifdef PC_PORT
+            if (obj->bs_mat == 2) {
+                gamestate_data.funcs.set_next_map(0x1100, 0);
+                obj->base.step++;
+                break;
+            }
+#endif
             if (gamestate_data.funcs.get_map() == 0x1000) {
                 gamestate_data.funcs.set_next_map(gamestate_data.field_map, 0);
             } else {

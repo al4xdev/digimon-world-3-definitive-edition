@@ -38,7 +38,7 @@ extern void port_log(const char *fmt, ...);
 
 /* The turn of the colour wheel, in degrees, per kind: the regional Rare's and the Super Rare's (owner-tunable). An
  * enemy persona with its own colours (definitive_persona.h HUES) is DEF_RECOLOR_PERSONA, turned rc_persona_deg. */
-static const int rc_degrees[DEF_RECOLOR_KINDS] = { 0, 120, 200, 0, 0, 0, 0 };
+static const int rc_degrees[DEF_RECOLOR_KINDS] = { 0, 120, 200, 0, 0, 0, 0, 0 };
 static int rc_persona_deg;
 
 static const void *rc_model; /* the enemy's model in a rare battle (compared only, never followed) */
@@ -101,6 +101,15 @@ void def_recolor_model_added(const void *model, int id) {
     rc_kind = kind;
     if (kind != DEF_RECOLOR_NONE) {
         port_log("recolor: the enemy's model, kind %d (%d degrees)", kind, rc_degrees[kind]);
+    }
+}
+
+void def_recolor_set_model(const void *model, int kind, int degrees) {
+    rc_model = kind != DEF_RECOLOR_NONE ? model : NULL;
+    rc_kind = kind;
+    rc_persona_deg = degrees;
+    if (kind == DEF_RECOLOR_PERSONA) {
+        rc_pool_used = 0;
     }
 }
 
@@ -231,6 +240,16 @@ const unsigned short *def_recolor_clut(const unsigned short *src, int n, int kin
     if (kind == DEF_RECOLOR_GOLD) {
         for (i = 0; i < n; i++) {
             out[i] = golden(src[i]);
+        }
+        return out;
+    }
+    if (kind == DEF_RECOLOR_SILHOUETTE) {
+        for (i = 0; i < n; i++) {
+            if ((src[i] & 0x7FFF) == 0) {
+                out[i] = src[i];
+            } else {
+                out[i] = (unsigned short)((2 | (4 << 5) | (9 << 10)) | (src[i] & 0x8000));
+            }
         }
         return out;
     }

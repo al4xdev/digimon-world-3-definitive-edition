@@ -551,7 +551,7 @@ int def_superhunt_frame(void);              /* the field's idle step: 1 while th
 void def_superhunt_screen_savestate(struct PortState *s);
 /* The rare foes' palette swap (definitive_recolor.c): the kinds, and its save-state part (the hooks are in port.h). */
 enum { DEF_RECOLOR_NONE, DEF_RECOLOR_RARE, DEF_RECOLOR_SUPER, DEF_RECOLOR_DARK, DEF_RECOLOR_BLACK, DEF_RECOLOR_GOLD,
-       DEF_RECOLOR_PERSONA, DEF_RECOLOR_KINDS };
+       DEF_RECOLOR_PERSONA, DEF_RECOLOR_SILHOUETTE, DEF_RECOLOR_KINDS };
 void def_recolor_enemy_hue(int degrees); /* an enemy persona's phase colour (definitive_persona.h HUES) */
 int def_persona_model_hue(void);         /* the colour of the enemy model being added, 0 none (definitive.c) */
 void def_recolor_savestate(struct PortState *s);

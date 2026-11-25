@@ -1766,6 +1766,10 @@ void def_action_resolved(u8 side, s32 id, s32 value) {
             def_bestiary_discover(def_bestiary_index(fightstg_battle.state.members[1][target].digimon),
                                   def_family_bits(hit_elem)); /* a pair is one affinity: both of it are learnt */
         }
+        {
+            extern void def_bestiary_ext_record_enemy(int species_id, int element_mask);
+            def_bestiary_ext_record_enemy(fightstg_battle.state.members[1][target].digimon, def_family_bits(hit_elem));
+        }
     }
     if (!was && chain.staggered[target] && def_persona_staggered(target % 3)) { /* ON_STAGGER: a new phase */
         persona_phase_changed(target % 3);
@@ -1941,6 +1945,10 @@ int def_tech_effect(u8 side, int tech, int *msg) {
             def_persona_learn(slot, 0x7F);
         } else {
             def_bestiary_discover(def_bestiary_index(fightstg_battle.state.members[1][slot].digimon), 0x7F);
+        }
+        {
+            extern void def_bestiary_ext_record_enemy(int species_id, int element_mask);
+            def_bestiary_ext_record_enemy(fightstg_battle.state.members[1][slot].digimon, 0x7F);
         }
         *msg = 0;
         if (log_on()) {

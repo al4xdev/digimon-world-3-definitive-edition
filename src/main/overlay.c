@@ -76,9 +76,14 @@ void overlay_run_object(Object *obj, Object **result) {
 #ifndef PC_PORT
         *result = (Object *)OVERLAY_FN(1, overlay_entries[gamestate_data.funcs.get_map() >> 8])();
 #else
-        /* PC_PORT: called as returning the object, which the table's s32 would truncate (cast through void (*)(void),
-         * which -Wcast-function-type lets any function pointer pass through) */
-        *result = ((Object *(*)(void))(void (*)(void))OVERLAY_FN(1, overlay_entries[gamestate_data.funcs.get_map() >> 8]))();
+        if ((gamestate_data.funcs.get_map() >> 8) == 17) {
+            extern Object *def_bestiary_stage_entry(void);
+            *result = def_bestiary_stage_entry();
+        } else {
+            /* PC_PORT: called as returning the object, which the table's s32 would truncate (cast through void (*)(void),
+             * which -Wcast-function-type lets any function pointer pass through) */
+            *result = ((Object *(*)(void))(void (*)(void))OVERLAY_FN(1, overlay_entries[gamestate_data.funcs.get_map() >> 8]))();
+        }
 #endif
         obj->next_state(obj);
         break;
@@ -105,6 +110,11 @@ void overlay_load_stage(void) {
     if (overlay_module.stage != stage) {
         overlay_module.stage = stage;
         overlay_module.file = -1;
+#ifdef PC_PORT
+        if (overlay_files[stage] == 0) {
+            return;
+        }
+#endif
         src = cdload_module.files.get_file(overlay_files[stage]);
         OVERLAY_COPY(1, overlay_files[stage], main_overlay_base, src, filetable_funcs.get_sectors(overlay_files[stage]) << 11);
     }
