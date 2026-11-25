@@ -174,12 +174,12 @@ Q135 DMG305:8 22@3: Cansaço: sem escolha | <7><9><7>Eu me viro. Sempre me<1>vir
 Q44 DMG400:0 1@1: Desafio respeitoso | <7><9><7>MasterTyranno.<2,2><3>Vim desafiar você.<1>Se aceitar.<2,2>
 Q44 DMG400:0 1@2: Direto | <7><9><7>MasterTyranno.<2,2><3>Lute comigo.<2,2>
 Q44 DMG400:0 1@3: Irônico: já comeu? | <7><9><7>MasterTyranno. Lute<1>comigo.<2,2><3>Espero que tenha<1>comido. Odiaria uma<1>desculpa.<2,2>
-Q45 DMG400:2 1@1: Formal | <7><9><7>Líder Seiryu. Venci<1>MasterTyranno.<2,2><3>Peço uma batalha.<2,2>
-Q45 DMG400:2 1@2: Direto | <7><9><7>Líder Seiryu. Derrotei<1>MasterTyranno.<2,2><3>Quer lutar comigo<1>agora?<2,2>
-Q45 DMG400:2 1@3: Empolgado | <7><9><7>Líder Seiryu! Venci<1>MasterTyranno. Agora<1>é a sua vez.<2,2>
-Q46 DMG400:3 2@1: Honrado | <7><9><7>Sou <8,1><5,1>.<2,2><3>Foi uma batalha<1>honrada.<2,2>
-Q46 DMG400:3 2@2: Humilde: foi por pouco | <7><9><7>Sou <8,1><5,1>.<2,2><3>Foi sorte. Podia ter<1>sido o contrário.<2,2>
-Q46 DMG400:3 2@3: Orgulhoso: lembre-se | <7><9><7>Sou <8,1><5,1>.<2,2><3>Lembre-se do nome.<1>Volto como Champion.<2,2>
+Q45 DMG400:2 1@1: Na moral [lisa:+1] | <7><9><7>Líder Seiryu. Passei pelo<1>MasterTyranno.<2,2><3>Peço a honra da luta.<2,2>
+Q45 DMG400:2 1@2: Direto ao ponto [rep:+1] | <7><9><7>Líder Seiryu! Derrubei<1>o MasterTyranno.<2,2><3>Bora tirar a limpo<1>agora?<2,2>
+Q45 DMG400:2 1@3: Cheio de marra [keith:+1] | <7><9><7>Líder Seiryu! O dinossauro<1>já caiu. Agora é tua vez!<2,2>
+Q46 DMG400:3 2@1: Que lutaça! [rep:+1] | <7><9><7>Sou <8,1><5,1>.<2,2><3>Que lutaça, hein! Valeu<1>cada segundo!<2,2>
+Q46 DMG400:3 2@2: Foi por pouco [teddy:+1] | <7><9><7>Sou <8,1><5,1>.<2,2><3>Foi no sufoco! Podia<1>ter ido pro outro lado.<2,2>
+Q46 DMG400:3 2@3: Grava esse nome! [keith:+1,rep:+1] | <7><9><7>Sou <8,1><5,1>.<2,2><3>Grava esse nome que o<1>título mundial é meu!<2,2>
 Q48 DMG400:6 1@1: Desconfiado: não é acaso | <7><9><7>Setor Sul. Enfim.<2,2><3>Aquele Digimon sabia<1>exatamente aonde ir.<1>Não gosto disso.<2,2>
 Q48 DMG400:6 1@2: Apreensivo: ainda aqui | <7><9><7>Setor Sul. Enfim.<2,2><3>Do que ele fugia?<1>Seja o que for, ainda<1>está aqui.<2,2>
 Q48 DMG400:6 1@3: Curioso: vou descobrir | <7><9><7>Setor Sul. Enfim.<2,2><3>Aquele Digimon...<1>Quero saber o que era.<2,2>
@@ -360,3 +360,23 @@ Q150 DMG900:5 3@3: Seco: pegou leve | <7><9><7>Valeu. Você pegou<1>leve comigo,
 Q39 DMG900:5 7@1: Ambição | <7><9><7>Pode deixar.<2,2><3>Vou ser o World Champ<1>mais forte que já<1>existiu.<2,2>
 Q39 DMG900:5 7@2: Humildade: só o começo | <7><9><7>Vou dar o meu melhor.<1>E vou continuar<1>aprendendo.<2,2><3>O título é só o<1>começo.<2,2>
 Q39 DMG900:5 7@3: Agridoce: sem mais perdas | <7><9><7>Vou ser forte. Forte<1>o bastante pra que<1>ninguém se perca mais.<2,2>
+
+# Fase 2: Mini-arcos de NPCs de Seiryu City (TALK01, mapas 0x22E / 0x22F / 0x230)
+Q208 TALK01 10@1: Ela tá na outra torre! [rep:+1] | <7>Maria Chorona<7>Buááá! Me perdi da Elle!<1>E agora, o que eu faço?!<2,2><3><7><9><7>Calma, respira! Procura<1>na torre das lojas que<1>ela deve tá lá!<2,2>
+Q208 TALK01 10@2: Para de chorar, ué [keith:+1] | <7>Maria Chorona<7>Buááá! Me perdi da Elle!<1>E agora, o que eu faço?!<2,2><3><7><9><7>Ficar chorando na praça<1>não vai fazer ela<1>brotar do chão, moça!<2,2>
+Q208 TALK01 10@3: Vai comer algo antes [teddy:+1] | <7>Maria Chorona<7>Buááá! Me perdi da Elle!<1>E agora, o que eu faço?!<2,2><3><7><9><7>Pega um lanche na pousada<1>e esfria a cabeça.<1>Logo vocês se acham!<2,2>
+Q209 TALK01 65@1: Ela tá chorando por ti! [rep:+1] | <7>Elle Charmosa<7>Cadê a Maria, hein?<1>Fico preocupada porque<1>ela chora por tudo...<2,2><3><7><9><7>Vai lá acudir a coitada<1>que ela tá abrindo o<1>berreiro na praça!<2,2>
+Q209 TALK01 65@2: Deixa ela se virar [keith:+1] | <7>Elle Charmosa<7>Cadê a Maria, hein?<1>Fico preocupada porque<1>ela chora por tudo...<2,2><3><7><9><7>Relaxa, um pouco de<1>independência faz bem.<1>Ela te acha!<2,2>
+Q209 TALK01 65@3: Vocês duas se merecem [ivy:+1] | <7>Elle Charmosa<7>Cadê a Maria, hein?<1>Fico preocupada porque<1>ela chora por tudo...<2,2><3><7><9><7>Uma perdida ali, outra<1>aqui... vocês duas<1>combinam mesmo, hein.<2,2>
+Q210 TALK01 11@1: Vou derrubar ele já já [keith:+1,rep:+1] | <7>Sarah<7>O Líder de Seiryu é<1>tããão lindo! E super<1>estiloso!<2,2><3><7><9><7>Aproveita o visual dele<1>agora, porque daqui a<1>pouco eu vou amassar!<2,2>
+Q210 TALK01 11@2: Parece um Golden, né? [teddy:+1] | <7>Sarah<7>O Líder de Seiryu é<1>tããão lindo! E super<1>estiloso!<2,2><3><7><9><7>Sabe que ele tem mó<1>cara de cachorro Golden<1>Retriever, né?<2,2>
+Q210 TALK01 11@3: Foco no treino, moça [lisa:+1] | <7>Sarah<7>O Líder de Seiryu é<1>tããão lindo! E super<1>estiloso!<2,2><3><7><9><7>Em vez de suspirar,<1>vai treinar teu Digimon!<1>Beleza não ganha luta!<2,2>
+Q211 TALK01 77@1: Péssimo espião, hein! [ivy:+1] | <7>Gerente Sasaki<7>Somos da concorrente da<1>MAGAMI. Segredo: viemos<1>espionar o Digimon Online!<2,2><3><7><9><7>Tu acabou de contar o<1>segredo pra um estranho!<1>Belo espião, hein!<2,2>
+Q211 TALK01 77@2: Me contrata então! [rep:+1] | <7>Gerente Sasaki<7>Somos da concorrente da<1>MAGAMI. Segredo: viemos<1>espionar o Digimon Online!<2,2><3><7><9><7>Ôpa, tem vaga aberta aí?<1>Por uns Bits eu faço<1>um relatório completo!<2,2>
+Q211 TALK01 77@3: Vou dedurar pra MAGAMI [rep:-1] | <7>Gerente Sasaki<7>Somos da concorrente da<1>MAGAMI. Segredo: viemos<1>espionar o Digimon Online!<2,2><3><7><9><7>Espionagem industrial?<1>Tô indo chamar o pessoal<1>da MAGAMI agora!<2,2>
+Q212 TALK01 78@1: Esquece o chefe e joga! [teddy:+1] | <7>Srta. Olivia<7>Ai, por que esse jogo é<1>tão divertido?! Dá até<1>raiva de tão bom!<2,2><3><7><9><7>Larga esse papo de<1>concorrente e aproveita!<1>Ninguém precisa saber!<2,2>
+Q212 TALK01 78@2: Anota pro relatório [lisa:+1] | <7>Srta. Olivia<7>Ai, por que esse jogo é<1>tão divertido?! Dá até<1>raiva de tão bom!<2,2><3><7><9><7>Se tá gostando tanto,<1>anota tudo no relatório<1>e aprende com eles!<2,2>
+Q212 TALK01 78@3: Tá perdendo tempo aqui [keith:+1] | <7>Srta. Olivia<7>Ai, por que esse jogo é<1>tão divertido?! Dá até<1>raiva de tão bom!<2,2><3><7><9><7>Viciou no jogo do rival?<1>Teu chefe vai ter um<1>treco se descobrir!<2,2>
+Q213 TALK01 15@1: Ventania braba aqui! [teddy:+1] | <7>Agumon<7>Bem-vindo a Seiryu,<1>a Cidade do Vento!<1>Fique à vontade!<2,2><3><7><9><7>Ôpa, valeu! Só segura<1>o boné que o vento aqui<1>não brinca em serviço!<2,2>
+Q213 TALK01 15@2: Cadê o Líder daqui? [rep:+1] | <7>Agumon<7>Bem-vindo a Seiryu,<1>a Cidade do Vento!<1>Fique à vontade!<2,2><3><7><9><7>Valeu, mas tô com pressa:<1>onde eu acho o Líder<1>daqui pra desafiar?<2,2>
+Q213 TALK01 15@3: Já vi cidades melhores [rep:-1] | <7>Agumon<7>Bem-vindo a Seiryu,<1>a Cidade do Vento!<1>Fique à vontade!<2,2><3><7><9><7>Hm, bonitinha... mas<1>Asuka ainda bota isso<1>aqui no bolso.<2,2>

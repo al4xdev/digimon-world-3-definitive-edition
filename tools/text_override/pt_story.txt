@@ -48,13 +48,13 @@ DMG200:11 1: <7>Tamer Genji<7>Ho ho ho! Olha só,<1>carne nova no pedaço!<2,2><
 DMG200:11 2: <7><9><7>Na mosca! Acabei de<1>pegar meu Digimon!<2,2>
 DMG200:11 3: <7>Tamer Genji<7>Então chega mais que<1>vamos tirar um contra!<2,2><3>Esquece manual, o<1>negócio se aprende<1>levando tabefe!<2,2>
 DMG200:12 1: <7><9><7>Opa! Levei essa!<2,2>
-DMG200:12 2: <7>Tamer Genji<7>Nada mal pra quem<1>chegou ontem!<2,2><3>Olha... você tem fibra<1>pra brigar pelo título<1>mundial, moleque!<2,2>
+DMG200:12 2: <7>Tamer Genji<7>Nada mal pra quem<1>chegou ontem!<2,2><3>Olha... você tem fibra<1>pra brigar pelo título<1>mundial, jovem!<2,2>
 DMG200:12 3: <7><9><7>Título mundial? Pode<1>escrever que eu vou<1>buscar essa taça!<2,2>
 DMG200:12 4: <7>Tamer Genji<7>Calma lá, apressadinho!<1>Antes de sair no braço,<1>dá um pulo no Digi-Lab.<2,2><3>Lá você entende como<1>evoluir seus bichos<1>sem fazer besteira.<2,2>
 DMG200:12 5: <7><9><7>Digi-Lab. Anotado!<2,2><3>Valeu pela dica, coroa.<2,2>
 DMG200:12 6: <7>Tamer Genji<7>Ah, e me diz uma coisa:<1>já pegou uma Folder Bag?<2,2>
 DMG200:12 7: <7><9><7>...Uma o quê?!<2,2><3>Isso aí é de comer?<2,2>
-DMG200:12 8: <7>Tamer Genji<7>Sabia! Então passa lá<1>no Yellow Cruiser.<2,2><3>O pessoal lá te ensina<1>o bê-á-bá das Batalhas<1>de Cartas.<2,2><3>Agora vai lá, campeão.<1>Não me faça passar<1>vergonha! Ho ho ho!<2,2>
+DMG200:12 8: <7>Tamer Genji<7>Sabia! Então passa lá<1>no Yellow Cruiser.<2,2><3>O pessoal lá te ensina<1>o bê-á-bá das Batalhas<1>de Cartas.<2,2><3>Agora vai lá, fera.<1>Não me faça passar<1>vergonha! Ho ho ho!<2,2>
 DMG200:21 1: <7>Jogador Misterioso<7>Ei! Você aí, ô<1>cara de sono! Para aí!<2,2>
 DMG200:21 2: <7><9><7>Tá falando comigo?<2,2>
 DMG200:21 3: <7>Jogador Misterioso<7>Não, com o poste!<2,2><3>Você é <8,1><5,1>, né?<1>O folgado que derrubou<1>o Líder de Seiryu.<2,2>
@@ -63,7 +63,7 @@ DMG200:21 5: <7>Keith<7>Meu nome é Keith!<1>Grava bem essa cara!<2,2><3>Porque 
 DMG200:21 6: <7><9><7>Aham, senta lá.<1>Vamos ver no ringue.<2,2>
 DMG200:21 7: <7>Keith<7>Ha! Gostei da marra!<2,2><3>Então bora resolver<1>isso agora, sem choro!<2,2>
 DMG200:21 8: <7><9><7>Cai dentro!<2,2>
-DMG200:21 9: <7>Keith<7>Já vou avisando:<2,2><3>eu não tenho pena de<1>novato metido!<2,2>
+DMG200:21 9: <7>Keith<7>Já vou avisando:<2,2><3>eu não tenho pena de<1>gente metida!<2,2>
 DMG200:22 1: <7><9><7>Toma! E agora, quem é<1>que manda no pedaço?!<2,2>
 DMG200:22 2: <7>Keith<7>Tsc! Só peguei leve<1>pra você não sair<1>chorando pra mamãe!<2,2>
 DMG200:22 3: <7><9><7>Ué, você não falou que<1>não tinha pena?<2,2>
@@ -524,31 +524,31 @@ DMG305:8 24: <7>Lisa<7>Nick, você fica aqui.<2,2>
 DMG305:9 1: <7><9><7>O Game Master estava<1>mandando Vemmon pra<1>algum lugar.<2,2><3>Talvez haja uma pista.<1>Vamos mais fundo.<2,2>
 DMG305:9 2: <7><9><7>...O quê?<2,2>
 DMG305:9 3: <7><9><7>Oinkmon. Aqui, no<1>Asuka Server?<2,2>
-DMG400:0 1: <7><9><7>MasterTyranno.<2,2><3>Lute comigo.<2,2>
-DMG400:0 2: <7>MasterTyranno<7>Manda ver! Bati um<1>rango e tô tinindo!<2,2>
-DMG400:0 3: <7><9><7>Bom. Então vai<1>significar algo.<2,2><3>Vou mostrar como sou<1>forte.<2,2>
-DMG400:0 4: <7>MasterTyranno<7>Quanta marra, jovem!<2,2><3>...Mas só garganta<1>não me derruba!<2,2>
-DMG400:1 1: <7>MasterTyranno<7>Bem, jovem. Você é<1>bom.<2,2><3>Fique com isto por<1>me derrotar.<2,2>
-DMG400:1 2: <7><9><7>Peguei a Garra Velha.<2,2>
-DMG400:1 3: <7>MasterTyranno<7>Leve isso ao Líder<1>Seiryu.<2,2><3>Aí ele vai lutar<1>com você.<2,2>
-DMG400:1 4: <7><9><7>Valeu, MasterTyranno.<2,2>
-DMG400:1 5: <7>MasterTyranno<7>O Líder Seiryu é<1>forte.<2,2><3>Fique em guarda.<2,2>
-DMG400:2 1: <7><9><7>Líder Seiryu. Derrotei<1>MasterTyranno.<2,2><3>Quer lutar comigo<1>agora?<2,2>
-DMG400:2 2: <7>Líder Seiryu<7>Entendo. Trouxe a<1>Garra Velha.<2,2><3>Pois bem. Mostre o<1>seu brilho!<2,2>
-DMG400:3 1: <7>Líder Seiryu<7>Você é forte.<2,2><3>Qual é o seu nome?<2,2>
-DMG400:3 2: <7><9><7>Sou <8,1><5,1>.<2,2><3>Foi uma batalha<1>honrada.<2,2>
-DMG400:3 3: <7>Líder Seiryu<7>Então leve isto com<1>você, <8,1><5,1>.<2,2>
-DMG400:3 4: <7><9><7>O Distintivo Seiryu...<1>e um Ticket de Prata.<2,2>
-DMG400:3 5: <7>Líder Seiryu<7>Você vai precisar<1>deles nas batalhas<1>que virão.<2,2><3>São importantes,<1>não os perca.<2,2>
-DMG400:3 6: <7><9><7>Valeu, Líder<1>Seiryu.<2,2>
-DMG400:3 7: <7>Líder Seiryu<7>Desafie o Líder<1>Suzaku no Setor Sul<1>em seguida.<2,2><3>Ainda há um longo<1>caminho pela frente.<2,2><3>Mas você consegue.<1>Boa sorte.<2,2>
-DMG400:4 1: <7><9><7>Hã? O que está<1>acontecendo?<2,2>
-DMG400:4 2: Código Vermelho! Código Vermelho!<2,2><3>Vamos parar por um momento por<1>motivos de segurança.<2,2>
-DMG400:4 3: <7><9><7>O carro todo está<1>tremendo.<2,2><3>Um terremoto...!<2,2>
-DMG400:4 4: <7><9><7>O quê...?<2,2><3>Algo se move lá<1>embaixo.<2,2><3>Aquilo é um Digimon?!<2,2>
-DMG400:5 1: Agradecemos a espera.<2,2><3>Retomaremos agora a operação<1>da gôndola.<2,2>
-DMG400:5 2: <7><9><7>Ah... Ei, espere!<2,2><3>...Fugiu.<2,2><3>Sabia exatamente<1>para onde ia.<2,2>
-DMG400:6 1: <7><9><7>Setor Sul. Enfim<1>cheguei.<2,2><3>Mas que Digimon era<1>aquele?<2,2><3>E do que ele<1>fugia?<2,2>
+DMG400:0 1: <7><9><7>Ô MasterTyranno!<2,2><3>Chega aí que eu vim<1>pro desafio!<2,2>
+DMG400:0 2: <7>MasterTyranno<7>Aí sim! Acabei de bater<1>um pratão e tô tinindo!<2,2>
+DMG400:0 3: <7><9><7>Ótimo, assim não tem<1>desculpa depois.<2,2><3>Bora ver quem aguenta<1>o tranco!<2,2>
+DMG400:0 4: <7>MasterTyranno<7>Olha a marra da fera!<2,2><3>Só no gogó você não<1>me derruba não!<2,2>
+DMG400:1 1: <7>MasterTyranno<7>Pô, jovem... tu bate<1>pesado mesmo!<2,2><3>Toma aqui, mereceu<1>com sobra.<2,2>
+DMG400:1 2: <7><9><7>Peguei a Garra Velha!<2,2>
+DMG400:1 3: <7>MasterTyranno<7>Mostra isso pro Líder<1>de Seiryu.<2,2><3>Aí ele vai saber que<1>você não é conversa fiada.<2,2>
+DMG400:1 4: <7><9><7>Valeu, MasterTyranno!<1>Até a próxima!<2,2>
+DMG400:1 5: <7>MasterTyranno<7>Só não relaxa: o Líder<1>de Seiryu é casca-grossa.<2,2><3>Entra ligado!<2,2>
+DMG400:2 1: <7><9><7>Líder Seiryu! Derrubei<1>o MasterTyranno.<2,2><3>Bora tirar a limpo<1>agora?<2,2>
+DMG400:2 2: <7>Líder Seiryu<7>Hm... a Garra Velha.<1>Você realmente passou<1>pelo teste.<2,2><3>Muito bem. Mostre do<1>que é feito!<2,2>
+DMG400:3 1: <7>Líder Seiryu<7>Impressionante... Você<1>tem fibra de verdade.<2,2><3>Qual é o seu nome?<2,2>
+DMG400:3 2: <7><9><7>Sou <8,1><5,1>.<2,2><3>Que lutaça, hein!<2,2>
+DMG400:3 3: <7>Líder Seiryu<7>Pois guarde isto com<1>orgulho, <8,1><5,1>.<2,2>
+DMG400:3 4: <7><9><7>O Distintivo Seiryu...<1>e um Ticket de Prata!<2,2>
+DMG400:3 5: <7>Líder Seiryu<7>Você vai precisar deles<1>no que vem pela frente.<2,2><3>Cuide bem disso.<2,2>
+DMG400:3 6: <7><9><7>Pode deixar, Líder!<1>Valeu mesmo!<2,2>
+DMG400:3 7: <7>Líder Seiryu<7>Seu próximo desafio é<1>a Líder de Suzaku, no<1>Setor Sul.<2,2><3>A estrada é longa e o<1>nível só vai subir.<2,2><3>Mas eu boto fé em você.<1>Boa sorte.<2,2>
+DMG400:4 1: <7><9><7>Ué... que barulheira é<1>essa?!<2,2>
+DMG400:4 2: Código Vermelho! Código Vermelho!<2,2><3>Parada de emergência por<1>motivos de segurança!<2,2>
+DMG400:4 3: <7><9><7>O bondinho tá sacudindo<1>todo! Terremoto?!<2,2>
+DMG400:4 4: <7><9><7>Espera aí...<2,2><3>Tem algo se mexendo lá<1>embaixo!<2,2><3>Aquilo é um Digimon?!<2,2>
+DMG400:5 1: Agradecemos a paciência.<2,2><3>Retomando a viagem da<1>gôndola.<2,2>
+DMG400:5 2: <7><9><7>Ei, volta aqui!<2,2><3>...Sumiu no mapa.<2,2><3>E sabia certinho pra<1>onde estava indo.<2,2>
+DMG400:6 1: <7><9><7>Setor Sul... enfim<1>chegamos.<2,2><3>Mas que Digimon era<1>aquele lá embaixo?<2,2><3>E de quem ele tava<1>fugindo?<2,2>
 DMG400:7 1: <7><9><7>Que estranho.<1>Não há ninguém aqui.<2,2><3>Uma vila desse tamanho<1>nunca deveria ser tão<1>silenciosa.<2,2>
 DMG400:7 2: <7>Voz<7>...Uuuuuu!<2,2>
 DMG400:7 3: <7><9><7>Q-quê?!<2,2>

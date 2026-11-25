@@ -65,7 +65,7 @@ static const DefBattlePrompt prompts[] = {
     {
         0, 220, -1, 0, 6, 1, 100,
         "DOMADOR DE ASUKA",
-        "Ei, novato! Achou que Asuka era passeio no parque?",
+        "Ei, desafiante! Achou que Asuka era passeio?",
         3,
         {
             {
@@ -113,7 +113,7 @@ static const DefBattlePrompt prompts[] = {
     {
         2, 222, -1, 1, 15, 2, 50,
         "CHEFE",
-        "Tsc... moleque folgado! Agora o bicho vai pegar!",
+        "Tsc... quanta folga! Agora o bicho vai pegar!",
         3,
         {
             {
@@ -130,6 +130,30 @@ static const DefBattlePrompt prompts[] = {
                 "Ja era, vamos perder essa...",
                 "MORAL ABALADA! Seu ATK caiu (ATK -1)!",
                 BP_FX_MOD, 0, 0, -1, 2, DEF_BOND_IVY, -1, -1
+            },
+        },
+    },
+    /* Phase 2: Batalha contra Lider de Ginásio / Seiryu (progress 4..9, tipo Tamer/Lider) */
+    {
+        3, 223, -1, 4, 9, 1, 50,
+        "LIDER DE SEIRYU",
+        "Nada mal! Mas quero ver segurar o vento de Seiryu!",
+        3,
+        {
+            {
+                "Pode soprar que eu nao arredo pe! (DEF +2)",
+                "FIRME COMO ROCHA! DEF +2 por 3 turnos!",
+                BP_FX_MOD, 0, 1, 2, 3, DEF_BOND_LISA, 1, 2
+            },
+            {
+                "Entendi teu ritmo! (SPD +1)",
+                "LEITURA PERFEITA! SPD +1 por 3 turnos!",
+                BP_FX_MOD, 0, 2, 1, 3, DEF_BOND_TEDDY, 1, 1
+            },
+            {
+                "Esse ventinho ai nao assusta ninguem!",
+                "PROVOCOU DEMAIS! O inimigo ficou furioso (ATK +1)!",
+                BP_FX_MOD, 1, 0, 1, 2, DEF_BOND_KEITH, 1, -1
             },
         },
     },

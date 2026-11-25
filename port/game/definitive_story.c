@@ -1109,6 +1109,19 @@ static const DefNpcArc npc_arcs[] = {
     { 7, 0x203, 49, 12, 999, 1 },  /* Lazy Alan — Stage 1 (TALK00 331) */
     { 8, 0x203, 52, 0, 11, 0 },    /* Digimon Fan Mary — Stage 0 (TALK00 239, Q207) */
     { 8, 0x203, 52, 12, 999, 1 },  /* Digimon Fan Mary — Stage 1 (TALK00 330) */
+    /* Phase 2 (Seiryu City) — 6 NPC mini-arcs across Plaza (0x22E), Shops (0x22F) & Inn (0x230) */
+    { 9, 0x22E, 46, 0, 11, 0 },    /* Crybaby Maria — Stage 0 (TALK01 10, Q208) */
+    { 9, 0x22E, 46, 12, 999, 1 },  /* Crybaby Maria — Stage 1 (TALK01 16) */
+    { 10, 0x22F, 46, 0, 11, 0 },   /* Charming Elle — Stage 0 (TALK01 65, Q209) */
+    { 10, 0x22F, 46, 12, 999, 1 }, /* Charming Elle — Stage 1 (TALK01 67) */
+    { 11, 0x22E, 50, 0, 11, 0 },   /* Sarah (Seiryu Leader fan) — Stage 0 (TALK01 11, Q210) */
+    { 11, 0x22E, 50, 12, 999, 1 }, /* Sarah — Stage 1 (TALK01 17) */
+    { 12, 0x230, 53, 0, 11, 0 },   /* Manager Sasaki (rival spy) — Stage 0 (TALK01 77, Q211) */
+    { 12, 0x230, 53, 12, 999, 1 }, /* Manager Sasaki — Stage 1 (TALK01 81) */
+    { 13, 0x230, 54, 0, 11, 0 },   /* Ms. Olivia (hooked spy) — Stage 0 (TALK01 78, Q212) */
+    { 13, 0x230, 54, 12, 999, 1 }, /* Ms. Olivia — Stage 1 (TALK01 82) */
+    { 14, 0x22E, 365, 0, 11, 0 },  /* Seiryu Agumon — Stage 0 (TALK01 15, Q213) */
+    { 14, 0x22E, 365, 12, 999, 1 },/* Seiryu Agumon — Stage 1 (TALK01 12) */
 };
 
 static const DefNpcArc *npc_arc_active(int map, int actor_id) {

@@ -10,7 +10,7 @@
 - **Tom (Equilíbrio Yu Yu Hakusho):** humor ácido, gírias clássicas dos anos 80/90, timing cômico e personalidade forte no dia a dia e nos NPCs; **drama firme, coerente e com nexo** nos momentos sérios (A.o.A, Velvet Room, clímax e viradas da trama).
 - **Dar vida aos NPCs ("mini-arcos"):** mapear NPCs secundários cujas falas evoluem com `gamestate_data.progress` ao longo da campanha e transformá-los em **mini-arcos contínuos** (ex.: o fã do Patamon em Asuka que recebe uma dica sua no início e aparece evoluído/reagindo mais tarde).
 - **Regra das 3 opções + omissão natural:** toda escolha explícita tem **3 opções (1, 2, 3)**. O estado **`0` ("não falou / ignorou")** funciona automaticamente como o **4º desfecho** — se o jogador passar batido naquela fase, o NPC se vira sozinho naquele arco e suas falas futuras refletem isso.
-- **Kaili & Nomes:** manter compatibilidade com o modo Kaili (`pt_kaili.txt`). Adaptações culturais BR na medida certa, preservando nomes oficiais de Digimons, golpes e lugares do jogo.
+- **Kaili & Nomes (Regra de Gênero Neutro):** manter 100% compatibilidade com o modo Kaili (`pt_kaili.txt`). Em todas as falas compartilhadas dirigidas ao protagonista (NPCs, chefes, escolhas e prompts de batalha), usar **termos neutros** (`jovem`, `fera`, `desafiante`, `Tamer`) em vez de termos masculinos (`garoto`, `moleque`, `novato`, `campeão`) para nunca quebrar a imersão quando Kaili for a protagonista. Usar sempre `<8,1><5,1>` para o nome do protagonista. Adaptações culturais BR na medida certa, preservando nomes oficiais de Digimons, golpes e lugares do jogo.
 
 ---
 

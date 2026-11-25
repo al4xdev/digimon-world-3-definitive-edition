@@ -614,17 +614,17 @@ Q201=3 TALK00 665: <7>Masato<7>Peraí, você derrubou o<1>Líder de Seiryu mesmo
 Q201=0 TALK00 665: <7>Masato<7>Manutenção?! Ninguém<1>nunca ouve os veteranos<1>e ainda vou perder meu<1>encontro!<2,2>
 # Agumon Coach (Q202) — etapa seguinte em TALK00 602
 Q202=1 TALK00 602: <7>Agumon<7>Fala, aluno nota dez!<1>Dica de ouro: só ganha<1>EXP quem entra na luta!<2,2><3>Então reveza o time<1>todo, sem preguiça!<2,2>
-Q202=2 TALK00 602: <7>Agumon<7>E aí, valentão do mato!<1>Lembra que só ganha<1>EXP quem entra na luta!<2,2><3>Se não revezar o time,<1>o resto fica na seca!<2,2>
+Q202=2 TALK00 602: <7>Agumon<7>E aí, fera do mato!<1>Lembra que só ganha<1>EXP quem entra na luta!<2,2><3>Se não revezar o time,<1>o resto fica na seca!<2,2>
 Q202=3 TALK00 602: <7>Agumon<7>Falei bonito de academia,<1>mas confesso: se pintar<1>um churrasco eu largo tudo!<2,2><3>Ah, e reveza o time na<1>luta pra todos ganharem<1>EXP!<2,2>
 Q202=0 TALK00 602: <7>Agumon<7>Essa geração nova nem<1>para pra ouvir dica de<1>treino...<2,2><3>Mas anota aí: só ganha<1>EXP quem entra na luta!<2,2>
 # Vovô Jake (Q203) — etapa seguinte em TALK00 646
 Q203=1 TALK00 646: <7>Jake<7>Ainda tô decidindo que<1>Digimon eu queria ser...<2,2><3>Mas esses tais de L.o.L.<1>ou A.o.A tão atrapalhando<1>a aposentadoria!<2,2>
-Q203=2 TALK00 646: <7>Jake<7>Você me deu um gelo<1>antes, hein moleque!<2,2><3>Com essa tal de A.o.A<1>solta, melhor eu ficar<1>humano mesmo! Hyo hyo!<2,2>
+Q203=2 TALK00 646: <7>Jake<7>Você me deu um gelo<1>antes, hein jovem!<2,2><3>Com essa tal de A.o.A<1>solta, melhor eu ficar<1>humano mesmo! Hyo hyo!<2,2>
 Q203=3 TALK00 646: <7>Jake<7>Humpf! Me chamou de<1>doido, mas doido mesmo<1>é esse pessoal da A.o.A!<2,2>
 Q203=0 TALK00 646: <7>Jake<7>Esses tais de L.o.L. ou<1>A.o.A... deviam parar<1>de arrumar encrenca!<2,2>
 # Maniac Jack (Q204) — etapa seguinte em TALK00 711
 Q204=1 TALK00 711: <7>Jack Maníaco<7>Fala, aprendiz! Acabei<1>me perdendo do Guilmon<1>no meio da muvuca!<2,2><3>Pelo menos tô jogando<1>de graça agora!<2,2>
-Q204=2 TALK00 711: <7>Jack Maníaco<7>E aí, brigão do soco!<1>Me perdi do Guilmon,<1>mas vê se equipa arma!<2,2><3>Soco limpo não derruba<1>chefe não, viu!<2,2>
+Q204=2 TALK00 711: <7>Jack Maníaco<7>E aí, fera do soco!<1>Me perdi do Guilmon,<1>mas vê se equipa arma!<2,2><3>Soco limpo não derruba<1>chefe não, viu!<2,2>
 Q204=3 TALK00 711: <7>Jack Maníaco<7>Tu deu azar, hein!<1>Perguntou do Guilmon e<1>eu perdi o bicho de vez!<2,2><3>Mas ei: pelo menos o<1>jogo tá na faixa!<2,2>
 Q204=0 TALK00 711: <7>Jack Maníaco<7>Me separei do Guilmon<1>e ninguém para pra<1>ouvir minhas builds...<2,2><3>Pelo menos tô jogando<1>de graça!<2,2>
 # Shiro Novato (Q205) — etapa seguinte em TALK00 329
@@ -642,3 +642,35 @@ Q207=1 TALK00 330: <7>Mary Fã de Digimon<7>Você me animou com o<1>Gallantmon, 
 Q207=2 TALK00 330: <7>Mary Fã de Digimon<7>A culpa é toda sua!<1>Botou Beelzemon na minha<1>cabeça e agora travei!<2,2><3>Gallantmon ou Beelzemon?!<1>Não consigo escolher!<2,2>
 Q207=3 TALK00 330: <7>Mary Fã de Digimon<7>Tô treinando o básico<1>como você mandou, mas<1>já tô na dúvida:<2,2><3>Gallantmon ou Beelzemon?<1>Sonhar não custa nada!<2,2>
 Q207=0 TALK00 330: <7>Mary Fã de Digimon<7>Vi uma revista aqui e<1>agora travei de vez:<2,2><3>Gallantmon ou Beelzemon?<1>Qual é melhor?!<2,2>
+
+# ---- Fase 2: Mini-arcos de NPCs de Seiryu City (TALK01, mapas 0x22E / 0x22F / 0x230) ----
+# Maria Chorona (Q208) — etapa seguinte em TALK01 16
+Q208=1 TALK01 16: <7>Maria Chorona<7>Fui lá onde você falou<1>e não achei a Elle!<2,2><3>A gente combinou na<1>Torre Gale, eu acho...<1>buááá!<2,2>
+Q208=2 TALK01 16: <7>Maria Chorona<7>Engoli o choro como você<1>mandou, mas cadê a Elle?!<2,2><3>A gente não tinha<1>combinado na Torre Gale?!<2,2>
+Q208=3 TALK01 16: <7>Maria Chorona<7>Comi um salgado e deu<1>uma acalmada... mas ainda<1>não achei a Elle!<2,2>
+Q208=0 TALK01 16: <7>Maria Chorona<7>Não acho a Elle em lugar<1>nenhum! A gente combinou<1>na Torre Gale, buááá!<2,2>
+# Elle Charmosa (Q209) — etapa seguinte em TALK01 67
+Q209=1 TALK01 67: <7>Elle Charmosa<7>Eu fui procurar ela,<1>juro! Mas ela sumiu!<2,2><3>Eu disse que tava na<1>Torre Zephyr, não Gale!<2,2>
+Q209=2 TALK01 67: <7>Elle Charmosa<7>Escutei você e deixei<1>ela se virar... agora<1>sumiu de vez!<2,2><3>Eu falei Torre Zephyr!<2,2>
+Q209=3 TALK01 67: <7>Elle Charmosa<7>Não ri não! Acho que eu<1>falei Torre Zephyr e ela<1>entendeu outra torre!<2,2>
+Q209=0 TALK01 67: <7>Elle Charmosa<7>Cadê a Maria, hein?<1>Eu falei bem claro que<1>tava na Torre Zephyr...<2,2>
+# Sarah (Q210) — etapa seguinte em TALK01 17
+Q210=1 TALK01 17: <7>Sarah<7>Humpf! Mesmo se você<1>vencer ele, o Líder de<1>Seiryu continua fofo!<2,2><3>Parece até um retriever!<2,2>
+Q210=2 TALK01 17: <7>Sarah<7>Não é que você tinha<1>razão?! O Líder de Seiryu<1>parece um retriever mesmo!<2,2><3>Ficou ainda mais fofo!<2,2>
+Q210=3 TALK01 17: <7>Sarah<7>Tentei focar no treino,<1>mas olha pra ele... parece<1>um retriever de tão fofo!<2,2>
+Q210=0 TALK01 17: <7>Sarah<7>Reparei agora: o Líder<1>de Seiryu parece um<1>retriever! Que fofo!<2,2>
+# Gerente Sasaki (Q211) — etapa seguinte em TALK01 81
+Q211=1 TALK01 81: <7>Gerente Sasaki<7>Psiu! Dessa vez tô<1>discreto... mas a Srta.<1>Olivia tá revoltada!<2,2><3>A MAGAMI deu um banho<1>na nossa empresa!<2,2>
+Q211=2 TALK01 81: <7>Gerente Sasaki<7>Sobre aquela vaga... a<1>Srta. Olivia tá quase<1>pedindo demissão!<2,2><3>A MAGAMI tem muito mais<1>conteúdo que a gente.<2,2>
+Q211=3 TALK01 81: <7>Gerente Sasaki<7>Ei, não dedura a gente!<1>A Srta. Olivia já tá<1>subindo pelas paredes!<2,2>
+Q211=0 TALK01 81: <7>Gerente Sasaki<7>Parece que a Srta.<1>Olivia esquentou a cabeça.<1>A MAGAMI tá anos na frente.<2,2>
+# Srta. Olivia (Q212) — etapa seguinte em TALK01 82
+Q212=1 TALK01 82: <7>Srta. Olivia<7>Eu segui tua dica e fui<1>jogar... aí me metem<1>manutenção?!<2,2><3>A tecnologia da MAGAMI<1>nem é tudo isso afinal!<2,2>
+Q212=2 TALK01 82: <7>Srta. Olivia<7>Anota no relatório:<1>manutenção fora de hora!<1>Ponto pra nós!<2,2>
+Q212=3 TALK01 82: <7>Srta. Olivia<7>Viu só?! Nem sou viciada!<1>Com essa manutenção,<1>a MAGAMI queimou o filme!<2,2>
+Q212=0 TALK01 82: <7>Srta. Olivia<7>Quê, manutenção agora?!<1>Acho que a tecnologia<1>deles não é lá isso tudo!<2,2>
+# Agumon de Seiryu (Q213) — etapa seguinte em TALK01 12
+Q213=1 TALK01 12: <7>Agumon<7>Ufa... treinei nessa<1>ventania o dia todo!<1>Tô só o pó!<2,2>
+Q213=2 TALK01 12: <7>Agumon<7>E aí, achou o Líder?<1>Eu treinei tanto hoje<1>que tô pregado!<2,2>
+Q213=3 TALK01 12: <7>Agumon<7>Tô só o pó do treino,<1>mas vê se respeita<1>Seiryu, ô turista!<2,2>
+Q213=0 TALK01 12: <7>Agumon<7>Chega de treino por<1>hoje... tô acabado!<2,2>
