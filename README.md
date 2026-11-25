@@ -432,7 +432,7 @@ it has only been played through a few times, so expect rough edges and frequent 
 - **Translation review.** The new text is written in English, and Brazilian Portuguese, French, German, Italian and Spanish
   cover the Definitive Edition's own strings (machine-assisted, not yet read in game by native speakers: expect
   clumsy lines and a few labels too wide for their box). The rewritten story is only in English and Portuguese; in the
-  other three languages the disc's original campaign plays.
+  other four languages the disc's original campaign plays.
 - **Overall game balance.** So far it was balanced by calculation only. I am playing through it in parallel and
   shipping hotfixes as I go, the Chosen Evolution and the endgame's secret battles included.
 

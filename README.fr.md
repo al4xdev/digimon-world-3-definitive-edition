@@ -445,6 +445,11 @@ Le jeu est jouable du début à la fin, et chaque système décrit plus haut est
 certaines parties n'ont été jouées que quelques fois, alors attendez-vous à des aspérités et à des hotfixes fréquents.
 Ce qui reste :
 
+- **Relecture des traductions.** Le nouveau texte est écrit en anglais, et le portugais du Brésil, le français,
+  l'allemand, l'italien et l'espagnol couvrent les textes propres à la Definitive Edition (traduits avec l'aide de la
+  machine, pas encore relus en jeu par des locuteurs natifs : attendez-vous à des phrases maladroites et à quelques
+  libellés trop larges pour leur cadre). L'histoire réécrite n'existe qu'en anglais et en portugais ; dans les quatre
+  autres langues, c'est la campagne originale du disque qui se joue.
 - **L'équilibrage général du jeu.** Jusqu'ici, il n'a été équilibré que par le calcul. Je le joue en parallèle et
   je publie des hotfixes au fur et à mesure, Chosen Evolution et combats secrets de fin de jeu compris.
 

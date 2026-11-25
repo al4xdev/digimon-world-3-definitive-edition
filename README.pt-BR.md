@@ -434,6 +434,10 @@ Se você testar em outro dispositivo, um relato no
 O jogo é jogável do começo ao fim, e todos os sistemas descritos acima estão implementados. Ele também é jovem: parte
 dele só foi jogada algumas vezes, então espere arestas e hotfixes frequentes. O que resta:
 
+- **Revisão das traduções.** O texto novo é escrito em inglês, e português do Brasil, francês, alemão, italiano e
+  espanhol cobrem os textos próprios da Definitive Edition (traduzidos com ajuda de máquina, ainda não lidos no jogo por
+  falantes nativos: espere frases desajeitadas e alguns rótulos largos demais para a caixa). A história reescrita só existe
+  em inglês e português; nos outros quatro idiomas roda a campanha original do disco.
 - **O equilíbrio geral do jogo.** Até agora ele foi balanceado só por cálculo. Estou jogando em paralelo e lançando
   hotfixes pelo caminho, a Chosen Evolution e as batalhas secretas do fim do jogo incluídas.
 

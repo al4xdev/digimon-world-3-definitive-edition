@@ -440,6 +440,11 @@ Wenn du es auf einem anderen Gerät ausprobierst, hilft ein Bericht im
 Das Spiel ist von Anfang bis Ende spielbar, und jedes oben beschriebene System ist umgesetzt. Es ist aber auch jung:
 Manches wurde erst ein paar Mal durchgespielt, rechne also mit Ecken und Kanten und häufigen Hotfixes. Was bleibt:
 
+- **Durchsicht der Übersetzungen.** Der neue Text ist auf Englisch geschrieben; brasilianisches Portugiesisch,
+  Französisch, Deutsch, Italienisch und Spanisch decken die eigenen Texte der Definitive Edition ab (maschinengestützt
+  übersetzt, noch nicht von Muttersprachlern im Spiel gelesen: rechne mit holprigen Sätzen und ein paar Beschriftungen,
+  die zu breit für ihr Feld sind). Die neu geschriebene Story gibt es nur auf Englisch und Portugiesisch; in den anderen
+  vier Sprachen läuft die Originalkampagne der Disc.
 - **Die allgemeine Spielbalance.** Bisher wurde sie nur rechnerisch ausbalanciert. Ich spiele es parallel durch und
   liefere Hotfixes nach, sobald sie fertig sind, die Chosen Evolution und die geheimen Endgame-Kämpfe eingeschlossen.
 
