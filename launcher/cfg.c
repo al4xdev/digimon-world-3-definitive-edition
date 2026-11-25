@@ -155,7 +155,7 @@ void cfg_defaults(Cfg *c) {
     c->scale = (is_pc || is_android) ? 0 : 2;
     c->renderer_pc = 0; /* gpu */
     c->filter = 1;      /* sharp */
-    c->iscale = 1;      /* the engine's own defaults: the PS1's picture until the player raises it */
+    c->iscale = is_pc ? 3 : 1; /* 3X (720p in 16:9) + smooth 3D vertices on PC */
     c->subpixel = 1;
     c->backup_max = 10;
     c->update_check = 1;
