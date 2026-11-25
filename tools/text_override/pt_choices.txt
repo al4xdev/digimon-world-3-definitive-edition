@@ -394,3 +394,17 @@ Q216 TALK01 147@3: Só quero a insígnia [keith:+1] | <7>Renamon<7>Só Tamers fo
 Q217 TALK01 151@1: Quero entrar no clube! [teddy:+1] | <7>Patamon<7>A Líder de Suzaku não é<1>uma fofa?! Entrei pro<1>fã-clube dela também!<2,2><3><7><9><7>Haha, tem carteirinha<1>sobrando aí? Quero ver<1>se é isso tudo!<2,2>
 Q217 TALK01 151@2: Ela parece perigosa... [ivy:+1] | <7>Patamon<7>A Líder de Suzaku não é<1>uma fofa?! Entrei pro<1>fã-clube dela também!<2,2><3><7><9><7>Fofa? Sei não, tem cara<1>de quem não alivia na<1>arena!<2,2>
 Q217 TALK01 151@3: Vai treinar dança, vai! [rep:+1] | <7>Patamon<7>A Líder de Suzaku não é<1>uma fofa?! Entrei pro<1>fã-clube dela também!<2,2><3><7><9><7>Pra chamar atenção no<1>fã-clube tu precisa de<1>coreografia, rapaz!<2,2>
+
+# Fase 4: Mini-arcos de NPCs de Byakko City (TALK01, mapas 0x25D / 0x25E)
+Q218 TALK01 327@1: Acabou o sufoco! [rep:+1] | <7>Maya<7>Que alívio ter Byakko<1>de volta! Não aguentava<1>mais correr no deserto!<2,2><3><7><9><7>Relaxa, acabou o perrengue.<1>Agora a cidade tá segura!<2,2>
+Q218 TALK01 327@2: Areia até na orelha, né? [teddy:+1] | <7>Maya<7>Que alívio ter Byakko<1>de volta! Não aguentava<1>mais correr no deserto!<2,2><3><7><9><7>Haha, nem me fala! Até<1>agora tô tirando areia<1>do tênis!<2,2>
+Q218 TALK01 327@3: Olho vivo com a A.o.A [ivy:+1] | <7>Maya<7>Que alívio ter Byakko<1>de volta! Não aguentava<1>mais correr no deserto!<2,2><3><7><9><7>Aproveita, mas não baixa<1>a guarda que essa A.o.A<1>não brinca em serviço.<2,2>
+Q219 TALK01 332@1: A gente vai resolver! [rep:+1] | <7>Vovó Plum<7>Quando será que vamos<1>ter paz de verdade<1>por aqui?<2,2><3><7><9><7>Pode ficar tranquila,<1>vovó! Eu vou botar essa<1>turma pra correr!<2,2>
+Q219 TALK01 332@2: A coisa tá feia mesmo [ivy:+1] | <7>Vovó Plum<7>Quando será que vamos<1>ter paz de verdade<1>por aqui?<2,2><3><7><9><7>Não vou mentir: tá tenso.<1>Mas a gente não vai<1>entregar os pontos.<2,2>
+Q219 TALK01 332@3: Descansa um pouco, vovó [teddy:+1] | <7>Vovó Plum<7>Quando será que vamos<1>ter paz de verdade<1>por aqui?<2,2><3><7><9><7>Toma um chá e descansa.<1>Deixa a bronca com quem<1>tá na linha de frente!<2,2>
+Q226 TALK01 189@1: Escapou de boa, hein! [teddy:+1] | <7>Estudante Tony<7>Cara, eu quase ajudei<1>a A.o.A! Eles sequestram<1>Tamers pra treinar arma!<2,2><3><7><9><7>Ufa, escapou por um triz!<1>Ainda bem que caiu a<1>ficha a tempo!<2,2>
+Q226 TALK01 189@2: Tem que abrir o olho! [lisa:+1] | <7>Estudante Tony<7>Cara, eu quase ajudei<1>a A.o.A! Eles sequestram<1>Tamers pra treinar arma!<2,2><3><7><9><7>Pois é, não dá pra cair<1>em papo mole de gente<1>esquisita na rede!<2,2>
+Q226 TALK01 189@3: Eu derrubo eles todos [keith:+1,rep:+1] | <7>Estudante Tony<7>Cara, eu quase ajudei<1>a A.o.A! Eles sequestram<1>Tamers pra treinar arma!<2,2><3><7><9><7>Pode deixar comigo que<1>esse exército deles vai<1>virar sucata!<2,2>
+Q227 TALK01 190@1: Ele mandou bem demais! [rep:+1] | <7>Rep. Aiko<7>O Líder de Byakko é<1>sensacional! Graças a<1>ele retomamos a cidade!<2,2><3><7><9><7>Aí sim! O cara segurou<1>a bronca quando a coisa<1>apertou!<2,2>
+Q227 TALK01 190@2: Ainda falta descobrir tudo [lisa:+1] | <7>Rep. Aiko<7>O Líder de Byakko é<1>sensacional! Graças a<1>ele retomamos a cidade!<2,2><3><7><9><7>Retomar a cidade é só o<1>começo. Falta saber o<1>plano real da A.o.A.<2,2>
+Q227 TALK01 190@3: Eu também ajudei, pô! [keith:+1] | <7>Rep. Aiko<7>O Líder de Byakko é<1>sensacional! Graças a<1>ele retomamos a cidade!<2,2><3><7><9><7>Ôpa, calma aí que eu<1>também suei a camisa<1>pra limpar isso aqui!<2,2>

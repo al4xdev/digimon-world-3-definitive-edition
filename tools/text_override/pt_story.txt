@@ -648,28 +648,28 @@ DMG500:3 1: <7>Kail<7>...Ei, <8,1><5,1>.<1>Até que enfim!<2,2><3>A gente rodou 
 DMG500:3 2: <7><9><7>Dois Líderes já caíram.<1>Pelo menos avançamos.<2,2><3>Mas e o Teddy? A gente<1>precisa achar ele logo.<2,2>
 DMG500:3 3: <7>Kail<7>Fica firme: o Teddy foi<1>pro Centro Administrativo<1>em Asuka City.<2,2><3>Foi o último lugar que<1>ele disse que ia checar.<2,2>
 DMG500:3 4: <7><9><7>Centro Administrativo...<1>Então partiu Asuka City.<1>Sem perder tempo!<2,2>
-DMG500:4 1: <7>Numemon<7>...Você vai pra<1>Byakko City?<2,2>
-DMG500:4 2: <7><9><7>É o plano.<2,2>
-DMG500:4 3: <7>Numemon<7>É melhor não.<2,2>
-DMG500:4 4: <7><9><7>...Por que não?<2,2>
-DMG500:4 5: <7>Numemon<7>Meia-volta, já!<1>É pro seu bem.<2,2><3>...Por favor.<1>Não inventa moda.<2,2>
-DMG500:4 6: <7><9><7>Ei, espere!<2,2>
-DMG500:4 7: <7><9><7>Sumiu...<2,2><3>...O que será que tem<1>em Byakko City?<2,2>
-DMG500:5 1: <7>Numemon<7>Aqui devemos estar<1>seguros.<2,2>
-DMG500:5 2: <7><9><7>Valeu.<2,2><3>Mas qual é a do povo<1>de Byakko City?<2,2><3>O Líder deu sorrisão<1>e me jogou no buraco!<2,2>
-DMG500:5 3: <7>Numemon<7>O Líder. Os cidadãos.<1>Todos são falsos.<2,2>
-DMG500:5 4: <7><9><7>O quê?! Então quem<1>eram eles?<2,2>
-DMG500:5 5: <7>Numemon<7>Isso não é da sua<1>conta.<2,2><3>Se quer o verdadeiro<1>Líder, vá ao Deserto<1>de Mobius.<2,2><3>Ele está na Mirage<1>Tower, depois das<1>areias.<2,2>
-DMG500:5 6: <7><9><7>Ei, espere! O que<1>está acontecendo?<2,2>
-DMG500:5 7: <7>Numemon<7>Não posso dizer mais.<1>Queria poder.<2,2><3>Fique longe de Byakko<1>City. Me prometa.<2,2>
-DMG500:5 8: <7><9><7>...Tudo bem. Até mais.<2,2>
-DMG500:5 9: <7><9><7>Então achamos o<1>verdadeiro Líder e<1>ouvimos dele mesmo.<2,2>
-DMG500:6 1: <7><9><7>Numemon!<2,2>
-DMG500:6 2: <7>Numemon<7>...Você. Por que<1>voltou?<2,2>
-DMG500:6 3: <7><9><7>Preciso te perguntar<1>uma coisa. Então...<2,2>
-DMG500:6 4: <7>Numemon<7>Não há nada a<1>dizer.<2,2>
-DMG500:6 5: <7><9><7>Ei, espere!<2,2>
-DMG500:7 1: <7><9><7>Que estranho.<2,2><3>Numemon não<1>está aqui.<2,2>
+DMG500:4 1: <7>Numemon<7>...Espera. Você tá indo<1>pra Byakko City?<2,2>
+DMG500:4 2: <7><9><7>Esse é o plano.<2,2>
+DMG500:4 3: <7>Numemon<7>Nem pensar. Não vai.<2,2>
+DMG500:4 4: <7><9><7>...Ué, por que não?<2,2>
+DMG500:4 5: <7>Numemon<7>Meia-volta, agora!<1>É pro teu próprio bem.<2,2><3>...Por favor.<1>Não cai nessa furada.<2,2>
+DMG500:4 6: <7><9><7>Ei, espera aí!<2,2>
+DMG500:4 7: <7><9><7>Sumiu no mato...<2,2><3>...O que diabos tá<1>rolando em Byakko City?<2,2>
+DMG500:5 1: <7>Numemon<7>Ufa... aqui a gente<1>consegue respirar.<2,2>
+DMG500:5 2: <7><9><7>Valeu por me puxar.<2,2><3>Mas qual é a daquele<1>povo em Byakko City?!<2,2><3>O Líder deu sorrisinho<1>e me jogou no buraco!<2,2>
+DMG500:5 3: <7>Numemon<7>O Líder. Os moradores.<1>É tudo teatro. Tudo<1>impostor da A.o.A.<2,2>
+DMG500:5 4: <7><9><7>Quê?! Então a cidade<1>inteira foi tomada?!<2,2>
+DMG500:5 5: <7>Numemon<7>Não se mete nisso.<2,2><3>Se quer falar com o<1>Líder verdadeiro, vai<1>pro Deserto de Mobius.<2,2><3>Ele tá escondido na<1>Mirage Tower, depois<1>das areias.<2,2>
+DMG500:5 6: <7><9><7>Ei, para! Quem é você<1>afinal?!<2,2>
+DMG500:5 7: <7>Numemon<7>Não posso falar mais.<1>Queria poder.<2,2><3>Fica longe de Byakko<1>City. Me promete.<2,2>
+DMG500:5 8: <7><9><7>...Tá bem. Até logo.<2,2>
+DMG500:5 9: <7><9><7>Beleza: bora achar o<1>Líder verdadeiro e<1>descobrir a verdade.<2,2>
+DMG500:6 1: <7><9><7>Ei, Numemon!<2,2>
+DMG500:6 2: <7>Numemon<7>...Você de novo?<1>Por que voltou?<2,2>
+DMG500:6 3: <7><9><7>Preciso tirar uma<1>dúvida séria contigo.<2,2>
+DMG500:6 4: <7>Numemon<7>Não tem nada pra<1>conversar aqui.<2,2>
+DMG500:6 5: <7><9><7>Ei, não foge!<2,2>
+DMG500:7 1: <7><9><7>Estranho...<2,2><3>O Numemon sumiu de vez.<2,2>
 DMG500:22 1: <7><9><7>Aquele quarto ali.<1>Deve ser o dele.<2,2>
 DMG500:23 1: <7><9><7>Peguei!<2,2><3>Dessa vez você não<1>me escapa nem a pau!<2,2>
 DMG500:23 2: <7>Numemon<7>Desista logo.<2,2>

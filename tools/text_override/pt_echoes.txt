@@ -696,3 +696,56 @@ Q217=1 TALK01 154: <7>Patamon<7>Un, deux, trois! Oi,<1>colega de fã-clube!<2,2>
 Q217=2 TALK01 154: <7>Patamon<7>Un, deux, trois! Nada de<1>perigosa, ela é incrível!<2,2><3>A Floramon tá me<1>ensinando os passinhos!<2,2>
 Q217=3 TALK01 154: <7>Patamon<7>Un, deux, trois! Segui<1>tua ideia da coreografia!<2,2><3>A Floramon tá me dando<1>aula de dança! Olha só!<2,2>
 Q217=0 TALK01 154: <7>Patamon<7>Un, deux, trois! A<1>Floramon tá me ensinando<1>a dançar pro fã-clube!<2,2>
+
+# ---- Continuação (Etapa 2) dos NPCs antigos de Asuka City ao voltar de Suzaku (progress 14+) ----
+# Mika (Q200) — TALK00 624
+Q200=1 TALK00 624: <7>Mika<7>Ei! A gente treinou tanto<1>com tua dica que agora o<1>Patamon tá de birra!<2,2><3>Disse que não quer mais<1>brincar comigo!<2,2>
+Q200=2 TALK00 624: <7>Mika<7>Culpa tua! Depois daquele<1>papo de pão de queijo,<1>o Patamon ficou sério!<2,2><3>Nem quer brincar comigo!<2,2>
+Q200=3 TALK00 624: <7>Mika<7>Eu dei espaço como você<1>falou... aí ele disse<1>que não quer brincar?!<2,2>
+Q200=0 TALK00 624: <7>Mika<7>Buá! O Patamon falou que<1>não quer brincar comigo!<2,2>
+# Patamon da Mika (Q200) — TALK00 614
+Q200=1 TALK00 614: <7>Patamon<7>Não é birra do treino!<1>Eu só perguntei se ela<1>queria ir pra casa...<2,2>
+Q200=2 TALK00 614: <7>Patamon<7>Não tô bravo com ela,<1>só perguntei se ela<1>queria ir pra casa!<2,2>
+Q200=3 TALK00 614: <7>Patamon<7>Nada disso... eu só<1>perguntei se ela tava<1>com saudade de casa.<2,2>
+Q200=0 TALK00 614: <7>Patamon<7>Não... eu só perguntei<1>se você queria ir pra<1>casa.<2,2>
+# Masato (Q201) — TALK00 666
+Q201=1 TALK00 666: <7>Masato<7>Lembra do meu encontro?<1>Já era! Ninguém liga que<1>tamos presos nesse mundo!<2,2>
+Q201=2 TALK00 666: <7>Masato<7>Pode zoar agora... a<1>gente tá preso nesse<1>mundo e ninguém faz nada!<2,2>
+Q201=3 TALK00 666: <7>Masato<7>Ô fera de Seiryu, faz<1>alguma coisa! A gente tá<1>preso nesse servidor!<2,2>
+Q201=0 TALK00 666: <7>Masato<7>Ninguém se importa!<1>Estamos presos nesse<1>mundo!<2,2>
+# Agumon Coach (Q202) — TALK00 603
+Q202=1 TALK00 603: <7>Agumon<7>Fala, aluno! Quer entrar<1>no Centro Administrativo?<2,2><3>Nós Digimon entramos de<1>boa, mas humano não<1>passa! Fica a dica!<2,2>
+Q202=2 TALK00 603: <7>Agumon<7>Nem no braço tu entra no<1>Centro Administrativo!<2,2><3>Só Digimon pode passar!<1>Humano fica barrado!<2,2>
+Q202=3 TALK00 603: <7>Agumon<7>Falaram que tem comida<1>no Centro Administrativo,<1>mas só Digimon entra!<2,2>
+Q202=0 TALK00 603: <7>Agumon<7>Quer entrar no Centro<1>Administrativo? Só<1>Digimon entra, humano não!<2,2>
+# Vovô Jake (Q203) — TALK00 642
+Q203=1 TALK00 642: <7>Jake<7>Pensei na tua pergunta:<1>virar Digimon ainda é<1>meu maior sonho! Hyo hyo!<2,2>
+Q203=2 TALK00 642: <7>Jake<7>Você disse pra tomar<1>cuidado... mas o sonho<1>fala mais alto! Hyo hyo!<2,2>
+Q203=3 TALK00 642: <7>Jake<7>Pode achar loucura, mas<1>eu ainda vou virar um<1>Digimon! Hyo hyo!<2,2>
+Q203=0 TALK00 642: <7>Jake<7>Virar Digimon é meu<1>sonho. Será que alguém<1>pode realizar isso?<2,2>
+# Maniac Jack (Q204) — TALK00 712
+Q204=1 TALK00 712: <7>Jack Maníaco<7>Esquece entrar no Centro,<1>tá tudo fechado! E cadê<1>o meu Guilmon, hein?!<2,2>
+Q204=2 TALK00 712: <7>Jack Maníaco<7>Nem tenta invadir o<1>Centro na porrada! E se<1>vir o Guilmon, me avisa!<2,2>
+Q204=3 TALK00 712: <7>Jack Maníaco<7>Tu me zicou mesmo: ainda<1>não achei o Guilmon e o<1>Centro tá trancado!<2,2>
+Q204=0 TALK00 712: <7>Jack Maníaco<7>Nem tenta, não dá pra<1>entrar no Centro. Cadê<1>o Guilmon?!<2,2>
+# ---- Fase 4: Mini-arcos de NPCs de Byakko City (TALK01, mapas 0x25D / 0x25E) ----
+# Maya (Q218) — TALK01 328
+Q218=1 TALK01 328: <7>Maya<7>Agora que deu paz, queria<1>ver o Servidor Asuka lá<1>de cima! Deve ser lindo!<2,2>
+Q218=2 TALK01 328: <7>Maya<7>Depois de tanta areia no<1>tênis, meu sonho agora é<1>ver Asuka lá do alto!<2,2>
+Q218=3 TALK01 328: <7>Maya<7>Tô de olho vivo como você<1>falou... mas queria ver<1>Asuka do alto um dia!<2,2>
+Q218=0 TALK01 328: <7>Maya<7>Queria muito ver o<1>Servidor Asuka lá de<1>cima! Deve ser incrível!<2,2>
+# Vovó Plum (Q219) — TALK01 333
+Q219=1 TALK01 333: <7>Vovó Plum<7>Eu confio na tua palavra,<1>mas ainda perco o sono<1>pensando na A.o.A voltar...<2,2>
+Q219=2 TALK01 333: <7>Vovó Plum<7>Você mandou a real... é<1>por isso que não consigo<1>dormir com medo da A.o.A.<2,2>
+Q219=3 TALK01 333: <7>Vovó Plum<7>Tomei o chá que você<1>falou, mas o medo da<1>A.o.A não me deixa dormir.<2,2>
+Q219=0 TALK01 333: <7>Vovó Plum<7>Fico apavorada pensando<1>se a A.o.A vai voltar.<1>Nem consigo dormir.<2,2>
+# Estudante Tony (Q226) — TALK01 194
+Q226=1 TALK01 194: <7>Estudante Tony<7>Eu escapei da A.o.A, mas<1>ouvi que tomaram Amaterasu!<2,2><3>Será que meu amigo<1>Tatsuya tá bem lá?!<2,2>
+Q226=2 TALK01 194: <7>Estudante Tony<7>Agora tô de olho aberto!<1>Mas a A.o.A tomou Amaterasu<1>e meu amigo Tatsuya tá lá!<2,2>
+Q226=3 TALK01 194: <7>Estudante Tony<7>Se você vai derrubar<1>eles, salva Amaterasu!<1>Meu amigo Tatsuya tá lá!<2,2>
+Q226=0 TALK01 194: <7>Estudante Tony<7>A A.o.A tomou o Servidor<1>Amaterasu?! Tomara que<1>meu amigo Tatsuya esteja bem!<2,2>
+# Rep. Aiko (Q227) — TALK01 195
+Q227=1 TALK01 195: <7>Rep. Aiko<7>Retomamos a cidade, mas<1>ainda tô encucada: o que<1>a A.o.A queria de verdade?<2,2>
+Q227=2 TALK01 195: <7>Rep. Aiko<7>Você tinha toda razão!<1>Retomamos a cidade, mas<1>o plano real da A.o.A ainda<2,2><3>tá um mistério total!<2,2>
+Q227=3 TALK01 195: <7>Rep. Aiko<7>Haha, desculpa! Você<1>também salvou a gente!<1>Mas o que a A.o.A quer?!<2,2>
+Q227=0 TALK01 195: <7>Rep. Aiko<7>Recuperamos a cidade, mas<1>ainda tô preocupada com<1>o plano real da A.o.A!<2,2>

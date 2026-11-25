@@ -1093,16 +1093,22 @@ typedef struct DefNpcArc {
 static const DefNpcArc npc_arcs[] = {
     /* Phase 1 (Asuka City) — 8 NPC mini-arcs across Central Park (0x200), Main Street (0x201) & Lobby (0x203) */
     { 0, 0x200, 46, 0, 11, 0 },    /* Mika (Patamon fan) — Stage 0 (TALK00 19, Q200) */
-    { 0, 0x200, 46, 12, 999, 1 },  /* Mika — Stage 1 (TALK00 623) */
-    { 1, 0x200, 371, 12, 999, 1 }, /* Mika's Patamon — Stage 1 (TALK00 613) */
+    { 0, 0x200, 46, 12, 13, 1 },   /* Mika — Stage 1 (TALK00 623) */
+    { 0, 0x200, 46, 14, 999, 2 },  /* Mika — Stage 2 return to Asuka (TALK00 624) */
+    { 1, 0x200, 371, 12, 13, 1 },  /* Mika's Patamon — Stage 1 (TALK00 613) */
+    { 1, 0x200, 371, 14, 999, 2 }, /* Mika's Patamon — Stage 2 (TALK00 614) */
     { 2, 0x200, 47, 0, 11, 0 },    /* Masato — Stage 0 (TALK00 15, Q201) */
-    { 2, 0x200, 47, 12, 999, 1 },  /* Masato — Stage 1 (TALK00 665) */
+    { 2, 0x200, 47, 12, 13, 1 },   /* Masato — Stage 1 (TALK00 665) */
+    { 2, 0x200, 47, 14, 999, 2 },  /* Masato — Stage 2 (TALK00 666) */
     { 3, 0x200, 365, 0, 11, 0 },   /* Agumon Coach — Stage 0 (TALK00 21, Q202) */
-    { 3, 0x200, 365, 12, 999, 1 }, /* Agumon Coach — Stage 1 (TALK00 602) */
+    { 3, 0x200, 365, 12, 13, 1 },  /* Agumon Coach — Stage 1 (TALK00 602) */
+    { 3, 0x200, 365, 14, 999, 2 }, /* Agumon Coach — Stage 2 Admin Center hint (TALK00 603) */
     { 4, 0x201, 57, 0, 11, 0 },    /* Grandpa Jake — Stage 0 (TALK00 22, Q203) */
-    { 4, 0x201, 57, 12, 999, 1 },  /* Grandpa Jake — Stage 1 (TALK00 646) */
+    { 4, 0x201, 57, 12, 13, 1 },   /* Grandpa Jake — Stage 1 (TALK00 646) */
+    { 4, 0x201, 57, 14, 999, 2 },  /* Grandpa Jake — Stage 2 (TALK00 642) */
     { 5, 0x201, 51, 0, 11, 0 },    /* Maniac Jack — Stage 0 (TALK00 11, Q204) */
-    { 5, 0x201, 51, 12, 999, 1 },  /* Maniac Jack — Stage 1 (TALK00 711) */
+    { 5, 0x201, 51, 12, 13, 1 },   /* Maniac Jack — Stage 1 (TALK00 711) */
+    { 5, 0x201, 51, 14, 999, 2 },  /* Maniac Jack — Stage 2 (TALK00 712) */
     { 6, 0x203, 45, 0, 11, 0 },    /* Newbie Shiro — Stage 0 (TALK00 17, Q205) */
     { 6, 0x203, 45, 12, 999, 1 },  /* Newbie Shiro — Stage 1 (TALK00 329) */
     { 7, 0x203, 49, 0, 11, 0 },    /* Lazy Alan — Stage 0 (TALK00 13, Q206) */
@@ -1131,6 +1137,15 @@ static const DefNpcArc npc_arcs[] = {
     { 17, 0x240, 65, 20, 999, 1 }, /* Suzaku Renamon — Stage 1 (TALK01 150) */
     { 18, 0x240, 66, 0, 19, 0 },   /* Suzaku Patamon (fan club) — Stage 0 (TALK01 151, Q217) */
     { 18, 0x240, 66, 20, 999, 1 }, /* Suzaku Patamon — Stage 1 (TALK01 154) */
+    /* Phase 4 (Byakko City) — 4 NPC mini-arcs across Byakko Plaza (0x25D) & Byakko Hall (0x25E) */
+    { 19, 0x25D, 54, 0, 30, 0 },   /* Maya (desert survivor) — Stage 0 (TALK01 327, Q218) */
+    { 19, 0x25D, 54, 31, 999, 1 }, /* Maya — Stage 1 (TALK01 328) */
+    { 20, 0x25D, 58, 0, 30, 0 },   /* Grandma Plum — Stage 0 (TALK01 332, Q219) */
+    { 20, 0x25D, 58, 31, 999, 1 }, /* Grandma Plum — Stage 1 (TALK01 333) */
+    { 21, 0x25E, 47, 0, 30, 0 },   /* Student Tony — Stage 0 (TALK01 189, Q226) */
+    { 21, 0x25E, 47, 31, 999, 1 }, /* Student Tony — Stage 1 (TALK01 194) */
+    { 22, 0x25E, 48, 0, 30, 0 },   /* Class Pres Aiko — Stage 0 (TALK01 190, Q227) */
+    { 22, 0x25E, 48, 31, 999, 1 }, /* Class Pres Aiko — Stage 1 (TALK01 195) */
 };
 
 static const DefNpcArc *npc_arc_active(int map, int actor_id) {

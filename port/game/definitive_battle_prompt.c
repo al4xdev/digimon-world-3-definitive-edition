@@ -181,6 +181,30 @@ static const DefBattlePrompt prompts[] = {
             },
         },
     },
+    /* Phase 4: Emboscada da A.o.A / Setor Oeste (progress 19..28, tipo Chefe) */
+    {
+        5, 225, -1, 19, 28, 2, 100,
+        "COMANDANTE DA A.O.A",
+        "Caiu direitinho na armadilha de Byakko! Fim da linha!",
+        3,
+        {
+            {
+                "Armadilha? Voces que tao presos comigo! (ATK +2)",
+                "SANGUE FRIO! Seu ATK subiu (ATK +2)!",
+                BP_FX_MOD, 0, 0, 2, 3, DEF_BOND_KEITH, 1, 2
+            },
+            {
+                "Analisa esse esquema deles! (Libra)",
+                "LIBRA! Fraquezas do inimigo reveladas!",
+                BP_FX_LIBRA, 1, 0, 0, 0, DEF_BOND_LISA, 1, 1
+            },
+            {
+                "Espera... foi cilada mesmo?!",
+                "HESITOU! Sua defesa caiu (DEF -1)!",
+                BP_FX_MOD, 0, 1, -1, 2, DEF_BOND_TEDDY, -1, -1
+            },
+        },
+    },
 };
 
 static struct {
