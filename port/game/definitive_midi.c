@@ -357,8 +357,13 @@ static size_t encode_body(const MidiEv *ev, size_t n, u32 cut, u32 division, u8 
     int ch;
     u8 raw[3];
     u32 first_tempo = 500000;
+    int max_vel = 0, max_cc7 = 0;
+    int ch_has_cc7[16];
+    int ch_has_note[16];
 
     memset(on, 0, sizeof(on));
+    memset(ch_has_cc7, 0, sizeof(ch_has_cc7));
+    memset(ch_has_note, 0, sizeof(ch_has_note));
     for (ch = 0; ch < 16; ch++) {
         cur[ch] = -1;
     }
@@ -368,6 +373,36 @@ static size_t encode_body(const MidiEv *ev, size_t n, u32 cut, u32 division, u8 
             first_tempo = ev[i].value;
             break;
         }
+    }
+    for (i = 0; i < n && ev[i].tick <= cut; i++) {
+        const MidiEv *e = &ev[i];
+
+        if (e->kind == EV_ON) {
+            int note = e->ch == 9 ? drum_note(e->d1) : e->d1 <= 120 ? e->d1 : -1;
+
+            if (note >= 0) {
+                ch_has_note[e->ch] = 1;
+                if (e->d2 > max_vel) {
+                    max_vel = e->d2;
+                }
+            }
+        } else if (e->kind == EV_CTRL && e->d1 == 7 && e->ch != 9) {
+            ch_has_cc7[e->ch] = 1;
+            if (e->d2 > max_cc7) {
+                max_cc7 = e->d2;
+            }
+        }
+    }
+    for (ch = 0; ch < 16; ch++) {
+        if (ch != 9 && ch_has_note[ch] && !ch_has_cc7[ch] && max_cc7 < 100) {
+            max_cc7 = 100;
+        }
+    }
+    if (max_vel <= 0) {
+        max_vel = 127;
+    }
+    if (max_cc7 <= 0) {
+        max_cc7 = 127;
     }
     /* the reverb: NRPN 15 = type, 16 = depth (before the loop, once) */
     {
@@ -389,9 +424,17 @@ static size_t encode_body(const MidiEv *ev, size_t n, u32 cut, u32 division, u8 
     }
     /* before the loop: every channel's level and pan as a sane default, the drums quieter */
     for (ch = 0; ch < 16; ch++) {
+        int def_vol = ch == 9 ? 70 : 100;
+
+        if (max_cc7 < 127) {
+            def_vol = (def_vol * 127 + max_cc7 / 2) / max_cc7;
+            if (def_vol > 127) {
+                def_vol = 127;
+            }
+        }
         raw[0] = (u8)(0xB0 | ch);
         raw[1] = 7;
-        raw[2] = ch == 9 ? 70 : 100;
+        raw[2] = (u8)def_vol;
         sep_put(&s, 0, raw, 3, 0);
         raw[1] = 10;
         raw[2] = 64;
@@ -435,7 +478,19 @@ static size_t encode_body(const MidiEv *ev, size_t n, u32 cut, u32 division, u8 
         case EV_CTRL:
             raw[0] = (u8)(0xB0 | e->ch);
             raw[1] = e->d1;
-            raw[2] = e->ch == 9 && e->d1 == 7 ? (u8)(e->d2 * 70 / 100) : e->d2;
+            if (e->d1 == 7) {
+                int v = e->ch == 9 ? (e->d2 * 70 / 100) : e->d2;
+
+                if (max_cc7 < 127) {
+                    v = (v * 127 + max_cc7 / 2) / max_cc7;
+                    if (v > 127) {
+                        v = 127;
+                    }
+                }
+                raw[2] = (u8)v;
+            } else {
+                raw[2] = e->d2;
+            }
             sep_put(&s, t, raw, 3, 0);
             break;
         case EV_ON:
@@ -455,7 +510,19 @@ static size_t encode_body(const MidiEv *ev, size_t n, u32 cut, u32 division, u8 
             }
             raw[0] = (u8)(0x90 | e->ch);
             raw[1] = (u8)note;
-            raw[2] = e->kind == EV_ON ? e->d2 : 0;
+            if (e->kind == EV_ON) {
+                int v = e->d2;
+
+                if (max_vel < 127) {
+                    v = (v * 127 + max_vel / 2) / max_vel;
+                    if (v > 127) {
+                        v = 127;
+                    }
+                }
+                raw[2] = (u8)(v > 0 ? v : 1);
+            } else {
+                raw[2] = 0;
+            }
             sep_put(&s, t, raw, 3, 0);
             on[e->ch][note] = e->kind == EV_ON;
             if (e->kind == EV_ON) {
@@ -573,26 +640,53 @@ static int midi_count;
 static char choice[MIDI_NAME];
 static char last[MIDI_NAME]; /* the playlists: the file played last */
 #define MIDI_VOL_MAX 64
+#define MIDI_VOL_MIN 10
+#define MIDI_VOL_MAX_PCT 400
+#define MIDI_VOL_DEFAULT 50
 static struct {
     char name[MIDI_NAME];
-    unsigned char vol;
+    u16 vol;
 } midi_vols[MIDI_VOL_MAX];
 static int midi_vol_count;
-static int active_vol = 100;
+static int active_vol = MIDI_VOL_DEFAULT;
 extern void dw3_midi_sound_set_vol(s32 vol);
+
+static s32 midi_vol_to_sep(int pct) {
+    u32 target, r = 0, bit = 1u << 14;
+
+    if (pct < MIDI_VOL_MIN) {
+        pct = MIDI_VOL_MIN;
+    } else if (pct > MIDI_VOL_MAX_PCT) {
+        pct = MIDI_VOL_MAX_PCT;
+    }
+    target = (u32)pct * 127u * 127u / (u32)MIDI_VOL_MAX_PCT;
+    while (bit > target) {
+        bit >>= 2;
+    }
+    while (bit != 0) {
+        if (target >= r + bit) {
+            target -= r + bit;
+            r = (r >> 1) + bit;
+        } else {
+            r >>= 1;
+        }
+        bit >>= 2;
+    }
+    return r > 127 ? 127 : (s32)r;
+}
 
 static int vol_of_name(const char *name) {
     int i;
 
     if (name == NULL || name[0] == 0) {
-        return 100;
+        return MIDI_VOL_DEFAULT;
     }
     for (i = 0; i < midi_vol_count; i++) {
         if (strcmp(midi_vols[i].name, name) == 0) {
-            return midi_vols[i].vol;
+            return (int)midi_vols[i].vol;
         }
     }
-    return 100;
+    return MIDI_VOL_DEFAULT;
 }
 
 static void vol_set_name(const char *name, int pct) {
@@ -601,20 +695,20 @@ static void vol_set_name(const char *name, int pct) {
     if (name == NULL || name[0] == 0) {
         return;
     }
-    if (pct < 10) {
-        pct = 10;
-    } else if (pct > 100) {
-        pct = 100;
+    if (pct < MIDI_VOL_MIN) {
+        pct = MIDI_VOL_MIN;
+    } else if (pct > MIDI_VOL_MAX_PCT) {
+        pct = MIDI_VOL_MAX_PCT;
     }
     for (i = 0; i < midi_vol_count; i++) {
         if (strcmp(midi_vols[i].name, name) == 0) {
-            midi_vols[i].vol = (unsigned char)pct;
+            midi_vols[i].vol = (u16)pct;
             return;
         }
     }
     if (midi_vol_count < MIDI_VOL_MAX) {
         snprintf(midi_vols[midi_vol_count].name, MIDI_NAME, "%.*s", MIDI_NAME - 1, name);
-        midi_vols[midi_vol_count].vol = (unsigned char)pct;
+        midi_vols[midi_vol_count].vol = (u16)pct;
         midi_vol_count++;
     }
 }
@@ -872,7 +966,7 @@ static void choice_save(void) {
     {
         int i;
         for (i = 0; i < midi_vol_count; i++) {
-            if (midi_vols[i].vol != 100) {
+            if (midi_vols[i].vol != MIDI_VOL_DEFAULT) {
                 fprintf(f, "vol:%s=%d\n", midi_vols[i].name, (int)midi_vols[i].vol);
             }
         }
@@ -964,7 +1058,7 @@ static int load_piece(const char *name) {
 int def_midi_volume(int index) {
     choice_load();
     if (index < 0 || index >= midi_count) {
-        return 100;
+        return MIDI_VOL_DEFAULT;
     }
     return vol_of_name(midi_names[index]);
 }
@@ -974,14 +1068,14 @@ void def_midi_set_volume(int index, int pct) {
     if (index < 0 || index >= midi_count) {
         return;
     }
-    if (pct < 10) {
-        pct = 10;
-    } else if (pct > 100) {
-        pct = 100;
+    if (pct < MIDI_VOL_MIN) {
+        pct = MIDI_VOL_MIN;
+    } else if (pct > MIDI_VOL_MAX_PCT) {
+        pct = MIDI_VOL_MAX_PCT;
     }
     vol_set_name(midi_names[index], pct);
     active_vol = pct;
-    dw3_midi_sound_set_vol(pct * 127 / 100);
+    dw3_midi_sound_set_vol(midi_vol_to_sep(pct));
     choice_save();
 }
 
@@ -999,7 +1093,7 @@ s32 dw3_midi_sound_vol(s32 id) {
     if (id != DW3_MIDI_BANK) {
         return 0x7F;
     }
-    return active_vol * 127 / 100;
+    return midi_vol_to_sep(active_vol);
 }
 
 /* fieldstg_encounter_start: the music a random encounter plays: `music` (the stage's key) unless something is chosen and

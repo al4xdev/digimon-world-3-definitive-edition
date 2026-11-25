@@ -34,10 +34,10 @@ extern const unsigned char def_str_MidiTitle[], def_str_MidiKeys[], def_str_Midi
 #define MS_LINE 16
 #define MS_TITLE_H 23
 #define MS_TOP 34
-#define MS_ROWS 8
+#define MS_ROWS 7
 #define MS_LIST_H (MS_ROWS * MS_LINE + 6)
 #define MS_INFO_Y (MS_TOP - 5 + MS_LIST_H + 3)
-#define MS_INFO_H 40
+#define MS_INFO_H 56
 #define MS_HINT_Y 208
 #define MS_ROW_X 22
 #define MS_NAME_SHOWN 34 /* characters of a file's name on its row */
@@ -49,6 +49,7 @@ extern const unsigned char def_str_MidiTitle[], def_str_MidiKeys[], def_str_Midi
 #define MS_SND_MOVE 0x8004513E
 #define MS_SND_OK 0x8004503C
 #define MS_SND_BACK 0x800450BD
+#define MS_MIDI_BANK 74
 
 static struct {
     s32 request;
@@ -62,16 +63,18 @@ static struct {
     s32 count_windows;
     s32 open_anim;
     s32 tick;
-    s32 preview_idx; /* -1: none, else 0..count-1 currently playing */
-    s32 saved_bgm;   /* sound_module.current before preview started */
+    s32 preview_idx;  /* -1: none, else 0..count-1 currently playing */
+    s32 saved_bgm;    /* sound_module.current before jukebox took over */
+    s32 pending_load; /* sound key waiting for current bank load to finish */
+    s32 pending_play; /* sound key waiting for its bank to finish loading */
     const unsigned char *msg;
     MessageWindow *wins[MS_WINDOWS];
-    MessageWindow *title, *rows[MS_ROWS], *line1, *line2, *vol_win, *hint;
+    MessageWindow *title, *rows[MS_ROWS], *line1, *line2, *warn, *vol_win, *hint;
     MessageCursor *cursor;
 } ms;
 
-static unsigned char row_text[MS_ROWS][MS_NAME_SHOWN * 2 + 8], info1[MS_TEXT], info2[MS_TEXT], vol_text[48],
-    hint_text[96];
+static unsigned char row_text[MS_ROWS][MS_NAME_SHOWN * 2 + 8], info1[MS_TEXT], info2[MS_TEXT], warn_text[96],
+    vol_text[48], hint_text[96];
 
 /* A file's name in the game's glyphs (docs: the font's table, tools/gen_text_override.py's): letters and digits are one
  * byte, the punctuation the names carry is `01 xx`; anything else shows as an underscore. */
@@ -94,6 +97,10 @@ static void ascii_glyphs(unsigned char *buf, int *p, int size, const char *s, in
             buf[(*p)++] = (unsigned char)(0x28 + c - 'a');
             continue;
         }
+        if (c == '!') {
+            buf[(*p)++] = 0xE7;
+            continue;
+        }
         switch (c) {
         case ' ': ext = 0x01; break;
         case '/': ext = 0x0F; break;
@@ -104,6 +111,7 @@ static void ascii_glyphs(unsigned char *buf, int *p, int size, const char *s, in
         case '+': ext = 0x19; break;
         case '(': ext = 0x15; break;
         case ')': ext = 0x16; break;
+        case '%': ext = 0x2A; break;
         case '&': ext = 0x2B; break;
         case '\'': ext = 0x13; break;
         }
@@ -184,15 +192,51 @@ static void ms_panel(s32 x, s32 y, s32 w, s32 h, s32 band) {
     ms_rect_ot(2, x + 2, y + 1, w - 2, h - 2, -1, 12, 15, 26);
 }
 
+static void jukebox_queue(s32 key) {
+    if (sound_module.current != 0) {
+        sound_module.stop(sound_module.current);
+    }
+    if (!sound_module.is_loading()) {
+        sound_module.load_extra_bank((key >> 18) & 0x7F);
+        ms.pending_play = key;
+        ms.pending_load = 0;
+    } else {
+        ms.pending_load = key;
+        ms.pending_play = 0;
+    }
+}
+
+static void jukebox_pump(void) {
+    if (sound_module.is_loading()) {
+        return;
+    }
+    if (ms.pending_load != 0) {
+        s32 key = ms.pending_load;
+
+        ms.pending_load = 0;
+        sound_module.load_extra_bank((key >> 18) & 0x7F);
+        ms.pending_play = key;
+    } else if (ms.pending_play != 0) {
+        s32 key = ms.pending_play;
+
+        ms.pending_play = 0;
+        sound_module.play(key);
+    }
+}
+
 static void preview_stop(void) {
     if (ms.preview_idx < 0) {
         return;
     }
     ms.preview_idx = -1;
     if (ms.saved_bgm != 0) {
-        sound_module.play(ms.saved_bgm);
+        jukebox_queue(ms.saved_bgm);
     } else {
-        sound_module.stop_all();
+        ms.pending_load = 0;
+        ms.pending_play = 0;
+        if (sound_module.current != 0) {
+            sound_module.stop(sound_module.current);
+        }
     }
 }
 
@@ -209,13 +253,15 @@ static void preview_toggle(void) {
         preview_stop();
         return;
     }
-    if (ms.preview_idx < 0) {
-        ms.saved_bgm = sound_module.current;
+    if (ms.saved_bgm == 0 || ((ms.saved_bgm >> 18) & 0x7F) == MS_MIDI_BANK) {
+        if (((sound_module.current >> 18) & 0x7F) != MS_MIDI_BANK) {
+            ms.saved_bgm = sound_module.current;
+        }
     }
     key = def_midi_preview_play(idx);
     if (key != 0) {
         ms.preview_idx = idx;
-        sound_module.play(key);
+        jukebox_queue(key);
     } else {
         sound_module.play(MS_SND_BACK);
     }
@@ -284,6 +330,19 @@ static void board_fill(void) {
             ms.vol_win->set_visible(ms.vol_win, 0);
         }
     }
+    if (ms.warn != NULL) {
+        int wp = 0;
+        const char *wstr = def_pick("Starts quiet (50%) for safety. L/R to 400%.",
+                                    "Som baixo (50%) p/ seguranca. Esq/Dir: 400%",
+                                    "Bas par defaut (50%) par securite. G/D: 400%",
+                                    "Leise (50%) zur Sicherheit. L/R bis 400%.",
+                                    "Basso (50%) per sicurezza. S/D fino a 400%.",
+                                    "Bajo (50%) por seguridad. I/D hasta 400%.");
+        warn_text[0] = 0;
+        ascii_glyphs(warn_text, &wp, sizeof(warn_text), wstr, 46);
+        ms.warn->set_palette(ms.warn, 3);
+        ms.warn->set_text(ms.warn, warn_text, -1);
+    }
     if (ms.hint != NULL) {
         int hp = 0;
         const char *hstr = def_pick("A:Pick  X:Play/Stop  L/R:Vol  B:Back",
@@ -305,8 +364,12 @@ static void board_open(void) {
 
     ms.open_anim = 0;
     ms.tick = 0;
-    ms.preview_idx = -1;
-    ms.saved_bgm = sound_module.current;
+    if (((sound_module.current >> 18) & 0x7F) != MS_MIDI_BANK && ms.pending_play == 0 && ms.pending_load == 0) {
+        ms.preview_idx = -1;
+        ms.saved_bgm = sound_module.current;
+    } else if (ms.preview_idx >= ms.count) {
+        ms.preview_idx = -1;
+    }
 
     ms.title = ms_window(1, 10, 5);
     ms.title->set_text(ms.title, (u8 *)def_str_MidiTitle, -1);
@@ -317,6 +380,7 @@ static void board_open(void) {
     ms.line1 = ms_window(1, 10, MS_INFO_Y + 4);
     ms.line1->set_palette(ms.line1, MS_PAL_TEXT);
     ms.line2 = ms_window(1, 10, MS_INFO_Y + 4 + 16);
+    ms.warn = ms_window(1, 10, MS_INFO_Y + 4 + 32);
     ms.vol_win = ms_window(1, 308, MS_INFO_Y + 4);
     ms.hint = ms_window(1, 8, MS_HINT_Y + 6);
     ms.cursor = message_create_cursor(MS_LAYER, 1, MS_ROW_X - 14, MS_TOP);
@@ -368,8 +432,16 @@ static void board_draw(void) {
     if (op >= 10 && ms.sel >= 3 && ms.sel - 3 < ms.count) {
         s32 vol = def_midi_volume(ms.sel - 3);
         s32 bw = 88;
-        s32 fill = vol * bw / 100;
-        ms_rect_ot(2, 220, MS_INFO_Y + 22, fill, 6, -1, 244, 196, 82);
+        s32 fill = vol * bw / 400;
+        u8 r = vol > 100 ? 255 : 244;
+        u8 g = vol > 100 ? 148 : 196;
+        u8 b = vol > 100 ? 56 : 82;
+
+        if (fill > bw) {
+            fill = bw;
+        }
+        ms_rect_ot(2, 220 + bw / 4, MS_INFO_Y + 21, 1, 8, -1, 220, 220, 235);
+        ms_rect_ot(2, 220, MS_INFO_Y + 22, fill, 6, -1, r, g, b);
         ms_rect_ot(2, 220, MS_INFO_Y + 22, bw, 6, -1, 28, 32, 48);
         ms_rect_ot(2, 219, MS_INFO_Y + 21, bw + 2, 8, -1, 152, 124, 58);
     }
@@ -420,13 +492,13 @@ static void board_input(void) {
         move_to((k + 1) % n);
     } else if (PAD_PRESSED(7) || PAD_REPEAT(7)) {
         if (k >= 3 && k - 3 < ms.count) {
-            def_midi_set_volume(k - 3, def_midi_volume(k - 3) - 5);
+            def_midi_set_volume(k - 3, def_midi_volume(k - 3) - 10);
             sound_module.play(MS_SND_MOVE);
             board_fill();
         }
     } else if (PAD_PRESSED(5) || PAD_REPEAT(5)) {
         if (k >= 3 && k - 3 < ms.count) {
-            def_midi_set_volume(k - 3, def_midi_volume(k - 3) + 5);
+            def_midi_set_volume(k - 3, def_midi_volume(k - 3) + 10);
             sound_module.play(MS_SND_MOVE);
             board_fill();
         }
@@ -440,7 +512,6 @@ static void board_input(void) {
     } else if (PAD_PRESSED(13)) {
         confirm();
     } else if (PAD_PRESSED(12) || PAD_PRESSED(14)) {
-        preview_stop();
         sound_module.play(MS_SND_BACK);
         ms.close = 1;
     }
@@ -504,6 +575,7 @@ int def_midi_frame(void) {
     if (!def_on()) {
         return 0;
     }
+    jukebox_pump();
     if (ms.releasing) {
         return ms_release();
     }
@@ -548,6 +620,7 @@ void def_midi_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, row_text);
     PORT_STATE_VAR(s, info1);
     PORT_STATE_VAR(s, info2);
+    PORT_STATE_VAR(s, warn_text);
     PORT_STATE_VAR(s, vol_text);
     PORT_STATE_VAR(s, hint_text);
 }

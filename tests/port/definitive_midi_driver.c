@@ -28,6 +28,10 @@ static int forgotten;
 void dw3_midi_sound_forget(void) {
     forgotten++;
 }
+static s32 last_sep_vol = -1;
+void dw3_midi_sound_set_vol(s32 vol) {
+    last_sep_vol = vol;
+}
 int def_on(void) {
     return 1;
 }
@@ -52,6 +56,9 @@ int def_midi_chosen(void);
 void def_midi_choose(int i);
 int def_midi_battle_music(int music);
 void def_midi_dir(char *out, unsigned long size);
+int def_midi_volume(int index);
+void def_midi_set_volume(int index, int pct);
+s32 dw3_midi_sound_vol(s32 id);
 SoundBank *dw3_midi_sound_bank(s32 id);
 void dw3_midi_sound_header(s32 id, s32 *buffer);
 void dw3_midi_sound_music(s32 id);
@@ -101,6 +108,16 @@ int main(int argc, char **argv) {
         return 0;
     }
     check("nothing chosen: the game's own music", def_midi_chosen() == 0 && def_midi_battle_music(own) == own);
+    if (count > 0) {
+        check("default midi volume is 50%", def_midi_volume(0) == 50);
+        def_midi_set_volume(0, 400);
+        check("midi volume supports 400%", def_midi_volume(0) == 400 && dw3_midi_sound_vol(74) == 127 && last_sep_vol == 127);
+        def_midi_set_volume(0, 999);
+        check("midi volume clamps above 400%", def_midi_volume(0) == 400);
+        def_midi_set_volume(0, 0);
+        check("midi volume clamps below 10%", def_midi_volume(0) == 10);
+        def_midi_set_volume(0, 50);
+    }
     def_midi_choose(3 + (argc > 4 ? atoi(argv[4]) : 0));
     check("a chosen file is read back", def_midi_chosen() == 3 + (argc > 4 ? atoi(argv[4]) : 0));
     music = def_midi_battle_music(own);
