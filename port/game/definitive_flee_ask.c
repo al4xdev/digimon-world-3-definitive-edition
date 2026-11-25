@@ -46,7 +46,7 @@ static struct {
 } flee_ask;
 
 int def_flee_ask_on(void) {
-    return def_on();
+    return def_on() && port_mod_battle_menu == 0;
 }
 
 static const char *fa_title(void) {

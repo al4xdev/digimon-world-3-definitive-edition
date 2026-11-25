@@ -246,6 +246,31 @@ int def_purify_fighting(void) {
     return def_on() && (pf_run.pending || pf_run.fighting);
 }
 
+int def_purify_queued_enemies(void) {
+    int i, j, n = 0;
+
+    if (!def_on() || !pf_run.fighting) {
+        return 0;
+    }
+    for (i = 0; i < DEF_BLAST_QUEST_FORMS; i++) {
+        int in_slot = 0;
+
+        if (!((pf_run.queue >> i) & 1) || entry_row(i) == 0) {
+            continue;
+        }
+        for (j = 0; j < pf_run.count && j < 3; j++) {
+            if (pf_run.entries[j] == i) {
+                in_slot = 1;
+                break;
+            }
+        }
+        if (!in_slot) {
+            n++;
+        }
+    }
+    return n;
+}
+
 /* Continuous single-battle waves (matching DRI's wave flow): when all active enemy slots fall, purify them and bring
  * the next queued dark form into (current[1] + 1) % 3 without reloading the field. */
 int def_purify_next_wave(void) {

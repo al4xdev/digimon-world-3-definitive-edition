@@ -568,6 +568,9 @@ FightstgStats *fightstg_rules_get_stats(u8 side, s32 first, s32 member);
 #ifdef PC_PORT
 s32 fightstg_p4_camera_active(void);
 void fightstg_p4_set_sway(s32 sway);
+void fightstg_notice_push(const u8 *text, s32 duration);
+void fightstg_notice_push_entry(s32 file, s32 entry, s32 duration);
+void fightstg_notice_clear(void);
 #endif
 
 #endif /* FIGHTSTG_H */

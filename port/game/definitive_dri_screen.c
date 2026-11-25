@@ -1187,6 +1187,16 @@ int def_dri_next_wave(void) {
     return slot;
 }
 
+int def_dri_queued_enemies(void) {
+    int left;
+
+    if (!def_on() || !dri_sim.fighting) {
+        return 0;
+    }
+    left = DEF_DRI_STAGES - (DEF_DRI_MEMBERS + dri_sim.wave);
+    return left > 0 ? left : 0;
+}
+
 void def_dri_stage_enters(int member) {
     if (!dri_sim.fighting) {
         return;

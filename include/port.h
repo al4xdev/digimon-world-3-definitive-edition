@@ -524,6 +524,8 @@ void def_super_flee_note(int who);
  * (wfightmn_knockout) and a lost battle (1 when it was a simulation: it goes back to the field, no game over). */
 int def_dri_talk(s32 map, s32 actor);
 int def_dri_frame(void);
+int def_dri_fighting(void);
+int def_dri_queued_enemies(void);
 void def_dri_stage_enters(int member);
 int def_dri_defeat(void);
 /* The Blast Gauge's phase 2, the purification (port/game/definitive_purify.c): the dark forms' enemy records (none on
@@ -548,6 +550,8 @@ int def_midi_battle_music(int music); /* the player's MIDI as the random battles
 int def_purify_stage_enters(int member);
 int def_purify_defeat(void);
 int def_purify_won_wave(void); /* the battle just ended was a purification's wave, won (def_log_end ran) */
+int def_purify_fighting(void);
+int def_purify_queued_enemies(void);
 /* The Time Room (port/game/definitive_time_room.c): a trial's area as the trial has it (after its stage's setup), and a
  * trial's battle won (no results screen) or lost (no game over: back to the field). */
 void def_time_stage_setup(void);

@@ -1432,13 +1432,14 @@ void wfightmn_knockout(WfightmnMain *obj, WfightmnMainData *data) {
                     break;
                 }
 #endif
-                data->wait.msg = fightstg_message_create();
                 if (ev->args[0] == 0) {
+                    data->wait.msg = fightstg_message_create();
                     fightstg_events_end_battle(2);
                     sound_module.play(0x60040008);
                     obj->msg_args[0] = 0x53;
                     obj->base.set_step(obj, 2);
                     data->intro_camera = fightstg_defeat_camera_create();
+                    data->wait.msg->show(data->wait.msg, 1, obj->msg_args);
                 } else {
                     fightstg_events_end_battle(1);
                     if (fightstg_battle.state.type != 6) {
@@ -1450,8 +1451,16 @@ void wfightmn_knockout(WfightmnMain *obj, WfightmnMainData *data) {
                     obj->msg_args[2] = 100;
                     models = (FightstgSlots *)heap_objects.find(0x14, -1, -1);
                     models->get_params(models, 0)->anim = 0xD;
+#ifdef PC_PORT
+                    if (port_mod_battle_menu != 0) {
+                        fightstg_notice_push_entry(0x7F, 0x52, 95);
+                    } else
+#endif
+                    {
+                        data->wait.msg = fightstg_message_create();
+                        data->wait.msg->show(data->wait.msg, 1, obj->msg_args);
+                    }
                 }
-                data->wait.msg->show(data->wait.msg, 1, obj->msg_args);
             }
         }
         break;
@@ -1594,6 +1603,11 @@ void wfightmn_victory_wait(WfightmnMain *obj, WfightmnMainData *data) {
             }
             break;
         }
+#ifdef PC_PORT
+        if (port_mod_battle_menu != 0 && obj->msg_args[2] >= gfx_module.funcs.get_time() - obj->msg_args[1]) {
+            break;
+        }
+#endif
         obj->base.set_step(obj, 0);
         break;
     case 1:
