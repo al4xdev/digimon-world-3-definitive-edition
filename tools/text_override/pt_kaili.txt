@@ -1,10 +1,13 @@
 # Portuguese Girls Power lines: en_kaili.txt translated, plus twins of lines the name swap cannot fix.
 DMG200:3 7: <7>Junior<7>Junior aqui dentro<1>também. Mantive meu<1>nome.<2,2>
 DMG200:3 8: <7><9><7>Seu nome real como<1>nome de conta?<2,2><3>Hm. Que ousadia.<1>Qualquer um poderia<1>achar você.<2,2>
+DMG200:3 9: <7>Junior<7>Não tenho nada a<1>esconder. Fica fácil<1>me achar por aqui.<2,2>
 DMG200:4 7: <7>Junior<7>Junior aqui dentro<1>também. Mantive meu<1>nome.<2,2>
 DMG200:4 8: <7><9><7>Seu nome real como<1>nome de conta?<2,2><3>Hm. Que ousadia.<1>Qualquer um poderia<1>achar você.<2,2>
+DMG200:4 9: <7>Junior<7>Não tenho nada a<1>esconder. Fica fácil<1>me achar por aqui.<2,2>
 DMG200:5 7: <7>Junior<7>Junior aqui dentro<1>também. Mantive meu<1>nome.<2,2>
 DMG200:5 8: <7><9><7>Seu nome real como<1>nome de conta?<2,2><3>Hm. Que ousadia.<1>Qualquer um poderia<1>achar você.<2,2>
+DMG200:5 9: <7>Junior<7>Não tenho nada a<1>esconder. Fica fácil<1>me achar por aqui.<2,2>
 DMG200:24 4: <7>Junior<7>...Espera. O que foi<1>agora?<2,2>
 DMG200:24 12: <7>Junior<7>Ainda não consertaram.<2,2><3>Ou seja, sem como<1>voltar ao Mundo Real.<1>Ótimo.<2,2>
 DMG200:24 14: <7>Junior<7>Lucky Mouse?! ...Por<1>que você diria isso?<1>O que você sabe?<2,2>

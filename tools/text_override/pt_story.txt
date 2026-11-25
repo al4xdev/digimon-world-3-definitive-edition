@@ -1,6 +1,6 @@
 # Portuguese (PT-BR) story rewrite — Fase 1 (Prólogo & Asuka City) em tom dublagem clássica 80/90.
 DMG200:0 1: <7><9><7>Nossa Senhora...<1>Então é isso aqui o tal<1>do Digimon Online?!<2,2>
-DMG200:0 2: <7>Atendente de Contas<7>Bem-vindo ao Servidor<1>Asuka, <8,1><5,1>!<2,2><3>Seus Digimon já estão<1>esperando no saguão.<1>É só passar lá e retirar.<2,2>
+DMG200:0 2: <7>Atendente de Contas<7>Boas-vindas ao Servidor<1>Asuka, <8,1><5,1>!<2,2><3>Seus Digimon já estão<1>esperando no saguão.<1>Passe lá para retirar.<2,2>
 DMG200:0 3: <7><9><7>Meus próprios Digimon?!<2,2><3>Partiu! Não vou perder<1>um segundo!<2,2>
 DMG200:3 1: <7>Tamer Service<7>Baixando os dados do<1>seu Digimon direto do<1>satélite.<2,2><3>Pisa na marca online<1>no chão e segura a<1>emoção!<2,2>
 DMG200:3 2: <7><9><7>Meu próprio Digimon...<1>Esperei tanto por isso<1>que até arrepiei!<2,2>
@@ -50,14 +50,14 @@ DMG200:11 3: <7>Tamer Genji<7>Então chega mais que<1>vamos tirar um contra!<2,2
 DMG200:12 1: <7><9><7>Opa! Levei essa!<2,2>
 DMG200:12 2: <7>Tamer Genji<7>Nada mal pra quem<1>chegou ontem!<2,2><3>Olha... você tem fibra<1>pra brigar pelo título<1>mundial, jovem!<2,2>
 DMG200:12 3: <7><9><7>Título mundial? Pode<1>escrever que eu vou<1>buscar essa taça!<2,2>
-DMG200:12 4: <7>Tamer Genji<7>Calma lá, apressadinho!<1>Antes de sair no braço,<1>dá um pulo no Digi-Lab.<2,2><3>Lá você entende como<1>evoluir seus bichos<1>sem fazer besteira.<2,2>
+DMG200:12 4: <7>Tamer Genji<7>Segura a onda!<1>Antes de sair por aí,<1>dá um pulo no Digi-Lab.<2,2><3>Lá você entende como<1>evoluir seus bichos<1>sem fazer besteira.<2,2>
 DMG200:12 5: <7><9><7>Digi-Lab. Anotado!<2,2><3>Valeu pela dica, coroa.<2,2>
 DMG200:12 6: <7>Tamer Genji<7>Ah, e me diz uma coisa:<1>já pegou uma Folder Bag?<2,2>
 DMG200:12 7: <7><9><7>...Uma o quê?!<2,2><3>Isso aí é de comer?<2,2>
 DMG200:12 8: <7>Tamer Genji<7>Sabia! Então passa lá<1>no Yellow Cruiser.<2,2><3>O pessoal lá te ensina<1>o bê-á-bá das Batalhas<1>de Cartas.<2,2><3>Agora vai lá, fera.<1>Não me faça passar<1>vergonha! Ho ho ho!<2,2>
 DMG200:21 1: <7>Jogador Misterioso<7>Ei! Você aí, ô<1>cara de sono! Para aí!<2,2>
 DMG200:21 2: <7><9><7>Tá falando comigo?<2,2>
-DMG200:21 3: <7>Jogador Misterioso<7>Não, com o poste!<2,2><3>Você é <8,1><5,1>, né?<1>O folgado que derrubou<1>o Líder de Seiryu.<2,2>
+DMG200:21 3: <7>Jogador Misterioso<7>Não, com o poste!<2,2><3>Você é <8,1><5,1>, né?<1>Quem venceu o Líder<1>de Seiryu.<2,2>
 DMG200:21 4: <7><9><7>...Sou eu mesmo.<1>E você é quem na fila<1>do pão?<2,2>
 DMG200:21 5: <7>Keith<7>Meu nome é Keith!<1>Grava bem essa cara!<2,2><3>Porque o campeão desse<1>torneio aqui sou EU!<2,2>
 DMG200:21 6: <7><9><7>Aham, senta lá.<1>Vamos ver no ringue.<2,2>
@@ -369,30 +369,30 @@ DMG300:20 1: <7><9><7>O Matrix System deve<1>estar por aqui.<2,2><3>Mas não sei
 DMG300:20 2: <7><9><7>...O quê?<2,2>
 DMG300:20 3: <7><9><7>Por que tem Vemmon<1>aqui?<2,2><3>...Será que...<2,2><3>Sem tempo. Preciso<1>ir atrás.<2,2>
 DMG300:21 1: <7><9><7>Certo. Vamos em<1>frente.<2,2>
-DMG300:22 1: <7>Kail<7><8,1><5,1>!<1>Graças a Deus.<1>Você está bem.<2,2>
-DMG300:22 2: <7><9><7>...Kail!<1>O que aconteceu?<2,2><3>Por que todos viraram<1>Oinkmon?<2,2>
-DMG300:22 3: <7>Kail<7>Foram os Vemmon.<1>Eles fizeram isso.<2,2>
-DMG300:22 4: <7><9><7>...O quê?<1>O que você disse?<2,2>
-DMG300:22 5: <7>Kail<7>Um enxame de Vemmon<1>de Amaterasu saiu do<1>Centro Administrativo.<2,2><3>Dispararam raios...<2,2><3>e todos viraram<1>Oinkmon.<2,2>
-DMG300:22 6: <7><9><7>Mas Vemmon não tem<1>esse tipo de poder...<2,2><3>A não ser que alguém<1>os tenha reprogramado.<2,2>
-DMG300:22 7: <7>Kail<7>Não sei...<2,2><3>Me escondi no porão<1>com os outros.<2,2><3>Só eu escapei da<1>transformação.<2,2><3>Teddy e Lisa...<1>Agora são Oinkmon.<2,2>
-DMG300:22 8: <7><9><7>O que está<1>acontecendo...<2,2><3>E para onde foram os<1>Vemmon?<2,2>
-DMG300:22 9: <7><9><7>...E para onde foram<1>os Vemmon?<2,2>
-DMG300:22 10: <7>Kail<7>Todos foram direto<1>para a Sala Mestra.<2,2>
-DMG300:22 11: <7><9><7>Então a Sala Mestra<1>guarda algum segredo.<2,2><3>Por isso eu vou.<2,2><3>Kail, procure um<1>lugar seguro para<1>se esconder.<2,2>
-DMG300:22 12: <7>Kail<7>O quê?<1>Mas... <8,1><5,1>...<2,2>
-DMG300:22 13: <7><9><7>Só eu posso lutar<1>contra eles neste<1>mundo.<2,2><3>Não se preocupe.<1>Deixe comigo.<2,2>
+DMG300:22 1: <7>Kail<7><8,1><5,1>!<1>Graças a Deus...<1>Você tá a salvo!<2,2>
+DMG300:22 2: <7><9><7>...Kail! O que foi que<1>aconteceu aqui?!<2,2><3>Por que a cidade inteira<1>virou Oinkmon?!<2,2>
+DMG300:22 3: <7>Kail<7>Foram os Vemmon.<1>Um ataque relâmpago.<2,2>
+DMG300:22 4: <7><9><7>...Quê?! Como assim?!<2,2>
+DMG300:22 5: <7>Kail<7>Um enxame de Vemmon veio<1>de Amaterasu direto do<1>Centro Administrativo.<2,2><3>Dispararam raios pra<1>todo lado...<2,2><3>e todo mundo virou<1>Oinkmon na hora.<2,2>
+DMG300:22 6: <7><9><7>Vemmon não tem poder<1>pra isso...<2,2><3>A menos que alguém<1>tenha modificado eles.<2,2>
+DMG300:22 7: <7>Kail<7>Eu me escondi no porão<1>com o pessoal...<2,2><3>Só eu escapei do raio.<2,2><3>O Teddy, a Lisa...<1>Todos viraram Oinkmon.<2,2>
+DMG300:22 8: <7><9><7>Maldição...<2,2><3>Pra onde esses Vemmon<1>foram depois?<2,2>
+DMG300:22 9: <7><9><7>...Pra onde eles foram?<2,2>
+DMG300:22 10: <7>Kail<7>Foram todos direto pra<1>Sala Mestra.<2,2>
+DMG300:22 11: <7><9><7>Então a resposta tá lá.<2,2><3>Eu vou entrar.<2,2><3>Kail, fica num lugar<1>seguro. Não se arrisca.<2,2>
+DMG300:22 12: <7>Kail<7>Ei! Espera, <8,1><5,1>...<2,2>
+DMG300:22 13: <7><9><7>Só eu posso encarar<1>eles neste mundo.<2,2><3>Fica firme. Eu vou<1>trazer todos de volta.<2,2>
 DMG300:22 14: <7>Kail<7>...Tá bom.<1>Eu confio em você,<1><8,1><5,1>.<2,2><3>Mas vê se volta bem,<1>senão vai ver só!<2,2>
-DMG300:22 15: <7><9><7>Certo. Então estou<1>indo.<2,2>
-DMG300:22 16: <7>Kail<7>Cuidado...<1><8,1><5,1>...<2,2>
-DMG300:22 17: <7>Kail<7>...Mas a A.o.A<1>ainda não acabou...<2,2>
-DMG300:22 18: <7><9><7>...Então todos os<1>outros...?<2,2>
-DMG300:22 19: <7>Kail<7>É... Teddy, Lisa<1>e os outros agora<1>são Oinkmon.<2,2>
+DMG300:22 15: <7><9><7>Combinado. Tô indo.<2,2>
+DMG300:22 16: <7>Kail<7>Toma cuidado...<1><8,1><5,1>...<2,2>
+DMG300:22 17: <7>Kail<7>...A A.o.A ainda não<1>acabou com a gente...<2,2>
+DMG300:22 18: <7><9><7>...Então o pessoal todo...?<2,2>
+DMG300:22 19: <7>Kail<7>É... Teddy, Lisa e os<1>outros viraram Oinkmon.<2,2>
 DMG300:22 20: <7><9><7>Ei. Kail?<2,2>
-DMG300:22 23: <7>Kail<7>Fico pensando no que<1>está acontecendo no<1>Mundo Real...<2,2><3>Tenho medo de saber.<2,2>
-DMG300:23 5: <7><9><7>T-Teddy?<2,2><3>Lisa. Nick. Keith.<1>Todos eles...<2,2>
-DMG300:23 7: <7><9><7>Teddy. Não consigo<1>entender uma palavra<1>do que você diz.<2,2><3>Espere aqui com Lisa<1>e os outros.<2,2><3>Vou achar um jeito<1>de consertar isso.<2,2>
-DMG300:23 8: <7><9><7>Estou indo. Esperem<1>por mim. Todos vocês.<2,2>
+DMG300:22 23: <7>Kail<7>Só de pensar no que tá<1>rolando no Mundo Real...<2,2><3>Dá até calafrio.<2,2>
+DMG300:23 5: <7><9><7>T-Teddy?!<2,2><3>Lisa... Nick... Keith...<1>Todos vocês...<2,2>
+DMG300:23 7: <7><9><7>Teddy... não dá pra<1>entender nada do que<1>você fala assim.<2,2><3>Segura firme aí com a<1>Lisa e o pessoal.<2,2><3>Eu juro que vou dar um<1>jeito de reverter isso.<2,2>
+DMG300:23 8: <7><9><7>Me esperem.<1>Eu vou voltar com a<1>solução.<2,2>
 DMG300:24 1: <7><9><7>...Não há ninguém<1>aqui.<2,2>
 DMG300:24 2: Eu sou Lord Megadeath,<1>destruidor do Mundo Real<1>e do Mundo Digital.<2,2><3>E aquele que será o deus<1>do novo mundo, quando<1>tudo mais se for...<2,2><3>Venha a mim agora,<1>o mais forte dos Tamers.<2,2><3>Aguardo você no<1>satélite militar,<1>Gunslinger.<2,2>
 DMG300:24 3: <7><9><7>...O quê?<1>Gunslinger?<2,2>
@@ -534,7 +534,7 @@ DMG400:1 3: <7>MasterTyranno<7>Mostra isso pro Líder<1>de Seiryu.<2,2><3>Aí el
 DMG400:1 4: <7><9><7>Valeu, MasterTyranno!<1>Até a próxima!<2,2>
 DMG400:1 5: <7>MasterTyranno<7>Só não relaxa: o Líder<1>de Seiryu é casca-grossa.<2,2><3>Entra ligado!<2,2>
 DMG400:2 1: <7><9><7>Líder Seiryu! Derrubei<1>o MasterTyranno.<2,2><3>Bora tirar a limpo<1>agora?<2,2>
-DMG400:2 2: <7>Líder Seiryu<7>Hm... a Garra Velha.<1>Você realmente passou<1>pelo teste.<2,2><3>Muito bem. Mostre do<1>que é feito!<2,2>
+DMG400:2 2: <7>Líder Seiryu<7>Hm... a Garra Velha.<1>Você realmente passou<1>pelo teste.<2,2><3>Pois bem. Mostre do<1>que é capaz!<2,2>
 DMG400:3 1: <7>Líder Seiryu<7>Impressionante... Você<1>tem fibra de verdade.<2,2><3>Qual é o seu nome?<2,2>
 DMG400:3 2: <7><9><7>Sou <8,1><5,1>.<2,2><3>Que lutaça, hein!<2,2>
 DMG400:3 3: <7>Líder Seiryu<7>Pois guarde isto com<1>orgulho, <8,1><5,1>.<2,2>
@@ -627,9 +627,9 @@ DMG400:44 4: <7><9><7>...Passou raspando!<2,2><3>Agora eu entro em<1>Zhu Que Cit
 DMG400:44 5: <7>Soldado<7>Claro. Por favor,<1>pode entrar.<2,2>
 DMG500:0 1: <7>Mulher<7>Ei, psiu...<2,2><3>Você aí mesmo!<2,2>
 DMG500:0 2: <7><9><7>Hã... tá falando comigo?<2,2>
-DMG500:0 3: <7>Mulher<7>Oie! Prazer, sou a Lisa!<1>Cheguei chegando!<2,2><3>E qual é a tua graça?<2,2>
+DMG500:0 3: <7>Mulher<7>Prazer, meu bem! Lisa<1>na área!<2,2><3>E qual é o seu nome?<2,2>
 DMG500:0 4: <7><9><7>Ah... sou <8,1><5,1>.<2,2>
-DMG500:0 5: <7>Lisa<7><8,1><5,1>! Nome chique.<1>Vou guardar.<2,2><3>Escuta, <8,2><5,2>, viu<1>um Digimon verdinho<1>e super fofo por aí?<2,2>
+DMG500:0 5: <7>Lisa<7><8,1><5,1>! Nome forte.<1>Vou guardar.<2,2><3>Escuta, <8,2><5,2>, viu<1>um Digimon verdinho<1>e simpático por aí?<2,2>
 DMG500:0 6: <7><9><7>Verde e fofo...<2,2><3>Tipo um Monmon? Ou<1>um Terriermon?<2,2>
 DMG500:0 7: <7>Lisa<7>Hmm... acho que não,<1>sabe?<2,2><3>Chuta outro, <8,1><5,1>!<2,2>
 DMG500:0 8: <7><9><7>...sei lá, ué...<2,2><3>Não faço ideia!<2,2>

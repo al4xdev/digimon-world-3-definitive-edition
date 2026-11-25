@@ -121,6 +121,7 @@ def kind_of(section, key, en):
 
 def split_choice(text):
     label, _, body = text.partition(" | ")
+    label = re.sub(r"\s*\[[^\]]+\]\s*$", "", label.strip())
     return label.strip(), body.strip()
 
 

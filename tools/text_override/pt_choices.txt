@@ -2,7 +2,7 @@
 Q8 DMG200:0 1@1: Queixinho caído [teddy:+1] | <7><9><7>Nossa Senhora...<1>Então é isso aqui o tal<1>do Digimon Online?!<2,2>
 Q8 DMG200:0 1@2: Pé atrás [ivy:+1] | <7><9><7>Bonito demais pra ser<1>verdade... Onde tá a<1>pegadinha?<2,2>
 Q8 DMG200:0 1@3: Sangue nos olhos [rep:+1] | <7><9><7>Finalmente! Digimon<1>Online! Bora ver se<1>dá caldo mesmo!<2,2>
-Q9 DMG200:11 2@1: Cheio de marra [rep:+1] | <7><9><7>Na mosca! Acabei de<1>pegar meu Digimon e<1>já tô pronto!<2,2>
+Q9 DMG200:11 2@1: Cheio de marra [rep:+1] | <7><9><7>Na mosca! Acabei de<1>pegar meu Digimon e<1>não tô de brincadeira!<2,2>
 Q9 DMG200:11 2@2: Humilde [teddy:+1] | <7><9><7>Comecei agora, coroa.<1>Tô pegando o jeito<1>ainda.<2,2>
 Q9 DMG200:11 2@3: Sem graça [ivy:+1] | <7><9><7>Tô com cara de turista<1>assim?! ...É, cheguei<1>agora mesmo.<2,2>
 Q10 DMG200:12 3@1: Vou levar a taça! [rep:+1] | <7><9><7>Título mundial? Pode<1>escrever que eu vou<1>buscar essa taça!<2,2>
@@ -24,33 +24,33 @@ Q43 DMG200:22 5@1: Mané é tu! [keith:+1] | <7><9><7>Aham, sei...<2,2><3>Mané 
 Q43 DMG200:22 5@2: Garganta demais [rep:+1] | <7><9><7>Difícil esquecer alguém<1>que grita tanto.<2,2>
 Q43 DMG200:22 5@3: Até a próxima [keith:+2] | <7><9><7>Então treina direito.<1>Na próxima eu quero<1>ver fogo!<2,2>
 Q14 DMG200:23 3@1: Passou a mão? [rep:+1] | <7><9><7>Não foi você que passou<1>a mão na máscara do<1>Sepikmon?<2,2>
-Q14 DMG200:23 3@2: Na educação [lisa:+1] | <7><9><7>Com licença, ô rei...<1>Por acaso a máscara do<1>Sepikmon caiu no teu bolso?<2,2>
+Q14 DMG200:23 3@2: Na educação [lisa:+1] | <7><9><7>Com licença, ô rei...<1>A máscara do Sepikmon<1>caiu no teu bolso?<2,2>
 Q14 DMG200:23 3@3: Cara de suspeito [ivy:+1] | <7><9><7>A máscara sumiu e você<1>tá suando frio.<1>Coincidência?<2,2>
-# Fase 1: Mini-arcos de NPCs de Asuka City (TALK00, mapa 0x200)
-Q200 TALK00 19@1: Dá a dica do Ginásio [rep:+1] | <7>Mika<7>Pô, Patamon, que corpo<1>mole é esse?! Quando<1>você vira Angemon?!<2,2><3><7><9><7>Calma, menina! Sem<1>batalha e Ginásio ele<1>não evolui mesmo.<2,2>
-Q200 TALK00 19@2: Zoa o Patamon [rep:-1] | <7>Mika<7>Pô, Patamon, que corpo<1>mole é esse?! Quando<1>você vira Angemon?!<2,2><3><7><9><7>Esse pão de queijo<1>voador aí? Vai virar<1>Angemon nunca!<2,2>
-Q200 TALK00 19@3: Pede paciência [teddy:+1] | <7>Mika<7>Pô, Patamon, que corpo<1>mole é esse?! Quando<1>você vira Angemon?!<2,2><3><7><9><7>Pega leve com o bicho!<1>Na hora do aperto ele<1>vai te surpreender.<2,2>
-Q201 TALK00 15@1: Valeu, mestre! [rep:+1] | <7>Masato<7>Escuta o veterano aqui:<1>teu primeiro alvo é o<1>Líder de Seiryu, a leste.<2,2><3><7><9><7>Valeu, chefe! Vou lá<1>mostrar serviço agora.<2,2>
-Q201 TALK00 15@2: E você, já ganhou? [ivy:+1] | <7>Masato<7>Escuta o veterano aqui:<1>teu primeiro alvo é o<1>Líder de Seiryu, a leste.<2,2><3><7><9><7>Se você manja tanto,<1>tá fazendo o quê<1>plantado na praça?<2,2>
-Q201 TALK00 15@3: Derrubo antes do almoço! [keith:+1] | <7>Masato<7>Escuta o veterano aqui:<1>teu primeiro alvo é o<1>Líder de Seiryu, a leste.<2,2><3><7><9><7>Deixa comigo que eu<1>derrubo esse Líder<1>antes do almoço!<2,2>
-Q202 TALK00 21@1: Manda o treino, coach! [rep:+1] | <7>Agumon<7>Ei! Só sair no braço<1>não basta! Tem que<1>suar a camisa no Ginásio!<2,2><3><7><9><7>Pode deixar, coach!<1>Vou puxar ferro lá<1>já já!<2,2>
-Q202 TALK00 21@2: Prefiro sair na mão! [keith:+1] | <7>Agumon<7>Ei! Só sair no braço<1>não basta! Tem que<1>suar a camisa no Ginásio!<2,2><3><7><9><7>Academia nada! O meu<1>negócio é porrada<1>franca no mato!<2,2>
-Q202 TALK00 21@3: Só quero um lanche [teddy:+1] | <7>Agumon<7>Ei! Só sair no braço<1>não basta! Tem que<1>suar a camisa no Ginásio!<2,2><3><7><9><7>Treinar de barriga<1>vazia? Nem pensar!<1>Bora comer primeiro!<2,2>
-Q203 TALK00 22@1: Viraria qual, vovô? [teddy:+1] | <7>Jake<7>Eu queria virar Digimon<1>pelo menos uma vez na<1>vida! Hyo hyo hyo!<2,2><3><7><9><7>Haha, boa, vovô!<1>Qual Digimon o senhor<1>ia querer ser?<2,2>
-Q203 TALK00 22@2: Cuidado com o pedido [ivy:+1] | <7>Jake<7>Eu queria virar Digimon<1>pelo menos uma vez na<1>vida! Hyo hyo hyo!<2,2><3><7><9><7>Cuidado com o que<1>deseja nesse servidor,<1>vovô... vai que cola!<2,2>
-Q203 TALK00 22@3: Cada doido em Asuka... [rep:-1] | <7>Jake<7>Eu queria virar Digimon<1>pelo menos uma vez na<1>vida! Hyo hyo hyo!<2,2><3><7><9><7>Cada figura que a<1>gente encontra nessa<1>cidade...<2,2>
-Q204 TALK00 11@1: Manda a build, chefe! [rep:+1] | <7>Jack Maníaco<7>Equipa uma arma no teu<1>Digimon pro ataque<1>explodir! Mas cada um<2,2><3>usa um tipo diferente.<2,2><3><7><9><7>Opa, valeu a aula!<1>Vou equipar o time<1>nos trinques!<2,2>
-Q204 TALK00 11@2: Prefiro no soco limpo [keith:+1] | <7>Jack Maníaco<7>Equipa uma arma no teu<1>Digimon pro ataque<1>explodir! Mas cada um<2,2><3>usa um tipo diferente.<2,2><3><7><9><7>Arma é pra quem não<1>se garante no braço!<1>Aqui é na raça!<2,2>
-Q204 TALK00 11@3: Cadê o teu Digimon? [lisa:+1] | <7>Jack Maníaco<7>Equipa uma arma no teu<1>Digimon pro ataque<1>explodir! Mas cada um<2,2><3>usa um tipo diferente.<2,2><3><7><9><7>Beleza, mas falando<1>nisso... cadê o teu<1>Digimon?<2,2>
-Q205 TALK00 17@1: Dá um beliscão aí! [teddy:+1] | <7>Shiro Novato<7>Essa Matrix Chamber é<1>coisa de louco! Nem<1>acredito que tô na rede!<2,2><3><7><9><7>Dá um beliscão na<1>bochecha pra ter<1>certeza que não é sonho!<2,2>
-Q205 TALK00 17@2: Fica esperto com isso [ivy:+1] | <7>Shiro Novato<7>Essa Matrix Chamber é<1>coisa de louco! Nem<1>acredito que tô na rede!<2,2><3><7><9><7>Tecnologia demais e<1>explicação de menos.<1>Abre o olho, parceiro.<2,2>
-Q205 TALK00 17@3: Bem-vindo ao futuro! [rep:+1] | <7>Shiro Novato<7>Essa Matrix Chamber é<1>coisa de louco! Nem<1>acredito que tô na rede!<2,2><3><7><9><7>Show de bola, né?!<1>Bora aproveitar que o<1>jogo tá só começando!<2,2>
-Q206 TALK00 13@1: Explica direito, ué [rep:+1] | <7>Alan Preguiçoso<7>Esse treco em cima da<1>tua cabeça é um satélite.<1>Cuida dos teus dados.<2,2><3>Eu também tenho um, só<1>que não aparece.<2,2><3><7><9><7>Pô, explica direito!<1>Tu tá falando quase<1>dormindo, cara!<2,2>
-Q206 TALK00 13@2: Tá com sono, chapa? [teddy:+1] | <7>Alan Preguiçoso<7>Esse treco em cima da<1>tua cabeça é um satélite.<1>Cuida dos teus dados.<2,2><3>Eu também tenho um, só<1>que não aparece.<2,2><3><7><9><7>Eita moleza... vai<1>tomar um café antes<1>de dar tutorial!<2,2>
-Q206 TALK00 13@3: Já saquei tudo [keith:+1] | <7>Alan Preguiçoso<7>Esse treco em cima da<1>tua cabeça é um satélite.<1>Cuida dos teus dados.<2,2><3>Eu também tenho um, só<1>que não aparece.<2,2><3><7><9><7>Beleza, já saquei!<1>Não precisa se cansar<1>explicando não!<2,2>
-Q207 TALK00 239@1: Gallantmon é brabo! [rep:+1] | <7>Mary Fã de Digimon<7>Meu sonho é evoluir<1>meu Digimon para um<1>Gallantmon...<2,2><3><7><9><7>Aí sim! Gallantmon é<1>puro respeito, vai<1>fundo nessa meta!<2,2>
-Q207 TALK00 239@2: E o Beelzemon, não? [keith:+1] | <7>Mary Fã de Digimon<7>Meu sonho é evoluir<1>meu Digimon para um<1>Gallantmon...<2,2><3><7><9><7>Gallantmon é legal, mas<1>já pensou num Beelzemon?<1>Aquele sim mete medo!<2,2>
-Q207 TALK00 239@3: Começa pelo básico [lisa:+1] | <7>Mary Fã de Digimon<7>Meu sonho é evoluir<1>meu Digimon para um<1>Gallantmon...<2,2><3><7><9><7>Calma lá, fã número um!<1>Primeiro treina direito,<1>depois pensa em Mega!<2,2>
+# Fase 1: Mini-arcos de NPCs de Asuka City (TALK00, mapas 0x200 / 0x201 / 0x203)
+Q200 TALK00 19@1: Dá a dica do Ginásio [rep:+1] | <7>Mika<7>Pô, Patamon, quando<1>você vira Angemon?!<2,2><3><7><9><7>Sem batalha e Ginásio<1>ele não evolui, moça!<2,2>
+Q200 TALK00 19@2: Zoa o Patamon [rep:-1] | <7>Mika<7>Pô, Patamon, quando<1>você vira Angemon?!<2,2><3><7><9><7>Esse pão de queijo<1>voador? Vira Angemon<1>nunca!<2,2>
+Q200 TALK00 19@3: Pede paciência [teddy:+1] | <7>Mika<7>Pô, Patamon, quando<1>você vira Angemon?!<2,2><3><7><9><7>Pega leve com o bicho!<1>No aperto ele brilha!<2,2>
+Q201 TALK00 15@1: Valeu, mestre! [rep:+1] | <7>Masato<7>Escuta aqui: teu alvo<1>é o Líder de Seiryu,<1>logo a leste.<2,2><3><7><9><7>Valeu a dica! Tô indo<1>pra lá agora!<2,2>
+Q201 TALK00 15@2: E você, já ganhou? [ivy:+1] | <7>Masato<7>Escuta aqui: teu alvo<1>é o Líder de Seiryu,<1>logo a leste.<2,2><3><7><9><7>Se manja tanto, faz o<1>quê plantado na praça?<2,2>
+Q201 TALK00 15@3: Venço antes do almoço! [keith:+1] | <7>Masato<7>Escuta aqui: teu alvo<1>é o Líder de Seiryu,<1>logo a leste.<2,2><3><7><9><7>Deixa comigo! Venço<1>antes do almoço!<2,2>
+Q202 TALK00 21@1: Manda o treino! [rep:+1] | <7>Agumon<7>Só lutar não basta!<1>Tem que puxar ferro<1>no Ginásio!<2,2><3><7><9><7>Fechado! Vou passar<1>no Ginásio já já!<2,2>
+Q202 TALK00 21@2: Prefiro batalha real [keith:+1] | <7>Agumon<7>Só lutar não basta!<1>Tem que puxar ferro<1>no Ginásio!<2,2><3><7><9><7>Academia nada! Prefiro<1>aprender no campo!<2,2>
+Q202 TALK00 21@3: Só quero um lanche [teddy:+1] | <7>Agumon<7>Só lutar não basta!<1>Tem que puxar ferro<1>no Ginásio!<2,2><3><7><9><7>De barriga vazia?<1>Nem pensar! Quero<1>comer primeiro!<2,2>
+Q203 TALK00 22@1: Viraria qual, vovô? [teddy:+1] | <7>Jake<7>Queria virar Digimon<1>uma vez na vida!<1>Hyo hyo hyo!<2,2><3><7><9><7>Haha, boa, vovô!<1>E qual Digimon o<1>senhor escolheria?<2,2>
+Q203 TALK00 22@2: Cuidado com o pedido [ivy:+1] | <7>Jake<7>Queria virar Digimon<1>uma vez na vida!<1>Hyo hyo hyo!<2,2><3><7><9><7>Cuidado com o que<1>deseja aqui, vovô...<1>Vai que cola!<2,2>
+Q203 TALK00 22@3: Cada figura aqui... [rep:-1] | <7>Jake<7>Queria virar Digimon<1>uma vez na vida!<1>Hyo hyo hyo!<2,2><3><7><9><7>Cada figura que a<1>gente acha nessa<1>cidade...<2,2>
+Q204 TALK00 11@1: Manda a dica, mestre! [rep:+1] | <7>Jack Maníaco<7>Equipa arma pro ataque<1>subir! Nem meu Guilmon<1>larga a dele.<2,2><3><7><9><7>Valeu a aula! Vou<1>equipar o time todo!<2,2>
+Q204 TALK00 11@2: Prefiro sem arma [keith:+1] | <7>Jack Maníaco<7>Equipa arma pro ataque<1>subir! Nem meu Guilmon<1>larga a dele.<2,2><3><7><9><7>Arma é pra quem não<1>confia no próprio<1>golpe!<2,2>
+Q204 TALK00 11@3: Cadê o teu Guilmon? [lisa:+1] | <7>Jack Maníaco<7>Equipa arma pro ataque<1>subir! Nem meu Guilmon<1>larga a dele.<2,2><3><7><9><7>Falando nisso... cadê<1>o teu Guilmon agora?<2,2>
+Q205 TALK00 17@1: Dá um beliscão aí! [teddy:+1] | <7>Shiro Novato<7>Essa Matrix Chamber é<1>demais! Nem acredito<1>que tô na rede!<2,2><3><7><9><7>Belisca a bochecha pra<1>ver se não é sonho!<2,2>
+Q205 TALK00 17@2: Estranho demais [ivy:+1] | <7>Shiro Novato<7>Essa Matrix Chamber é<1>demais! Nem acredito<1>que tô na rede!<2,2><3><7><9><7>Máquina demais, pouca<1>explicação. Não confio<1>nisso não.<2,2>
+Q205 TALK00 17@3: Curte o passeio! [rep:+1] | <7>Shiro Novato<7>Essa Matrix Chamber é<1>demais! Nem acredito<1>que tô na rede!<2,2><3><7><9><7>Show de bola, né?!<1>Aproveita enquanto o<1>jogo tá calmo!<2,2>
+Q206 TALK00 13@1: Explica direito, ué [rep:+1] | <7>Alan Preguiçoso<7>Isso acima da cabeça é<1>um satélite. Cuida dos<1>teus dados... uaaah.<2,2><3><7><9><7>Pô, acorda! Explica<1>direito esse negócio!<2,2>
+Q206 TALK00 13@2: Toma um café, chapa! [teddy:+1] | <7>Alan Preguiçoso<7>Isso acima da cabeça é<1>um satélite. Cuida dos<1>teus dados... uaaah.<2,2><3><7><9><7>Que moleza... vai<1>tomar um café forte!<2,2>
+Q206 TALK00 13@3: Já saquei tudo [keith:+1] | <7>Alan Preguiçoso<7>Isso acima da cabeça é<1>um satélite. Cuida dos<1>teus dados... uaaah.<2,2><3><7><9><7>Relaxa, já entendi!<1>Não se cansa não!<2,2>
+Q207 TALK00 239@1: Gallantmon é demais! [rep:+1] | <7>Mary Fã de Digimon<7>Meu sonho é evoluir<1>meu Digimon para um<1>Gallantmon...<2,2><3><7><9><7>Aí sim! Gallantmon é<1>puro respeito, vai<1>fundo!<2,2>
+Q207 TALK00 239@2: E o Beelzemon, não? [keith:+1] | <7>Mary Fã de Digimon<7>Meu sonho é evoluir<1>meu Digimon para um<1>Gallantmon...<2,2><3><7><9><7>E um Beelzemon? Aquele<1>sim bota respeito na<1>arena!<2,2>
+Q207 TALK00 239@3: Começa pelo básico [lisa:+1] | <7>Mary Fã de Digimon<7>Meu sonho é evoluir<1>meu Digimon para um<1>Gallantmon...<2,2><3><7><9><7>Calma! Primeiro sobe<1>de nível, depois pensa<1>em Mega!<2,2>
 Q16 DMG200:24 13@1: Acusar Lucky Mouse | <7><9><7>Manutenção? Duvido.<1>Isso tem cara de<1>Lucky Mouse.<2,2>
 Q16 DMG200:24 13@2: Duvidar do óbvio | <7><9><7>Talvez Lucky Mouse.<1>Ou alguém quer que a<1>gente pense isso.<2,2>
 Q16 DMG200:24 13@3: Perguntar por quê | <7><9><7>Se Lucky Mouse fez<1>isso, quero saber<1>por quê.<2,2>
@@ -362,49 +362,54 @@ Q39 DMG900:5 7@2: Humildade: só o começo | <7><9><7>Vou dar o meu melhor.<1>E 
 Q39 DMG900:5 7@3: Agridoce: sem mais perdas | <7><9><7>Vou ser forte. Forte<1>o bastante pra que<1>ninguém se perca mais.<2,2>
 
 # Fase 2: Mini-arcos de NPCs de Seiryu City (TALK01, mapas 0x22E / 0x22F / 0x230)
-Q208 TALK01 10@1: Ela tá na outra torre! [rep:+1] | <7>Maria Chorona<7>Buááá! Me perdi da Elle!<1>E agora, o que eu faço?!<2,2><3><7><9><7>Calma, respira! Procura<1>na torre das lojas que<1>ela deve tá lá!<2,2>
-Q208 TALK01 10@2: Para de chorar, ué [keith:+1] | <7>Maria Chorona<7>Buááá! Me perdi da Elle!<1>E agora, o que eu faço?!<2,2><3><7><9><7>Ficar chorando na praça<1>não vai fazer ela<1>brotar do chão, moça!<2,2>
-Q208 TALK01 10@3: Vai comer algo antes [teddy:+1] | <7>Maria Chorona<7>Buááá! Me perdi da Elle!<1>E agora, o que eu faço?!<2,2><3><7><9><7>Pega um lanche na pousada<1>e esfria a cabeça.<1>Logo vocês se acham!<2,2>
-Q209 TALK01 65@1: Ela tá chorando por ti! [rep:+1] | <7>Elle Charmosa<7>Cadê a Maria, hein?<1>Fico preocupada porque<1>ela chora por tudo...<2,2><3><7><9><7>Vai lá acudir a coitada<1>que ela tá abrindo o<1>berreiro na praça!<2,2>
-Q209 TALK01 65@2: Deixa ela se virar [keith:+1] | <7>Elle Charmosa<7>Cadê a Maria, hein?<1>Fico preocupada porque<1>ela chora por tudo...<2,2><3><7><9><7>Relaxa, um pouco de<1>independência faz bem.<1>Ela te acha!<2,2>
-Q209 TALK01 65@3: Vocês duas se merecem [ivy:+1] | <7>Elle Charmosa<7>Cadê a Maria, hein?<1>Fico preocupada porque<1>ela chora por tudo...<2,2><3><7><9><7>Uma perdida ali, outra<1>aqui... vocês duas<1>combinam mesmo, hein.<2,2>
-Q210 TALK01 11@1: Vou derrubar ele já já [keith:+1,rep:+1] | <7>Sarah<7>O Líder de Seiryu é<1>tããão lindo! E super<1>estiloso!<2,2><3><7><9><7>Aproveita o visual dele<1>agora, porque daqui a<1>pouco eu vou amassar!<2,2>
-Q210 TALK01 11@2: Parece um Golden, né? [teddy:+1] | <7>Sarah<7>O Líder de Seiryu é<1>tããão lindo! E super<1>estiloso!<2,2><3><7><9><7>Sabe que ele tem mó<1>cara de cachorro Golden<1>Retriever, né?<2,2>
-Q210 TALK01 11@3: Foco no treino, moça [lisa:+1] | <7>Sarah<7>O Líder de Seiryu é<1>tããão lindo! E super<1>estiloso!<2,2><3><7><9><7>Em vez de suspirar,<1>vai treinar teu Digimon!<1>Beleza não ganha luta!<2,2>
-Q211 TALK01 77@1: Péssimo espião, hein! [ivy:+1] | <7>Gerente Sasaki<7>Somos da concorrente da<1>MAGAMI. Segredo: viemos<1>espionar o Digimon Online!<2,2><3><7><9><7>Tu acabou de contar o<1>segredo pra um estranho!<1>Belo espião, hein!<2,2>
-Q211 TALK01 77@2: Me contrata então! [rep:+1] | <7>Gerente Sasaki<7>Somos da concorrente da<1>MAGAMI. Segredo: viemos<1>espionar o Digimon Online!<2,2><3><7><9><7>Ôpa, tem vaga aberta aí?<1>Por uns Bits eu faço<1>um relatório completo!<2,2>
-Q211 TALK01 77@3: Vou dedurar pra MAGAMI [rep:-1] | <7>Gerente Sasaki<7>Somos da concorrente da<1>MAGAMI. Segredo: viemos<1>espionar o Digimon Online!<2,2><3><7><9><7>Espionagem industrial?<1>Tô indo chamar o pessoal<1>da MAGAMI agora!<2,2>
-Q212 TALK01 78@1: Esquece o chefe e joga! [teddy:+1] | <7>Srta. Olivia<7>Ai, por que esse jogo é<1>tão divertido?! Dá até<1>raiva de tão bom!<2,2><3><7><9><7>Larga esse papo de<1>concorrente e aproveita!<1>Ninguém precisa saber!<2,2>
-Q212 TALK01 78@2: Anota pro relatório [lisa:+1] | <7>Srta. Olivia<7>Ai, por que esse jogo é<1>tão divertido?! Dá até<1>raiva de tão bom!<2,2><3><7><9><7>Se tá gostando tanto,<1>anota tudo no relatório<1>e aprende com eles!<2,2>
-Q212 TALK01 78@3: Tá perdendo tempo aqui [keith:+1] | <7>Srta. Olivia<7>Ai, por que esse jogo é<1>tão divertido?! Dá até<1>raiva de tão bom!<2,2><3><7><9><7>Viciou no jogo do rival?<1>Teu chefe vai ter um<1>treco se descobrir!<2,2>
-Q213 TALK01 15@1: Ventania braba aqui! [teddy:+1] | <7>Agumon<7>Bem-vindo a Seiryu,<1>a Cidade do Vento!<1>Fique à vontade!<2,2><3><7><9><7>Ôpa, valeu! Só segura<1>o boné que o vento aqui<1>não brinca em serviço!<2,2>
-Q213 TALK01 15@2: Cadê o Líder daqui? [rep:+1] | <7>Agumon<7>Bem-vindo a Seiryu,<1>a Cidade do Vento!<1>Fique à vontade!<2,2><3><7><9><7>Valeu, mas tô com pressa:<1>onde eu acho o Líder<1>daqui pra desafiar?<2,2>
-Q213 TALK01 15@3: Já vi cidades melhores [rep:-1] | <7>Agumon<7>Bem-vindo a Seiryu,<1>a Cidade do Vento!<1>Fique à vontade!<2,2><3><7><9><7>Hm, bonitinha... mas<1>Asuka ainda bota isso<1>aqui no bolso.<2,2>
-
+Q208 TALK01 10@1: Procura na outra torre [rep:+1] | <7>Maria Chorona<7>Buáá! Perdi a Elle!<1>O que eu faço agora?!<2,2><3><7><9><7>Calma! Procura lá na<1>torre das lojas!<2,2>
+Q208 TALK01 10@2: Para de chorar, ué [keith:+1] | <7>Maria Chorona<7>Buáá! Perdi a Elle!<1>O que eu faço agora?!<2,2><3><7><9><7>Chorar aqui não vai<1>trazer ela, moça!<2,2>
+Q208 TALK01 10@3: Come algo antes [teddy:+1] | <7>Maria Chorona<7>Buáá! Perdi a Elle!<1>O que eu faço agora?!<2,2><3><7><9><7>Pega um salgado ali e<1>esfria a cabeça.<2,2>
+Q209 TALK01 65@1: Ela tá chorando ali! [rep:+1] | <7>Elle Encantadora<7>Cadê a Maria? Ela<1>chora por qualquer<1>coisa...<2,2><3><7><9><7>Corre lá que ela tá<1>abrindo o berreiro!<2,2>
+Q209 TALK01 65@2: Deixa ela se virar [keith:+1] | <7>Elle Encantadora<7>Cadê a Maria? Ela<1>chora por qualquer<1>coisa...<2,2><3><7><9><7>Relaxa, um pouco de<1>independência faz bem.<2,2>
+Q209 TALK01 65@3: Vocês se merecem [ivy:+1] | <7>Elle Encantadora<7>Cadê a Maria? Ela<1>chora por qualquer<1>coisa...<2,2><3><7><9><7>Uma perdida ali, outra<1>aqui... se merecem.<2,2>
+Q210 TALK01 11@1: Vou vencer ele já já [keith:+1,rep:+1] | <7>Sarah<7>O Líder de Seiryu é<1>tão lindo e estiloso!<2,2><3><7><9><7>Curte o visual agora,<1>que já vou vencer ele!<2,2>
+Q210 TALK01 11@2: Parece um Golden, né? [teddy:+1] | <7>Sarah<7>O Líder de Seiryu é<1>tão lindo e estiloso!<2,2><3><7><9><7>Ele tem mó cara de<1>Golden Retriever, né?<2,2>
+Q210 TALK01 11@3: Foco no treino, moça [lisa:+1] | <7>Sarah<7>O Líder de Seiryu é<1>tão lindo e estiloso!<2,2><3><7><9><7>Vai treinar! Beleza<1>não ganha torneio!<2,2>
+Q211 TALK01 77@1: Péssimo espião, hein! [ivy:+1] | <7>Gerente Sasaki<7>Somos concorrentes da<1>MAGAMI! Segredo: vim<1>espionar o jogo!<2,2><3><7><9><7>Contou pro primeiro<1>estranho? Belo espião!<2,2>
+Q211 TALK01 77@2: Me contrata então! [rep:+1] | <7>Gerente Sasaki<7>Somos concorrentes da<1>MAGAMI! Segredo: vim<1>espionar o jogo!<2,2><3><7><9><7>Tem vaga aí? Por uns<1>Bits faço o relatório!<2,2>
+Q211 TALK01 77@3: Vou avisar a MAGAMI [rep:-1] | <7>Gerente Sasaki<7>Somos concorrentes da<1>MAGAMI! Segredo: vim<1>espionar o jogo!<2,2><3><7><9><7>Espionagem?! Tô indo<1>chamar a MAGAMI!<2,2>
+Q212 TALK01 78@1: Joga sem culpa! [teddy:+1] | <7>Sra. Olivia<7>Ai, por que esse jogo<1>é tão bom?! Dá até<1>raiva!<2,2><3><7><9><7>Se tá divertido, curte<1>logo sem culpa!<2,2>
+Q212 TALK01 78@2: Observa o segredo [lisa:+1] | <7>Sra. Olivia<7>Ai, por que esse jogo<1>é tão bom?! Dá até<1>raiva!<2,2><3><7><9><7>Quando algo vicia,<1>vale estudar o porquê!<2,2>
+Q212 TALK01 78@3: Competitiva assim? [keith:+1] | <7>Sra. Olivia<7>Ai, por que esse jogo<1>é tão bom?! Dá até<1>raiva!<2,2><3><7><9><7>Calma! Parece até que<1>tá torcendo contra!<2,2>
+Q213 TALK01 12@1: Descansa um pouco! [teddy:+1] | <7>Agumon<7>Ufa... acabei o treino<1>de hoje. Tô acabado.<2,2><3><7><9><7>Merece um descanso,<1>rapaz! Toma uma água!<2,2>
+Q213 TALK01 12@2: Treinou pouco ainda! [keith:+1] | <7>Agumon<7>Ufa... acabei o treino<1>de hoje. Tô acabado.<2,2><3><7><9><7>Já cansou? Assim não<1>aguenta dois rounds!<2,2>
+Q213 TALK01 12@3: Onde fica o Líder? [rep:+1] | <7>Agumon<7>Ufa... acabei o treino<1>de hoje. Tô acabado.<2,2><3><7><9><7>Legal, mas cadê o<1>Líder de Seiryu?!<2,2>
 # Fase 3: Mini-arcos de NPCs de Suzaku City (TALK01, mapas 0x23E / 0x240)
-Q214 TALK01 112@1: Esse cara é herói? [rep:+1] | <7>Lena<7>Ficou sabendo?! O famoso<1>Lucky Mouse voltou pro<1>servidor!<2,2><3><7><9><7>Lucky Mouse? Esse cara<1>é tipo um justiceiro<1>por aqui?<2,2>
-Q214 TALK01 112@2: Tem cheiro de encrenca [ivy:+1] | <7>Lena<7>Ficou sabendo?! O famoso<1>Lucky Mouse voltou pro<1>servidor!<2,2><3><7><9><7>Hacker famoso voltando<1>do nada? Isso aí tem<1>cheiro de encrenca.<2,2>
-Q214 TALK01 112@3: Nunca nem ouvi falar [teddy:+1] | <7>Lena<7>Ficou sabendo?! O famoso<1>Lucky Mouse voltou pro<1>servidor!<2,2><3><7><9><7>Quem?! Nunca nem ouvi<1>falar desse rato aí!<2,2>
-Q215 TALK01 113@1: Zanbamon nem suou! [keith:+1,rep:+1] | <7>Kyle Fortão<7>Se chegou até aqui,<1>derrubou o Zanbamon!<1>Tu manda muito, hein!<2,2><3><7><9><7>Aquele espadachim? Não<1>deu nem pro aquecimento!<2,2>
-Q215 TALK01 113@2: Foi no limite, viu! [teddy:+1] | <7>Kyle Fortão<7>Se chegou até aqui,<1>derrubou o Zanbamon!<1>Tu manda muito, hein!<2,2><3><7><9><7>Fala sério, foi no<1>sufoco! Quase virei<1>fatiado lá atrás.<2,2>
-Q215 TALK01 113@3: Qual Digimon é brabo? [lisa:+1] | <7>Kyle Fortão<7>Se chegou até aqui,<1>derrubou o Zanbamon!<1>Tu manda muito, hein!<2,2><3><7><9><7>Valeu! E na tua opinião,<1>qual é o Digimon mais<1>forte de todos?<2,2>
-Q216 TALK01 147@1: Cheguei pra vencer! [rep:+1] | <7>Renamon<7>Só Tamers fortes passam<1>daqui. Pode sentir<1>orgulho disso.<2,2><3><7><9><7>Valeu, mas não vim só<1>passear: vim levar a<1>insígnia!<2,2>
-Q216 TALK01 147@2: A Líder é braba mesmo? [lisa:+1] | <7>Renamon<7>Só Tamers fortes passam<1>daqui. Pode sentir<1>orgulho disso.<2,2><3><7><9><7>A Líder daqui é tudo<1>isso mesmo que o povo<1>fala?<2,2>
-Q216 TALK01 147@3: Só quero a insígnia [keith:+1] | <7>Renamon<7>Só Tamers fortes passam<1>daqui. Pode sentir<1>orgulho disso.<2,2><3><7><9><7>Sem papo furado: me diz<1>onde tá a Líder que<1>eu resolvo rápido.<2,2>
-Q217 TALK01 151@1: Quero entrar no clube! [teddy:+1] | <7>Patamon<7>A Líder de Suzaku não é<1>uma fofa?! Entrei pro<1>fã-clube dela também!<2,2><3><7><9><7>Haha, tem carteirinha<1>sobrando aí? Quero ver<1>se é isso tudo!<2,2>
-Q217 TALK01 151@2: Ela parece perigosa... [ivy:+1] | <7>Patamon<7>A Líder de Suzaku não é<1>uma fofa?! Entrei pro<1>fã-clube dela também!<2,2><3><7><9><7>Fofa? Sei não, tem cara<1>de quem não alivia na<1>arena!<2,2>
-Q217 TALK01 151@3: Vai treinar dança, vai! [rep:+1] | <7>Patamon<7>A Líder de Suzaku não é<1>uma fofa?! Entrei pro<1>fã-clube dela também!<2,2><3><7><9><7>Pra chamar atenção no<1>fã-clube tu precisa de<1>coreografia, rapaz!<2,2>
-
+Q214 TALK01 112@1: Esse cara é herói? [rep:+1] | <7>Lena<7>Soube?! O famoso<1>Lucky Mouse voltou!<2,2><3><7><9><7>Lucky Mouse? Ele é<1>tipo um justiceiro?<2,2>
+Q214 TALK01 112@2: Cheiro de problema [ivy:+1] | <7>Lena<7>Soube?! O famoso<1>Lucky Mouse voltou!<2,2><3><7><9><7>Hacker sumido voltando<1>do nada? Mau sinal.<2,2>
+Q214 TALK01 112@3: Nunca ouvi falar [teddy:+1] | <7>Lena<7>Soube?! O famoso<1>Lucky Mouse voltou!<2,2><3><7><9><7>Quem?! Nunca nem ouvi<1>falar desse rato!<2,2>
+Q215 TALK01 113@1: Nem deu pro gasto! [keith:+1,rep:+1] | <7>Kyle Fortão<7>Chegou aqui, então<1>venceu Zanbamon!<1>Mandou muito!<2,2><3><7><9><7>Aquele espadachim?<1>Nem deu pro gasto!<2,2>
+Q215 TALK01 113@2: Foi por um triz! [teddy:+1] | <7>Kyle Fortão<7>Chegou aqui, então<1>venceu Zanbamon!<1>Mandou muito!<2,2><3><7><9><7>Fala sério, quase<1>virei fatia lá atrás!<2,2>
+Q215 TALK01 113@3: Quem é o mais forte? [lisa:+1] | <7>Kyle Fortão<7>Chegou aqui, então<1>venceu Zanbamon!<1>Mandou muito!<2,2><3><7><9><7>Valeu! E qual Digimon<1>é o mais forte aqui?<2,2>
+Q216 TALK01 147@1: Vim pela insígnia! [rep:+1] | <7>Renamon<7>Só Tamers fortes<1>passam por aqui.<2,2><3><7><9><7>Não vim passear: vim<1>buscar a insígnia!<2,2>
+Q216 TALK01 147@2: Como é a Líder? [lisa:+1] | <7>Renamon<7>Só Tamers fortes<1>passam por aqui.<2,2><3><7><9><7>A Líder de Suzaku é<1>tão braba quanto dizem?<2,2>
+Q216 TALK01 147@3: Abre caminho logo [keith:+1] | <7>Renamon<7>Só Tamers fortes<1>passam por aqui.<2,2><3><7><9><7>Menos sermão e mais<1>passagem, por favor!<2,2>
+Q217 TALK01 151@1: Quero entrar no clube! [teddy:+1] | <7>Patamon<7>A Líder não é fofa?!<1>Entrei pro fã-clube!<2,2><3><7><9><7>Haha, sobrou vaga?<1>Quero carteirinha!<2,2>
+Q217 TALK01 151@2: Ela parece perigosa [ivy:+1] | <7>Patamon<7>A Líder não é fofa?!<1>Entrei pro fã-clube!<2,2><3><7><9><7>Fofa? Tem cara de quem<1>não perdoa na arena!<2,2>
+Q217 TALK01 151@3: Faz uma coreografia! [rep:+1] | <7>Patamon<7>A Líder não é fofa?!<1>Entrei pro fã-clube!<2,2><3><7><9><7>Pra brilhar no clube<1>tem que ter dancinha!<2,2>
 # Fase 4: Mini-arcos de NPCs de Byakko City (TALK01, mapas 0x25D / 0x25E)
-Q218 TALK01 327@1: Acabou o sufoco! [rep:+1] | <7>Maya<7>Que alívio ter Byakko<1>de volta! Não aguentava<1>mais correr no deserto!<2,2><3><7><9><7>Relaxa, acabou o perrengue.<1>Agora a cidade tá segura!<2,2>
-Q218 TALK01 327@2: Areia até na orelha, né? [teddy:+1] | <7>Maya<7>Que alívio ter Byakko<1>de volta! Não aguentava<1>mais correr no deserto!<2,2><3><7><9><7>Haha, nem me fala! Até<1>agora tô tirando areia<1>do tênis!<2,2>
-Q218 TALK01 327@3: Olho vivo com a A.o.A [ivy:+1] | <7>Maya<7>Que alívio ter Byakko<1>de volta! Não aguentava<1>mais correr no deserto!<2,2><3><7><9><7>Aproveita, mas não baixa<1>a guarda que essa A.o.A<1>não brinca em serviço.<2,2>
-Q219 TALK01 332@1: A gente vai resolver! [rep:+1] | <7>Vovó Plum<7>Quando será que vamos<1>ter paz de verdade<1>por aqui?<2,2><3><7><9><7>Pode ficar tranquila,<1>vovó! Eu vou botar essa<1>turma pra correr!<2,2>
-Q219 TALK01 332@2: A coisa tá feia mesmo [ivy:+1] | <7>Vovó Plum<7>Quando será que vamos<1>ter paz de verdade<1>por aqui?<2,2><3><7><9><7>Não vou mentir: tá tenso.<1>Mas a gente não vai<1>entregar os pontos.<2,2>
-Q219 TALK01 332@3: Descansa um pouco, vovó [teddy:+1] | <7>Vovó Plum<7>Quando será que vamos<1>ter paz de verdade<1>por aqui?<2,2><3><7><9><7>Toma um chá e descansa.<1>Deixa a bronca com quem<1>tá na linha de frente!<2,2>
-Q226 TALK01 189@1: Escapou de boa, hein! [teddy:+1] | <7>Estudante Tony<7>Cara, eu quase ajudei<1>a A.o.A! Eles sequestram<1>Tamers pra treinar arma!<2,2><3><7><9><7>Ufa, escapou por um triz!<1>Ainda bem que caiu a<1>ficha a tempo!<2,2>
-Q226 TALK01 189@2: Tem que abrir o olho! [lisa:+1] | <7>Estudante Tony<7>Cara, eu quase ajudei<1>a A.o.A! Eles sequestram<1>Tamers pra treinar arma!<2,2><3><7><9><7>Pois é, não dá pra cair<1>em papo mole de gente<1>esquisita na rede!<2,2>
-Q226 TALK01 189@3: Eu derrubo eles todos [keith:+1,rep:+1] | <7>Estudante Tony<7>Cara, eu quase ajudei<1>a A.o.A! Eles sequestram<1>Tamers pra treinar arma!<2,2><3><7><9><7>Pode deixar comigo que<1>esse exército deles vai<1>virar sucata!<2,2>
-Q227 TALK01 190@1: Ele mandou bem demais! [rep:+1] | <7>Rep. Aiko<7>O Líder de Byakko é<1>sensacional! Graças a<1>ele retomamos a cidade!<2,2><3><7><9><7>Aí sim! O cara segurou<1>a bronca quando a coisa<1>apertou!<2,2>
-Q227 TALK01 190@2: Ainda falta descobrir tudo [lisa:+1] | <7>Rep. Aiko<7>O Líder de Byakko é<1>sensacional! Graças a<1>ele retomamos a cidade!<2,2><3><7><9><7>Retomar a cidade é só o<1>começo. Falta saber o<1>plano real da A.o.A.<2,2>
-Q227 TALK01 190@3: Eu também ajudei, pô! [keith:+1] | <7>Rep. Aiko<7>O Líder de Byakko é<1>sensacional! Graças a<1>ele retomamos a cidade!<2,2><3><7><9><7>Ôpa, calma aí que eu<1>também suei a camisa<1>pra limpar isso aqui!<2,2>
+Q218 TALK01 327@1: Acabou o sufoco! [rep:+1] | <7>Maya<7>Byakko voltou! Chega<1>de correr no deserto!<2,2><3><7><9><7>Relaxa, o pior já<1>passou por aqui!<2,2>
+Q218 TALK01 327@2: Areia até no tênis! [teddy:+1] | <7>Maya<7>Byakko voltou! Chega<1>de correr no deserto!<2,2><3><7><9><7>Nem me fala! Tô com<1>areia até na meia!<2,2>
+Q218 TALK01 327@3: Fica alerta [ivy:+1] | <7>Maya<7>Byakko voltou! Chega<1>de correr no deserto!<2,2><3><7><9><7>Aproveita, mas fica<1>esperta com a A.o.A.<2,2>
+Q219 TALK01 332@1: A gente vai resolver! [rep:+1] | <7>Vovó Plum<7>Quando teremos paz<1>de verdade aqui?<2,2><3><7><9><7>Fica tranquila, vovó!<1>Vou resolver isso!<2,2>
+Q219 TALK01 332@2: Tá difícil mesmo [ivy:+1] | <7>Vovó Plum<7>Quando teremos paz<1>de verdade aqui?<2,2><3><7><9><7>Tá tenso, não minto.<1>Mas vamos resistir!<2,2>
+Q219 TALK01 332@3: Toma um chá, vovó [teddy:+1] | <7>Vovó Plum<7>Quando teremos paz<1>de verdade aqui?<2,2><3><7><9><7>Toma um chá e relaxa.<1>Deixa conosco!<2,2>
+Q226 TALK01 189@1: Escapou por um triz! [teddy:+1] | <7>Aluno Tony<7>Quase ajudei a A.o.A!<1>Eles sequestram Tamers<1>pra fazer arma!<2,2><3><7><9><7>Ufa, caiu a ficha bem<1>a tempo, hein!<2,2>
+Q226 TALK01 189@2: Não cai em conversa [lisa:+1] | <7>Aluno Tony<7>Quase ajudei a A.o.A!<1>Eles sequestram Tamers<1>pra fazer arma!<2,2><3><7><9><7>Nunca confie em gente<1>estranha na rede!<2,2>
+Q226 TALK01 189@3: Vou virar sucata! [keith:+1,rep:+1] | <7>Aluno Tony<7>Quase ajudei a A.o.A!<1>Eles sequestram Tamers<1>pra fazer arma!<2,2><3><7><9><7>Esse exército deles<1>vai virar sucata!<2,2>
+Q227 TALK01 190@1: Ele segurou a barra! [rep:+1] | <7>Aiko Representante<7>O Líder de Byakko é<1>incrível! Retomamos<1>a cidade!<2,2><3><7><9><7>O cara segurou firme<1>quando apertou!<2,2>
+Q227 TALK01 190@2: Falta saber o plano [lisa:+1] | <7>Aiko Representante<7>O Líder de Byakko é<1>incrível! Retomamos<1>a cidade!<2,2><3><7><9><7>Ainda precisamos saber<1>o plano real da A.o.A.<2,2>
+Q227 TALK01 190@3: Eu também ajudei! [keith:+1] | <7>Aiko Representante<7>O Líder de Byakko é<1>incrível! Retomamos<1>a cidade!<2,2><3><7><9><7>Ei, eu também ralei<1>pra limpar isso aqui!<2,2>
+# Fase 5: Mini-arcos de NPCs de Genbu City (TALK01, mapa 0x26F)
+Q229 TALK01 247@1: Ainda bem! [teddy:+1] | <7>Guarda DO<7>Boas-vindas à fortaleza<1>Genbu! Aqui a A.o.A<1>não entra!<2,2><3><7><9><7>Ufa! Um lugar onde<1>dá pra respirar!<2,2>
+Q229 TALK01 247@2: Não confie demais [lisa:+1,rep:+1] | <7>Guarda DO<7>Boas-vindas à fortaleza<1>Genbu! Aqui a A.o.A<1>não entra!<2,2><3><7><9><7>Byakko achava o mesmo.<1>Redobrem a vigília.<2,2>
+Q229 TALK01 247@3: Se vierem, eu encaro [keith:+1] | <7>Guarda DO<7>Boas-vindas à fortaleza<1>Genbu! Aqui a A.o.A<1>não entra!<2,2><3><7><9><7>Se aparecerem aqui,<1>pode chamar que eu<1>resolvo!<2,2>
+Q230 TALK01 261@1: A gente vai virar! [rep:+1] | <7>Guarda DO<7>Levaram o Juggernaut!<1>Não há mais o que<1>fazer, há?<2,2><3><7><9><7>Ainda não acabou!<1>Eu vou impedir eles!<2,2>
+Q230 TALK01 261@2: Sem desanimar, guarda! [ivy:+1] | <7>Guarda DO<7>Levaram o Juggernaut!<1>Não há mais o que<1>fazer, há?<2,2><3><7><9><7>Levanta a cabeça!<1>Chorar não traz a<1>máquina de volta!<2,2>
+Q230 TALK01 261@3: Cadê o Líder Genbu? [lisa:+1] | <7>Guarda DO<7>Levaram o Juggernaut!<1>Não há mais o que<1>fazer, há?<2,2><3><7><9><7>Foca no plano! O que<1>o Líder Genbu disse?<2,2>

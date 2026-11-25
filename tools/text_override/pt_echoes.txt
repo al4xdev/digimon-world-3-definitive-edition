@@ -596,156 +596,178 @@ Q12=2 TALK09 81: <7>Keith<7>Grande rival,<1><8,1><5,1>. Venceu "por<1>um triz" u
 Q11=1 TALK09 83: <7>Keith<7>Viu? Bem que eu disse.<1>A gente não ia ver<1>quem vence?<2,2><3>Sou o Rei das Cartas.<2,2><3>Você não tem nível<1>pra ME vencer.<2,2>
 Q30=1 TALK09 145: <7>Líder Xuan Wu<7>Quem é você para me<1>vencer? Duas vezes.<1>Perdoou meu teste.<2,2><3>Como conseguiu tanta<1>força?<2,2><3>Se houver um programa<1>de treino secreto, eu<1>quero.<2,2>
 
-# ---- Fase 1: Mini-arcos de NPCs de Asuka City (TALK00, mapa 0x200) ----
-# Mika (Q200) — etapa seguinte na manutenção (TALK00 623) e depois (TALK00 624)
-Q200=1 TALK00 623: <7>Mika<7>Ei! Segui tua dica do<1>Ginásio e o Patamon<1>tá voando baixo!<2,2><3>Nem ligo de ficar presa<1>aqui enquanto treino<1>com ele!<2,2>
-Q200=2 TALK00 623: <7>Mika<7>Olha só quem apareceu!<1>Chamou meu Patamon de<1>pão de queijo, né?!<2,2><3>Quando ele virar Angemon<1>você vai ver só o<1>tamanho do sacode!<2,2>
-Q200=3 TALK00 623: <7>Mika<7>Sabe que você tinha<1>razão? Parei de apressar<1>o Patamon.<2,2><3>Mesmo presos aqui, tô<1>curtindo demais ficar<1>do lado dele!<2,2>
-Q200=0 TALK00 623: <7>Mika<7>Tentei botar o Patamon<1>pra correr em volta da<1>fonte pra ver se evoluía!<2,2><3>Não deu certo, mas a<1>gente riu tanto que nem<1>ligo de ficar aqui!<2,2>
-# Patamon da Mika (Q200) — reage em TALK00 613
-Q200=1 TALK00 613: <7>Patamon<7>Hehe, tô meio sem jeito...<1>Com o treino novo eu já<1>tô quase lá!<2,2>
-Q200=2 TALK00 613: <7>Patamon<7>Pão de queijo voador,<1>é?! Eu tô treinando na<1>força do ódio, viu!<2,2>
-Q200=3 TALK00 613: <7>Patamon<7>A Mika parou de me<1>cobrar tanto... Agora<1>dá gosto de treinar!<2,2>
-Q200=0 TALK00 613: <7>Patamon<7>Ufa... correr em volta<1>da fonte me deixou<1>tonto, mas valeu!<2,2>
-# Masato (Q201) — etapa seguinte na manutenção (TALK00 665 / 666)
-Q201=1 TALK00 665: <7>Masato<7>Manutenção?! Logo hoje<1>que eu tinha um encontro<1>no Mundo Real!<2,2><3>Ei, como você foi gente<1>fina antes: ouvi dizer<1>que a Matrix travou feio!<2,2>
-Q201=2 TALK00 665: <7>Masato<7>Não enche! Só não fui<1>pra Seiryu porque tinha<1>um encontro hoje!<2,2><3>E agora essa manutenção<1>me ferrou de vez!<2,2>
-Q201=3 TALK00 665: <7>Masato<7>Peraí, você derrubou o<1>Líder de Seiryu mesmo?!<2,2><3>Então resolve logo essa<1>manutenção, ô brabo!<1>Eu tenho um encontro!<2,2>
-Q201=0 TALK00 665: <7>Masato<7>Manutenção?! Ninguém<1>nunca ouve os veteranos<1>e ainda vou perder meu<1>encontro!<2,2>
-# Agumon Coach (Q202) — etapa seguinte em TALK00 602
-Q202=1 TALK00 602: <7>Agumon<7>Fala, aluno nota dez!<1>Dica de ouro: só ganha<1>EXP quem entra na luta!<2,2><3>Então reveza o time<1>todo, sem preguiça!<2,2>
-Q202=2 TALK00 602: <7>Agumon<7>E aí, fera do mato!<1>Lembra que só ganha<1>EXP quem entra na luta!<2,2><3>Se não revezar o time,<1>o resto fica na seca!<2,2>
-Q202=3 TALK00 602: <7>Agumon<7>Falei bonito de academia,<1>mas confesso: se pintar<1>um churrasco eu largo tudo!<2,2><3>Ah, e reveza o time na<1>luta pra todos ganharem<1>EXP!<2,2>
-Q202=0 TALK00 602: <7>Agumon<7>Essa geração nova nem<1>para pra ouvir dica de<1>treino...<2,2><3>Mas anota aí: só ganha<1>EXP quem entra na luta!<2,2>
-# Vovô Jake (Q203) — etapa seguinte em TALK00 646
-Q203=1 TALK00 646: <7>Jake<7>Ainda tô decidindo que<1>Digimon eu queria ser...<2,2><3>Mas esses tais de L.o.L.<1>ou A.o.A tão atrapalhando<1>a aposentadoria!<2,2>
-Q203=2 TALK00 646: <7>Jake<7>Você me deu um gelo<1>antes, hein jovem!<2,2><3>Com essa tal de A.o.A<1>solta, melhor eu ficar<1>humano mesmo! Hyo hyo!<2,2>
-Q203=3 TALK00 646: <7>Jake<7>Humpf! Me chamou de<1>doido, mas doido mesmo<1>é esse pessoal da A.o.A!<2,2>
-Q203=0 TALK00 646: <7>Jake<7>Esses tais de L.o.L. ou<1>A.o.A... deviam parar<1>de arrumar encrenca!<2,2>
-# Maniac Jack (Q204) — etapa seguinte em TALK00 711
-Q204=1 TALK00 711: <7>Jack Maníaco<7>Fala, aprendiz! Acabei<1>me perdendo do Guilmon<1>no meio da muvuca!<2,2><3>Pelo menos tô jogando<1>de graça agora!<2,2>
-Q204=2 TALK00 711: <7>Jack Maníaco<7>E aí, fera do soco!<1>Me perdi do Guilmon,<1>mas vê se equipa arma!<2,2><3>Soco limpo não derruba<1>chefe não, viu!<2,2>
-Q204=3 TALK00 711: <7>Jack Maníaco<7>Tu deu azar, hein!<1>Perguntou do Guilmon e<1>eu perdi o bicho de vez!<2,2><3>Mas ei: pelo menos o<1>jogo tá na faixa!<2,2>
-Q204=0 TALK00 711: <7>Jack Maníaco<7>Me separei do Guilmon<1>e ninguém para pra<1>ouvir minhas builds...<2,2><3>Pelo menos tô jogando<1>de graça!<2,2>
-# Shiro Novato (Q205) — etapa seguinte em TALK00 329
-Q205=1 TALK00 329: <7>Shiro Novato<7>...Ai! Segui teu conselho<1>e belisquei a bochecha!<2,2><3>Doeu pra caramba! Não<1>é sonho mesmo não!<2,2>
-Q205=2 TALK00 329: <7>Shiro Novato<7>...Ai! Me belisquei pra<1>acordar, mas não é sonho!<2,2><3>Você tinha razão... tem<1>coisa estranha nessa<1>máquina mesmo.<2,2>
-Q205=3 TALK00 329: <7>Shiro Novato<7>...Ai! Belisquei a cara<1>e doeu! O futuro é real<1>até demais, cara!<2,2>
-Q205=0 TALK00 329: <7>Shiro Novato<7>...Ai! Me belisquei<1>sozinho pra testar e<1>doeu! Não é sonho!<2,2>
-# Alan Preguiçoso (Q206) — etapa seguinte em TALK00 331
-Q206=1 TALK00 331: <7>Alan Preguiçoso<7>Tá, tá, vou explicar<1>direito... Cada Digimon<1>tem seu elemento.<2,2><3>Quem estuda fraqueza<1>trabalha menos na luta.<1>Anota aí... uaaah.<2,2>
-Q206=2 TALK00 331: <7>Alan Preguiçoso<7>Tomei o café que você<1>falou... agora escuta:<1>cada Digimon tem elemento!<2,2><3>Bate na fraqueza que<1>acaba mais rápido e eu<1>volto a dormir.<2,2>
-Q206=3 TALK00 331: <7>Alan Preguiçoso<7>Já que tu sabe tudo,<1>aposto que já manja de<1>fraqueza elemental, né?<2,2><3>Ótimo. Menos trabalho<1>pra mim... uaaah.<2,2>
-Q206=0 TALK00 331: <7>Alan Preguiçoso<7>Uaaah... cada Digimon<1>tem seu atributo. Um bom<1>Tamer estuda isso...<2,2>
-# Mary Fã de Digimon (Q207) — etapa seguinte em TALK00 330
-Q207=1 TALK00 330: <7>Mary Fã de Digimon<7>Você me animou com o<1>Gallantmon, mas agora<1>vi um Beelzemon!<2,2><3>Socorro! Qual dos dois<1>é mais maneiro?!<2,2>
-Q207=2 TALK00 330: <7>Mary Fã de Digimon<7>A culpa é toda sua!<1>Botou Beelzemon na minha<1>cabeça e agora travei!<2,2><3>Gallantmon ou Beelzemon?!<1>Não consigo escolher!<2,2>
-Q207=3 TALK00 330: <7>Mary Fã de Digimon<7>Tô treinando o básico<1>como você mandou, mas<1>já tô na dúvida:<2,2><3>Gallantmon ou Beelzemon?<1>Sonhar não custa nada!<2,2>
-Q207=0 TALK00 330: <7>Mary Fã de Digimon<7>Vi uma revista aqui e<1>agora travei de vez:<2,2><3>Gallantmon ou Beelzemon?<1>Qual é melhor?!<2,2>
 
-# ---- Fase 2: Mini-arcos de NPCs de Seiryu City (TALK01, mapas 0x22E / 0x22F / 0x230) ----
-# Maria Chorona (Q208) — etapa seguinte em TALK01 16
-Q208=1 TALK01 16: <7>Maria Chorona<7>Fui lá onde você falou<1>e não achei a Elle!<2,2><3>A gente combinou na<1>Torre Gale, eu acho...<1>buááá!<2,2>
-Q208=2 TALK01 16: <7>Maria Chorona<7>Engoli o choro como você<1>mandou, mas cadê a Elle?!<2,2><3>A gente não tinha<1>combinado na Torre Gale?!<2,2>
-Q208=3 TALK01 16: <7>Maria Chorona<7>Comi um salgado e deu<1>uma acalmada... mas ainda<1>não achei a Elle!<2,2>
-Q208=0 TALK01 16: <7>Maria Chorona<7>Não acho a Elle em lugar<1>nenhum! A gente combinou<1>na Torre Gale, buááá!<2,2>
-# Elle Charmosa (Q209) — etapa seguinte em TALK01 67
-Q209=1 TALK01 67: <7>Elle Charmosa<7>Eu fui procurar ela,<1>juro! Mas ela sumiu!<2,2><3>Eu disse que tava na<1>Torre Zephyr, não Gale!<2,2>
-Q209=2 TALK01 67: <7>Elle Charmosa<7>Escutei você e deixei<1>ela se virar... agora<1>sumiu de vez!<2,2><3>Eu falei Torre Zephyr!<2,2>
-Q209=3 TALK01 67: <7>Elle Charmosa<7>Não ri não! Acho que eu<1>falei Torre Zephyr e ela<1>entendeu outra torre!<2,2>
-Q209=0 TALK01 67: <7>Elle Charmosa<7>Cadê a Maria, hein?<1>Eu falei bem claro que<1>tava na Torre Zephyr...<2,2>
-# Sarah (Q210) — etapa seguinte em TALK01 17
-Q210=1 TALK01 17: <7>Sarah<7>Humpf! Mesmo se você<1>vencer ele, o Líder de<1>Seiryu continua fofo!<2,2><3>Parece até um retriever!<2,2>
-Q210=2 TALK01 17: <7>Sarah<7>Não é que você tinha<1>razão?! O Líder de Seiryu<1>parece um retriever mesmo!<2,2><3>Ficou ainda mais fofo!<2,2>
-Q210=3 TALK01 17: <7>Sarah<7>Tentei focar no treino,<1>mas olha pra ele... parece<1>um retriever de tão fofo!<2,2>
-Q210=0 TALK01 17: <7>Sarah<7>Reparei agora: o Líder<1>de Seiryu parece um<1>retriever! Que fofo!<2,2>
-# Gerente Sasaki (Q211) — etapa seguinte em TALK01 81
-Q211=1 TALK01 81: <7>Gerente Sasaki<7>Psiu! Dessa vez tô<1>discreto... mas a Srta.<1>Olivia tá revoltada!<2,2><3>A MAGAMI deu um banho<1>na nossa empresa!<2,2>
-Q211=2 TALK01 81: <7>Gerente Sasaki<7>Sobre aquela vaga... a<1>Srta. Olivia tá quase<1>pedindo demissão!<2,2><3>A MAGAMI tem muito mais<1>conteúdo que a gente.<2,2>
-Q211=3 TALK01 81: <7>Gerente Sasaki<7>Ei, não dedura a gente!<1>A Srta. Olivia já tá<1>subindo pelas paredes!<2,2>
-Q211=0 TALK01 81: <7>Gerente Sasaki<7>Parece que a Srta.<1>Olivia esquentou a cabeça.<1>A MAGAMI tá anos na frente.<2,2>
-# Srta. Olivia (Q212) — etapa seguinte em TALK01 82
-Q212=1 TALK01 82: <7>Srta. Olivia<7>Eu segui tua dica e fui<1>jogar... aí me metem<1>manutenção?!<2,2><3>A tecnologia da MAGAMI<1>nem é tudo isso afinal!<2,2>
-Q212=2 TALK01 82: <7>Srta. Olivia<7>Anota no relatório:<1>manutenção fora de hora!<1>Ponto pra nós!<2,2>
-Q212=3 TALK01 82: <7>Srta. Olivia<7>Viu só?! Nem sou viciada!<1>Com essa manutenção,<1>a MAGAMI queimou o filme!<2,2>
-Q212=0 TALK01 82: <7>Srta. Olivia<7>Quê, manutenção agora?!<1>Acho que a tecnologia<1>deles não é lá isso tudo!<2,2>
-# Agumon de Seiryu (Q213) — etapa seguinte em TALK01 12
-Q213=1 TALK01 12: <7>Agumon<7>Ufa... treinei nessa<1>ventania o dia todo!<1>Tô só o pó!<2,2>
-Q213=2 TALK01 12: <7>Agumon<7>E aí, achou o Líder?<1>Eu treinei tanto hoje<1>que tô pregado!<2,2>
-Q213=3 TALK01 12: <7>Agumon<7>Tô só o pó do treino,<1>mas vê se respeita<1>Seiryu, ô turista!<2,2>
-Q213=0 TALK01 12: <7>Agumon<7>Chega de treino por<1>hoje... tô acabado!<2,2>
-
-# ---- Fase 3: Mini-arcos de NPCs de Suzaku City (TALK01, mapas 0x23E / 0x240) ----
-# Lena (Q214) — etapa seguinte em TALK01 114
-Q214=1 TALK01 114: <7>Lena<7>A gente tá preso sem<1>voltar pro Mundo Real!<2,2><3>Você perguntou se ele era<1>herói... será que foi o<1>Lucky Mouse mesmo?!<2,2>
-Q214=2 TALK01 114: <7>Lena<7>A gente não consegue<1>voltar pro Mundo Real!<2,2><3>Você falou que tinha<1>cheiro de encrenca...<1>e deu ruim mesmo!<2,2>
-Q214=3 TALK01 114: <7>Lena<7>Agora você vai conhecer<1>o nome dele: travaram a<1>saída pro Mundo Real!<2,2><3>Todo mundo tá culpando<1>o Lucky Mouse!<2,2>
-Q214=0 TALK01 114: <7>Lena<7>Não dá pra voltar pro<1>Mundo Real! Será que foi<1>obra do Lucky Mouse?!<2,2>
-# Kyle Fortão (Q215) — etapa seguinte em TALK01 121
-Q215=1 TALK01 121: <7>Kyle Fortão<7>Com essa marra toda:<1>Imperialdramon Fighter<1>Mode é absurdo!<2,2><3>Mas Marsmon também<1>quebra tudo no braço!<2,2>
-Q215=2 TALK01 121: <7>Kyle Fortão<7>Se achou Zanbamon tenso,<1>imagina Imperialdramon<1>Fighter Mode ou Marsmon!<2,2>
-Q215=3 TALK01 121: <7>Kyle Fortão<7>Pensei na tua pergunta!<1>Imperialdramon Fighter<1>Mode é insano...<2,2><3>Mas meu coração ainda<1>bate pelo Marsmon!<2,2>
-Q215=0 TALK01 121: <7>Kyle Fortão<7>Imperialdramon Fighter<1>Mode é forte... mas<1>Marsmon também arrebenta!<2,2>
-# Renamon de Suzaku (Q216) — etapa seguinte em TALK01 150
-Q216=1 TALK01 150: <7>Renamon<7>Gosto dessa tua postura.<1>Quer ir mais fundo?<1>Tudo bem, mas olho vivo.<2,2>
-Q216=2 TALK01 150: <7>Renamon<7>Ainda com curiosidade<1>sobre a Líder? Pode<1>entrar, mas olho vivo.<2,2>
-Q216=3 TALK01 150: <7>Renamon<7>Sempre na pressa, né?<1>Pode passar, mas toma<1>cuidado aí na frente.<2,2>
-Q216=0 TALK01 150: <7>Renamon<7>Quer seguir adiante?<1>Tudo bem, mas tenha<1>muito cuidado.<2,2>
-# Patamon Fã-Clube (Q217) — etapa seguinte em TALK01 154
-Q217=1 TALK01 154: <7>Patamon<7>Un, deux, trois! Oi,<1>colega de fã-clube!<2,2><3>A Floramon tá me<1>ensinando a dançar pra<1>torcer pela Líder!<2,2>
-Q217=2 TALK01 154: <7>Patamon<7>Un, deux, trois! Nada de<1>perigosa, ela é incrível!<2,2><3>A Floramon tá me<1>ensinando os passinhos!<2,2>
-Q217=3 TALK01 154: <7>Patamon<7>Un, deux, trois! Segui<1>tua ideia da coreografia!<2,2><3>A Floramon tá me dando<1>aula de dança! Olha só!<2,2>
-Q217=0 TALK01 154: <7>Patamon<7>Un, deux, trois! A<1>Floramon tá me ensinando<1>a dançar pro fã-clube!<2,2>
-
-# ---- Continuação (Etapa 2) dos NPCs antigos de Asuka City ao voltar de Suzaku (progress 14+) ----
-# Mika (Q200) — TALK00 624
-Q200=1 TALK00 624: <7>Mika<7>Ei! A gente treinou tanto<1>com tua dica que agora o<1>Patamon tá de birra!<2,2><3>Disse que não quer mais<1>brincar comigo!<2,2>
-Q200=2 TALK00 624: <7>Mika<7>Culpa tua! Depois daquele<1>papo de pão de queijo,<1>o Patamon ficou sério!<2,2><3>Nem quer brincar comigo!<2,2>
-Q200=3 TALK00 624: <7>Mika<7>Eu dei espaço como você<1>falou... aí ele disse<1>que não quer brincar?!<2,2>
-Q200=0 TALK00 624: <7>Mika<7>Buá! O Patamon falou que<1>não quer brincar comigo!<2,2>
-# Patamon da Mika (Q200) — TALK00 614
-Q200=1 TALK00 614: <7>Patamon<7>Não é birra do treino!<1>Eu só perguntei se ela<1>queria ir pra casa...<2,2>
-Q200=2 TALK00 614: <7>Patamon<7>Não tô bravo com ela,<1>só perguntei se ela<1>queria ir pra casa!<2,2>
-Q200=3 TALK00 614: <7>Patamon<7>Nada disso... eu só<1>perguntei se ela tava<1>com saudade de casa.<2,2>
-Q200=0 TALK00 614: <7>Patamon<7>Não... eu só perguntei<1>se você queria ir pra<1>casa.<2,2>
-# Masato (Q201) — TALK00 666
-Q201=1 TALK00 666: <7>Masato<7>Lembra do meu encontro?<1>Já era! Ninguém liga que<1>tamos presos nesse mundo!<2,2>
-Q201=2 TALK00 666: <7>Masato<7>Pode zoar agora... a<1>gente tá preso nesse<1>mundo e ninguém faz nada!<2,2>
-Q201=3 TALK00 666: <7>Masato<7>Ô fera de Seiryu, faz<1>alguma coisa! A gente tá<1>preso nesse servidor!<2,2>
-Q201=0 TALK00 666: <7>Masato<7>Ninguém se importa!<1>Estamos presos nesse<1>mundo!<2,2>
-# Agumon Coach (Q202) — TALK00 603
-Q202=1 TALK00 603: <7>Agumon<7>Fala, aluno! Quer entrar<1>no Centro Administrativo?<2,2><3>Nós Digimon entramos de<1>boa, mas humano não<1>passa! Fica a dica!<2,2>
-Q202=2 TALK00 603: <7>Agumon<7>Nem no braço tu entra no<1>Centro Administrativo!<2,2><3>Só Digimon pode passar!<1>Humano fica barrado!<2,2>
-Q202=3 TALK00 603: <7>Agumon<7>Falaram que tem comida<1>no Centro Administrativo,<1>mas só Digimon entra!<2,2>
-Q202=0 TALK00 603: <7>Agumon<7>Quer entrar no Centro<1>Administrativo? Só<1>Digimon entra, humano não!<2,2>
-# Vovô Jake (Q203) — TALK00 642
-Q203=1 TALK00 642: <7>Jake<7>Pensei na tua pergunta:<1>virar Digimon ainda é<1>meu maior sonho! Hyo hyo!<2,2>
-Q203=2 TALK00 642: <7>Jake<7>Você disse pra tomar<1>cuidado... mas o sonho<1>fala mais alto! Hyo hyo!<2,2>
-Q203=3 TALK00 642: <7>Jake<7>Pode achar loucura, mas<1>eu ainda vou virar um<1>Digimon! Hyo hyo!<2,2>
-Q203=0 TALK00 642: <7>Jake<7>Virar Digimon é meu<1>sonho. Será que alguém<1>pode realizar isso?<2,2>
-# Maniac Jack (Q204) — TALK00 712
-Q204=1 TALK00 712: <7>Jack Maníaco<7>Esquece entrar no Centro,<1>tá tudo fechado! E cadê<1>o meu Guilmon, hein?!<2,2>
-Q204=2 TALK00 712: <7>Jack Maníaco<7>Nem tenta invadir o<1>Centro na porrada! E se<1>vir o Guilmon, me avisa!<2,2>
-Q204=3 TALK00 712: <7>Jack Maníaco<7>Tu me zicou mesmo: ainda<1>não achei o Guilmon e o<1>Centro tá trancado!<2,2>
-Q204=0 TALK00 712: <7>Jack Maníaco<7>Nem tenta, não dá pra<1>entrar no Centro. Cadê<1>o Guilmon?!<2,2>
-# ---- Fase 4: Mini-arcos de NPCs de Byakko City (TALK01, mapas 0x25D / 0x25E) ----
-# Maya (Q218) — TALK01 328
-Q218=1 TALK01 328: <7>Maya<7>Agora que deu paz, queria<1>ver o Servidor Asuka lá<1>de cima! Deve ser lindo!<2,2>
-Q218=2 TALK01 328: <7>Maya<7>Depois de tanta areia no<1>tênis, meu sonho agora é<1>ver Asuka lá do alto!<2,2>
-Q218=3 TALK01 328: <7>Maya<7>Tô de olho vivo como você<1>falou... mas queria ver<1>Asuka do alto um dia!<2,2>
-Q218=0 TALK01 328: <7>Maya<7>Queria muito ver o<1>Servidor Asuka lá de<1>cima! Deve ser incrível!<2,2>
-# Vovó Plum (Q219) — TALK01 333
-Q219=1 TALK01 333: <7>Vovó Plum<7>Eu confio na tua palavra,<1>mas ainda perco o sono<1>pensando na A.o.A voltar...<2,2>
-Q219=2 TALK01 333: <7>Vovó Plum<7>Você mandou a real... é<1>por isso que não consigo<1>dormir com medo da A.o.A.<2,2>
-Q219=3 TALK01 333: <7>Vovó Plum<7>Tomei o chá que você<1>falou, mas o medo da<1>A.o.A não me deixa dormir.<2,2>
-Q219=0 TALK01 333: <7>Vovó Plum<7>Fico apavorada pensando<1>se a A.o.A vai voltar.<1>Nem consigo dormir.<2,2>
-# Estudante Tony (Q226) — TALK01 194
-Q226=1 TALK01 194: <7>Estudante Tony<7>Eu escapei da A.o.A, mas<1>ouvi que tomaram Amaterasu!<2,2><3>Será que meu amigo<1>Tatsuya tá bem lá?!<2,2>
-Q226=2 TALK01 194: <7>Estudante Tony<7>Agora tô de olho aberto!<1>Mas a A.o.A tomou Amaterasu<1>e meu amigo Tatsuya tá lá!<2,2>
-Q226=3 TALK01 194: <7>Estudante Tony<7>Se você vai derrubar<1>eles, salva Amaterasu!<1>Meu amigo Tatsuya tá lá!<2,2>
-Q226=0 TALK01 194: <7>Estudante Tony<7>A A.o.A tomou o Servidor<1>Amaterasu?! Tomara que<1>meu amigo Tatsuya esteja bem!<2,2>
-# Rep. Aiko (Q227) — TALK01 195
-Q227=1 TALK01 195: <7>Rep. Aiko<7>Retomamos a cidade, mas<1>ainda tô encucada: o que<1>a A.o.A queria de verdade?<2,2>
-Q227=2 TALK01 195: <7>Rep. Aiko<7>Você tinha toda razão!<1>Retomamos a cidade, mas<1>o plano real da A.o.A ainda<2,2><3>tá um mistério total!<2,2>
-Q227=3 TALK01 195: <7>Rep. Aiko<7>Haha, desculpa! Você<1>também salvou a gente!<1>Mas o que a A.o.A quer?!<2,2>
-Q227=0 TALK01 195: <7>Rep. Aiko<7>Recuperamos a cidade, mas<1>ainda tô preocupada com<1>o plano real da A.o.A!<2,2>
+# ---- Mini-arcos PT-BR (Fases 1 a 5): revisados (anti-slop, <=22/linha, placas unificadas, cronologia real) ----
+# Mika (Q200) — Etapa 1 (TALK00 623) & Etapa 2 (TALK00 624)
+Q200=1 TALK00 623: <7>Mika<7>O Ginásio fez milagre!<1>O Patamon tá voando<1>baixo agora!<2,2><3>Nem ligo de ficar aqui<1>treinando com ele!<2,2>
+Q200=2 TALK00 623: <7>Mika<7>Pão de queijo voador,<1>é?! Espera só ele<1>virar Angemon!<2,2><3>Você vai ver o tamanho<1>do sacode!<2,2>
+Q200=3 TALK00 623: <7>Mika<7>Parei de apressar o<1>Patamon e deu paz.<2,2><3>Mesmo presos aqui, tá<1>ótimo ao lado dele!<2,2>
+Q200=0 TALK00 623: <7>Mika<7>Botei o Patamon pra<1>correr na fonte...<1>Não evoluiu nada!<2,2><3>Mas a gente riu tanto<1>que nem ligo!<2,2>
+Q200=1 TALK00 624: <7>Mika<7>Treinamos tanto que o<1>Patamon deu birra!<2,2><3>Falou que não quer<1>mais brincar comigo!<2,2>
+Q200=2 TALK00 624: <7>Mika<7>Depois daquele apelido<1>ele ficou bem sério!<2,2><3>Nem quer brincar mais!<2,2>
+Q200=3 TALK00 624: <7>Mika<7>Dei espaço pra ele e<1>agora ele não quer<1>mais brincar?!<2,2>
+Q200=0 TALK00 624: <7>Mika<7>Buá! O Patamon disse<1>que não quer brincar<1>comigo!<2,2>
+# Patamon da Mika (Q200) — Etapa 1 (TALK00 613) & Etapa 2 (TALK00 614)
+Q200=1 TALK00 613: <7>Patamon<7>Hehe, fiquei tímido!<1>Com esse treino novo<1>eu chego lá!<2,2>
+Q200=2 TALK00 613: <7>Patamon<7>Pão de queijo, eu?!<1>Tô treinando na força<1>do ódio, viu!<2,2>
+Q200=3 TALK00 613: <7>Patamon<7>A Mika parou de pegar<1>no pé! Dá gosto treinar!<2,2>
+Q200=0 TALK00 613: <7>Patamon<7>Ufa... rodar a fonte<1>me deixou tonto, mas<1>valeu!<2,2>
+Q200=1 TALK00 614: <7>Patamon<7>Não é birra! Só per-<1>guntei se ela queria<1>ir pra casa...<2,2>
+Q200=2 TALK00 614: <7>Patamon<7>Não tô emburrado! Só<1>perguntei se ela quer<1>ir pra casa.<2,2>
+Q200=3 TALK00 614: <7>Patamon<7>Nada disso... só quis<1>saber se bateu saudade<1>de casa.<2,2>
+Q200=0 TALK00 614: <7>Patamon<7>Não... só perguntei se<1>você queria voltar pra<1>casa.<2,2>
+# Masato (Q201) — Etapa 1 (TALK00 665) & Etapa 2 (TALK00 666)
+Q201=1 TALK00 665: <7>Masato<7>Manutenção?! Logo hoje<1>que eu tinha encontro!<2,2><3>Olha o papo: a Matrix<1>travou feio lá dentro!<2,2>
+Q201=2 TALK00 665: <7>Masato<7>Não enche! Só não fui<1>pra Seiryu por causa<1>do meu encontro!<2,2><3>E agora essa pane me<1>ferrou de vez!<2,2>
+Q201=3 TALK00 665: <7>Masato<7>Peraí, venceu Seiryu<1>mesmo?! Ô prodígio,<1>conserta logo isso!<2,2><3>Meu encontro tá indo<1>pro espaço!<2,2>
+Q201=0 TALK00 665: <7>Masato<7>Manutenção?! Ninguém<1>ouve os veteranos e<1>perdi meu encontro!<2,2>
+Q201=1 TALK00 666: <7>Masato<7>Já era meu encontro!<1>Ninguém liga que tamos<1>presos aqui!<2,2>
+Q201=2 TALK00 666: <7>Masato<7>Pode rir... a gente tá<1>preso neste mundo e<1>ninguém faz nada!<2,2>
+Q201=3 TALK00 666: <7>Masato<7>Cadê a magia de Seiryu<1>agora?! Estamos presos<1>neste servidor!<2,2>
+Q201=0 TALK00 666: <7>Masato<7>Ninguém se importa!<1>Estamos presos neste<1>mundo!<2,2>
+# Agumon Coach (Q202) — Etapa 1 (TALK00 602) & Etapa 2 (TALK00 603)
+Q202=1 TALK00 602: <7>Agumon<7>Boa, aluno nota dez!<1>Revezou bem o time?<2,2><3>Quem fica no banco não<1>leva um pingo de EXP!<2,2>
+Q202=2 TALK00 602: <7>Agumon<7>Tudo bem, curte campo.<1>Mas só um lutando vai<1>deixar o resto fraco!<2,2><3>Ganha EXP só quem<1>entra na briga!<2,2>
+Q202=3 TALK00 602: <7>Agumon<7>Confesso: se pintar um<1>churrasco eu largo a<1>academia na hora!<2,2><3>Só reveza o time pra<1>todos ganharem EXP!<2,2>
+Q202=0 TALK00 602: <7>Agumon<7>Ninguém quer suar!<1>Anota aí: só ganha EXP<1>quem entra na luta!<2,2>
+Q202=1 TALK00 603: <7>Agumon<7>Quer entrar no Centro<1>Admin? Nós Digimon<1>passamos de boa!<2,2><3>Humano fica barrado.<1>Usa a cuca!<2,2>
+Q202=2 TALK00 603: <7>Agumon<7>Nem forçando a porta<1>você entra no Centro!<2,2><3>Só Digimon passa ali.<1>Humano não entra!<2,2>
+Q202=3 TALK00 603: <7>Agumon<7>Dizem que tem rango no<1>Centro Admin, mas só<1>Digimon pode entrar!<2,2>
+Q202=0 TALK00 603: <7>Agumon<7>Quer ir ao Centro<1>Admin? Só Digimon<1>entra, humano não!<2,2>
+# Vovô Jake (Q203) — Etapa 1 (prog 5..10: TALK00 642) & Etapa 2 (prog 22+: TALK00 646)
+Q203=1 TALK00 642: <7>Jake<7>Pensei bem: acho que<1>viraria um Agumon!<1>Hyo hyo hyo!<2,2>
+Q203=2 TALK00 642: <7>Jake<7>Que susto você me deu!<1>Mas o sonho de virar<1>Digimon não morre!<2,2>
+Q203=3 TALK00 642: <7>Jake<7>Pode me chamar de<1>maluco, mas ainda viro<1>Digimon! Hyo hyo!<2,2>
+Q203=0 TALK00 642: <7>Jake<7>Virar Digimon é meu<1>sonho. Quem será que<1>realiza isso?<2,2>
+Q203=1 TALK00 646: <7>Jake<7>Esses tais de L.o.L.<1>ou A.o.A tão acabando<1>com meu sossego!<2,2>
+Q203=2 TALK00 646: <7>Jake<7>Com essa A.o.A solta,<1>melhor ficar humano<1>mesmo! Hyo hyo!<2,2>
+Q203=3 TALK00 646: <7>Jake<7>Humpf! Maluco mesmo é<1>esse pessoal da A.o.A!<2,2>
+Q203=0 TALK00 646: <7>Jake<7>Esses L.o.L. ou A.o.A<1>deviam parar de criar<1>confusão!<2,2>
+# Jack Maníaco (Q204) — Etapa 1 (TALK00 711) & Etapa 2 (TALK00 712)
+Q204=1 TALK00 711: <7>Jack Maníaco<7>Me perdi do Guilmon na<1>muvuca! Pelo menos tô<1>jogando de graça!<2,2>
+Q204=2 TALK00 711: <7>Jack Maníaco<7>Perdi o Guilmon, mas<1>escuta: sem arma você<1>vai penar nos chefes!<2,2>
+Q204=3 TALK00 711: <7>Jack Maníaco<7>Tu perguntou dele e o<1>Guilmon sumiu mesmo!<2,2><3>Ao menos o jogo tá na<1>faixa agora!<2,2>
+Q204=0 TALK00 711: <7>Jack Maníaco<7>Me separei do Guilmon!<1>Pelo menos tô jogando<1>de graça!<2,2>
+Q204=1 TALK00 712: <7>Jack Maníaco<7>Esquece o Centro,<1>tá fechado! E cadê o<1>meu Guilmon?!<2,2>
+Q204=2 TALK00 712: <7>Jack Maníaco<7>Nem tenta forçar o<1>Centro! Se achar o<1>Guilmon, me grita!<2,2>
+Q204=3 TALK00 712: <7>Jack Maníaco<7>Ainda sem sinal do<1>Guilmon e o Centro tá<1>trancado! Que zica!<2,2>
+Q204=0 TALK00 712: <7>Jack Maníaco<7>Nem tenta, o Centro tá<1>fechado. Cadê o meu<1>Guilmon?!<2,2>
+# Shiro Novato (Q205) — Etapa 1 (prog 4: TALK00 329) — divergência real!
+Q205=1 TALK00 329: <7>Shiro Novato<7>...Ai! Belisquei forte<1>demais a bochecha!<2,2><3>Doeu! Não é sonho<1>mesmo não!<2,2>
+Q205=2 TALK00 329: <7>Shiro Novato<7>Fiquei encucado com a<1>máquina... até o ar<1>parece artificial.<2,2><3>Que arrepio!<2,2>
+Q205=3 TALK00 329: <7>Shiro Novato<7>É real demais, cara!<1>Sinto até o vento no<1>rosto! Incrível!<2,2>
+Q205=0 TALK00 329: <7>Shiro Novato<7>...Ai! Me belisquei<1>pra testar e doeu!<1>Não é sonho!<2,2>
+# Alan Preguiçoso (Q206) — Etapa 1 (prog 4: TALK00 331)
+Q206=1 TALK00 331: <7>Alan Preguiçoso<7>Tá bom, explico...<1>Cada Digimon tem seu<1>elemento.<2,2><3>Bate na fraqueza que<1>cansa menos... uaaah.<2,2>
+Q206=2 TALK00 331: <7>Alan Preguiçoso<7>Tomei dois expressos!<1>Escuta: cada Digimon<1>tem seu elemento!<2,2><3>Usa a fraqueza pra<1>acabar rápido!<2,2>
+Q206=3 TALK00 331: <7>Alan Preguiçoso<7>Já que manja tudo, nem<1>preciso falar sobre<1>elementos... uaaah.<2,2>
+Q206=0 TALK00 331: <7>Alan Preguiçoso<7>Uaaah... cada Digimon<1>tem atributo próprio.<1>Estude isso...<2,2>
+# Mary Fã de Digimon (Q207) — Etapa 1 (prog 4: TALK00 330)
+Q207=1 TALK00 330: <7>Mary Fã de Digimon<7>Eu ia de Gallantmon,<1>mas vi um Beelzemon<1>agora! E agora?!<2,2>
+Q207=2 TALK00 330: <7>Mary Fã de Digimon<7>A culpa é tua! Botou<1>Beelzemon na minha<1>cabeça e eu travei!<2,2><3>Qual deles eu pego?!<2,2>
+Q207=3 TALK00 330: <7>Mary Fã de Digimon<7>Tô subindo de nível<1>direitinho, mas já tô<1>na dúvida:<2,2><3>Gallantmon ou<1>Beelzemon?!<2,2>
+Q207=0 TALK00 330: <7>Mary Fã de Digimon<7>Vi na revista e travei:<1>Gallantmon ou<1>Beelzemon?! Qual?!<2,2>
+# ---- Fase 2: Seiryu City (TALK01) ----
+# Maria Chorona (Q208) — Etapa 1 (TALK01 16) & Etapa 2 (TALK01 41)
+Q208=1 TALK01 16: <7>Maria Chorona<7>Olhei nas lojas e nada<1>da Elle! Combinamos na<1>Torre Gale, buáá!<2,2>
+Q208=2 TALK01 16: <7>Maria Chorona<7>Engoli o choro, mas<1>cadê a Elle?! Era pra<1>ser na Torre Gale!<2,2>
+Q208=3 TALK01 16: <7>Maria Chorona<7>O salgado acalmou, mas<1>a Elle sumiu mesmo!<2,2>
+Q208=0 TALK01 16: <7>Maria Chorona<7>Não acho a Elle! Era<1>na Torre Gale, buáá!<2,2>
+Q208=1 TALK01 41: <7>Maria Chorona<7>Com a A.o.A solta, e<1>se pegaram a Elle?!<1>Ai meu Deus!<2,2>
+Q208=2 TALK01 41: <7>Maria Chorona<7>Tô tentando ser forte,<1>mas e se a A.o.A pegou<1>a Elle?!<2,2>
+Q208=3 TALK01 41: <7>Maria Chorona<7>Nem comida resolve<1>agora! E se algo ruim<1>rolou com a Elle?!<2,2>
+Q208=0 TALK01 41: <7>Maria Chorona<7>E se algo aconteceu<1>com a Elle?! O que eu<1>faço agora?!<2,2>
+# Elle Encantadora (Q209) — Etapa 1 (TALK01 67)
+Q209=1 TALK01 67: <7>Elle Encantadora<7>Fui lá fora e ela<1>sumiu! Eu falei Torre<1>Zephyr, não Gale!<2,2>
+Q209=2 TALK01 67: <7>Elle Encantadora<7>Deixei ela se virar e<1>sumiu de vez! Eu falei<1>Torre Zephyr!<2,2>
+Q209=3 TALK01 67: <7>Elle Encantadora<7>Não ri! Acho que falei<1>Zephyr e ela entendeu<1>outra torre!<2,2>
+Q209=0 TALK01 67: <7>Elle Encantadora<7>Cadê a Maria? Eu disse<1>Torre Zephyr...<2,2>
+# Sarah (Q210) — Etapa 1 (TALK01 17) & Etapa 2 (TALK01 42)
+Q210=1 TALK01 17: <7>Sarah<7>Humpf! Mesmo perdendo,<1>o Líder continua um<1>gato! E estiloso!<2,2>
+Q210=2 TALK01 17: <7>Sarah<7>Olhei de novo e ele<1>parece um retriever<1>mesmo! Muito fofo!<2,2>
+Q210=3 TALK01 17: <7>Sarah<7>Tentei focar na luta,<1>mas aquele olhar de<1>retriever não deixa!<2,2>
+Q210=0 TALK01 17: <7>Sarah<7>O Líder de Seiryu<1>parece um retriever!<1>Que fofo!<2,2>
+Q210=1 TALK01 42: <7>Sarah<7>Esquece torneio agora!<1>Será que minha cadela<1>Doria tá com fome?!<2,2>
+Q210=2 TALK01 42: <7>Sarah<7>Falando em cachorro...<1>ai! Será que minha<1>Doria tá com fome?!<2,2>
+Q210=3 TALK01 42: <7>Sarah<7>Não consigo treinar<1>pensando se minha<1>Doria comeu hoje!<2,2>
+Q210=0 TALK01 42: <7>Sarah<7>Será que a Doria tá<1>com fome? O que faço?!<2,2>
+# Gerente Sasaki (Q211) — Etapa 1 (TALK01 81) & Etapa 2 (TALK01 93)
+Q211=1 TALK01 81: <7>Gerente Sasaki<7>Psiu! Agora tô mudo...<1>Mas a Sra. Olivia tá<1>soltando fumaça!<2,2><3>A MAGAMI deu um banho<1>na nossa firma!<2,2>
+Q211=2 TALK01 81: <7>Gerente Sasaki<7>Sobre a vaga... a Sra.<1>Olivia tá pra pedir<1>as contas!<2,2><3>A MAGAMI tá anos luz<1>na nossa frente.<2,2>
+Q211=3 TALK01 81: <7>Gerente Sasaki<7>Fala baixo! Se a firma<1>descobre, a Sra.<1>Olivia me mata!<2,2>
+Q211=0 TALK01 81: <7>Gerente Sasaki<7>A Sra. Olivia tá brava.<1>A MAGAMI tem bem mais<1>conteúdo.<2,2>
+Q211=1 TALK01 93: <7>Gerente Sasaki<7>Fazer um jogo bom<1>assim dá um trabalho<1>danado, viu...<2,2>
+Q211=2 TALK01 93: <7>Gerente Sasaki<7>Se a firma te chamar,<1>talvez a gente faça um<1>jogo bom também!<2,2>
+Q211=3 TALK01 93: <7>Gerente Sasaki<7>Calma, só queríamos<1>fazer um produto bom<1>também... não é fácil.<2,2>
+Q211=0 TALK01 93: <7>Gerente Sasaki<7>Queremos fazer um bom<1>produto também. Mas<1>não é simples.<2,2>
+# Sra. Olivia (Q212) — Etapa 1 (TALK01 82) & Etapa 2 (TALK01 97)
+Q212=1 TALK01 82: <7>Sra. Olivia<7>Logo quando eu tava<1>curtindo: manutenção?!<2,2><3>A tecnologia deles nem<1>é lá essas coisas!<2,2>
+Q212=2 TALK01 82: <7>Sra. Olivia<7>Anotei tudo: servidor<1>caindo toda hora! A<1>tecnologia falha!<2,2>
+Q212=3 TALK01 82: <7>Sra. Olivia<7>Viu?! Nem tô viciada!<1>Com essa manutenção,<1>perderam meu respeito!<2,2>
+Q212=0 TALK01 82: <7>Sra. Olivia<7>Manutenção?! Então a<1>tecnologia deles não<1>é tudo isso!<2,2>
+Q212=1 TALK01 97: <7>Sra. Olivia<7>A A.o.A tava por trás<1>disso?! Que escândalo!<1>Fim da MAGAMI!<2,2>
+Q212=2 TALK01 97: <7>Sra. Olivia<7>Relatório bombástico:<1>a A.o.A controlava a<1>MAGAMI! Já era!<2,2>
+Q212=3 TALK01 97: <7>Sra. Olivia<7>A A.o.A tava por trás!<1>Ainda bem que não<1>comprei o passe VIP!<2,2>
+Q212=0 TALK01 97: <7>Sra. Olivia<7>A A.o.A estava por<1>trás?! É o fim da<1>MAGAMI!<2,2>
+# Agumon de Seiryu (Q213) — Etapa 1 (prog 5..10: TALK01 15) — cronologia corrigida!
+Q213=1 TALK01 15: <7>Agumon<7>A água me renovou!<1>Boas-vindas a Seiryu,<1>a Cidade do Vento!<2,2>
+Q213=2 TALK01 15: <7>Agumon<7>Dobrei a série só pra<1>provar meu valor!<1>Boas-vindas a Seiryu!<2,2>
+Q213=3 TALK01 15: <7>Agumon<7>O Líder fica lá no<1>alto! Boas-vindas a<1>Seiryu, e boa sorte!<2,2>
+Q213=0 TALK01 15: <7>Agumon<7>Boas-vindas a Seiryu,<1>a Cidade do Vento!<1>Fique à vontade!<2,2>
+# ---- Fase 3: Suzaku City (TALK01) ----
+# Lena (Q214) — Etapa 1 (TALK01 114) & Etapa 2 (TALK01 124)
+Q214=1 TALK01 114: <7>Lena<7>Travaram a volta pro<1>Mundo Real! Será que<1>Lucky Mouse fez isso?!<2,2>
+Q214=2 TALK01 114: <7>Lena<7>Mau sinal mesmo...<1>ninguém volta pro<1>Mundo Real agora!<2,2>
+Q214=3 TALK01 114: <7>Lena<7>Agora vai lembrar do<1>nome dele: travaram a<1>saída do servidor!<2,2>
+Q214=0 TALK01 114: <7>Lena<7>Não dá pra voltar pro<1>Mundo Real! Foi obra<1>do Lucky Mouse?!<2,2>
+Q214=1 TALK01 124: <7>Lena<7>Sentiu o terremoto?!<1>Passou de 6 na escala!<1>Deve ser o Lucky Mouse!<2,2>
+Q214=2 TALK01 124: <7>Lena<7>O chão tremeu todo!<1>Isso tá piorando a<1>cada minuto!<2,2>
+Q214=3 TALK01 124: <7>Lena<7>Esquece o rato! Sentiu<1>aquele terremoto?!<1>Quase caí no chão!<2,2>
+Q214=0 TALK01 124: <7>Lena<7>Ei! Foi um terremoto?!<1>Passou de 6 na escala<1>Richter!<2,2>
+# Kyle Fortão (Q215) — Etapa 1 (TALK01 121)
+Q215=1 TALK01 121: <7>Kyle Fortão<7>Boa marra! Mas Marsmon<1>e Imperialdramon FM<1>são outro nível!<2,2>
+Q215=2 TALK01 121: <7>Kyle Fortão<7>Se Zanbamon apertou,<1>imagina enfrentar um<1>Marsmon na arena!<2,2>
+Q215=3 TALK01 121: <7>Kyle Fortão<7>Fiquei pensando: entre<1>Imperialdramon FM e<1>Marsmon, vou de Mars!<2,2>
+Q215=0 TALK01 121: <7>Kyle Fortão<7>Imperialdramon FM é<1>forte, mas Marsmon<1>também não fica atrás!<2,2>
+# Renamon de Suzaku (Q216) — Etapa 1 (TALK01 150) — voz serena/enigmática
+Q216=1 TALK01 150: <7>Renamon<7>Firmeza rara. A arena<1>espera por você.<1>Não vacile lá dentro.<2,2>
+Q216=2 TALK01 150: <7>Renamon<7>Quer conhecer a Líder?<1>Em breve verá a força<1>dela com os olhos.<2,2>
+Q216=3 TALK01 150: <7>Renamon<7>Tanta pressa costuma<1>custar caro. Siga em<1>frente, por sua conta.<2,2>
+Q216=0 TALK01 150: <7>Renamon<7>Quer ir mais fundo?<1>Prossiga com cautela.<2,2>
+# Patamon Fã-Clube (Q217) — Etapa 1 (TALK01 154)
+Q217=1 TALK01 154: <7>Patamon<7>Un, deux, trois!<1>Colega do clube, a<1>Floramon tá ensinando!<2,2>
+Q217=2 TALK01 154: <7>Patamon<7>Un, deux, trois! Ela é<1>demais, não perigosa!<1>Olha meus passinhos!<2,2>
+Q217=3 TALK01 154: <7>Patamon<7>Un, deux, trois! Botei<1>a dancinha em prática<1>com a Floramon!<2,2>
+Q217=0 TALK01 154: <7>Patamon<7>Un, deux, trois! A<1>Floramon tá me dando<1>aula de dança!<2,2>
+# ---- Fase 4: Byakko City (TALK01) ----
+# Maya (Q218) — Etapa 1 (TALK01 328) — divergência real
+Q218=1 TALK01 328: <7>Maya<7>Em paz enfim! Queria<1>ver o Servidor Asuka<1>lá de cima um dia!<2,2>
+Q218=2 TALK01 328: <7>Maya<7>Lavei o tênis todo!<1>Agora só quero subir<1>e ver Asuka do alto!<2,2>
+Q218=3 TALK01 328: <7>Maya<7>Se a A.o.A voltar, eu<1>fujo voando! Deve dar<1>pra ver Asuka inteira!<2,2>
+Q218=0 TALK01 328: <7>Maya<7>Queria ver o Servidor<1>Asuka lá de cima.<1>Deve ser lindo!<2,2>
+# Vovó Plum (Q219) — Etapa 1 (TALK01 333)
+Q219=1 TALK01 333: <7>Vovó Plum<7>Acredito em você, mas<1>ainda perco o sono<1>temendo a A.o.A.<2,2>
+Q219=2 TALK01 333: <7>Vovó Plum<7>A verdade dói... fico<1>acordada a noite toda<1>com medo da A.o.A.<2,2>
+Q219=3 TALK01 333: <7>Vovó Plum<7>Fiz o chazinho, mas o<1>medo da A.o.A não me<1>deixa pregar o olho.<2,2>
+Q219=0 TALK01 333: <7>Vovó Plum<7>Morro de medo da A.o.A<1>voltar. Nem consigo<1>dormir.<2,2>
+# Aluno Tony (Q226) — Etapa 1 (TALK01 194)
+Q226=1 TALK01 194: <7>Aluno Tony<7>Escapei, mas a A.o.A<1>tomou Amaterasu!<2,2><3>Será que meu amigo<1>Tatsuya tá bem?!<2,2>
+Q226=2 TALK01 194: <7>Aluno Tony<7>Não confio em mais<1>ninguém! E o Tatsuya<1>tá preso em Amaterasu!<2,2>
+Q226=3 TALK01 194: <7>Aluno Tony<7>Se for pra Amaterasu,<1>salva o Tatsuya!<1>É meu melhor amigo!<2,2>
+Q226=0 TALK01 194: <7>Aluno Tony<7>A.o.A tomou Amaterasu!<1>Tomara que o Tatsuya<1>esteja bem...<2,2>
+# Aiko Representante (Q227) — Etapa 1 (TALK01 195)
+Q227=1 TALK01 195: <7>Aiko Representante<7>Retomamos a cidade,<1>mas o que a A.o.A<1>queria de verdade?<2,2>
+Q227=2 TALK01 195: <7>Aiko Representante<7>Fiquei encucada com o<1>plano deles... isso<1>ainda não acabou!<2,2>
+Q227=3 TALK01 195: <7>Aiko Representante<7>Desculpa! Você também<1>salvou a gente! Mas o<1>que a A.o.A planeja?<2,2>
+Q227=0 TALK01 195: <7>Aiko Representante<7>Retomamos a cidade,<1>mas ainda temo o plano<1>da A.o.A!<2,2>
+# ---- Fase 5: Genbu City (TALK01) ----
+# Guarda DO Portão (Q229) — Etapa 1 (TALK01 249)
+Q229=1 TALK01 249: <7>Guarda DO<7>Aqui está calmo, mas e<1>Amaterasu? Preocupo-me<1>com o recruta Chuck.<2,2>
+Q229=2 TALK01 249: <7>Guarda DO<7>Reforçamos os postos!<1>Mas sem sinal do meu<1>amigo Chuck lá fora.<2,2>
+Q229=3 TALK01 249: <7>Guarda DO<7>Se for pra Amaterasu,<1>procure o Chuck. Ele<1>ficou na linha de trás.<2,2>
+Q229=0 TALK01 249: <7>Guarda DO<7>O que houve lá fora?<1>Estou preocupado com<1>meu amigo Chuck...<2,2>
+# Guarda DO Veterano (Q230) — Etapa 1 (prog 38+: TALK01 262) — cronologia corrigida!
+Q230=1 TALK01 262: <7>Guarda DO<7>O Líder tinha razão:<1>o mundo é salvo por<1>jovens como você!<2,2>
+Q230=2 TALK01 262: <7>Guarda DO<7>Obrigado pelo choque.<1>O Líder disse bem:<1>jovens salvam o mundo!<2,2>
+Q230=3 TALK01 262: <7>Guarda DO<7>O Líder mandou avisar:<1>não somos nós, mas<1>jovens que nos salvam!<2,2>
+Q230=0 TALK01 262: <7>Guarda DO<7>O Líder de Genbu diz:<1>são jovens corajosos<1>que protegem o mundo!<2,2>
