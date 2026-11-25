@@ -771,3 +771,35 @@ Q230=1 TALK01 262: <7>Guarda DO<7>O Líder tinha razão:<1>o mundo é salvo por<
 Q230=2 TALK01 262: <7>Guarda DO<7>Valeu o sacode! Como<1>o Líder dizia: o peso<1>do mundo é de vocês.<2,2>
 Q230=3 TALK01 262: <7>Guarda DO<7>O plano? O Líder<1>sempre dizia antes:<2,2><3>"Não somos nós, mas<1>jovens como você que<1>salvam o mundo!"<2,2>
 Q230=0 TALK01 262: <7>Guarda DO<7>O Líder de Genbu diz:<1>são jovens corajosos<1>que protegem o mundo!<2,2>
+# ---- Fase 6: Encerramentos Finais de NPCs Antigos (prog 38+ / 21+) ----
+# Shiro Novato (Q205) — Etapa 2 Finale (prog 38+: TALK00 428)
+Q205=1 TALK00 428: <7>Shiro Novato<7>A A.o.A caiu! Nem<1>preciso me beliscar:<1>vamos pra casa!<2,2>
+Q205=2 TALK00 428: <7>Shiro Novato<7>A A.o.A já era! Nunca<1>mais confio cegamente<1>em máquina nenhuma!<2,2>
+Q205=3 TALK00 428: <7>Shiro Novato<7>Que aventura maluca!<1>Mas agora quero mesmo<1>é o rango da mamãe!<2,2>
+Q205=0 TALK00 428: <7>Shiro Novato<7>A A.o.A acabou! Enfim<1>vamos voltar pro<1>Mundo Real!<2,2>
+# Alan Preguiçoso (Q206) — Etapa 2 Finale (prog 38+: TALK00 450)
+Q206=1 TALK00 450: <7>Alan Preguiçoso<7>A.o.A presa! Agora<1>posso voltar a dormir<1>em paz... uaaah.<2,2>
+Q206=2 TALK00 450: <7>Alan Preguiçoso<7>Com a A.o.A fora, o<1>café venceu! Mas que<1>cansaço... uaaah.<2,2>
+Q206=3 TALK00 450: <7>Alan Preguiçoso<7>Já que você salvou<1>tudo, eu tiro férias<1>daqui... uaaah.<2,2>
+Q206=0 TALK00 450: <7>Alan Preguiçoso<7>Prenderam toda a<1>A.o.A! Chega de<1>ciberterroristas.<2,2>
+# Mary Fã de Digimon (Q207) — Etapa 2 Finale (prog 21+: TALK00 431)
+Q207=1 TALK00 431: <7>Mary Fã de Digimon<7>Esquece Gallantmon!<1>Descobri Sukamon e<1>Vegiemon! São demais!<2,2>
+Q207=2 TALK00 431: <7>Mary Fã de Digimon<7>Nem Gallantmon nem<1>Beelzemon! Agora sou<1>fã de Sukamon!<2,2>
+Q207=3 TALK00 431: <7>Mary Fã de Digimon<7>Fui pro básico e me<1>apaixonei por Sukamon<1>e Vegiemon! Fofos!<2,2>
+Q207=0 TALK00 431: <7>Mary Fã de Digimon<7>Sukamon ou Vegiemon,<1>qual prefere? Curto<1>os dois! Quem julga?<2,2>
+# Guarda DO Portão de Genbu (Q229) — Etapa 2 Finale (prog 38+: TALK01 250)
+Q229=1 TALK01 250: <7>Guarda DO<7>O Chuck tá inteiro!<1>E acredita?! Ele virou<1>líder da Resistência!<2,2>
+Q229=2 TALK01 250: <7>Guarda DO<7>A vigília valeu! E o<1>Chuck? O danado ainda<1>liderou a Resistência!<2,2>
+Q229=3 TALK01 250: <7>Guarda DO<7>Você salvou o dia e o<1>Chuck liderou a linha<1>de frente! Que dupla!<2,2>
+Q229=0 TALK01 250: <7>Guarda DO<7>O Chuck tá bem, que<1>alívio! Quem diria:<1>líder da Resistência!<2,2>
+# ---- Fase 6: Novos Mini-Arcos de Amaterasu City (TALK03, prog 38 -> 43 pós-game) ----
+# Jim Mentiroso (Q231) — Etapa 1 Pós-Game (prog 43+: TALK03 196)
+Q231=1 TALK03 196: <7>Jim Mentiroso<7>Calma, hoje é verdade:<1>voltaram os torneios!<1>Glu-glu, ié-ié!<2,2>
+Q231=2 TALK03 196: <7>Jim Mentiroso<7>Juro que parei com a<1>pegadinha da A.o.A...<1>Mas olha atrás de tu!<2,2>
+Q231=3 TALK03 196: <7>Jim Mentiroso<7>Você derrubou até o<1>chefão do espaço! Nem<1>tenho coragem de zoar!<2,2>
+Q231=0 TALK03 196: <7>Jim Mentiroso<7>O jogo voltou novinho!<1>...Sério! Dessa vez<1>não é pegadinha!<2,2>
+# Comilão (Q232) — Etapa 1 Pós-Game (prog 43+: TALK03 218)
+Q232=1 TALK03 218: <7>Comilão<7>Você acertou! Voltei<1>pro torresmo na feira<1>ontem! Que delícia!<2,2>
+Q232=2 TALK03 218: <7>Comilão<7>Virei fã de alface e<1>perdi cinco quilos!<1>Oinkmon fez milagre!<2,2>
+Q232=3 TALK03 218: <7>Comilão<7>Valeu por salvar a<1>gente! Hoje eu pago um<1>churrasco pra você!<2,2>
+Q232=0 TALK03 218: <7>Comilão<7>Três meses depois e<1>ainda olho torto pro<1>torresmo... que fase!<2,2>

@@ -413,3 +413,10 @@ Q229 TALK01 247@3: Se vierem, eu encaro [keith:+1] | <7>Guarda DO<7>Fortaleza de
 Q230 TALK01 261@1: A gente vai virar! [rep:+1] | <7>Guarda DO<7>Levaram o Juggernaut!<1>Não há mais o que<1>fazer, há?<2,2><3><7><9><7>Ainda não acabou!<1>Eu vou impedir eles!<2,2>
 Q230 TALK01 261@2: Firmeza, guarda! [ivy:+1] | <7>Guarda DO<7>Levaram o Juggernaut!<1>Não há mais o que<1>fazer, há?<2,2><3><7><9><7>Cabeça erguida!<1>Desistir agora só<1>ajuda a A.o.A!<2,2>
 Q230 TALK01 261@3: Cadê o Líder Genbu? [lisa:+1] | <7>Guarda DO<7>Levaram o Juggernaut!<1>Não há mais o que<1>fazer, há?<2,2><3><7><9><7>Foca no plano! O que<1>o Líder Genbu disse?<2,2>
+# Fase 6: Mini-arcos de Amaterasu City (TALK03, mapas 0x270 / 0x271, prog 38 -> 43 pós-game)
+Q231 TALK03 194@1: Quase me mata! [teddy:+1] | <7>Jim Mentiroso<7>Olha a A.o.A aí!!<2,2><3>...Pegadinha do<1>malandro!<2,2><3><7><9><7>Pô, Jim! Depois de<1>tudo, quer me matar<1>do coração?!<2,2>
+Q231 TALK03 194@2: Piada sem graça [lisa:+1] | <7>Jim Mentiroso<7>Olha a A.o.A aí!!<2,2><3>...Pegadinha do<1>malandro!<2,2><3><7><9><7>Cedo demais pra essa<1>piada, espertinho.<2,2>
+Q231 TALK03 194@3: Se vierem, eu encaro [keith:+1,rep:+1] | <7>Jim Mentiroso<7>Olha a A.o.A aí!!<2,2><3>...Pegadinha do<1>malandro!<2,2><3><7><9><7>Se aparecerem mesmo,<1>eu derrubo de novo!<2,2>
+Q232 TALK03 216@1: Passa já já! [teddy:+1] | <7>Comilão<7>Que trauma!<2,2><3>Fiquei até sem graça<1>de comer torresmo!<2,2><3><7><9><7>Relaxa! Daqui um mês<1>você volta pra feira!<2,2>
+Q232 TALK03 216@2: Vai de salada então [ivy:+1] | <7>Comilão<7>Que trauma!<2,2><3>Fiquei até sem graça<1>de comer torresmo!<2,2><3><7><9><7>Aproveita o trauma e<1>vira fã de salada!<2,2>
+Q232 TALK03 216@3: Pelo menos salvamos [rep:+1] | <7>Comilão<7>Que trauma!<2,2><3>Fiquei até sem graça<1>de comer torresmo!<2,2><3><7><9><7>Antes sem torresmo do<1>que Oinkmon pra sempre!<2,2>

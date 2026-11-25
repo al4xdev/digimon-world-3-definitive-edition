@@ -1111,10 +1111,13 @@ static const DefNpcArc npc_arcs[] = {
     { 5, 0x201, 51, 12, 999, 2 },  /* Maniac Jack — Stage 2 (prog 12+: TALK00 712) */
     { 6, 0x203, 45, 0, 3, 0 },     /* Newbie Shiro — Stage 0 (prog 2: TALK00 17, Q205) */
     { 6, 0x203, 45, 4, 10, 1 },    /* Newbie Shiro — Stage 1 (prog 4: TALK00 329) */
+    { 6, 0x203, 45, 38, 999, 2 },  /* Newbie Shiro — Stage 2 Finale (prog 38+: TALK00 428) */
     { 7, 0x203, 49, 0, 3, 0 },     /* Lazy Alan — Stage 0 (prog 2: TALK00 13, Q206) */
     { 7, 0x203, 49, 4, 10, 1 },    /* Lazy Alan — Stage 1 (prog 4: TALK00 331) */
+    { 7, 0x203, 49, 38, 999, 2 },  /* Lazy Alan — Stage 2 Finale (prog 38+: TALK00 450) */
     { 8, 0x203, 52, 0, 3, 0 },     /* Digimon Fan Mary — Stage 0 (prog 2: TALK00 239, Q207) */
-    { 8, 0x203, 52, 4, 10, 1 },    /* Digimon Fan Mary — Stage 1 (prog 4: TALK00 330; leaves after 10) */
+    { 8, 0x203, 52, 4, 10, 1 },    /* Digimon Fan Mary — Stage 1 (prog 4: TALK00 330) */
+    { 8, 0x203, 52, 21, 999, 2 },  /* Digimon Fan Mary — Stage 2 Finale (prog 21+: TALK00 431) */
     /* Phase 2 (Seiryu City) — aligned to exact wstag420/425/430 progress ranges */
     { 9, 0x22E, 46, 0, 4, 0 },     /* Crybaby Maria — Stage 0 (prog 4: TALK01 10, Q208) */
     { 9, 0x22E, 46, 5, 22, 1 },    /* Crybaby Maria — Stage 1 (prog 5..10: TALK01 16) */
@@ -1153,9 +1156,15 @@ static const DefNpcArc npc_arcs[] = {
     { 22, 0x25E, 48, 27, 999, 1 }, /* Class Pres Aiko — Stage 1 (prog 27+: TALK01 195) */
     /* Phase 5 (Genbu City, 0x26F) — aligned to exact wstag760 progress ranges */
     { 23, 0x26F, 37, 0, 32, 0 },   /* Genbu Gate Guard — Stage 0 (prog 30: TALK01 247, Q229) */
-    { 23, 0x26F, 37, 33, 999, 1 }, /* Genbu Gate Guard — Stage 1 (prog 33..37: TALK01 249) */
+    { 23, 0x26F, 37, 33, 37, 1 },  /* Genbu Gate Guard — Stage 1 (prog 33..37: TALK01 249) */
+    { 23, 0x26F, 37, 38, 999, 2 }, /* Genbu Gate Guard — Stage 2 Finale (prog 38+: TALK01 250) */
     { 24, 0x26F, 39, 33, 37, 0 },  /* Genbu Veteran Guard — Stage 0 (prog 33..37: TALK01 261, Q230) */
     { 24, 0x26F, 39, 38, 999, 1 }, /* Genbu Veteran Guard — Stage 1 (prog 38+: TALK01 262) */
+    /* Phase 6 (Amaterasu City, 0x270 & 0x271) — aligned to wstag201/203 (TALK03) */
+    { 25, 0x270, 45, 38, 42, 0 },  /* Liar Jim — Stage 0 (prog 38: TALK03 194, Q231) */
+    { 25, 0x270, 45, 43, 999, 1 }, /* Liar Jim — Stage 1 Post-Game (prog 43+: TALK03 196) */
+    { 26, 0x271, 51, 38, 42, 0 },  /* Big Eater — Stage 0 (prog 38: TALK03 216, Q232) */
+    { 26, 0x271, 51, 43, 999, 1 }, /* Big Eater — Stage 1 Post-Game (prog 43+: TALK03 218) */
 };
 
 static const DefNpcArc *npc_arc_active(int map, int actor_id) {

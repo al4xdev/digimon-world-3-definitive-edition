@@ -331,13 +331,13 @@ DMG300:16 1: <7>Guarda Real<7>Estávamos esperando.<1>Você derrotou nossos<1>Ch
 DMG300:16 2: <7><9><7>Venha. Eu aceito<1>o desafio.<2,2>
 DMG300:16 3: <7>Guarda Real<7>Nosso nível é de<1>outro planeta!<2,2>
 DMG300:16 4: <7>Guarda Real<7>Com o orgulho da<1>Guarda Real, eu vou<1>derrotar você.<2,2>
-DMG300:17 1: <7>???<7>...Inúteis, todos<1>eles.<2,2><3>Mesmo assim, sua<1>força me impressiona.<2,2>
+DMG300:17 1: <7>???<7>...Inúteis, todos<1>eles.<2,2><3>Mesmo assim, sua<1>força impressiona.<2,2>
 DMG300:17 2: <7><9><7>Você é o Presidente<1>da MAGAMI?<2,2>
-DMG300:17 3: <7>???<7>...Presidente?<1>Ah. Sim. Isso.<2,2><3>Mas poderia me chamar<1>de Chief Officer?<1>Soa mais legal.<2,2>
-DMG300:17 4: <7><9><7>Chega de jogos.<1>Desative o Destromon.<1>Agora.<2,2>
-DMG300:17 5: <7>Oficial-Chefe<7>Calma. Por que não<1>se junta a nós?<2,2><3>Diga sim e eu faço<1>de você meu número 2,<1>logo depois de mim.<2,2>
-DMG300:17 6: <7><9><7>Nem a pau! Você usa<1>Digimon pro mal.<2,2><3>Mesmo deletando tudo,<1>não me vendo nunca!<2,2>
-DMG300:17 7: <7>Oficial-Chefe<7>Era sua última chance.<1>Que criança cabeça<1>dura!<2,2><3>Tanto faz. O bonde<1>já passou mesmo.<2,2>
+DMG300:17 3: <7>???<7>...Presidente? Sim,<1>também.<2,2><3>Mas prefiro o título<1>de Oficial-Chefe.<1>Soa mais imponente.<2,2>
+DMG300:17 4: <7><9><7>Chega de teatro.<1>Desliga o Destromon.<1>Agora.<2,2>
+DMG300:17 5: <7>Oficial-Chefe<7>Calma. Por que não<1>se junta a nós?<2,2><3>Diga sim e eu faço<1>de você meu número 2,<1>logo abaixo de mim.<2,2>
+DMG300:17 6: <7><9><7>Nem pensar! Você usa<1>Digimon como arma.<2,2><3>Prefiro virar pó a<1>sujar minhas mãos!<2,2>
+DMG300:17 7: <7>Oficial-Chefe<7>Era sua última chance.<1>Que teimosia!<2,2><3>Tanto faz. O bonde<1>já passou mesmo.<2,2>
 DMG300:17 8: <7><9><7>Eles se chamavam de<1>Guarda Real...<2,2><3>Então quem está no<1>topo está logo à<1>frente.<2,2>
 DMG300:18 1: <7>Oficial-Chefe<7>...Espere. Eu me<1>entrego.<2,2><3>Você é mesmo forte.<2,2><3>Quem venceria: você<1>ou aquele que está<1>atrás de mim?<2,2>
 DMG300:18 2: <7><9><7>...O quê?<2,2>
@@ -1077,43 +1077,43 @@ DMG800:11 2: <7><9><7>Muita garganta.<2,2><3>Quero ver na hora<1>do vamos ver!<2
 DMG800:12 1: <7><9><7>...Que lugar é este?<2,2><3>Tem algo errado<1>aqui.<2,2>
 DMG800:13 1: <7><9><7>Depressa.<2,2><3>Temos que derrotar<1>Lord Megadeath e<1>trazer todos de volta.<2,2>
 DMG800:14 1: <7><9><7>...O que é aquilo?<2,2>
-DMG800:15 1: Você finalmente chegou,<1>o mais forte de todos<1>os Tamers.<2,2>
-DMG800:15 2: <7><9><7>Lord Megadeath.<1>Quem é você?<2,2>
-DMG800:15 3: ...Sou uma forma de vida digital,<1>nascida dentro da rede.<2,2><3>E serei eu a substituir a<1>humanidade como soberano<1>de todos os mundos.<2,2>
-DMG800:15 4: <7><9><7>É por isso que você<1>formou o A.o.A?<2,2>
-DMG800:15 5: ...Sim. Para criar o<1>Digimon mais leal e<1>poderoso: Snatchmon.<2,2>
+DMG800:15 1: Você enfim chegou,<1>o mais forte entre<1>todos os Tamers.<2,2>
+DMG800:15 2: <7><9><7>Lord Megadeath.<1>O que é você afinal?<2,2>
+DMG800:15 3: ...Sou vida digital,<1>nascida na rede.<2,2><3>E substituirei os<1>humanos como senhor<1>de ambos os mundos.<2,2>
+DMG800:15 4: <7><9><7>Foi pra isso que<1>criou a A.o.A?!<2,2>
+DMG800:15 5: ...Sim. Para forjar o<1>Digimon mais forte e<1>leal: Snatchmon.<2,2>
 DMG800:15 6: <7><9><7>Snatchmon?<1>Nunca ouvi falar.<2,2>
-DMG800:15 7: ...Snatchmon nasce quando<1>um Vemmon absorve muitos<1>dados matrix e digievolui.<2,2><3>Você viu o preço: dados<1>matrix drenados, e uma<1>pessoa feita Digimon.<2,2>
-DMG800:15 8: <7><9><7>O quê? Então é isso<1>que os Oinkmon são...<2,2><3>Pessoas. Esvaziadas.<2,2>
-DMG800:15 9: Quando Gunslinger disparar a<1>Digitize Wave...<2,2><3>os dados matrix de todo ser<1>vivo serão enviados a<1>Snatchmon...<2,2><3>e Snatchmon será o mais<1>forte de todos.<2,2><3>E como seu Tamer, eu<1>governarei o mundo com<1>medo e desespero.<2,2>
-DMG800:15 10: <7><9><7>Não enquanto eu<1>estiver aqui.<1>Não vou permitir.<2,2>
-DMG800:15 11: ...Por isso você vai lutar<1>comigo.<2,2><3>Para provar que sou o<1>Tamer mais forte.<2,2>
-DMG800:15 12: <7><9><7>Fechado.<1>Cai pra dentro!<2,2>
-DMG800:16 1: <7><9><7>E aí, Lord Megadeath.<2,2><3>Ainda tá achando que<1>é a última bolacha?<2,2>
-DMG800:16 2: ...Claro.<1>Isso foi só um teste.<2,2><3>Ainda tenho o Digimon<1>mais poderoso:<1>Snatchmon...<2,2><3>Em breve você vai saber<1>o que é terror de verdade.<2,2>
-DMG800:16 3: <7><9><7>Pare! Aonde você<1>pensa que vai?<2,2>
+DMG800:15 7: ...Snatchmon nasce se<1>Vemmon absorver dados<1>matrix suficientes.<2,2><3>Você viu o preço:<1>dados drenados, gente<1>presa em Oinkmon.<2,2>
+DMG800:15 8: <7><9><7>Quê?! Então é isso<1>que os Oinkmon são...<2,2><3>Pessoas esvaziadas!<2,2>
+DMG800:15 9: Quando Gunslinger<1>disparar a Onda...<2,2><3>os dados de cada ser<1>vivo irão direto para<1>Snatchmon...<2,2><3>tornando-o o mais<1>forte de todos.<2,2><3>E como seu Tamer,<1>reinarei sobre o medo<1>e o desespero.<2,2>
+DMG800:15 10: <7><9><7>Não enquanto eu<1>estiver de pé.<1>Não vou permitir!<2,2>
+DMG800:15 11: ...Então enfrente-me.<2,2><3>Prove quem é o Tamer<1>mais forte.<2,2>
+DMG800:15 12: <7><9><7>Com prazer.<1>Vem com tudo!<2,2>
+DMG800:16 1: <7><9><7>E então, Megadeath?<2,2><3>Ainda se acha o<1>dono do mundo?!<2,2>
+DMG800:16 2: ...Tolo. Isso foi<1>apenas um teste.<2,2><3>Ainda tenho o Digimon<1>supremo: Snatchmon.<2,2><3>Agora conhecerá o<1>verdadeiro terror.<2,2>
+DMG800:16 3: <7><9><7>Pare! Aonde pensa<1>que vai?!<2,2>
 DMG800:17 1: <7>Snatchmon<7>Eu sou Snatchmon.<2,2><3>O Digimon mais forte.<1>Sempre.<2,2>
 DMG800:17 2: Vá, Snatchmon.<1>Destrua esses humanos<1>tolos.<2,2>
-DMG800:17 3: <7><9><7>Vem então.<1>Eu enfrento você.<2,2>
-DMG800:17 4: <7>Snatchmon<7>Quem é você?<2,2><3>Por que me dá<1>ordens?<2,2>
-DMG800:17 5: ...O que está dizendo?<1>Sou seu Tamer.<2,2>
-DMG800:17 6: <7>Snatchmon<7>...Tamer?<2,2><3>Dispenso!<2,2><3>Sou o mais forte.<1>Não bato continência<1>pra ninguém!<2,2>
-DMG800:17 7: O quê... Quem você<1>pensa que eu sou?<2,2>
-DMG800:17 8: <7>Snatchmon<7>Não importa quem<1>me criou.<2,2><3>Vou absorver mais<1>dados. Ficar mais<1>forte.<2,2><3>Primeiro...<1>vou absorver você.<2,2>
+DMG800:17 3: <7><9><7>Vem então.<1>Eu encaro você!<2,2>
+DMG800:17 4: <7>Snatchmon<7>Quem é você?<2,2><3>Por que me dá ordens?<2,2>
+DMG800:17 5: ...O que diz?!<1>Eu sou o seu Tamer!<2,2>
+DMG800:17 6: <7>Snatchmon<7>...Tamer?<2,2><3>Não preciso de um!<2,2><3>Sou o mais forte.<1>Não obedeço a<1>ninguém!<2,2>
+DMG800:17 7: O quê... Quem pensa<1>que eu sou?!<2,2>
+DMG800:17 8: <7>Snatchmon<7>Não importa quem me<1>criou.<2,2><3>Vou absorver tudo.<1>Ficar invencível.<2,2><3>Começando por você!<2,2>
 DMG800:17 9: O quê... não...<2,2>
 DMG800:17 10: Aaaaaaaaah...!<2,2>
-DMG800:17 11: <7><9><7>Pare! É o Tamer<1>que criou você!<2,2><3>Tamer e Digimon<1>são um só.<2,2><3>Sempre trabalhamos<1>juntos!<2,2>
-DMG800:17 12: <7>Snatchmon<7>Então. É você.<2,2><3>Você me venceu quando<1>eu era Vemmon.<2,2><3>Mas agora renasci.<1>Deixe-me mostrar meu<1>novo poder.<2,2>
-DMG800:17 13: <7><9><7>...O quê?<1>O que vai fazer?<2,2>
-DMG800:17 14: <7>Snatchmon<7>Vou me fundir com<1>Gunslinger e me tornar<1>Galacticmon.<2,2>
-DMG800:17 15: <7><9><7>Galacticmon?<2,2>
-DMG800:17 16: <7>Snatchmon<7>E então me tornarei<1>um com a Terra.<2,2><3>Vou digievoluir para<1>algo maior:<1>Gaiamon.<2,2>
-DMG800:17 17: <7><9><7>...Gaiamon?<2,2><3>Então não vai parar<1>nos humanos.<2,2><3>Tudo na Terra<1>vai morrer.<2,2>
-DMG800:17 18: <7>Snatchmon<7>Isso é irrelevante.<1>Nada importa<1>além de mim.<2,2>
-DMG800:17 19: <7><9><7>Não. Não vou<1>permitir.<2,2>
-DMG800:17 20: <7>Snatchmon<7>Quero só ver quando<1>eu virar Galacticmon!<2,2>
-DMG800:17 21: <7><9><7>Vou tentar.<2,2><3>Não posso deixar você<1>fazer isso.<2,2>
-DMG800:17 22: <7>Snatchmon<7>Muito bem.<1>Então nos vemos<1>no espaço.<2,2><3>Vou transferir seus<1>dados matrix.<2,2><3>Veja-me digievoluir<1>para Galacticmon.<2,2>
+DMG800:17 11: <7><9><7>Para! Ele te criou!<2,2><3>Tamer e Digimon são<1>parceiros de alma!<2,2><3>Não se vira contra<1>quem te deu vida!<2,2>
+DMG800:17 12: <7>Snatchmon<7>Então é você.<2,2><3>Me venceu quando eu<1>era só um Vemmon.<2,2><3>Mas agora renasci.<1>Veja meu verdadeiro<1>poder!<2,2>
+DMG800:17 13: <7><9><7>...O quê?<1>O que vai fazer?!<2,2>
+DMG800:17 14: <7>Snatchmon<7>Vou me fundir com a<1>Gunslinger e virar<1>Galacticmon.<2,2>
+DMG800:17 15: <7><9><7>Galacticmon?!<2,2>
+DMG800:17 16: <7>Snatchmon<7>E depois me fundir<1>com a própria Terra.<2,2><3>E evoluir para algo<1>maior: Gaiamon!<2,2>
+DMG800:17 17: <7><9><7>...Gaiamon?!<2,2><3>Não vai sobrar nada.<2,2><3>Tudo na Terra vai<1>ser destruído!<2,2>
+DMG800:17 18: <7>Snatchmon<7>Irrelevante.<1>Nada importa além<1>de mim.<2,2>
+DMG800:17 19: <7><9><7>Não. Eu não vou<1>deixar isso passar!<2,2>
+DMG800:17 20: <7>Snatchmon<7>Quero ver me deter<1>como Galacticmon!<2,2>
+DMG800:17 21: <7><9><7>Eu vou tentar.<2,2><3>Por todos que confiam<1>em mim, eu vou deter!<2,2>
+DMG800:17 22: <7>Snatchmon<7>Pois bem. Nos vemos<1>no espaço.<2,2><3>Vou puxar seus dados<1>matrix até lá.<2,2><3>Contemple o despertar<1>de Galacticmon!<2,2>
 DMG800:17 23: ...Venha, Snatchmon.<1>Cubra este mundo<1>de trevas...<2,2>
 DMG900:0 1: <7><9><7>Ué? Ivy e Teddy<1>sumiram.<2,2><3>Do jeito que eu sei,<1>já deram no pé sem<1>mim!<2,2>
 DMG900:0 2: <7>Guia Turístico<7><8,1><5,1>, certo?<1>Boas-vindas ao<1>Digimon Online.<2,2><3>Hoje é um treino,<1>para preparar você<1>para o início.<2,2><3>Você está restrito ao<1>Setor Leste e ao<1>Amaterasu Central.<2,2><3>No entanto, há mais<1>áreas de Circuit Board<1>e Seabed.<2,2><3>Os dados dos Digimon<1>são usados como antes.<2,2><3>É claro que técnicas e<1>digievoluções também<1>não mudaram.<2,2><3>Mesmo assim, quero<1>checar seus dados,<1>por precaução.<2,2><3>Antes de partir,<1>salve com o<1>Guardromon.<2,2>
@@ -1125,17 +1125,17 @@ DMG900:3 3: <7>Recepção da Arena<7>Hê hê. É surpresa!<1>Vai ter que olhar.<
 DMG900:3 4: <7><9><7>O Tamer mais forte.<1>Vamos lá.<2,2>
 DMG900:4 1: <7><9><7>Então esta é a Arena.<2,2><3>Quem será meu<1>oponente?<2,2><3>Estou a postos.<2,2>
 DMG900:4 2: <7>Kurt<7>Ei, <8,1><5,1>!<2,2><3>Eu sabia que você<1>chegaria até aqui.<2,2>
-DMG900:4 3: <7><9><7>Hã? Kurt?<2,2><3>Não me diga que você<1>é o Tamer mais forte.<2,2>
-DMG900:4 4: <7>Kurt<7>É isso mesmo.<2,2><3>Fico feliz que seja<1>você na minha frente.<2,2><3>Há tempos eu queria<1>lutar com você<1>com tudo.<2,2>
-DMG900:4 5: <7><9><7>Eu senti o mesmo.<2,2><3>Não existe oponente<1>mais digno que você.<2,2>
-DMG900:4 6: <7>Kurt<7>Ha ha. Essa vai ser<1>boa demais!<2,2><3>Bora lá! Sem aliviar<1>nenhum golpe!<2,2>
-DMG900:5 1: <7><9><7>Consegui.<1>Venci o Kurt.<2,2>
-DMG900:5 2: <7>Kurt<7>Parabéns, <8,1><5,1>.<1>Você me venceu em<1>luta justa.<2,2><3>Você é o novo<1>Tamer mais forte.<2,2>
-DMG900:5 3: <7><9><7>Valeu.<2,2>
-DMG900:5 4: <7>Kurt<7>Logo, Digimon Online<1>será restaurado.<2,2><3>Como primeiro World<1>Champ, você terá que<1>enfrentar todos.<2,2><3>Desafiantes vindos<1>do mundo inteiro.<2,2>
-DMG900:5 5: <7><9><7>Eu? O primeiro World<1>Champ?<2,2><3>...Bem.<1>Vou dar o meu melhor.<2,2>
-DMG900:5 6: <7>Kurt<7>Conto com você.<1>Mas ainda há algum<1>tempo.<2,2><3>Até lá, lute mais.<1>Fique ainda mais<1>forte.<2,2>
-DMG900:5 7: <7><9><7>Pode deixar!<2,2><3>Vou ser o World Champ<1>imbatível da vez!<2,2>
+DMG900:4 3: <7><9><7>Hã? Kurt?!<2,2><3>Não me diga que você<1>é o Tamer mais forte!<2,2>
+DMG900:4 4: <7>Kurt<7>É isso mesmo.<2,2><3>Que bom que é você<1>na minha frente.<2,2><3>Faz tempo que queria<1>te enfrentar com tudo.<2,2>
+DMG900:4 5: <7><9><7>Digo o mesmo!<2,2><3>Não existe adversário<1>melhor que você.<2,2>
+DMG900:4 6: <7>Kurt<7>Ha ha! Essa vai ser<1>inesquecível!<2,2><3>Mostra tudo! Sem<1>aliviar um golpe!<2,2>
+DMG900:5 1: <7><9><7>Consegui...<1>Venci o Kurt!<2,2>
+DMG900:5 2: <7>Kurt<7>Parabéns, <8,1><5,1>.<1>Vitória limpa e justa.<2,2><3>O posto de Tamer mais<1>forte agora é seu.<2,2>
+DMG900:5 3: <7><9><7>Valeu, Kurt.<2,2>
+DMG900:5 4: <7>Kurt<7>Logo o Digimon Online<1>estará a todo vapor.<2,2><3>Como primeiro World<1>Champ, o mundo todo<1>vai te desafiar.<2,2>
+DMG900:5 5: <7><9><7>Eu? World Champ?<2,2><3>...Beleza!<1>Vou honrar esse posto!<2,2>
+DMG900:5 6: <7>Kurt<7>Conto com você.<1>Ainda temos tempo.<2,2><3>Até lá, continue<1>lutando e crescendo.<2,2>
+DMG900:5 7: <7><9><7>Pode deixar!<2,2><3>Vou ser o World Champ<1>mais forte de todos!<2,2>
 DMG900:10 1: <7>Tamer Haruka<7>Pois bem.<1>Tenha coragem na<1>sua jornada.<2,2><3>E agradeça a minha<1>generosidade.<2,2>
 DMG900:11 1: <7>Tamer Poemy<7>Vá, grande Herói.<1>Busque seu destino.<2,2><3>Estarei sempre com<1>você em espírito.<2,2>
 DMG900:12 1: <7>Tamer Pierre<7>Força na peruca nessa<1>jornada!<2,2><3>Quero ver seu duelo<1>com o Rei.<2,2><3>Au Revoir!<2,2>

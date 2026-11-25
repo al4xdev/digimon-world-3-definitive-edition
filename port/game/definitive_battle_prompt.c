@@ -227,6 +227,78 @@ static const DefBattlePrompt prompts[] = {
             },
         },
     },
+    /* Fase 6: Oficial-Chefe / Presidente da MAGAMI (wstag311, battle 32) */
+    {
+        7, 233, 32, 50,
+        "OFICIAL-CHEFE",
+        "Ainda insiste?! O Destromon é invencível!",
+        3,
+        {
+            {
+                "Teu império acaba hoje! (ATK +2)",
+                "Golpe certeiro! Ataque subiu (+2)!",
+                BP_FX_MOD, 0, 0, 2, 3, DEF_BOND_LISA, 2, 2
+            },
+            {
+                "Aguenta o tranco, equipe! (DEF +2)",
+                "Guarda fechada! Defesa subiu (+2)!",
+                BP_FX_MOD, 0, 1, 2, 3, DEF_BOND_TEDDY, 1, 1
+            },
+            {
+                "Destromon vai virar sucata!",
+                "Provocou demais! Ataque dele subiu (+1)!",
+                BP_FX_MOD, 1, 0, 1, 2, DEF_BOND_KEITH, 1, -1
+            },
+        },
+    },
+    /* Fase 6: Lord Megadeath na Gunslinger (wstag820, battle 33) */
+    {
+        8, 234, 33, 50,
+        "LORD MEGADEATH",
+        "A humanidade acabou! Curvem-se ao deus!",
+        3,
+        {
+            {
+                "Deus nenhum! Eu vou te derrubar! (ATK +2)",
+                "Chama acesa! Ataque subiu (+2)!",
+                BP_FX_MOD, 0, 0, 2, 3, DEF_BOND_TEDDY, 2, 2
+            },
+            {
+                "Todo plano tem uma falha! (Libra)",
+                "Libra revelou as fraquezas de Megadeath!",
+                BP_FX_LIBRA, 1, 0, 0, 0, DEF_BOND_LISA, 2, 1
+            },
+            {
+                "Ele é forte demais... não dá...",
+                "Vacilou no clímax! Defesa caiu (-1)!",
+                BP_FX_MOD, 0, 1, -1, 2, DEF_BOND_IVY, -1, -1
+            },
+        },
+    },
+    /* Fase 6: Galacticmon — Batalha Final (wstag820, battle 324 / 0x144) */
+    {
+        9, 235, 324, 50,
+        "GALACTICMON",
+        "Eu sou o fim de tudo! Queime no vácuo!",
+        3,
+        {
+            {
+                "Por todos os nossos mundos! (ATK +2)",
+                "Força dos vínculos! Ataque subiu (+2)!",
+                BP_FX_MOD, 0, 0, 2, 4, DEF_BOND_TEDDY, 2, 2
+            },
+            {
+                "Não caio antes de vencer! (DEF +2)",
+                "Escudo inabalável! Defesa subiu (+2)!",
+                BP_FX_MOD, 0, 1, 2, 4, DEF_BOND_LISA, 2, 2
+            },
+            {
+                "Vamos superar a luz! (SPD +2)",
+                "Velocidade máxima! Ritmo subiu (+2)!",
+                BP_FX_MOD, 0, 2, 2, 4, DEF_BOND_KEITH, 2, 2
+            },
+        },
+    },
 };
 
 static struct {
