@@ -4113,7 +4113,9 @@ static void fightstg_p4_scene_tick(FightstgHudData *data) {
         }
     } else {
         fightstg_p4_status_hide_windows();
-        fightstg_p4_keys_hide();
+        if (!fightstg_sheet_on()) {
+            fightstg_p4_keys_hide();
+        }
     }
 }
 
@@ -4342,9 +4344,9 @@ static void fightstg_p4_draw_ring(const FightstgP4Opt *opts, s32 n, s32 sel, s32
         if (idx < 0 || idx >= n || (i >= 0 && idx == sel)) {
             continue;
         }
-        /* Persona-style parallax: foreground selected block drifts slightly more than background blocks */
-        px = (fightstg_p4.cam_sway * (idx == sel ? 5 : 2)) >> 12;
-        py = (rsin(((fightstg_p4.pulse_t * 24) + idx * 900) & 0xFFF) * (idx == sel ? 2 : 1)) >> 12;
+        /* Subtle camera-synced parallax: foreground drifts +/-2 px, background +/-1 px */
+        px = (fightstg_p4.cam_sway * (idx == sel ? 2 : 1)) >> 12;
+        py = 0;
         tx = opts[idx].x + (((74 - opts[idx].x) * sease) >> 8) + px;
         ty = opts[idx].y + ((((stack_y0 + idx * 44) - opts[idx].y) * sease) >> 8) + py;
         ta = opts[idx].angle + (((-48 - opts[idx].angle) * sease) >> 8);
@@ -5804,6 +5806,38 @@ static void fightstg_info_set(s32 open) {
     fightstg_inspect_reveal(); /* now: a window shows its new text on this very frame */
 }
 
+static void fightstg_p3r_slant_quad(s32 x0, s32 y0, s32 x1, s32 y1, s32 x2, s32 y2, s32 x3, s32 y3, s32 abr, u8 r, u8 g,
+                                    u8 b) {
+    GfxLayer *layer = gfx_module.funcs.get_layer(0x1005);
+    POLY_F4 *poly;
+    u32 *ot;
+
+    if (layer == NULL) {
+        return;
+    }
+    ot = layer->get_ot_entry(layer, FIGHTSTG_BMENU_PANEL_DEPTH);
+    poly = gfx_module.funcs.get_packet();
+    setPolyF4(poly);
+    setRGB0(poly, r, g, b);
+    setXY4(poly, (s16)x0, (s16)y0, (s16)x1, (s16)y1, (s16)x2, (s16)y2, (s16)x3, (s16)y3);
+    if (abr >= 0) {
+        DR_TPAGE *tpage = (DR_TPAGE *)(poly + 1);
+
+        setSemiTrans(poly, 1);
+        addPrim(ot, poly);
+        SetDrawTPage(tpage, 0, 1, getTPage(1, abr, 0, 0));
+        addPrim(ot, tpage);
+        gfx_module.funcs.set_packet(tpage + 1);
+    } else {
+        addPrim(ot, poly);
+        gfx_module.funcs.set_packet(poly + 1);
+    }
+}
+
+static void fightstg_p3r_slant_rect(s32 x, s32 y, s32 w, s32 h, s32 st, s32 sb, s32 abr, u8 r, u8 g, u8 b) {
+    fightstg_p3r_slant_quad(x + st, y, x + w + st, y, x + sb, y + h, x + w + sb, y + h, abr, r, g, b);
+}
+
 /* The panel's backdrop at its animation's point: the dark quad, a line under the title (and under the grid when a
  * legend follows), a frame in the windows' blue, and the traits' pictures, each once the frame has grown past it;
  * before the frame, the trace from (ox, oy), INFO's tab. */
@@ -5814,6 +5848,8 @@ static void fightstg_info_frame(s32 ox, s32 oy) {
     s32 h = fightstg_panel_height();
     s32 t = fightstg_info.panel_t;
     s32 px = x + 4;
+    s32 st = 2;
+    s32 sb = -2;
     s32 i;
     s32 k;
 
@@ -5871,17 +5907,52 @@ static void fightstg_info_frame(s32 ox, s32 oy) {
         }
         px += FIGHTSTG_INSPECT_QUEUE_STEP;
     }
-    fightstg_battle_menu_quad(x, y, w, 1, 1, 40, 110, 220);
-    fightstg_battle_menu_quad(x, y + h - 1, w, 1, 1, 40, 110, 220);
-    fightstg_battle_menu_quad(x, y + 1, 1, h - 2, 1, 40, 110, 220);
-    fightstg_battle_menu_quad(x + w - 1, y + 1, 1, h - 2, 1, 40, 110, 220);
-    if (fightstg_panel_shows(FIGHTSTG_INSPECT_ROW_Y - 1)) {
-        fightstg_battle_menu_quad(x + 3, FIGHTSTG_INSPECT_ROW_Y - 2, w - 6, 1, 1, 30, 70, 150);
+    {
+        GfxLayer *layer = gfx_module.funcs.get_layer(0x1005);
+        s32 hh = FIGHTSTG_INSPECT_ROW_Y - 2 - y;
+        s32 hs_bot = h > 0 ? st + (sb - st) * hh / h : sb;
+        s32 col_x = FIGHTSTG_INSPECT_X + port_video_widescreen_pad() + FIGHTSTG_INSPECT_COL_DX - 4;
+        s32 col_y0 = fightstg_info.inspect_rows_y;
+        s32 col_y1 = fightstg_info.inspect_rows_y + FIGHTSTG_INSPECT_LINE * FIGHTSTG_INSPECT_ROWS;
+
+        if (layer != NULL && fightstg_panel_shows(FIGHTSTG_INSPECT_ROW_Y - 1)) {
+            static const u8 scan_cyan[3] = { 0, 212, 255 };
+            static const u8 scan_sh[3] = { 4, 10, 28 };
+
+            def_poly_text_rot(layer, 0, x + w - 20, y + 8, 96, -20, 0, "SCAN", scan_cyan, NULL);
+            def_poly_text_rot(layer, 0, x + w - 19, y + 9, 96, -20, 0, "SCAN", scan_sh, NULL);
+        }
+        if (fightstg_panel_shows(FIGHTSTG_INSPECT_ROW_Y - 1)) {
+            fightstg_p3r_slant_rect(x + 2, FIGHTSTG_INSPECT_ROW_Y - 3, w - 4, 2, hs_bot, hs_bot, -1, 0, 196, 255);
+            fightstg_p3r_slant_rect(x + 1, y + 2, 3, hh - 2, st, hs_bot, -1, 0, 224, 255);
+            fightstg_p3r_slant_rect(x + 1, y + 2, w - 2, hh - 2, st, hs_bot, -1, 8, 22, 56);
+        }
+        if (fightstg_info.info.count > 0 && fightstg_panel_shows(fightstg_info.legend_y[0] - 1)) {
+            s32 ly = fightstg_info.legend_y[0] - 2;
+            s32 ls = h > 0 ? st + (sb - st) * (ly - y) / h : sb;
+
+            fightstg_p3r_slant_rect(x + 2, ly, 14, 2, ls, ls, -1, 240, 250, 255);
+            fightstg_p3r_slant_rect(x + 2, ly, w - 4, 1, ls, ls, -1, 0, 176, 255);
+            fightstg_p3r_slant_rect(x + 1, ly + 1, w - 2, y + h - 2 - ly, ls, sb, 2, 210, 200, 155);
+        }
+        if (fightstg_panel_shows(col_y1 - 2)) {
+            s32 cy1 = col_y1 > y + h - 2 ? y + h - 2 : col_y1;
+            s32 cs0 = h > 0 ? st + (sb - st) * (col_y0 - y) / h : st;
+            s32 cs1 = h > 0 ? st + (sb - st) * (cy1 - y) / h : sb;
+
+            if (cy1 > col_y0 + 4) {
+                fightstg_p3r_slant_rect(col_x, col_y0 + 1, 1, cy1 - col_y0 - 2, cs0, cs1, 1, 22, 68, 138);
+            }
+        }
+        fightstg_p3r_slant_rect(x, y, w, 2, st, st, -1, 236, 246, 255);
+        fightstg_p3r_slant_rect(x, y + h - 2, w, 2, sb, sb, -1, 0, 176, 255);
+        fightstg_p3r_slant_quad(x + st, y, x + st + 1, y, x + sb, y + h, x + sb + 1, y + h, -1, 32, 138, 245);
+        fightstg_p3r_slant_quad(x + w + st - 1, y, x + w + st, y, x + w + sb - 1, y + h, x + w + sb, y + h, -1, 32,
+                                138, 245);
+        fightstg_p3r_slant_rect(x, y, w, h, st, sb, 2, 194, 184, 134);
+        fightstg_p3r_slant_rect(x - 3, y + 3, 3, h, st, sb, -1, 0, 184, 255);
+        fightstg_p3r_slant_rect(x - 3, y + h, w, 3, sb, sb, -1, 0, 184, 255);
     }
-    if (fightstg_info.info.count > 0 && fightstg_panel_shows(fightstg_info.legend_y[0] - 1)) {
-        fightstg_battle_menu_quad(x + 3, fightstg_info.legend_y[0] - 2, w - 6, 1, 1, 30, 70, 150);
-    }
-    fightstg_battle_menu_quad(x, y, w, h, 2, 190, 180, 130); /* added last: the layer draws it first, under the lines */
 }
 
 /* The refusal's box: the Inspect panel's backdrop and frame, without the title's line. */
@@ -5890,12 +5961,17 @@ static void fightstg_battle_menu_notice_frame(void) {
     s32 y = FIGHTSTG_NOTICE_Y - 3;
     s32 w = FIGHTSTG_NOTICE_W;
     s32 h = FIGHTSTG_INSPECT_LINE * FIGHTSTG_NOTICE_LINES + 8;
+    s32 st = 2;
+    s32 sb = -2;
 
-    fightstg_battle_menu_quad(x, y, w, 1, 1, 40, 110, 220);
-    fightstg_battle_menu_quad(x, y + h - 1, w, 1, 1, 40, 110, 220);
-    fightstg_battle_menu_quad(x, y + 1, 1, h - 2, 1, 40, 110, 220);
-    fightstg_battle_menu_quad(x + w - 1, y + 1, 1, h - 2, 1, 40, 110, 220);
-    fightstg_battle_menu_quad(x, y, w, h, 2, 190, 180, 130);
+    fightstg_p3r_slant_rect(x, y, w, 2, st, st, -1, 236, 246, 255);
+    fightstg_p3r_slant_rect(x, y + h - 2, w, 2, sb, sb, -1, 0, 176, 255);
+    fightstg_p3r_slant_quad(x + st, y, x + st + 1, y, x + sb, y + h, x + sb + 1, y + h, -1, 32, 138, 245);
+    fightstg_p3r_slant_quad(x + w + st - 1, y, x + w + st, y, x + w + sb - 1, y + h, x + w + sb, y + h, -1, 32, 138,
+                            245);
+    fightstg_p3r_slant_rect(x, y, w, h, st, sb, 2, 196, 186, 136);
+    fightstg_p3r_slant_rect(x - 3, y + 3, 3, h, st, sb, -1, 0, 184, 255);
+    fightstg_p3r_slant_rect(x - 3, y + h, w, 3, sb, sb, -1, 0, 184, 255);
 }
 
 /* Cut at once: no fold (a command chosen, the turn gone on, the notice in the panel's place). */
@@ -6455,6 +6531,35 @@ static void fightstg_p4_digivolve_draw(FightstgDigivolveMenu *obj) {
     fightstg_p4_draw_ring(opts, obj->count, obj->cursor, fightstg_p4.burst);
     fightstg_p4_status_draw(obj->member, obj->cursor, obj->digimon[obj->cursor], 1);
 }
+static void fightstg_p4_digivolve_draw_confirm(FightstgDigivolveMenu *obj) {
+    FightstgP4Opt opt;
+    RecordsDigimon *digimon = records_get_digimon_func(obj->digimon[obj->cursor]);
+    void *names_file = cdload_module.files.get_file(records_language + 0x4E);
+    const char *lbl = "DIGIVOLVE";
+    s32 k = 0;
+
+    if (!fightstg_p4.cam_on) {
+        return;
+    }
+    while (lbl[k] != '\0') {
+        opt.label[k] = lbl[k];
+        k++;
+    }
+    opt.label[k] = '\0';
+    opt.sub[0] = '\0';
+    if (digimon != NULL && names_file != NULL) {
+        Font f;
+        font_init(&f);
+        fightstg_p4_decode((const u8 *)f.get_entry(names_file, digimon->name_id), opt.sub, sizeof(opt.sub));
+    }
+    opt.badge = NULL;
+    opt.dim = 0;
+    opt.kind = 0;
+    fightstg_p4_preview_hover(obj->digimon[obj->cursor]);
+    fightstg_p4_layout_ring(&opt, 1);
+    fightstg_p4_draw_ring(&opt, 1, 0, fightstg_p4.burst);
+    fightstg_p4_status_draw(obj->member, obj->cursor, obj->digimon[obj->cursor], 1);
+}
 #endif
 
 /* The data block comes in untyped and is read through a typed local (the US decomp's shape): with a typed parameter,
@@ -6487,6 +6592,7 @@ void fightstg_digivolve_menu_update(FightstgDigivolveMenu *obj, void *arg) {
 #ifdef PC_PORT
         if (port_mod_battle_menu != 0) {
             obj->cursor = 0;
+            obj->base.step = 0;
             fightstg_p4_scene_enter();
             obj->base.next_state(obj);
             break;
@@ -6502,42 +6608,64 @@ void fightstg_digivolve_menu_update(FightstgDigivolveMenu *obj, void *arg) {
     case OBJECT_STATE_RUN:
 #ifdef PC_PORT
         if (port_mod_battle_menu != 0) {
+            extern int port_script_active;
             s32 rep;
 
             pad = FIGHTSTG_MENU_PAD();
             fightstg_p4_status_input(pad);
             rep = pad_state.get_repeat(0) | pad;
-            if ((rep & (0x10 | 0x80)) != 0) {
-                if (obj->cursor > 0) {
-                    obj->cursor--;
-                    sound_module.play(0x4001B);
+            if (obj->base.step == 0) {
+                if ((rep & (0x10 | 0x80)) != 0) {
+                    if (obj->cursor > 0) {
+                        obj->cursor--;
+                        sound_module.play(0x4001B);
+                    }
+                } else if ((rep & (0x40 | 0x20)) != 0) {
+                    if (obj->cursor < obj->count - 1) {
+                        obj->cursor++;
+                        sound_module.play(0x4001B);
+                    }
                 }
-            } else if ((rep & (0x40 | 0x20)) != 0) {
-                if (obj->cursor < obj->count - 1) {
-                    obj->cursor++;
-                    sound_module.play(0x4001B);
+                if (pad & 0x2000) {
+                    m = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
+                    cur = m->blasted != 0 ? m->base_digimon : m->digimon;
+                    sel = obj->digimon[obj->cursor];
+                    if (cur != sel) {
+                        sound_module.play(0x4001C);
+                        if (port_script_active) {
+                            *obj->result = sel;
+                            obj->base.set_state(obj, OBJECT_STATE_END);
+                            fightstg_p4_scene_exit(1);
+                        } else {
+                            fightstg_p4.burst = 0;
+                            obj->base.set_step(obj, 1);
+                        }
+                        break;
+                    }
+                    sound_module.play(0x800450BD);
+                } else if (pad & 0x4000) {
+                    *obj->result = -2;
+                    obj->base.set_state(obj, OBJECT_STATE_END);
+                    sound_module.play(0x800450BD);
+                    fightstg_p4_scene_exit(0);
+                    break;
                 }
-            }
-            if (pad & 0x2000) {
-                m = &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
-                cur = m->blasted != 0 ? m->base_digimon : m->digimon;
-                sel = obj->digimon[obj->cursor];
-                if (cur != sel) {
+                fightstg_p4_digivolve_draw(obj);
+            } else {
+                if (pad & 0x2000) {
                     sound_module.play(0x4001C);
-                    *obj->result = sel;
+                    *obj->result = obj->digimon[obj->cursor];
                     obj->base.set_state(obj, OBJECT_STATE_END);
                     fightstg_p4_scene_exit(1);
                     break;
+                } else if (pad & 0x4000) {
+                    sound_module.play(0x800450BD);
+                    fightstg_p4.burst = 0;
+                    obj->base.set_step(obj, 0);
+                    break;
                 }
-                sound_module.play(0x800450BD);
-            } else if (pad & 0x4000) {
-                *obj->result = -2;
-                obj->base.set_state(obj, OBJECT_STATE_END);
-                sound_module.play(0x800450BD);
-                fightstg_p4_scene_exit(0);
-                break;
+                fightstg_p4_digivolve_draw_confirm(obj);
             }
-            fightstg_p4_digivolve_draw(obj);
             break;
         }
 #endif
@@ -7383,22 +7511,26 @@ static void fightstg_sheet_describe(const FightstgSheetLayout *l, MessageWindow 
 /* The header's chip and word for `action` (FIGHTSTG_BMENU_*: 1 Tech, 4 Item), the chip's glyph in `icon` (placed
  * here, fightstg_sheet_icon_w wide), as its tab looks in the battle menu. */
 static void fightstg_sheet_head(MessageWindow *icon, s32 action, s32 x, s32 y) {
-    static const u8 white[3] = { 236, 242, 255 }, shadow[3] = { 6, 10, 34 };
+    static const u8 white[3] = { 244, 250, 255 }, cyan_sh[3] = { 0, 116, 210 }, navy[3] = { 10, 22, 54 };
     GfxLayer *layer = gfx_module.funcs.get_layer(0x1005);
     const char *word = fightstg_bmenu_word(action);
     s32 chip_w = fightstg_sheet_icon_w + 4 < FIGHTSTG_BMENU_CHIP ? FIGHTSTG_BMENU_CHIP : fightstg_sheet_icon_w + 4;
-    s32 size = FIGHTSTG_BMENU_SIZE_TAB;
-    s32 wy = y + (FIGHTSTG_BMENU_CHIP - (16 * size >> 8)) / 2;
+    s32 size = 148;
+    s32 ww = def_poly_text_width(size, word);
+    s32 cx = x + chip_w + FIGHTSTG_BMENU_GAP + ww / 2 + 1;
+    s32 cy = y + FIGHTSTG_BMENU_CHIP / 2;
     const u8 *tint = fightstg_bmenu_tints[fightstg_battle_menu_tint_of(icon->lines[0].text)];
+    u32 *ot1;
 
     if (layer == NULL) {
         return;
     }
-    def_poly_text(layer, 0, x + chip_w + FIGHTSTG_BMENU_GAP, wy, size, word, white);
-    def_poly_text(layer, 0, x + chip_w + FIGHTSTG_BMENU_GAP + 1, wy + 1, size, word, shadow);
+    ot1 = layer->get_ot_entry(layer, FIGHTSTG_BMENU_PANEL_DEPTH);
+    def_poly_text_rot(layer, 0, cx, cy, size, -32, 0, word, white, NULL);
+    def_poly_text_rot(layer, 0, cx + 1, cy + 2, size, -32, 0, word, cyan_sh, NULL);
     icon->set_pos(icon, x + (chip_w - fightstg_sheet_icon_w) / 2, y + 1);
-    fightstg_battle_menu_plate(x + 1, y + 1, chip_w - 2, FIGHTSTG_BMENU_CHIP - 2, 0, -1, 16, 18, 30);
-    fightstg_battle_menu_plate(x, y, chip_w, FIGHTSTG_BMENU_CHIP, 0, -1, tint[0], tint[1], tint[2]);
+    fightstg_p4_quad(ot1, x + chip_w / 2, cy, chip_w / 2 - 1, 6, 2, -32, navy);
+    fightstg_p4_quad(ot1, x + chip_w / 2, cy, chip_w / 2, 7, 2, -32, tint);
 }
 
 /* Where the page arrows' pair is: the left arrow's x and y, and the right one's x. */
@@ -7412,42 +7544,128 @@ static void fightstg_sheet_arrows_at(const FightstgSheetLayout *l, s32 *lx, s32 
 
 /* The sheet's frame: the lines, the selected row's light, the page arrows, the backdrop. */
 static void fightstg_sheet_frame(const FightstgSheetLayout *l, s32 sel, s32 page, s32 pages) {
+    GfxLayer *layer = gfx_module.funcs.get_layer(0x1005);
     s32 x = fightstg_sheet_x();
     s32 y = FIGHTSTG_SHEET_Y;
     s32 w = FIGHTSTG_SHEET_W;
     s32 h = fightstg_sheet_bottom(l) - y;
     s32 ry = fightstg_sheet_row_y(l, sel);
+    s32 dy_desc = fightstg_sheet_desc_y(l) - 3;
+    s32 st = 2;
+    s32 sb = -2;
+    s32 hs_bot = h > 0 ? st + (sb - st) * (FIGHTSTG_SHEET_ROW_Y - 3 - y) / h : sb;
+    s32 ds = h > 0 ? st + (sb - st) * (dy_desc - y) / h : sb;
     s32 lx;
     s32 rx;
     s32 ay;
+    s32 i;
 
     fightstg_sheet_arrows_at(l, &lx, &ay, &rx);
 
-    if (pages > 1 && (gfx_module.funcs.get_time() & 0x10)) {
-        Sprite sprite;
-        s32 *bank = cdload_module.get_subfile_by_id(0x4550000);
+    if (pages > 1) {
+        static const u8 pg_cyan[3] = { 0, 212, 255 };
+        static const u8 pg_sh[3] = { 4, 10, 28 };
+        char pbuf[16];
 
-        sprite_init(&sprite);
-        sprite.set_layer_id(0x1005, 0);
-        sprite.set_vram_pos(0x200, 0);
-        if (page > 0) {
-            sprite.draw(bank, 0x1F, lx, ay);
+        if (gfx_module.funcs.get_time() & 0x10) {
+            Sprite sprite;
+            s32 *bank = cdload_module.get_subfile_by_id(0x4550000);
+
+            sprite_init(&sprite);
+            sprite.set_layer_id(0x1005, 0);
+            sprite.set_vram_pos(0x200, 0);
+            if (page > 0) {
+                sprite.draw(bank, 0x1F, lx, ay);
+            }
+            if (page < pages - 1) {
+                sprite.draw(bank, 0x20, rx, ay);
+            }
         }
-        if (page < pages - 1) {
-            sprite.draw(bank, 0x20, rx, ay);
+        if (layer != NULL && l->arrows) {
+            s32 n = 0;
+            s32 cur = page + 1;
+
+            if (cur >= 10) {
+                pbuf[n++] = (char)('0' + cur / 10);
+            }
+            pbuf[n++] = (char)('0' + cur % 10);
+            pbuf[n++] = '/';
+            if (pages >= 10) {
+                pbuf[n++] = (char)('0' + pages / 10);
+            }
+            pbuf[n++] = (char)('0' + pages % 10);
+            pbuf[n] = 0;
+            def_poly_text_rot(layer, 0, x + w / 2, ay + 3, 104, -12, 0, pbuf, pg_cyan, NULL);
+            def_poly_text_rot(layer, 0, x + w / 2 + 1, ay + 4, 104, -12, 0, pbuf, pg_sh, NULL);
+        }
+        fightstg_p3r_slant_rect(lx + 8, ay - 1, 18, 10, 1, -1, -1, 10, 28, 68);
+        fightstg_p3r_slant_rect(lx + 8, ay + 8, 18, 1, -1, -1, -1, 0, 196, 255);
+        fightstg_p3r_slant_rect(rx - 16, ay - 1, 18, 10, 1, -1, -1, 10, 28, 68);
+        fightstg_p3r_slant_rect(rx - 16, ay + 8, 18, 1, -1, -1, -1, 0, 196, 255);
+    }
+    if (sel >= 0) {
+        FightstgHudData *hd = fightstg_p4.hud_data;
+        s32 rs0 = h > 0 ? st + (sb - st) * (ry - y) / h : 0;
+        s32 rs1 = h > 0 ? st + (sb - st) * (ry + l->pitch - 1 - y) / h : 0;
+        s32 pulse = (rsin((s32)(port_frames * 96)) + 4096) >> 9;
+
+        if (layer != NULL && hd != NULL && hd->p4_confirm_key != NULL && !fightstg_p4.cam_on) {
+            u32 *ot1 = layer->get_ot_entry(layer, FIGHTSTG_BMENU_PANEL_DEPTH);
+            s32 kcx = x + rs0 - 1;
+            s32 kcy = ry + (l->pitch - 1) / 2;
+            s32 shiv = ((port_frames / 4) & 3) == 0 ? 1 : 0;
+            u8 chip_rgb[3] = { (u8)(dw3_feat_icons ? 28 : 44), (u8)(dw3_feat_icons ? 196 : 144),
+                               (u8)(dw3_feat_icons ? 76 : 255) };
+            static const u8 chip_white[3] = { 246, 252, 255 };
+
+            if (kcx < 8) {
+                kcx = 8;
+            }
+            fightstg_p4_keys_init_text();
+            hd->p4_confirm_key->set_pos(hd->p4_confirm_key, kcx - (dw3_feat_icons ? 4 : 6) + shiv, kcy - 6);
+            hd->p4_confirm_key->set_palette(hd->p4_confirm_key, 0);
+            hd->p4_confirm_key->set_visible(hd->p4_confirm_key, 1);
+            fightstg_p4_quad(ot1, kcx + shiv, kcy, 6, 6, 2, -64, chip_rgb);
+            fightstg_p4_quad(ot1, kcx + shiv, kcy, 7, 7, 2, -64, chip_white);
+        }
+        fightstg_p3r_slant_rect(x - 2, ry, 4, l->pitch - 1, rs0, rs1, -1, 240, 250, 255);
+        fightstg_p3r_slant_rect(x + 2, ry, 3, l->pitch - 1, rs0, rs1, -1, 0, 224, 255);
+        fightstg_p3r_slant_rect(x - 2, ry, w + 4, 1, rs0, rs0, -1, 220, 246, 255);
+        fightstg_p3r_slant_rect(x - 2, ry + l->pitch - 2, w + 4, 1, rs1, rs1, -1, 0, 196, 255);
+        fightstg_p3r_slant_rect(x - 2, ry, w + 4, l->pitch - 1, rs0, rs1, -1, (u8)(14 + (pulse >> 1)),
+                                (u8)(64 + pulse), (u8)(168 + pulse * 2));
+    } else if (!fightstg_p4.cam_on) {
+        fightstg_p4_keys_hide();
+    }
+    if (l->action == 1) {
+        fightstg_p3r_slant_rect(x + w - 88, y + 4, 82, 13, 1, -1, -1, 6, 14, 36);
+        fightstg_p3r_slant_rect(x + w - 88, y + 17, 82, 1, -1, -1, -1, 0, 196, 255);
+    }
+    for (i = 0; i < l->rows; i += 2) {
+        s32 row_y = fightstg_sheet_row_y(l, i);
+        s32 r0 = h > 0 ? st + (sb - st) * (row_y - y) / h : 0;
+        s32 r1 = h > 0 ? st + (sb - st) * (row_y + l->pitch - 1 - y) / h : 0;
+
+        if (i != sel) {
+            fightstg_p3r_slant_rect(x + 2, row_y, w - 4, l->pitch - 1, r0, r1, 1, 6, 18, 42);
         }
     }
-    if (sel >= 0) { /* the cursor: a bar at the row's left end and the row lit, as a pressed tab is */
-        fightstg_inspect_pixels(x + 2, ry, 2, l->pitch - 1, fightstg_panel_trace_rgb[1], 0);
-        fightstg_battle_menu_quad(x + 2, ry, w - 4, l->pitch - 1, 1, 40, 110, 190);
+    fightstg_p3r_slant_rect(x + 2, dy_desc, 16, 2, ds, ds, -1, 240, 250, 255);
+    fightstg_p3r_slant_rect(x + 2, dy_desc, w - 4, 1, ds, ds, -1, 0, 188, 255);
+    fightstg_p3r_slant_rect(x + 1, dy_desc + 1, w - 2, y + h - 2 - dy_desc, ds, sb, 2, 214, 204, 160);
+    fightstg_p3r_slant_rect(x + 1, FIGHTSTG_SHEET_ROW_Y - 4, w - 2, 2, hs_bot, hs_bot, -1, 0, 196, 255);
+    if (l->action != 1 && pages <= 1) {
+        fightstg_p3r_slant_rect(x + w - 12, y + 2, 5, FIGHTSTG_SHEET_ROW_Y - y - 6, st + 2, hs_bot - 2, -1, 0, 168, 240);
     }
-    fightstg_battle_menu_quad(x, y, w, 1, 1, 40, 110, 220);
-    fightstg_battle_menu_quad(x, y + h - 1, w, 1, 1, 40, 110, 220);
-    fightstg_battle_menu_quad(x, y + 1, 1, h - 2, 1, 40, 110, 220);
-    fightstg_battle_menu_quad(x + w - 1, y + 1, 1, h - 2, 1, 40, 110, 220);
-    fightstg_battle_menu_quad(x + 3, FIGHTSTG_SHEET_ROW_Y - 3, w - 6, 1, 1, 30, 70, 150);
-    fightstg_battle_menu_quad(x + 3, fightstg_sheet_desc_y(l) - 3, w - 6, 1, 1, 30, 70, 150);
-    fightstg_battle_menu_quad(x, y, w, h, 2, 190, 180, 130); /* added last: drawn first, under the rest */
+    fightstg_p3r_slant_rect(x + 1, y + 2, w - 2, FIGHTSTG_SHEET_ROW_Y - y - 6, st, hs_bot, -1, 8, 22, 56);
+    fightstg_p3r_slant_rect(x, y, w, 2, st, st, -1, 238, 248, 255);
+    fightstg_p3r_slant_rect(x, y + h - 2, w, 2, sb, sb, -1, 0, 176, 255);
+    fightstg_p3r_slant_quad(x + st, y, x + st + 1, y, x + sb, y + h, x + sb + 1, y + h, -1, 32, 138, 245);
+    fightstg_p3r_slant_quad(x + w + st - 1, y, x + w + st, y, x + w + sb - 1, y + h, x + w + sb, y + h, -1, 32, 138,
+                            245);
+    fightstg_p3r_slant_rect(x, y, w, h, st, sb, 2, 194, 184, 134);
+    fightstg_p3r_slant_rect(x - 3, y + 3, 3, h, st, sb, -1, 0, 184, 255);
+    fightstg_p3r_slant_rect(x - 3, y + h, w, 3, sb, sb, -1, 0, 184, 255);
 }
 
 /* The sheet's paper (the owner, 2026-11-24: "the menu itself turns into the screen, like a sheet of paper"). On Tech or
@@ -7924,26 +8142,32 @@ static void fightstg_sheet_info_tab(s32 right, s32 y) {
         key->measure(key, 0);
     }
     chip_w = bit < 0 ? 0 : key_w + 4 < FIGHTSTG_BMENU_CHIP ? FIGHTSTG_BMENU_CHIP : key_w + 4;
-    w = (chip_w > 0 ? chip_w + FIGHTSTG_BMENU_GAP : 3) + ww + 5;
+    w = (chip_w > 0 ? chip_w + FIGHTSTG_BMENU_GAP : 3) + ww + 8;
     x = right - w;
     fightstg_info_hold(right, y + FIGHTSTG_BMENU_CHIP / 2);
-    def_poly_text(layer, 0, x + (chip_w > 0 ? chip_w + FIGHTSTG_BMENU_GAP : 3), wy, size, word, white);
-    def_poly_text(layer, 0, x + (chip_w > 0 ? chip_w + FIGHTSTG_BMENU_GAP : 3) + 1, wy + 1, size, word, shadow);
-    if (chip_w > 0) {
-        const u8 *tint = fightstg_bmenu_tints[fightstg_battle_menu_tint_of(key->lines[0].text)];
+    {
+        static const u8 tab_navy[3] = { 8, 18, 44 };
+        static const u8 tab_blue[3] = { 32, 118, 240 };
+        static const u8 tab_cyan[3] = { 0, 196, 255 };
+        u32 *ot1 = layer->get_ot_entry(layer, 1);
+        s32 tcx = x + w / 2;
+        s32 tcy = y + FIGHTSTG_BMENU_CHIP / 2 + 1;
+        s32 wcx = x + (chip_w > 0 ? chip_w + FIGHTSTG_BMENU_GAP : 4) + ww / 2;
 
-        key->set_pos(key, x + 1 + (chip_w - key_w) / 2, y + 1);
-        key->set_visible(key, 1);
-        fightstg_battle_menu_plate(x + 2, y + 1, chip_w - 2, FIGHTSTG_BMENU_CHIP - 2, 0, -1, 16, 18, 30);
-        fightstg_battle_menu_plate(x + 1, y, chip_w, FIGHTSTG_BMENU_CHIP, 0, -1, tint[0], tint[1], tint[2]);
+        def_poly_text_rot(layer, 0, wcx, tcy, size, -48, 0, word, fightstg_info.inspect ? tab_cyan : white, NULL);
+        def_poly_text_rot(layer, 0, wcx + 1, tcy + 1, size, -48, 0, word, shadow, NULL);
+        if (chip_w > 0) {
+            const u8 *tint = fightstg_bmenu_tints[fightstg_battle_menu_tint_of(key->lines[0].text)];
+
+            key->set_pos(key, x + 1 + (chip_w - key_w) / 2, y + 2);
+            key->set_visible(key, 1);
+            fightstg_p4_quad(ot1, x + 1 + chip_w / 2, tcy, chip_w / 2 - 1, 6, 2, -48, tab_navy);
+            fightstg_p4_quad(ot1, x + 1 + chip_w / 2, tcy, chip_w / 2, 7, 2, -48, tint);
+        }
+        fightstg_p4_quad(ot1, tcx, tcy, w / 2, 7, 4, -48, tab_navy);
+        fightstg_p4_quad(ot1, tcx, tcy, w / 2 + 1, 8, 4, -48,
+                         (fightstg_info.blip > 0 || fightstg_info.inspect) ? tab_cyan : tab_blue);
     }
-    if (fightstg_info.blip > 0) { /* the panel leaves the tab, or comes back into it */
-        fightstg_battle_menu_quad(x, y - 1, w, FIGHTSTG_BMENU_CHIP + 2, 1, 40, 110, 220);
-    }
-    fightstg_battle_menu_quad(x, y + FIGHTSTG_BMENU_CHIP, w, 1, 1, 40, 110, 220);
-    fightstg_battle_menu_quad(x, y - 1, 1, FIGHTSTG_BMENU_CHIP + 1, 1, 40, 110, 220);
-    fightstg_battle_menu_quad(right - 1, y - 1, 1, FIGHTSTG_BMENU_CHIP + 1, 1, 40, 110, 220);
-    fightstg_battle_menu_quad(x, y - 1, w, FIGHTSTG_BMENU_CHIP + 2, 2, 190, 180, 130);
 }
 
 /* The INFO tab's glyph hidden (no sheet, or the sheet not open). */
@@ -7970,6 +8194,9 @@ static void fightstg_sheet_tick(MessageWindow *icon) {
     }
     if (fightstg_sheet.l == NULL) {
         fightstg_sheet_info_tab_off();
+        if (!fightstg_p4.cam_on) {
+            fightstg_p4_keys_hide();
+        }
         if (icon->lines[0].text != NULL && icon->lines[0].text[0] != 0) {
             icon->set_text(icon, (u8 *)empty, -1);
         }
@@ -8001,9 +8228,12 @@ static void fightstg_sheet_tick(MessageWindow *icon) {
         fightstg_sheet.turn_t += ticks;
     }
     if (fightstg_sheet.t >= FIGHTSTG_SHEET_OPEN && fightstg_sheet.dir > 0) {
-        fightstg_sheet_info_tab(g.x + g.w, fightstg_sheet_bottom(fightstg_sheet.l) + 1);
+        fightstg_sheet_info_tab(g.x + g.w - 2, fightstg_sheet_bottom(fightstg_sheet.l) + 1);
     } else {
         fightstg_sheet_info_tab_off();
+        if (!fightstg_p4.cam_on) {
+            fightstg_p4_keys_hide();
+        }
     }
     if (fightstg_sheet.t >= FIGHTSTG_SHEET_OPEN) {
         fightstg_sheet_draw_leaf();
