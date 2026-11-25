@@ -1963,16 +1963,16 @@ int def_tech_effect(u8 side, int tech, int *msg) {
     }
     /* Resist Down / Mega Break, and in an enemy's hands all four (owner's choice: Libra and Relay mean nothing to an
      * enemy): the target's resists of the user's best families go down, both elements of a pair (owner, 2026-11-13: a
-     * pair is one affinity). The best is the user's highest affinity as the multiplier counts it (def_affinity: a pair's
-     * sum), ties by the family order. On the player they are its affinities. */
+     * pair is one affinity). The best is the user's highest affinity as the multiplier counts it (def_affinity_fine: a pair's
+     * squares), ties by the family order. On the player they are its affinities. */
     me = fightstg_rules.get_stats(side, 1, fightstg_battle.state.current[enemy]);
     delta = enemy ? (tech == 208 ? DEF_BREAK_MEGA_DELTA : DEF_BREAK_SLOW_DELTA)
                   : def_debuff_scale(10, tech == 208 ? DEF_BREAK_MEGA_DELTA : DEF_BREAK_SLOW_DELTA);
     for (n = tech == 208 ? 2 : 1, k = 0; k < n; k++) {
         best = -1;
         for (e = 0; e < 7; e++) {
-            if (!taken[e] && def_affinity(e, me->resists) > 0 &&
-                (best < 0 || def_affinity(e, me->resists) > def_affinity(best, me->resists))) {
+            if (!taken[e] && def_affinity_fine(e, me->resists) > 0 &&
+                (best < 0 || def_affinity_fine(e, me->resists) > def_affinity_fine(best, me->resists))) {
                 best = e;
             }
         }

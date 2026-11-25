@@ -103,27 +103,45 @@ int def_chain_take_extra(DefChain *c) {
     return 1;
 }
 
-/* ---- The damage multiplier. Fire and Wind count on their own resist, Water with Ice and Thunder with Machine on the
- * pair's sum, Dark on its own; each is its ceiling times the share of the maximum (999 a stat). */
+/* ---- The damage multiplier. Affinity is convex in the stat so the ceiling is only reached at 999 (owner, 2026-11-25:
+ * 555 must not be half the ceiling): ceiling * (stat / 999)^2. Fire and Wind count on their own resist, Water with Ice
+ * and Thunder with Machine on the mean of the pair's squares (999+0 is still half the ceiling), Dark on its own. */
 static int stat_cap(int v) {
     return v < 0 ? 0 : v > 999 ? 999 : v;
 }
 
-int def_affinity(int element, const short resists[7]) {
+#define AFF_DEN (2LL * 999 * 999) /* the fine unit's denominator: a pair's mean of squares over 2 * 999^2 */
+
+/* The affinity as a fine integer (ceiling * squares, thousandths of the multiplier times AFF_DEN): exact enough to rank
+ * the families (Resist Down) at low stats, where def_affinity rounds to 0. The sum of two squares times the ceiling
+ * passes 2^31, hence 64 bits. */
+long long def_affinity_fine(int element, const short resists[7]) {
+    long long a, b;
+
     switch (element) {
     case 0:
     case 3:
-        return DEF_AFF_SINGLE_MAX * stat_cap(resists[element]) / 999;
+        a = stat_cap(resists[element]);
+        return 2LL * DEF_AFF_SINGLE_MAX * a * a;
     case 1:
     case 2:
-        return DEF_AFF_PAIR_MAX * (stat_cap(resists[1]) + stat_cap(resists[2])) / 1998;
+        a = stat_cap(resists[1]);
+        b = stat_cap(resists[2]);
+        return (long long)DEF_AFF_PAIR_MAX * (a * a + b * b);
     case 4:
     case 5:
-        return DEF_AFF_PAIR_MAX * (stat_cap(resists[4]) + stat_cap(resists[5])) / 1998;
+        a = stat_cap(resists[4]);
+        b = stat_cap(resists[5]);
+        return (long long)DEF_AFF_PAIR_MAX * (a * a + b * b);
     case 6:
-        return DEF_AFF_DARK_MAX * stat_cap(resists[6]) / 999;
+        a = stat_cap(resists[6]);
+        return 2LL * DEF_AFF_DARK_MAX * a * a;
     }
     return 0;
+}
+
+int def_affinity(int element, const short resists[7]) {
+    return (int)(def_affinity_fine(element, resists) / AFF_DEN);
 }
 
 int def_multiplier(int weak, int open, int resisted, int affinity) {

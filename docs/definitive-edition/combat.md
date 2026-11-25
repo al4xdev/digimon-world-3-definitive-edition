@@ -78,10 +78,11 @@ elemental resistances, and adds a stagger bonus for blows with no element.
 **Affinity** is what your Digimon's old elemental "tolerance" stats became: they no longer defend, they strengthen your
 attacks of that element. It is added once for a weakness and once for a staggered target, and never otherwise: on a
 neutral hit against an enemy that is not staggered it does nothing. Each family has a ceiling, scaled by the stat's
-share of its maximum, 999: Fire and Wind count on their own, up to 0.3; Water with Ice and Thunder with Machine count as
-pairs, on the two stats' sum out of 1998, up to 0.6 (a Water and an Ice technique get the same affinity); Dark counts on
-its own, up to 0.6. The strongest hit there is, a weakness on a staggered target with full affinity, is 2.3 for Fire or
-Wind and 2.9 for the pairs and Dark.
+square of its share of the maximum, 999 (so 555 is under a third of the ceiling, and the last 100 points are worth
+a fifth of it): Fire and Wind count on their own, up to 0.4; Water with Ice and Thunder with Machine count as pairs, on
+the mean of the two stats' squares, up to 0.8 (a Water and an Ice technique get the same affinity; 999+0 is half);
+Dark counts on its own, up to 0.8. The strongest hit there is, a weakness on a staggered target with full affinity, is
+2.5 for Fire or Wind and 3.3 for the pairs and Dark.
 
 One stat defends against everything: enemy magic is resisted by your **Defense**, and Spirit is purely your magic
 attack. Your elemental stats no longer cut the damage enemy elements do to you.
@@ -212,14 +213,14 @@ The combat PRD was built in layers 0-10 (the older PRDs 2 and 3 added layers A-J
 ### Constants worth knowing
 
 `DEF_WEAK_MAX` 80, `DEF_RESIST_MIN` 250 (a family's resistance: weak at 80 or less, resisted at 250 or more). Resisted
-hits are a fixed 0.5. Affinity ceilings: single 0.3, pair 0.6, Dark 0.6. Weak +0.5, stagger +0.2. The player's reference
+hits are a fixed 0.5. Affinity ceilings: single 0.4, pair 0.8, Dark 0.8 (convex in the stat). Weak +0.5, stagger +0.2. The player's reference
 resistance is 100. Relay costs 50 MP. Resist Down is a delta of 80 and Mega Break 100, for 3 enemy turns. The Baton Pass
 is free (`DEF_BATON_PASS_MP` 0) and offered only while the enemy is staggered. **Overlevel gap 3** (`DEF_OVERLEVEL_GAP`,
 it was 15). The Rush question lasts 300 ticks, the Rush panel 175 ticks and 10 rows.
 
 Their names: multipliers and affinities are fixed point in thousandths (`DEF_MULT_ONE` 1000): `DEF_MULT_WEAK` 500,
-`DEF_MULT_STAGGER` 200, `DEF_MULT_RESISTED` 500, `DEF_AFF_SINGLE_MAX` 300 (Fire, Wind; resist 999), `DEF_AFF_PAIR_MAX`
-600 (Water+Ice, Thunder+Machine; the pair's sum 1998), `DEF_AFF_DARK_MAX` 600. `DEF_PLAYER_REF_RESIST` 100 is what an
+`DEF_MULT_STAGGER` 200, `DEF_MULT_RESISTED` 500, `DEF_AFF_SINGLE_MAX` 400 (Fire, Wind; resist 999), `DEF_AFF_PAIR_MAX`
+800 (Water+Ice, Thunder+Machine; both 999), `DEF_AFF_DARK_MAX` 800. `DEF_PLAYER_REF_RESIST` 100 is what an
 enemy's element is measured against when it hits the player. Resist Down / Mega Break: `DEF_BREAK_SLOW_DELTA` 80,
 `DEF_BREAK_MEGA_DELTA` 100, `DEF_BREAK_TURNS` 3; on a boss the original made immune, a stat debuff is scaled by
 `DEF_BOSS_DEBUFF_PCT` (100). `DEF_RELAY_MP` 50. TP: `DEF_TP_GAIN_LV_2_20` 7, `DEF_TP_GAIN_LV_21_40` 9,

@@ -22,9 +22,9 @@
 #define DEF_MULT_WEAK 500       /* bonus for hitting a weakness */
 #define DEF_MULT_STAGGER 200    /* bonus for hitting a target that is open (staggered) */
 #define DEF_MULT_RESISTED 500   /* the whole multiplier against a resisted element, no bonuses (owner, 2026-11-13) */
-#define DEF_AFF_SINGLE_MAX 300  /* affinity ceiling of Fire and of Wind (the player's resist 999) */
-#define DEF_AFF_PAIR_MAX 600    /* of Water+Ice and of Thunder+Machine (the pair's sum 1998) */
-#define DEF_AFF_DARK_MAX 600    /* of Dark (999) */
+#define DEF_AFF_SINGLE_MAX 400  /* affinity ceiling of Fire and of Wind (the player's resist 999) */
+#define DEF_AFF_PAIR_MAX 800    /* of Water+Ice and of Thunder+Machine (both resists 999) */
+#define DEF_AFF_DARK_MAX 800    /* of Dark (999) */
 #define DEF_PLAYER_REF_RESIST 100 /* the resist the player counts as when an enemy's element hits it: the old formulas' scale */
 #define DEF_RELAY_MP 50         /* MP the Relay technique (Mega Boost, remade) costs */
 #define DEF_BREAK_SLOW_DELTA 80 /* how far Slow Down (remade) lowers the enemy's resist of the user's best element */
@@ -93,8 +93,10 @@ int def_family_bits(int e);
 int def_resisted(int resist); /* 1 from DEF_RESIST_MIN up */
 /* The damage multiplier of an elemental technique of the player (thousandths, DEF_MULT_ONE = 1.0):
  * 1 + (weak ? 0.5) + (open ? 0.2) + (weak ? affinity) + (open ? affinity); resisted: DEF_MULT_RESISTED alone.
- * `affinity` from def_affinity: the element's share of the attacker's own resists (`resists[0..6]`, 0..999 each). */
+ * `affinity` from def_affinity: ceiling * (the attacker's own resist / 999)^2 (`resists[0..6]`, 0..999 each). */
 int def_affinity(int element, const short resists[7]);
+/* The same in a finer unit, for ranking families (def_affinity rounds to 0 at low stats). */
+long long def_affinity_fine(int element, const short resists[7]);
 int def_status_chance_calc(int value, int atk_prec, int tgt_prec, int resist_sum, int boss, int staggered);
 int def_poison_dot_calc(int base_power, int wind_affinity, int precision, int spirit);
 int def_poison_cap(int amount, int max_hp);

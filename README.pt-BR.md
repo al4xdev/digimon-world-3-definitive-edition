@@ -201,7 +201,7 @@ interrompe mais a luta.
 | Fraqueza, alvo atordoado | 1.7 + 2 × affinity |
 | Sem elemento, alvo atordoado | 1.2 |
 
-A afinidade chega a 0.3 para Fire e Wind e a 0.6 para os pares e Dark, então o golpe mais forte é 2.3 ou 2.9.
+A afinidade cresce com o quadrado do atributo e chega a 0.4 para Fire e Wind e a 0.8 para os pares e Dark, então o golpe mais forte é 2.5 ou 3.3.
 Os níveis de buff são +20 / +35 / +50% e os de debuff −15 / −25 / −35%. O cálculo completo, passo a passo e com um
 exemplo prático, está na [referência de combate](docs/definitive-edition/combat.md).
 

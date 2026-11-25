@@ -199,7 +199,7 @@ last technique and item, buffers early presses, and battle text no longer stops 
 | Weakness, staggered target | 1.7 + 2 × affinity |
 | No element, staggered target | 1.2 |
 
-Affinity is up to 0.3 for Fire and Wind and up to 0.6 for the pairs and Dark, so the strongest hit is 2.3 or 2.9.
+Affinity grows with the square of the stat, up to 0.4 for Fire and Wind and up to 0.8 for the pairs and Dark, so the strongest hit is 2.5 or 3.3.
 Buff tiers are +20 / +35 / +50% and debuffs −15 / −25 / −35%. The whole calculation, step by step with a worked
 example, is in [the combat reference](docs/definitive-edition/combat.md).
 
