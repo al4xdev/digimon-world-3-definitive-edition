@@ -992,12 +992,12 @@ static const DefStoryLine *kaili_find(int file, int index, int pt) {
 }
 
 static struct {
-    s32 phase; /* 0 none, 1 NPC speaking, 2 choosing, 3 hero replying */
+    s32 phase; /* 0 none, 1 NPC speaking, 2 choosing, 3 hero replying, 4 NPC reacting */
     s32 actor;
     s32 file;
     s32 msg;
     s32 map;
-    unsigned char prompt_buf[256];
+    unsigned char prompt_buf[384];
 } npc_choice;
 
 static const unsigned char *find_hero_reply_sep(const unsigned char *s) {
@@ -1009,6 +1009,20 @@ static const unsigned char *find_hero_reply_sep(const unsigned char *s) {
     for (i = 0; s[i] != 0; i++) {
         if (s[i] == 0x02 && s[i + 1] == 0x03 && s[i + 2] == 0x02 && s[i + 3] == 0x07 &&
             s[i + 4] == 0x02 && s[i + 5] == 0x09 && s[i + 6] == 0x02 && s[i + 7] == 0x07) {
+            return &s[i];
+        }
+    }
+    return NULL;
+}
+
+static const unsigned char *find_npc_reply_sep(const unsigned char *s) {
+    int i;
+
+    if (s == NULL) {
+        return NULL;
+    }
+    for (i = 0; s[i] != 0; i++) {
+        if (s[i] == 0x02 && s[i + 1] == 0x03 && s[i + 2] == 0x02 && s[i + 3] == 0x07) {
             return &s[i];
         }
     }
@@ -1041,11 +1055,26 @@ const unsigned char *def_story_line(int file, int index) {
     if ((c = choice_find(file, index)) != NULL && (a = def_record_story_answer(c->question)) >= 1 && a <= c->count) {
         const unsigned char *picked = pt && c->lines_pt[a - 1] != NULL ? c->lines_pt[a - 1] : c->lines[a - 1];
         if (picked != NULL) {
-            if (npc_choice.phase == 3 && file == npc_choice.file && index == npc_choice.msg) {
-                const unsigned char *sep = find_hero_reply_sep(picked);
-                if (sep != NULL) {
-                    return sep + 2; /* start at <7><9><7> hero reply */
+            const unsigned char *hero_sep = find_hero_reply_sep(picked);
+            const unsigned char *npc_sep = hero_sep != NULL ? find_npc_reply_sep(hero_sep + 8) : NULL;
+
+            if (npc_choice.phase == 3 && file == npc_choice.file && index == npc_choice.msg && hero_sep != NULL) {
+                const unsigned char *start = hero_sep + 2;
+                if (npc_sep != NULL) {
+                    int len = (int)(npc_sep - start);
+                    if (len > 0 && len < (int)sizeof(npc_choice.prompt_buf) - 1) {
+                        memcpy(npc_choice.prompt_buf, start, (size_t)len);
+                        npc_choice.prompt_buf[len] = 0;
+                        return npc_choice.prompt_buf;
+                    }
                 }
+                return start;
+            }
+            if (npc_choice.phase == 4 && file == npc_choice.file && index == npc_choice.msg && npc_sep != NULL) {
+                return npc_sep + 2;
+            }
+            if (npc_choice.phase == 0 && npc_sep != NULL) {
+                return npc_sep + 2;
             }
             return picked;
         }
@@ -1263,12 +1292,31 @@ int def_story_npc_after_dialog(s32 actor_id, s32 *msg_out) {
     if (npc_choice.phase == 0 || npc_choice.actor != actor_id) {
         return 0;
     }
-    if (npc_choice.phase == 3) {
+    if (npc_choice.phase == 4) {
         npc_choice.phase = 0;
         return 0;
     }
     c = choice_find(npc_choice.file, npc_choice.msg);
     if (c == NULL) {
+        npc_choice.phase = 0;
+        return 0;
+    }
+    if (npc_choice.phase == 3) {
+        int a = def_record_story_answer(c->question);
+        int pt = def_is_ptbr();
+        const unsigned char *picked = (a >= 1 && a <= c->count)
+            ? (pt && c->lines_pt[a - 1] != NULL ? c->lines_pt[a - 1] : c->lines[a - 1])
+            : NULL;
+        const unsigned char *hero_sep = find_hero_reply_sep(picked);
+        const unsigned char *npc_sep = hero_sep != NULL ? find_npc_reply_sep(hero_sep + 8) : NULL;
+
+        if (npc_sep != NULL) {
+            npc_choice.phase = 4;
+            if (msg_out != NULL) {
+                *msg_out = npc_choice.msg;
+            }
+            return 3;
+        }
         npc_choice.phase = 0;
         return 0;
     }

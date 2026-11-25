@@ -357,11 +357,13 @@ La Definitive Edition no cambia adónde va la historia. Cambia cómo se cuenta, 
   se espera que lo hagas. Quien se quede atrás sigue sin ti, y verás adónde le llevó.
 - **Los sueños de Igor.** En unos pocos puntos de giro te arrastra a solas a la sala y te pregunta algo. No hay
   respuesta incorrecta, y él recuerda lo que dijiste.
-- **Tus decisiones, y sus ecos.** 111 escenas dejan ahora que el héroe responda con sus propias palabras, y unas 600
-  líneas posteriores cambian según lo que elegiste.
-- **Un guion reescrito** (en inglés y portugués, como las decisiones y sus ecos; en español se juega la campaña
-  original del disco): las frases infantiles se han hecho adultas, el orden y las misiones no se tocan, y el héroe
-  está escrito para quien esté jugando.
+- **Tus decisiones, y sus ecos.** Más de 135 escenas y 27 mini-arcos de NPC dejan que el héroe responda con sus propias
+  palabras, y cientos de líneas posteriores cambian según lo que elegiste. Cada decisión se recuerda — moldeando vínculos,
+  reputación y 10 combates contra jefes, pudiendo hacer la aventura más fácil o más difícil.
+- **Un guion reescrito** (escrito, revisado y curado personalmente en portugués de Brasil con la jerga y el tono de los
+  doblajes clásicos de anime de los 80/90, y traducido directamente al inglés; en español se juega la campaña original
+  del disco): las frases infantiles se han hecho adultas, el orden y las misiones no se tocan, y el héroe está escrito
+  para quien esté jugando.
 - **Una figura encapuchada** corta el paso en el Bug Maze, y **una sala donde el tiempo se detiene** espera antes del
   punto sin retorno, para asegurarse de que estás listo.
 - **La última batalla ya no termina donde terminaba.** No diremos más.
@@ -437,11 +439,11 @@ Si lo pruebas en otro dispositivo, un informe en el
 El juego se puede jugar de principio a fin, y todos los sistemas descritos arriba están implementados. También es
 joven: parte de él solo se ha jugado unas pocas veces, así que cuenta con asperezas y hotfixes frecuentes. Lo que queda:
 
-- **Revisión de las traducciones.** El texto nuevo está escrito en inglés, y el portugués de Brasil, el francés, el
-  alemán, el italiano y el español cubren los textos propios de la Definitive Edition (traducidos con ayuda de máquina,
-  aún no leídos en el juego por hablantes nativos: espera frases torpes y algunas etiquetas demasiado anchas para su
-  caja). La historia reescrita solo está en inglés y portugués; en los otros cuatro idiomas se juega la campaña original
-  del disco.
+- **Revisión de las traducciones.** La historia reescrita fue escrita, revisada y curada personalmente en portugués de
+  Brasil (con jerga y tono de animes clásicos de los 80/90), y traducida directamente al inglés. Francés, alemán, italiano
+  y español cubren los textos propios de la Definitive Edition (traducidos con ayuda de máquina, aún no leídos en el juego
+  por hablantes nativos: espera frases torpes y algunas etiquetas demasiado anchas para su caja); en esos cuatro idiomas
+  se juega la campaña original del disco.
 - **El equilibrio general del juego.** Hasta ahora se equilibró solo por cálculo. Lo estoy jugando en paralelo y
   publicando hotfixes sobre la marcha, la Chosen Evolution y los combates secretos del final incluidos.
 

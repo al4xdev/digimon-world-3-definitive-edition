@@ -356,11 +356,13 @@ A Definitive Edition não muda para onde a história vai. Ela muda como é conta
   mundo, e nem é para criar. Quem ficar para trás segue sem você, e você vai ver onde isso deu.
 - **Os sonhos do Igor.** Em alguns pontos de virada, ele puxa você sozinho para a sala e pergunta alguma coisa. Não
   existe resposta errada, e ele se lembra do que você disse.
-- **As suas escolhas, e os ecos delas.** 111 cenas agora deixam o herói responder com as próprias palavras, e umas 600
-  falas posteriores mudam conforme o que você escolheu.
-- **Um roteiro reescrito** (em inglês e em português): as falas infantilizadas ficaram adultas, a ordem e as missões
-  ficaram intactas, e o herói foi escrito para quem estiver jogando. Em português, boa parte da zoeira fala como as
-  dublagens clássicas de anime dos anos 90: rival provocando, vilão se gabando, os amigos tirando sarro.
+- **As suas escolhas, e os ecos delas.** Mais de 135 cenas e 27 mini-arcos de NPCs deixam o herói responder com as
+  próprias palavras, e centenas de falas posteriores mudam conforme o que você escolheu. Cada decisão é lembrada —
+  moldando vínculos, reputação e 10 batalhas de chefe, podendo deixar a aventura mais fácil ou mais difícil.
+- **Um roteiro reescrito** (escrito, revisado e curado pessoalmente em português do Brasil, com o inglês traduzido
+  direto a partir dele): as falas infantilizadas ficaram adultas, a ordem e as missões ficaram intactas, e o herói foi
+  escrito para quem estiver jogando — com as gírias, o humor e o espírito das dublagens clássicas de anime dos anos 80 e
+  90: rival provocando, vilão se gabando, os amigos tirando sarro.
 - **Uma figura encapuzada** bloqueia o caminho no Bug Maze, e **uma sala onde o tempo para** espera antes do ponto sem
   volta, para garantir que você está pronto.
 - **A última batalha não termina onde terminava.** Mais do que isso, só jogando.
@@ -434,10 +436,11 @@ Se você testar em outro dispositivo, um relato no
 O jogo é jogável do começo ao fim, e todos os sistemas descritos acima estão implementados. Ele também é jovem: parte
 dele só foi jogada algumas vezes, então espere arestas e hotfixes frequentes. O que resta:
 
-- **Revisão das traduções.** O texto novo é escrito em inglês, e português do Brasil, francês, alemão, italiano e
-  espanhol cobrem os textos próprios da Definitive Edition (traduzidos com ajuda de máquina, ainda não lidos no jogo por
-  falantes nativos: espere frases desajeitadas e alguns rótulos largos demais para a caixa). A história reescrita só existe
-  em inglês e português; nos outros quatro idiomas roda a campanha original do disco.
+- **Revisão das traduções.** A narrativa reescrita foi toda escrita, revisada e curada pessoalmente em português do
+  Brasil (com gírias e tom de animes clássicos dos anos 80/90), com o inglês traduzido diretamente a partir dela.
+  Francês, alemão, italiano e espanhol cobrem os textos próprios da Definitive Edition (traduzidos com ajuda de máquina,
+  ainda não lidos no jogo por falantes nativos: espere frases desajeitadas e alguns rótulos largos demais para a caixa);
+  nesses quatro idiomas roda a campanha original do disco.
 - **O equilíbrio geral do jogo.** Até agora ele foi balanceado só por cálculo. Estou jogando em paralelo e lançando
   hotfixes pelo caminho, a Chosen Evolution e as batalhas secretas do fim do jogo incluídas.
 

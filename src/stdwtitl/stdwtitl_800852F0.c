@@ -166,10 +166,11 @@ static const StdwtitlQuestion stdwtitl_q_hero_l[5] = {
 };
 static s32 hero_cursor; /* 0 Kail, 1 Junior */
 static s32 notice_ticks;
-#define NOTICE_HOLD_FRAMES 300 /* 5 seconds at 60 Hz */
+#define NOTICE_HOLD_FRAMES 420 /* 7 seconds at 60 Hz */
 
 typedef struct StdwtitlNotice {
     const char *title;
+    const char *tag;
     const char *lines[3];
     const char *wait_fmt;
     const char *ready;
@@ -177,82 +178,187 @@ typedef struct StdwtitlNotice {
 
 static const StdwtitlNotice stdwtitl_notice_en = {
     "YOUR CHOICES MATTER!",
+    NULL,
     {
         "DECISIONS SHAPE DIALOGUE, BONDS, AND BATTLES.",
-        "NPCS WITH (...) BUBBLES MOVE ON WITHOUT YOU!",
+        "NPCS WITH ... BUBBLES MOVE ON WITHOUT YOU!",
         "TAKE YOUR TIME AND EXPLORE THE CAMPAIGN.",
     },
     "PLEASE READ... %DS",
-    "PRESS CONFIRM TO BEGIN",
+    "PRESS CONFIRM TO CONTINUE",
 };
 
 static const StdwtitlNotice stdwtitl_notice_l[5] = {
     {
         "SUAS ESCOLHAS IMPORTAM!",
+        NULL,
         {
             "SUAS DECISÕES MOLDAM DIÁLOGOS, VÍNCULOS E LUTAS.",
-            "NPCS COM BALÃO (...) SEGUEM A VIDA SEM VOCÊ!",
+            "NPCS COM BALÃO ... SEGUEM A VIDA SEM VOCÊ!",
             "EXPLORE COM CALMA E APROVEITE A CAMPANHA.",
+        },
+        "AGUARDE %DS...",
+        "CONFIRME PARA CONTINUAR",
+    },
+    {
+        "VOS CHOIX COMPTENT!",
+        NULL,
+        {
+            "VOS DÉCISIONS FAÇONNENT LIENS ET COMBATS.",
+            "LES PNJ ... AVANCENT MÊME SANS VOUS!",
+            "PRENEZ LE TEMPS D EXPLORER LA CAMPAGNE.",
+        },
+        "PATIENTEZ... %DS",
+        "CONFIRMER POUR CONTINUER",
+    },
+    {
+        "DEINE WAHL ZÄHLT!",
+        NULL,
+        {
+            "ENTSCHEIDUNGEN PRÄGEN BANDE UND KÄMPFE.",
+            "NPCS MIT ... GEHEN AUCH OHNE DICH WEITER!",
+            "NIMM DIR ZEIT FÜR DIE KAMPAGNE.",
+        },
+        "BITTE LESEN... %DS",
+        "BESTÄTIGEN FÜR WEITER",
+    },
+    {
+        "LE TUE SCELTE CONTANO!",
+        NULL,
+        {
+            "LE DECISIONI PLASMANO LEGAMI E BATTAGLIE.",
+            "GLI NPC ... VANNO AVANTI ANCHE SENZA DI TE!",
+            "GODITI CON CALMA LA CAMPAGNA.",
+        },
+        "ATTENDI %DS...",
+        "CONFERMA PER CONTINUARE",
+    },
+    {
+        "TUS DECISIONES IMPORTAN!",
+        NULL,
+        {
+            "TUS ACTOS MOLDEAN DIÁLOGOS, VÍNCULOS Y LUCHAS.",
+            "LOS NPC ... SIGUEN SU VIDA SIN TI!",
+            "EXPLORA CON CALMA Y DISFRUTA LA CAMPAÑA.",
+        },
+        "ESPERA %DS...",
+        "CONFIRMA PARA CONTINUAR",
+    },
+};
+
+static const StdwtitlNotice stdwtitl_notice2_en = {
+    "STORY AND CONSEQUENCES!",
+    "STYLE: 80S/90S ANIME",
+    {
+        "WRITTEN AND REVISED IN BRAZILIAN PORTUGUESE.",
+        "OTHER LANGUAGES ARE DIRECT TRANSLATIONS.",
+        "CHOICES ARE REMEMBERED AND SHIFT DIFFICULTY!",
+    },
+    "PLEASE READ... %DS",
+    "PRESS CONFIRM TO BEGIN",
+};
+
+static const StdwtitlNotice stdwtitl_notice2_l[5] = {
+    {
+        "ROTEIRO E CONSEQUÊNCIAS!",
+        "ESTILO: ANIME 80/90",
+        {
+            "ESCRITO E REVISADO EM PT-BR.",
+            "OUTROS IDIOMAS FORAM TRADUZIDOS DIRETO.",
+            "CADA ESCOLHA É LEMBRADA E MUDA A DIFICULDADE!",
         },
         "AGUARDE %DS...",
         "CONFIRME PARA COMEÇAR",
     },
     {
-        "VOS CHOIX COMPTENT!",
+        "RÉCIT ET CONSÉQUENCES!",
+        "STYLE: ANIME 80/90",
         {
-            "VOS DÉCISIONS FAÇONNENT LIENS ET COMBATS.",
-            "LES PNJ (...) AVANCENT MÊME SANS VOUS!",
-            "PRENEZ LE TEMPS D EXPLORER LA CAMPAGNE.",
+            "ÉCRIT ET RÉVISÉ EN PORTUGAIS BRÉSILIEN.",
+            "LES AUTRES LANGUES SONT TRADUITES DIRECTEMENT.",
+            "CHAQUE CHOIX RESTE ET CHANGE LA DIFFICULTÉ!",
         },
         "PATIENTEZ... %DS",
         "CONFIRMER POUR COMMENCER",
     },
     {
-        "DEINE WAHL ZÄHLT!",
+        "STORY UND FOLGEN!",
+        "STIL: 80ER/90ER ANIME",
         {
-            "ENTSCHEIDUNGEN PRÄGEN BANDE UND KÄMPFE.",
-            "NPCS MIT (...) GEHEN AUCH OHNE DICH WEITER!",
-            "NIMM DIR ZEIT FÜR DIE KAMPAGNE.",
+            "VERFASST UND GEPRÜFT IN PT-BR.",
+            "ANDERE SPRACHEN SIND DIREKT ÜBERSETZT.",
+            "JEDE WAHL BLEIBT UND ÄNDERT DIE SCHWIERIGKEIT!",
         },
         "BITTE LESEN... %DS",
         "BESTÄTIGEN ZUM START",
     },
     {
-        "LE TUE SCELTE CONTANO!",
+        "STORIA E CONSEGUENZE!",
+        "STILE: ANIME 80/90",
         {
-            "LE DECISIONI PLASMANO LEGAMI E BATTAGLIE.",
-            "GLI NPC (...) VANNO AVANTI ANCHE SENZA DI TE!",
-            "GODITI CON CALMA LA CAMPAGNA.",
+            "SCRITTO E RIVISTO IN PORTOGHESE BRASILIANO.",
+            "LE ALTRE LINGUE SONO TRADUZIONI DIRETTE.",
+            "OGNI SCELTA RESTA E CAMBIA LA DIFFICOLTÀ!",
         },
         "ATTENDI %DS...",
         "CONFERMA PER INIZIARE",
     },
     {
-        "TUS DECISIONES IMPORTAN!",
+        "HISTORIA Y CONSECUENCIAS!",
+        "ESTILO: ANIME 80/90",
         {
-            "TUS ACTOS MOLDEAN DIÁLOGOS, VÍNCULOS Y LUCHAS.",
-            "LOS NPC (...) SIGUEN SU VIDA SIN TI!",
-            "EXPLORA CON CALMA Y DISFRUTA LA CAMPAÑA.",
+            "ESCRITO Y REVISADO EN PORTUGUÉS BRASILEÑO.",
+            "OTROS IDIOMAS SON TRADUCCIONES DIRECTAS.",
+            "CADA ELECCIÓN CUENTA Y CAMBIA LA DIFICULTAD!",
         },
         "ESPERA %DS...",
         "CONFIRMA PARA EMPEZAR",
     },
 };
 
-static s32 stdwtitl_notice(StdwtitlMenu *obj) {
+static void stdwtitl_skew_quad(StdwtitlMenu *obj, s32 x, s32 y, s32 w, s32 h, s32 skew, u8 r, u8 g, u8 b) {
+    GfxLayer *layer = gfx_module.funcs.get_layer(obj->layer_id);
+    POLY_F4 *poly = gfx_module.funcs.get_packet();
+    u32 *ot = layer->get_ot_entry(layer, 0);
+
+    setPolyF4(poly);
+    setRGB0(poly, r, g, b);
+    setXY4(poly, x + skew, y, x + w + skew, y, x, y + h, x + w, y + h);
+    addPrim(ot, poly);
+    gfx_module.funcs.set_packet(poly + 1);
+}
+
+static s32 stdwtitl_notice(StdwtitlMenu *obj, const StdwtitlNotice *en, const StdwtitlNotice *l) {
     static const u8 gold[3] = { 255, 212, 72 }, white[3] = { 242, 246, 255 },
                     cyan[3] = { 120, 224, 255 }, muted[3] = { 172, 180, 206 },
                     ready_col[3] = { 112, 245, 160 };
-    const StdwtitlNotice *n = (def_lang() > 0 && def_lang() <= 5) ? &stdwtitl_notice_l[def_lang() - 1] : &stdwtitl_notice_en;
-    s32 i, rem, bar_w, fill_w;
+    const StdwtitlNotice *n = (def_lang() > 0 && def_lang() <= 5) ? &l[def_lang() - 1] : en;
+    s32 i, rem, bar_w, fill_w, line_y0, line_step, line_size;
     char foot[40];
 
     notice_ticks++;
     stdwtitl_question_open = 1;
 
-    stdwtitl_diff_text(obj, DIFF_X + DIFF_W / 2, DIFF_Y + 6, DIFF_TITLE_SIZE, DIFF_W - 16, 1, n->title, gold);
+    stdwtitl_diff_text(obj, DIFF_X + DIFF_W / 2, DIFF_Y + 5, DIFF_TITLE_SIZE, DIFF_W - 16, 1, n->title, gold);
+    if (n->tag != NULL) {
+        s32 tw = def_poly_text_width(120, n->tag) + 18;
+        s32 tx = DIFF_X + (DIFF_W - tw) / 2;
+        s32 ty = DIFF_Y + 20;
+
+        stdwtitl_diff_text(obj, DIFF_X + DIFF_W / 2 + 2, ty + 2, 120, DIFF_W - 36, 1, n->tag, white);
+        stdwtitl_skew_quad(obj, tx, ty, tw, 12, 5, 216, 36, 62);
+        stdwtitl_skew_quad(obj, tx - 1, ty - 1, tw + 2, 14, 5, 248, 248, 255);
+        stdwtitl_skew_quad(obj, tx + 2, ty + 2, tw + 1, 13, 5, 12, 12, 22);
+        line_y0 = DIFF_Y + 37;
+        line_step = 13;
+        line_size = 136;
+    } else {
+        line_y0 = DIFF_Y + 28;
+        line_step = 16;
+        line_size = 144;
+    }
     for (i = 0; i < 3; i++) {
-        stdwtitl_diff_text(obj, DIFF_X + DIFF_W / 2, DIFF_Y + 28 + i * 16, 144, DIFF_W - 18, 1, n->lines[i],
+        stdwtitl_diff_text(obj, DIFF_X + DIFF_W / 2, line_y0 + i * line_step, line_size, DIFF_W - 18, 1, n->lines[i],
                            i == 1 ? cyan : white);
     }
 
@@ -505,7 +611,18 @@ void stdwtitl_menu_update(StdwtitlMenu *obj) {
             }
             return;
         case 12:
-            switch (stdwtitl_notice(obj)) {
+            switch (stdwtitl_notice(obj, &stdwtitl_notice_en, stdwtitl_notice_l)) {
+            case 1:
+                notice_ticks = 0;
+                obj->base.set_step(obj, 13);
+                break;
+            case -1:
+                obj->base.set_step(obj, 11);
+                break;
+            }
+            return;
+        case 13:
+            switch (stdwtitl_notice(obj, &stdwtitl_notice2_en, stdwtitl_notice2_l)) {
             case 1:
                 def_new_game_difficulty(diff_cursor);
                 def_new_game_hero(hero_cursor == 0);
@@ -514,7 +631,8 @@ void stdwtitl_menu_update(StdwtitlMenu *obj) {
                 obj->base.set_step(obj, 3);
                 break;
             case -1:
-                obj->base.set_step(obj, 11);
+                notice_ticks = 0;
+                obj->base.set_step(obj, 12);
                 break;
             }
             return;

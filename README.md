@@ -353,11 +353,12 @@ The Definitive Edition does not change where the story goes. It changes how it i
   are not meant to. Whoever you leave behind carries on without you, and you will see where it took them.
 - **Igor's dreams.** At a few turning points he pulls you into the room alone and asks you something. There is no
   wrong answer, and he remembers what you said.
-- **Your choices, and their echoes.** 111 scenes now let the hero answer in their own words, and some 600 later lines
-  change with what you chose.
-- **A rewritten script** (English and Brazilian Portuguese): the childish lines grown up, the order and the quests
-  untouched, and the hero written for whoever is playing. In Portuguese, a good part of the banter speaks like the
-  classic Brazilian anime dubs.
+- **Your choices, and their echoes.** Over 135 scenes and 27 NPC mini-arcs let the hero answer in their own words, with
+  hundreds of later lines changing based on what you chose. Every decision is remembered — shaping bonds, reputation, and
+  10 boss battles, which can make the adventure easier or harder.
+- **A rewritten script** (written and personally curated in Brazilian Portuguese, with English translated directly from
+  it): the childish lines grown up, the order and the quests untouched, and the hero written for whoever is playing. The
+  script embraces the humor, slang and spirit of classic 80s and 90s Brazilian anime dubs.
 - **A hooded figure** blocks the way in the Bug Maze, and **a room where time stands still** waits before the point of
   no return, to make sure you are ready.
 - **The last battle is not where it used to end.** No more on that here.
@@ -429,10 +430,10 @@ If you try it on another device, a report in the
 The game is playable from start to end, and every system described above is implemented. It is also young: some of
 it has only been played through a few times, so expect rough edges and frequent hotfixes. What remains:
 
-- **Translation review.** The new text is written in English, and Brazilian Portuguese, French, German, Italian and Spanish
-  cover the Definitive Edition's own strings (machine-assisted, not yet read in game by native speakers: expect
-  clumsy lines and a few labels too wide for their box). The rewritten story is only in English and Portuguese; in the
-  other four languages the disc's original campaign plays.
+- **Translation review.** The rewritten narrative was written, revised and personally curated in Brazilian Portuguese
+  (with classic 80s/90s anime dub slang and tone), and translated directly into English. French, German, Italian and
+  Spanish cover the Definitive Edition's own strings (machine-assisted, not yet read in game by native speakers: expect
+  clumsy lines and a few labels too wide for their box); in those four languages the disc's original campaign plays.
 - **Overall game balance.** So far it was balanced by calculation only. I am playing through it in parallel and
   shipping hotfixes as I go, the Chosen Evolution and the endgame's secret battles included.
 

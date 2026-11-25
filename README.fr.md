@@ -364,11 +364,13 @@ une voix.
   où cela les a menés.
 - **Les rêves d'Igor.** À quelques tournants, il vous attire seul dans la pièce et vous pose une question. Il n'y a pas
   de mauvaise réponse, et il se souvient de ce que vous avez dit.
-- **Vos choix, et leurs échos.** 111 scènes laissent désormais le héros répondre avec ses propres mots, et environ 600
-  répliques plus tardives changent selon ce que vous avez choisi.
-- **Un script réécrit** (en anglais et en portugais, comme les choix et leurs échos ; en français, c'est la campagne
-  d'origine du disque) : les répliques puériles ont mûri, l'ordre et les quêtes sont intacts, et le héros est écrit
-  pour qui tient la manette.
+- **Vos choix, et leurs échos.** Plus de 135 scènes et 27 mini-arcs de PNJ laissent le héros répondre avec ses propres
+  mots, et des centaines de répliques changent selon vos décisions. Chaque choix est retenu — façonnant liens,
+  réputation et 10 combats de boss, rendant l'aventure plus facile ou plus difficile.
+- **Un script réécrit** (écrit, relu et soigné personnellement en portugais du Brésil dans l'esprit et l'argot des
+  doublages d'anime classiques des années 80/90, avec l'anglais traduit directement à partir de lui ; en français, c'est
+  la campagne d'origine du disque) : les répliques puériles ont mûri, l'ordre et les quêtes sont intacts, et le héros
+  est écrit pour qui tient la manette.
 - **Une silhouette encapuchonnée** barre la route dans le Bug Maze, et **une pièce où le temps s'arrête** attend avant
   le point de non-retour, pour s'assurer que vous êtes prêt.
 - **Le dernier combat ne s'arrête plus là où il s'arrêtait.** Nous n'en dirons pas plus.
@@ -445,11 +447,11 @@ Le jeu est jouable du début à la fin, et chaque système décrit plus haut est
 certaines parties n'ont été jouées que quelques fois, alors attendez-vous à des aspérités et à des hotfixes fréquents.
 Ce qui reste :
 
-- **Relecture des traductions.** Le nouveau texte est écrit en anglais, et le portugais du Brésil, le français,
-  l'allemand, l'italien et l'espagnol couvrent les textes propres à la Definitive Edition (traduits avec l'aide de la
-  machine, pas encore relus en jeu par des locuteurs natifs : attendez-vous à des phrases maladroites et à quelques
-  libellés trop larges pour leur cadre). L'histoire réécrite n'existe qu'en anglais et en portugais ; dans les quatre
-  autres langues, c'est la campagne originale du disque qui se joue.
+- **Relecture des traductions.** L'histoire réécrite a été entièrement écrite, relue et soignée personnellement en
+  portugais du Brésil (argot et ton des anime classiques des années 80/90), et traduite directement en anglais. Le
+  français, l'allemand, l'italien et l'espagnol couvrent les textes propres à la Definitive Edition (traduits avec l'aide
+  de la machine, pas encore relus en jeu par des locuteurs natifs : attendez-vous à des phrases maladroites et à quelques
+  libellés trop larges pour leur cadre) ; dans ces quatre langues, c'est la campagne originale du disque qui se joue.
 - **L'équilibrage général du jeu.** Jusqu'ici, il n'a été équilibré que par le calcul. Je le joue en parallèle et
   je publie des hotfixes au fur et à mesure, Chosen Evolution et combats secrets de fin de jeu compris.
 

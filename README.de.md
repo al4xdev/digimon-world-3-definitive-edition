@@ -361,11 +361,13 @@ Stimme darin.
   sehen, wohin es ihn geführt hat.
 - **Igors Träume.** An ein paar Wendepunkten zieht er dich allein in den Raum und stellt dir eine Frage. Es gibt keine
   falsche Antwort, und er merkt sich, was du gesagt hast.
-- **Deine Entscheidungen und ihr Echo.** In 111 Szenen darf der Held jetzt mit eigenen Worten antworten, und rund 600
-  spätere Zeilen ändern sich je nach deiner Wahl.
-- **Ein neu geschriebenes Drehbuch** (auf Englisch und Portugiesisch, wie die Entscheidungen und ihre Echos; auf
-  Deutsch läuft die Originalkampagne der Disc): die kindischen Zeilen erwachsen geworden, Reihenfolge und Quests unangetastet,
-  und der Held so geschrieben, dass er zu jedem passt, der gerade spielt.
+- **Deine Entscheidungen und ihr Echo.** In über 135 Szenen und 27 NPC-Mini-Arcs antwortet der Held mit eigenen Worten,
+  und Hunderte spätere Zeilen ändern sich nach deiner Wahl. Jede Entscheidung bleibt im Gedächtnis — sie prägt Bande, Ruf
+  und 10 Bosskämpfe und kann das Abenteuer leichter oder schwerer machen.
+- **Ein neu geschriebenes Drehbuch** (persönlich auf brasilianischem Portugiesisch im Slang und Stil klassischer
+  80er/90er-Anime-Synchros verfasst und kuratiert, direkt ins Englische übersetzt; auf Deutsch läuft die Originalkampagne
+  der Disc): die kindischen Zeilen erwachsen geworden, Reihenfolge und Quests unangetastet, und der Held so geschrieben,
+  dass er zu jedem passt, der gerade spielt.
 - **Eine Gestalt mit Kapuze** versperrt im Bug Maze den Weg, und **ein Raum, in dem die Zeit stillsteht**, wartet vor
   dem Point of no Return, um sicherzugehen, dass du bereit bist.
 - **Der letzte Kampf endet nicht mehr dort, wo er endete.** Mehr wird hier nicht verraten.
@@ -440,11 +442,11 @@ Wenn du es auf einem anderen Gerät ausprobierst, hilft ein Bericht im
 Das Spiel ist von Anfang bis Ende spielbar, und jedes oben beschriebene System ist umgesetzt. Es ist aber auch jung:
 Manches wurde erst ein paar Mal durchgespielt, rechne also mit Ecken und Kanten und häufigen Hotfixes. Was bleibt:
 
-- **Durchsicht der Übersetzungen.** Der neue Text ist auf Englisch geschrieben; brasilianisches Portugiesisch,
-  Französisch, Deutsch, Italienisch und Spanisch decken die eigenen Texte der Definitive Edition ab (maschinengestützt
-  übersetzt, noch nicht von Muttersprachlern im Spiel gelesen: rechne mit holprigen Sätzen und ein paar Beschriftungen,
-  die zu breit für ihr Feld sind). Die neu geschriebene Story gibt es nur auf Englisch und Portugiesisch; in den anderen
-  vier Sprachen läuft die Originalkampagne der Disc.
+- **Durchsicht der Übersetzungen.** Die neu geschriebene Story wurde vollständig auf brasilianischem Portugiesisch
+  verfasst, überarbeitet und persönlich kuratiert (im Stil klassischer 80er/90er-Animes) und direkt ins Englische
+  übersetzt. Französisch, Deutsch, Italienisch und Spanisch decken die eigenen Texte der Definitive Edition ab
+  (maschinengestützt übersetzt, noch nicht von Muttersprachlern im Spiel gelesen: rechne mit holprigen Sätzen und ein
+  paar Beschriftungen, die zu breit für ihr Feld sind); in diesen vier Sprachen läuft die Originalkampagne der Disc.
 - **Die allgemeine Spielbalance.** Bisher wurde sie nur rechnerisch ausbalanciert. Ich spiele es parallel durch und
   liefere Hotfixes nach, sobald sie fertig sind, die Chosen Evolution und die geheimen Endgame-Kämpfe eingeschlossen.
 

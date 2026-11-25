@@ -4450,6 +4450,10 @@ void fieldstg_actor_run_state(FieldstgActor *obj, void **data) {
                         data[3] = fieldstg_dialog_create_talk(obj->talker, npc_msg);
                         break;
                     }
+                    if (npc_act == 3) {
+                        data[3] = fieldstg_dialog_create_talk(obj->sprite_file != 0 ? obj : obj->talker, npc_msg);
+                        break;
+                    }
                 }
 #endif
                 if (!special) {
