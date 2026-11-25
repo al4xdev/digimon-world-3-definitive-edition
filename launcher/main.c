@@ -32,6 +32,7 @@
 enum {
     S_SPLASH, S_HOME, S_GAME, S_VIDEO, S_HUD, S_CONTROLS, S_SAVES, S_BACKUPS, S_BACKUP_CONFIRM,
     S_CLOUD, S_PAIR_HOST, S_PAIR_ENTER, S_DEVICES, S_REVOKE_CONFIRM, S_CONFLICT, S_CONFLICT_CONFIRM,
+    S_SAVE_NOTICE, S_SAVE_NOTICE_CONFIRM,
     S_DEBUG, S_BROWSE, S_LED, S_LED1, S_LED2, S_RESET, S_CLEAN, S_LOADING, S_DISC, S_ERROR, S_UPDATING, S_UPDATE_ASK
 };
 enum { HI_PLAY, HI_GAME, HI_VIDEO, HI_HUD, HI_CONTROLS, HI_SAVES, HI_LED, HI_DEBUG, HI_RESET, HI_COUNT };
@@ -82,6 +83,7 @@ enum { CA_CLOUD, CA_LOCAL, CA_RECOMP, CA_CANCEL };
 static char conflict_msg[160], conflict_cloud_info[96], conflict_local_info[96], conflict_recomp_info[96], conflict_recomp_sha[9];
 static int conflict_acts[4] = {CA_CLOUD, CA_LOCAL, CA_CANCEL, CA_CANCEL}, conflict_n = 3, conflict_has_cloud = 1;
 static int conflict_return_screen = S_SAVES, conflict_choice, conflict_step;
+static int save_notice_step;
 static float confirm_pos = 0.0f;
 
 /* Built-in D-Pad file browser state (PC / Android / non-PortMaster) */
@@ -223,6 +225,7 @@ static int row_target_y(int s, int idx) {
     case S_SAVES: return 86 + idx * 46 - 4;
     case S_CLOUD: return 206 + idx * 44 - 4;
     case S_CONFLICT: return (conflict_n > 3 ? 186 + idx * 44 : 194 + idx * 52) - 4;
+    case S_SAVE_NOTICE: return 212 + idx * 52 - 4;
     case S_BACKUPS: return 114 + (idx - bk_scroll) * 38 - 4;
     case S_DEVICES: return 114 + (idx - dev_scroll) * 38 - 4;
     case S_BROWSE: return 114 + (idx - b_scroll) * 36 - 4;
@@ -981,6 +984,93 @@ static void draw_conflict_confirm(void) {
     text(bx, ty + 9, "CANCEL", 16, C_TEXT);
 }
 
+static void draw_save_notice(void) {
+    header("DIGIMON WORLD 3", "NEW IN v0.9.1");
+    rrect(40, 82, W - 80, 108, 12, C_PANEL, 256);
+    rrect_line(40, 82, W - 80, 108, 12, C_GOLD);
+    circle(72, 114, 13, C_GOLD, 256);
+    text_c(72, 101, "!", 22, C_BG0);
+    text(96, 98, "START FRESH RECOMMENDED", 20, C_GOLD);
+    text(58, 130, "v0.9.1 overhauls the story, NPC mini-arcs, and bonds.", 15, C_TEXT);
+    text(58, 150, "Continuing an old save can negatively affect your experience.", 15, C_NOTE);
+    text(58, 170, "Your current save is safely backed up in saves_backup/ first.", 13, C_NOTE);
+
+    int gy = (int)(cur_y >= 0 && cur_screen == S_SAVE_NOTICE ? cur_y : row_target_y(S_SAVE_NOTICE, sel));
+    draw_focus(36, gy, W - 72, 46, 8, sel == 1);
+
+    row(212, "START FRESH (RECOMMENDED)", "BACKUP + NEW SAVE", sel == 0, 0, 0, 0);
+    row(264, "KEEP OLD SAVE", "NOT RECOMMENDED", sel == 1, 0, 0, 0);
+
+    const char *hint = sel == 0
+        ? "Backs up your old save and starts clean for the full v0.9.1 experience."
+        : "Keeps your old save (requires 3x confirmation). Some new arcs may be skipped.";
+    rect(40, 368, W - 80, 1, C_EDGE, 256);
+    text(44, 380, hint, 15, C_NOTE);
+    foot_2("CHOOSE", "BACK");
+}
+
+static void draw_save_notice_confirm(void) {
+    draw_save_notice();
+    uint32_t accent = C_ORANGE;
+    char ok_lbl[32];
+
+    rect(0, 0, W, H, C_BG0, 195);
+    rrect(70, 108, W - 140, 266, 14, C_PANEL, 256);
+    rrect_line(70, 108, W - 140, 266, 14, accent);
+    circle(110, 146, 14, accent, 256);
+    text_c(110, 132, "!", 24, C_BG0);
+    text(138, 130, "KEEP OLD SAVE ANYWAY?", 23, C_TEXT);
+    text(102, 176, "Continuing an old save in v0.9.1 may miss new", 16, C_NOTE);
+    text(102, 198, "story choices, NPC mini-arcs, and ally bonds,", 16, C_NOTE);
+    text(102, 220, "negatively affecting your experience.", 16, C_NOTE);
+
+    float pos = confirm_pos < 0.0f ? 0.0f : confirm_pos > 2.0f ? 2.0f : confirm_pos;
+    uint32_t step_col = pos > 1.4f ? accent : C_GOLD;
+
+    int cx = W / 2, dy = 264;
+    rect(cx - 72, dy - 2, 144, 4, C_EDGE, 256);
+    int fill_w = (int)(pos * 72.0f + 0.5f);
+    if (fill_w > 0) rect(cx - 72, dy - 2, fill_w, 4, step_col, 256);
+    for (int i = 0; i < 3; i++) {
+        int dx = cx + (i - 1) * 72;
+        int lit = pos >= (float)i - 0.15f;
+        uint32_t col = lit ? (i == 2 ? accent : C_GOLD) : C_BG1;
+        circle(dx, dy, 12, col, 256);
+        ring(dx, dy, 12, 2, lit ? (i == 2 ? accent : C_GOLD) : C_EDGE);
+        char num[2] = {(char)('1' + i), 0};
+        text_c(dx, dy - 8, num, 14, lit ? C_BG0 : C_OFF);
+    }
+
+    if (save_notice_step < 3) {
+        snprintf(ok_lbl, sizeof(ok_lbl), TR("CONFIRM (%d/3)"), save_notice_step);
+    } else {
+        snprintf(ok_lbl, sizeof(ok_lbl), "%s", TR("KEEP OLD (3/3)"));
+    }
+
+    int tx = 92, tw = 344, ty = 304, th = 36;
+    rrect(tx, ty, tw, th, 18, C_BG1, 256);
+    int ax = tx + 14 + (int)(pos * 74.0f + 0.5f);
+    uint32_t track_col = mix(C_GREEN, accent, (int)(pos * 128.0f));
+    int trail_w = (ax - tx) + 22;
+    if (trail_w > tw) trail_w = tw;
+    rrect(tx, ty, trail_w, th, 18, mix(C_BG1, track_col, 72), 256);
+    rrect_line(tx, ty, tw, th, 18, save_notice_step == 3 ? accent : C_EDGE);
+
+    char ga[16], gb[16];
+    glyph(btn_ok(), ga); glyph(btn_back(), gb);
+    if (save_notice_step == 3) {
+        int wave = (int)(plat_now_ms() % 800);
+        int pulse = wave < 400 ? wave : 800 - wave;
+        ring(ax + 12, ty + th / 2, 16 + pulse * 3 / 400, 2, accent);
+    }
+    int kx = ax + keycap(ax, ty + th / 2, ga, track_col) + 8;
+    text(kx, ty + 9, ok_lbl, 16, C_TEXT);
+
+    int bx = 452;
+    bx += keycap(bx, ty + th / 2, gb, C_RED) + 8;
+    text(bx, ty + 9, "CANCEL", 16, C_TEXT);
+}
+
 /* SEND LOGS: the full zip is saved beside the game as ever, then the capped one goes to the server and is dropped. */
 static void send_logs(void) {
     char nm[80], up[80], id[40] = "", err[96] = "";
@@ -1195,6 +1285,8 @@ static void draw_screen(void) {
               "It will have to re-register or pair again.", "YES, REVOKE", "CANCEL", C_RED); break;
     case S_CONFLICT: draw_conflict(); break;
     case S_CONFLICT_CONFIRM: draw_conflict_confirm(); break;
+    case S_SAVE_NOTICE: draw_save_notice(); break;
+    case S_SAVE_NOTICE_CONFIRM: draw_save_notice_confirm(); break;
     case S_DEBUG: draw_debug(); break;
     case S_BROWSE: draw_browse(); break;
     case S_LED: draw_led(); break;
@@ -1503,6 +1595,16 @@ static void start_game(void) {
         last_err[0] = 0;
         screen = S_ERROR;
         return;
+    }
+    if (!c.v091_save_ok) {
+        char card_chk[1024];
+        snprintf(card_chk, sizeof(card_chk), "%s/card1.mcd", game_dir);
+        if (save_is_valid_mc(card_chk, NULL)) {
+            go(S_SAVE_NOTICE, 0, 1, H / 2);
+            return;
+        }
+        c.v091_save_ok = 1;
+        cfg_save(&c);
     }
     last_err[0] = 0;
     disc_bad = DISC_OK;
@@ -2138,6 +2240,46 @@ static void on_press(int code) {
                 int rsel = conflict_return_screen == S_SAVES ? 3 : conflict_return_screen == S_CLOUD ? 1 : 0;
                 go(conflict_return_screen, rsel, -1, H / 2);
                 snprintf(status, sizeof(status), "%s", res_msg);
+            }
+        }
+        break;
+    case S_SAVE_NOTICE:
+        if (back) {
+            go(S_HOME, 0, -1, H / 2);
+        } else if (code == K_UP || code == K_DOWN) {
+            sel = (sel + (code == K_UP ? 1 : 1)) % 2;
+        } else if (ok) {
+            if (sel == 0) {
+                char card_p[1024], def_p[1024];
+                snprintf(card_p, sizeof(card_p), "%s/card1.mcd", game_dir);
+                snprintf(def_p, sizeof(def_p), "%s/card1.def.json", game_dir);
+                if (save_is_valid_mc(card_p, NULL)) {
+                    save_backup_rotate(game_dir, "card1.mcd", c.backup_max);
+                }
+                remove(card_p);
+                remove(def_p);
+                c.v091_save_ok = 1;
+                cfg_save(&c);
+                start_game();
+            } else {
+                save_notice_step = 1;
+                confirm_pos = 0.0f;
+                start_trans(1, row_target_y(S_SAVE_NOTICE, 1) + 14);
+                screen = S_SAVE_NOTICE_CONFIRM;
+            }
+        }
+        break;
+    case S_SAVE_NOTICE_CONFIRM:
+        if (back) {
+            start_trans(-1, row_target_y(S_SAVE_NOTICE, 1) + 14);
+            screen = S_SAVE_NOTICE;
+        } else if (ok) {
+            if (save_notice_step < 3) {
+                save_notice_step++;
+            } else {
+                c.v091_save_ok = 1;
+                cfg_save(&c);
+                start_game();
             }
         }
         break;
@@ -2935,7 +3077,7 @@ int main(int argc, char **argv) {
     for (;;) {
         int ty = row_target_y(screen, sel);
         int cursor_moving = ty >= 0 && cur_screen == screen && (cur_y - ty > 0.5f || ty - cur_y > 0.5f);
-        int animating = trans_active || cursor_moving || screen == S_SPLASH || screen == S_LOADING || screen == S_UPDATING || screen == S_CONFLICT_CONFIRM;
+        int animating = trans_active || cursor_moving || screen == S_SPLASH || screen == S_LOADING || screen == S_UPDATING || screen == S_CONFLICT_CONFIRM || screen == S_SAVE_NOTICE_CONFIRM;
         Ev ev = {0};
         int r = plat_poll(&ev, animating ? 16 : 33);
         if (r < 0) break;
@@ -2952,8 +3094,9 @@ int main(int argc, char **argv) {
             draw();
             go(S_HOME, 0, 1, H / 2);
         }
-        if (screen == S_CONFLICT_CONFIRM) {
-            float target = (float)(conflict_step - 1);
+        if (screen == S_CONFLICT_CONFIRM || screen == S_SAVE_NOTICE_CONFIRM) {
+            int step = screen == S_CONFLICT_CONFIRM ? conflict_step : save_notice_step;
+            float target = (float)(step - 1);
             float diff = target - confirm_pos;
             if (diff > -0.01f && diff < 0.01f) confirm_pos = target;
             else confirm_pos += diff * (dt >= 32 ? 0.45f : 0.25f);

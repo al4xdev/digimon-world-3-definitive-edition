@@ -1093,77 +1093,77 @@ typedef struct DefNpcArc {
 static const DefNpcArc npc_arcs[] = {
     /* Phase 1 (Asuka City) — aligned to exact wstag200/202/210 progress ranges */
     { 0, 0x200, 46, 0, 4, 0 },     /* Mika — Stage 0 (prog 4: TALK00 19, Q200) */
-    { 0, 0x200, 46, 5, 10, 1 },    /* Mika — Stage 1 (prog 5..10: TALK00 623) */
-    { 0, 0x200, 46, 12, 999, 2 },  /* Mika — Stage 2 (prog 12+: TALK00 624) */
-    { 1, 0x200, 371, 5, 10, 1 },   /* Mika's Patamon — Stage 1 (TALK00 613) */
-    { 1, 0x200, 371, 12, 999, 2 }, /* Mika's Patamon — Stage 2 (TALK00 614) */
+    { 0, 0x200, 46, 12, 12, 1 },   /* Mika — Stage 1 (prog 12: TALK00 623) */
+    { 0, 0x200, 46, 14, 14, 2 },   /* Mika — Stage 2 (prog 14: TALK00 624) */
+    { 1, 0x200, 371, 12, 12, 1 },  /* Mika's Patamon — Stage 1 (prog 12: TALK00 613) */
+    { 1, 0x200, 371, 14, 14, 2 },  /* Mika's Patamon — Stage 2 (prog 14: TALK00 614) */
     { 2, 0x200, 47, 0, 4, 0 },     /* Masato — Stage 0 (prog 4: TALK00 15, Q201) */
     { 2, 0x200, 47, 5, 10, 1 },    /* Masato — Stage 1 (prog 5..10: TALK00 665) */
-    { 2, 0x200, 47, 12, 999, 2 },  /* Masato — Stage 2 (prog 12+: TALK00 666) */
+    { 2, 0x200, 47, 12, 12, 2 },   /* Masato — Stage 2 (prog 12: TALK00 666) */
     { 3, 0x200, 365, 0, 4, 0 },    /* Agumon Coach — Stage 0 (prog 4: TALK00 21, Q202) */
     { 3, 0x200, 365, 5, 10, 1 },   /* Agumon Coach — Stage 1 (prog 5..10: TALK00 602) */
-    { 3, 0x200, 365, 12, 999, 2 }, /* Agumon Coach — Stage 2 (prog 12+: TALK00 603) */
+    { 3, 0x200, 365, 12, 12, 2 },  /* Agumon Coach — Stage 2 (prog 12: TALK00 603) */
     { 4, 0x201, 57, 0, 4, 0 },     /* Grandpa Jake — Stage 0 (prog 4: TALK00 22, Q203) */
-    { 4, 0x201, 57, 5, 18, 1 },    /* Grandpa Jake — Stage 1 (prog 5..10: TALK00 642) */
-    { 4, 0x201, 57, 22, 999, 2 },  /* Grandpa Jake — Stage 2 (prog 22+: TALK00 646) */
+    { 4, 0x201, 57, 5, 10, 1 },    /* Grandpa Jake — Stage 1 (prog 5..10: TALK00 642) */
+    { 4, 0x201, 57, 22, 22, 2 },   /* Grandpa Jake — Stage 2 (prog 22: TALK00 646) */
     { 5, 0x201, 51, 0, 4, 0 },     /* Maniac Jack — Stage 0 (prog 4: TALK00 11, Q204) */
     { 5, 0x201, 51, 5, 10, 1 },    /* Maniac Jack — Stage 1 (prog 5..10: TALK00 711) */
-    { 5, 0x201, 51, 12, 999, 2 },  /* Maniac Jack — Stage 2 (prog 12+: TALK00 712) */
+    { 5, 0x201, 51, 12, 12, 2 },   /* Maniac Jack — Stage 2 (prog 12: TALK00 712) */
     { 6, 0x203, 45, 0, 3, 0 },     /* Newbie Shiro — Stage 0 (prog 2: TALK00 17, Q205) */
-    { 6, 0x203, 45, 4, 10, 1 },    /* Newbie Shiro — Stage 1 (prog 4: TALK00 329) */
-    { 6, 0x203, 45, 38, 999, 2 },  /* Newbie Shiro — Stage 2 Finale (prog 38+: TALK00 428) */
+    { 6, 0x203, 45, 4, 4, 1 },     /* Newbie Shiro — Stage 1 (prog 4: TALK00 329) */
+    { 6, 0x203, 45, 38, 38, 2 },   /* Newbie Shiro — Stage 2 Finale (prog 38: TALK00 428) */
     { 7, 0x203, 49, 0, 3, 0 },     /* Lazy Alan — Stage 0 (prog 2: TALK00 13, Q206) */
-    { 7, 0x203, 49, 4, 10, 1 },    /* Lazy Alan — Stage 1 (prog 4: TALK00 331) */
-    { 7, 0x203, 49, 38, 999, 2 },  /* Lazy Alan — Stage 2 Finale (prog 38+: TALK00 450) */
+    { 7, 0x203, 49, 4, 4, 1 },     /* Lazy Alan — Stage 1 (prog 4: TALK00 331) */
+    { 7, 0x203, 49, 38, 38, 2 },   /* Lazy Alan — Stage 2 Finale (prog 38: TALK00 450) */
     { 8, 0x203, 52, 0, 3, 0 },     /* Digimon Fan Mary — Stage 0 (prog 2: TALK00 239, Q207) */
-    { 8, 0x203, 52, 4, 10, 1 },    /* Digimon Fan Mary — Stage 1 (prog 4: TALK00 330) */
-    { 8, 0x203, 52, 21, 999, 2 },  /* Digimon Fan Mary — Stage 2 Finale (prog 21+: TALK00 431) */
+    { 8, 0x203, 52, 4, 4, 1 },     /* Digimon Fan Mary — Stage 1 (prog 4: TALK00 330) */
+    { 8, 0x203, 52, 5, 10, 2 },    /* Digimon Fan Mary — Stage 2 Finale (prog 5..10: TALK00 431) */
     /* Phase 2 (Seiryu City) — aligned to exact wstag420/425/430 progress ranges */
     { 9, 0x22E, 46, 0, 4, 0 },     /* Crybaby Maria — Stage 0 (prog 4: TALK01 10, Q208) */
-    { 9, 0x22E, 46, 5, 22, 1 },    /* Crybaby Maria — Stage 1 (prog 5..10: TALK01 16) */
-    { 9, 0x22E, 46, 24, 999, 2 },  /* Crybaby Maria — Stage 2 (prog 24..26: TALK01 41) */
+    { 9, 0x22E, 46, 5, 10, 1 },    /* Crybaby Maria — Stage 1 (prog 5..10: TALK01 16) */
+    { 9, 0x22E, 46, 24, 26, 2 },   /* Crybaby Maria — Stage 2 (prog 24..26: TALK01 41) */
     { 10, 0x22F, 46, 0, 4, 0 },    /* Charming Elle — Stage 0 (prog 4: TALK01 65, Q209) */
-    { 10, 0x22F, 46, 12, 999, 1 }, /* Charming Elle — Stage 1 (prog 12: TALK01 67) */
+    { 10, 0x22F, 46, 12, 12, 1 },  /* Charming Elle — Stage 1 (prog 12: TALK01 67) */
     { 11, 0x22E, 50, 0, 4, 0 },    /* Sarah — Stage 0 (prog 4: TALK01 11, Q210) */
-    { 11, 0x22E, 50, 5, 22, 1 },   /* Sarah — Stage 1 (prog 5..10: TALK01 17) */
-    { 11, 0x22E, 50, 24, 999, 2 }, /* Sarah — Stage 2 (prog 24..26: TALK01 42) */
+    { 11, 0x22E, 50, 5, 10, 1 },   /* Sarah — Stage 1 (prog 5..10: TALK01 17) */
+    { 11, 0x22E, 50, 24, 26, 2 },  /* Sarah — Stage 2 (prog 24..26: TALK01 42) */
     { 12, 0x230, 53, 0, 4, 0 },    /* Manager Sasaki — Stage 0 (prog 4: TALK01 77, Q211) */
-    { 12, 0x230, 53, 5, 19, 1 },   /* Manager Sasaki — Stage 1 (prog 5..10: TALK01 81) */
-    { 12, 0x230, 53, 20, 999, 2 }, /* Manager Sasaki — Stage 2 (prog 20..22: TALK01 93) */
+    { 12, 0x230, 53, 5, 10, 1 },   /* Manager Sasaki — Stage 1 (prog 5..10: TALK01 81) */
+    { 12, 0x230, 53, 20, 22, 2 },  /* Manager Sasaki — Stage 2 (prog 20..22: TALK01 93) */
     { 13, 0x230, 54, 0, 4, 0 },    /* Ms. Olivia — Stage 0 (prog 4: TALK01 78, Q212) */
-    { 13, 0x230, 54, 5, 22, 1 },   /* Ms. Olivia — Stage 1 (prog 5..10: TALK01 82) */
-    { 13, 0x230, 54, 24, 999, 2 }, /* Ms. Olivia — Stage 2 (prog 24..26: TALK01 97) */
+    { 13, 0x230, 54, 5, 10, 1 },   /* Ms. Olivia — Stage 1 (prog 5..10: TALK01 82) */
+    { 13, 0x230, 54, 24, 26, 2 },  /* Ms. Olivia — Stage 2 (prog 24..26: TALK01 97) */
     { 14, 0x22E, 365, 0, 4, 0 },   /* Seiryu Agumon — Stage 0 (prog 4: TALK01 12, Q213) */
     { 14, 0x22E, 365, 5, 10, 1 },  /* Seiryu Agumon — Stage 1 (prog 5..10: TALK01 15) */
     /* Phase 3 (Suzaku City) — aligned to exact wstag500/520 progress ranges */
-    { 15, 0x23E, 50, 0, 11, 0 },   /* Lena — Stage 0 (prog 10: TALK01 112, Q214) */
-    { 15, 0x23E, 50, 12, 24, 1 },  /* Lena — Stage 1 (prog 12: TALK01 114) */
-    { 15, 0x23E, 50, 25, 999, 2 }, /* Lena — Stage 2 (prog 25..26: TALK01 124) */
-    { 16, 0x23E, 45, 0, 11, 0 },   /* Strongman Kyle — Stage 0 (prog 10: TALK01 113, Q215) */
-    { 16, 0x23E, 45, 12, 999, 1 }, /* Strongman Kyle — Stage 1 (prog 12+: TALK01 121) */
-    { 17, 0x240, 65, 0, 13, 0 },   /* Suzaku Renamon — Stage 0 (prog 12: TALK01 147, Q216) */
-    { 17, 0x240, 65, 14, 19, 1 },  /* Suzaku Renamon — Stage 1 (prog 14: TALK01 150) */
-    { 18, 0x240, 66, 0, 14, 0 },   /* Suzaku Patamon — Stage 0 (prog 14: TALK01 151, Q217) */
+    { 15, 0x23E, 50, 10, 10, 0 },  /* Lena — Stage 0 (prog 10: TALK01 112, Q214) */
+    { 15, 0x23E, 50, 12, 12, 1 },  /* Lena — Stage 1 (prog 12: TALK01 114) */
+    { 15, 0x23E, 50, 25, 26, 2 },  /* Lena — Stage 2 (prog 25..26: TALK01 124) */
+    { 16, 0x23E, 45, 10, 10, 0 },  /* Strongman Kyle — Stage 0 (prog 10: TALK01 113, Q215) */
+    { 16, 0x23E, 45, 20, 22, 1 },  /* Strongman Kyle — Stage 1 (prog 20..22: TALK01 121) */
+    { 17, 0x240, 65, 12, 12, 0 },  /* Suzaku Renamon — Stage 0 (prog 12: TALK01 147, Q216) */
+    { 17, 0x240, 65, 14, 14, 1 },  /* Suzaku Renamon — Stage 1 (prog 14: TALK01 150) */
+    { 18, 0x240, 66, 14, 14, 0 },  /* Suzaku Patamon — Stage 0 (prog 14: TALK01 151, Q217) */
     { 18, 0x240, 66, 15, 18, 1 },  /* Suzaku Patamon — Stage 1 (prog 15..18: TALK01 154) */
     /* Phase 4 (Byakko City) — aligned to exact wstag660/675 progress ranges */
-    { 19, 0x25D, 54, 0, 26, 0 },   /* Maya — Stage 0 (prog 24..26: TALK01 327, Q218) */
-    { 19, 0x25D, 54, 27, 999, 1 }, /* Maya — Stage 1 (prog 27+: TALK01 328) */
-    { 20, 0x25D, 58, 0, 26, 0 },   /* Grandma Plum — Stage 0 (prog 24..26: TALK01 332, Q219) */
-    { 20, 0x25D, 58, 27, 999, 1 }, /* Grandma Plum — Stage 1 (prog 27+: TALK01 333) */
-    { 21, 0x25E, 47, 0, 26, 0 },   /* Student Tony — Stage 0 (prog 24..26: TALK01 189, Q226) */
-    { 21, 0x25E, 47, 27, 999, 1 }, /* Student Tony — Stage 1 (prog 27+: TALK01 194) */
-    { 22, 0x25E, 48, 0, 26, 0 },   /* Class Pres Aiko — Stage 0 (prog 24..26: TALK01 190, Q227) */
-    { 22, 0x25E, 48, 27, 999, 1 }, /* Class Pres Aiko — Stage 1 (prog 27+: TALK01 195) */
+    { 19, 0x25D, 54, 24, 26, 0 },  /* Maya — Stage 0 (prog 24..26: TALK01 327, Q218) */
+    { 19, 0x25D, 54, 27, 37, 1 },  /* Maya — Stage 1 (prog 27..37: TALK01 328) */
+    { 20, 0x25D, 58, 24, 26, 0 },  /* Grandma Plum — Stage 0 (prog 24..26: TALK01 332, Q219) */
+    { 20, 0x25D, 58, 27, 37, 1 },  /* Grandma Plum — Stage 1 (prog 27..37: TALK01 333) */
+    { 21, 0x25E, 47, 24, 26, 0 },  /* Student Tony — Stage 0 (prog 24..26: TALK01 189, Q226) */
+    { 21, 0x25E, 47, 27, 37, 1 },  /* Student Tony — Stage 1 (prog 27..37: TALK01 194) */
+    { 22, 0x25E, 48, 24, 26, 0 },  /* Class Pres Aiko — Stage 0 (prog 24..26: TALK01 190, Q227) */
+    { 22, 0x25E, 48, 27, 37, 1 },  /* Class Pres Aiko — Stage 1 (prog 27..37: TALK01 195) */
     /* Phase 5 (Genbu City, 0x26F) — aligned to exact wstag760 progress ranges */
-    { 23, 0x26F, 37, 0, 32, 0 },   /* Genbu Gate Guard — Stage 0 (prog 30: TALK01 247, Q229) */
+    { 23, 0x26F, 37, 30, 30, 0 },  /* Genbu Gate Guard — Stage 0 (prog 30: TALK01 247, Q229) */
     { 23, 0x26F, 37, 33, 37, 1 },  /* Genbu Gate Guard — Stage 1 (prog 33..37: TALK01 249) */
-    { 23, 0x26F, 37, 38, 999, 2 }, /* Genbu Gate Guard — Stage 2 Finale (prog 38+: TALK01 250) */
+    { 23, 0x26F, 37, 38, 38, 2 },  /* Genbu Gate Guard — Stage 2 Finale (prog 38: TALK01 250) */
     { 24, 0x26F, 39, 33, 37, 0 },  /* Genbu Veteran Guard — Stage 0 (prog 33..37: TALK01 261, Q230) */
-    { 24, 0x26F, 39, 38, 999, 1 }, /* Genbu Veteran Guard — Stage 1 (prog 38+: TALK01 262) */
+    { 24, 0x26F, 39, 38, 38, 1 },  /* Genbu Veteran Guard — Stage 1 (prog 38: TALK01 262) */
     /* Phase 6 (Amaterasu City, 0x270 & 0x271) — aligned to wstag201/203 (TALK03) */
-    { 25, 0x270, 45, 38, 42, 0 },  /* Liar Jim — Stage 0 (prog 38: TALK03 194, Q231) */
+    { 25, 0x270, 45, 38, 38, 0 },  /* Liar Jim — Stage 0 (prog 38: TALK03 194, Q231) */
     { 25, 0x270, 45, 43, 999, 1 }, /* Liar Jim — Stage 1 Post-Game (prog 43+: TALK03 196) */
-    { 26, 0x271, 51, 38, 42, 0 },  /* Big Eater — Stage 0 (prog 38: TALK03 216, Q232) */
+    { 26, 0x271, 51, 38, 38, 0 },  /* Big Eater — Stage 0 (prog 38: TALK03 216, Q232) */
     { 26, 0x271, 51, 43, 999, 1 }, /* Big Eater — Stage 1 Post-Game (prog 43+: TALK03 218) */
 };
 

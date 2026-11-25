@@ -124,6 +124,7 @@ typedef struct StdwtitlQuestion {
     u8 colour[2][3];
 } StdwtitlQuestion;
 
+#include <stdio.h>
 #include "port/game/definitive.h"
 
 static const StdwtitlQuestion stdwtitl_q_difficulty = {
@@ -164,6 +165,129 @@ static const StdwtitlQuestion stdwtitl_q_hero_l[5] = {
       { "LAS CHICAS MANDAN!", "LO CLÁSICO ES ORO!" }, Q_COLOURS_HERO },
 };
 static s32 hero_cursor; /* 0 Kail, 1 Junior */
+static s32 notice_ticks;
+#define NOTICE_HOLD_FRAMES 300 /* 5 seconds at 60 Hz */
+
+typedef struct StdwtitlNotice {
+    const char *title;
+    const char *lines[3];
+    const char *wait_fmt;
+    const char *ready;
+} StdwtitlNotice;
+
+static const StdwtitlNotice stdwtitl_notice_en = {
+    "YOUR CHOICES MATTER!",
+    {
+        "DECISIONS SHAPE DIALOGUE, BONDS, AND BATTLES.",
+        "NPCS WITH (...) BUBBLES MOVE ON WITHOUT YOU!",
+        "TAKE YOUR TIME AND EXPLORE THE CAMPAIGN.",
+    },
+    "PLEASE READ... %DS",
+    "PRESS CONFIRM TO BEGIN",
+};
+
+static const StdwtitlNotice stdwtitl_notice_l[5] = {
+    {
+        "SUAS ESCOLHAS IMPORTAM!",
+        {
+            "SUAS DECISÕES MOLDAM DIÁLOGOS, VÍNCULOS E LUTAS.",
+            "NPCS COM BALÃO (...) SEGUEM A VIDA SEM VOCÊ!",
+            "EXPLORE COM CALMA E APROVEITE A CAMPANHA.",
+        },
+        "AGUARDE %DS...",
+        "CONFIRME PARA COMEÇAR",
+    },
+    {
+        "VOS CHOIX COMPTENT!",
+        {
+            "VOS DÉCISIONS FAÇONNENT LIENS ET COMBATS.",
+            "LES PNJ (...) AVANCENT MÊME SANS VOUS!",
+            "PRENEZ LE TEMPS D EXPLORER LA CAMPAGNE.",
+        },
+        "PATIENTEZ... %DS",
+        "CONFIRMER POUR COMMENCER",
+    },
+    {
+        "DEINE WAHL ZÄHLT!",
+        {
+            "ENTSCHEIDUNGEN PRÄGEN BANDE UND KÄMPFE.",
+            "NPCS MIT (...) GEHEN AUCH OHNE DICH WEITER!",
+            "NIMM DIR ZEIT FÜR DIE KAMPAGNE.",
+        },
+        "BITTE LESEN... %DS",
+        "BESTÄTIGEN ZUM START",
+    },
+    {
+        "LE TUE SCELTE CONTANO!",
+        {
+            "LE DECISIONI PLASMANO LEGAMI E BATTAGLIE.",
+            "GLI NPC (...) VANNO AVANTI ANCHE SENZA DI TE!",
+            "GODITI CON CALMA LA CAMPAGNA.",
+        },
+        "ATTENDI %DS...",
+        "CONFERMA PER INIZIARE",
+    },
+    {
+        "TUS DECISIONES IMPORTAN!",
+        {
+            "TUS ACTOS MOLDEAN DIÁLOGOS, VÍNCULOS Y LUCHAS.",
+            "LOS NPC (...) SIGUEN SU VIDA SIN TI!",
+            "EXPLORA CON CALMA Y DISFRUTA LA CAMPAÑA.",
+        },
+        "ESPERA %DS...",
+        "CONFIRMA PARA EMPEZAR",
+    },
+};
+
+static s32 stdwtitl_notice(StdwtitlMenu *obj) {
+    static const u8 gold[3] = { 255, 212, 72 }, white[3] = { 242, 246, 255 },
+                    cyan[3] = { 120, 224, 255 }, muted[3] = { 172, 180, 206 },
+                    ready_col[3] = { 112, 245, 160 };
+    const StdwtitlNotice *n = (def_lang() > 0 && def_lang() <= 5) ? &stdwtitl_notice_l[def_lang() - 1] : &stdwtitl_notice_en;
+    s32 i, rem, bar_w, fill_w;
+    char foot[40];
+
+    notice_ticks++;
+    stdwtitl_question_open = 1;
+
+    stdwtitl_diff_text(obj, DIFF_X + DIFF_W / 2, DIFF_Y + 6, DIFF_TITLE_SIZE, DIFF_W - 16, 1, n->title, gold);
+    for (i = 0; i < 3; i++) {
+        stdwtitl_diff_text(obj, DIFF_X + DIFF_W / 2, DIFF_Y + 28 + i * 16, 144, DIFF_W - 18, 1, n->lines[i],
+                           i == 1 ? cyan : white);
+    }
+
+    bar_w = DIFF_W - 36;
+    fill_w = notice_ticks >= NOTICE_HOLD_FRAMES ? bar_w : (notice_ticks * bar_w) / NOTICE_HOLD_FRAMES;
+    if (notice_ticks < NOTICE_HOLD_FRAMES) {
+        rem = (NOTICE_HOLD_FRAMES - notice_ticks + 59) / 60;
+        if (rem < 1) rem = 1;
+        snprintf(foot, sizeof(foot), n->wait_fmt, (int)rem);
+        stdwtitl_diff_text(obj, DIFF_X + DIFF_W / 2, DIFF_Y + DIFF_H - 18, 152, DIFF_W - 16, 1, foot, muted);
+        stdwtitl_diff_quad(obj, DIFF_X + 18, DIFF_Y + DIFF_H - 24, fill_w, 3, -1, 255, 200, 72);
+    } else {
+        s32 pulse = ((notice_ticks & 31) < 16);
+        stdwtitl_diff_text(obj, DIFF_X + DIFF_W / 2, DIFF_Y + DIFF_H - 18, 152, DIFF_W - 16, 1, n->ready,
+                           pulse ? ready_col : white);
+        stdwtitl_diff_quad(obj, DIFF_X + 18, DIFF_Y + DIFF_H - 24, bar_w, 3, -1, 96, 235, 148);
+    }
+    stdwtitl_diff_quad(obj, DIFF_X + 18, DIFF_Y + DIFF_H - 24, bar_w, 3, -1, 28, 36, 60);
+
+    stdwtitl_diff_quad(obj, DIFF_X, DIFF_Y, DIFF_W, 1, 1, 240, 190, 70);
+    stdwtitl_diff_quad(obj, DIFF_X, DIFF_Y + DIFF_H - 1, DIFF_W, 1, 1, 240, 190, 70);
+    stdwtitl_diff_quad(obj, DIFF_X, DIFF_Y + 1, 1, DIFF_H - 2, 1, 240, 190, 70);
+    stdwtitl_diff_quad(obj, DIFF_X + DIFF_W - 1, DIFF_Y + 1, 1, DIFF_H - 2, 1, 240, 190, 70);
+    stdwtitl_diff_quad(obj, DIFF_X, DIFF_Y, DIFF_W, DIFF_H, 2, 235, 228, 190);
+
+    if (notice_ticks >= NOTICE_HOLD_FRAMES && PAD_PRESSED(13)) {
+        sound_module.play(0x8004503C);
+        return 1;
+    }
+    if (PAD_PRESSED(14)) {
+        sound_module.play(0x800450BD);
+        return -1;
+    }
+    return 0;
+}
 
 /* One frame of a question: 0 while it is open, 1 confirmed (*cursor), -1 cancelled. Everything is queued front to
  * back: the words, the cards (a frame, then its fill), the panel's lines, then its dark fill. */
@@ -372,13 +496,25 @@ void stdwtitl_menu_update(StdwtitlMenu *obj) {
         case 11:
             switch (stdwtitl_question(obj, &stdwtitl_q_hero, &hero_cursor)) {
             case 1:
-                def_new_game_difficulty(diff_cursor);
-                def_new_game_hero(hero_cursor == 0);
-                obj->result = 1;
-                obj->base.set_step(obj, 3);
+                notice_ticks = 0;
+                obj->base.set_step(obj, 12);
                 break;
             case -1: /* back to the difficulty, as it was */
                 obj->base.set_step(obj, 10);
+                break;
+            }
+            return;
+        case 12:
+            switch (stdwtitl_notice(obj)) {
+            case 1:
+                def_new_game_difficulty(diff_cursor);
+                def_new_game_hero(hero_cursor == 0);
+                stdwtitl_question_open = 0;
+                obj->result = 1;
+                obj->base.set_step(obj, 3);
+                break;
+            case -1:
+                obj->base.set_step(obj, 11);
                 break;
             }
             return;

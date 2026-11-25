@@ -453,6 +453,7 @@ void cfg_load(Cfg *c) {
         else if (!strcmp(line, "backup_max")) c->backup_max = n < 1 ? 1 : n > 100 ? 100 : n;
         else if (!strcmp(line, "sync_enabled")) c->sync_enabled = n != 0;
         else if (!strcmp(line, "update_check")) c->update_check = n != 0;
+        else if (!strcmp(line, "v091_save_ok")) c->v091_save_ok = n != 0;
         else if (!strcmp(line, "sync_interval")) {
             static const int ivs[] = {0, 5, 10, 15, 20, 30};
             c->sync_interval_min = 10;
@@ -619,8 +620,8 @@ int cfg_save(const Cfg *c) {
         snprintf(line, sizeof(line), "%s=%s\n", keys[i], hud_name(c->hud[i]));
         strcat(text, line);
     }
-    snprintf(line, sizeof(line), "logs=%d\nlang=%d\nlang_on=1\nbackup_max=%d\nsync_enabled=%d\nsync_interval=%d\nupdate_check=%d\n",
-             c->logs, c->lang, c->backup_max, c->sync_enabled, c->sync_interval_min, c->update_check);
+    snprintf(line, sizeof(line), "logs=%d\nlang=%d\nlang_on=1\nbackup_max=%d\nsync_enabled=%d\nsync_interval=%d\nupdate_check=%d\nv091_save_ok=%d\n",
+             c->logs, c->lang, c->backup_max, c->sync_enabled, c->sync_interval_min, c->update_check, c->v091_save_ok);
     strcat(text, line);
     path_of(path, sizeof(path), "tui.state");
     /* A tui.state of a newer launcher (a downgrade) is not rewritten: its keys are not ours to drop, and stamping it

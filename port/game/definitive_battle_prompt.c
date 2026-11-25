@@ -59,9 +59,9 @@ typedef struct DefBattlePrompt {
 } DefBattlePrompt;
 
 static const DefBattlePrompt prompts[] = {
-    /* Fase 1: Tamer Genji (wstag200, battle 188) */
+    /* Fase 1: Tamer Genji (wstag200, battle 200) */
     {
-        0, 220, 188, 100,
+        0, 220, 200, 100,
         "TAMER GENJI",
         "Ho ho! Mostra se tem fibra de Tamer!",
         3,
@@ -83,9 +83,9 @@ static const DefBattlePrompt prompts[] = {
             },
         },
     },
-    /* Fase 1/2: Keith em Asuka (wstag200, battle 200) */
+    /* Fase 1/2: Keith em Asuka (wstag205, battle 263) */
     {
-        1, 221, 200, 100,
+        1, 221, 263, 100,
         "KEITH",
         "Venceu Seiryu na sorte e já tá se achando?!",
         3,
@@ -477,6 +477,9 @@ int def_battle_prompt_check(void) {
             continue;
         }
         if (p->battle_id >= 0 && bid != p->battle_id) {
+            continue;
+        }
+        if (bid == 324 && (def_finale_phase() != 0 || fightstg_battle.state.type != 6)) {
             continue;
         }
         if (p->hp_pct < 100 && hp_pct > p->hp_pct) {
