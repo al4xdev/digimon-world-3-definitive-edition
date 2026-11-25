@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "video": {
+    "window": true,
+    "fullscreen": false,
+    "fill": true,
+    "refresh": 60,
+    "renderer": "gpu",
+    "filter": "none",
+    "internal_scale": 8,
+    "subpixel": "on"
+  },
+  "audio": {
+    "mute": true
+  },
+  "watchdog": 0,
+  "mods": {
+    "fast_loading": { "enabled": true, "speed": "instant" },
+    "battle_text": { "enabled": true, "mode": "skip" },
+    "widescreen": { "enabled": true },
+    "battle_menu": { "enabled": true }
+  }
+}
