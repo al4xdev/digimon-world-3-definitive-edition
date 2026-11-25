@@ -572,6 +572,52 @@ static int midi_cut[MIDI_LIST_MAX];
 static int midi_count;
 static char choice[MIDI_NAME];
 static char last[MIDI_NAME]; /* the playlists: the file played last */
+#define MIDI_VOL_MAX 64
+static struct {
+    char name[MIDI_NAME];
+    unsigned char vol;
+} midi_vols[MIDI_VOL_MAX];
+static int midi_vol_count;
+static int active_vol = 100;
+extern void dw3_midi_sound_set_vol(s32 vol);
+
+static int vol_of_name(const char *name) {
+    int i;
+
+    if (name == NULL || name[0] == 0) {
+        return 100;
+    }
+    for (i = 0; i < midi_vol_count; i++) {
+        if (strcmp(midi_vols[i].name, name) == 0) {
+            return midi_vols[i].vol;
+        }
+    }
+    return 100;
+}
+
+static void vol_set_name(const char *name, int pct) {
+    int i;
+
+    if (name == NULL || name[0] == 0) {
+        return;
+    }
+    if (pct < 10) {
+        pct = 10;
+    } else if (pct > 100) {
+        pct = 100;
+    }
+    for (i = 0; i < midi_vol_count; i++) {
+        if (strcmp(midi_vols[i].name, name) == 0) {
+            midi_vols[i].vol = (unsigned char)pct;
+            return;
+        }
+    }
+    if (midi_vol_count < MIDI_VOL_MAX) {
+        snprintf(midi_vols[midi_vol_count].name, MIDI_NAME, "%.*s", MIDI_NAME - 1, name);
+        midi_vols[midi_vol_count].vol = (unsigned char)pct;
+        midi_vol_count++;
+    }
+}
 static int choice_mode;
 enum { DEF_MIDI_OWN, DEF_MIDI_FILE, DEF_MIDI_SHUFFLE, DEF_MIDI_ORDER };
 static int choice_read;
@@ -785,6 +831,17 @@ static void choice_load(void) {
             if (strchr(v, '/') == NULL && strchr(v, '\\') == NULL) { /* a name, never a path out of the folder */
                 snprintf(dst, MIDI_NAME, "%.*s", MIDI_NAME - 1, v);
             }
+        } else if (strncmp(line, "vol:", 4) == 0) {
+            char *eq = strrchr(line + 4, '=');
+            if (eq != NULL) {
+                char vname[MIDI_NAME];
+                size_t len = (size_t)(eq - (line + 4));
+                if (len > 0 && len < MIDI_NAME) {
+                    memcpy(vname, line + 4, len);
+                    vname[len] = 0;
+                    vol_set_name(vname, atoi(eq + 1));
+                }
+            }
         } else if (choice_mode == DEF_MIDI_OWN && strchr(line, ':') == NULL && strchr(line, '/') == NULL) {
             snprintf(choice, MIDI_NAME, "%.*s", MIDI_NAME - 1, line); /* the first version's file: just the name */
             choice_mode = DEF_MIDI_FILE;
@@ -811,6 +868,14 @@ static void choice_save(void) {
         fprintf(f, "file: %s\n", choice);
     } else if (last[0] != 0) {
         fprintf(f, "last: %s\n", last);
+    }
+    {
+        int i;
+        for (i = 0; i < midi_vol_count; i++) {
+            if (midi_vols[i].vol != 100) {
+                fprintf(f, "vol:%s=%d\n", midi_vols[i].name, (int)midi_vols[i].vol);
+            }
+        }
     }
     fclose(f);
 }
@@ -886,12 +951,55 @@ static int load_piece(const char *name) {
     }
     midi_sep_len = len;
     midi_sep_hash = fnv(midi_sep, len);
+    active_vol = vol_of_name(name);
     if (midi_loaded_hash != 0 && midi_loaded_hash != midi_sep_hash) {
         dw3_midi_sound_forget(); /* another piece than the one the sound entries hold: load the bank again */
         midi_loaded_hash = 0;
     }
-    port_log("midi: %s, %d notes, SEP %u bytes%s", name, notes, (unsigned)len, cut ? " (cut to fit)" : "");
+    port_log("midi: %s, %d notes, vol %d%%, SEP %u bytes%s", name, notes, active_vol, (unsigned)len,
+             cut ? " (cut to fit)" : "");
     return 1;
+}
+
+int def_midi_volume(int index) {
+    choice_load();
+    if (index < 0 || index >= midi_count) {
+        return 100;
+    }
+    return vol_of_name(midi_names[index]);
+}
+
+void def_midi_set_volume(int index, int pct) {
+    choice_load();
+    if (index < 0 || index >= midi_count) {
+        return;
+    }
+    if (pct < 10) {
+        pct = 10;
+    } else if (pct > 100) {
+        pct = 100;
+    }
+    vol_set_name(midi_names[index], pct);
+    active_vol = pct;
+    dw3_midi_sound_set_vol(pct * 127 / 100);
+    choice_save();
+}
+
+int def_midi_preview_play(int index) {
+    if (index < 0 || index >= midi_count) {
+        return 0;
+    }
+    if (!load_piece(midi_names[index])) {
+        return 0;
+    }
+    return (int)(0x60000000 | (DW3_MIDI_BANK << 18));
+}
+
+s32 dw3_midi_sound_vol(s32 id) {
+    if (id != DW3_MIDI_BANK) {
+        return 0x7F;
+    }
+    return active_vol * 127 / 100;
 }
 
 /* fieldstg_encounter_start: the music a random encounter plays: `music` (the stage's key) unless something is chosen and

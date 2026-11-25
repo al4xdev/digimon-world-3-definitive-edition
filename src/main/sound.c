@@ -127,6 +127,7 @@ extern void dw3_midi_sound_header(s32 id, s32 *buffer);
 extern void dw3_midi_sound_music(s32 id);
 extern void dw3_midi_sound_stopped(s32 id);
 extern void dw3_midi_sound_silenced(void);
+extern s32 dw3_midi_sound_vol(s32 id);
 #endif
 
 /* The three entries' buffers for the VAB header file, and their VAB bodies' SPU addresses. */
@@ -190,12 +191,33 @@ s32 sound_play(s32 key) {
     if (is_note) {
         voice = SsUtKeyOn(sound_module.entries[index].vab_id, prog, tone, note, 0, 0x7F, 0x7F);
     } else {
+        s32 vol = 0x7F;
+#ifdef PC_PORT
+        vol = dw3_midi_sound_vol(id);
+#endif
         SsSepStop(sound_module.entries[index].seps[sep], seq);
-        SsSepSetVol(sound_module.entries[index].seps[sep], seq, 0x7F, 0x7F);
+        SsSepSetVol(sound_module.entries[index].seps[sep], seq, vol, vol);
         SsSepPlay(sound_module.entries[index].seps[sep], seq, 1, 1);
     }
     return voice;
 }
+
+#ifdef PC_PORT
+void dw3_midi_sound_set_vol(s32 vol) {
+    s32 i;
+
+    if (vol < 0) {
+        vol = 0;
+    } else if (vol > 0x7F) {
+        vol = 0x7F;
+    }
+    for (i = 0; i < 3; i++) {
+        if (sound_module.entries[i].id == 74 && sound_module.entries[i].seps[0] >= 0) {
+            SsSepSetVol(sound_module.entries[i].seps[0], 0, vol, vol);
+        }
+    }
+}
+#endif
 
 /* Stops every SEP sequence and every note. */
 void sound_stop_all(void) {
