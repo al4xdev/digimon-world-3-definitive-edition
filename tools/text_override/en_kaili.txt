@@ -125,7 +125,10 @@ TALK08 107: <7>Kurt<7>Your level has really<1>gone up, sis.<2,2><3>Go take a loo
 TALK08 108: <7>Kurt<7>You never stop<1>surprising me.<2,2><3>You're going to be the<1>next World Champ. I'd<1>bet on it.<2,2>
 DMG200:3 7: <7>Junior<7>Junior in here too.<1>I kept my name.<2,2>
 DMG200:3 8: <7><9><7>Your real name, as<1>your account name?<2,2><3>Huh. Bold choice.<1>Anyone could find<1>you.<2,2>
+DMG200:3 9: <7>Junior<7>Nothing to hide!<1>Makes it easier to<1>track me down too.<2,2>
 DMG200:4 7: <7>Junior<7>Junior in here too.<1>I kept my name.<2,2>
 DMG200:4 8: <7><9><7>Your real name, as<1>your account name?<2,2><3>Huh. Bold choice.<1>Anyone could find<1>you.<2,2>
+DMG200:4 9: <7>Junior<7>Nothing to hide!<1>Makes it easier to<1>track me down too.<2,2>
 DMG200:5 7: <7>Junior<7>Junior in here too.<1>I kept my name.<2,2>
 DMG200:5 8: <7><9><7>Your real name, as<1>your account name?<2,2><3>Huh. Bold choice.<1>Anyone could find<1>you.<2,2>
+DMG200:5 9: <7>Junior<7>Nothing to hide!<1>Makes it easier to<1>track me down too.<2,2>
