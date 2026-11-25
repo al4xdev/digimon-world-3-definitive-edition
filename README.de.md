@@ -165,6 +165,10 @@ sind hier Elementmagie. Die Techniklisten zeigen es auf einen Blick: Wo das Spie
 <td width="50%" align="center"><img src="docs/images/definitive/shots/battle-baton-pass.gif" alt="Während der Gegner wankt, tauscht Baton Pass WarGreymon ein, ohne den Zug zu verlieren."><br><sub><b>Baton Pass</b>: ein kostenloser Wechsel, der deinen Zug behält</sub></td>
 <td width="50%" align="center"><img src="docs/images/definitive/shots/battle-overfinish.gif" alt="Treffer auf einen besiegten Gegner zeigen OVERFINISH! und zahlen Bits."><br><sub><b>OVERFINISH</b>: der Gegner bleibt am Boden, und jeder Treffer zahlt</sub></td>
 </tr>
+<tr>
+<td width="50%" align="center"><img src="docs/images/definitive/shots/battle-tag.png" alt="Tag zeigt deinen Partner auf der Bank in Nahaufnahme mit seinen Formen im Ring; Switch oder Baton Pass, das deinen Zug behält."><br><sub><b>Tag</b>: die Formen deines Partners, dann Switch oder Baton Pass</sub></td>
+<td width="50%" align="center"><img src="docs/images/definitive/shots/battle-digivolve.gif" alt="Digivolve zeigt dein Digimon in Nahaufnahme mit seinen Formen im Ring und einer 3D-Vorschau; zweimal bestätigen, und es digitiert."><br><sub><b>Digivolve</b>: die Formen im Ring, mit 3D-Vorschau</sub></td>
+</tr>
 </table>
 
 <p align="center"><img src="docs/images/definitive/weakness-discovery.svg" width="800" alt="INFO beginnt bei ???. Ein Fire-Treffer zeigt RESIST, ein Ice-Treffer zeigt Water + Ice WEAK, Resist Down macht neutrales Wind zur Schwäche, und Libra deckt den Rest auf."></p>
@@ -174,6 +178,8 @@ Familien des Gegners, sobald du sie erfährst, bis dahin `???`, und wer als Näc
 einmal auf; das **Bestiary**, ein eigener Bildschirm, auf dem sich jedes Digimon in 3D dreht, bewahrt auf, was du über
 jede Art, jedes Rare Target, jeden Super Rare und jede DRI-Linie gelernt hast, samt ihren Hunt Materials. Jede Technikliste markiert jede Technik (eine Faust oder ihr Element), und jede Beschreibung wurde danach neu geschrieben, was die Technik wirklich tut ("Feuermagie. Chance auf
 Schlaf.").
+
+<p align="center"><img src="docs/images/definitive/shots/bestiary.gif" width="640" alt="Das Bestiary: jede Art, jedes Rare Target, Super Rare, jede DRI-Linie und dunkle Form, mit Schwächen, Hunt Material und 3D-Modell."><br><sub>Das Bestiary als eigener Bildschirm: Reiter nach Art, Schwächen, sobald du sie kennst, jedes Digimon dreht sich in 3D.</sub></p>
 
 **Deine Werte haben neue Aufgaben.** Die alten elementaren "Toleranz"-Werte deines Digimon sind zur **Affinity**
 geworden: Sie verteidigen nicht mehr, sondern verstärken deine Angriffe dieses Elements gegen eine Schwäche oder einen
@@ -210,7 +216,7 @@ Ring aus Optionen und einer 3D-Vorschau, die Blast-Taste ist die Leiste selbst, 
 merkt sich deine letzte Technik und deinen letzten Gegenstand, puffert zu frühe Tastendrücke, und Kampftext hält den
 Kampf nie an.
 
-<p align="center"><img src="docs/images/definitive/shots/battle-inspect.png" width="640" alt="Das Kampf-HUD mit Direkttasten und das Inspect-Fenster, das die bisher gefundenen Schwächen zeigt."></p>
+<p align="center"><img src="docs/images/definitive/shots/battle-inspect.png" width="640" alt="Das Kampf-HUD mit Direkttasten und das INFO-Fenster, das die bisher gefundenen Schwächen zeigt."></p>
 
 <details>
 <summary><b>Die Zahlen, für Neugierige</b></summary>
@@ -382,6 +388,8 @@ Die Tafel des Sepikmon führt **zwölf Super-Rare**-Digimon auf (und einen Tutor
 61, nacheinander freigeschaltet. Jedes versteckt sich auf einer zufälligen Map seines Reviers, und ein
 **Temperaturkompass** verrät dir, wann du näher kommst. Verletze es, und es rennt weg, behält den Schaden und kommt
 stärker zurück. Jedes, das du erledigst, zahlt einen Kristall und schaltet einen **Heldenskin** frei.
+
+<p align="center"><img src="docs/images/definitive/shots/super-hunt-dossier.gif" width="640" alt="Die Tafel des Sepikmon zeigt Level und Ziel jeder Jagd; eine gesperrte öffnet ein Target Dossier mit Revier, Kristallpreis und freigeschaltetem Skin."><br><sub>Die Jagdtafel und ein Target Dossier: wo das Ziel umherstreift, was sein Kristall bringt, welchen Skin es freischaltet.</sub></p>
 
 ## Dein Held, auf deine Art
 

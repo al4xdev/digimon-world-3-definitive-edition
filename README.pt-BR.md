@@ -163,6 +163,10 @@ golpe físico e o desenho do elemento para magia.
 <td width="50%" align="center"><img src="docs/images/definitive/shots/battle-baton-pass.gif" alt="Com o inimigo atordoado, o Baton Pass coloca o WarGreymon em campo sem perder o turno."><br><sub><b>Baton Pass</b>: uma troca gratuita que mantém o seu turno</sub></td>
 <td width="50%" align="center"><img src="docs/images/definitive/shots/battle-overfinish.gif" alt="Golpes num inimigo nocauteado mostram OVERFINISH! e rendem Bits."><br><sub><b>OVERFINISH</b>: o inimigo fica no chão, e cada golpe rende</sub></td>
 </tr>
+<tr>
+<td width="50%" align="center"><img src="docs/images/definitive/shots/battle-tag.png" alt="Tag abre um close do parceiro do banco com as formas dele num anel; Switch ou Baton Pass, que mantém o seu turno."><br><sub><b>Tag</b>: as formas do parceiro, depois Switch ou Baton Pass</sub></td>
+<td width="50%" align="center"><img src="docs/images/definitive/shots/battle-digivolve.gif" alt="Digivolve abre um close do seu Digimon com as formas num anel e uma prévia 3D ao vivo; confirme duas vezes e ele digivolve."><br><sub><b>Digivolve</b>: as formas num anel, com prévia 3D ao vivo</sub></td>
+</tr>
 </table>
 
 <p align="center"><img src="docs/images/definitive/weakness-discovery.svg" width="800" alt="O INFO começa em ???. Um golpe de Fire mostra RESIST, um golpe de Ice mostra Water + Ice WEAK, o Resist Down transforma o Wind neutro em fraqueza, e o Libra revela o resto."></p>
@@ -172,6 +176,8 @@ famílias do inimigo conforme você as descobre, `???` até lá, e quem age em s
 vez; o **Bestiary**, uma tela própria com cada Digimon girando em 3D, guarda o que você aprendeu sobre cada espécie,
 Rare Target, Super Rare e linha DRI, com os seus Hunt Materials. Toda lista de técnicas marca cada técnica (um soco, ou o seu elemento), e cada descrição foi reescrita a partir do que a técnica realmente faz ("Magia de fogo. Chance de
 sono.").
+
+<p align="center"><img src="docs/images/definitive/shots/bestiary.gif" width="640" alt="O Bestiary: cada espécie, Rare Target, Super Rare, linha DRI e forma sombria, com fraquezas, Hunt Material e modelo 3D."><br><sub>O Bestiary, numa tela só dele: abas por tipo, fraquezas conforme você descobre, cada Digimon girando em 3D.</sub></p>
 
 **Os seus atributos mudaram de função.** Os antigos atributos de "tolerância" elemental do seu Digimon viraram
 **afinidade**: eles não defendem mais, e sim reforçam os seus ataques daquele elemento contra uma fraqueza ou um
@@ -208,7 +214,7 @@ anel de opções e uma prévia em 3D, o botão do Blast é o próprio gauge, e o
 a sua última técnica e o último item, guarda os comandos apertados cedo demais, e o texto de batalha nunca interrompe a
 luta.
 
-<p align="center"><img src="docs/images/definitive/shots/battle-inspect.png" width="640" alt="O HUD de batalha com botões diretos e o painel do Inspect mostrando as fraquezas descobertas até agora."></p>
+<p align="center"><img src="docs/images/definitive/shots/battle-inspect.png" width="640" alt="O HUD de batalha com botões diretos e o painel do INFO mostrando as fraquezas descobertas até agora."></p>
 
 <details>
 <summary><b>Os números, para os curiosos</b></summary>
@@ -377,6 +383,8 @@ O quadro do Sepikmon lista **doze Digimon Super Rare** (e um Ogremon de tutorial
 liberados um depois do outro. Cada um se esconde num mapa aleatório do seu território, e uma **bússola de temperatura**
 avisa quando você está esquentando. Machuque-o e ele foge, mantendo o dano e voltando mais forte. Cada um que você
 derrota paga um cristal e desbloqueia uma **skin de herói**.
+
+<p align="center"><img src="docs/images/definitive/shots/super-hunt-dossier.gif" width="640" alt="O quadro do Sepikmon mostra o nível e o alvo de cada caçada; uma trancada abre um Target Dossier com onde ele anda, o preço do cristal e a skin que libera."><br><sub>O quadro de caçadas e um Target Dossier: onde o alvo anda, quanto vale o cristal, a skin que ele libera.</sub></p>
 
 ## O seu herói, do seu jeito
 

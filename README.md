@@ -162,6 +162,10 @@ physical blow and the element's picture for magic.
 <td width="50%" align="center"><img src="docs/images/definitive/shots/battle-baton-pass.gif" alt="While the enemy is staggered, Baton Pass swaps in WarGreymon without losing the turn."><br><sub><b>Baton Pass</b>: a free switch that keeps your turn</sub></td>
 <td width="50%" align="center"><img src="docs/images/definitive/shots/battle-overfinish.gif" alt="Hits on a knocked-out enemy show OVERFINISH! and pay Bits."><br><sub><b>OVERFINISH</b>: the enemy stays down, and every hit pays</sub></td>
 </tr>
+<tr>
+<td width="50%" align="center"><img src="docs/images/definitive/shots/battle-tag.png" alt="Tag opens a close-up of your bench partner with its forms in a ring; Switch or Baton Pass, which keeps your turn."><br><sub><b>Tag</b>: your partner's forms, then Switch or Baton Pass</sub></td>
+<td width="50%" align="center"><img src="docs/images/definitive/shots/battle-digivolve.gif" alt="Digivolve opens a close-up of your Digimon with its forms in a ring and a live 3D preview; confirm twice and it digivolves."><br><sub><b>Digivolve</b>: the forms in a ring, with a live 3D preview</sub></td>
+</tr>
 </table>
 
 <p align="center"><img src="docs/images/definitive/weakness-discovery.svg" width="800" alt="INFO starts at ???. A Fire hit shows RESIST, an Ice hit shows Water + Ice WEAK, Resist Down turns neutral Wind into a weakness, and Libra reveals the rest."></p>
@@ -171,6 +175,8 @@ families as you learn them, `???` until then, and who acts next; **Libra** revea
 a screen of its own with each Digimon turning in 3D, keeps what you have learnt about every species, Rare Target, Super
 Rare and DRI line, with its Hunt Materials. Every technique list marks each technique (a fist, or its element), and every
 description was rewritten from what the technique really does ("Fire magic. Sleep chance.").
+
+<p align="center"><img src="docs/images/definitive/shots/bestiary.gif" width="640" alt="The Bestiary: every species, Rare Target, Super Rare, DRI line and dark form, with its weaknesses, Hunt Material and a 3D model."><br><sub>The Bestiary, a screen of its own: tabs by kind, weaknesses as you learn them, each Digimon turning in 3D.</sub></p>
 
 **Your stats changed jobs.** Your Digimon's old elemental "tolerance" stats became **affinity**: they no longer
 defend, they power your attacks of that element against a weakness or a staggered foe. **Defense** now guards against
@@ -206,7 +212,7 @@ as a sheet beside the enemy's INFO, Tag and Digivolve open a close-up of your pa
 3D preview, the Blast button is the gauge itself, and Run asks before you flee. It remembers your last technique and
 item, buffers early presses, and battle text never stops the fight.
 
-<p align="center"><img src="docs/images/definitive/shots/battle-inspect.png" width="640" alt="The direct-button battle HUD and the Inspect panel showing the weaknesses found so far."></p>
+<p align="center"><img src="docs/images/definitive/shots/battle-inspect.png" width="640" alt="The direct-button battle HUD and the INFO panel showing the weaknesses found so far."></p>
 
 <details>
 <summary><b>The numbers, for the curious</b></summary>
@@ -373,6 +379,8 @@ The Sepikmon's board lists **twelve Super Rare** Digimon (and a tutorial Ogremon
 unlocked one after another. Each hides on a random map of its territory, and a **temperature compass** tells you when
 you are getting warmer. Hurt it and it runs, keeping the damage and coming back stronger. Each one you take down pays
 a crystal and unlocks a **hero skin**.
+
+<p align="center"><img src="docs/images/definitive/shots/super-hunt-dossier.gif" width="640" alt="The Sepikmon's board lists each hunt's level and target; a locked one opens a Target Dossier with where it roams, its crystal's price and the skin it unlocks."><br><sub>The hunt board and a Target Dossier: where the target roams, what its crystal sells for, the skin it unlocks.</sub></p>
 
 ## Your hero, your way
 

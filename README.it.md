@@ -164,6 +164,10 @@ blu (magia), ora vedi un pugno per un colpo fisico e l'immagine dell'elemento pe
 <td width="50%" align="center"><img src="docs/images/definitive/shots/battle-baton-pass.gif" alt="Mentre il nemico è stordito, il Baton Pass fa entrare WarGreymon senza perdere il turno."><br><sub><b>Baton Pass</b>: un cambio gratuito che mantiene il tuo turno</sub></td>
 <td width="50%" align="center"><img src="docs/images/definitive/shots/battle-overfinish.gif" alt="I colpi a un nemico KO mostrano OVERFINISH! e pagano Bits."><br><sub><b>OVERFINISH</b>: il nemico resta a terra, e ogni colpo paga</sub></td>
 </tr>
+<tr>
+<td width="50%" align="center"><img src="docs/images/definitive/shots/battle-tag.png" alt="Tag apre un primo piano del compagno in panchina con le sue forme in un anello; Switch o Baton Pass, che tiene il tuo turno."><br><sub><b>Tag</b>: le forme del tuo compagno, poi Switch o Baton Pass</sub></td>
+<td width="50%" align="center"><img src="docs/images/definitive/shots/battle-digivolve.gif" alt="Digivolve apre un primo piano del tuo Digimon con le sue forme in un anello e un'anteprima 3D; conferma due volte e digievolve."><br><sub><b>Digivolve</b>: le forme in un anello, con anteprima 3D dal vivo</sub></td>
+</tr>
 </table>
 
 <p align="center"><img src="docs/images/definitive/weakness-discovery.svg" width="800" alt="INFO parte da ???. Un colpo Fire mostra RESIST, un colpo Ice mostra Water + Ice WEAK, Resist Down trasforma il Wind neutro in una debolezza, e Libra rivela il resto."></p>
@@ -173,6 +177,8 @@ nemico man mano che le impari, `???` fino ad allora, e chi agisce dopo; **Libra*
 **Bestiary**, una schermata a sé con ogni Digimon che ruota in 3D, conserva ciò che hai imparato su ogni specie, Rare
 Target, Super Rare e linea DRI, con i suoi Hunt Materials. Ogni elenco di tecniche segna ciascuna tecnica (un pugno, o il suo elemento), e ogni descrizione è stata riscritta in base a ciò che la tecnica fa davvero ("Magia di fuoco. Probabilità di
 sonno.").
+
+<p align="center"><img src="docs/images/definitive/shots/bestiary.gif" width="640" alt="Il Bestiary: ogni specie, Rare Target, Super Rare, linea DRI e forma oscura, con debolezze, Hunt Material e modello 3D."><br><sub>Il Bestiary, in una schermata tutta sua: schede per tipo, debolezze man mano che le scopri, ogni Digimon che ruota in 3D.</sub></p>
 
 **Le tue statistiche hanno cambiato mestiere.** Le vecchie statistiche di "tolleranza" elementale del tuo Digimon sono
 diventate **affinity**: non difendono più, potenziano i tuoi attacchi di quell'elemento contro una debolezza o un
@@ -209,7 +215,7 @@ di scelte e un'anteprima in 3D, il tasto del Blast è l'indicatore stesso, e Run
 Ricorda l'ultima tecnica e l'ultimo oggetto, memorizza le pressioni anticipate, e il testo di battaglia non ferma mai lo
 scontro.
 
-<p align="center"><img src="docs/images/definitive/shots/battle-inspect.png" width="640" alt="L'HUD di battaglia a tasti diretti e il pannello Inspect che mostra le debolezze trovate finora."></p>
+<p align="center"><img src="docs/images/definitive/shots/battle-inspect.png" width="640" alt="L'HUD di battaglia a tasti diretti e il pannello INFO che mostra le debolezze trovate finora."></p>
 
 <details>
 <summary><b>I numeri, per i curiosi</b></summary>
@@ -380,6 +386,8 @@ La bacheca del Sepikmon elenca **dodici Digimon Super Rare** (e un Ogremon tutor
 al 61, sbloccati uno dopo l'altro. Ognuno si nasconde su una mappa casuale del suo territorio, e una **bussola della
 temperatura** ti dice quando ti stai scaldando. Feriscilo e scappa, mantenendo il danno e tornando più forte. Ognuno che
 abbatti paga un cristallo e sblocca una **skin da eroe**.
+
+<p align="center"><img src="docs/images/definitive/shots/super-hunt-dossier.gif" width="640" alt="La bacheca del Sepikmon mostra livello e bersaglio di ogni caccia; una bloccata apre un Target Dossier con dove si aggira, il prezzo del cristallo e la skin che sblocca."><br><sub>La bacheca delle cacce e un Target Dossier: dove si aggira il bersaglio, quanto vale il suo cristallo, la skin che sblocca.</sub></p>
 
 ## Il tuo eroe, a modo tuo
 

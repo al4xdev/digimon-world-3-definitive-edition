@@ -164,6 +164,10 @@ para un golpe físico y el dibujo del elemento para la magia.
 <td width="50%" align="center"><img src="docs/images/definitive/shots/battle-baton-pass.gif" alt="Mientras el enemigo está aturdido, Baton Pass mete a WarGreymon sin perder el turno."><br><sub><b>Baton Pass</b>: un cambio gratuito que conserva tu turno</sub></td>
 <td width="50%" align="center"><img src="docs/images/definitive/shots/battle-overfinish.gif" alt="Los golpes a un enemigo derribado muestran OVERFINISH! y pagan Bits."><br><sub><b>OVERFINISH</b>: el enemigo se queda en el suelo, y cada golpe paga</sub></td>
 </tr>
+<tr>
+<td width="50%" align="center"><img src="docs/images/definitive/shots/battle-tag.png" alt="Tag abre un primer plano de tu compañero en reserva con sus formas en un anillo; Switch o Baton Pass, que conserva tu turno."><br><sub><b>Tag</b>: las formas de tu compañero, luego Switch o Baton Pass</sub></td>
+<td width="50%" align="center"><img src="docs/images/definitive/shots/battle-digivolve.gif" alt="Digivolve abre un primer plano de tu Digimon con sus formas en un anillo y una vista previa 3D; confirma dos veces y digievoluciona."><br><sub><b>Digivolve</b>: las formas en un anillo, con vista previa 3D en vivo</sub></td>
+</tr>
 </table>
 
 <p align="center"><img src="docs/images/definitive/weakness-discovery.svg" width="800" alt="INFO empieza en ???. Un golpe de Fire muestra RESIST, un golpe de Ice muestra Water + Ice WEAK, Resist Down convierte el Wind neutro en una debilidad, y Libra revela el resto."></p>
@@ -173,6 +177,8 @@ del enemigo a medida que las vas conociendo, `???` hasta entonces, y quién act�
 golpe; el **Bestiary**, una pantalla propia con cada Digimon girando en 3D, guarda lo que has aprendido de cada especie,
 Rare Target, Super Rare y línea DRI, con sus Hunt Materials. Cada lista de técnicas marca cada técnica (un puño, o su elemento), y cada descripción se reescribió a partir de lo que la técnica hace de verdad ("Magia de fuego.
 Probabilidad de sueño.").
+
+<p align="center"><img src="docs/images/definitive/shots/bestiary.gif" width="640" alt="El Bestiary: cada especie, Rare Target, Super Rare, línea DRI y forma oscura, con sus debilidades, Hunt Material y modelo 3D."><br><sub>El Bestiary, en una pantalla propia: pestañas por tipo, debilidades a medida que las descubres, cada Digimon girando en 3D.</sub></p>
 
 **Tus estadísticas han cambiado de oficio.** Las antiguas estadísticas de "tolerancia" elemental de tu Digimon son
 ahora **affinity**: ya no defienden, potencian tus ataques de ese elemento contra una debilidad o un enemigo aturdido.
@@ -209,7 +215,7 @@ de opciones y una vista previa en 3D, el botón del Blast es el propio medidor, 
 última técnica y tu último objeto, guarda en búfer las pulsaciones anticipadas, y el texto de combate nunca detiene la
 pelea.
 
-<p align="center"><img src="docs/images/definitive/shots/battle-inspect.png" width="640" alt="El HUD de combate con botones directos y el panel de Inspect mostrando las debilidades descubiertas hasta ahora."></p>
+<p align="center"><img src="docs/images/definitive/shots/battle-inspect.png" width="640" alt="El HUD de combate con botones directos y el panel de INFO mostrando las debilidades descubiertas hasta ahora."></p>
 
 <details>
 <summary><b>Los números, para los curiosos</b></summary>
@@ -378,6 +384,8 @@ El tablón del Sepikmon enumera **doce Digimon Super Rare** (y un Ogremon de tut
 desbloqueados uno tras otro. Cada uno se esconde en un mapa aleatorio de su territorio, y una **brújula de temperatura**
 te avisa cuando te estás calentando. Hiérelo y huye, conservando el daño y volviendo más fuerte. Cada uno que derribas
 paga un cristal y desbloquea una **skin de héroe**.
+
+<p align="center"><img src="docs/images/definitive/shots/super-hunt-dossier.gif" width="640" alt="El tablón del Sepikmon muestra el nivel y el objetivo de cada cacería; una bloqueada abre un Target Dossier con dónde anda, el precio de su cristal y la skin que desbloquea."><br><sub>El tablón de cacerías y un Target Dossier: por dónde anda el objetivo, cuánto vale su cristal, la skin que desbloquea.</sub></p>
 
 ## Tu héroe, a tu manera
 
