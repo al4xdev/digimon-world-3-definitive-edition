@@ -33,6 +33,7 @@
 #include "sound.h"
 
 #include "definitive.h"
+#include "port.h"
 #include "port_runtime.h"
 #include "psxstack/savestate.h"
 
@@ -118,6 +119,10 @@ static struct {
     s32 mtop;   /* that list's first row shown */
     s32 note;   /* a DEF_BM_* result shown in a detail line, or BM_NOTE_NONE */
     s32 bought; /* a trade or a purchase happened since the screen opened (the room's shopkeeper asks) */
+    s32 open_anim;
+    s32 tab_anim;
+    s32 stamp_anim;
+    s32 stamp_kind; /* 0: DEAL!, 1: SOLD! */
     s32 layer;
     s16 rares[DEF_HUNT_RARES]; /* the Exchange's rows: the rare items held, by index of def_hunt_targets */
     MessageWindow *title, *tabs[2], *head, *where, *names[BM_ROWS], *counts[BM_ROWS], *lines[BM_DETAIL_LINES], *hint,
@@ -158,27 +163,86 @@ static MessageWindow *bm_window(s32 x, s32 y) {
     return w;
 }
 
-/* An opaque rectangle; the layer draws what is added last first, so frames go before fills. */
-static void bm_rect(s32 x, s32 y, s32 w, s32 h, u8 r, u8 g, u8 b) {
+static void bm_rect_ot(s32 depth, s32 x, s32 y, s32 w, s32 h, s32 abr, u8 r, u8 g, u8 b) {
     GfxLayer *layer = gfx_module.funcs.get_layer(bm_ui.layer);
-    POLY_F4 *poly = gfx_module.funcs.get_packet();
+    POLY_F4 *poly;
 
+    if (layer == NULL || w <= 0 || h <= 0) {
+        return;
+    }
+    poly = gfx_module.funcs.get_packet();
     setPolyF4(poly);
     setRGB0(poly, r, g, b);
-    poly->x0 = poly->x2 = x;
-    poly->x1 = poly->x3 = x + w;
-    poly->y0 = poly->y1 = y;
-    poly->y2 = poly->y3 = y + h;
-    addPrim(layer->get_ot_entry(layer, 2), poly);
-    gfx_module.funcs.set_packet(poly + 1);
+    setXY4(poly, (s16)x, (s16)y, (s16)(x + w), (s16)y, (s16)x, (s16)(y + h), (s16)(x + w), (s16)(y + h));
+    if (abr >= 0) {
+        DR_TPAGE *tp = (DR_TPAGE *)(poly + 1);
+        setSemiTrans(poly, 1);
+        addPrim(layer->get_ot_entry(layer, depth), poly);
+        SetDrawTPage(tp, 0, 1, getTPage(1, abr, 0, 0));
+        addPrim(layer->get_ot_entry(layer, depth), tp);
+        gfx_module.funcs.set_packet(tp + 1);
+    } else {
+        addPrim(layer->get_ot_entry(layer, depth), poly);
+        gfx_module.funcs.set_packet(poly + 1);
+    }
+}
+
+static void bm_slant_ot(s32 depth, s32 x, s32 y, s32 w, s32 h, s32 skew, s32 abr, u8 r, u8 g, u8 b) {
+    GfxLayer *layer = gfx_module.funcs.get_layer(bm_ui.layer);
+    POLY_F4 *poly;
+
+    if (layer == NULL || w <= 0 || h <= 0) {
+        return;
+    }
+    poly = gfx_module.funcs.get_packet();
+    setPolyF4(poly);
+    setRGB0(poly, r, g, b);
+    setXY4(poly, (s16)(x + skew), (s16)y, (s16)(x + w + skew), (s16)y, (s16)x, (s16)(y + h), (s16)(x + w),
+           (s16)(y + h));
+    if (abr >= 0) {
+        DR_TPAGE *tp = (DR_TPAGE *)(poly + 1);
+        setSemiTrans(poly, 1);
+        addPrim(layer->get_ot_entry(layer, depth), poly);
+        SetDrawTPage(tp, 0, 1, getTPage(1, abr, 0, 0));
+        addPrim(layer->get_ot_entry(layer, depth), tp);
+        gfx_module.funcs.set_packet(tp + 1);
+    } else {
+        addPrim(layer->get_ot_entry(layer, depth), poly);
+        gfx_module.funcs.set_packet(poly + 1);
+    }
+}
+
+static void bm_rect(s32 x, s32 y, s32 w, s32 h, u8 r, u8 g, u8 b) {
+    bm_rect_ot(2, x, y, w, h, -1, r, g, b);
 }
 
 static void bm_panel(s32 x, s32 y, s32 w, s32 h, s32 band) {
     if (band) {
-        bm_rect(x + 2, y + 2, w - 4, BM_LINE + 2, 0, 0, 74);
+        bm_rect_ot(2, x + 2, y + 2, w - 4, BM_LINE + 3, -1, 32, 22, 56);
     }
-    bm_rect(x + 1, y + 1, w - 2, h - 2, 0, 0, 33);
-    bm_rect(x, y, w, h, 107, 107, 214);
+    bm_rect_ot(2, x, y, 2, h, -1, 188, 128, 255);
+    bm_rect_ot(2, x, y, 2, 12, -1, 248, 236, 255);
+    bm_rect_ot(2, x + 2, y, w - 2, 1, -1, 128, 86, 188);
+    bm_rect_ot(2, x + 2, y + h - 1, w - 2, 1, -1, 76, 52, 120);
+    bm_rect_ot(2, x + 2, y + 1, w - 2, h - 2, -1, 14, 12, 26);
+}
+
+static void bm_draw_stamp(GfxLayer *layer, s32 cx, s32 cy, const char *word, u8 r, u8 g, u8 b, s32 scale_pct) {
+    s32 size = 148 * scale_pct / 100;
+    s32 tw = def_poly_text_width(size, word);
+    s32 pad_x = 8 * scale_pct / 100;
+    s32 pad_y = 4 * scale_pct / 100;
+    s32 bw = tw + pad_x * 2;
+    s32 bh = (10 * scale_pct / 100) + pad_y * 2;
+    s32 x = cx - bw / 2;
+    s32 y = cy - bh / 2;
+    u8 txt[3] = { 255, 252, 240 };
+    u8 shd[3] = { 16, 24, 18 };
+
+    def_poly_text(layer, 0, x + pad_x - 2, y + pad_y - 1, size, word, txt);
+    def_poly_text(layer, 0, x + pad_x - 1, y + pad_y, size, word, shd);
+    bm_slant_ot(0, x + 2, y + 2, bw - 4, bh - 4, -3, -1, r, g, b);
+    bm_slant_ot(0, x, y, bw, bh, -3, -1, 244, 255, 232);
 }
 
 /* A window's text (NULL: none) and colour. */
@@ -563,7 +627,7 @@ static void bm_fill(void) {
                      ? BM_PAL_HOT
                      : BM_PAL_TEXT);
     bm_ui.cursor->set_pos(bm_ui.cursor, BM_LIST_X + 4, BM_TOP + (sel - top) * BM_LINE);
-    bm_ui.cursor->show(bm_ui.cursor, rows > 0);
+    bm_ui.cursor->show(bm_ui.cursor, 0);
 }
 
 static void bm_open(void) {
@@ -599,6 +663,10 @@ static void bm_open(void) {
     bm_ui.fresh = 1;
     bm_ui.request = 0;
     bm_ui.close = 0;
+    bm_ui.open_anim = 0;
+    bm_ui.tab_anim = 0;
+    bm_ui.stamp_anim = 0;
+    bm_ui.stamp_kind = 0;
     bm_ui.tab = BM_TRADE;
     bm_ui.mode = BM_LIST;
     bm_ui.sel = bm_ui.top = 0;
@@ -658,23 +726,92 @@ static void bm_run_windows(void) {
 }
 
 static void bm_draw(void) {
-    s32 rows, sel, top;
+    GfxLayer *layer = gfx_module.funcs.get_layer(bm_ui.layer);
+    s32 wide = port_video_widescreen_pad();
+    s32 rows, sel, top, i;
+    s32 op = bm_ui.open_anim < 10 ? bm_ui.open_anim : 10;
+    s32 title_dx = -((10 - op) * (10 - op));
+    s32 tab_dx = bm_ui.tab_anim * 3;
+    s32 list_h = BM_LIST_H * op / 10;
+    s32 det_h = BM_DETAIL_H * op / 10;
 
-    /* the row under the cursor: a band behind it (added before the panels' fill, which then covers all but it), brown
-     * while a trade or a purchase is under way, the title's blue otherwise */
+    bm_ui.title->set_pos(bm_ui.title, 8 + title_dx, 5);
+    bm_ui.tabs[0]->set_pos(bm_ui.tabs[0], BM_TAB_X + title_dx, 5);
+    bm_ui.tabs[1]->set_pos(bm_ui.tabs[1], BM_TAB_X + BM_TAB_DX + title_dx, 5);
+    bm_ui.head->set_pos(bm_ui.head, BM_NAME_X + tab_dx, BM_HEAD_Y);
+    for (i = 0; i < BM_ROWS; i++) {
+        s32 ry = BM_TOP + i * BM_LINE;
+        bm_ui.names[i]->set_pos(bm_ui.names[i], BM_NAME_X + tab_dx, ry);
+        bm_ui.counts[i]->set_pos(bm_ui.counts[i], BM_RIGHT_X + tab_dx, ry);
+    }
+
+    /* Active tab underline */
+    if (op >= 10) {
+        s32 tx = bm_ui.tab == BM_TRADE ? BM_TAB_X : BM_TAB_X + BM_TAB_DX;
+        bm_rect_ot(2, tx - 2, 20, 72, 2, -1, 214, 156, 255);
+    }
+
+    /* Selected row highlight + slanted [A] chip */
     bm_view(&rows, &sel, &top);
-    if (rows > 0 && sel >= top && sel < top + BM_ROWS) {
+    if (op >= 10 && rows > 0 && sel >= top && sel < top + BM_ROWS) {
+        s32 ry = BM_TOP + (sel - top) * BM_LINE - 1;
         if (bm_ui.mode != BM_LIST) {
-            bm_rect(BM_LIST_X + 3, BM_TOP + (sel - top) * BM_LINE - 1, BM_LIST_W - 6, BM_LINE, 74, 41, 0);
+            bm_slant_ot(2, BM_LIST_X + 3 + tab_dx, ry, 10, BM_LINE, 2, -1, 224, 152, 42);
+            bm_rect_ot(2, BM_LIST_X + 11 + tab_dx, ry, BM_LIST_W - 16, BM_LINE, 1, 92, 54, 14);
+            bm_rect_ot(2, BM_LIST_X + 11 + tab_dx, ry, BM_LIST_W - 16, 1, -1, 248, 198, 92);
         } else {
-            bm_rect(BM_LIST_X + 3, BM_TOP + (sel - top) * BM_LINE - 1, BM_LIST_W - 6, BM_LINE, 0, 0, 74);
+            bm_slant_ot(2, BM_LIST_X + 3 + tab_dx, ry, 10, BM_LINE, 2, -1, 44, 192, 96);
+            bm_rect_ot(2, BM_LIST_X + 11 + tab_dx, ry, BM_LIST_W - 16, BM_LINE, 1, 48, 30, 88);
+            bm_rect_ot(2, BM_LIST_X + 11 + tab_dx, ry, BM_LIST_W - 16, 1, -1, 196, 140, 255);
         }
     }
-    bm_rect(BM_LIST_X + 8, BM_RULE_Y, BM_LIST_W - 16, 1, 107, 107, 214); /* the heading's rule */
-    bm_panel(0, 0, 320, BM_TITLE_H, 1);
-    bm_panel(BM_LIST_X, BM_LIST_Y, BM_LIST_W, BM_LIST_H, 0);
-    bm_panel(BM_LIST_X, BM_DETAIL_Y, BM_LIST_W, BM_DETAIL_H, 0);
+
+    /* Scrollbar on right edge of list */
+    if (op >= 10 && rows > BM_ROWS) {
+        s32 track_h = BM_ROWS * BM_LINE - 4;
+        s32 thumb_h = track_h * BM_ROWS / rows;
+        s32 thumb_y;
+        if (thumb_h < 12) {
+            thumb_h = 12;
+        }
+        thumb_y = BM_TOP + (track_h - thumb_h) * top / (rows - BM_ROWS);
+        bm_rect_ot(2, BM_LIST_X + BM_LIST_W - 5, BM_TOP, 2, track_h, -1, 34, 24, 58);
+        bm_rect_ot(2, BM_LIST_X + BM_LIST_W - 5, thumb_y, 2, thumb_h, -1, 196, 140, 255);
+    }
+
+    /* Stamp-Slam DEAL! / SOLD! on completed trade or purchase */
+    if (bm_ui.stamp_anim > 0 && layer != NULL) {
+        s32 sc = 100;
+        if (bm_ui.stamp_anim > 12) {
+            sc = 100 + (bm_ui.stamp_anim - 12) * 24;
+        } else if (bm_ui.stamp_anim > 8) {
+            sc = 92;
+        }
+        bm_draw_stamp(layer, 266, BM_DETAIL_Y + 22, bm_ui.stamp_kind ? "SOLD!" : "DEAL!", 36, 158, 86, sc);
+        if (bm_ui.stamp_anim >= 10 && bm_ui.stamp_anim <= 13) {
+            bm_rect_ot(0, BM_LIST_X, BM_DETAIL_Y, BM_LIST_W, BM_DETAIL_H, 1, 90, 120, 72);
+        }
+    }
+
+    if (op >= 10) {
+        bm_rect(BM_LIST_X + 8, BM_RULE_Y, BM_LIST_W - 16, 1, 128, 86, 188);
+    }
+    bm_panel(title_dx, 0, 320, BM_TITLE_H, 1);
+    if (list_h > 4) {
+        bm_panel(BM_LIST_X, BM_LIST_Y, BM_LIST_W, list_h, 0);
+        if (op < 10) {
+            bm_rect_ot(2, BM_LIST_X, BM_LIST_Y + list_h - 2, BM_LIST_W, 2, -1, 224, 176, 255);
+        }
+    }
+    if (det_h > 4) {
+        bm_panel(BM_LIST_X, BM_DETAIL_Y, BM_LIST_W, det_h, 0);
+    }
     bm_panel(0, BM_HINT_Y, 320, 240 - BM_HINT_Y, 0);
+
+    /* Full-screen opaque dark obsidian-violet backdrop with diagonal Persona bands */
+    bm_slant_ot(2, 214, 0, 72, 240, -38, -1, 20, 14, 38);
+    bm_slant_ot(2, 72, 0, 44, 240, -38, -1, 14, 10, 28);
+    bm_rect_ot(2, -wide, 0, 320 + wide * 2, 240, -1, 8, 7, 16);
 }
 
 static s32 bm_pressed(s32 button) {
@@ -705,14 +842,19 @@ static void bm_pick_input(void) {
     } else if (PAD_PRESSED(13)) {
         bm_ui.note = def_bm_exchange(bm_ui.rares[bm_ui.sel], bm_ui.common);
         sound_module.play(bm_ui.note == DEF_BM_OK ? BM_SND_OK : BM_SND_BACK);
-        if (bm_ui.note == DEF_BM_OK && def_record_rare(bm_ui.rares[bm_ui.sel]) <= 0) {
-            bm_ui.mode = BM_LIST; /* that was the last of it: its row goes */
+        if (bm_ui.note == DEF_BM_OK) {
+            bm_ui.stamp_anim = 20;
+            bm_ui.stamp_kind = 0;
+            if (def_record_rare(bm_ui.rares[bm_ui.sel]) <= 0) {
+                bm_ui.mode = BM_LIST; /* that was the last of it: its row goes */
+            }
         }
         bm_collect(1);
         bm_fill();
     } else if (PAD_PRESSED(12) || PAD_PRESSED(14)) {
         sound_module.play(BM_SND_BACK);
         bm_ui.mode = BM_LIST;
+        bm_ui.tab_anim = -6;
         bm_ui.note = BM_NOTE_NONE;
         bm_fill();
     }
@@ -723,6 +865,7 @@ static void bm_list_input(void) {
 
     if (PAD_PRESSED(10) || PAD_PRESSED(11) || PAD_PRESSED(5) || PAD_PRESSED(7)) {
         bm_ui.tab ^= 1;
+        bm_ui.tab_anim = bm_ui.tab == BM_REPLICA ? 8 : -8;
         bm_ui.mode = BM_LIST;
         bm_ui.sel = bm_ui.top = 0;
         bm_ui.note = BM_NOTE_NONE;
@@ -741,11 +884,16 @@ static void bm_list_input(void) {
         } else if (bm_ui.tab == BM_TRADE) {
             sound_module.play(BM_SND_OK);
             bm_ui.mode = BM_PICK; /* the list becomes the materials, the cursor on the one picked last time */
+            bm_ui.tab_anim = 6;
             bm_ui.mtop = bm_scrolled(bm_ui.common, bm_ui.mtop);
             bm_ui.note = BM_NOTE_NONE;
         } else if (bm_ui.mode == BM_ARMED) {
             bm_ui.note = def_bm_replica_buy(bm_ui.sel);
             sound_module.play(bm_ui.note == DEF_BM_OK ? BM_SND_OK : BM_SND_BACK);
+            if (bm_ui.note == DEF_BM_OK) {
+                bm_ui.stamp_anim = 20;
+                bm_ui.stamp_kind = 1;
+            }
             bm_ui.mode = BM_LIST;
         } else {
             bm_ui.note = def_bm_replica_check(bm_ui.sel, picks);
@@ -853,6 +1001,17 @@ int def_bm_frame(void) {
     if (bm_ui.close) {
         bm_finish();
         return 1;
+    }
+    if (bm_ui.open_anim < 10) {
+        bm_ui.open_anim++;
+    }
+    if (bm_ui.tab_anim > 0) {
+        bm_ui.tab_anim--;
+    } else if (bm_ui.tab_anim < 0) {
+        bm_ui.tab_anim++;
+    }
+    if (bm_ui.stamp_anim > 0) {
+        bm_ui.stamp_anim--;
     }
     bm_run_windows();
     bm_draw();
