@@ -55,6 +55,7 @@ if [[ -z "$version" ]]; then
     fi
 fi
 version="${version#v}"
+export DW3_VERSION="$version"   # the launcher's CMake reads it (launcher/CMakeLists.txt): it is the X.Y.Z the update check compares
 [[ "$version" =~ ^[A-Za-z0-9._+-]+$ ]] || die "a version of letters, digits and ._+- only: '$version'"
 name="dw2003-$version-x86_64.AppImage"
 debug="dw2003-$version-x86_64.debug"

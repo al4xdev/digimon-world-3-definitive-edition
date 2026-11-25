@@ -32,7 +32,7 @@
 enum {
     S_SPLASH, S_HOME, S_GAME, S_VIDEO, S_HUD, S_CONTROLS, S_SAVES, S_BACKUPS, S_BACKUP_CONFIRM,
     S_CLOUD, S_PAIR_HOST, S_PAIR_ENTER, S_DEVICES, S_REVOKE_CONFIRM, S_CONFLICT, S_CONFLICT_CONFIRM,
-    S_DEBUG, S_BROWSE, S_LED, S_LED1, S_LED2, S_RESET, S_CLEAN, S_LOADING, S_DISC, S_ERROR, S_UPDATING
+    S_DEBUG, S_BROWSE, S_LED, S_LED1, S_LED2, S_RESET, S_CLEAN, S_LOADING, S_DISC, S_ERROR, S_UPDATING, S_UPDATE_ASK
 };
 enum { HI_PLAY, HI_GAME, HI_VIDEO, HI_HUD, HI_CONTROLS, HI_SAVES, HI_LED, HI_DEBUG, HI_RESET, HI_COUNT };
 
@@ -1077,6 +1077,7 @@ static void draw_browse(void) {
  * asks the player to restart; nothing closes on its own. */
 static SelfUpdate su;
 static int su_on; /* an update was started this run and not cancelled or failed */
+static int update_asked; /* PLAY already offered the update this run (or never should: a test run, --play): it asks once */
 
 static void draw_updating(void) {
     char stage[120];
@@ -1210,6 +1211,14 @@ static void draw_screen(void) {
               "and the disc are never touched.", "YES, CLEAN", "NO, KEEP", C_ORANGE); break;
     case S_LOADING: draw_loading(); break;
 #ifdef DW3_TARGET_PC
+    case S_UPDATE_ASK: {
+        char nv[96];
+        snprintf(nv, sizeof(nv), "%s %.40s", TR("NEW VERSION"), upd.latest);
+        draw_home();
+        modal("UPDATE AVAILABLE", nv, su_on && su.state == SU_READY ? "Already downloaded: restarts to install it." : "Downloads now, then restarts the launcher.",
+              "Saves and settings are never touched.", "YES, UPDATE", "NO, PLAY", C_GOLD);
+        break;
+    }
     case S_UPDATING: draw_updating(); break;
 #endif
     case S_DISC: draw_disc(); break;
@@ -1465,6 +1474,20 @@ static void browse_load(const char *dir) {
 }
 
 static void start_game(void) {
+#ifdef DW3_TARGET_PC
+    /* First of everything PLAY does, so that the one window at a time holds: the update's question comes before the
+     * save sync, whose conflict screen would otherwise be on top of it. NO comes back here and goes on to the sync. */
+    if (!update_asked) {
+        update_poll(&upd);
+        /* a staged update (READY, "later") is offered again as well: the old launcher plays, the update waits for it */
+        if ((su_on && su.state == SU_READY) || (upd.state == UPDATE_AVAILABLE && selfupd_available(&upd, exe_dir))) {
+            update_asked = 1;
+            start_trans(1, H / 2);
+            screen = S_UPDATE_ASK;
+            return;
+        }
+    }
+#endif
     if (!disc_path[0] && !is_portmaster) {
         if (browse_disc() != 0) {
             browse_start_dir(b_dir, sizeof(b_dir));
@@ -1714,6 +1737,7 @@ static void on_press(int code) {
         /* SELECT, not the back button: the minigame's three jump buttons include the east one, which is back's */
         if (is_select) {
             if (su.state != SU_READY) { selfupd_cancel(); su_on = 0; } /* a staged update keeps waiting; SELECT only hides it */
+            update_asked = 0; /* later or cancelled: PLAY asks again */
             go(S_DEBUG, 4, -1, 284 + 14);
             return;
         }
@@ -2183,6 +2207,12 @@ static void on_press(int code) {
             else { start_trans(1, H / 2); screen = S_ERROR; }
         }
         break;
+#ifdef DW3_TARGET_PC
+    case S_UPDATE_ASK:
+        if (ok) start_update(); /* on its screen, or (cannot start: the reason is on DEBUG) on to PLAY */
+        if (back || (ok && screen == S_UPDATE_ASK)) { screen = S_HOME; cur_screen = S_HOME; start_game(); }
+        break;
+#endif
     case S_RESET:
         if (back) { start_trans(-1, 92 + home_index(HI_RESET) * home_step() + 14); screen = S_HOME; }
         if (ok) { cfg_defaults(&c); cfg_save(&c); go(S_HOME, 0, -1, 92 + 14); }
@@ -2697,6 +2727,9 @@ static int self_test(const char *root) {
             {"SELECT: LATER", 13, W - 120 - 24},              {"DOWNLOADING...", 18, W - 40},
             {"CHECKING...", 18, W - 40},                 {"PREPARING...", 18, W - 40},
             {"SELECT: CANCEL", 13, W - 40}, {"PRESS A TO UPDATE", 15, W - 64 - 24},      {"PRESS A TO OPEN THE PAGE", 15, W - 64 - 24},
+            {"NEW VERSION v0.9.0", 17, W - 192},
+            {"Downloads now, then restarts the launcher.", 17, W - 192}, {"Already downloaded: restarts to install it.", 17, W - 192},
+            {"Saves and settings are never touched.", 17, W - 192}, {"YES, UPDATE", 18, 200}, {"NO, PLAY", 18, 200},
         };
         /* The two states drawn (and saved with --shots), to look at. */
         memset(&su, 0, sizeof(su));
@@ -2879,6 +2912,7 @@ int main(int argc, char **argv) {
     cloud_state_load(&cloud, game_dir);
 #ifdef DW3_TARGET_PC
     if (kind != PLAT_NULL) update_check_start(game_dir, DW3_LAUNCHER_VERSION, c.update_check); /* never in a test run */
+    if (kind == PLAT_NULL) update_asked = 1;
     if (kind != PLAT_NULL) selfupd_cleanup(exe_dir); /* what an earlier update left in its working folder */
 #endif
     trans_from = malloc((size_t)ui_w * ui_h * sizeof(uint32_t));
@@ -2892,6 +2926,7 @@ int main(int argc, char **argv) {
      * still happens (the backup, the cloud sync, a save conflict's screen); a missing disc or game lands on the
      * menu's own screens, and a normal end of the game ends the launcher, as after PLAY. */
     if (play_now && kind != PLAT_NULL) {
+        update_asked = 1; /* "Skip" means no menu in between */
         screen = S_HOME;
         cur_screen = S_HOME;
         cur_y = (float)row_target_y(S_HOME, 0);

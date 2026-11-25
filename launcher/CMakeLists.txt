@@ -16,13 +16,13 @@ message(STATUS "SDL3 ${SDL3_VERSION}: ${SDL3_DIR}")
 add_executable(dw2003-launcher main.c ui.c plat.c cfg.c migrate.c loading.c cloud.c sha256.c update.c selfupdate.c assets/assets.c)
 
 # The running build's version for the update notice (update.h): a release's X.Y.Z, from the tag the packaging scripts
-# export as PSXSTACK_VERSION; any other build is "dev", which never asks.
+# export as DW3_VERSION (the launcher's own variable: PSXSTACK_VERSION is the psxstack's); any other build is "dev", which never asks.
 set(DW3_LAUNCHER_VERSION "dev")
-if("$ENV{PSXSTACK_VERSION}" MATCHES "^v?([0-9]+[.][0-9]+[.][0-9]+)$")
+if("$ENV{DW3_VERSION}" MATCHES "^v?([0-9]+[.][0-9]+[.][0-9]+)$")
     set(DW3_LAUNCHER_VERSION "${CMAKE_MATCH_1}")
 endif()
-if(DEFINED ENV{PSXSTACK_VERSION} AND NOT "$ENV{PSXSTACK_VERSION}" STREQUAL "")
-    set(DW3_LAUNCHER_STAMP "$ENV{PSXSTACK_VERSION}")
+if(DEFINED ENV{DW3_VERSION} AND NOT "$ENV{DW3_VERSION}" STREQUAL "")
+    set(DW3_LAUNCHER_STAMP "$ENV{DW3_VERSION}")
 else()
     execute_process(
         COMMAND git describe --tags --match "v[0-9]*.[0-9]*.[0-9]*" --always --dirty
