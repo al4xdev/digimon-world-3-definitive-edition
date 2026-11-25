@@ -812,6 +812,8 @@ document.documentElement.classList.add('js');
 <li class="rv"><span class="n">02</span><span><b>Solange er wankt:</b> Triff eine weitere Schwäche, wechsle mit einem kostenlosen Baton Pass den Partner und behalte deinen Zug, oder führe irgendeinen anderen Schlag aus, für einen Bonus, der das Wanken beendet.</span></li>
 <li class="rv"><span class="n">03</span><span><b>OVERFINISH:</b> Besiege ihn mit einem Schlag, der eine weitere Aktion bringt, und er bleibt am Boden. Jeder Treffer auf ihn zahlt Bits.</span></li>
 <li class="rv"><span class="n">04</span><span><b>Physisch ist physisch:</b> Nur Magie trägt ein Element. Eine physische Technik oder ein normaler Angriff trifft nie eine Schwäche, und die Techniklisten zeigen es: eine Faust für einen physischen Schlag, das Bild des Elements für Magie. Die elementaren physischen Angriffe des Originalspiels sind hier Magie.</span></li>
+<li class="rv"><span class="n">05</span><span><b>Statuseffekte, die einen Zug wert sind:</b> Poison, Sleep und Confusion greifen umso öfter, je weiter deine Wisdom die des Ziels übertrifft, und viel öfter bei einem wankenden Ziel. Bosse bekommen sie mit verringerter Chance ab, und Gift beißt jede Runde, bis zu 8% der maximalen HP eines Gegners.</span></li>
+<li class="rv"><span class="n">06</span><span><b>Gegner mit einer eigenen Regel:</b> eine Wache, die nur 30% durchlässt, bis du sie ins Wanken bringst, eine rote Wache, die nur eine Schwäche bricht, eine Schwäche, die alle paar Runden wechselt, doppeltes Tempo. INFO markiert sie mit einem "!" und merkt sich, was du lernst.</span></li>
 </ul>
 </div>
 <!-- Interactive demo. The rules mirror docs/definitive-edition/combat.md in miniature; numbers are illustrative. -->
@@ -837,7 +839,7 @@ document.documentElement.classList.add('js');
 </div>
 <div aria-hidden="true" class="fx" id="fx"></div>
 </div>
-<div aria-label="Inspect: was du über den Gegner weißt" class="intel" id="intel"></div>
+<div aria-label="INFO: was du über den Gegner weißt" class="intel" id="intel"></div>
 <div aria-label="Elementtechniken" class="moves" id="moves" role="group"></div>
 <div class="arena-foot">
 <button class="btn ghost small" disabled="" id="baton">Baton Pass</button>
@@ -891,7 +893,7 @@ document.documentElement.classList.add('js');
 <div class="panel tile rv" style="--d:.16s"><div class="big">4.</div><p>Drei unvollkommene Trainingseinheiten, und die vierte gelingt in jeder Runde.</p></div>
 <div class="panel tile rv"><div class="big">15</div><p>Card Booster fallen zu je 15. Der Deckbau braucht keinen zweiten Durchlauf mehr.</p></div>
 <div class="panel tile rv" style="--d:.08s"><div class="big">Hard</div><p>Hard Mode bei New Game: zwei Digimon statt drei, das ganze Spiel lang.</p></div>
-<div class="panel tile rv" style="--d:.16s"><div class="big">+50%</div><p>Super Hard, jederzeit: Trage den Demon Bell für zähere, schnellere Gegner, die doppelt zahlen.</p></div>
+<div class="panel tile rv" style="--d:.16s"><div class="big">+50%</div><p>Super Hard, jederzeit: Trage den Demon Bell bei dir, für härtere, schnellere Gegner, die doppelt so viele Bits und doppelte Erfahrung zahlen.</p></div>
 </div>
 </div>
 </section>
@@ -924,8 +926,8 @@ document.documentElement.classList.add('js');
 </div>
 <div class="econ">
 <div class="panel card rv"><span class="tag">Materialien → Ausrüstung</span><h3>Die Schmiede</h3><p>Waffen, Rüstungen und Accessoires jedes Ladens verlangen die Materialien der Regionen in der Umgebung. 41 Varianten, um einen Stil herum gebaut: Speed, Elemental, Tank, Trade-off.</p></div>
-<div class="panel card rv" style="--d:.08s"><span class="tag">Cores → Legenden</span><h3>Der Black Market</h3><p>Tausche einen Core gegen zwölf gewöhnliche, oder die Cores zweier Bosse gegen eine von sechzehn Repliken, die kein Laden je verkauft hat. Und ganz am Ende der Liste ein Zeichen, das jeder Jäger will.</p></div>
-<div class="panel card rv" style="--d:.16s"><span class="tag">Champion → Mega</span><h3>Das DRI Gauntlet</h3><p>Die DRI Agents spielen klassische Tamer-Kämpfe nach: ein Kampf, drei Stufen, ein DIGIVOLVE! dazwischen, und ein Power-Accessoire für jede Stufe, die du bezwingst.</p></div>
+<div class="panel card rv" style="--d:.08s"><span class="tag">Cores → Legenden</span><h3>Der Black Market</h3><p>Tausche einen Core gegen zwölf gewöhnliche, oder die Cores zweier Bosse gegen eine von 32 Repliken, die nie ein Laden verkauft hat, bis hin zu fünf ultimativen Waffen. Und ganz am Ende der Liste ein Zeichen, das jeder Jäger will.</p></div>
+<div class="panel card rv" style="--d:.16s"><span class="tag">Champion → Mega</span><h3>Das DRI Gauntlet</h3><p>Die DRI Agents spielen klassische Tamer-Kämpfe nach: ein Kampf, vier Stufen von Rookie bis Mega, ein DIGIVOLVE! dazwischen und ein Power-Accessoire für den Champion, den Ultimate und den Mega, die du bezwingst.</p></div>
 </div>
 </div>
 </section>
@@ -950,8 +952,8 @@ document.documentElement.classList.add('js');
 <article class="panel guest rv" style="--d:.05s"><span class="when">Der Jagdmeister</span><h3>Sepikmon</h3><p>Super-Rare-Jagden, ihre Kristalle und die Heldenskins, die sie freischalten.</p></article>
 <article class="panel guest rv" style="--d:.1s"><span class="when">Der Hüter von Blast</span><h3>Gennai</h3><p>Die Blast-Quest und die Chosen Evolution. Wenn du ihm vertrauen kannst.</p></article>
 <article class="panel guest rv" style="--d:.15s"><span class="when">Der Demon Bell</span><h3>Guilmon</h3><p>Verwahrt den Bell. Super Hard auf Wunsch.</p></article>
-<article class="panel guest rv"><span class="when">Am Klavier</span><h3>Etemon</h3><p>Er hat diese Musik schon in einem anderen Spiel gehört.</p></article>
-<article class="panel guest rv" style="--d:.05s"><span class="when">Endlich auf der Bühne</span><h3>Das Schwein</h3><p>Ein Darsteller, den das Spiel mitlieferte und nie einsetzte.</p></article>
+<article class="panel guest rv"><span class="when">Am Klavier</span><h3>Etemon</h3><p>Er hat diese Musik schon in einem anderen Spiel gehört und spielt deine eigenen MIDI-Dateien in Zufallskämpfen.</p></article>
+<article class="panel guest rv" style="--d:.05s"><span class="when">Endlich auf der Bühne</span><h3>Das Schwein</h3><p>Ein Darsteller, den das Spiel mitlieferte und nie einsetzte. Verschiebt 100 Punkte von einem Wert auf einen anderen.</p></article>
 <article class="panel guest rv" style="--d:.1s"><span class="when">Sobald du es dir verdient hast</span><h3>Oikawa</h3><p>Hinter dem Tresen: der Black Market.</p></article>
 <article class="panel guest rv" style="--d:.15s"><span class="when">Netzwerk</span><h3>Guardromon</h3><p>Speichere oder teleportiere dich von jedem Guardromon zu denen, die du getroffen hast.</p></article>
 </div>
@@ -968,7 +970,7 @@ document.documentElement.classList.add('js');
 <div class="stat rv"><div class="big" data-count="111">0</div><p>Szenen, in denen der Held mit eigenen Worten antwortet</p></div>
 <div class="stat rv" style="--d:.1s"><div class="big">~<span data-count="600">0</span></div><p>spätere Zeilen, die sich je nach deiner Wahl ändern</p></div>
 </div>
-<p class="lede rv">An ein paar Wendepunkten zieht Igor dich allein in den Raum und stellt dir eine Frage. Es gibt keine falsche Antwort, und er merkt sich, was du gesagt hast. Das englische Drehbuch wurde neu geschrieben: die kindischen Zeilen erwachsen geworden, die Quests unangetastet.</p>
+<p class="lede rv">An ein paar Wendepunkten zieht Igor dich allein in den Raum und fragt dich etwas. Es gibt keine falsche Antwort, und er merkt sich, was du gesagt hast. Das Drehbuch wurde auf Englisch und Portugiesisch neu geschrieben: die kindischen Zeilen erwachsen, die Quests unangetastet.</p>
 <div aria-hidden="true" class="devslot" data-ch="story"></div>
 </div>
 <div class="panel hero-pick rv">
@@ -1025,7 +1027,7 @@ document.documentElement.classList.add('js');
 <div class="wrap">
 <span class="kicker rv">Kapitel 08 · Überall spielen</span>
 <h2 class="rv" data-scramble="">Ein Spielstand.<br/><em>Jeder Bildschirm.</em></h2>
-<p class="lede rv">Ohne Emulator: Das Spiel ist nach C dekompiliert und nativ neu gebaut. 16:9-Widescreen, ein GPU-Renderer mit Shadern und kostenlose <b>Cross-Play-Cloud-Spielstände</b>, die deine Memory Card zwischen Handheld, Handy und PC auf dem gleichen Stand halten.</p>
+<p class="lede rv">Kein Emulator: Das Spiel ist nach C dekompiliert und nativ neu gebaut. Widescreen, das deinem Bildschirm folgt, ein GPU-Renderer mit Shadern und kostenlose <b>Cross-Play-Cloud-Spielstände</b>, die deine Memory Card zwischen Handheld, Handy und PC synchron halten.</p>
 <div aria-hidden="true" class="devslot" data-ch="anywhere"></div>
 <div aria-hidden="true" class="devices rv">
 <div class="dev hh"><div class="scr"><img alt="" height="720" loading="lazy" src="/assets/shots/guide-quest.png" width="960"/></div><span class="lbl">Handheld</span></div>
@@ -1035,14 +1037,14 @@ document.documentElement.classList.add('js');
 <p aria-hidden="true" class="sync rv"><i></i>Cloud Sync · 6-stellige Kopplung<i></i></p>
 <div class="platforms">
 <div class="panel card rv"><span class="tag">PortMaster · im Test</span><h3>RK3326-Handhelds</h3><p>XF35H, R36S und ähnliche Geräte. Von Anfang bis Ende auf einem echten XF35H abgestimmt: direkte Framebuffer-Ausgabe, GLES-Renderer, Videos in voller Geschwindigkeit, die LED-Leiste.</p></div>
-<div class="panel card rv" style="--d:.08s"><span class="tag">AppImage · .zip</span><h3>Windows, Linux &amp; Steam Deck</h3><p>SDL3-GPU-Renderer (Vulkan, D3D12), HighDPI-Vollbild, Skalierung FILL oder INTEGER, Filter SHARP / SCANLINES / CRT / SMOOTH, Vorspulen bis 8×.</p></div>
+<div class="panel card rv" style="--d:.08s"><span class="tag">AppImage · .zip</span><h3>Windows, Linux &amp; Steam Deck</h3><p>SDL3-GPU-Renderer (Vulkan, D3D12), HighDPI-Vollbild, interne Auflösung bis 8× (standardmäßig 3×), FILL- oder INTEGER-Skalierung, Filter SHARP / SCANLINES / CRT / SMOOTH, Vorspulen bis 8× und ein Launcher, der sich selbst aktualisiert.</p></div>
 <div class="panel card rv" style="--d:.16s"><span class="tag">arm64 · Android 7+</span><h3>Android</h3><p>Große Touch-Steuerelemente, die du verschieben, skalieren oder ausblenden kannst, jedes USB- oder Bluetooth-Gamepad und eine Disc-Auswahl, die dein Image in die App kopiert.</p></div>
 </div>
 <ul class="qol">
 <li class="rv"><b>GUIDE:</b> dein aktueller Hauptquest-Schritt, die offenen Nebenmissionen und alle sechzehn Asuka-Auktionen.</li>
 <li class="rv"><b>Overlevel Rush:</b> überspring die leichten Kämpfe, während du weiterläufst, und behalte die Belohnungen.</li>
-<li class="rv"><b>Ein Kampf-HUD mit einer Taste pro Aktion,</b> umbelegbar, mit Tastensymbolen passend zu deinem Controller.</li>
-<li class="rv"><b>60-Hz-Modus:</b> Die europäische Disc läuft mit 50 Hz; der geschwindigkeitskompensierte 60-Hz-Modus ist nur eine Einstellung entfernt.</li>
+<li class="rv"><b>Ein Kampf-HUD mit einer Taste pro Aktion,</b> umbelegbar, mit Tastensymbolen passend zu deinem Controller; Kampftext hält den Kampf nie an.</li>
+<li class="rv"><b>60 Hz als Standard:</b> Die europäische Disc läuft mit 50 Hz; die spieleigenen, geschwindigkeitskompensierten 60 Hz sind von Anfang an aktiv.</li>
 </ul>
 </div>
 </section>
@@ -1069,7 +1071,7 @@ document.documentElement.classList.add('js');
 <ol>
 <li><span>Lade oben den Build für dein System herunter. Entpacke unter Windows die <b>.zip</b> und starte <code>dw2003-launcher.exe</code>; unter Linux machst du das <b>AppImage</b> ausführbar und startest es.</span></li>
 <li><span>Wähle beim ersten Start deine <code>.cue</code> / <code>.bin</code>. Jederzeit änderbar unter <b>GAME › DISC IMAGE</b>.</span></li>
-<li><span>Öffne <b>VIDEO</b> für Widescreen 16:9, Vollbild, Skalierung FILL oder INTEGER, den GPU-Renderer und die Filter.</span></li>
+<li><span>Öffne <b>VIDEO</b> für Widescreen, Vollbild, FILL- oder INTEGER-Skalierung, die interne Auflösung, den GPU-Renderer und die Filter.</span></li>
 </ol>
 </div>
 <div aria-labelledby="t-and" class="panel tabpanel" hidden="" id="p-and" role="tabpanel">
@@ -1126,9 +1128,7 @@ document.documentElement.classList.add('js');
 <p class="rv" style="color:var(--muted)">Das Spiel ist von Anfang bis Ende spielbar, und jedes oben beschriebene System ist umgesetzt. Es ist aber auch jung: Rechne mit Ecken und Kanten und häufigen Hotfixes.</p>
 <ul class="left">
 <li class="rv"><b>Übersetzungen.</b> Der eigene Text der Definitive Edition liegt in allen sechs Sprachen vor, wurde aber noch nicht von Muttersprachlern im Spiel gelesen. Die neu geschriebene Story gibt es nur auf Englisch und Portugiesisch.</li>
-<li class="rv"><b>Spielbalance.</b> Bisher rechnerisch ausbalanciert und per Hotfix nachjustiert, während ich es parallel durchspiele.</li>
-<li class="rv"><b>Spezialangriffe.</b> Werden bei einigen Formen im DRI Gauntlet und im Läuterungssimulator der Auserwählten Evolution noch abgestimmt.</li>
-<li class="rv"><b>Playtest.</b> Die Auserwählte Evolution und einige geheime Endgame-Kämpfe werden noch verfeinert.</li>
+<li class="rv"><b>Balance.</b> Bisher nur rechnerisch ausbalanciert und per Hotfix während eines parallelen Durchgangs nachjustiert, die Auserwählte Evolution und die geheimen Endgame-Kämpfe eingeschlossen.</li>
 <li class="rv"><b>Andere Geräte.</b> Abgestimmt auf dem XF35H und dem PC. Berichte von anderer Hardware helfen sehr.</li>
 </ul>
 </div>
@@ -1189,7 +1189,7 @@ document.documentElement.classList.add('js');
 "combat.weakFound": "{name}: eine Schwäche! Er gerät ins Wanken, und du bist wieder dran.",
 "combat.weakPaid": "Immer noch schwach, aber diese Familie hat in dieser Runde schon ausgezahlt.",
 "combat.resistStagger": "Resistiert, und das Wanken endet.",
-"combat.resist": "Resistiert. Inspect merkt sich das.",
+"combat.resist": "Resistiert. INFO merkt sich das.",
 "combat.bonus": "Ein Schlag auf einen wankenden Gegner: Bonusschaden, und das Wanken endet.",
 "combat.neutral": "Neutral. Keine Reaktion.",
 "combat.koOver": "Besiegt, mit einer Aktion übrig. Schlag noch mal zu!",

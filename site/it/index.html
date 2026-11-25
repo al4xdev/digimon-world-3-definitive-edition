@@ -812,6 +812,8 @@ document.documentElement.classList.add('js');
 <li class="rv"><span class="n">02</span><span><b>Finché è stordito:</b> colpisci un'altra debolezza, cambia partner con un Baton Pass gratuito mantenendo il tuo turno, oppure assesta un colpo qualsiasi per un bonus che pone fine allo stordimento.</span></li>
 <li class="rv"><span class="n">03</span><span><b>OVERFINISH:</b> manda KO il nemico con un colpo che ha dato un'azione in più e lui resta a terra. Ogni colpo che lo raggiunge paga Bits.</span></li>
 <li class="rv"><span class="n">04</span><span><b>Il fisico è fisico:</b> solo la magia ha un elemento. Una tecnica fisica o un attacco normale non colpisce mai un punto debole, e gli elenchi delle tecniche lo mostrano: un pugno per un colpo fisico, l'immagine dell'elemento per la magia. I colpi fisici elementali del gioco originale qui sono magia.</span></li>
+<li class="rv"><span class="n">05</span><span><b>Status che valgono un turno:</b> Poison, Sleep e Confusion entrano più spesso quanto più la tua Wisdom supera quella del bersaglio, e molto di più su uno stordito. I boss li subiscono con probabilità ridotta, e il veleno morde ogni turno, fino all'8% degli HP massimi di un nemico.</span></li>
+<li class="rv"><span class="n">06</span><span><b>Nemici con una regola tutta loro:</b> una guardia che lascia passare solo il 30% finché non lo stordisci, una guardia rossa che solo una debolezza spezza, una debolezza che cambia ogni pochi turni, velocità doppia. INFO li segna con un "!" e ricorda ciò che impari.</span></li>
 </ul>
 </div>
 <!-- Interactive demo. The rules mirror docs/definitive-edition/combat.md in miniature; numbers are illustrative. -->
@@ -837,7 +839,7 @@ document.documentElement.classList.add('js');
 </div>
 <div aria-hidden="true" class="fx" id="fx"></div>
 </div>
-<div aria-label="Inspect: cosa sai del nemico" class="intel" id="intel"></div>
+<div aria-label="INFO: ciò che sai del nemico" class="intel" id="intel"></div>
 <div aria-label="Tecniche elementali" class="moves" id="moves" role="group"></div>
 <div class="arena-foot">
 <button class="btn ghost small" disabled="" id="baton">Baton Pass</button>
@@ -891,7 +893,7 @@ document.documentElement.classList.add('js');
 <div class="panel tile rv" style="--d:.16s"><div class="big">4ª</div><p>Tre sessioni di addestramento imperfette e la quarta riesce a ogni round.</p></div>
 <div class="panel tile rv"><div class="big">15</div><p>I card booster cadono a quindici alla volta. Costruire un mazzo non richiede più una seconda partita.</p></div>
 <div class="panel tile rv" style="--d:.08s"><div class="big">Hard</div><p>Hard Mode a New Game: due Digimon invece di tre, per tutto il gioco.</p></div>
-<div class="panel tile rv" style="--d:.16s"><div class="big">+50%</div><p>Super Hard, in qualsiasi momento: porta con te il Demon Bell per nemici più duri e veloci che pagano il doppio.</p></div>
+<div class="panel tile rv" style="--d:.16s"><div class="big">+50%</div><p>Super Hard, in qualsiasi momento: porta il Demon Bell per nemici più duri e veloci che pagano il doppio di Bits ed esperienza.</p></div>
 </div>
 </div>
 </section>
@@ -924,8 +926,8 @@ document.documentElement.classList.add('js');
 </div>
 <div class="econ">
 <div class="panel card rv"><span class="tag">Materiali → equipaggiamento</span><h3>La fucina</h3><p>Armi, armature e accessori di ogni negozio chiedono i materiali delle regioni circostanti. 41 varianti costruite attorno a uno stile: Speed, Elemental, Tank, Trade-off.</p></div>
-<div class="panel card rv" style="--d:.08s"><span class="tag">Core → leggende</span><h3>Il Black Market</h3><p>Scambia un Core con dodici comuni, oppure i Core di due boss con una delle sedici repliche che nessun negozio ha mai venduto. E in fondo alla lista, un segno che ogni cacciatore desidera.</p></div>
-<div class="panel card rv" style="--d:.16s"><span class="tag">Da Champion a Mega</span><h3>Il DRI Gauntlet</h3><p>I DRI Agents rigiocano battaglie classiche dei Tamer: uno scontro, tre fasi, un DIGIVOLVE! in mezzo, e un accessorio Power per ogni fase che abbatti.</p></div>
+<div class="panel card rv" style="--d:.08s"><span class="tag">Core → leggende</span><h3>Il Black Market</h3><p>Scambia un Core con dodici comuni, oppure i Core di due boss con una di 32 repliche che nessun negozio ha mai venduto, fino a cinque armi supreme. E in fondo alla lista, un segno che ogni cacciatore desidera.</p></div>
+<div class="panel card rv" style="--d:.16s"><span class="tag">Da Champion a Mega</span><h3>Il DRI Gauntlet</h3><p>I DRI Agents rigiocano battaglie classiche dei Tamer: uno scontro, quattro fasi da Rookie a Mega, un DIGIVOLVE! in mezzo, e un accessorio Power per il Champion, l'Ultimate e il Mega che abbatti.</p></div>
 </div>
 </div>
 </section>
@@ -950,8 +952,8 @@ document.documentElement.classList.add('js');
 <article class="panel guest rv" style="--d:.05s"><span class="when">Il maestro delle cacce</span><h3>Sepikmon</h3><p>Le cacce Super Rare, i loro cristalli e le skin da eroe che sbloccano.</p></article>
 <article class="panel guest rv" style="--d:.1s"><span class="when">Il custode del Blast</span><h3>Gennai</h3><p>La missione del Blast e la Chosen Evolution. Se ti puoi fidare di lui.</p></article>
 <article class="panel guest rv" style="--d:.15s"><span class="when">Il Demon Bell</span><h3>Guilmon</h3><p>Custodisce il Demon Bell. Super Hard su richiesta.</p></article>
-<article class="panel guest rv"><span class="when">Al pianoforte</span><h3>Etemon</h3><p>Ha già sentito questa musica in un altro gioco.</p></article>
-<article class="panel guest rv" style="--d:.05s"><span class="when">Finalmente sul palco</span><h3>Il maiale</h3><p>Un attore che il gioco includeva e non ha mai usato.</p></article>
+<article class="panel guest rv"><span class="when">Al pianoforte</span><h3>Etemon</h3><p>Ha già sentito questa musica in un altro gioco, e suona i tuoi file MIDI nelle battaglie casuali.</p></article>
+<article class="panel guest rv" style="--d:.05s"><span class="when">Finalmente sul palco</span><h3>Il maiale</h3><p>Un attore che il gioco includeva e non ha mai usato. Sposta 100 punti da una statistica a un'altra.</p></article>
 <article class="panel guest rv" style="--d:.1s"><span class="when">Quando te lo sarai guadagnato</span><h3>Oikawa</h3><p>Dietro il bancone: il Black Market.</p></article>
 <article class="panel guest rv" style="--d:.15s"><span class="when">Rete</span><h3>Guardromon</h3><p>Salva o teletrasportati da qualsiasi Guardromon verso quelli che hai incontrato.</p></article>
 </div>
@@ -968,7 +970,7 @@ document.documentElement.classList.add('js');
 <div class="stat rv"><div class="big" data-count="111">0</div><p>scene in cui l'eroe risponde con parole proprie</p></div>
 <div class="stat rv" style="--d:.1s"><div class="big">~<span data-count="600">0</span></div><p>battute successive che cambiano in base a ciò che hai scelto</p></div>
 </div>
-<p class="lede rv">In alcuni punti di svolta Igor ti trascina da solo nella stanza e ti pone una domanda. Non esiste una risposta sbagliata, e lui ricorda quello che hai detto. La sceneggiatura inglese è stata riscritta: le battute infantili sono cresciute, le missioni sono intatte.</p>
+<p class="lede rv">In alcuni punti di svolta Igor ti trascina da solo nella stanza e ti chiede qualcosa. Non c'è una risposta sbagliata, e lui ricorda ciò che hai detto. La sceneggiatura è stata riscritta in inglese e portoghese: le battute infantili sono cresciute, le missioni intatte.</p>
 <div aria-hidden="true" class="devslot" data-ch="story"></div>
 </div>
 <div class="panel hero-pick rv">
@@ -1025,7 +1027,7 @@ document.documentElement.classList.add('js');
 <div class="wrap">
 <span class="kicker rv">Capitolo 08 · Gioca ovunque</span>
 <h2 class="rv" data-scramble="">Un salvataggio.<br/><em>Ogni schermo.</em></h2>
-<p class="lede rv">Senza emulatore: il gioco è decompilato in C e ricostruito in nativo. Widescreen 16:9, renderer GPU con shader e <b>salvataggi cloud cross-play</b> gratuiti che tengono allineata la tua memory card tra un portatile, un telefono e un PC.</p>
+<p class="lede rv">Nessun emulatore: il gioco è decompilato in C e ricostruito in modo nativo. Widescreen che segue il tuo schermo, un renderer GPU con shader e <b>salvataggi cloud cross-play</b> gratuiti che tengono allineata la tua memory card tra una console portatile, un telefono e un PC.</p>
 <div aria-hidden="true" class="devslot" data-ch="anywhere"></div>
 <div aria-hidden="true" class="devices rv">
 <div class="dev hh"><div class="scr"><img alt="" height="720" loading="lazy" src="/assets/shots/guide-quest.png" width="960"/></div><span class="lbl">Portatili</span></div>
@@ -1035,14 +1037,14 @@ document.documentElement.classList.add('js');
 <p aria-hidden="true" class="sync rv"><i></i>Cloud Sync · abbinamento a 6 cifre<i></i></p>
 <div class="platforms">
 <div class="panel card rv"><span class="tag">PortMaster · in fase di test</span><h3>Portatili RK3326</h3><p>XF35H, R36S e dispositivi simili. Ottimizzato da cima a fondo su un vero XF35H: framebuffer diretto, renderer GLES, filmati a piena velocità, la barra LED.</p></div>
-<div class="panel card rv" style="--d:.08s"><span class="tag">AppImage · .zip</span><h3>Windows, Linux e Steam Deck</h3><p>Renderer GPU SDL3 (Vulkan, D3D12), schermo intero HighDPI, ridimensionamento FILL o INTEGER, filtri SHARP / SCANLINES / CRT / SMOOTH, avanzamento rapido fino a 8×.</p></div>
+<div class="panel card rv" style="--d:.08s"><span class="tag">AppImage · .zip</span><h3>Windows, Linux e Steam Deck</h3><p>Renderer GPU SDL3 (Vulkan, D3D12), schermo intero HighDPI, risoluzione interna fino a 8× (3× di default), ridimensionamento FILL o INTEGER, filtri SHARP / SCANLINES / CRT / SMOOTH, avanzamento rapido fino a 8×, e un launcher che si aggiorna da solo.</p></div>
 <div class="panel card rv" style="--d:.16s"><span class="tag">arm64 · Android 7+</span><h3>Android</h3><p>Grandi controlli touch che puoi spostare, ridimensionare o nascondere, qualsiasi controller USB o Bluetooth e un selettore del disco che copia la tua immagine dentro l'app.</p></div>
 </div>
 <ul class="qol">
 <li class="rv"><b>GUIDE:</b> il passo attuale della missione principale, le missioni secondarie aperte e tutte e sedici le aste di Asuka.</li>
 <li class="rv"><b>Overlevel Rush:</b> salta gli scontri facili mentre continui a camminare, e tieni le ricompense.</li>
-<li class="rv"><b>Un HUD di battaglia con un tasto per ogni azione,</b> riassegnabile, con glifi che corrispondono al tuo pad.</li>
-<li class="rv"><b>Modalità 60 Hz:</b> il disco europeo gira a 50 Hz; la modalità a 60 Hz con velocità compensata è a una sola impostazione di distanza.</li>
+<li class="rv"><b>Un HUD di battaglia con un tasto per ogni azione,</b> riassegnabile, con glifi che corrispondono al tuo pad; il testo di battaglia non ferma mai lo scontro.</li>
+<li class="rv"><b>60 Hz di default:</b> il disco europeo gira a 50 Hz; i 60 Hz del gioco stesso, con velocità compensata, sono attivi fin dall'inizio.</li>
 </ul>
 </div>
 </section>
@@ -1069,7 +1071,7 @@ document.documentElement.classList.add('js');
 <ol>
 <li><span>Scarica qui sopra la versione per il tuo sistema. Su Windows, decomprimi lo <b>.zip</b> ed esegui <code>dw2003-launcher.exe</code>; su Linux, rendi eseguibile l'<b>AppImage</b> ed eseguila.</span></li>
 <li><span>Scegli il tuo <code>.cue</code> / <code>.bin</code> al primo avvio. Lo cambi quando vuoi in <b>GAME › DISC IMAGE</b>.</span></li>
-<li><span>Apri <b>VIDEO</b> per widescreen 16:9, schermo intero, ridimensionamento FILL o INTEGER, il renderer GPU e i filtri.</span></li>
+<li><span>Apri <b>VIDEO</b> per il widescreen, lo schermo intero, il ridimensionamento FILL o INTEGER, la risoluzione interna, il renderer GPU e i filtri.</span></li>
 </ol>
 </div>
 <div aria-labelledby="t-and" class="panel tabpanel" hidden="" id="p-and" role="tabpanel">
@@ -1126,9 +1128,7 @@ document.documentElement.classList.add('js');
 <p class="rv" style="color:var(--muted)">Il gioco è giocabile dall'inizio alla fine e ogni sistema descritto sopra è implementato. È anche giovane: aspettati qualche spigolo e hotfix frequenti.</p>
 <ul class="left">
 <li class="rv"><b>Traduzioni.</b> Il testo proprio della Definitive Edition è in tutte e sei le lingue, ma non è ancora stato letto in gioco da madrelingua. La storia riscritta esiste solo in inglese e portoghese.</li>
-<li class="rv"><b>Bilanciamento.</b> Finora bilanciato solo a calcolo, e rifinito con hotfix durante una partita in parallelo.</li>
-<li class="rv"><b>Attacchi speciali.</b> Ancora in regolazione per alcune forme nel DRI Gauntlet e nel simulatore di purificazione dell'Evoluzione Scelta.</li>
-<li class="rv"><b>Playtest.</b> L'Evoluzione Scelta e alcune battaglie segrete di fine gioco sono ancora in rifinitura.</li>
+<li class="rv"><b>Bilanciamento.</b> Finora bilanciato solo a calcolo, e regolato con hotfix durante una partita in parallelo, l'Evoluzione Scelta e le battaglie segrete di fine gioco comprese.</li>
 <li class="rv"><b>Altri dispositivi.</b> Ottimizzato su XF35H e PC. Le segnalazioni da altro hardware aiutano molto.</li>
 </ul>
 </div>
@@ -1189,7 +1189,7 @@ document.documentElement.classList.add('js');
 "combat.weakFound": "{name}: un punto debole! È stordito e agisci di nuovo.",
 "combat.weakPaid": "Ancora debole, ma questa famiglia ha già pagato in questo round.",
 "combat.resistStagger": "Resistito, e lo stordimento finisce.",
-"combat.resist": "Resistito. Inspect lo ricorda.",
+"combat.resist": "Resistito. INFO lo ricorda.",
 "combat.bonus": "Un colpo a un nemico stordito: danno bonus, e lo stordimento finisce.",
 "combat.neutral": "Neutro. Nessuna reazione.",
 "combat.koOver": "KO con un'azione da spendere. Colpiscilo ancora!",

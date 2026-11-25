@@ -728,6 +728,8 @@ document.documentElement.classList.add('js');
           <li class="rv"><span class="n">02</span><span><b>While it is staggered:</b> hit another weakness, Baton Pass to a partner for free and keep your turn, or land any blow for a bonus that ends the stagger.</span></li>
           <li class="rv"><span class="n">03</span><span><b>OVERFINISH:</b> knock it out with a blow that earned one more action and it stays down. Every hit on it pays Bits.</span></li>
           <li class="rv"><span class="n">04</span><span><b>Physical is physical:</b> only magic carries an element. A physical technique or a basic attack never hits a weakness, and the technique lists show it: a fist for a physical blow, the element's picture for magic. The original game's elemental physical moves are magic here.</span></li>
+          <li class="rv"><span class="n">05</span><span><b>Status worth a turn:</b> Poison, Sleep and Confusion land more the more your Wisdom passes the target's, and far more on a staggered one. Bosses take them at a reduced chance, and Poison bites every turn, up to 8% of an enemy's max HP.</span></li>
+          <li class="rv"><span class="n">06</span><span><b>Enemies with a rule of their own:</b> a guard that lets 30% through until you stagger it, a red guard only a weakness breaks, a weakness that shifts every few turns, double speed. INFO marks them with a "!" and remembers what you learn.</span></li>
         </ul>
       </div>
 
@@ -754,7 +756,7 @@ document.documentElement.classList.add('js');
           </div>
           <div class="fx" id="fx" aria-hidden="true"></div>
         </div>
-        <div class="intel" id="intel" aria-label="Inspect: what you know about the enemy"></div>
+        <div class="intel" id="intel" aria-label="INFO: what you know about the enemy"></div>
         <div class="moves" id="moves" role="group" aria-label="Elemental techniques"></div>
         <div class="arena-foot">
           <button class="btn ghost small" id="baton" disabled>Baton Pass</button>
@@ -810,7 +812,7 @@ document.documentElement.classList.add('js');
       <div class="panel tile rv" style="--d:.16s"><div class="big">4th</div><p>Three imperfect training sessions and the fourth succeeds on every round.</p></div>
       <div class="panel tile rv"><div class="big">15</div><p>Card boosters drop fifteen at a time. A deck no longer takes a second playthrough.</p></div>
       <div class="panel tile rv" style="--d:.08s"><div class="big">Hard</div><p>Hard Mode on New Game: two Digimon instead of three, the whole way through.</p></div>
-      <div class="panel tile rv" style="--d:.16s"><div class="big">+50%</div><p>Super Hard, any time: carry the Demon Bell for tougher, faster enemies that pay double.</p></div>
+      <div class="panel tile rv" style="--d:.16s"><div class="big">+50%</div><p>Super Hard, any time: carry the Demon Bell for tougher, faster enemies that pay double Bits and experience.</p></div>
     </div>
   </div>
 </section>
@@ -844,8 +846,8 @@ document.documentElement.classList.add('js');
     </div>
     <div class="econ">
       <div class="panel card rv"><span class="tag">Materials → gear</span><h3>The forge</h3><p>Every shop's weapons, armour and accessories ask for the materials of the regions around it. 41 variants built around a style: Speed, Elemental, Tank, Trade-off.</p></div>
-      <div class="panel card rv" style="--d:.08s"><span class="tag">Cores → legends</span><h3>The Black Market</h3><p>Trade a Core for twelve commons, or two bosses' Cores for one of sixteen replicas no shop ever sold. And at the end of the list, a mark every hunter wants.</p></div>
-      <div class="panel card rv" style="--d:.16s"><span class="tag">Champion → Mega</span><h3>The DRI Gauntlet</h3><p>The DRI Agents replay classic Tamers' battles: one fight, three stages, a DIGIVOLVE! between them, and a Power accessory for every stage you fell.</p></div>
+      <div class="panel card rv" style="--d:.08s"><span class="tag">Cores → legends</span><h3>The Black Market</h3><p>Trade a Core for twelve commons, or two bosses' Cores for one of 32 replicas no shop ever sold, up to five ultimate weapons. And at the end of the list, a mark every hunter wants.</p></div>
+      <div class="panel card rv" style="--d:.16s"><span class="tag">Champion → Mega</span><h3>The DRI Gauntlet</h3><p>The DRI Agents replay classic Tamers' battles: one fight, four stages from Rookie to Mega, a DIGIVOLVE! between them, and a Power accessory for the Champion, the Ultimate and the Mega you fell.</p></div>
     </div>
   </div>
 </section>
@@ -871,8 +873,8 @@ document.documentElement.classList.add('js');
       <article class="panel guest rv" style="--d:.05s"><span class="when">The hunts' master</span><h3>Sepikmon</h3><p>Super Rare hunts, their crystals, and the hero skins they unlock.</p></article>
       <article class="panel guest rv" style="--d:.1s"><span class="when">The keeper of Blast</span><h3>Gennai</h3><p>The Blast quest and the Chosen Evolution. If you can trust him.</p></article>
       <article class="panel guest rv" style="--d:.15s"><span class="when">The Demon Bell</span><h3>Guilmon</h3><p>Keeps the bell. Super Hard, on demand.</p></article>
-      <article class="panel guest rv"><span class="when">At the piano</span><h3>Etemon</h3><p>He has heard this music in another game.</p></article>
-      <article class="panel guest rv" style="--d:.05s"><span class="when">Finally on stage</span><h3>The pig</h3><p>An actor the game shipped and never used.</p></article>
+      <article class="panel guest rv"><span class="when">At the piano</span><h3>Etemon</h3><p>He has heard this music in another game, and plays your own MIDI files in random battles.</p></article>
+      <article class="panel guest rv" style="--d:.05s"><span class="when">Finally on stage</span><h3>The pig</h3><p>An actor the game shipped and never used. Moves 100 points from one stat to another.</p></article>
       <article class="panel guest rv" style="--d:.1s"><span class="when">Once you earn it</span><h3>Oikawa</h3><p>Behind the counter: the Black Market.</p></article>
       <article class="panel guest rv" style="--d:.15s"><span class="when">Network</span><h3>Guardromon</h3><p>Save or teleport from any Guardromon to the ones you have met.</p></article>
     </div>
@@ -890,7 +892,7 @@ document.documentElement.classList.add('js');
           <div class="stat rv"><div class="big" data-count="111">0</div><p>scenes where the hero answers in their own words</p></div>
           <div class="stat rv" style="--d:.1s"><div class="big">~<span data-count="600">0</span></div><p>later lines that change with what you chose</p></div>
         </div>
-        <p class="lede rv">Igor pulls you into the room alone at a few turning points and asks you something. There is no wrong answer, and he remembers what you said. The English script was rewritten: the childish lines grown up, the quests untouched.</p>
+        <p class="lede rv">Igor pulls you into the room alone at a few turning points and asks you something. There is no wrong answer, and he remembers what you said. The script was rewritten in English and Portuguese: the childish lines grown up, the quests untouched.</p>
         <div class="devslot" data-ch="story" aria-hidden="true"></div>
       </div>
       <div class="panel hero-pick rv">
@@ -950,7 +952,7 @@ document.documentElement.classList.add('js');
   <div class="wrap">
     <span class="kicker rv">Chapter 08 · Play anywhere</span>
     <h2 class="rv" data-scramble>One save.<br><em>Every screen.</em></h2>
-    <p class="lede rv">No emulator: the game is decompiled to C and rebuilt natively. Widescreen 16:9, a GPU renderer with shaders, and free <b>cross-play cloud saves</b> that keep your memory card in step between a handheld, a phone and a PC.</p>
+    <p class="lede rv">No emulator: the game is decompiled to C and rebuilt natively. Widescreen that follows your screen, a GPU renderer with shaders, and free <b>cross-play cloud saves</b> that keep your memory card in step between a handheld, a phone and a PC.</p>
     <div class="devslot" data-ch="anywhere" aria-hidden="true"></div>
     <div class="devices rv" aria-hidden="true">
       <div class="dev hh"><div class="scr"><img src="/assets/shots/guide-quest.png" alt="" loading="lazy" width="960" height="720"></div><span class="lbl">Handheld</span></div>
@@ -960,14 +962,14 @@ document.documentElement.classList.add('js');
     <p class="sync rv" aria-hidden="true"><i></i>Cloud Sync · 6-digit pairing<i></i></p>
     <div class="platforms">
       <div class="panel card rv"><span class="tag">PortMaster · in testing</span><h3>RK3326 handhelds</h3><p>XF35H, R36S and friends. Tuned end to end on a real XF35H: direct framebuffer, GLES renderer, full-speed movies, the LED bar.</p></div>
-      <div class="panel card rv" style="--d:.08s"><span class="tag">AppImage · .zip</span><h3>Windows, Linux &amp; Steam Deck</h3><p>SDL3 GPU renderer (Vulkan, D3D12), HighDPI fullscreen, FILL or INTEGER scaling, SHARP / SCANLINES / CRT / SMOOTH filters, fast-forward up to 8×.</p></div>
+      <div class="panel card rv" style="--d:.08s"><span class="tag">AppImage · .zip</span><h3>Windows, Linux &amp; Steam Deck</h3><p>SDL3 GPU renderer (Vulkan, D3D12), HighDPI fullscreen, internal resolution up to 8× (3× by default), FILL or INTEGER scaling, SHARP / SCANLINES / CRT / SMOOTH filters, fast-forward up to 8×, and a launcher that updates itself.</p></div>
       <div class="panel card rv" style="--d:.16s"><span class="tag">arm64 · Android 7+</span><h3>Android</h3><p>Big touch controls you can move, resize or hide, any USB or Bluetooth gamepad, and a disc picker that copies your image into the app.</p></div>
     </div>
     <ul class="qol">
       <li class="rv"><b>GUIDE:</b> your current quest step, open side missions and all sixteen Asuka auctions.</li>
       <li class="rv"><b>Overlevel Rush:</b> skip the easy fights while you keep walking, and keep the rewards.</li>
-      <li class="rv"><b>A battle HUD with a button per action,</b> rebindable, with glyphs that match your pad.</li>
-      <li class="rv"><b>60 Hz mode:</b> the European disc runs at 50 Hz; the speed-compensated 60 Hz is one setting away.</li>
+      <li class="rv"><b>A battle HUD with a button per action,</b> rebindable, with glyphs that match your pad; battle text never stops the fight.</li>
+      <li class="rv"><b>60 Hz by default:</b> the European disc runs at 50 Hz; the game's speed-compensated 60 Hz is on from the start.</li>
     </ul>
   </div>
 </section>
@@ -996,7 +998,7 @@ document.documentElement.classList.add('js');
       <ol>
         <li><span>Download the build for your system above. On Windows, unpack the <b>.zip</b> and run <code>dw2003-launcher.exe</code>; on Linux, make the <b>AppImage</b> executable and run it.</span></li>
         <li><span>Pick your <code>.cue</code> / <code>.bin</code> on first launch. Change it any time under <b>GAME › DISC IMAGE</b>.</span></li>
-        <li><span>Open <b>VIDEO</b> for widescreen 16:9, fullscreen, FILL or INTEGER scaling, the GPU renderer and the filters.</span></li>
+        <li><span>Open <b>VIDEO</b> for widescreen, fullscreen, FILL or INTEGER scaling, the internal resolution, the GPU renderer and the filters.</span></li>
       </ol>
     </div>
     <div class="panel tabpanel" role="tabpanel" id="p-and" aria-labelledby="t-and" hidden>
@@ -1057,9 +1059,7 @@ document.documentElement.classList.add('js');
     <p class="rv" style="color:var(--muted)">The game is playable from start to end and every system above is implemented. It is also young: expect rough edges and frequent hotfixes.</p>
     <ul class="left">
       <li class="rv"><b>Translations.</b> The Definitive Edition's own text is in all six languages, but not yet read in game by native speakers. The rewritten story is in English and Portuguese only.</li>
-      <li class="rv"><b>Balance.</b> Balanced by calculation so far, and tuned by hotfix during a parallel playthrough.</li>
-      <li class="rv"><b>Special attacks.</b> Still being tuned for a few forms in the DRI Gauntlet and the Chosen Evolution purification simulator.</li>
-      <li class="rv"><b>Playtesting.</b> Chosen Evolution and a few secret endgame battles are still being refined.</li>
+      <li class="rv"><b>Balance.</b> Balanced by calculation so far, and tuned by hotfix during a parallel playthrough, the Chosen Evolution and the secret endgame battles included.</li>
       <li class="rv"><b>Other devices.</b> Tuned on the XF35H and PC. Reports from other hardware help a lot.</li>
     </ul>
   </div>
@@ -1122,7 +1122,7 @@ document.documentElement.classList.add('js');
 "combat.weakFound": "{name}: a weakness! It staggers, and you act again.",
 "combat.weakPaid": "Still weak, but this family already paid out this round.",
 "combat.resistStagger": "Resisted, and the stagger ends.",
-"combat.resist": "Resisted. Inspect remembers that.",
+"combat.resist": "Resisted. INFO remembers that.",
 "combat.bonus": "A blow on a staggered foe: bonus damage, and the stagger ends.",
 "combat.neutral": "Neutral. No reaction.",
 "combat.koOver": "Knocked out with an action to spare. Hit it again!",
