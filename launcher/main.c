@@ -429,7 +429,7 @@ static void draw_video(void) {
         "GPU enables widescreen and shaders; SOFTWARE is exact PS1.",
         "GPU screen filter (SHARP keeps crisp pixels).",
         "Draws the game at 1X to 8X the PS1's resolution (GPU only), without dithering.",
-        "Above 1X: PS1 wobbles as the console did; SMOOTH steadies it; + TEXTURES fixes swimming."
+        "Above 1X: PS1 wobbles; SMOOTH steadies 3D; + TEXTURES fixes warping."
     };
     rect(40, 346, W - 80, 1, C_EDGE, 256);
     text(44, 358, desc[sel], 15, C_NOTE);
