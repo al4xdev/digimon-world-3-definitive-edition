@@ -35,10 +35,11 @@ static int android_pick_disc_files(void) { return -1; }
 
 enum {
     S_SPLASH, S_HOME, S_GAME, S_VIDEO, S_HUD, S_CONTROLS, S_SAVES, S_BACKUPS, S_BACKUP_CONFIRM,
-    S_DEBUG, S_BROWSE, S_RESET, S_CLEAN, S_LOADING, S_ERROR,
+    S_DEBUG, S_BROWSE, S_RESET, S_CLEAN, S_LOADING, S_ERROR, S_DISC,
     S_CLOUD, S_PAIR_HOST, S_PAIR_ENTER, S_DEVICES, S_REVOKE_CONFIRM, S_RENEW_CONFIRM, S_CONFLICT, S_CONFLICT_CONFIRM,
     S_SAVE_NOTICE, S_SAVE_NOTICE_CONFIRM
 };
+enum { DISC_OK, DISC_BAD_IMAGE, DISC_BAD_FILE };
 enum { HI_PLAY, HI_GAME, HI_VIDEO, HI_HUD, HI_CONTROLS, HI_SAVES, HI_DEBUG, HI_RESET, HI_COUNT };
 #define HOME_ROW_Y 74
 #define HOME_ROW_STEP 43
@@ -57,7 +58,7 @@ enum { DEBUG_LOGS, DEBUG_SAVE_LOGS, DEBUG_CLEAN_LOGS, DEBUG_UPDATES, DEBUG_N };
 static Cfg c;
 static CloudState cloud;
 static int screen = S_SPLASH, sel, capture, return_screen = S_HOME;
-static int return_sel;
+static int return_sel, disc_bad;
 static char msg[256], status[256], last_err[256];
 static long splash_t0 = -1;
 #define SPLASH_MS 600
@@ -99,6 +100,8 @@ static char pair_done_msg[160];
 
 /* A sync that found cloud and local both changed waits here for the player's choice. */
 static int conflict_ret, conflict_ret_sel, conflict_choice, conflict_sel, conflict_then_play;
+static int conflict_step;
+static long conflict_tap_ms;
 static char conflict_cloud_info[96], conflict_local_info[96];
 #define CONFLICT_PILL_Y 296
 #define CONFLICT_PILL_W 176
@@ -347,10 +350,151 @@ static void conflict_finish(const char *res, int proceed) {
     if (proceed && conflict_then_play) start_game(0);
 }
 
+/* Minimal SHA-1 for pre-launch disc verification on Android (matches psxstack/runtime/disc.c). */
+static void sha1_block(uint32_t h[5], const uint8_t b[64]) {
+    uint32_t w[80];
+    for (int i = 0; i < 16; i++)
+        w[i] = ((uint32_t)b[i * 4] << 24) | ((uint32_t)b[i * 4 + 1] << 16) | ((uint32_t)b[i * 4 + 2] << 8) | b[i * 4 + 3];
+    for (int i = 16; i < 80; i++) {
+        uint32_t t = w[i - 3] ^ w[i - 8] ^ w[i - 14] ^ w[i - 16];
+        w[i] = (t << 1) | (t >> 31);
+    }
+    uint32_t a = h[0], bb = h[1], cc = h[2], d = h[3], e = h[4];
+    for (int i = 0; i < 80; i++) {
+        uint32_t f, k;
+        if (i < 20) { f = (bb & cc) | ((~bb) & d); k = 0x5A827999u; }
+        else if (i < 40) { f = bb ^ cc ^ d; k = 0x6ED9EBA1u; }
+        else if (i < 60) { f = (bb & cc) | (bb & d) | (cc & d); k = 0x8F1BBCDCu; }
+        else { f = bb ^ cc ^ d; k = 0xCA62C1D6u; }
+        uint32_t tmp = ((a << 5) | (a >> 27)) + f + e + k + w[i];
+        e = d; d = cc; cc = (bb << 30) | (bb >> 2); bb = a; a = tmp;
+    }
+    h[0] += a; h[1] += bb; h[2] += cc; h[3] += d; h[4] += e;
+}
+
+static int sha1_file_hex(const char *path, char out[41]) {
+    FILE *f = fopen(path, "rb");
+    if (!f) return -1;
+    uint32_t h[5] = {0x67452301u, 0xEFCDAB89u, 0x98BADCFEu, 0x10325476u, 0xC3D2E1F0u};
+    uint8_t *buf = malloc(65536), tail[128];
+    if (!buf) { fclose(f); return -1; }
+    uint64_t total = 0;
+    size_t rem = 0, r;
+    while ((r = fread(buf, 1, 65536, f)) > 0) {
+        total += r;
+        size_t off = 0;
+        if (rem) {
+            size_t need = 64 - rem;
+            if (r < need) { memcpy(tail + rem, buf, r); rem += r; continue; }
+            memcpy(tail + rem, buf, need);
+            sha1_block(h, tail);
+            off = need; rem = 0;
+        }
+        while (off + 64 <= r) { sha1_block(h, buf + off); off += 64; }
+        if (off < r) { rem = r - off; memcpy(tail, buf + off, rem); }
+    }
+    fclose(f);
+    free(buf);
+    tail[rem++] = 0x80;
+    while ((rem % 64) != 56) tail[rem++] = 0;
+    uint64_t bits = total * 8;
+    for (int i = 7; i >= 0; i--) tail[rem++] = (uint8_t)((bits >> (i * 8)) & 0xFF);
+    for (size_t off = 0; off < rem; off += 64) sha1_block(h, tail + off);
+    snprintf(out, 41, "%08x%08x%08x%08x%08x", h[0], h[1], h[2], h[3], h[4]);
+    return 0;
+}
+
+static int disc_stamp_matches(const char *bin_path, const struct stat *st) {
+    char sp[1024], canon[1400], line[1600];
+    snprintf(sp, sizeof(sp), "%s/dw2003-port/disc-stamps", game_dir);
+    FILE *f = fopen(sp, "r");
+    if (!f) return 0;
+    if (!realpath(bin_path, canon)) snprintf(canon, sizeof(canon), "%.1399s", bin_path);
+    int ok = 0;
+    while (fgets(line, sizeof(line), f)) {
+        char hex[48], cpath[1200];
+        long long sz = 0, sec = 0, nsec = 0;
+        unsigned long long ino = 0, dev = 0;
+        if (sscanf(line, "%40s %lld %lld.%lld %llu %llu %1199[^\r\n]", hex, &sz, &sec, &nsec, &ino, &dev, cpath) == 7) {
+            if (sz == (long long)st->st_size && sec == (long long)st->st_mtime &&
+                ino == (unsigned long long)st->st_ino && dev == (unsigned long long)st->st_dev &&
+                strcmp(cpath, canon) == 0) {
+                ok = 1;
+                break;
+            }
+        }
+    }
+    fclose(f);
+    return ok;
+}
+
+/* Pre-launch disc check on Android: dw3_game_main() runs in-process and port_fatal("disc: ...") calls exit(1).
+ * Catching missing/unverified discs here lets Android open S_DISC ("CHECK YOUR DISC") instead of closing the app. */
+static int disc_check_android(const char *path) {
+    char bin[1400];
+    size_t pl = strlen(path);
+    last_err[0] = 0;
+    if (pl > 4 && strcasecmp(path + pl - 4, ".cue") == 0) {
+        FILE *f = fopen(path, "rb");
+        if (!f) { snprintf(last_err, sizeof(last_err), "cannot open %s", path); return DISC_BAD_FILE; }
+        char line[1024];
+        int found = 0;
+        while (fgets(line, sizeof(line), f)) {
+            char *p = line;
+            while (*p == ' ' || *p == '\t') p++;
+            if (strncmp(p, "FILE", 4) != 0 || (p[4] != ' ' && p[4] != '\t')) continue;
+            p += 5;
+            while (*p == ' ' || *p == '\t') p++;
+            char *name, *end;
+            if (*p == '"') { name = p + 1; end = strchr(name, '"'); }
+            else { name = p; end = strpbrk(name, " \t\r\n"); }
+            if (!end || end == name) break;
+            *end = 0;
+            if (name[0] == '/') snprintf(bin, sizeof(bin), "%s", name);
+            else {
+                const char *sl = strrchr(path, '/');
+                int dl = sl ? (int)(sl - path) + 1 : 0;
+                snprintf(bin, sizeof(bin), "%.*s%s", dl, path, name);
+            }
+            found = 1;
+            break;
+        }
+        fclose(f);
+        if (!found) { snprintf(last_err, sizeof(last_err), "no FILE line in .cue"); return DISC_BAD_FILE; }
+    } else {
+        snprintf(bin, sizeof(bin), "%s", path);
+    }
+    struct stat st;
+    if (stat(bin, &st) != 0 || !S_ISREG(st.st_mode)) {
+        snprintf(last_err, sizeof(last_err), "cannot open %.200s", bin);
+        return DISC_BAD_FILE;
+    }
+    if (st.st_size < 100LL * 1024 * 1024 || (st.st_size % 2352) != 0) return DISC_BAD_IMAGE;
+    if (disc_stamp_matches(bin, &st)) return DISC_OK;
+    busy("VERIFYING THE DISC");
+    char hex[41];
+    if (sha1_file_hex(bin, hex) != 0) {
+        snprintf(last_err, sizeof(last_err), "cannot read %.200s", bin);
+        return DISC_BAD_FILE;
+    }
+    if (strcmp(hex, "457cb233349ba841e03b33d8060f8fbcadd45cb3") == 0 ||
+        strcmp(hex, "fbfd1044e4ae0c6128e2e1a679fb6d72dc954b39") == 0) {
+        return DISC_OK;
+    }
+    return DISC_BAD_IMAGE;
+}
+
 static void start_game(int sync) {
     if (!disc_path[0]) {
         pick_disc_android();
         if (!disc_path[0]) return;
+    }
+    disc_bad = disc_check_android(disc_path);
+    if (disc_bad != DISC_OK) {
+        return_screen = screen;
+        return_sel = sel;
+        go(S_DISC, 0, +1);
+        return;
     }
     {
         char card_p[1024];
@@ -977,6 +1121,30 @@ static void draw_error(void) {
     footer_touch(0, 1, "OK");
 }
 
+static void draw_disc(void) {
+    const int img = disc_bad != DISC_BAD_FILE;
+    header_touch("CHECK YOUR DISC", 1);
+    rrect(36, 86, W - 72, 232, 12, C_PANEL, 256);
+    rrect_line(36, 86, W - 72, 232, 12, C_GOLD);
+    text(56, 102, S(img ? "NOT THE VERIFIED DISC IMAGE" : "THE DISC FILE COULD NOT BE READ"), 19, C_GOLD);
+    if (img) {
+        text(56, 138, S("Nothing broke: the game checks your disc before it starts."), 14, C_TEXT);
+        text(56, 162, S("It plays one exact image: the Redump dump of"), 14, C_TEXT);
+        text(56, 186, S("Digimon World 2003 (Europe), SLES-03936, as .bin + .cue."), 14, C_TEXT);
+        text(56, 210, S("Patched or differently ripped images don't pass."), 14, C_TEXT);
+        text(56, 244, S("Choose that image and press PLAY again."), 14, C_CYAN);
+    } else {
+        text(56, 146, S("It may have been moved or renamed, or its drive unplugged."), 14, C_TEXT);
+        text(56, 182, S("Choose the disc again and press PLAY."), 14, C_CYAN);
+        if (last_err[0]) {
+            char el[72];
+            snprintf(el, sizeof(el), "%.62s%s", last_err, strlen(last_err) > 62 ? "..." : "");
+            text(56, 218, el, 13, C_NOTE);
+        }
+    }
+    footer_touch(0, 1, "CHOOSE DISC");
+}
+
 static void draw_screen(void) {
     if (screen != S_SPLASH && screen != S_LOADING) {
         background((int)(plat_now_ms() & 0x7fffffff));
@@ -1009,6 +1177,7 @@ static void draw_screen(void) {
         break;
     case S_LOADING: draw_loading(); break;
     case S_ERROR: draw_error(); break;
+    case S_DISC: draw_disc(); break;
     case S_CLOUD: draw_cloud(); break;
     case S_PAIR_HOST: draw_pair_host(); break;
     case S_PAIR_ENTER: draw_pair_enter(); break;
@@ -1024,16 +1193,22 @@ static void draw_screen(void) {
                     "Other devices stay on the old one.", "YES, NEW ACCOUNT", "NO, KEEP", C_ORANGE);
         break;
     case S_CONFLICT: draw_conflict(); break;
-    case S_CONFLICT_CONFIRM:
+    case S_CONFLICT_CONFIRM: {
         draw_conflict();
+        char rev_line[96], ok_btn[64];
+        int step = conflict_step < 3 ? conflict_step + 1 : 3;
+        snprintf(rev_line, sizeof(rev_line), "REV #%d", cloud.cloud_seq);
         if (conflict_choice == 1) {
+            snprintf(ok_btn, sizeof(ok_btn), "%s (%d/3)", S("YES, UPLOAD"), step);
             modal_touch("OVERWRITE CLOUD SAVE?", "This device's save replaces the cloud's.",
-                        "Other devices get it on their next sync.", "", "YES, UPLOAD", "CANCEL", C_RED);
+                        "Other devices get it on their next sync.", rev_line, ok_btn, "CANCEL", C_RED);
         } else {
+            snprintf(ok_btn, sizeof(ok_btn), "%s (%d/3)", S("YES, DOWNLOAD"), step);
             modal_touch("REPLACE LOCAL SAVE?", "The cloud save replaces this device's.",
-                        "The current one is backed up first.", "", "YES, DOWNLOAD", "CANCEL", C_ORANGE);
+                        "The current one is backed up first.", rev_line, ok_btn, "CANCEL", C_ORANGE);
         }
         break;
+    }
     case S_SAVE_NOTICE: draw_save_notice(); break;
     case S_SAVE_NOTICE_CONFIRM: draw_save_notice_confirm(); break;
     default: draw_home(); break;
@@ -1331,6 +1506,7 @@ static void conflict_choose(int i) {
         return;
     }
     conflict_choice = i;
+    conflict_step = 0;
     go(S_CONFLICT_CONFIRM, 0, +1);
 }
 
@@ -1341,6 +1517,17 @@ static void conflict_apply(void) {
         ? cloud_pull_card1(&cloud, game_dir, c.backup_max, res, sizeof(res))
         : cloud_push_card1(&cloud, game_dir, c.backup_max, 1, res, sizeof(res));
     conflict_finish(res, rc == 0);
+}
+
+static void conflict_confirm_tap(void) {
+    long now = plat_now_ms();
+    if (conflict_step > 0 && now - conflict_tap_ms < 220) return;
+    conflict_tap_ms = now;
+    conflict_step++;
+    if (conflict_step >= 3) {
+        conflict_step = 0;
+        conflict_apply();
+    }
 }
 
 static void revoke_selected(void) {
@@ -1483,7 +1670,7 @@ static void on_touch(int code, int x, int y) {
         if (in_rect(x, y, 90, 294, 210, 44)) {
             if (screen == S_REVOKE_CONFIRM) revoke_selected();
             else if (screen == S_RENEW_CONFIRM) { register_device(1); go(S_CLOUD, 0, -1); }
-            else conflict_apply();
+            else conflict_confirm_tap();
         } else if (in_rect(x, y, 340, 294, 210, 44) || in_rect(x, y, 520, 14, 98, 36) || in_rect(x, y, 28, H - 46, 126, 36)) {
             on_back();
         }
@@ -1513,6 +1700,15 @@ static void on_touch(int code, int x, int y) {
 
     if (screen == S_ERROR) {
         if (in_rect(x, y, 240, H - 46, 160, 36) || in_rect(x, y, 520, 14, 98, 36) || in_rect(x, y, 28, H - 46, 126, 36)) {
+            go(return_screen, return_sel, -1);
+        }
+        return;
+    }
+    if (screen == S_DISC) {
+        if (in_rect(x, y, 240, H - 46, 160, 36)) {
+            pick_disc_android();
+            if (screen == S_DISC && disc_path[0]) go(return_screen, return_sel, -1);
+        } else if (in_rect(x, y, 520, 14, 98, 36) || in_rect(x, y, 28, H - 46, 126, 36)) {
             go(return_screen, return_sel, -1);
         }
         return;
@@ -1703,7 +1899,7 @@ static void on_back(void) {
     case S_CLEAN: go(S_DEBUG, DEBUG_CLEAN_LOGS, -1); return;
     case S_BROWSE: go(S_GAME, GAME_DISC, -1); return;
     case S_BACKUPS: go(S_SAVES, SAVES_RESTORE, -1); return;
-    case S_ERROR: go(return_screen, return_sel, -1); return;
+    case S_ERROR: case S_DISC: go(return_screen, return_sel, -1); return;
     case S_CLOUD: status[0] = 0; go(S_SAVES, SAVES_ACCOUNT, -1); return;
     case S_PAIR_HOST: pair_host_leave(); return;
     case S_PAIR_ENTER: status[0] = 0; go(S_CLOUD, CLOUD_LINK, -1); return;
@@ -1711,7 +1907,7 @@ static void on_back(void) {
     case S_REVOKE_CONFIRM: go(S_DEVICES, sel, -1); return;
     case S_RENEW_CONFIRM: go(S_CLOUD, CLOUD_RENEW, -1); return;
     case S_CONFLICT: conflict_finish(S("SAVES LEFT AS THEY ARE"), 0); return;
-    case S_CONFLICT_CONFIRM: go(S_CONFLICT, 0, -1); return;
+    case S_CONFLICT_CONFIRM: conflict_step = 0; go(S_CONFLICT, 0, -1); return;
     case S_HUD:
         if (dup_hud(&c, NULL)) { snprintf(msg, sizeof(msg), "SAME BUTTON ON TWO ROWS"); return; }
         cfg_save(&c); go(S_HOME, HI_HUD, -1); return;
@@ -1829,8 +2025,9 @@ static void on_key(int code) {
         else if (screen == S_BACKUP_CONFIRM) do_backup_restore();
         else if (screen == S_REVOKE_CONFIRM) revoke_selected();
         else if (screen == S_RENEW_CONFIRM) { register_device(1); go(S_CLOUD, 0, -1); }
-        else if (screen == S_CONFLICT_CONFIRM) conflict_apply();
+        else if (screen == S_CONFLICT_CONFIRM) conflict_confirm_tap();
         else if (screen == S_ERROR) go(return_screen, return_sel, -1);
+        else if (screen == S_DISC) { pick_disc_android(); if (screen == S_DISC && disc_path[0]) go(return_screen, return_sel, -1); }
         else if (screen == S_DEBUG) {
             if (sel == DEBUG_LOGS) { c.logs = (c.logs + 1) % 3; cfg_save(&c); }
             else if (sel == DEBUG_SAVE_LOGS) send_logs();
@@ -1964,10 +2161,20 @@ static int android_self_test(const char *tmp) {
     conflict_choose(2);
     acheck(screen == S_HOME, "S_CONFLICT DECIDE LATER returns to S_HOME without launching");
 
+    /* 3b. Pre-launch disc check catches missing and invalid images */
+    acheck(disc_check_android("/nonexistent/dw2003.bin") == DISC_BAD_FILE, "disc_check_android returns DISC_BAD_FILE for missing file");
+    {
+        char bp[600];
+        snprintf(bp, sizeof(bp), "%s/bad.bin", tmp);
+        FILE *bf = fopen(bp, "wb");
+        if (bf) { fputs("not a ps1 disc", bf); fclose(bf); }
+        acheck(disc_check_android(bp) == DISC_BAD_IMAGE, "disc_check_android returns DISC_BAD_IMAGE for invalid disc");
+    }
+
     /* 4. Render every screen in all 6 languages without crashing */
     static const int screens[] = {
         S_SPLASH, S_HOME, S_GAME, S_VIDEO, S_HUD, S_CONTROLS, S_SAVES, S_BACKUPS, S_BACKUP_CONFIRM,
-        S_DEBUG, S_BROWSE, S_RESET, S_CLEAN, S_LOADING, S_ERROR, S_CLOUD, S_PAIR_HOST, S_PAIR_ENTER,
+        S_DEBUG, S_BROWSE, S_RESET, S_CLEAN, S_LOADING, S_ERROR, S_DISC, S_CLOUD, S_PAIR_HOST, S_PAIR_ENTER,
         S_DEVICES, S_REVOKE_CONFIRM, S_RENEW_CONFIRM, S_CONFLICT, S_CONFLICT_CONFIRM,
         S_SAVE_NOTICE, S_SAVE_NOTICE_CONFIRM
     };
@@ -1979,7 +2186,7 @@ static int android_self_test(const char *tmp) {
             draw();
         }
     }
-    acheck(1, "all 25 Android screens drawn across all 6 languages");
+    acheck(1, "all 26 Android screens drawn across all 6 languages");
 
     /* 5. Key i18n strings used by Android screens must resolve to non-English in PT-BR */
     c.lang = 1;
