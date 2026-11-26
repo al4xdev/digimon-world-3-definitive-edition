@@ -1359,10 +1359,6 @@ static void revoke_selected(void) {
     }
 }
 
-static int is_cloud_screen(int s) {
-    return s == S_CLOUD || s == S_PAIR_HOST || s == S_PAIR_ENTER || s == S_DEVICES || s == S_CONFLICT;
-}
-
 static int touch_dir(int x) { return (x >= 260 && x < 470) ? -1 : +1; }
 
 static void clamp_scroll(int *scroll, int vis) {
