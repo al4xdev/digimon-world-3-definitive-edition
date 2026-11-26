@@ -35,7 +35,7 @@ typedef struct Cfg {
     int sync_enabled;        /* 0 off, 1 cloud cross-play sync active */
     int sync_interval_min;   /* 0 = start/exit only, else 5, 10, 15, 20, 30 min */
     int update_check;        /* 1: the Android launcher asks GitHub for a newer release (update.h) */
-    int v091_save_ok;        /* 1: player answered the v0.9.1 fresh-save recommendation */
+    int v091_save_ok;        /* 1: player answered the v0.9.1 fresh-save recommendation. Temporary: migrate.h */
     int hud[H_COUNT];        /* evdev code of each battle action's button */
     Bind pad[A_COUNT];
 } Cfg;

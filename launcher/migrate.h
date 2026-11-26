@@ -18,6 +18,11 @@
 
 #define SCHEMA_TUI_STATE 1 /* 0 -> 1: the Fight button's new default (was bm_v=2) and 60 Hz, then "schema=1" */
 #define SCHEMA_SAVE 2      /* 1 -> 2: the "respec" section (the pig's swaps); the data of version 1 is unchanged */
+/* TODO, next SCHEMA_SAVE bump, 3 (owner, 2026-11-26): a clean cut, saves from before 0.9.1 are not migrated (players
+ * were on a near-alpha), and the fresh-save notice (Cfg.v091_save_ok, main.c and main_android.c) goes with it.
+ * 0.9.1 added the "story" section without bumping: 0.9.0 and 0.9.1 files are both version 2, told apart only by
+ * "story", which an older save continued in 0.9.1 has too. The README's "Coming from an older version?" promises the
+ * opposite: change it with the cut. */
 
 enum { MIGRATE_NONE = 0, MIGRATE_DONE = 1, MIGRATE_NEWER = 2, MIGRATE_FAILED = -1 };
 
