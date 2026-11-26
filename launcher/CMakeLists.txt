@@ -66,6 +66,18 @@ if(WIN32)
 else()
     find_package(Threads REQUIRED)
     target_link_libraries(dw2003-launcher PRIVATE m Threads::Threads)
+
+    # Headless test harness for the Android touch launcher (main_android.c --self-test): compiles on Linux without the
+    # Android SDK so CI and desktop runs catch Android screen, layout and i18n regressions immediately.
+    add_executable(dw2003-android-test main_android.c ui.c plat.c cfg.c migrate.c loading.c cloud.c sha256.c update.c assets/assets.c)
+    target_include_directories(dw2003-android-test PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/../android")
+    target_compile_definitions(dw2003-android-test PRIVATE DW3_ANDROID_STANDALONE_TEST HAVE_SDL3 _GNU_SOURCE)
+    target_compile_options(dw2003-android-test PRIVATE -Wall -Wextra -Wno-unused-parameter)
+    if(TARGET SDL3::SDL3-static)
+        target_link_libraries(dw2003-android-test PRIVATE SDL3::SDL3-static m Threads::Threads)
+    else()
+        target_link_libraries(dw2003-android-test PRIVATE SDL3::SDL3 m Threads::Threads)
+    endif()
 endif()
 
 # The updater (updater.c): the one small program that replaces the installed files when the launcher updates itself. No

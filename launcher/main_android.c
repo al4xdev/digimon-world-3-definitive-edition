@@ -1933,12 +1933,86 @@ int dw3_android_launcher_run(int kind, const char *script, int *out_touch_pad, i
 }
 
 #ifdef DW3_ANDROID_STANDALONE_TEST
+const char port_version[] = "dev";
+void dw3_touch_pad_set_faces(const int place[4], const char letter[4]) { (void)place; (void)letter; }
+
+static int android_self_test(const char *tmp) {
+    int fails = 0;
+    #define acheck(cond, label) do { \
+        if (cond) printf("android-self-test: ok     %s\n", (label)); \
+        else { printf("android-self-test: FAIL   %s\n", (label)); fails++; } \
+    } while (0)
+
+    is_android = 1; is_pc = 0; is_portmaster = 0;
+    mkdir(tmp, 0755);
+    snprintf(game_dir, sizeof(game_dir), "%s", tmp);
+    if (plat_open(PLAT_NULL, "") != 0) { fprintf(stderr, "plat_open failed\n"); return 1; }
+
+    /* 1. Fresh boot without card1.mcd must mark v091_save_ok = 1 and go to S_HOME */
+    cfg_defaults(&c);
+    screen = S_SPLASH;
+    leave_splash();
+    acheck(screen == S_HOME && c.v091_save_ok == 1, "fresh boot without save sets v091_save_ok=1 and opens S_HOME");
+
+    /* 2. Reset settings preserves v091_save_ok */
+    do_reset_confirm();
+    acheck(c.v091_save_ok == 1, "S_RESET preserves v091_save_ok=1");
+
+    /* 3. S_CONFLICT: DECIDE LATER / Back must not launch the game */
+    conflict_ret = S_HOME; conflict_ret_sel = HI_PLAY; conflict_then_play = 1;
+    screen = S_CONFLICT;
+    conflict_choose(2);
+    acheck(screen == S_HOME, "S_CONFLICT DECIDE LATER returns to S_HOME without launching");
+
+    /* 4. Render every screen in all 6 languages without crashing */
+    static const int screens[] = {
+        S_SPLASH, S_HOME, S_GAME, S_VIDEO, S_HUD, S_CONTROLS, S_SAVES, S_BACKUPS, S_BACKUP_CONFIRM,
+        S_DEBUG, S_BROWSE, S_RESET, S_CLEAN, S_LOADING, S_ERROR, S_CLOUD, S_PAIR_HOST, S_PAIR_ENTER,
+        S_DEVICES, S_REVOKE_CONFIRM, S_RENEW_CONFIRM, S_CONFLICT, S_CONFLICT_CONFIRM,
+        S_SAVE_NOTICE, S_SAVE_NOTICE_CONFIRM
+    };
+    for (int lang = 0; lang < 6; lang++) {
+        c.lang = lang;
+        for (unsigned i = 0; i < sizeof(screens) / sizeof(screens[0]); i++) {
+            screen = screens[i];
+            sel = 0;
+            draw();
+        }
+    }
+    acheck(1, "all 25 Android screens drawn across all 6 languages");
+
+    /* 5. Key i18n strings used by Android screens must resolve to non-English in PT-BR */
+    c.lang = 1;
+    static const char *const must_tr[] = {
+        "NEW IN v0.9.1", "START FRESH RECOMMENDED", "START FRESH (RECOMMENDED)",
+        "KEEP OLD SAVE", "KEEP OLD SAVE ANYWAY?",
+        "Scales full PS1 VRAM (1024x512, 1536x512 in 16:9), not just 320x240.",
+        "On-screen floating touch controls during gameplay.",
+        "SEND LOGS uploads the logs and your save (RPG data) to the developer.",
+        "CONFIRM", "BACK", "BAG", "FIGHT"
+    };
+    int tr_bad = 0;
+    for (unsigned i = 0; i < sizeof(must_tr) / sizeof(must_tr[0]); i++) {
+        if (strcmp(S(must_tr[i]), must_tr[i]) == 0) {
+            fprintf(stderr, "missing PT-BR translation: %s\n", must_tr[i]);
+            tr_bad++;
+        }
+    }
+    acheck(tr_bad == 0, "all key Android UI strings resolve in i18n.h (PT-BR)");
+
+    plat_release();
+    printf("android-self-test: %s (%d failures)\n", fails ? "FAILED" : "all checks passed", fails);
+    #undef acheck
+    return fails ? 1 : 0;
+}
+
 int main(int argc, char **argv) {
     int kind = PLAT_SDL, tp = 1, lg = 0;
     const char *script = NULL;
     char disc[1200] = "";
     for (int i = 1; i < argc; i++) {
-        if (!strcmp(argv[i], "--null") && i + 1 < argc) { kind = PLAT_NULL; script = argv[++i]; }
+        if (!strcmp(argv[i], "--self-test") && i + 1 < argc) return android_self_test(argv[i + 1]);
+        else if (!strcmp(argv[i], "--null") && i + 1 < argc) { kind = PLAT_NULL; script = argv[++i]; }
         else if (!strcmp(argv[i], "--shots") && i + 1 < argc) plat_shot_dir = argv[++i];
         else if (!strcmp(argv[i], "--dir") && i + 1 < argc) snprintf(game_dir, sizeof(game_dir), "%s", argv[++i]);
     }
