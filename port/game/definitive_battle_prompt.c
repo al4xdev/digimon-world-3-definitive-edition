@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <string.h>
 
 #include "common.h"
@@ -18,7 +17,6 @@
 #include "port_runtime.h"
 
 extern int def_on(void);
-extern int def_is_ptbr(void);
 extern int def_mod_apply(u8 side, s32 member, s32 kind, s32 level, s32 turns, s32 blocked_idx);
 extern int def_tech_effect(u8 side, int tech, int *msg);
 extern void port_log(const char *fmt, ...);
@@ -34,9 +32,9 @@ enum {
     BP_FX_LIBRA = 2, /* native Libra via def_tech_effect(0, 202) */
 };
 
+#define BP_PROMPTS 10
+
 typedef struct DefBattleOpt {
-    const char *label_pt;
-    const char *result_pt;
     int fx_type;
     int fx_side;    /* 0 player, 1 enemy */
     int fx_kind;    /* 0 Atk, 1 Def, 2 Spd */
@@ -52,253 +50,87 @@ typedef struct DefBattlePrompt {
     int question;  /* >= 0: stored in expansion save; fires at most once per save */
     int battle_id; /* exact records_state.battle ID from wstag*.c */
     int hp_pct;    /* 100 = turn 1, 50 = enemy <= 50% HP */
-    const char *speaker_pt;
-    const char *line_pt;
     int opt_count;
     DefBattleOpt opts[3];
 } DefBattlePrompt;
 
-static const DefBattlePrompt prompts[] = {
+/* A prompt's words in one language. */
+typedef struct DefBattleText {
+    const char *speaker;
+    const char *line;
+    const char *opts[3][2]; /* each option's label, and the result once it is picked */
+} DefBattleText;
+
+#include "definitive_battle_prompt_text.inc" /* bp_texts[language][prompt], bp_bond[language] */
+
+/* The words in the language shown (def_lang: en, pt, fr, de, it, es). */
+static int bp_lang(void) {
+    int l = def_lang();
+
+    return l > 0 && l < 6 ? l : 0;
+}
+
+static const DefBattlePrompt prompts[BP_PROMPTS] = { /* their words: bp_texts, same order */
     /* Fase 1: Tamer Genji (wstag200, battle 200) */
-    {
-        0, 220, 200, 100,
-        "TAMER GENJI",
-        "Ho ho! Mostra se tem fibra de Tamer!",
-        3,
-        {
-            {
-                "Pode mandar ver, coroa! (ATK +1)",
-                "Ânimo lá em cima! Ataque subiu (+1)!",
-                BP_FX_MOD, 0, 0, 1, 3, -1, 0, 1
-            },
-            {
-                "Vou ler o seu jogo primeiro! (Libra)",
-                "Olho clínico! Libra revelou fraquezas!",
-                BP_FX_LIBRA, 1, 0, 0, 0, DEF_BOND_TEDDY, 1, 1
-            },
-            {
-                "Calma, nem li o manual ainda...",
-                "Vacilou na entrada! Defesa caiu (-1)!",
-                BP_FX_MOD, 0, 1, -1, 2, -1, 0, -1
-            },
-        },
-    },
+    { 0, 220, 200, 100, 3, {
+        { BP_FX_MOD, 0, 0, 1, 3, -1, 0, 1 },
+        { BP_FX_LIBRA, 1, 0, 0, 0, DEF_BOND_TEDDY, 1, 1 },
+        { BP_FX_MOD, 0, 1, -1, 2, -1, 0, -1 },
+    } },
     /* Fase 1/2: Keith em Asuka (wstag205, battle 263) */
-    {
-        1, 221, 263, 100,
-        "KEITH",
-        "Venceu Seiryu na sorte e já tá se achando?!",
-        3,
-        {
-            {
-                "Cai dentro e descobre! (ATK +2)",
-                "Sangue ferveu! Ataque subiu (+2)!",
-                BP_FX_MOD, 0, 0, 2, 3, DEF_BOND_KEITH, 1, 1
-            },
-            {
-                "Vou achar tua brecha! (Libra)",
-                "Libra ativado! Fraquezas reveladas!",
-                BP_FX_LIBRA, 1, 0, 0, 0, DEF_BOND_TEDDY, 1, 1
-            },
-            {
-                "Fecha a guarda e espera! (DEF +2)",
-                "Postura firme! Defesa subiu (+2)!",
-                BP_FX_MOD, 0, 1, 2, 3, DEF_BOND_LISA, 1, 0
-            },
-        },
-    },
+    { 1, 221, 263, 100, 3, {
+        { BP_FX_MOD, 0, 0, 2, 3, DEF_BOND_KEITH, 1, 1 },
+        { BP_FX_LIBRA, 1, 0, 0, 0, DEF_BOND_TEDDY, 1, 1 },
+        { BP_FX_MOD, 0, 1, 2, 3, DEF_BOND_LISA, 1, 0 },
+    } },
     /* Fase 2: MasterTyrannomon (wstag405, battle 2) */
-    {
-        2, 222, 2, 50,
-        "MASTERTYRANNO",
-        "Bate bem, mas ainda não digeri o almoço!",
-        3,
-        {
-            {
-                "Aguenta essa então! (DEF alvo -1)",
-                "Quebrou o ritmo dele! Defesa caiu (-1)!",
-                BP_FX_MOD, 1, 1, -1, 3, -1, 0, 2
-            },
-            {
-                "Mantém o compasso, sem pressa! (SPD +1)",
-                "Ritmo certeiro! Velocidade subiu (+1)!",
-                BP_FX_MOD, 0, 2, 1, 3, DEF_BOND_TEDDY, 1, 0
-            },
-            {
-                "Ih, esse dinossauro é grande demais...",
-                "Amarelou na hora H! Ataque caiu (-1)!",
-                BP_FX_MOD, 0, 0, -1, 2, DEF_BOND_IVY, -1, -1
-            },
-        },
-    },
+    { 2, 222, 2, 50, 3, {
+        { BP_FX_MOD, 1, 1, -1, 3, -1, 0, 2 },
+        { BP_FX_MOD, 0, 2, 1, 3, DEF_BOND_TEDDY, 1, 0 },
+        { BP_FX_MOD, 0, 0, -1, 2, DEF_BOND_IVY, -1, -1 },
+    } },
     /* Fase 2: Líder de Seiryu (wstag420, battle 3) */
-    {
-        3, 223, 3, 50,
-        "LÍDER DE SEIRYU",
-        "Belo combate! Aguenta o vento de Seiryu?",
-        3,
-        {
-            {
-                "Não arredo o pé daqui! (DEF +2)",
-                "Firme como rocha! Defesa subiu (+2)!",
-                BP_FX_MOD, 0, 1, 2, 3, DEF_BOND_LISA, 1, 2
-            },
-            {
-                "Já saquei o teu ritmo! (SPD +1)",
-                "Leitura afiada! Velocidade subiu (+1)!",
-                BP_FX_MOD, 0, 2, 1, 3, DEF_BOND_TEDDY, 1, 1
-            },
-            {
-                "Esse ventinho não assusta ninguém!",
-                "Provocou demais! Ataque dele subiu (+1)!",
-                BP_FX_MOD, 1, 0, 1, 2, DEF_BOND_KEITH, 1, -1
-            },
-        },
-    },
+    { 3, 223, 3, 50, 3, {
+        { BP_FX_MOD, 0, 1, 2, 3, DEF_BOND_LISA, 1, 2 },
+        { BP_FX_MOD, 0, 2, 1, 3, DEF_BOND_TEDDY, 1, 1 },
+        { BP_FX_MOD, 1, 0, 1, 2, DEF_BOND_KEITH, 1, -1 },
+    } },
     /* Fase 3: Líder de Suzaku (wstag520, battle 4) */
-    {
-        4, 224, 4, 50,
-        "LÍDER DE SUZAKU",
-        "Não me subestime! Minhas chamas não perdoam!",
-        3,
-        {
-            {
-                "Então aumenta essas chamas! (ATK +2)",
-                "Fogo no ringue! Ataque subiu (+2)!",
-                BP_FX_MOD, 0, 0, 2, 3, DEF_BOND_KEITH, 1, 2
-            },
-            {
-                "Hora de ler seu jogo! (Libra)",
-                "Libra revelou as fraquezas da Líder!",
-                BP_FX_LIBRA, 1, 0, 0, 0, DEF_BOND_LISA, 1, 1
-            },
-            {
-                "Calma, pega leve aí...",
-                "Bobeou na arena! Defesa caiu (-1)!",
-                BP_FX_MOD, 0, 1, -1, 2, DEF_BOND_IVY, -1, -1
-            },
-        },
-    },
+    { 4, 224, 4, 50, 3, {
+        { BP_FX_MOD, 0, 0, 2, 3, DEF_BOND_KEITH, 1, 2 },
+        { BP_FX_LIBRA, 1, 0, 0, 0, DEF_BOND_LISA, 1, 1 },
+        { BP_FX_MOD, 0, 1, -1, 2, DEF_BOND_IVY, -1, -1 },
+    } },
     /* Fase 4: Duelo em Byakko (wstag675, battle 5) */
-    {
-        5, 225, 5, 100,
-        "LÍDER DE BYAKKO",
-        "Mostre sua força... mas não espere piedade!",
-        3,
-        {
-            {
-                "Não vim pra brincar de lutar! (ATK +2)",
-                "Sangue frio! Ataque subiu (+2)!",
-                BP_FX_MOD, 0, 0, 2, 3, DEF_BOND_KEITH, 1, 2
-            },
-            {
-                "Tem algo estranho nesse estilo! (Libra)",
-                "Libra revelou as fraquezas do Líder!",
-                BP_FX_LIBRA, 1, 0, 0, 0, DEF_BOND_LISA, 1, 1
-            },
-            {
-                "Esse sorrisinho tá suspeito demais...",
-                "Hesitou na arena! Defesa caiu (-1)!",
-                BP_FX_MOD, 0, 1, -1, 2, DEF_BOND_TEDDY, -1, -1
-            },
-        },
-    },
+    { 5, 225, 5, 100, 3, {
+        { BP_FX_MOD, 0, 0, 2, 3, DEF_BOND_KEITH, 1, 2 },
+        { BP_FX_LIBRA, 1, 0, 0, 0, DEF_BOND_LISA, 1, 1 },
+        { BP_FX_MOD, 0, 1, -1, 2, DEF_BOND_TEDDY, -1, -1 },
+    } },
     /* Fase 5: Game Master no Centro Admin (wstag310, battle 10) */
-    {
-        6, 228, 10, 50,
-        "GAME MASTER",
-        "Teimosia adorável... Pena que acaba aqui.",
-        3,
-        {
-            {
-                "Pelo Teddy e por Asuka! (ATK +2)",
-                "Vontade inabalável! Ataque subiu (+2)!",
-                BP_FX_MOD, 0, 0, 2, 3, DEF_BOND_TEDDY, 2, 2
-            },
-            {
-                "Segura o contra-ataque! (DEF +2)",
-                "Muralha levantada! Defesa subiu (+2)!",
-                BP_FX_MOD, 0, 1, 2, 3, DEF_BOND_LISA, 1, 1
-            },
-            {
-                "Cala a boca! Eu acabo com você!",
-                "Perdeu a cabeça! Ela acelerou (+1)!",
-                BP_FX_MOD, 1, 2, 1, 2, DEF_BOND_IVY, -1, -1
-            },
-        },
-    },
+    { 6, 228, 10, 50, 3, {
+        { BP_FX_MOD, 0, 0, 2, 3, DEF_BOND_TEDDY, 2, 2 },
+        { BP_FX_MOD, 0, 1, 2, 3, DEF_BOND_LISA, 1, 1 },
+        { BP_FX_MOD, 1, 2, 1, 2, DEF_BOND_IVY, -1, -1 },
+    } },
     /* Fase 6: Oficial-Chefe / Presidente da MAGAMI (wstag311, battle 32) */
-    {
-        7, 233, 32, 50,
-        "OFICIAL-CHEFE",
-        "Ainda insiste?! O Destromon é invencível!",
-        3,
-        {
-            {
-                "Teu império acaba hoje! (ATK +2)",
-                "Golpe certeiro! Ataque subiu (+2)!",
-                BP_FX_MOD, 0, 0, 2, 3, DEF_BOND_LISA, 2, 2
-            },
-            {
-                "Aguenta o tranco, equipe! (DEF +2)",
-                "Guarda fechada! Defesa subiu (+2)!",
-                BP_FX_MOD, 0, 1, 2, 3, DEF_BOND_TEDDY, 1, 1
-            },
-            {
-                "Destromon vai virar sucata!",
-                "Provocou demais! Ataque dele subiu (+1)!",
-                BP_FX_MOD, 1, 0, 1, 2, DEF_BOND_KEITH, 1, -1
-            },
-        },
-    },
+    { 7, 233, 32, 50, 3, {
+        { BP_FX_MOD, 0, 0, 2, 3, DEF_BOND_LISA, 2, 2 },
+        { BP_FX_MOD, 0, 1, 2, 3, DEF_BOND_TEDDY, 1, 1 },
+        { BP_FX_MOD, 1, 0, 1, 2, DEF_BOND_KEITH, 1, -1 },
+    } },
     /* Fase 6: Lord Megadeath na Gunslinger (wstag820, battle 33) */
-    {
-        8, 234, 33, 50,
-        "LORD MEGADEATH",
-        "A humanidade acabou! Curvem-se ao deus!",
-        3,
-        {
-            {
-                "Deus nenhum! Eu vou te derrubar! (ATK +2)",
-                "Chama acesa! Ataque subiu (+2)!",
-                BP_FX_MOD, 0, 0, 2, 3, DEF_BOND_TEDDY, 2, 2
-            },
-            {
-                "Todo plano tem uma falha! (Libra)",
-                "Libra revelou as fraquezas de Megadeath!",
-                BP_FX_LIBRA, 1, 0, 0, 0, DEF_BOND_LISA, 2, 1
-            },
-            {
-                "Ele é forte demais... não dá...",
-                "Vacilou no clímax! Defesa caiu (-1)!",
-                BP_FX_MOD, 0, 1, -1, 2, DEF_BOND_IVY, -1, -1
-            },
-        },
-    },
+    { 8, 234, 33, 50, 3, {
+        { BP_FX_MOD, 0, 0, 2, 3, DEF_BOND_TEDDY, 2, 2 },
+        { BP_FX_LIBRA, 1, 0, 0, 0, DEF_BOND_LISA, 2, 1 },
+        { BP_FX_MOD, 0, 1, -1, 2, DEF_BOND_IVY, -1, -1 },
+    } },
     /* Fase 6: Galacticmon — Batalha Final (wstag820, battle 324 / 0x144) */
-    {
-        9, 235, 324, 50,
-        "GALACTICMON",
-        "Eu sou o fim de tudo! Queime no vácuo!",
-        3,
-        {
-            {
-                "Por todos os nossos mundos! (ATK +2)",
-                "Força dos vínculos! Ataque subiu (+2)!",
-                BP_FX_MOD, 0, 0, 2, 4, DEF_BOND_TEDDY, 2, 2
-            },
-            {
-                "Não caio antes de vencer! (DEF +2)",
-                "Escudo inabalável! Defesa subiu (+2)!",
-                BP_FX_MOD, 0, 1, 2, 4, DEF_BOND_LISA, 2, 2
-            },
-            {
-                "Vamos superar a luz! (SPD +2)",
-                "Velocidade máxima! Ritmo subiu (+2)!",
-                BP_FX_MOD, 0, 2, 2, 4, DEF_BOND_KEITH, 2, 2
-            },
-        },
-    },
+    { 9, 235, 324, 50, 3, {
+        { BP_FX_MOD, 0, 0, 2, 4, DEF_BOND_TEDDY, 2, 2 },
+        { BP_FX_MOD, 0, 1, 2, 4, DEF_BOND_LISA, 2, 2 },
+        { BP_FX_MOD, 0, 2, 2, 4, DEF_BOND_KEITH, 2, 2 },
+    } },
 };
 
 static struct {
@@ -309,50 +141,44 @@ static struct {
     u32 fired_mask;  /* prompts already triggered in this battle */
     MessageWindow *w_spk, *w_line, *w_opts[3], *w_res;
     unsigned char t_spk[64], t_line[128], t_opts[3][96], t_res[128];
+    s32 res_lines;   /* 2: the bond's words on a line above the result */
 } bp;
 
-static int bp_utf8_latin(unsigned char c0, unsigned char c1) {
-    if (c0 != 0xC3) {
-        return 0;
-    }
-    switch (c1) {
-    case 0x80: return 0x6D; /* À */
-    case 0x81: return 0x68; /* Á */
-    case 0x82: return 0x40; /* Â */
-    case 0x83: return 0x63; /* Ã */
-    case 0x87: return 0x44; /* Ç */
-    case 0x89: return 0x69; /* É */
-    case 0x8A: return 0x64; /* Ê */
-    case 0x8D: return 0x6A; /* Í */
-    case 0x93: return 0x6B; /* Ó */
-    case 0x94: return 0x65; /* Ô */
-    case 0x95: return 0x46; /* Õ */
-    case 0x9A: return 0x6C; /* Ú */
-    case 0xA0: return 0x4B; /* à */
-    case 0xA1: return 0x5F; /* á */
-    case 0xA2: return 0x4C; /* â */
-    case 0xA3: return 0x4D; /* ã */
-    case 0xA7: return 0x4F; /* ç */
-    case 0xA9: return 0x51; /* é */
-    case 0xAA: return 0x52; /* ê */
-    case 0xAD: return 0x60; /* í */
-    case 0xB3: return 0x61; /* ó */
-    case 0xB4: return 0x59; /* ô */
-    case 0xB5: return 0x5A; /* õ */
-    case 0xBA: return 0x62; /* ú */
-    default: return 0;
-    }
-}
+/* The extra glyphs (01 xx) the European font draws as Latin-1 letters, by code point - 0xA0 (tools/dump_text.py
+ * LATIN): every accent of the five languages but Œ and Î. 0: not in the font. */
+static const unsigned char bp_latin[0x60] = {
+    [0xA1 - 0xA0] = 0x3B, /* ¡ */ [0xA3 - 0xA0] = 0x3C, /* £ */ [0xA7 - 0xA0] = 0x3D, /* § */
+    [0xB5 - 0xA0] = 0x3E, /* µ */ [0xBA - 0xA0] = 0x72, /* º */ [0xBF - 0xA0] = 0x3F, /* ¿ */
+    [0xC0 - 0xA0] = 0x6D, /* À */ [0xC1 - 0xA0] = 0x68, /* Á */ [0xC2 - 0xA0] = 0x40, /* Â */
+    [0xC3 - 0xA0] = 0x63, /* Ã */ [0xC4 - 0xA0] = 0x41, /* Ä */ [0xC5 - 0xA0] = 0x42, /* Å */
+    [0xC6 - 0xA0] = 0x43, /* Æ */ [0xC7 - 0xA0] = 0x44, /* Ç */ [0xC8 - 0xA0] = 0x6E, /* È */
+    [0xC9 - 0xA0] = 0x69, /* É */ [0xCA - 0xA0] = 0x64, /* Ê */ [0xCB - 0xA0] = 0x66, /* Ë */
+    [0xCC - 0xA0] = 0x6F, /* Ì */ [0xCD - 0xA0] = 0x6A, /* Í */ [0xCF - 0xA0] = 0x67, /* Ï */
+    [0xD1 - 0xA0] = 0x45, /* Ñ */ [0xD2 - 0xA0] = 0x70, /* Ò */ [0xD3 - 0xA0] = 0x6B, /* Ó */
+    [0xD4 - 0xA0] = 0x65, /* Ô */ [0xD5 - 0xA0] = 0x46, /* Õ */ [0xD6 - 0xA0] = 0x47, /* Ö */
+    [0xD9 - 0xA0] = 0x71, /* Ù */ [0xDA - 0xA0] = 0x6C, /* Ú */ [0xDB - 0xA0] = 0x48, /* Û */
+    [0xDC - 0xA0] = 0x49, /* Ü */ [0xDF - 0xA0] = 0x4A, /* ß */ [0xE0 - 0xA0] = 0x4B, /* à */
+    [0xE1 - 0xA0] = 0x5F, /* á */ [0xE2 - 0xA0] = 0x4C, /* â */ [0xE3 - 0xA0] = 0x4D, /* ã */
+    [0xE4 - 0xA0] = 0x4E, /* ä */ [0xE7 - 0xA0] = 0x4F, /* ç */ [0xE8 - 0xA0] = 0x50, /* è */
+    [0xE9 - 0xA0] = 0x51, /* é */ [0xEA - 0xA0] = 0x52, /* ê */ [0xEB - 0xA0] = 0x53, /* ë */
+    [0xEC - 0xA0] = 0x54, /* ì */ [0xED - 0xA0] = 0x60, /* í */ [0xEE - 0xA0] = 0x55, /* î */
+    [0xEF - 0xA0] = 0x56, /* ï */ [0xF1 - 0xA0] = 0x57, /* ñ */ [0xF2 - 0xA0] = 0x58, /* ò */
+    [0xF3 - 0xA0] = 0x61, /* ó */ [0xF4 - 0xA0] = 0x59, /* ô */ [0xF5 - 0xA0] = 0x5A, /* õ */
+    [0xF6 - 0xA0] = 0x5B, /* ö */ [0xF9 - 0xA0] = 0x5C, /* ù */ [0xFA - 0xA0] = 0x62, /* ú */
+    [0xFB - 0xA0] = 0x5D, /* û */ [0xFC - 0xA0] = 0x5E, /* ü */
+};
 
-static void bp_encode(unsigned char *buf, int size, const char *s) {
+/* UTF-8 `s` as the game's glyph codes into buf (NUL-ended); returns the length. */
+static int bp_encode(unsigned char *buf, int size, const char *s) {
     int p = 0;
 
     while (*s != 0 && p < size - 3) {
         unsigned char c = (unsigned char)*s++;
         int ext = 0x01;
 
-        if (c == 0xC3 && *s != 0) {
-            int lat = bp_utf8_latin(c, (unsigned char)*s++);
+        if ((c == 0xC2 || c == 0xC3) && *s != 0) { /* U+00A0..U+00FF */
+            int cp = ((c & 0x1F) << 6) | ((unsigned char)*s++ & 0x3F);
+            int lat = cp >= 0xA0 ? bp_latin[cp - 0xA0] : 0;
             if (lat != 0) {
                 buf[p++] = 1;
                 buf[p++] = (unsigned char)lat;
@@ -394,6 +220,7 @@ static void bp_encode(unsigned char *buf, int size, const char *s) {
         buf[p++] = (unsigned char)ext;
     }
     buf[p] = 0;
+    return p;
 }
 
 static void bp_quad(GfxLayer *layer, s32 x, s32 y, s32 w, s32 h, s32 abr, u8 r, u8 g, u8 b) {
@@ -458,7 +285,7 @@ int def_battle_prompt_check(void) {
     int i, cur_e, hp_pct, bid = records_state.battle;
     FightstgMember *em;
 
-    if (!def_on() || !def_is_ptbr() || bp.active >= 0) {
+    if (!def_on() || bp.active >= 0) {
         return 0;
     }
     cur_e = fightstg_battle.state.current[1] % 3;
@@ -467,8 +294,9 @@ int def_battle_prompt_check(void) {
         return 0;
     }
     hp_pct = em->hp * 100 / em->max_hp;
-    for (i = 0; i < (int)(sizeof(prompts) / sizeof(prompts[0])); i++) {
+    for (i = 0; i < BP_PROMPTS; i++) {
         const DefBattlePrompt *p = &prompts[i];
+        const DefBattleText *t = &bp_texts[bp_lang()][i];
 
         if ((bp.fired_mask >> i) & 1u) {
             continue;
@@ -490,12 +318,12 @@ int def_battle_prompt_check(void) {
         bp.sel = 0;
         bp.tick = 0;
         bp.fired_mask |= 1u << i;
-        bp_encode(bp.t_spk, sizeof(bp.t_spk), p->speaker_pt);
-        bp_encode(bp.t_line, sizeof(bp.t_line), p->line_pt);
+        bp_encode(bp.t_spk, sizeof(bp.t_spk), t->speaker);
+        bp_encode(bp.t_line, sizeof(bp.t_line), t->line);
         bp.w_spk = bp_win(24, 56, 3, bp.t_spk);
         bp.w_line = bp_win(24, 74, 0, bp.t_line);
         for (int k = 0; k < p->opt_count && k < 3; k++) {
-            bp_encode(bp.t_opts[k], sizeof(bp.t_opts[k]), p->opts[k].label_pt);
+            bp_encode(bp.t_opts[k], sizeof(bp.t_opts[k]), t->opts[k][0]);
             bp.w_opts[k] = bp_win(36, 104 + k * 18, k == 0 ? 4 : 0, bp.t_opts[k]);
         }
         port_log("battle_prompt: opened prompt %d (battle %d, Q%d)", p->id, bid, p->question);
@@ -556,19 +384,20 @@ int def_battle_prompt_frame(void) {
             bp.sel = (bp.sel + 1) % p->opt_count;
             sound_module.play(BP_SND_MOVE);
         } else if (PAD_PRESSED(13)) {
-            int boosted;
-            char rbuf[96];
+            int lang = bp_lang(), n = 0;
 
             sound_module.play(BP_SND_OK);
-            boosted = bp_apply_choice(p, bp.sel);
-            bp_close_windows();
-            if (boosted) {
-                snprintf(rbuf, sizeof(rbuf), "Vínculo forte! %s", p->opts[bp.sel].result_pt);
-                bp_encode(bp.t_res, sizeof(bp.t_res), rbuf);
-            } else {
-                bp_encode(bp.t_res, sizeof(bp.t_res), p->opts[bp.sel].result_pt);
+            bp.res_lines = 1;
+            /* A buff the bond raised: its words on a line of their own (with the result they outgrow the window) */
+            if (bp_apply_choice(p, bp.sel)) {
+                n = bp_encode(bp.t_res, sizeof(bp.t_res), bp_bond[lang]);
+                bp.t_res[n++] = 2; /* control code 1: a new line */
+                bp.t_res[n++] = 1;
+                bp.res_lines = 2;
             }
-            bp.w_res = bp_win(22, 110, 3, bp.t_res);
+            bp_encode(bp.t_res + n, (int)sizeof(bp.t_res) - n, bp_texts[lang][bp.active].opts[bp.sel][1]);
+            bp_close_windows();
+            bp.w_res = bp_win(22, bp.res_lines > 1 ? 103 : 110, 3, bp.t_res);
             bp.phase = 1;
             bp.tick = 0;
         }
@@ -609,11 +438,13 @@ int def_battle_prompt_frame(void) {
             bp_quad(layer, 16, 50, 290, 1, -1, 176, 146, 68);
             bp_quad(layer, 16, 163, 290, 1, -1, 108, 90, 44);
             bp_quad(layer, 16, 51, 290, 112, -1, 14, 18, 30);
-        } else {
-            bp_quad(layer, 14, 98, 2, 38, -1, 248, 206, 86);
-            bp_quad(layer, 16, 98, 290, 1, -1, 176, 146, 68);
-            bp_quad(layer, 16, 135, 290, 1, -1, 108, 90, 44);
-            bp_quad(layer, 16, 99, 290, 36, -1, 14, 18, 30);
+        } else { /* the result's box, a line taller (centred on the same row) for the bond's words */
+            s32 top = bp.res_lines > 1 ? 91 : 98, h = bp.res_lines > 1 ? 52 : 38;
+
+            bp_quad(layer, 14, top, 2, h, -1, 248, 206, 86);
+            bp_quad(layer, 16, top, 290, 1, -1, 176, 146, 68);
+            bp_quad(layer, 16, top + h - 1, 290, 1, -1, 108, 90, 44);
+            bp_quad(layer, 16, top + 1, 290, h - 2, -1, 14, 18, 30);
         }
         bp_quad(layer, -wide, 0, 320 + wide * 2, 240, 2, 110, 110, 118);
     }
