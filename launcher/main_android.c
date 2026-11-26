@@ -393,8 +393,10 @@ static int sha1_file_hex(const char *path, char out[41]) {
         while (off + 64 <= r) { sha1_block(h, buf + off); off += 64; }
         if (off < r) { rem = r - off; memcpy(tail, buf + off, rem); }
     }
+    int io_err = ferror(f);
     fclose(f);
     free(buf);
+    if (io_err) return -1;
     tail[rem++] = 0x80;
     while ((rem % 64) != 56) tail[rem++] = 0;
     uint64_t bits = total * 8;
@@ -404,8 +406,13 @@ static int sha1_file_hex(const char *path, char out[41]) {
     return 0;
 }
 
+static int disc_sha1_accepted(const char *hex) {
+    return strcmp(hex, "457cb233349ba841e03b33d8060f8fbcadd45cb3") == 0 ||
+           strcmp(hex, "fbfd1044e4ae0c6128e2e1a679fb6d72dc954b39") == 0;
+}
+
 static int disc_stamp_matches(const char *bin_path, const struct stat *st) {
-    char sp[1024], line[1600];
+    char sp[1024], line[4600];
     snprintf(sp, sizeof(sp), "%s/dw2003-port/disc-stamps", game_dir);
     FILE *f = fopen(sp, "r");
     if (!f) return 0;
@@ -413,11 +420,13 @@ static int disc_stamp_matches(const char *bin_path, const struct stat *st) {
     const char *canon = resolved ? resolved : bin_path;
     int ok = 0;
     while (fgets(line, sizeof(line), f)) {
-        char hex[48], cpath[1200];
+        char hex[48], cpath[4096];
         long long sz = 0, sec = 0, nsec = 0;
         unsigned long long ino = 0, dev = 0;
-        if (sscanf(line, "%40s %lld %lld.%lld %llu %llu %1199[^\r\n]", hex, &sz, &sec, &nsec, &ino, &dev, cpath) == 7) {
-            if (sz == (long long)st->st_size && sec == (long long)st->st_mtime &&
+        if (sscanf(line, "%40s %lld %lld.%lld %llu %llu %4095[^\r\n]", hex, &sz, &sec, &nsec, &ino, &dev, cpath) == 7) {
+            if (disc_sha1_accepted(hex) &&
+                sz == (long long)st->st_size && sec == (long long)st->st_mtime &&
+                nsec == (long long)st->st_mtim.tv_nsec &&
                 ino == (unsigned long long)st->st_ino && dev == (unsigned long long)st->st_dev &&
                 strcmp(cpath, canon) == 0) {
                 ok = 1;
@@ -479,8 +488,7 @@ static int disc_check_android(const char *path) {
         snprintf(last_err, sizeof(last_err), "cannot read %.200s", bin);
         return DISC_BAD_FILE;
     }
-    if (strcmp(hex, "457cb233349ba841e03b33d8060f8fbcadd45cb3") == 0 ||
-        strcmp(hex, "fbfd1044e4ae0c6128e2e1a679fb6d72dc954b39") == 0) {
+    if (disc_sha1_accepted(hex)) {
         return DISC_OK;
     }
     return DISC_BAD_IMAGE;
@@ -517,6 +525,8 @@ static void start_game(int sync) {
     }
     cloud_migrate_saves(&cloud, game_dir); /* after the sync: an old expansion save takes the current schema (migrate.h) */
     if (cfg_save(&c) != 0) {
+        return_screen = screen;
+        return_sel = sel;
         snprintf(msg, sizeof(msg), "Cannot write settings.json");
         go(S_ERROR, 0, +1);
         return;
@@ -1533,6 +1543,10 @@ static void conflict_confirm_tap(void) {
 }
 
 static void revoke_selected(void) {
+    if (dev_count <= 0 || sel < 0 || sel >= dev_count || dev_items[sel].is_current) {
+        go(S_DEVICES, 0, -1);
+        return;
+    }
     char err[128] = "";
     busy("CONNECTING...");
     if (dev_count > 0 && cloud_revoke_device(&cloud, dev_items[sel].device_id, err, sizeof(err)) == 0) {
@@ -1615,7 +1629,10 @@ static void on_back(void);
 
 static void on_touch(int code, int x, int y) {
     if (screen == S_SPLASH) {
-        if (code == K_TOUCH_DOWN) leave_splash();
+        if (code == K_TOUCH_DOWN) {
+            touch_drag_scrolled = 1;
+            leave_splash();
+        }
         return;
     }
     if (screen == S_LOADING) {
@@ -1911,10 +1928,10 @@ static void on_back(void) {
     case S_CONFLICT: conflict_finish(S("SAVES LEFT AS THEY ARE"), 0); return;
     case S_CONFLICT_CONFIRM: conflict_step = 0; go(S_CONFLICT, 0, -1); return;
     case S_HUD:
-        if (dup_hud(&c, NULL)) { snprintf(msg, sizeof(msg), "SAME BUTTON ON TWO ROWS"); return; }
+        if (dup_hud(&c, NULL)) { snprintf(msg, sizeof(msg), "SAME BUTTON ON TWO ROWS - FIX IT BEFORE LEAVING"); return; }
         cfg_save(&c); go(S_HOME, HI_HUD, -1); return;
     case S_CONTROLS:
-        if (dup_actions(&c, NULL)) { snprintf(msg, sizeof(msg), "SAME BUTTON ON TWO ROWS"); return; }
+        if (dup_actions(&c, NULL)) { snprintf(msg, sizeof(msg), "SAME BUTTON ON TWO ROWS - FIX IT BEFORE LEAVING"); return; }
         cfg_save(&c); go(S_HOME, HI_CONTROLS, -1); return;
     case S_GAME: cfg_save(&c); go(S_HOME, HI_GAME, -1); return;
     case S_VIDEO: cfg_save(&c); go(S_HOME, HI_VIDEO, -1); return;
@@ -1973,6 +1990,11 @@ static void on_key(int code) {
         return;
     }
     if (code == K_UP || code == K_DOWN) {
+        if (screen == S_BACKUP_CONFIRM || screen == S_REVOKE_CONFIRM || screen == S_RESET ||
+            screen == S_CLEAN || screen == S_RENEW_CONFIRM || screen == S_CONFLICT_CONFIRM ||
+            screen == S_SAVE_NOTICE_CONFIRM || screen == S_ERROR || screen == S_DISC) {
+            return;
+        }
         int dir = code == K_UP ? -1 : +1;
         int n = screen == S_HOME ? HI_COUNT : screen == S_GAME ? GAME_N : screen == S_VIDEO ? VIDEO_N :
                 screen == S_HUD ? HUD_ROWS : screen == S_CONTROLS ? (A_COUNT + 1) : screen == S_SAVES ? SAVES_N :
