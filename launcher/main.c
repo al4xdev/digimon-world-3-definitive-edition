@@ -710,8 +710,9 @@ static void draw_pair_host(void) {
     int rem = pair_expires_at > 0 ? pair_expires_at - (int)time(NULL) : 0;
     if (rem < 0) rem = 0;
     char tm[48];
-    snprintf(tm, sizeof(tm), "EXPIRES IN %02d:%02d", rem / 60, rem % 60);
-    text_c(W / 2, 212, tm, 15, rem < 30 ? C_ORANGE : C_CYAN);
+    if (rem <= 0) snprintf(tm, sizeof(tm), "%s", "CODE EXPIRED");
+    else snprintf(tm, sizeof(tm), "EXPIRES IN %02d:%02d", rem / 60, rem % 60);
+    text_c(W / 2, 212, tm, 15, rem <= 0 ? C_RED : rem < 30 ? C_ORANGE : C_CYAN);
 
     if (pair_done) {
         text_c(W / 2, 260, "DEVICE APPROVED AND LINKED!", 20, C_GREEN);
