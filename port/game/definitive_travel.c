@@ -472,14 +472,17 @@ static void nt_update(void) {
 static void nt_finish(void) {
     s32 action = nt.action;
     s32 sel = nt.sel;
-    FieldstgActor *player;
+    Object *o;
 
     nt.action = NT_IDLE;
     nt_close();
     fieldstg_stage.event_running = 0;
-    player = (FieldstgActor *)heap_objects.find(5, -1, 0);
-    if (player != NULL) {
-        player->reset_control(player);
+    for (o = heap_objects.find(5, -1, -1); o != NULL; o = heap_objects.find_next()) {
+        FieldstgActor *a = (FieldstgActor *)o;
+        a->reset_control(a);
+        if (action == NT_CLOSE && a->base.key1 == 21 && (a->anim == 54 || a->anim == 55)) {
+            a->play_anim(a, 1, a->dir);
+        }
     }
     if (action == NT_SAVE) {
         port_log("network: the save screen of map 0x%X", nt.next);
