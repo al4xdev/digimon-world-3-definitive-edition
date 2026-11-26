@@ -446,6 +446,8 @@ Nothing else is planned: from here on the work is hotfixes. Bugs go to the
 - **0.9.6 – 0.9.9**: biweekly updates (every two weeks). At 0.9.9 the state of the project will be reviewed, with up to five additional updates if needed before 1.0.
 - **1.0 and beyond**: monthly batched hotfixes, with no fixed schedule for new features.
 
+**Issue triage:** new issues are normally reviewed within 1 to 4 days and labelled `next-release` when scheduled for the upcoming update window, or `help wanted` when I cannot resolve them on my own. Since this is a solo-maintained project, it is hard to reply across every channel — please track progress mainly through the issues and their labels.
+
 ## Under the hood
 
 This is built on the [Digimon World 2003 decompilation](https://github.com/gascarcella/dw2003recomp) and its PC port,

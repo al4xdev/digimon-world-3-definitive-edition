@@ -453,6 +453,8 @@ Nada mais está planejado: daqui em diante o trabalho são hotfixes. Bugs vão p
 - **0.9.6 – 0.9.9**: atualizações quinzenais. Ao chegar na 0.9.9, o estado do projeto será avaliado, podendo haver até cinco atualizações extras se necessário antes da 1.0.
 - **1.0 em diante**: hotfixes mensais (acumulados) e sem prazo definido para novas funcionalidades.
 
+**Triagem de issues:** normalmente analiso novas issues em 1 a 4 dias e marco com `next-release` quando entram na próxima janela de atualização, ou com `help wanted` quando não consigo resolver sozinho. Como o projeto tem apenas um mantenedor, é difícil responder em todos os canais — acompanhe o andamento principalmente pelas issues e suas tags.
+
 ## Por baixo do capô
 
 Isto é construído sobre a [decompilação do Digimon World 2003](https://github.com/gascarcella/dw2003recomp) e o port

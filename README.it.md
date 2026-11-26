@@ -456,6 +456,8 @@ Nient'altro è in programma: da qui in avanti il lavoro sono hotfix. I bug vanno
 - **0.9.6 – 0.9.9**: aggiornamenti ogni due settimane. Alla 0.9.9 verrà valutato lo stato del progetto, con fino a cinque aggiornamenti aggiuntivi se necessari prima della 1.0.
 - **Dalla 1.0 in poi**: hotfix mensili raggruppati e nessuna scadenza fissa per nuove funzionalità.
 
+**Gestione delle issue:** le nuove issue vengono di norma esaminate entro 1-4 giorni e contrassegnate con `next-release` quando rientrano nella prossima finestra di aggiornamento, oppure con `help wanted` se non riesco a risolverle da solo. Essendo un progetto con un solo maintainer, è difficile rispondere su tutti i canali — fai riferimento soprattutto alle issue e alle loro etichette.
+
 ## Sotto il cofano
 
 Si basa sulla [decompilazione di Digimon World 2003](https://github.com/gascarcella/dw2003recomp) e sul suo port per

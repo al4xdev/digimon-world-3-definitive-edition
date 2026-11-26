@@ -464,6 +464,8 @@ Rien d'autre n'est prévu : désormais, le travail se résume à des hotfixes. L
 - **0.9.6 – 0.9.9** : mises à jour toutes les deux semaines. À la 0.9.9, l'état du projet sera évalué, avec jusqu'à cinq mises à jour supplémentaires si nécessaire avant la 1.0.
 - **1.0 et après** : hotfixes mensuels regroupés, sans calendrier fixe pour de nouvelles fonctionnalités.
 
+**Suivi des issues :** les nouvelles issues sont généralement examinées sous 1 à 4 jours et marquées `next-release` lorsqu'elles sont prévues pour la prochaine fenêtre de mise à jour, ou `help wanted` si je ne peux pas les résoudre seul. Le projet n'ayant qu'un seul mainteneur, il est difficile de répondre sur tous les canaux — suivez plutôt l'avancement via les issues et leurs étiquettes.
+
 ## Sous le capot
 
 Ce projet repose sur la [décompilation de Digimon World 2003](https://github.com/gascarcella/dw2003recomp) et son port

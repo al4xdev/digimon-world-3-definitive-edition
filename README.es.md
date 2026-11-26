@@ -456,6 +456,8 @@ No hay nada más planeado: de aquí en adelante el trabajo son hotfixes. Los err
 - **0.9.6 – 0.9.9**: actualizaciones quincenales. Al llegar a la 0.9.9 se evaluará si hacen falta más cambios, pudiendo añadir hasta cinco actualizaciones extra antes de la 1.0.
 - **1.0 en adelante**: hotfixes mensuales acumulados y sin fecha fija para nuevas funciones.
 
+**Triaje de issues:** normalmente reviso las issues nuevas en 1 a 4 días y las marco con `next-release` cuando entran en la próxima ventana de actualización, o con `help wanted` si no puedo resolverlas por mi cuenta. Al ser un proyecto con un solo mantenedor, es difícil responder en todos los canales — guíate principalmente por las issues y sus etiquetas.
+
 ## Bajo el capó
 
 Esto se construye sobre la [descompilación de Digimon World 2003](https://github.com/gascarcella/dw2003recomp) y su
