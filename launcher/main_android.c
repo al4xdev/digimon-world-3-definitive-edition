@@ -1334,6 +1334,69 @@ static int is_cloud_screen(int s) {
     return s == S_CLOUD || s == S_PAIR_HOST || s == S_PAIR_ENTER || s == S_DEVICES || s == S_CONFLICT;
 }
 
+static int touch_dir(int x) { return (x >= 260 && x < 470) ? -1 : +1; }
+
+static void clamp_scroll(int *scroll, int vis) {
+    if (sel < *scroll) *scroll = sel;
+    if (sel >= *scroll + vis) *scroll = sel - vis + 1;
+    if (*scroll < 0) *scroll = 0;
+}
+
+static void do_reset_confirm(void) {
+    int ok91 = c.v091_save_ok;
+    cfg_defaults(&c);
+    c.v091_save_ok = ok91;
+    cfg_save(&c);
+    go(S_HOME, HI_RESET, -1);
+}
+
+static void do_backup_restore(void) {
+    if (bk_count <= 0) return;
+    char err[128] = "";
+    if (save_backup_restore(game_dir, bk_items[sel].name, c.backup_max, err, sizeof(err)) == 0) {
+        snprintf(status, sizeof(status), "RESTORED %s", bk_items[sel].label);
+    } else {
+        snprintf(status, sizeof(status), "%s", err[0] ? err : "RESTORE FAILED");
+    }
+    go(S_SAVES, SAVES_RESTORE, -1);
+}
+
+static void do_clean_logs(void) {
+    int rm = logs_clean();
+    snprintf(status, sizeof(status), "CLEANED %d FILES", rm);
+    go(S_DEBUG, DEBUG_CLEAN_LOGS, -1);
+}
+
+static void do_hud_step(int row, int dir) {
+    if (row < H_COUNT) c.hud[row] = hud_cycle(c.hud[row], dir);
+    else if (row == H_COUNT) c.bmem = !c.bmem;
+    else if (row == H_COUNT + 1) c.bbuf = (c.bbuf + dir + 3) % 3;
+    else cfg_set_fight_place(&c, cfg_fight_place(&c) != 1);
+    cfg_save(&c);
+}
+
+static void do_browse_activate(int i) {
+    if (i < 0 || i >= b_count) return;
+    if (b_items[i].is_dir) {
+        if (strcmp(b_items[i].name, "..") == 0) {
+            char *sl = strrchr(b_dir, '/');
+            if (sl && sl != b_dir) *sl = 0;
+            else strcpy(b_dir, "/");
+        } else {
+            char nxt[1400];
+            snprintf(nxt, sizeof(nxt), "%s/%s", strcmp(b_dir, "/") ? b_dir : "", b_items[i].name);
+            snprintf(b_dir, sizeof(b_dir), "%.1023s", nxt);
+        }
+        b_count = browse_read(b_dir, b_items, 256);
+        b_scroll = 0;
+        sel = 0;
+    } else {
+        snprintf(disc_path, sizeof(disc_path), "%s/%s", strcmp(b_dir, "/") ? b_dir : "", b_items[i].name);
+        cfg_save(&c);
+        go(S_GAME, GAME_DISC, -1);
+    }
+}
+
 static void on_back(void);
 
 static void on_touch(int code, int x, int y) {
@@ -1375,36 +1438,18 @@ static void on_touch(int code, int x, int y) {
     if (was_drag) return;
 
     if (screen == S_RESET) {
-        if (in_rect(x, y, 90, 294, 210, 44)) {
-            int ok91 = c.v091_save_ok;
-            cfg_defaults(&c); c.v091_save_ok = ok91; cfg_save(&c); go(S_HOME, HI_RESET, -1);
-        } else if (in_rect(x, y, 340, 294, 210, 44) || in_rect(x, y, 520, 14, 98, 36)) {
-            go(S_HOME, HI_RESET, -1);
-        }
+        if (in_rect(x, y, 90, 294, 210, 44)) do_reset_confirm();
+        else if (in_rect(x, y, 340, 294, 210, 44) || in_rect(x, y, 520, 14, 98, 36)) go(S_HOME, HI_RESET, -1);
         return;
     }
     if (screen == S_BACKUP_CONFIRM) {
-        if (in_rect(x, y, 90, 294, 210, 44) && bk_count > 0) {
-            char err[128] = "";
-            if (save_backup_restore(game_dir, bk_items[sel].name, c.backup_max, err, sizeof(err)) == 0) {
-                snprintf(status, sizeof(status), "RESTORED %s", bk_items[sel].label);
-            } else {
-                snprintf(status, sizeof(status), "%s", err[0] ? err : "RESTORE FAILED");
-            }
-            go(S_SAVES, SAVES_RESTORE, -1);
-        } else if (in_rect(x, y, 340, 294, 210, 44)) {
-            go(S_BACKUPS, sel, -1);
-        }
+        if (in_rect(x, y, 90, 294, 210, 44) && bk_count > 0) do_backup_restore();
+        else if (in_rect(x, y, 340, 294, 210, 44)) go(S_BACKUPS, sel, -1);
         return;
     }
     if (screen == S_CLEAN) {
-        if (in_rect(x, y, 90, 294, 210, 44)) {
-            int rm = logs_clean();
-            snprintf(status, sizeof(status), "CLEANED %d FILES", rm);
-            go(S_DEBUG, DEBUG_CLEAN_LOGS, -1);
-        } else if (in_rect(x, y, 340, 294, 210, 44)) {
-            go(S_DEBUG, DEBUG_CLEAN_LOGS, -1);
-        }
+        if (in_rect(x, y, 90, 294, 210, 44)) do_clean_logs();
+        else if (in_rect(x, y, 340, 294, 210, 44)) go(S_DEBUG, DEBUG_CLEAN_LOGS, -1);
         return;
     }
 
@@ -1472,8 +1517,7 @@ static void on_touch(int code, int x, int y) {
         for (int i = 0; i < GAME_N; i++) {
             if (in_rect(x, y, 32, 76 + i * GAME_ROW_STEP, W - 64, GAME_ROW_STEP)) {
                 sel = i;
-                int dir = (x >= 380 && x < 490) ? -1 : +1;
-                activate_game_row(i, dir);
+                activate_game_row(i, touch_dir(x));
                 return;
             }
         }
@@ -1482,8 +1526,7 @@ static void on_touch(int code, int x, int y) {
         for (int i = 0; i < VIDEO_N; i++) {
             if (in_rect(x, y, 32, VIDEO_ROW_Y + i * VIDEO_ROW_STEP, W - 64, 40)) {
                 sel = i;
-                int dir = (x >= 380 && x < 490) ? -1 : +1;
-                activate_video_row(i, dir);
+                activate_video_row(i, touch_dir(x));
                 return;
             }
         }
@@ -1503,12 +1546,7 @@ static void on_touch(int code, int x, int y) {
         for (int i = 0; i < HUD_ROWS; i++) {
             if (in_rect(x, y, 32, 174 + i * 23, W - 64, 23)) {
                 sel = i;
-                int dir = (x >= 380 && x < 500) ? -1 : +1;
-                if (i < H_COUNT) c.hud[i] = hud_cycle(c.hud[i], dir);
-                else if (i == H_COUNT) c.bmem = !c.bmem;
-                else if (i == H_COUNT + 1) c.bbuf = (c.bbuf + dir + 3) % 3;
-                else cfg_set_fight_place(&c, cfg_fight_place(&c) != 1);
-                cfg_save(&c);
+                do_hud_step(i, touch_dir(x));
                 return;
             }
         }
@@ -1521,7 +1559,7 @@ static void on_touch(int code, int x, int y) {
         }
         if (in_rect(x, y, 32, 74, W - 64, 38)) {
             sel = 0;
-            int dir = (x >= 380 && x < 490) ? -1 : +1;
+            int dir = touch_dir(x);
             int l = cfg_layout(&c);
             if (l == LAYOUT_CUSTOM) l = LAYOUT_PS1;
             else l = (l + dir + 3) % 3;
@@ -1540,7 +1578,7 @@ static void on_touch(int code, int x, int y) {
         for (int i = 0; i < SAVES_N; i++) {
             if (in_rect(x, y, 32, 86 + i * 52, W - 64, 46)) {
                 sel = i;
-                activate_saves_row(i, (x >= 380 && x < 490) ? -1 : +1);
+                activate_saves_row(i, touch_dir(x));
                 return;
             }
         }
@@ -1618,24 +1656,7 @@ static void on_touch(int code, int x, int y) {
         for (int i = b_scroll; i < b_count && i < b_scroll + BROWSE_VIS; i++) {
             if (in_rect(x, y, 32, 116 + (i - b_scroll) * 44, W - 64, 40)) {
                 sel = i;
-                if (b_items[i].is_dir) {
-                    if (strcmp(b_items[i].name, "..") == 0) {
-                        char *sl = strrchr(b_dir, '/');
-                        if (sl && sl != b_dir) *sl = 0;
-                        else strcpy(b_dir, "/");
-                    } else {
-                        char nxt[1400];
-                        snprintf(nxt, sizeof(nxt), "%s/%s", strcmp(b_dir, "/") ? b_dir : "", b_items[i].name);
-                        snprintf(b_dir, sizeof(b_dir), "%.1023s", nxt);
-                    }
-                    b_count = browse_read(b_dir, b_items, 256);
-                    b_scroll = 0;
-                    sel = 0;
-                } else {
-                    snprintf(disc_path, sizeof(disc_path), "%s/%s", strcmp(b_dir, "/") ? b_dir : "", b_items[i].name);
-                    cfg_save(&c);
-                    go(S_GAME, GAME_DISC, -1);
-                }
+                do_browse_activate(i);
                 return;
             }
         }
@@ -1706,47 +1727,60 @@ static void on_key(int code) {
         if (code == K_UP || code == K_DOWN) { kp_sel = (kp_sel + KP_COLS) % KP_KEYS; return; }
         if (code == K_LEFT) { kp_sel = (kp_sel + KP_KEYS - 1) % KP_KEYS; return; }
         if (code == K_RIGHT) { kp_sel = (kp_sel + 1) % KP_KEYS; return; }
-        if (code == btn_ok() || code == K_SOUTH) { pair_key(kp_sel); return; }
+        if (code == btn_ok()) { pair_key(kp_sel); return; }
     }
     if (screen == S_CONFLICT) {
         if (code == K_LEFT) { conflict_sel = (conflict_sel + 2) % 3; return; }
         if (code == K_RIGHT) { conflict_sel = (conflict_sel + 1) % 3; return; }
-        if (code == btn_ok() || code == K_SOUTH) { conflict_choose(conflict_sel); return; }
+        if (code == btn_ok()) { conflict_choose(conflict_sel); return; }
     }
-    if (code == K_UP) {
+    if (screen == S_PAIR_HOST && !pair_done && !strcmp(pair_st.status, "awaiting_approval") &&
+        code == c.pad[A_TRIANGLE].code) {
+        pair_host_answer(0);
+        return;
+    }
+    if (screen == S_BROWSE && code == c.pad[A_TRIANGLE].code) {
+        if (android_pick_disc_files() == 0) {
+            find_disc();
+            if (disc_path[0]) { cfg_save(&c); go(S_GAME, GAME_DISC, -1); }
+        }
+        return;
+    }
+    if (code == K_UP || code == K_DOWN) {
+        int dir = code == K_UP ? -1 : +1;
         int n = screen == S_HOME ? HI_COUNT : screen == S_GAME ? GAME_N : screen == S_VIDEO ? VIDEO_N :
                 screen == S_HUD ? HUD_ROWS : screen == S_CONTROLS ? (A_COUNT + 1) : screen == S_SAVES ? SAVES_N :
                 screen == S_DEBUG ? DEBUG_N : screen == S_BROWSE ? b_count : screen == S_BACKUPS ? bk_count :
                 screen == S_CLOUD ? cloud_n() : screen == S_DEVICES ? dev_count : screen == S_SAVE_NOTICE ? 2 : 1;
-        if (n > 0) sel = (sel - 1 + n) % n;
-        if (screen == S_BROWSE && sel < b_scroll) b_scroll = sel;
-        if (screen == S_BACKUPS && sel < bk_scroll) bk_scroll = sel;
-        if (screen == S_DEVICES && sel < dev_scroll) dev_scroll = sel;
-    } else if (code == K_DOWN) {
-        int n = screen == S_HOME ? HI_COUNT : screen == S_GAME ? GAME_N : screen == S_VIDEO ? VIDEO_N :
-                screen == S_HUD ? HUD_ROWS : screen == S_CONTROLS ? (A_COUNT + 1) : screen == S_SAVES ? SAVES_N :
-                screen == S_DEBUG ? DEBUG_N : screen == S_BROWSE ? b_count : screen == S_BACKUPS ? bk_count :
-                screen == S_CLOUD ? cloud_n() : screen == S_DEVICES ? dev_count : screen == S_SAVE_NOTICE ? 2 : 1;
-        if (n > 0) sel = (sel + 1) % n;
-        if (screen == S_BROWSE && sel >= b_scroll + BROWSE_VIS) b_scroll = sel - BROWSE_VIS + 1;
-        if (screen == S_BACKUPS && sel >= bk_scroll + LIST_VIS) bk_scroll = sel - LIST_VIS + 1;
-        if (screen == S_DEVICES && sel >= dev_scroll + LIST_VIS) dev_scroll = sel - LIST_VIS + 1;
+        if (n > 0) sel = (sel + dir + n) % n;
+        if (screen == S_BROWSE) clamp_scroll(&b_scroll, BROWSE_VIS);
+        if (screen == S_BACKUPS) clamp_scroll(&bk_scroll, LIST_VIS);
+        if (screen == S_DEVICES) clamp_scroll(&dev_scroll, LIST_VIS);
     } else if (code == K_LEFT || code == K_RIGHT) {
         int dir = code == K_LEFT ? -1 : +1;
         if (screen == S_GAME) activate_game_row(sel, dir);
         else if (screen == S_VIDEO) activate_video_row(sel, dir);
         else if (screen == S_SAVES && (sel == SAVES_INTERVAL || sel == SAVES_BACKUPS)) activate_saves_row(sel, dir);
-        else if (screen == S_HUD && sel < H_COUNT) { c.hud[sel] = hud_cycle(c.hud[sel], dir); cfg_save(&c); }
-        else if (screen == S_HUD && sel == HUD_ROWS - 1) { cfg_set_fight_place(&c, cfg_fight_place(&c) != 1); cfg_save(&c); }
+        else if (screen == S_HUD) do_hud_step(sel, dir);
         else if (screen == S_CONTROLS && sel == 0) {
             int l = cfg_layout(&c);
             cfg_set_layout(&c, l == LAYOUT_CUSTOM ? LAYOUT_PS1 : (l + dir + 3) % 3);
             cfg_save(&c);
         }
-    } else if (code == btn_ok() || code == K_SOUTH) {
+    } else if (code == btn_ok()) {
         if (screen == S_HOME) activate_home_row(sel);
         else if (screen == S_GAME) activate_game_row(sel, +1);
         else if (screen == S_VIDEO) activate_video_row(sel, +1);
+        else if (screen == S_HUD) do_hud_step(sel, +1);
+        else if (screen == S_CONTROLS) {
+            if (sel == 0) {
+                int l = cfg_layout(&c);
+                cfg_set_layout(&c, l == LAYOUT_CUSTOM ? LAYOUT_PS1 : (l + 1) % 3);
+                cfg_save(&c);
+            } else {
+                capture = 1;
+            }
+        }
         else if (screen == S_SAVE_NOTICE) {
             if (sel == 0) { fresh_save_reset(); go(S_HOME, 0, +1); }
             else { notice_step = 0; go(S_SAVE_NOTICE_CONFIRM, 0, +1); }
@@ -1758,17 +1792,25 @@ static void on_key(int code) {
         else if (screen == S_DEVICES && dev_count > 0 && !dev_items[sel].is_current && !strcmp(dev_items[sel].status, "active")) {
             go(S_REVOKE_CONFIRM, sel, +1);
         }
+        else if (screen == S_BACKUPS && bk_count > 0) go(S_BACKUP_CONFIRM, sel, +1);
+        else if (screen == S_BROWSE) do_browse_activate(sel);
+        else if (screen == S_RESET) do_reset_confirm();
+        else if (screen == S_CLEAN) do_clean_logs();
+        else if (screen == S_BACKUP_CONFIRM) do_backup_restore();
+        else if (screen == S_REVOKE_CONFIRM) revoke_selected();
+        else if (screen == S_RENEW_CONFIRM) { register_device(1); go(S_CLOUD, 0, -1); }
+        else if (screen == S_CONFLICT_CONFIRM) conflict_apply();
+        else if (screen == S_ERROR) go(return_screen, return_sel, -1);
         else if (screen == S_DEBUG) {
             if (sel == DEBUG_LOGS) { c.logs = (c.logs + 1) % 3; cfg_save(&c); }
+            else if (sel == DEBUG_SAVE_LOGS) send_logs();
             else if (sel == DEBUG_CLEAN_LOGS) go(S_CLEAN, 0, +1);
             else if (sel == DEBUG_UPDATES) toggle_update_check();
         }
-    } else if (code == btn_back() || code == K_EAST) {
-        if (is_cloud_screen(screen) || screen == S_REVOKE_CONFIRM || screen == S_RENEW_CONFIRM ||
-            screen == S_CONFLICT_CONFIRM || screen == S_SAVE_NOTICE || screen == S_SAVE_NOTICE_CONFIRM) on_back();
-        else if (screen != S_HOME) { cfg_save(&c); go(S_HOME, 0, -1); }
+    } else if (code == btn_back()) {
+        on_back();
     } else if (code == btn_start()) {
-        if (screen != S_SAVE_NOTICE && screen != S_SAVE_NOTICE_CONFIRM) start_game_flow();
+        if (screen == S_HOME || screen == S_GAME || screen == S_VIDEO || screen == S_DEBUG) start_game_flow();
     }
 }
 
