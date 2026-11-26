@@ -403,8 +403,9 @@ static void draw_video(void) {
     char sc_val[48], mon[48];
     if (c.scale == 0) snprintf(sc_val, sizeof(sc_val), "AUTO (%dx%d)", gw, gh);
     else snprintf(sc_val, sizeof(sc_val), "%dX (%dx%d)", c.scale, gw, gh);
-    char res_val[24];
-    snprintf(res_val, sizeof(res_val), c.iscale == 1 ? "1X (PS1)" : "%dX", c.iscale);
+    int vw = (c.widescreen && c.renderer_pc == 0 ? 1536 : 1024) * c.iscale, vh = 512 * c.iscale;
+    char res_val[48];
+    snprintf(res_val, sizeof(res_val), "%dX (%dx%d VRAM)", c.iscale, vw, vh);
     const char *v[VIDEO_N] = {
         (c.widescreen && c.renderer_pc == 0) ? "AUTO" : "OFF",
         c.fullscreen ? "ON" : "OFF",
@@ -431,7 +432,7 @@ static void draw_video(void) {
         "Window resolution scale (AUTO fits the detected monitor).",
         "GPU enables widescreen and shaders; SOFTWARE is exact PS1.",
         "GPU screen filter (SHARP keeps crisp pixels).",
-        "Draws the game at 1X to 8X the PS1's resolution (GPU only), without dithering.",
+        "Scales full PS1 VRAM (1024x512, 1536x512 in 16:9), not just 320x240.",
         "Above 1X: PS1 wobbles; SMOOTH steadies 3D; + TEXTURES fixes warping."
     };
     rect(40, 346, W - 80, 1, C_EDGE, 256);
@@ -2357,7 +2358,7 @@ static void on_press(int code) {
 #endif
     case S_RESET:
         if (back) { start_trans(-1, 92 + home_index(HI_RESET) * home_step() + 14); screen = S_HOME; }
-        if (ok) { cfg_defaults(&c); cfg_save(&c); go(S_HOME, 0, -1, 92 + 14); }
+        if (ok) { int ok91 = c.v091_save_ok; cfg_defaults(&c); c.v091_save_ok = ok91; cfg_save(&c); go(S_HOME, 0, -1, 92 + 14); }
         break;
     case S_CLEAN:
         if (back) { start_trans(-1, 188 + 14); screen = S_DEBUG; }

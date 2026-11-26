@@ -170,6 +170,16 @@ int main(int argc, char **argv) {
      * permute the touch pad's buttons, which are already the PS1 buttons they show. */
     setenv("DW3_LOG", log_level == 2 ? "heavy" : log_level == 1 ? "soft" : "off", 1);
 
+    {
+        char lp[640];
+        snprintf(lp, sizeof(lp), "%s/logs/game.log", base);
+        FILE *lf = freopen(lp, "a", stdout);
+        if (lf) {
+            setvbuf(lf, NULL, _IOLBF, 0);
+            dup2(fileno(lf), STDERR_FILENO);
+        }
+    }
+
     char *game_argv[] = {
         "dw2003",
         "--config", "./settings.json",

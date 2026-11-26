@@ -14,6 +14,9 @@
 #endif
 #include <time.h>
 #include <unistd.h>
+#ifdef __ANDROID__
+#include <sys/system_properties.h>
+#endif
 
 #include "compat.h"
 #include "migrate.h"
@@ -986,6 +989,26 @@ static int win_system_txt(char *out, size_t n) {
 #endif
 #ifdef __ANDROID__
     int l = snprintf(out, n, "os: android\n");
+    static const char *const props[][2] = {
+        {"manufacturer", "ro.product.manufacturer"},
+        {"model", "ro.product.model"},
+        {"android", "ro.build.version.release"},
+        {"sdk", "ro.build.version.sdk"},
+        {"abi", "ro.product.cpu.abi"},
+    };
+    for (unsigned i = 0; i < sizeof(props) / sizeof(props[0]) && l > 0 && (size_t)l < n; i++) {
+        char pv[PROP_VALUE_MAX] = "";
+        if (__system_property_get(props[i][1], pv) > 0)
+            l += snprintf(out + l, n - (size_t)l, "%s: %s\n", props[i][0], pv);
+    }
+    long cores = sysconf(_SC_NPROCESSORS_ONLN);
+    if (cores > 0 && l > 0 && (size_t)l < n) l += snprintf(out + l, n - (size_t)l, "cores: %ld\n", cores);
+    FILE *mf = fopen("/proc/meminfo", "r");
+    if (mf) {
+        char ml[128];
+        if (fgets(ml, sizeof(ml), mf) && l > 0 && (size_t)l < n) l += snprintf(out + l, n - (size_t)l, "%s", ml);
+        fclose(mf);
+    }
     const char *ev[] = {NULL};
 #else
     int l = snprintf(out, n, "os: windows\n");

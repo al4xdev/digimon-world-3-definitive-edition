@@ -466,8 +466,9 @@ static void draw_home(void) {
 
 static void draw_video(void) {
     header_touch("VIDEO", 1);
-    char res_val[24];
-    snprintf(res_val, sizeof(res_val), c.iscale == 1 ? "1X (PS1)" : "%dX", c.iscale);
+    int vw = (c.widescreen && c.renderer_pc == 0 ? 1536 : 1024) * c.iscale, vh = 512 * c.iscale;
+    char res_val[48];
+    snprintf(res_val, sizeof(res_val), "%dX (%dx%d VRAM)", c.iscale, vw, vh);
     const char *lab[VIDEO_N] = {
         "WIDESCREEN", "SCALING", "REFRESH RATE", "RENDERER", "FILTER", "RESOLUTION", "3D VERTICES"
     };
@@ -486,7 +487,7 @@ static void draw_video(void) {
         "60 Hz NTSC speed or 50 Hz PAL original timing.",
         "GPU for widescreen, filters and high-res 3D; Software for classic PS1.",
         "Image shader applied on the GPU renderer.",
-        "Internal 3D resolution (1X PS1 up to 8X).",
+        "Scales full PS1 VRAM (1024x512, 1536x512 in 16:9), not just 320x240.",
         "Smooth 3D vertices and perspective textures above 1X."
     };
     int gy = (int)(cur_y >= 0 && cur_screen == S_VIDEO ? cur_y : row_target_y(S_VIDEO, sel));
@@ -520,20 +521,31 @@ static void fresh_save_reset(void) {
     cfg_save(&c);
 }
 
+static void leave_splash(void) {
+    if (!c.v091_save_ok) {
+        if (has_existing_save()) {
+            go(S_SAVE_NOTICE, 0, +1);
+            return;
+        }
+        c.v091_save_ok = 1;
+        cfg_save(&c);
+    }
+    go(S_HOME, 0, +1);
+}
+
 static void draw_save_notice(void) {
-    header_touch("NEW STORY UPDATE (v0.9.1)", 0);
+    header_touch("NEW IN v0.9.1", 0);
     rrect(36, 74, W - 72, 134, 12, C_PANEL, 256);
     rrect_line(36, 74, W - 72, 134, 12, C_GOLD);
-    text(56, 86, S("FRESH SAVE RECOMMENDED"), 20, C_GOLD);
-    text(56, 114, S("v0.9.1 overhauls the campaign story, NPC mini-arcs and ally bonds."), 14, C_TEXT);
-    text(56, 136, S("Continuing an old save can negatively affect the new experience."), 14, C_TEXT);
-    text(56, 160, S("Starting fresh backs up your current card1.mcd into saves_backup/."), 13, C_GREEN);
-    text(56, 182, S("You can restore it anytime under SAVES & CLOUD > RESTORE BACKUP."), 13, C_NOTE);
+    text(56, 88, S("START FRESH RECOMMENDED"), 20, C_GOLD);
+    text(56, 120, S("v0.9.1 overhauls the story, NPC mini-arcs, and bonds."), 14, C_TEXT);
+    text(56, 144, S("Continuing an old save can negatively affect your experience."), 14, C_TEXT);
+    text(56, 170, S("Your current save is safely backed up in saves_backup/ first."), 13, C_GREEN);
 
     int gy = (int)(cur_y >= 0 && cur_screen == S_SAVE_NOTICE ? cur_y : row_target_y(S_SAVE_NOTICE, sel));
     draw_focus(32, gy, W - 64, 46, 10, sel == 1);
-    row_touch(226, 46, "START FRESH (RECOMMENDED)", "BACKUP + NEW", sel == 0, 0, 1, 0, 0);
-    row_touch(280, 46, "KEEP OLD SAVE", "NOT ADVISED", sel == 1, 1, 0, 0, 0);
+    row_touch(226, 46, "START FRESH (RECOMMENDED)", "BACKUP + NEW SAVE", sel == 0, 0, 1, 0, 0);
+    row_touch(280, 46, "KEEP OLD SAVE", "NOT RECOMMENDED", sel == 1, 1, 0, 0, 0);
     footer_touch(0, 0, "SELECT");
 }
 
@@ -542,8 +554,9 @@ static void draw_save_notice_confirm(void) {
     rrect(56, 108, W - 112, 256, 14, C_PANEL, 256);
     rrect_line(56, 108, W - 112, 256, 14, C_RED);
     text_c(W / 2, 128, S("KEEP OLD SAVE ANYWAY?"), 22, C_RED);
-    text_c(W / 2, 166, S("Old saves miss opening choices, NPC mini-arcs and ally bonds."), 14, C_TEXT);
-    text_c(W / 2, 190, S("This may negatively affect your v0.9.1 experience."), 14, C_GOLD);
+    text_c(W / 2, 170, S("Continuing an old save in v0.9.1 may miss new"), 14, C_TEXT);
+    text_c(W / 2, 192, S("story choices, NPC mini-arcs, and ally bonds,"), 14, C_TEXT);
+    text_c(W / 2, 214, S("negatively affecting your experience."), 14, C_GOLD);
     char pill[64];
     int step = notice_step < 3 ? notice_step + 1 : 3;
     snprintf(pill, sizeof(pill), "%s (%d/3)", S("CONFIRM"), step);
@@ -1317,7 +1330,7 @@ static void on_back(void);
 
 static void on_touch(int code, int x, int y) {
     if (screen == S_SPLASH) {
-        if (code == K_TOUCH_DOWN) go((!c.v091_save_ok && has_existing_save()) ? S_SAVE_NOTICE : S_HOME, 0, +1);
+        if (code == K_TOUCH_DOWN) leave_splash();
         return;
     }
     if (screen == S_LOADING) {
@@ -1355,7 +1368,8 @@ static void on_touch(int code, int x, int y) {
 
     if (screen == S_RESET) {
         if (in_rect(x, y, 90, 294, 210, 44)) {
-            cfg_defaults(&c); cfg_save(&c); go(S_HOME, HI_RESET, -1);
+            int ok91 = c.v091_save_ok;
+            cfg_defaults(&c); c.v091_save_ok = ok91; cfg_save(&c); go(S_HOME, HI_RESET, -1);
         } else if (in_rect(x, y, 340, 294, 210, 44) || in_rect(x, y, 520, 14, 98, 36)) {
             go(S_HOME, HI_RESET, -1);
         }
@@ -1644,7 +1658,7 @@ static void on_back(void) {
 
 static void on_key(int code) {
     if (code == K_BACK) { on_back(); return; }
-    if (screen == S_SPLASH) { go((!c.v091_save_ok && has_existing_save()) ? S_SAVE_NOTICE : S_HOME, 0, +1); return; }
+    if (screen == S_SPLASH) { leave_splash(); return; }
     if (screen == S_LOADING) { load_press(code); return; }
     if (capture) {
         /* As the desktop launcher's (main.c, on_press): a face button, a shoulder, Start or Select binds, the d-pad
@@ -1761,7 +1775,7 @@ int dw3_android_launcher_run(int kind, const char *script, int *out_touch_pad, i
 
     while (!android_done) {
         if (screen == S_SPLASH && splash_t0 >= 0 && plat_now_ms() - splash_t0 >= SPLASH_MS) {
-            go((!c.v091_save_ok && has_existing_save()) ? S_SAVE_NOTICE : S_HOME, 0, +1);
+            leave_splash();
         }
         if (screen == S_LOADING) {
             long now = plat_now_ms();
