@@ -440,6 +440,12 @@ it has only been played through a few times, so expect rough edges and frequent 
 Nothing else is planned: from here on the work is hotfixes. Bugs go to the
 [issue tracker](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues).
 
+### Release cadence
+
+- **0.9.3 – 0.9.5** (after 0.9.2): weekly updates.
+- **0.9.6 – 0.9.9**: biweekly updates (every two weeks). At 0.9.9 the state of the project will be reviewed, with up to five additional updates if needed before 1.0.
+- **1.0 and beyond**: monthly batched hotfixes, with no fixed schedule for new features.
+
 ## Under the hood
 
 This is built on the [Digimon World 2003 decompilation](https://github.com/gascarcella/dw2003recomp) and its PC port,

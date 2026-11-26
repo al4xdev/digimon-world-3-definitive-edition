@@ -453,6 +453,12 @@ Manches wurde erst ein paar Mal durchgespielt, rechne also mit Ecken und Kanten 
 Sonst ist nichts geplant: ab jetzt besteht die Arbeit aus Hotfixes. Fehler gehören in den
 [Issue Tracker](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues).
 
+### Update-Rhythmus
+
+- **0.9.3 – 0.9.5** (nach 0.9.2): wöchentliche Updates.
+- **0.9.6 – 0.9.9**: alle zwei Wochen. Bei 0.9.9 wird geprüft, ob weitere Updates nötig sind — bis zu fünf zusätzliche Updates vor 1.0 sind möglich.
+- **Ab 1.0**: monatlich gebündelte Hotfixes und kein fester Zeitplan für neue Features.
+
 ## Unter der Haube
 
 Dies baut auf der [Dekompilierung von Digimon World 2003](https://github.com/gascarcella/dw2003recomp) und ihrem
