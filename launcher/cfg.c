@@ -1019,6 +1019,11 @@ static int win_system_txt(char *out, size_t n) {
     }
 #ifdef DW3_LAUNCHER_VERSION
     if (l > 0 && (size_t)l < n) l += snprintf(out + l, n - (size_t)l, "launcher: %s\n", DW3_LAUNCHER_VERSION);
+#elif defined(__ANDROID__)
+    {
+        extern const char port_version[];
+        if (l > 0 && (size_t)l < n) l += snprintf(out + l, n - (size_t)l, "launcher: %s\n", port_version);
+    }
 #endif
     return l > 0 && (size_t)l < n ? l : (int)n - 1;
 }

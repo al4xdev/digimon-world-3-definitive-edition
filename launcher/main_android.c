@@ -264,6 +264,7 @@ static void go(int s, int new_sel, int dir) {
     int fy = row_target_y(screen, sel);
     if (fy < 0) fy = H / 2;
     start_trans(dir, fy);
+    capture = 0;
     screen = s;
     sel = new_sel;
     cur_y = (float)row_target_y(s, new_sel);
@@ -340,16 +341,21 @@ static void start_game(int sync);
 
 static void start_game_flow(void) { start_game(1); }
 
-static void conflict_finish(const char *res) {
+static void conflict_finish(const char *res, int proceed) {
     go(conflict_ret, conflict_ret_sel, -1);
     snprintf(status, sizeof(status), "%s", res ? res : "");
-    if (conflict_then_play) start_game(0);
+    if (proceed && conflict_then_play) start_game(0);
 }
 
 static void start_game(int sync) {
     if (!disc_path[0]) {
         pick_disc_android();
         if (!disc_path[0]) return;
+    }
+    {
+        char card_p[1024];
+        snprintf(card_p, sizeof(card_p), "%s/card1.mcd", game_dir);
+        if (save_is_valid_mc(card_p, NULL)) save_backup_rotate(game_dir, "card1.mcd", c.backup_max);
     }
     /* SAVES & CLOUD's CLOUD SYNC promises a pull before play. The game runs inside this process and Android kills it
      * rather than letting it exit, so there is no push on exit as on desktop: this same sync pushes the last session's
@@ -883,6 +889,7 @@ static void draw_backups(void) {
 /* SEND LOGS: the full zip is saved as ever, then the capped one goes to the server and is dropped. */
 static void send_logs(void) {
     char nm[128], up[128], id[40] = "", err[96] = "";
+    busy("UPLOADING...");
     if (logs_save(nm, sizeof(nm)) != 0) { snprintf(status, sizeof(status), "SAVE LOGS FAILED"); return; }
     if (logs_pack(up, sizeof(up), 1) != 0) { snprintf(status, sizeof(status), "SAVED %s", nm); return; }
     char zp[1400];
@@ -1291,7 +1298,7 @@ static void cloud_poll(void) {
 
 static void conflict_choose(int i) {
     if (i == 2) {
-        conflict_finish(S("SAVES LEFT AS THEY ARE"));
+        conflict_finish(S("SAVES LEFT AS THEY ARE"), 0);
         return;
     }
     conflict_choice = i;
@@ -1301,9 +1308,10 @@ static void conflict_choose(int i) {
 static void conflict_apply(void) {
     char res[160] = "";
     busy("SYNCING SAVE...");
-    if (conflict_choice == 0) cloud_pull_card1(&cloud, game_dir, c.backup_max, res, sizeof(res));
-    else cloud_push_card1(&cloud, game_dir, c.backup_max, 1, res, sizeof(res));
-    conflict_finish(res);
+    int rc = conflict_choice == 0
+        ? cloud_pull_card1(&cloud, game_dir, c.backup_max, res, sizeof(res))
+        : cloud_push_card1(&cloud, game_dir, c.backup_max, 1, res, sizeof(res));
+    conflict_finish(res, rc == 0);
 }
 
 static void revoke_selected(void) {
@@ -1433,12 +1441,15 @@ static void on_touch(int code, int x, int y) {
         return;
     }
 
+    if (screen == S_ERROR) {
+        if (in_rect(x, y, 240, H - 46, 160, 36) || in_rect(x, y, 520, 14, 98, 36) || in_rect(x, y, 28, H - 46, 126, 36)) {
+            go(return_screen, return_sel, -1);
+        }
+        return;
+    }
+
     if (screen != S_HOME && (in_rect(x, y, 520, 14, 98, 36) || in_rect(x, y, 28, H - 46, 126, 36))) {
-        if (is_cloud_screen(screen)) on_back();
-        else if (screen == S_BROWSE) go(S_GAME, GAME_DISC, -1);
-        else if (screen == S_BACKUPS) go(S_SAVES, SAVES_RESTORE, -1);
-        else if (screen == S_ERROR) go(return_screen, return_sel, -1);
-        else { cfg_save(&c); go(S_HOME, 0, -1); }
+        on_back();
         return;
     }
     if (screen == S_HOME && in_rect(x, y, 452, 14, 166, 36) && open_update_page()) return;
@@ -1650,8 +1661,18 @@ static void on_back(void) {
     case S_DEVICES: status[0] = 0; go(S_CLOUD, CLOUD_DEVICES, -1); return;
     case S_REVOKE_CONFIRM: go(S_DEVICES, sel, -1); return;
     case S_RENEW_CONFIRM: go(S_CLOUD, CLOUD_RENEW, -1); return;
-    case S_CONFLICT: conflict_finish(S("SAVES LEFT AS THEY ARE")); return;
+    case S_CONFLICT: conflict_finish(S("SAVES LEFT AS THEY ARE"), 0); return;
     case S_CONFLICT_CONFIRM: go(S_CONFLICT, 0, -1); return;
+    case S_HUD:
+        if (dup_hud(&c, NULL)) { snprintf(msg, sizeof(msg), "SAME BUTTON ON TWO ROWS"); return; }
+        cfg_save(&c); go(S_HOME, HI_HUD, -1); return;
+    case S_CONTROLS:
+        if (dup_actions(&c, NULL)) { snprintf(msg, sizeof(msg), "SAME BUTTON ON TWO ROWS"); return; }
+        cfg_save(&c); go(S_HOME, HI_CONTROLS, -1); return;
+    case S_GAME: cfg_save(&c); go(S_HOME, HI_GAME, -1); return;
+    case S_VIDEO: cfg_save(&c); go(S_HOME, HI_VIDEO, -1); return;
+    case S_SAVES: cfg_save(&c); go(S_HOME, HI_SAVES, -1); return;
+    case S_DEBUG: cfg_save(&c); go(S_HOME, HI_DEBUG, -1); return;
     default: cfg_save(&c); go(S_HOME, 0, -1); return;
     }
 }
@@ -1767,9 +1788,8 @@ int dw3_android_launcher_run(int kind, const char *script, int *out_touch_pad, i
     trans_from = malloc((size_t)ui_w * ui_h * sizeof(uint32_t));
     trans_to = malloc((size_t)ui_w * ui_h * sizeof(uint32_t));
 
-    cfg_load(&c);
     find_disc();
-    if (!disc_path[0]) cfg_load(&c);
+    cfg_load(&c);
     cloud_state_load(&cloud, game_dir);
     update_check_start(game_dir, port_version, c.update_check);
 
