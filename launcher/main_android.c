@@ -752,7 +752,7 @@ static void draw_game(void) {
         "   HIT REACTION", "FLOATING PAD", "DISC IMAGE"
     };
     const char *val[GAME_N] = {
-        lang_label[c.lang < 0 || c.lang > 7 ? 0 : c.lang],
+        lang_label[c.lang < 0 || c.lang > 6 ? 0 : c.lang],
         ff_label[c.ff],
         load_label[c.load],
         c.skip ? "ON" : "OFF",
@@ -1257,7 +1257,7 @@ static void draw(void) {
 
 static void activate_game_row(int row, int dir) {
     switch (row) {
-    case GAME_LANG: c.lang = (c.lang + dir + 8) % 8; break;
+    case GAME_LANG: c.lang = (c.lang + dir + 7) % 7; break;
     case GAME_FF: c.ff = (c.ff + dir + 5) % 5; break;
     case GAME_LOAD: c.load = (c.load + dir + 5) % 5; break;
     case GAME_SKIP: c.skip = !c.skip; break;

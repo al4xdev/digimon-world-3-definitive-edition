@@ -359,7 +359,7 @@ static int j_str(const char *t, const char *path, char *out, size_t n) {
 
 static const char *ff_names[] = {"off", "2x", "4x", "8x", "unlimited"};
 static const char *load_names[] = {"off", "2x", "4x", "8x", "instant"};
-static const char *lang_names[] = {"english", "portuguese", "french", "german", "italian", "spanish", "usa", "japanese"};
+static const char *lang_names[] = {"english", "portuguese", "french", "german", "italian", "spanish", "japanese"};
 static const char *bbuf_names[] = {"off", "short", "long"};
 static const char *log_names[] = {"off", "soft", "heavy"};
 static const char *filter_names[] = {"none", "sharp", "scanlines", "crt", "smooth"};
@@ -406,7 +406,7 @@ static void cfg_read_settings(Cfg *c, const char *j) {
     c->battles = j_bool(j, "mods/battle_animations/enabled", c->battles);
     c->hit = c->battles && j_bool(j, "mods/battle_animations/hit_reaction", c->hit);
     if (j_bool(j, "mods/preset_language/enabled", 1) && j_str(j, "mods/preset_language/language", s, sizeof(s)))
-        c->lang = idx_of(lang_names, 8, s, c->lang);
+        c->lang = !strcmp(s, "usa") ? 0 : idx_of(lang_names, 7, s, c->lang);
     if (j_str(j, "debug/logs", s, sizeof(s))) c->logs = idx_of(log_names, 3, s, c->logs);
     /* the disc: RecompLauncher's game_path is disc/path; relative paths are the settings directory's */
     if (j_str(j, "disc/path", s, sizeof(s)) && s[0]) {
@@ -434,7 +434,7 @@ void cfg_load(Cfg *c) {
         v[strcspn(v, "\r\n")] = 0;
         int n = atoi(v);
         if (!strcmp(line, "hz")) c->hz = n == 60 ? 60 : 50;
-        else if (!strcmp(line, "lang")) c->lang = n < 0 ? 0 : n > 7 ? 7 : n;
+        else if (!strcmp(line, "lang")) c->lang = n < 0 ? 0 : n > 6 ? 6 : n;
         else if (!strcmp(line, "ff")) ffon = n;
         else if (!strcmp(line, "ff_speed")) snprintf(ffspeed, sizeof(ffspeed), "%s", v);
         else if (!strcmp(line, "load")) c->load = n < 0 ? 0 : n > 4 ? 4 : n;
@@ -518,7 +518,7 @@ void cfg_load(Cfg *c) {
         if (!f) {
             char lstr[32] = "";
             if (json_str(j, "\"preset_language\"", "language", lstr, sizeof(lstr)))
-                c->lang = idx_of(lang_names, 8, lstr, 0);
+                c->lang = !strcmp(lstr, "usa") ? 0 : idx_of(lang_names, 7, lstr, 0);
         }
         if (is_pc || is_android) cfg_read_settings(c, j);
         free(j);
@@ -597,7 +597,7 @@ static int write_settings(const Cfg *c) {
         is_pc ? "Tab" : "", code_name(c->pad[A_SELECT].code), code_name(c->pad[A_R1].code),
         c->load ? "true" : "false", load_names[c->load ? c->load : 3],
         c->skip ? "true" : "false", c->battles ? "true" : "false", c->battles && c->hit ? "true" : "false",
-        lang_names[c->lang < 0 || c->lang > 7 ? 0 : c->lang], vw ? "true" : "false",
+        lang_names[c->lang < 0 || c->lang > 6 ? 0 : c->lang], vw ? "true" : "false",
         hud_name(c->hud[H_FIGHT]), hud_name(c->hud[H_TECH]), hud_name(c->hud[H_DV]),
         hud_name(c->hud[H_TAG]), hud_name(c->hud[H_ITEM]), hud_name(c->hud[H_RUN]), hud_name(c->hud[H_INSPECT]), hud_name(c->hud[H_BLAST]),
         c->bmem ? "true" : "false", bbuf_names[c->bbuf], (!is_pc && !is_android && c->led) ? "true" : "false", pads);

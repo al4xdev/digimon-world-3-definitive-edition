@@ -12,8 +12,8 @@
 /* Canonical UI label tables shared by desktop (main.c) and Android (main_android.c). */
 static const char *const ff_label[5] = {"OFF", "2X", "4X", "8X", "UNLIMITED"};
 static const char *const load_label[5] = {"OFF", "2X", "4X", "8X", "INSTANT"};
-static const char *const lang_label[8] = {
-    "ENGLISH", "PORTUGUÊS (BR)", "FRANÇAIS", "DEUTSCH", "ITALIANO", "ESPAÑOL", "ENGLISH (USA)", "JAPANESE"
+static const char *const lang_label[7] = {
+    "ENGLISH", "PORTUGUÊS (BR)", "FRANÇAIS", "DEUTSCH", "ITALIANO", "ESPAÑOL", "JAPANESE"
 };
 static const char *const buf_label[3] = {"OFF", "SHORT", "LONG"};
 static const char *const fight_label[3] = {"CUSTOM", "BOTTOM", "RIGHT"};

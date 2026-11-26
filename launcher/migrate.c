@@ -88,7 +88,14 @@ static int tui_0_to_1(char **text) {
     return kv_set(text, "bm_v", NULL);
 }
 
-static const MigrateStep tui_steps[] = {tui_0_to_1}; /* tui_steps[N] takes version N to N + 1 */
+static int tui_1_to_2(char **text) {
+    int lang = kv_int(*text, "lang", -1);
+    if (lang == 6) return kv_set(text, "lang", "0");
+    if (lang == 7) return kv_set(text, "lang", "6");
+    return 0;
+}
+
+static const MigrateStep tui_steps[] = {tui_0_to_1, tui_1_to_2}; /* tui_steps[N] takes version N to N + 1 */
 
 int migrate_tui_text(char **text, int *from_out) {
     int v = kv_int(*text, "schema", 0), from = v;

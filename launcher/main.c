@@ -431,7 +431,7 @@ static void draw_game(void) {
         const char *b = path_last_sep(disc_path);
         disc_lbl = b ? b + 1 : disc_path;
     }
-    const char *v[8] = {lang_label[c.lang < 0 || c.lang > 7 ? 0 : c.lang], ff_label[c.ff], load_label[c.load],
+    const char *v[8] = {lang_label[c.lang < 0 || c.lang > 6 ? 0 : c.lang], ff_label[c.ff], load_label[c.load],
                         c.hz == 60 ? "60 HZ" : "50 HZ", c.skip ? "ON" : "OFF", c.battles ? "ON" : "OFF", c.battles ? (c.hit ? "ON" : "OFF") : "-",
                         disc_lbl};
     const char *lab[8] = {"LANGUAGE", "FAST-FORWARD", "FAST LOAD", "REFRESH RATE", "SKIP DIALOGUES", "SKIP BATTLE ANIMS",
@@ -1890,7 +1890,7 @@ static void on_press(int code) {
         if (back) leave_edit(HI_GAME);
         if (ok || d) {
             switch (sel) {
-            case 0: c.lang = (c.lang + s + 8) % 8; break;
+            case 0: c.lang = (c.lang + s + 7) % 7; break;
             case 1: c.ff = (c.ff + s + 5) % 5; break;
             case 2: c.load = (c.load + s + 5) % 5; break;
             case 3: c.hz = c.hz == 60 ? 50 : 60; break;
@@ -2507,7 +2507,7 @@ static int self_test(const char *root) {
         check(g.hz == 60 && cfg_fight_place(&g) == 0, "schema: an old tui.state takes 60 Hz and Fight at the bottom");
         {
             char *t = slurp(tp);
-            check(t && strstr(t, "schema=1") && !strstr(t, "bm_v") && strstr(t, "hz=60"), "schema: tui.state stamped schema=1");
+            check(t && strstr(t, "schema=2") && !strstr(t, "bm_v") && strstr(t, "hz=60"), "schema: tui.state stamped schema=2");
             free(t);
         }
         snprintf(tp, sizeof(tp), "%s/tui.state.v0.bak", game_dir);
@@ -2517,12 +2517,21 @@ static int self_test(const char *root) {
             free(t);
         }
         snprintf(tp, sizeof(tp), "%s/tui.state", game_dir);
-        write_text(tp, "schema=1\nhz=50\nbm_fight=east\nbm_tag=south\n");
+        write_text(tp, "schema=2\nhz=50\nbm_fight=east\nbm_tag=south\n");
         cfg_load(&g);
         {
             char *t = slurp(tp); /* settings.json's refresh wins over tui.state's hz on a read, so the file is what shows */
             check(cfg_fight_place(&g) == 1 && t && strstr(t, "hz=50"), "schema: a tui.state on the current schema keeps the player's Fight right and 50 Hz");
             free(t);
+        }
+        {
+            char *u = strdup("schema=1\nlang=6\n"), *jp = strdup("schema=1\nlang=7\n");
+            int fu = -1, fjp = -1;
+            check(migrate_tui_text(&u, &fu) == MIGRATE_DONE && fu == 1 && strstr(u, "lang=0") && strstr(u, "schema=2"),
+                  "schema: dropped USA lang (6) migrates to english (0)");
+            check(migrate_tui_text(&jp, &fjp) == MIGRATE_DONE && fjp == 1 && strstr(jp, "lang=6") && strstr(jp, "schema=2"),
+                  "schema: japanese lang (7) shifts to 6");
+            free(u); free(jp);
         }
         write_text(tp, "schema=9\nhz=50\n");
         cfg_load(&g);
@@ -2539,7 +2548,7 @@ static int self_test(const char *root) {
             char *crlf = strdup("hz=50\r\nbm_fight=east\r\nbm_tag=south\r\nff=1"); /* CRLF, and no newline at the end */
             int from = -1;
             check(migrate_tui_text(&crlf, &from) == MIGRATE_DONE && from == 0 && strstr(crlf, "hz=60") &&
-                      strstr(crlf, "bm_fight=south") && strstr(crlf, "schema=1") && strstr(crlf, "ff=1"),
+                      strstr(crlf, "bm_fight=south") && strstr(crlf, "schema=2") && strstr(crlf, "ff=1"),
                   "schema: a tui.state with CRLF lines and no last newline migrates");
             free(crlf);
         }

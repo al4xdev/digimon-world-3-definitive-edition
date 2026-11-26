@@ -153,9 +153,9 @@ s32 port_inn_save_screen(s32 map) {
  * in its order (cnty_sel_languages), then USA and JPN, whose sets are on the EU disc but which the screen never
  * reaches. */
 static const char *const pl_languages[] = {
-    "english", "portuguese", "french", "german", "italian", "spanish", "usa", "japanese", NULL
+    "english", "portuguese", "french", "german", "italian", "spanish", "japanese", NULL
 };
-static const s32 pl_codes[] = { 2, 2, 3, 5, 4, 6, 1, 0 };
+static const s32 pl_codes[] = { 2, 2, 3, 5, 4, 6, 0 };
 enum { PL_LANGUAGE };
 static const PortModOption pl_options[] = {
     { .id = "language", .type = PORT_MOD_ENUM, .def = "\"english\"", .values = pl_languages, .applies = "restart" },

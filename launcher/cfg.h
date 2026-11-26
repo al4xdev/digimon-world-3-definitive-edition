@@ -15,7 +15,7 @@ typedef struct Bind {
 
 typedef struct Cfg {
     int hz;                  /* 50 or 60: GAME screen's REFRESH RATE; default 60 */
-    int lang;                /* 0 english, 1 portuguese, 2 french, 3 german, 4 italian, 5 spanish, 6 usa, 7 japanese */
+    int lang;                /* 0 english, 1 portuguese, 2 french, 3 german, 4 italian, 5 spanish, 6 japanese */
     int ff;                  /* 0 off, 1 2x, 2 4x, 3 8x, 4 unlimited */
     int load;                /* fast_loading: 0 off, 1 2x, 2 4x, 3 8x, 4 instant */
     int skip, battles, hit;  /* skip dialogues, skip battle animations, hit reaction */

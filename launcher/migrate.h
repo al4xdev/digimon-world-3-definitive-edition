@@ -16,7 +16,7 @@
 
 #include <stddef.h>
 
-#define SCHEMA_TUI_STATE 1 /* 0 -> 1: the Fight button's new default (was bm_v=2) and 60 Hz, then "schema=1" */
+#define SCHEMA_TUI_STATE 2 /* 0 -> 1: Fight/60Hz defaults; 1 -> 2: drop USA lang (6 -> 0, 7 -> 6) */
 #define SCHEMA_SAVE 2      /* 1 -> 2: the "respec" section (the pig's swaps); the data of version 1 is unchanged */
 /* TODO, next SCHEMA_SAVE bump, 3 (owner, 2026-11-26): a clean cut, saves from before 0.9.1 are not migrated (players
  * were on a near-alpha), and the fresh-save notice (Cfg.v091_save_ok, main.c and main_android.c) goes with it.
