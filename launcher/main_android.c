@@ -405,11 +405,12 @@ static int sha1_file_hex(const char *path, char out[41]) {
 }
 
 static int disc_stamp_matches(const char *bin_path, const struct stat *st) {
-    char sp[1024], canon[1400], line[1600];
+    char sp[1024], line[1600];
     snprintf(sp, sizeof(sp), "%s/dw2003-port/disc-stamps", game_dir);
     FILE *f = fopen(sp, "r");
     if (!f) return 0;
-    if (!realpath(bin_path, canon)) snprintf(canon, sizeof(canon), "%.1399s", bin_path);
+    char *resolved = realpath(bin_path, NULL);
+    const char *canon = resolved ? resolved : bin_path;
     int ok = 0;
     while (fgets(line, sizeof(line), f)) {
         char hex[48], cpath[1200];
@@ -424,6 +425,7 @@ static int disc_stamp_matches(const char *bin_path, const struct stat *st) {
             }
         }
     }
+    free(resolved);
     fclose(f);
     return ok;
 }
