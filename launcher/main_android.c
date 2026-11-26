@@ -3,6 +3,7 @@
  * (< BACK header pill, full-width rows, < / > value regions, clickable footer pills, tap-to-jump loading),
  * exposing the FLOATING PAD toggle in GAME settings, and supporting native Android controllers simultaneously. */
 #include <ctype.h>
+#include <dirent.h>
 #include <math.h>
 #include <signal.h>
 #include <stdio.h>
@@ -282,9 +283,38 @@ static void open_browse(void) {
     go(S_BROWSE, 0, +1);
 }
 
+static int pick_newest_game_disc(void) {
+    char dir[700], best[512] = "";
+    snprintf(dir, sizeof(dir), "%s/game", game_dir);
+    DIR *d = opendir(dir);
+    if (!d) return 0;
+    time_t best_mt = 0;
+    int best_cue = 0;
+    struct dirent *e;
+    while ((e = readdir(d))) {
+        size_t n = strlen(e->d_name);
+        int is_cue = n > 4 && strcasecmp(e->d_name + n - 4, ".cue") == 0;
+        int is_bin = n > 4 && strcasecmp(e->d_name + n - 4, ".bin") == 0;
+        if (!is_cue && !is_bin) continue;
+        char p[1400];
+        snprintf(p, sizeof(p), "%s/%s", dir, e->d_name);
+        struct stat st;
+        if (stat(p, &st) != 0 || !S_ISREG(st.st_mode)) continue;
+        if (!best[0] || st.st_mtime > best_mt || (st.st_mtime == best_mt && is_cue && !best_cue)) {
+            best_mt = st.st_mtime;
+            best_cue = is_cue;
+            snprintf(best, sizeof(best), "%.511s", e->d_name);
+        }
+    }
+    closedir(d);
+    if (!best[0]) return 0;
+    snprintf(disc_path, sizeof(disc_path), "%s/%s", dir, best);
+    return 1;
+}
+
 static void pick_disc_android(void) {
     if (android_pick_disc_files() == 0) {
-        find_disc();
+        if (!pick_newest_game_disc()) find_disc();
         if (disc_path[0]) {
             cfg_save(&c);
             snprintf(status, sizeof(status), "DISC IMPORTED");

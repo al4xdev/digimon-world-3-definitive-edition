@@ -215,7 +215,9 @@ export async function runRetentionCleanup(env: Env, ts = nowSec()): Promise<{
   const retentionDays = intEnv(env.RETENTION_DAYS, 40);
   const cutoff = ts - retentionDays * 86400;
 
-  await env.DB.prepare(`DELETE FROM log_reports WHERE created_at < ?1`).bind(cutoff).run();
+  await env.DB.prepare(`DELETE FROM log_reports WHERE created_at < ?1 AND status NOT IN ('bug', 'critical')`)
+    .bind(cutoff)
+    .run();
   const pRes = await env.DB.prepare(`DELETE FROM pairing_codes WHERE expires_at <= ?1`).bind(ts).run();
   const rRes = await env.DB.prepare(`DELETE FROM rate_limits WHERE reset_at <= ?1`).bind(ts).run();
 
