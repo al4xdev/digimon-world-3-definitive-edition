@@ -18,6 +18,7 @@ import {
   validatePs1MemoryCard,
 } from "./save";
 import {
+  ALLOWED_LOG_STATUSES,
   ALLOWED_PLATFORMS,
   ALLOWED_SLOTS,
   EXPANSION_MAX,
@@ -1026,8 +1027,23 @@ async function handleAdmin(request: Request, env: Env, meta: ClientMeta, path: s
   }
 
   if (path === "/v1/admin/logs" && request.method === "GET") {
+    const url = new URL(request.url);
+    const statusFilter = url.searchParams.get("status")?.trim() ?? "";
+    if (statusFilter) {
+      if (!ALLOWED_LOG_STATUSES.has(statusFilter)) {
+        return errJson("invalid_status", 400);
+      }
+      const rows = await env.DB.prepare(
+        `SELECT id, created_at, country, platform, device_id, launcher, size, status, note, updated_at
+         FROM log_reports WHERE status = ?1 ORDER BY created_at DESC LIMIT 100`,
+      )
+        .bind(statusFilter)
+        .all();
+      return json({ ok: true, reports: rows.results ?? [] });
+    }
     const rows = await env.DB.prepare(
-      `SELECT id, created_at, country, platform, device_id, launcher, size FROM log_reports ORDER BY created_at DESC LIMIT 100`,
+      `SELECT id, created_at, country, platform, device_id, launcher, size, status, note, updated_at
+       FROM log_reports ORDER BY created_at DESC LIMIT 100`,
     ).all();
     return json({ ok: true, reports: rows.results ?? [] });
   }
@@ -1036,6 +1052,44 @@ async function handleAdmin(request: Request, env: Env, meta: ClientMeta, path: s
     const row = await env.DB.prepare(`SELECT zip FROM log_reports WHERE id = ?1`).bind(logMatch[1]!).first<{ zip: unknown }>();
     if (!row) return errJson("not_found", 404);
     return new Response(toUint8Array(row.zip), { headers: { "Content-Type": "application/zip", "Content-Disposition": `attachment; filename="dw3-logs-${logMatch[1]}.zip"` } });
+  }
+  if (logMatch && request.method === "PATCH") {
+    const body = await readJsonBody(request);
+    let nextStatus: string | null = null;
+    if (body.status !== undefined) {
+      if (typeof body.status !== "string" || !ALLOWED_LOG_STATUSES.has(body.status)) {
+        return errJson("invalid_status", 400);
+      }
+      nextStatus = body.status;
+    }
+    let nextNote: string | null = null;
+    if (body.note !== undefined) {
+      if (typeof body.note !== "string") {
+        return errJson("invalid_note", 400);
+      }
+      nextNote = body.note.trim().slice(0, 500);
+    }
+    if (nextStatus === null && nextNote === null) {
+      return errJson("missing_fields", 400);
+    }
+    const updated = await env.DB.prepare(
+      `UPDATE log_reports
+       SET status = COALESCE(?1, status),
+           note = COALESCE(?2, note),
+           updated_at = ?3
+       WHERE id = ?4
+       RETURNING id, status, note, updated_at`,
+    )
+      .bind(nextStatus, nextNote, ts, logMatch[1]!)
+      .first<{ id: string; status: string; note: string; updated_at: number }>();
+    if (!updated) return errJson("not_found", 404);
+    return json({
+      ok: true,
+      id: updated.id,
+      status: updated.status,
+      note: updated.note,
+      updated_at: Number(updated.updated_at),
+    });
   }
 
   if (path === "/v1/admin/cleanup" && request.method === "POST") {

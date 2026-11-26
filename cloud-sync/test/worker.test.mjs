@@ -515,7 +515,74 @@ test("SEND LOGS: a zip is kept without an account, a non-zip and a big body are 
 
   assert.equal((await fetch(`${BASE}/v1/admin/logs`)).status, 401);
   const list = await (await fetch(`${BASE}/v1/admin/logs`, { headers: { "X-Admin-Secret": ADMIN_SECRET } })).json();
-  assert.ok(list.reports.some((r) => r.id === id && r.platform === "pc" && r.size === zip.length));
+  const uploaded = list.reports.find((r) => r.id === id);
+  assert.ok(uploaded);
+  assert.equal(uploaded.platform, "pc");
+  assert.equal(uploaded.size, zip.length);
+  assert.equal(uploaded.status, "new");
+  assert.equal(uploaded.note, "");
+  assert.equal(uploaded.updated_at, null);
+
   const back = await fetch(`${BASE}/v1/admin/logs/${id}`, { headers: { "X-Admin-Secret": ADMIN_SECRET } });
   assert.deepEqual(Buffer.from(await back.arrayBuffer()), zip);
+
+  const up2 = await fetch(`${BASE}/v1/logs`, { method: "POST", headers: { ...ip, "X-Platform": "android", "X-Launcher": "1.2.4" }, body: zip });
+  assert.equal(up2.status, 200);
+  const { id: id2 } = await up2.json();
+
+  assert.equal(
+    (await fetch(`${BASE}/v1/admin/logs/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "critical" }),
+    })).status,
+    401,
+  );
+
+  const badStatus = await fetch(`${BASE}/v1/admin/logs/${id}`, {
+    method: "PATCH",
+    headers: { "X-Admin-Secret": ADMIN_SECRET, "Content-Type": "application/json" },
+    body: JSON.stringify({ status: "invalid_state" }),
+  });
+  assert.equal(badStatus.status, 400);
+
+  const unknownId = await fetch(`${BASE}/v1/admin/logs/AAAAA-BBBBB`, {
+    method: "PATCH",
+    headers: { "X-Admin-Secret": ADMIN_SECRET, "Content-Type": "application/json" },
+    body: JSON.stringify({ status: "bug", note: "ghost" }),
+  });
+  assert.equal(unknownId.status, 404);
+
+  const longNote = `  ${"x".repeat(600)}  `;
+  const patched = await fetch(`${BASE}/v1/admin/logs/${id}`, {
+    method: "PATCH",
+    headers: { "X-Admin-Secret": ADMIN_SECRET, "Content-Type": "application/json" },
+    body: JSON.stringify({ status: "critical", note: longNote }),
+  });
+  assert.equal(patched.status, 200);
+  const patchJson = await patched.json();
+  assert.equal(patchJson.ok, true);
+  assert.equal(patchJson.id, id);
+  assert.equal(patchJson.status, "critical");
+  assert.equal(patchJson.note.length, 500);
+  assert.equal(typeof patchJson.updated_at, "number");
+
+  const critList = await (
+    await fetch(`${BASE}/v1/admin/logs?status=critical`, { headers: { "X-Admin-Secret": ADMIN_SECRET } })
+  ).json();
+  assert.equal(critList.reports.length, 1);
+  assert.equal(critList.reports[0].id, id);
+  assert.equal(critList.reports[0].status, "critical");
+  assert.equal(critList.reports[0].note.length, 500);
+
+  const newList = await (
+    await fetch(`${BASE}/v1/admin/logs?status=new`, { headers: { "X-Admin-Secret": ADMIN_SECRET } })
+  ).json();
+  assert.ok(newList.reports.some((r) => r.id === id2));
+  assert.ok(!newList.reports.some((r) => r.id === id));
+
+  const badFilter = await fetch(`${BASE}/v1/admin/logs?status=bogus`, {
+    headers: { "X-Admin-Secret": ADMIN_SECRET },
+  });
+  assert.equal(badFilter.status, 400);
 });

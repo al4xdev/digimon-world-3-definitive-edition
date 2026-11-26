@@ -13,7 +13,9 @@
     "db:migrate:expansion:local": "wrangler d1 execute dw3-cloud-sync-db --local --file=./migrations/0002_save_expansion.sql",
     "db:migrate:expansion:remote": "wrangler d1 execute dw3-cloud-sync-db --remote --file=./migrations/0002_save_expansion.sql",
     "db:migrate:logs:local": "wrangler d1 execute dw3-cloud-sync-db --local --file=./migrations/0003_log_reports.sql",
-    "db:migrate:logs:remote": "wrangler d1 execute dw3-cloud-sync-db --remote --file=./migrations/0003_log_reports.sql"
+    "db:migrate:logs:remote": "wrangler d1 execute dw3-cloud-sync-db --remote --file=./migrations/0003_log_reports.sql",
+    "db:migrate:triage:local": "wrangler d1 execute dw3-cloud-sync-db --local --file=./migrations/0004_log_triage.sql",
+    "db:migrate:triage:remote": "wrangler d1 execute dw3-cloud-sync-db --remote --file=./migrations/0004_log_triage.sql"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250411.0",

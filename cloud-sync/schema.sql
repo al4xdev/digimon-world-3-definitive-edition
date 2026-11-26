@@ -79,6 +79,10 @@ CREATE TABLE IF NOT EXISTS log_reports (
   launcher TEXT,
   sha256 TEXT NOT NULL,
   size INTEGER NOT NULL,
-  zip BLOB NOT NULL
+  zip BLOB NOT NULL,
+  status TEXT NOT NULL DEFAULT 'new',
+  note TEXT NOT NULL DEFAULT '',
+  updated_at INTEGER
 );
 CREATE INDEX IF NOT EXISTS idx_log_reports_created ON log_reports(created_at);
+CREATE INDEX IF NOT EXISTS idx_log_reports_status ON log_reports(status);
