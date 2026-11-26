@@ -124,7 +124,7 @@ static const char *log_label[3] = {"OFF", "SOFT", "HEAVY"};
 static const char *lay_label[4] = {"PS1", "XBOX", "NINTENDO", "CUSTOM"};
 static const char *filt_label[5] = {"NONE", "SHARP", "SCANLINES", "CRT", "SMOOTH"};
 static const char *vert_label[3] = {"PS1", "SMOOTH", "SMOOTH + TEXTURES"};
-static const char *act_label[A_COUNT] = {"CONFIRM / CROSS", "CARD / SQUARE", "BACK / CIRCLE", "MENU / TRIANGLE", "PREV / L1", "NEXT / R1", "START", "SELECT"};
+static const char *act_label[A_COUNT] = {"CONFIRM", "CARD", "BACK", "MENU", "L1", "R1", "START", "SELECT"};
 static const int act_order[A_COUNT] = {A_CROSS, A_CIRCLE, A_TRIANGLE, A_SQUARE, A_L1, A_R1, A_START, A_SELECT};
 static int notice_step;
 static long notice_tap_ms;
@@ -488,13 +488,13 @@ static void draw_video(void) {
         (c.renderer_pc || c.iscale == 1) ? "-" : vert_label[c.subpixel]
     };
     static const char *const desc[VIDEO_N] = {
-        "16:9 widescreen on the GPU renderer.",
-        "Fill screen preserving aspect, or exact integer pixels.",
-        "60 Hz NTSC speed or 50 Hz PAL original timing.",
-        "GPU for widescreen, filters and high-res 3D; Software for classic PS1.",
-        "Image shader applied on the GPU renderer.",
+        "Battles and field follow the screen's shape, up to 16:9 (auto-selects GPU). Menus stay 4:3.",
+        "FILL stretches cleanly to screen height; INTEGER uses exact multiples.",
+        "60 HZ is the game's own NTSC mode (smoother). 50 HZ is the original PAL speed.",
+        "GPU enables widescreen and shaders; SOFTWARE is exact PS1.",
+        "GPU screen filter (SHARP keeps crisp pixels).",
         "Scales full PS1 VRAM (1024x512, 1536x512 in 16:9), not just 320x240.",
-        "Smooth 3D vertices and perspective textures above 1X."
+        "Above 1X: PS1 wobbles; SMOOTH steadies 3D; + TEXTURES fixes warping."
     };
     int gy = (int)(cur_y >= 0 && cur_screen == S_VIDEO ? cur_y : row_target_y(S_VIDEO, sel));
     draw_focus(32, gy, W - 64, 38, 10, 0);
@@ -572,10 +572,12 @@ static void draw_save_notice_confirm(void) {
 
 static void draw_game(void) {
     header_touch("GAME", 1);
-    const char *disc_lbl = "BROWSE...";
+    char disc_short[36] = "BROWSE...";
     if (disc_path[0]) {
         const char *b = strrchr(disc_path, '/');
-        disc_lbl = b ? b + 1 : disc_path;
+        const char *n = b ? b + 1 : disc_path;
+        if (strlen(n) > 26) snprintf(disc_short, sizeof(disc_short), "%.23s...", n);
+        else snprintf(disc_short, sizeof(disc_short), "%s", n);
     }
     const char *lab[GAME_N] = {
         "LANGUAGE", "FAST-FORWARD", "FAST LOAD", "SKIP DIALOGUES", "SKIP BATTLE ANIMS",
@@ -589,7 +591,17 @@ static void draw_game(void) {
         c.battles ? "ON" : "OFF",
         c.battles ? (c.hit ? "ON" : "OFF") : "-",
         c.touch_pad ? "ON" : "OFF",
-        disc_lbl
+        disc_short
+    };
+    static const char *const desc[GAME_N] = {
+        "Game text language (English, Portuguese BR, French, German, Italian, Spanish).",
+        "Speed up gameplay. OFF, 2X, 4X, 8X or UNLIMITED.",
+        "Reads the game's files faster. Movies keep normal speed. OFF, 2X, 4X, 8X or INSTANT.",
+        "Dialogue boxes close on their own.",
+        "Battle moves play without their animation.",
+        "Keep the hit flinch while animations are skipped.",
+        "On-screen floating touch controls during gameplay.",
+        "Pick or change your .cue / .bin disc file."
     };
     int gy = (int)(cur_y >= 0 && cur_screen == S_GAME ? cur_y : row_target_y(S_GAME, sel));
     draw_focus(32, gy, W - 64, 38, 10, 0);
@@ -598,6 +610,7 @@ static void draw_game(void) {
         int arrows = (i != GAME_DISC);
         row_touch(76 + i * GAME_ROW_STEP, 36, lab[i], val[i], i == sel, 0, on, 0, arrows);
     }
+    text(36, 400, S(desc[sel < GAME_N ? sel : 0]), 13, C_NOTE);
     footer_touch(1, 1, "CHANGE");
 }
 
@@ -625,7 +638,7 @@ static void draw_hud(void) {
             else text_r(x - 16, y - 8, names, 13, col);
         }
     }
-    const char *rl[HUD_ROWS] = {"FIGHT", "TECH", "DIGIVOLVE", "TAG", "ITEM", "RUN", "INSPECT", "BLAST", "REMEMBER CURSOR", "BUFFER INPUT",
+    const char *rl[HUD_ROWS] = {"FIGHT", "TECH", "DIGIVOLVE", "TAG", "BAG", "RUN", "INFO", "BLAST", "REMEMBER CURSOR", "BUFFER INPUT",
                                 "FIGHT BUTTON"};
     int gy = (int)(cur_y >= 0 && cur_screen == S_HUD ? cur_y : row_target_y(S_HUD, sel));
     int sbd = sel < H_COUNT && ((dm >> sel) & 1);
@@ -634,12 +647,12 @@ static void draw_hud(void) {
         char g[16], v[48];
         if (i < H_COUNT) {
             glyph(c.hud[i], g);
-            if (capture && i == sel) snprintf(v, sizeof(v), "PRESS A BUTTON...");
+            if (capture && i == sel) snprintf(v, sizeof(v), "%s", S("PRESS A BUTTON..."));
             else snprintf(v, sizeof(v), "< %s [%s] >", place_display(c.hud[i]), g);
         } else if (i == H_COUNT) {
             snprintf(v, sizeof(v), "< %s >", S(c.bmem ? "ON" : "OFF"));
         } else if (i == H_COUNT + 1) {
-            snprintf(v, sizeof(v), "< %s >", buf_label[c.bbuf]);
+            snprintf(v, sizeof(v), "< %s >", S(buf_label[c.bbuf]));
         } else {
             snprintf(v, sizeof(v), "< %s >", S(fight_label[cfg_fight_place(&c) + 1]));
         }
@@ -647,6 +660,7 @@ static void draw_hud(void) {
         text(54, y + 3, S(rl[i]), 16, bd ? C_RED : i == sel ? C_GOLD : C_TEXT);
         text_r(W - 54, y + 3, v, 16, bd ? C_RED : i == sel ? C_GOLD : C_NOTE);
     }
+    if (msg[0]) text_c(W / 2, H - 72, S(msg), 13, C_RED);
     footer_touch(0, 1, bad ? "RESET" : "CYCLE");
 }
 
@@ -664,10 +678,11 @@ static void draw_controls(void) {
         int a = act_order[i], y = 122 + i * 37, isel = sel == i + 1, bd = (dm >> a) & 1;
         char g[16];
         glyph(c.pad[a].code, g);
-        if (capture && isel) snprintf(v, sizeof(v), "PRESS A BUTTON...");
+        if (capture && isel) snprintf(v, sizeof(v), "%s", S("PRESS A BUTTON..."));
         else snprintf(v, sizeof(v), "%s [%s]", place_display(c.pad[a].code), g);
         row_touch(y, 34, act_label[a], v, isel, bd, 0, 0, 0);
     }
+    if (msg[0]) text_c(W / 2, H - 72, S(msg), 13, C_RED);
     footer_touch(0, 1, "RESET");
 }
 
@@ -900,19 +915,33 @@ static void send_logs(void) {
     else snprintf(status, sizeof(status), "NOT SENT: %s. ZIP SAVED", err);
 }
 
+static int debug_n(void) {
+    UpdateInfo up;
+    update_poll(&up);
+    return up.state == UPDATE_AVAILABLE ? DEBUG_N + 1 : DEBUG_N;
+}
+
 static void draw_debug(void) {
     header_touch("DEBUG", 1);
+    UpdateInfo up;
+    update_poll(&up);
+    int dn = up.state == UPDATE_AVAILABLE ? DEBUG_N + 1 : DEBUG_N;
     int gy = (int)(cur_y >= 0 && cur_screen == S_DEBUG ? cur_y : row_target_y(S_DEBUG, sel));
     draw_focus(32, gy, W - 64, 44, 10, 0);
     row_touch(86, 44, "LOGS", log_label[c.logs], sel == DEBUG_LOGS, 0, c.logs > 0, 0, 1);
     row_touch(140, 44, "SEND LOGS", "UPLOAD", sel == DEBUG_SAVE_LOGS, 0, 0, 0, 0);
     row_touch(194, 44, "CLEAN LOGS", "ASK", sel == DEBUG_CLEAN_LOGS, 0, 0, 0, 0);
     row_touch(248, 44, "CHECK FOR UPDATES", c.update_check ? "ON" : "OFF", sel == DEBUG_UPDATES, 0, c.update_check, 0, 1);
-    if (status[0]) text(40, 322, status, 16, C_GREEN);
+    if (dn > DEBUG_N) {
+        row_touch(302, 44, "NEW VERSION", up.latest, sel == DEBUG_N, 0, 1, 0, 0);
+    }
+    int sy = dn > DEBUG_N ? 354 : 306;
+    if (status[0]) { text(40, sy, status, 14, C_GREEN); sy += 20; }
+    text(40, sy, S("SEND LOGS uploads the logs and your save (RPG data) to the developer."), 13, C_NOTE);
     {
         char bld[96];
         snprintf(bld, sizeof(bld), "BUILD: %s", port_version);
-        text(40, 356, bld, 15, strstr(port_version, "-dirty") ? C_GOLD : C_NOTE);
+        text(40, sy + 20, bld, 13, strstr(port_version, "-dirty") ? C_GOLD : C_NOTE);
     }
     footer_touch(1, 1, "RUN");
 }
@@ -935,7 +964,7 @@ static void draw_browse(void) {
 
 static void draw_loading(void) {
     char stage[80];
-    snprintf(stage, sizeof(stage), "%s...", launch_stage);
+    snprintf(stage, sizeof(stage), "%s...", S(launch_stage));
     load_draw(&c, plat_now_ms() - launch_t0, stage, launch_pct);
 }
 
@@ -1041,7 +1070,7 @@ static void activate_game_row(int row, int dir) {
     case GAME_FF: c.ff = (c.ff + dir + 5) % 5; break;
     case GAME_LOAD: c.load = (c.load + dir + 5) % 5; break;
     case GAME_SKIP: c.skip = !c.skip; break;
-    case GAME_BATTLES: c.battles = !c.battles; break;
+    case GAME_BATTLES: c.battles = !c.battles; if (!c.battles) c.hit = 0; break;
     case GAME_HIT: if (c.battles) c.hit = !c.hit; break;
     case GAME_TOUCHPAD: c.touch_pad = !c.touch_pad; break;
     case GAME_DISC: pick_disc_android(); break;
@@ -1111,9 +1140,9 @@ static void activate_saves_row(int row, int dir) {
         break;
     }
     case SAVES_BACKUPS:
-        c.backup_max += dir * 5;
-        if (c.backup_max < 1) c.backup_max = 100;
-        if (c.backup_max > 100) c.backup_max = 1;
+        c.backup_max += dir;
+        if (c.backup_max < 1) c.backup_max = 1;
+        if (c.backup_max > 100) c.backup_max = 100;
         break;
     case SAVES_NOW:
         if (!cloud_active()) {
@@ -1631,7 +1660,8 @@ static void on_touch(int code, int x, int y) {
             }
         }
     } else if (screen == S_DEBUG) {
-        for (int i = 0; i < DEBUG_N; i++) {
+        int dn = debug_n();
+        for (int i = 0; i < dn; i++) {
             if (in_rect(x, y, 32, 86 + i * 54, W - 64, 44)) {
                 sel = i;
                 if (i == DEBUG_LOGS) { c.logs = (c.logs + 1) % 3; cfg_save(&c); }
@@ -1641,6 +1671,8 @@ static void on_touch(int code, int x, int y) {
                     go(S_CLEAN, 0, +1);
                 } else if (i == DEBUG_UPDATES) {
                     toggle_update_check();
+                } else if (i == DEBUG_N) {
+                    open_update_page();
                 }
                 return;
             }
@@ -1750,12 +1782,14 @@ static void on_key(int code) {
         int dir = code == K_UP ? -1 : +1;
         int n = screen == S_HOME ? HI_COUNT : screen == S_GAME ? GAME_N : screen == S_VIDEO ? VIDEO_N :
                 screen == S_HUD ? HUD_ROWS : screen == S_CONTROLS ? (A_COUNT + 1) : screen == S_SAVES ? SAVES_N :
-                screen == S_DEBUG ? DEBUG_N : screen == S_BROWSE ? b_count : screen == S_BACKUPS ? bk_count :
+                screen == S_DEBUG ? debug_n() : screen == S_BROWSE ? b_count : screen == S_BACKUPS ? bk_count :
                 screen == S_CLOUD ? cloud_n() : screen == S_DEVICES ? dev_count : screen == S_SAVE_NOTICE ? 2 : 1;
         if (n > 0) sel = (sel + dir + n) % n;
         if (screen == S_BROWSE) clamp_scroll(&b_scroll, BROWSE_VIS);
         if (screen == S_BACKUPS) clamp_scroll(&bk_scroll, LIST_VIS);
         if (screen == S_DEVICES) clamp_scroll(&dev_scroll, LIST_VIS);
+    } else if ((code == K_L1 || code == K_R1) && screen == S_SAVES && sel == SAVES_BACKUPS) {
+        activate_saves_row(SAVES_BACKUPS, code == K_L1 ? -10 : +10);
     } else if (code == K_LEFT || code == K_RIGHT) {
         int dir = code == K_LEFT ? -1 : +1;
         if (screen == S_GAME) activate_game_row(sel, dir);
@@ -1806,6 +1840,7 @@ static void on_key(int code) {
             else if (sel == DEBUG_SAVE_LOGS) send_logs();
             else if (sel == DEBUG_CLEAN_LOGS) go(S_CLEAN, 0, +1);
             else if (sel == DEBUG_UPDATES) toggle_update_check();
+            else if (sel == DEBUG_N) open_update_page();
         }
     } else if (code == btn_back()) {
         on_back();
