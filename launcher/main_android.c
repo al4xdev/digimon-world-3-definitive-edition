@@ -16,6 +16,7 @@
 #include "cfg.h"
 #include "migrate.h"
 #include "cloud.h"
+#include "app_core.h"
 #include "i18n.h"
 #include "loading.h"
 #include "plat.h"
@@ -120,22 +121,8 @@ static long trans_t0;
 static uint32_t *trans_from, *trans_to;
 #define TRANS_MS 180
 
-static const char *lang_label[8] = {"ENGLISH", "PORTUGUESE BR", "FRENCH", "GERMAN", "ITALIAN", "SPANISH", "USA", "JAPANESE"};
-static const char *ff_label[5] = {"OFF", "2X", "4X", "8X", "UNLIMITED"};
-static const char *load_label[5] = {"OFF", "2X", "4X", "8X", "INSTANT"};
-static const char *buf_label[3] = {"OFF", "SHORT", "LONG"};
-static const char *log_label[3] = {"OFF", "SOFT", "HEAVY"};
-static const char *lay_label[4] = {"PS1", "XBOX", "NINTENDO", "CUSTOM"};
-static const char *filt_label[5] = {"NONE", "SHARP", "SCANLINES", "CRT", "SMOOTH"};
-static const char *vert_label[3] = {"PS1", "SMOOTH", "SMOOTH + TEXTURES"};
-static const char *act_label[A_COUNT] = {"CONFIRM", "CARD", "BACK", "MENU", "L1", "R1", "START", "SELECT"};
-static const int act_order[A_COUNT] = {A_CROSS, A_CIRCLE, A_TRIANGLE, A_SQUARE, A_L1, A_R1, A_START, A_SELECT};
 static int notice_step;
 static long notice_tap_ms;
-static const char *hud_label[H_COUNT] = {"FIGHT", "TECH", "DIGIVOLVE", "TAG", "BAG", "RUN", "INFO", "BLAST"};
-/* the "Fight button" row (cfg_fight_place + 1): neither layout reads CUSTOM, and choosing on it gives the bottom */
-static const char *fight_label[] = {"CUSTOM", "BOTTOM", "RIGHT"};
-#define HUD_ROWS (H_COUNT + 3)
 
 static const char *S(const char *en) {
     return ui_tr_lookup(en, c.lang);
@@ -340,11 +327,7 @@ static void busy(const char *what) {
 }
 
 static void fmt_epoch(long ts, char *out, size_t n) {
-    if (ts <= 0) { snprintf(out, n, "?"); return; }
-    time_t t = (time_t)ts;
-    struct tm tm;
-    localtime_r(&t, &tm);
-    strftime(out, n, "%Y-%m-%d %H:%M", &tm);
+    app_fmt_epoch(ts, "?", out, n);
 }
 
 /* then_play: the sync ran on the way into the game, which goes on once the conflict is settled (or put off). */
@@ -658,9 +641,8 @@ static void draw_home(void) {
 
 static void draw_video(void) {
     header_touch("VIDEO", 1);
-    int vw = (c.widescreen && c.renderer_pc == 0 ? 1536 : 1024) * c.iscale, vh = 512 * c.iscale;
     char res_val[48];
-    snprintf(res_val, sizeof(res_val), "%dX (%dx%d VRAM)", c.iscale, vw, vh);
+    app_fmt_vram(&c, res_val, sizeof(res_val));
     const char *lab[VIDEO_N] = {
         "WIDESCREEN", "SCALING", "REFRESH RATE", "RENDERER", "FILTER", "RESOLUTION", "3D VERTICES"
     };
@@ -1089,16 +1071,8 @@ static void draw_backups(void) {
 
 /* SEND LOGS: the full zip is saved as ever, then the capped one goes to the server and is dropped. */
 static void send_logs(void) {
-    char nm[128], up[128], id[40] = "", err[96] = "";
     busy("UPLOADING...");
-    if (logs_save(nm, sizeof(nm)) != 0) { snprintf(status, sizeof(status), "SAVE LOGS FAILED"); return; }
-    if (logs_pack(up, sizeof(up), 1) != 0) { snprintf(status, sizeof(status), "SAVED %s", nm); return; }
-    char zp[1400];
-    snprintf(zp, sizeof(zp), "%s/%s", game_dir, up);
-    int rc = cloud_send_logs(&cloud, zp, port_version, 0, id, sizeof(id), err, sizeof(err));
-    unlink(zp);
-    if (rc == 0) snprintf(status, sizeof(status), "SENT. REPORT %s. A COPY IS SAVED", id);
-    else snprintf(status, sizeof(status), "NOT SENT: %s. ZIP SAVED", err);
+    app_send_logs(&cloud, port_version, 0, status, sizeof(status));
 }
 
 static int debug_n(void) {
@@ -1349,17 +1323,11 @@ static void activate_saves_row(int row, int dir) {
         if (!cloud_active()) { open_cloud_account(); return; }
         c.sync_enabled = !c.sync_enabled;
         break;
-    case SAVES_INTERVAL: {
-        static const int ivs[] = {0, 5, 10, 15, 20, 30};
-        int k = 0;
-        for (int j = 0; j < 6; j++) if (c.sync_interval_min == ivs[j]) k = j;
-        c.sync_interval_min = ivs[(k + dir + 6) % 6];
+    case SAVES_INTERVAL:
+        app_step_sync_interval(&c, dir);
         break;
-    }
     case SAVES_BACKUPS:
-        c.backup_max += dir;
-        if (c.backup_max < 1) c.backup_max = 1;
-        if (c.backup_max > 100) c.backup_max = 100;
+        app_step_backups(&c, dir);
         break;
     case SAVES_NOW:
         if (!cloud_active()) {
@@ -1601,10 +1569,7 @@ static void clamp_scroll(int *scroll, int vis) {
 }
 
 static void do_reset_confirm(void) {
-    int ok91 = c.v091_save_ok;
-    cfg_defaults(&c);
-    c.v091_save_ok = ok91;
-    cfg_save(&c);
+    app_reset_cfg(&c);
     go(S_HOME, HI_RESET, -1);
 }
 

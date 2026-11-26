@@ -17,6 +17,7 @@
 #include "cfg.h"
 #include "migrate.h"
 #include "cloud.h"
+#include "app_core.h"
 #include "compat.h"
 #include "i18n.h"
 #include "loading.h"
@@ -101,24 +102,6 @@ static int trans_active, trans_dir, trans_cy = H / 2;
 static long trans_t0;
 #define SPLASH_MS 1050
 #define TRANS_MS 210
-
-static const char *ff_label[] = {"OFF", "2X", "4X", "8X", "UNLIMITED"};
-static const char *load_label[] = {"OFF", "2X", "4X", "8X", "INSTANT"};
-static const char *lang_label[] = {"ENGLISH", "PORTUGUÊS (BR)", "FRANÇAIS", "DEUTSCH", "ITALIANO", "ESPAÑOL", "ENGLISH (USA)", "JAPANESE"};
-static const char *buf_label[] = {"OFF", "SHORT", "LONG"};
-/* the "Fight button" row (cfg_fight_place + 1): a layout of the per-action rows that is neither reads CUSTOM, and
- * choosing on it gives the bottom */
-static const char *fight_label[] = {"CUSTOM", "BOTTOM", "RIGHT"};
-#define HUD_FIGHT_ROW (H_COUNT + 2)
-#define HUD_ROWS (H_COUNT + 3)
-static const char *log_label[] = {"OFF", "SOFT", "HEAVY"};
-static const char *lay_label[] = {"PS1", "XBOX", "NINTENDO", "CUSTOM"};
-static const char *filt_label[] = {"NONE", "SHARP", "SCANLINES", "CRT", "SMOOTH"};
-static const char *vert_label[] = {"PS1", "SMOOTH", "SMOOTH + TEXTURES"};
-static const char *act_label[A_COUNT] = {"CONFIRM", "CARD", "BACK", "MENU", "L1", "R1", "START", "SELECT"};
-static const char *hud_label[H_COUNT] = {"FIGHT", "TECH", "DIGIVOLVE", "TAG", "BAG", "RUN", "INFO", "BLAST"};
-/* On-screen order of the pad rows follows the pad: confirm, back, menu, card first. */
-static const int act_order[A_COUNT] = {A_CROSS, A_CIRCLE, A_TRIANGLE, A_SQUARE, A_L1, A_R1, A_START, A_SELECT};
 
 static int home_items[HI_COUNT];
 static int home_n;
@@ -403,9 +386,8 @@ static void draw_video(void) {
     char sc_val[48], mon[48];
     if (c.scale == 0) snprintf(sc_val, sizeof(sc_val), "AUTO (%dx%d)", gw, gh);
     else snprintf(sc_val, sizeof(sc_val), "%dX (%dx%d)", c.scale, gw, gh);
-    int vw = (c.widescreen && c.renderer_pc == 0 ? 1536 : 1024) * c.iscale, vh = 512 * c.iscale;
     char res_val[48];
-    snprintf(res_val, sizeof(res_val), "%dX (%dx%d VRAM)", c.iscale, vw, vh);
+    app_fmt_vram(&c, res_val, sizeof(res_val));
     const char *v[VIDEO_N] = {
         (c.widescreen && c.renderer_pc == 0) ? "AUTO" : "OFF",
         c.fullscreen ? "ON" : "OFF",
@@ -792,11 +774,7 @@ static void draw_devices(void) {
 }
 
 static void fmt_epoch(long ts, char *out, size_t n) {
-    if (ts <= 0) { snprintf(out, n, "%s", TR("unknown time")); return; }
-    time_t t = (time_t)ts;
-    struct tm tm;
-    localtime_r(&t, &tm);
-    strftime(out, n, "%Y-%m-%d %H:%M", &tm);
+    app_fmt_epoch(ts, TR("unknown time"), out, n);
 }
 
 static void go(int s, int to_sel, int dir, int focus_y);
@@ -1075,20 +1053,12 @@ static void draw_save_notice_confirm(void) {
 
 /* SEND LOGS: the full zip is saved beside the game as ever, then the capped one goes to the server and is dropped. */
 static void send_logs(void) {
-    char nm[80], up[80], id[40] = "", err[96] = "";
-    if (logs_save(nm, sizeof(nm)) != 0) { snprintf(status, sizeof(status), "COULD NOT SAVE THE ZIP"); return; }
-    if (logs_pack(up, sizeof(up), 1) != 0) { snprintf(status, sizeof(status), "SAVED %s", nm); return; }
-    char zp[1300];
-    snprintf(zp, sizeof(zp), "%s/%s", game_dir, up);
 #ifdef DW3_LAUNCHER_VERSION
     const char *ver = DW3_LAUNCHER_VERSION;
 #else
     const char *ver = "";
 #endif
-    int rc = cloud_send_logs(&cloud, zp, ver, is_portmaster, id, sizeof(id), err, sizeof(err));
-    unlink(zp);
-    if (rc == 0) snprintf(status, sizeof(status), "SENT. REPORT %s. A COPY IS SAVED", id);
-    else snprintf(status, sizeof(status), "NOT SENT: %s. ZIP SAVED", err);
+    app_send_logs(&cloud, ver, is_portmaster, status, sizeof(status));
 }
 
 static void draw_debug(void) {
@@ -2359,7 +2329,7 @@ static void on_press(int code) {
 #endif
     case S_RESET:
         if (back) { start_trans(-1, 92 + home_index(HI_RESET) * home_step() + 14); screen = S_HOME; }
-        if (ok) { int ok91 = c.v091_save_ok; cfg_defaults(&c); c.v091_save_ok = ok91; cfg_save(&c); go(S_HOME, 0, -1, 92 + 14); }
+        if (ok) { app_reset_cfg(&c); go(S_HOME, 0, -1, 92 + 14); }
         break;
     case S_CLEAN:
         if (back) { start_trans(-1, 188 + 14); screen = S_DEBUG; }
