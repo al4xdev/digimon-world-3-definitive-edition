@@ -143,7 +143,7 @@
   "17f5d4f0fb": "Held",
   "4ae5c491e2": "Kail",
   "c65983ba7c": "Junior",
-  "67c422a5c9": "Die Rollen tauschen sich in den Feld-Sprites, Zwischensequenzen, Feldaktionen und Menüs, wobei jedes Frame, das Kail fehlte, von Hand gezeichnet wurde. Dreizehn Heldenskins aus den Super-Rare-Jagden färben Haar und Kleidung um.",
+  "16ff058994": "Die Rollen tauschen sich in den Feld-Sprites, Zwischensequenzen, Feldaktionen und Menüs, wobei jedes Frame, das Kail fehlte, Pixel für Pixel gezeichnet wurde. Dreizehn Heldenskins aus den Super-Rare-Jagden färben Haar und Kleidung um.",
   "5e6be0d84a": "Kapitel 07 · Blast und die Chosen Evolution",
   "7e33c27bed": "Kraft.<br/><em>Mit Preis.</em>",
   "9a9c5d725e": "Gutes Kämpfen füllt das <b>Blast Gauge</b>. Ist es voll, entfesselt <code>R2</code> die dunkle Form deines Partners. Läutere zehn Formen, und ein Partner verdient sich die <b>Chosen Evolution</b>: eine eigene Mega-Form, ohne Fluch.",
@@ -322,5 +322,5 @@
   "ebb8fea7aa": "Öffne <b>VIDEO</b> für Widescreen, Vollbild, FILL- oder INTEGER-Skalierung, die interne Auflösung, den GPU-Renderer und die Filter.",
   "1e6788abc9": "<b>Balance.</b> Bisher nur rechnerisch ausbalanciert und per Hotfix während eines parallelen Durchgangs nachjustiert, die Auserwählte Evolution und die geheimen Endgame-Kämpfe eingeschlossen.",
   "0ef3c9f668": "Igor zieht dich an einigen Wendepunkten allein in den Raum und stellt dir eine Frage. Jede Entscheidung bleibt im Gedächtnis — sie prägt Bande, 27 NPC-Mini-Arcs und 10 Bosskämpfe und macht das Abenteuer leichter oder schwerer. Das Drehbuch wurde persönlich auf brasilianischem Portugiesisch im Slang klassischer 80er/90er-Animes verfasst und kuratiert und direkt ins Englische übersetzt.",
-  "fc652ac333": "<b>Übersetzungen.</b> Die neu geschriebene Story wurde persönlich auf brasilianischem Portugiesisch verfasst, überarbeitet und kuratiert (klassischer 80er/90er-Anime-Stil) und direkt ins Englische übersetzt. Französisch, Deutsch, Italienisch und Spanisch decken die eigenen UI-Texte der Definitive Edition ab (maschinengestützt); in diesen vier Sprachen läuft die Originalkampagne der Disc."
+  "a757d0c243": "<b>Übersetzungen.</b> Die neu geschriebene Story wurde persönlich auf brasilianischem Portugiesisch verfasst, überarbeitet und kuratiert (klassischer 80er/90er-Anime-Stil) und direkt ins Englische übersetzt. Französisch, Deutsch, Italienisch und Spanisch decken die eigenen UI-Texte der Definitive Edition ab; in diesen vier Sprachen läuft die Originalkampagne der Disc."
 }

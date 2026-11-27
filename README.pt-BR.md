@@ -391,7 +391,7 @@ derrota paga um cristal e desbloqueia uma **skin de herói**.
 ## O seu herói, do seu jeito
 
 **Girls Power**: em New Game, escolha **Kail** ou **Junior** como herói. Os papéis se invertem nos sprites de campo,
-nas cutscenes, nas ações de campo e nos menus, com cada frame que o Kail não tinha desenhado à mão, e o texto da
+nas cutscenes, nas ações de campo e nos menus, com cada frame que o Kail não tinha desenhado pixel a pixel, e o texto da
 história acompanha a troca. Treze **skins de herói** das caçadas Super Rare recoloram o cabelo e a roupa do seu herói.
 
 ## Conforto e qualidade de vida
@@ -438,8 +438,8 @@ dele só foi jogada algumas vezes, então espere arestas e hotfixes frequentes. 
 
 - **Revisão das traduções.** A narrativa reescrita foi toda escrita, revisada e curada pessoalmente em português do
   Brasil (com gírias e tom de animes clássicos dos anos 80/90), com o inglês traduzido diretamente a partir dela.
-  Francês, alemão, italiano e espanhol cobrem os textos próprios da Definitive Edition (traduzidos com ajuda de máquina,
-  ainda não lidos no jogo por falantes nativos: espere frases desajeitadas e alguns rótulos largos demais para a caixa);
+  Francês, alemão, italiano e espanhol cobrem os textos próprios da Definitive Edition (ainda não lidos
+  no jogo por falantes nativos: espere frases desajeitadas e alguns rótulos largos demais para a caixa);
   nesses quatro idiomas roda a campanha original do disco.
 - **O equilíbrio geral do jogo.** Até agora ele foi balanceado só por cálculo. Estou jogando em paralelo e lançando
   hotfixes pelo caminho, a Chosen Evolution e as batalhas secretas do fim do jogo incluídas.

@@ -392,7 +392,7 @@ paga un cristal y desbloquea una **skin de héroe**.
 ## Tu héroe, a tu manera
 
 **Girls Power**: en New Game, elige **Kail** o **Junior** como héroe. Los papeles se intercambian en los sprites del
-campo, las escenas, las acciones de campo y los menús, con cada fotograma que le faltaba a Kail dibujado a mano, y el
+campo, las escenas, las acciones de campo y los menús, con cada fotograma que le faltaba a Kail dibujado píxel a píxel, y el
 texto de la historia sigue el intercambio. Trece **skins de héroe** de las cacerías Super Rare recolorean el pelo y la
 ropa de tu héroe.
 
@@ -441,7 +441,7 @@ joven: parte de él solo se ha jugado unas pocas veces, así que cuenta con aspe
 
 - **Revisión de las traducciones.** La historia reescrita fue escrita, revisada y curada personalmente en portugués de
   Brasil (con jerga y tono de animes clásicos de los 80/90), y traducida directamente al inglés. Francés, alemán, italiano
-  y español cubren los textos propios de la Definitive Edition (traducidos con ayuda de máquina, aún no leídos en el juego
+  y español cubren los textos propios de la Definitive Edition (aún no leídos en el juego
   por hablantes nativos: espera frases torpes y algunas etiquetas demasiado anchas para su caja); en esos cuatro idiomas
   se juega la campaña original del disco.
 - **El equilibrio general del juego.** Hasta ahora se equilibró solo por cálculo. Lo estoy jugando en paralelo y

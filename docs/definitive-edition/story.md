@@ -112,24 +112,23 @@ is byte q >> 2, bits (q & 3) x 2; 0 not answered, 1..3 the option); slots 0..7 a
 (Q8..Q39 existed first, at one byte each, until the bytes ran out). A compile-time check keeps them clear of the skin byte;
 an older record reads 0. See [Save format](save-format.md#save-format-memory-card-records).
 
-**The story rewrite (English only).** `en_story.txt` (2724 entries, `FILE:sub index: text` for an event scene's table,
+**The story rewrite (PT-BR and English).** Written in Brazilian Portuguese, with the English translated from it. The
+sources are in `tools/text_override/`. `pt_story.txt` / `en_story.txt` (`FILE:sub index: text` for an event scene's table,
 `FILE index: text` for a talk file): childish or simple dialogue made more serious without changing order or quests, and
-gender-neutral wherever the hero is concerned. `en_kaili.txt` (111 entries): Girls Power's mode, the lines the automatic
-name swap gets wrong; a text starting `>hero ` is said by the hero (the balloon moves to the player). `pt_kaili.txt` (3
-entries): the brother's lines in Portuguese. Portuguese shows the disc's/`pt.txt` text with only the Kaili names (the rewrite
-and its choices are English); FR/IT/DE/ES show the disc's. `DW3_STORY=0` turns the layer off (the game's own text, to
-compare). Logs: `story: echo ...`, `story: kaili line ...`, `story: ... choice N answered M`. Checker
-`tools/check_story_text.py [FILE]` (every source by default; exit 1 on an error): the same speaker plate and control codes as
-the disc's line, 22 letters a line in balloons (38 in unplated narration), 3 lines a page, the page structure (each page ends
-with `<2,2>`, every later page starts with `<3>`), and no gendered word about the hero. Girls Power's swap
+gender-neutral wherever the hero is concerned. `pt_kaili.txt` / `en_kaili.txt`: Girls Power's mode, the lines the
+automatic name swap gets wrong; a text starting `>hero ` is said by the hero (the balloon moves to the player).
+FR/IT/DE/ES show the disc's text. `DW3_STORY=0` turns the layer off (the game's own text, to compare). Logs:
+`story: echo ...`, `story: kaili line ...`, `story: ... choice N answered M`. Checkers:
+`tools/check_story_text.py [FILE]` (the English sources and `pt_kaili.txt` by default; exit 1 on an error): the same
+speaker plate and control codes as the disc's line, 22 letters a line in balloons (38 in unplated narration), 3 lines a
+page, the page structure (each page ends with `<2,2>`, every later page starts with `<3>`), and no gendered word about
+the hero; `tools/check_pt_text.py`: each Portuguese file against its English pair. Girls Power's swap
 (`tools/gen_text_override.py`, `NAMES`): every line without its own entry names Junior as Ivy, and Ivy or Kail as Junior
-(Smith Junior keeps his name), rewrapped within its page; written by hand in `en_kaili.txt`: the brother's lines, the "he/him"
-ones (DMG700:0 2, DMG200:32 3, DMG600:15 18/20/23) and the account-name joke (DMG200:3/4/5 7-8); `$OpenIvy1K`/`$OpenJuniorK`
-were removed (the swap makes the `$Open*` lines). Portuguese swaps only Kail for Junior: its Real World lines need their
-articles and endings turned too ("a Ivy" -> "o Junior", "sozinho" -> "sozinha", the captured Kail as "ele"), which waits for
-the rewrite's translation. How the rewrite was made (scratch in `.dumps/tasks/story/rewrite/`): a Sonnet "bible" per chapter
-(`bible_events.md`, `bible_talk.md`), a rewrite per chapter with verification, then an adversarial review (`review.md`)
-applied straight into `en_*.txt` by `apply_review.py` (its `merge.py` rewrites `en_*.txt` from `out/`: never rerun it alone).
+(Smith Junior keeps his name), rewrapped within its page. With their own entries in `en_kaili.txt`: the brother's lines,
+the "he/him" ones (DMG700:0 2, DMG200:32 3, DMG600:15 18/20/23) and the account-name joke (DMG200:3/4/5 7-8);
+`$OpenIvy1K`/`$OpenJuniorK` were removed (the swap makes the `$Open*` lines). Portuguese swaps the same names: its
+rewrite is written without gendered words or articles next to them, and a line that still needs its own Girls Power
+wording has one in `pt_kaili.txt`.
 
 **The Oikawa's arc (step 26 -> 27, `oikawa_hook`).** After Bulbmon, event 711 sets step 27 and leaves the player in the Bug
 Maze Pit's hall (map 0x245, WSTAG540) at (1800,524). While he is unbeaten the hooded dealer is added to that map's figures

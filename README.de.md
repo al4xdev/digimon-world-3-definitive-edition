@@ -396,7 +396,7 @@ stärker zurück. Jedes, das du erledigst, zahlt einen Kristall und schaltet ein
 ## Dein Held, auf deine Art
 
 **Girls Power**: Wähle bei New Game **Kail** oder **Junior** als Helden. Die Rollen tauschen sich in den
-Feld-Sprites, Zwischensequenzen, Feldaktionen und Menüs, wobei jedes Frame, das Kail fehlte, von Hand gezeichnet
+Feld-Sprites, Zwischensequenzen, Feldaktionen und Menüs, wobei jedes Frame, das Kail fehlte, Pixel für Pixel gezeichnet
 wurde, und der Text der Geschichte folgt dem Tausch. Dreizehn **Heldenskins** aus den Super-Rare-Jagden färben Haar
 und Kleidung deines Helden um.
 
@@ -445,7 +445,7 @@ Manches wurde erst ein paar Mal durchgespielt, rechne also mit Ecken und Kanten 
 - **Durchsicht der Übersetzungen.** Die neu geschriebene Story wurde vollständig auf brasilianischem Portugiesisch
   verfasst, überarbeitet und persönlich kuratiert (im Stil klassischer 80er/90er-Animes) und direkt ins Englische
   übersetzt. Französisch, Deutsch, Italienisch und Spanisch decken die eigenen Texte der Definitive Edition ab
-  (maschinengestützt übersetzt, noch nicht von Muttersprachlern im Spiel gelesen: rechne mit holprigen Sätzen und ein
+  (noch nicht von Muttersprachlern im Spiel gelesen: rechne mit holprigen Sätzen und ein
   paar Beschriftungen, die zu breit für ihr Feld sind); in diesen vier Sprachen läuft die Originalkampagne der Disc.
 - **Die allgemeine Spielbalance.** Bisher wurde sie nur rechnerisch ausbalanciert. Ich spiele es parallel durch und
   liefere Hotfixes nach, sobald sie fertig sind, die Chosen Evolution und die geheimen Endgame-Kämpfe eingeschlossen.

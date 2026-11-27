@@ -400,8 +400,8 @@ fort. Chacun que vous abattez rapporte un cristal et débloque un **skin de hér
 ## Votre héros, à votre façon
 
 **Girls Power** : à la New Game, choisissez **Kail** ou **Junior** comme héros. Les rôles s'échangent dans les sprites
-de terrain, les cinématiques, les actions de terrain et les menus, avec chaque image qui manquait à Kail dessinée à la
-main, et le texte de l'histoire suit l'échange. Treize **skins de héros** issus des chasses Super Rare recolorent les
+de terrain, les cinématiques, les actions de terrain et les menus, avec chaque image qui manquait à Kail dessinée pixel par
+pixel, et le texte de l'histoire suit l'échange. Treize **skins de héros** issus des chasses Super Rare recolorent les
 cheveux et les vêtements de votre héros.
 
 ## Confort et qualité de vie
@@ -449,8 +449,8 @@ Ce qui reste :
 
 - **Relecture des traductions.** L'histoire réécrite a été entièrement écrite, relue et soignée personnellement en
   portugais du Brésil (argot et ton des anime classiques des années 80/90), et traduite directement en anglais. Le
-  français, l'allemand, l'italien et l'espagnol couvrent les textes propres à la Definitive Edition (traduits avec l'aide
-  de la machine, pas encore relus en jeu par des locuteurs natifs : attendez-vous à des phrases maladroites et à quelques
+  français, l'allemand, l'italien et l'espagnol couvrent les textes propres à la Definitive Edition (pas encore relus en jeu
+  par des locuteurs natifs : attendez-vous à des phrases maladroites et à quelques
   libellés trop larges pour leur cadre) ; dans ces quatre langues, c'est la campagne originale du disque qui se joue.
 - **L'équilibrage général du jeu.** Jusqu'ici, il n'a été équilibré que par le calcul. Je le joue en parallèle et
   je publie des hotfixes au fur et à mesure, Chosen Evolution et combats secrets de fin de jeu compris.

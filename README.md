@@ -386,7 +386,7 @@ a crystal and unlocks a **hero skin**.
 ## Your hero, your way
 
 **Girls Power**: on New Game, choose **Kail** or **Junior** as the hero. The roles swap across the field sprites,
-cutscenes, field actions and menus, with every frame Kail lacked drawn by hand, and the story's text follows the
+cutscenes, field actions and menus, with every frame Kail lacked drawn pixel by pixel, and the story's text follows the
 swap. Thirteen **hero skins** from the Super Rare hunts recolour your hero's hair and clothes.
 
 ## Comfort and quality of life
@@ -432,7 +432,7 @@ it has only been played through a few times, so expect rough edges and frequent 
 
 - **Translation review.** The rewritten narrative was written, revised and personally curated in Brazilian Portuguese
   (with classic 80s/90s anime dub slang and tone), and translated directly into English. French, German, Italian and
-  Spanish cover the Definitive Edition's own strings (machine-assisted, not yet read in game by native speakers: expect
+  Spanish cover the Definitive Edition's own strings (not yet read in game by native speakers: expect
   clumsy lines and a few labels too wide for their box); in those four languages the disc's original campaign plays.
 - **Overall game balance.** So far it was balanced by calculation only. I am playing through it in parallel and
   shipping hotfixes as I go, the Chosen Evolution and the endgame's secret battles included.

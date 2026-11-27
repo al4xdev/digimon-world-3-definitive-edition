@@ -143,7 +143,7 @@
   "17f5d4f0fb": "Héros",
   "4ae5c491e2": "Kail",
   "c65983ba7c": "Junior",
-  "67c422a5c9": "Les rôles s'échangent dans les sprites de terrain, les cinématiques, les actions de terrain et les menus, avec chaque image qui manquait à Kail dessinée à la main. Treize skins de héros issus des chasses Super Rare recolorent les cheveux et les vêtements.",
+  "16ff058994": "Les rôles s'échangent dans les sprites de terrain, les cinématiques, les actions de terrain et les menus, avec chaque image qui manquait à Kail dessinée pixel par pixel. Treize skins de héros issus des chasses Super Rare recolorent les cheveux et les vêtements.",
   "5e6be0d84a": "Chapitre 07 · Blast et la Chosen Evolution",
   "7e33c27bed": "La puissance.<br/><em>Et son prix.</em>",
   "9a9c5d725e": "Bien combattre remplit la <b>Blast Gauge</b>. Quand elle est pleine, <code>R2</code> libère la forme sombre de votre partenaire. Purifiez dix formes, et un partenaire obtient la <b>Chosen Evolution</b> : une forme Mega bien à lui, sans malédiction.",
@@ -322,5 +322,5 @@
   "ebb8fea7aa": "Ouvrez <b>VIDEO</b> pour l'écran large, le plein écran, la mise à l'échelle FILL ou INTEGER, la résolution interne, le rendu GPU et les filtres.",
   "1e6788abc9": "<b>Équilibrage.</b> Équilibré par le calcul jusqu'ici, et ajusté par hotfix pendant une partie en parallèle, l'Évolution Choisie et les combats secrets de fin de jeu compris.",
   "0ef3c9f668": "Igor vous attire seul dans la pièce à quelques tournants et vous pose une question. Chaque choix est retenu — façonnant les liens, 27 mini-arcs de PNJ et 10 combats de boss, rendant l’aventure plus facile ou plus difficile. Le script a été écrit, relu et soigné personnellement en portugais du Brésil avec l’argot des doublages d’anime classiques des années 80/90, puis traduit directement en anglais.",
-  "fc652ac333": "<b>Traductions.</b> L’histoire réécrite a été écrite, relue et soignée personnellement en portugais du Brésil (ton d’anime classique 80/90) et traduite directement en anglais. Le français, l’allemand, l’italien et l’espagnol couvrent les textes d’interface propres à la Definitive Edition (traduits avec aide automatique) ; dans ces quatre langues, c’est la campagne originale du disque qui se joue."
+  "a757d0c243": "<b>Traductions.</b> L’histoire réécrite a été écrite, relue et soignée personnellement en portugais du Brésil (ton d’anime classique 80/90) et traduite directement en anglais. Le français, l’allemand, l’italien et l’espagnol couvrent les textes d’interface propres à la Definitive Edition ; dans ces quatre langues, c’est la campagne originale du disque qui se joue."
 }

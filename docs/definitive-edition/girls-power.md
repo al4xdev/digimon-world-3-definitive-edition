@@ -7,7 +7,7 @@
 `port/game/girls_power.c`, `girls_power_art.h`. Kail is the hero and Junior the friend. The story's English text follows
 the swap (`tools/text_override/en_kaili.txt`, `tools/gen_text_override.py`): the hero is Ivy in the Real World and the
 player's account name in the Digital World, Kurt is her brother, and the friend is Junior in both worlds (Junior becomes Ivy;
-Ivy and Kail become Junior; Smith Junior keeps his name). Portuguese swaps only Kail until the rewrite is translated. The choice is
+Ivy and Kail become Junior; Smith Junior keeps his name). Portuguese swaps the same names (`pt_kaili.txt`). The choice is
 "CHOOSE YOUR HERO!" on New Game after the difficulty, saved as `DEF_SAVE_KAILI` (old saves stay Junior). `DW3_GIRLS=0/1`.
 
 - Sprite files repainted at cdload time: 0x186, 0x187, 0x3C9-0x3CC, 0x190, 0x2F8, and the name-entry VRAM pages 0x28B and

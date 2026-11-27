@@ -394,7 +394,7 @@ abbatti paga un cristallo e sblocca una **skin da eroe**.
 ## Il tuo eroe, a modo tuo
 
 **Girls Power**: a New Game, scegli **Kail** o **Junior** come eroe. I ruoli si scambiano negli sprite sul campo, nei
-filmati, nelle azioni sul campo e nei menu, con ogni frame che mancava a Kail disegnato a mano, e il testo della storia
+filmati, nelle azioni sul campo e nei menu, con ogni frame che mancava a Kail disegnato pixel per pixel, e il testo della storia
 segue lo scambio. Tredici **skin da eroe** delle cacce Super Rare ricolorano i capelli e i vestiti del tuo eroe.
 
 ## Comfort e qualità della vita
@@ -441,7 +441,7 @@ stata giocata solo poche volte, quindi aspettati qualche spigolo e hotfix freque
 
 - **Revisione delle traduzioni.** La storia riscritta è stata scritta, rivista e curata personalmente in portoghese
   brasiliano (con slang e tono da anime classici anni '80/'90) e tradotta direttamente in inglese. Francese, tedesco,
-  italiano e spagnolo coprono i testi propri della Definitive Edition (tradotti con l'aiuto della macchina, non ancora
+  italiano e spagnolo coprono i testi propri della Definitive Edition (non ancora
   letti in gioco da madrelingua: aspettati frasi goffe e qualche etichetta troppo larga per il suo riquadro); in queste
   quattro lingue si gioca la campagna originale del disco.
 - **Il bilanciamento generale del gioco.** Finora è stato bilanciato solo a calcolo. Lo sto giocando in parallelo e

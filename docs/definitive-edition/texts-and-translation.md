@@ -12,7 +12,7 @@
   `<2,2><3>`).
 - **PT-BR is a 6th language**, falling back to English per entry (`port_language_ptbr`; `records_language` stays 2). The
   other languages (FR/IT/DE/ES) show the disc's text for the original entries, their own translation (`fr.txt`, `de.txt`,
-  `it.txt`, `es.txt`, 854 entries each, 2026-11-20) for the Definitive delta and English for what is not translated
+  `it.txt`, `es.txt`) for the Definitive delta and English for what is not translated
   (`dw3_velvet_text_own` entries without a line); the story rewrite is not shown there at all (see below). The language is `def_lang()` (0 en, 1 pt, 2 fr, 3 de,
   4 it, 5 es: from the preset or `DW3_LANG=pt`, else `records_language`); `def_text_overrides_of(lang)` gives the table
   and `def_pick()` picks among six C literals (title questions, Rush and flee prompts, compass). The callout font
@@ -23,15 +23,13 @@
   `port/game/definitive_story_text.c`, checked by `tools/check_story_text.py`) is in English and Brazilian Portuguese; in
   French, German, Italian and Spanish the disc's own campaign plays and the hero's choice panel stays shut (`8244649`).
   Formats, counts and the lookup order are in [The story layer](story.md#the-story-layer-velvet-room-in-the-main-story).
-- **PT-BR with the flavour of the classic dubs** (`8dfd4e8`): about one story line in seven (381 of 2750) and one NPC line
-  in eight (200 of 1606) carry the slang and catchphrases of the 90s/2000s Brazilian anime dubs (rivals' taunts, boasts,
-  scares, wins, the friends' banter). What to do, where to go, names, items and numbers are unchanged, nothing gendered
-  was added for the hero, and every line keeps its control codes and fits its box (`tools/check_pt_text.py`).
+- **PT-BR is the story rewrite's source language**, in the tone of the classic 80s/90s Brazilian anime dubs; the
+  English files are translated from it. Control codes and box sizes are checked by `tools/check_pt_text.py`.
 - PT pipeline: `tools/translate_ptbr.py` talks to a local Gemma server (no sampling parameters sent; `--benchmark` compares
   reasoning low vs medium on 20 real strings; `--tier p0|all`; `--export`). Glossary: keep in English `WEAK`, `RESIST`,
   `OVERFINISH`, `Baton Pass`, `Relay`, `Libra`, `Digimon`, `Digi-Lab`, `Load Tech`, `Blast Gauge`, `Bits`, `TP`, `MP`, `HP`
   and proper names; use Fogo, Agua, Gelo, Vento, Trovao, Maquina, Trevas for elements. A cache with tag/width validation lives
-  under `.dumps/tasks/translation/`. The other four languages were translated by Haiku subagents straight from `en.txt` and checked with
+  under `.dumps/tasks/translation/`. The other four languages are translated straight from `en.txt` and checked with
   `tools/check_pt_text.py` (0 errors; heavy-page and width warnings remain, pixel widths are unverified in game).
 - Glyph fix (plan 9): despite the name, it is the **button-glyph/place translation bug** of the battle menu (`PLACE_TO_GAME`), not a font fix; the cause, the fix and the 11 simplification items (done status
   unverified) are in [Battle HUD: design record](interface.md#battle-hud-design-record-plan-8-the-opt-in-mod-that-became-always-on-and-the-glyph-fix-plan-9).
@@ -47,7 +45,7 @@
   deduplicating strings repeated across maps; automatic per-line validation: exact preservation of every control code (`<1>`, `<2,...>`, `<5,1>`, `\n`, variables, colour codes), strict character/pixel limit per window (34 chars in
   SKLINF, pixel width from the font metrics for `TALK*`/`DMG*` and menus), auto-retry with size feedback on overflow. Execution order planned: the buff/debuff SKLINF batch was held until the tier work finished.
   **FR/DE/IT/ES (done 2026-11-20):** the EU disc has the original campaign in French (`records_language` 3), Italian (4), German (5) and
-  Spanish (6); the Definitive delta is `tools/text_override/{fr,de,it,es}.txt`, one line per key of `en.txt` (854 each), read by
+  Spanish (6); the Definitive delta is `tools/text_override/{fr,de,it,es}.txt`, one line per key of `en.txt`, read by
   `tools/gen_text_override.py` into `definitive_text_lang.inc`. The `--lang` and `--only-definitive-delta` options of the old plan were not
   needed. Open: a native read in game (width of the 14 px labels, the heavy dialogue pages, plates kept in English), and the story rewrite
   (`en_story`, `en_choices`, `en_echoes`, `en_kaili`), which exists only in English and Portuguese.
