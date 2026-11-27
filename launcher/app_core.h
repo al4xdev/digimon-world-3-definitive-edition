@@ -21,6 +21,8 @@ static const char *const fight_label[3] = {"CUSTOM", "BOTTOM", "RIGHT"};
 #define HUD_FIGHT_ROW (H_COUNT + 2)
 #define HUD_ROWS (H_COUNT + 3)
 static const char *const log_label[3] = {"OFF", "SOFT", "HEAVY"};
+/* SEND LOGS with LOGS at OFF (launcher/i18n.h has its translations). */
+#define APP_LOGS_OFF "LOGS ARE OFF: SET HEAVY (OR SOFT), REPEAT THE BUG, SEND"
 static const char *const lay_label[4] = {"PS1", "XBOX", "NINTENDO", "CUSTOM"};
 static const char *const filt_label[5] = {"NONE", "SHARP", "SCANLINES", "CRT", "SMOOTH"};
 static const char *const vert_label[3] = {"PS1", "SMOOTH", "SMOOTH + TEXTURES"};

@@ -1064,8 +1064,11 @@ int logs_pack(char *name, size_t n, int upload) {
     }
     path_of(p, sizeof(p), "logs");
     zip_dir(z, e, &count, MAXE, p, "", "", "logs/", cap);
-    /* last: they are the biggest and the logs above say the same (a crash report keeps what the budget has left) */
+    /* last: they are the biggest and the logs above say the same (a crash report keeps what the budget has left).
+     * Beside the settings when the launcher started the game, in crashes/ when RecompLauncher did (its --crash-dir). */
     zip_dir(z, e, &count, MAXE, game_dir, "crash-", ".txt", "crashes/", crash_cap);
+    path_of(p, sizeof(p), "crashes");
+    zip_dir(z, e, &count, MAXE, p, "crash-", ".txt", "crashes/", crash_cap);
     unsigned long cd = (unsigned long)ftell(z);
     for (int i = 0; i < count; i++) {
         size_t nl = strlen(e[i].name);
@@ -1106,7 +1109,7 @@ int logs_pack(char *name, size_t n, int upload) {
         "put('card1.mcd',None,0,0,0)\n"
         "put('card1.def.json',None,0,(256 if cap else 512)*1024)\n"
         "for f in glob.glob('logs/*'): put(f,None,cap)\n"
-        "for f in sorted(glob.glob('crash-*.txt'),key=os.path.getmtime)[-8:]: put(f,'crashes/'+f,cap//2)\n"
+        "for f in sorted(glob.glob('crash-*.txt')+glob.glob('crashes/crash-*.txt'),key=os.path.getmtime)[-8:]: put(f,'crashes/'+os.path.basename(f),cap//2)\n"
         "def rd(p,n=4096):\n"
         "  try: return open(p).read(n)\n"
         "  except Exception: return ''\n"
@@ -1143,6 +1146,8 @@ int logs_clean(void) {
     path_of(p, sizeof(p), "logs");
     n += rm_matching(p, "", "");
     n += rm_matching(game_dir, "crash-", ".txt");
+    path_of(p, sizeof(p), "crashes");
+    n += rm_matching(p, "crash-", "");
     n += rm_matching(game_dir, "dw3-logs-", ".zip");
     path_of(p, sizeof(p), "menu.log");
     n += unlink(p) == 0;

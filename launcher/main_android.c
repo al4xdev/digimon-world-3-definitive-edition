@@ -1071,6 +1071,11 @@ static void draw_backups(void) {
 
 /* SEND LOGS: the full zip is saved as ever, then the capped one goes to the server and is dropped. */
 static void send_logs(void) {
+    /* A report without the game's log cannot be reproduced: the player turns logs on and plays the bug again first. */
+    if (c.logs == 0) {
+        snprintf(status, sizeof(status), "%s", APP_LOGS_OFF);
+        return;
+    }
     busy("UPLOADING...");
     app_send_logs(&cloud, port_version, 0, status, sizeof(status));
 }

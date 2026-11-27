@@ -1054,6 +1054,11 @@ static void draw_save_notice_confirm(void) {
 
 /* SEND LOGS: the full zip is saved beside the game as ever, then the capped one goes to the server and is dropped. */
 static void send_logs(void) {
+    /* A report without the game's log cannot be reproduced: the player turns logs on and plays the bug again first. */
+    if (c.logs == 0) {
+        snprintf(status, sizeof(status), "%s", APP_LOGS_OFF);
+        return;
+    }
 #ifdef DW3_LAUNCHER_VERSION
     const char *ver = DW3_LAUNCHER_VERSION;
 #else
@@ -2580,6 +2585,31 @@ static int self_test(const char *root) {
     check(!memcmp(&a, &b, sizeof(a)), "settings: read back as written");
     check(!strcmp(disc_path, p), "settings: the disc read back");
     {
+        /* SEND LOGS's zip: a crash report beside the settings and one in crashes/ (where the game writes when
+         * RecompLauncher started it) both go in. The zip is stored, so the names are in its bytes. */
+        char zn[128], zp[1400], cd[1200];
+        snprintf(cd, sizeof(cd), "%s/crashes", game_dir);
+        mkdir(cd, 0755);
+        snprintf(q, sizeof(q), "%s/crash-20260101-000000.txt", game_dir);
+        write_text(q, "dw2003 crash report\n");
+        snprintf(q, sizeof(q), "%s/crash-20260102-000000.txt", cd);
+        write_text(q, "dw2003 crash report\n");
+        int found = 0;
+        if (logs_save(zn, sizeof(zn)) == 0) {
+            snprintf(zp, sizeof(zp), "%s/%s", game_dir, zn);
+            FILE *zf = fopen(zp, "rb");
+            static char zb[1 << 20];
+            size_t zl = zf ? fread(zb, 1, sizeof(zb), zf) : 0;
+            if (zf) fclose(zf);
+            const char *want[] = {"crashes/crash-20260101-000000.txt", "crashes/crash-20260102-000000.txt"};
+            for (int k = 0; k < 2; k++)
+                for (size_t o = 0; o + strlen(want[k]) <= zl; o++)
+                    if (!memcmp(zb + o, want[k], strlen(want[k]))) { found++; break; }
+            remove(zp);
+        }
+        check(found == 2, "send logs: the crash reports beside the settings and in crashes/ are in the zip");
+    }
+    {
         /* The Fight button: Fight at the bottom by default; the row swaps it with Tag, and a button another
          * action held moves to the row it left; an old tui.state still on the old defaults takes the new one. */
         Cfg f, g;
@@ -3025,6 +3055,22 @@ static int self_test(const char *root) {
         check(ufits, what);
     }
 #endif
+    {
+        /* SEND LOGS refused while LOGS is OFF: nothing is written, and its line fits the DEBUG screen in every language
+         * (status at x 64, 16 px). */
+        Cfg keep = c;
+        status[0] = 0;
+        c.logs = 0;
+        send_logs();
+        int refused = !strcmp(status, APP_LOGS_OFF);
+        int lfits = 1;
+        for (int lang = 0; lang < 6; lang++) {
+            if (text_w(ui_tr_lookup(APP_LOGS_OFF, lang), 16) > W - 64 - 24) lfits = 0;
+        }
+        c = keep;
+        status[0] = 0;
+        check(refused && lfits, "send logs: refused with LOGS at OFF, and the reason fits in every language");
+    }
     /* The game beside the launcher (the release's layout) and its mods; with a disc, 300 frames from PLAY. */
     const char *real = getenv("DW3_SELFTEST_GAME");
     if (!real) return st_fails;
