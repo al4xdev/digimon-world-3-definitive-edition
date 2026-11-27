@@ -217,7 +217,7 @@ int def_story_velvet_level(void) {
         s32 progress; /* the step it comes at */
         s32 level;
     } steps[] = {
-        { 10, 2 }, /* "The Suzaku Badge": Gennai and his Blast quest (the opening drags: owner), and Igor */
+        { 10, 2 }, /* "The Suzaku Badge": Gennai and his Blast quest, and Igor */
         { 16, 3 }, /* "The real Leader": the Demon Bell's keeper */
         { 22, 4 }, /* "Free Asuka City": Etemon and the pig */
     };

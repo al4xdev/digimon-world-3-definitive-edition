@@ -9,7 +9,7 @@ What you need
 -------------
 * Windows 10 or newer, 64-bit.
 * Your own disc image of Digimon World 2003 (PlayStation, Europe, SLES-03936), as a .cue with its .bin (or the .bin
-  alone). No game data is included: the launcher checks the image's SHA-1 and only the European disc is accepted.
+  alone). No game data is included: the game checks the image's SHA-1 and only the European disc is accepted.
 
 Starting
 --------
@@ -37,10 +37,10 @@ A portable.txt file beside dw2003-launcher.exe keeps all of this in the launcher
 
 Reporting a problem
 -------------------
-This build was tested on Linux through Wine and on Windows 11 (the launcher's self-test, 14 checks, and a title-screen replay
-with a real disc). If the game crashes, the launcher shows why.
-Set DEBUG > LOGS to HEAVY, play until it happens again, then DEBUG > SAVE LOGS writes dw3-logs-<date>.zip (the logs and
-crash reports) into the folder above: attach it to a new issue at https://github.com/al4xdev/digimon-world-3-definitive-edition/issues (the bug
-report form). Your disc image and your saves are never part of it.
+This build is tested on Windows 11 and on Linux under Wine. If the game crashes, the launcher
+shows why. Set DEBUG > LOGS to HEAVY, play until it happens again, then DEBUG > SEND LOGS: it writes dw3-logs-<date>.zip
+(the logs, crash reports, settings, your memory card and a system summary) into the folder above and uploads a copy,
+then shows a code. Open a new issue at https://github.com/al4xdev/digimon-world-3-definitive-edition/issues (the bug
+report form) with that code, or attach the zip. Your disc image is never part of it.
 
 LICENSES\README.txt lists the licences of what this package contains.

@@ -91,7 +91,7 @@ TOY HOW` (a piece of a disc frame put on the frame at run time; HOW 1 mirrored, 
 ignored (column ruler, each pixel row ends with `%row`); pixel rows: `.` empty, `1`-`F` palette index. **The header
 must never hold disc pixels**: her real head/trunk at another angle is `paste`d (read from the disc at run time); what
 is hand-drawn goes in the rows. The drawing files are local (`.dumps/`, gitignored) because they hold disc pixels; the
-header is the source of truth (`edit` recreates a drawing from it). After a batch: `build` -> `make -C build/port -j8`
+header is the source of truth (`edit` recreates a drawing from it). After editing: `build` -> `make -C build/port -j8`
 and `ninja -C build/port-sdl` (-Werror) -> `check` -> `tools/venv/bin/python tests/port/girls_power.py` ->
 `tests/port/run.py`.
 
@@ -125,7 +125,7 @@ digits, mirrored when the game mirrors the frame); on a screenshot the number na
 the action (fishing `3CA`, kick `3CB`, climbing `3CC`, scene gestures `186`, walking `187`, the Junior NPC `190`).
 Known weak spots: the rod is one pixel wide in her dark hair colour (index 6); 3/4 frames in 24-wide files lose 1-2 px
 of the pigtail tip at the frame edge (95, 97-99, 108-110, 119-123, 93, 100-103, 107); the lying frames keep the
-automatic body; 122/123 differ from standing only by head height and elbow. Fishing plan used (`3CA`): per direction
+automatic body; 122/123 differ from standing only by head height and elbow. Fishing (`3CA`): per direction
 compose her body (the head of that direction; the 3/4 head where he turns his head to look at his hands, 55-58 in
 front), then `paste` his own arms and rod from the same frame with how=2 (recoloured: his white short sleeves become
 her green upper sleeves, his skin hers), then hand-fix (his bare forearms -> her light sleeves D/C with a white A cuff,

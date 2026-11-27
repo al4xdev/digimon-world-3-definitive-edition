@@ -13,7 +13,7 @@ int def_weakness_mask(const short resists[7], int dark_weak) {
     int mask = 0;
     int e;
 
-    /* No median and no cap any more: the enemy table gives a family its weak value, and a Resist Down that brings a
+    /* No median and no cap: the enemy table gives a family its weak value, and a Resist Down that brings a
      * neutral family under DEF_WEAK_MAX adds a weakness without hiding one the target already has. */
     for (e = 0; e < 6; e++) {
         if (resists[e] <= DEF_WEAK_MAX) {

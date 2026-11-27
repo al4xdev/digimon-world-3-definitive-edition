@@ -42,7 +42,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 STATUS = ROOT / "docs/STATUS.md"
 
-# The functions still in asm (INCLUDE_ASM, WIP C under #ifdef NON_MATCHING). Empty since issue #55 matched the last 8:
+# The functions still in asm (INCLUDE_ASM, WIP C under #ifdef NON_MATCHING). Empty:
 # any INCLUDE_ASM or NON_MATCHING in game code fails. A function that has to go back to asm is listed here, on purpose.
 HOLDOUTS: set[str] = set()
 # Functions that may use a macro wrapping inline asm (accepted).

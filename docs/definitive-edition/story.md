@@ -105,8 +105,7 @@ renumbered) with 336 options; 600 echoes (30 of them Kaili-only).
 
 **Story answers in the save** (`def_record_story_answer` / `_set_`, `definitive_bestiary.c`): `DEF_STORY_ANSWERS` = 160 answers
 at 2 bits each (`DEF_STORY_ANSWER_BYTES` = 40 bytes at `REC2_ANSWERS`, right after the Blast data in card record 2; answer q
-is byte q >> 2, bits (q & 3) x 2; 0 not answered, 1..3 the option); slots 0..7 are Igor's dreams, 8..159 the scenes' choices
-(Q8..Q39 existed first, at one byte each, until the bytes ran out). A compile-time check keeps them clear of the skin byte;
+is byte q >> 2, bits (q & 3) x 2; 0 not answered, 1..3 the option); slots 0..7 are Igor's dreams, 8..159 the scenes' choices. A compile-time check keeps them clear of the skin byte;
 an older record reads 0. See [Save format](save-format.md#save-format-memory-card-records).
 
 **The story rewrite.** Written in Brazilian Portuguese, with the English, French, German, Italian and Spanish

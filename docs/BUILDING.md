@@ -47,7 +47,6 @@ scripts/check_toolchain.sh  # smoke test of the compilers and diff tools
 ```
 
 Outputs: `build/SLES_039.36` and every overlay (`build/*.PRO`), each checked byte-identical against the original.
-Functions not yet decompiled are built from split assembly.
 
 ## Tests
 

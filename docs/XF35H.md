@@ -5,12 +5,6 @@ mod drives. Nothing in this document generalises to another device.
 
 The reference console this port was tuned on: EmuELEC 4.7-Nexus nightly, board
 `Rockchip rk3326 evb lpddr3 v12 board for linux`, kernel `5.10.160`, aarch64, panel on DSI-1.
-Access is standard dropbear ssh (`ssh root@<device-ip>`, port 22, default firmware credentials).
-
-The sshd is not part of the image's stock boot: it comes from a PortMaster helper script
-(`server_ssh_enable.sh`) started from inside `emustation.service`'s cgroup. It survives
-`systemctl stop emustation` (the unit is `KillMode=process`), but a reboot does not bring it
-back automatically — physical access to the device menu is the fallback.
 
 ## Blanking the panel (backlight)
 
@@ -30,7 +24,7 @@ killes.sh`, `ExecStart=/bin/bash -c 'ee_splash_intro_delay.sh && emulationstatio
 
 `Restart=always` only covers unexpected exits: after an explicit `systemctl stop emustation` the unit stays
 `inactive` (`pidof emulationstation` empty, verified for minutes) until `systemctl start emustation` or a
-reboot. The sshd living in that cgroup is not killed by the stop.
+reboot.
 
 ## The LED bar is on a UART, not in sysfs
 
@@ -122,8 +116,8 @@ bar"): one message per change of reading.
 - `/sys/class/input/input4/capabilities/ff` = `107030000 0`: **FF_RUMBLE**, **FF_PERIODIC** (square,
   triangle, sine) and **FF_GAIN**. No `FF_CONSTANT`, no separate left/right motors — one motor.
 - `libSDL2.so` is on the image, so `SDL_GameControllerRumble()` / `SDL_HapticRumblePlay()` reach it with no
-  extra dependency. There is no `evtest` or `fftest` to poke it by hand — but **`python3` 3.11.2 is there** (the
-  handheld menu runs on it, and so does `ledd`), with `mkfifo` and `nc`.
+  extra dependency. There is no `evtest` or `fftest` to poke it by hand — but **`python3` 3.11.2 is there** (`ledd`
+  runs on it), with `mkfifo` and `nc`.
 
 ## What the game can do from C
 
@@ -137,9 +131,3 @@ bar"): one message per change of reading.
   open 0.15–0.9 ms. It means owning a UART shared with the MCU that also handles charging — which is why exactly one
   process does it (`ledd`) and everyone else talks to that process.
 - **Rumble:** free through SDL, no shell involved.
-
-## Inspecting the vendor binary
-
-The vendor scripts and binaries on the device are `/usr/bin/mcu_led_ctrl.sh` and `/usr/bin/mcu_led`.
-To inspect them offline: copy them via ssh, then disassemble `mcu_led` with `capstone` (the host
-binutils may lack aarch64 support).

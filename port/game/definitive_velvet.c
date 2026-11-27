@@ -62,7 +62,7 @@ int dw3_velvet_pipimon_art(FieldstgActor *actor, u32 *ot, s32 x, s32 y); /* defi
 #define VL_MERCHANT 42  /* the Black Market's trader: the figure that traded in map 0x20C */
 /* The mentor (the Gennai of the room,  an old figure of the game until one is drawn): 0x39, the old man
  * the game's Grandpas and Tamer Genji wear (P074JIJI): bald, white-bearded, five facings. Its frame is 24x32, which the
- * VRAM place below holds (its neighbour starts 32 pixels on). It was 0x178, a Kotemon no map places. */
+ * VRAM place below holds (its neighbour starts 32 pixels on). */
 #define VL_MENTOR 0x39
 /* The Demon Bell's keeper (Super Hard Mode, definitive_super.c): 370 (0x172), a small Guilmon no map places, the red
  * one of the room. Talking to him hands over the Bell or takes it back (dw3_velvet_shop_talk picks the line). */

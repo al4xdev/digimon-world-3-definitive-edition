@@ -1,8 +1,7 @@
 /* The game's built-in mods (docs/LAUNCHER.md "Built-in mods"; psxstack/game.h game_mods): skip_dialogues,
- * battle_animations, preset_language, widescreen, led_bar and battle_menu (the battle text is no longer a mod: it is
- * always skipped)
+ * battle_animations, preset_language, widescreen, led_bar and battle_menu (the battle text is always skipped)
  * (and, after them, the handheld's features and the player's pad.map), as PortMod records the
- * runtime's engine (port/runtime/mods.c) reads the settings of, gives hotkeys to and runs every vsync. Each reaches the game's C through
+ * runtime's engine (psxstack/runtime/mods.c) reads the settings of, gives hotkeys to and runs every vsync. Each reaches the game's C through
  * the port_mod_* flags and functions of include/port.h, read inside `#ifdef PC_PORT` blocks. The runtime's own mod,
  * fast_forward, is the engine's; skip_dialogues asks for it with port_fast_forward_request. */
 #include <stddef.h>
@@ -172,7 +171,7 @@ static void pl_start(struct PortMod *mod) {
              (int)port_preset_language, i <= 5 ? i : 0);
 }
 
-/* ---- The party's shared experience (definitive edition; was the party_xp mod; docs/MECHANICS.md section 6):
+/* ---- The party's shared experience (definitive edition; docs/MECHANICS.md section 6):
  * STFGTREP's report asks port_party_xp_share for every party member's experience. A member that took part keeps one
  * fighter's split share; one that sat out gets DEF_XP_PARTY_SHARE percent of it (at least 1 when both are above 0); a
  * knocked-out one (port_party_xp_knocked_out, from WFIGHTMN) gets none. */
@@ -522,10 +521,8 @@ void port_bm_remember(s32 kind, s32 member, s32 value) {
     bm_memory[kind][member & 63] = value;
 }
 
-/* ---- battle text: always skipped. It was the `battle_text` mod, with off / skip / async;
- * from now on the battle's message box (FightstgMessage) never waits and never shows: every action goes on, and the
- * player reads the result rather than the box. The mode stays a code variable (BT_SKIP: 1) for the FIGHTSTG side and
- * for a future change. The toast's windows are arena objects held here (FIGHTSTG runs and draws them), so they are
+/* ---- battle text: always skipped. The battle's message box (FightstgMessage) never waits and never shows: every action goes on, and the
+ * player reads the result rather than the box. The mode stays a code variable (BT_SKIP: 1) for the FIGHTSTG side. The toast's windows are arena objects held here (FIGHTSTG runs and draws them), so they are
  * part of the save state. */
 #define BT_SKIP 1
 int port_mod_battle_text = BT_SKIP;

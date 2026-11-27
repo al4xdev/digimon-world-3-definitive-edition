@@ -135,13 +135,12 @@ checks the scanner against every script on the disc; `tests/port/mods.py` runs t
 
 ### Battle text
 
-**Not a mod any more: the battle text is always skipped**. The
-launcher has no option for it and the settings file no longer carries one; `port_mod_battle_text` stays as a code
-constant (`BT_SKIP`, 1, in `port/game/game_mods.c`) for the FIGHTSTG side and for a future change. 0 (as the disc) and
-2 (async) remain in the flag's vocabulary, unused.
+The battle text is always skipped: the launcher has no option for it and the settings file carries none.
+`port_mod_battle_text` is a code constant (`BT_SKIP`, 1, in `port/game/game_mods.c`) for the FIGHTSTG side; 0 (as the
+disc) and 2 (async) are in the flag's vocabulary, unused.
 
 The battle's message box (`FightstgMessage`, `src/fightstg/fightstg_8008D3B4.c`) is presentation only: the rules ran
-before it is shown, but every action waits for it to be dismissed with a confirm press. The hook sits in
+before it is shown, but on the disc every action waits for it to be dismissed with a confirm press. The hook sits in
 `fightstg_message_update`'s RUN, the frame a message is ready (`fightstg_message_port_take`). Each message has a class,
 set by `fightstg_message_show` from its type and text ID (`ESMFIGHT`):
 
@@ -150,19 +149,14 @@ set by `fightstg_message_show` from its type and text ID (`ESMFIGHT`):
 - **drop:** what the animation already says: a plain "Attack" (8), "Evade" (0x1D), "Focus on attack/guard" (0x3C, 0x3D),
   "Special effect up" (0x3E), "Blast gauge up" (0x3F), "Excited" (0x40). Ended at once in `skip` and `async`.
 - **normal** (technique and item names, damage, healing, statuses, switches...): `skip` ends it at once; `async` hands
-  its two windows to a **toast** and ends it, so the action goes on (the animation starts with the technique's name
-  still up, and the damage replaces it when it arrives). A chain (a queued follow-up: regeneration, the counter's
-  damage) shows only its last page. The toast stays 90 frames unless a newer text replaces it.
+  its two windows to a **toast** and ends it, so the action goes on. A chain (a queued follow-up: regeneration, the
+  counter's damage) shows only its last page. The toast stays 90 frames unless a newer text replaces it.
 
 The toast is owned by no object: the battle's slots object (`fightstg_slots_update`) runs and draws the windows each
 frame, and `fightstg_slots_create` clears it for a new battle. Its state (`port_battle_text_windows`,
 `port_battle_text_frames`, in `port/game/game_mods.c`) is named in the save state. No random number is drawn and no
-rule changes, but the frame count of a battle does, so the scripted replays of the disc's own battles do not apply with
-the mode on.
-
-Being fixed, it also changes the frame count of a battle for everyone, so the scripted replays of the disc's own
-battles are compared on the game state, not on frames (`tests/port/mods.py`'s `battle_menu` runs the first battle this
-way).
+rule changes, but the frame count of a battle does, so the scripted replays of the disc's own battles are compared on
+the game state, not on frames (`tests/port/mods.py`'s `battle_menu` runs the first battle this way).
 
 ### Preset language
 
@@ -270,7 +264,7 @@ game sends past the 320-wide screen's edges. The mod's frame callback (`port/gam
 - **Known limits:** the digivolution's 2D effects are 320-wide art and may show their edges at the sides; a stage
   modelled only at the front (stage kind 4) may show its back at the sides. In the field, something an event keeps just
   off the 320-wide screen now shows, a stage's own backdrop (WSTAG375 and WSTAG949 have parallax layers) may not cover
-  the sides, and the closing window's first step drops the sides at once. All are for the play-test.
+  the sides, and the closing window's first step drops the sides at once.
 
 `tests/port/render_gpu.py` (a GPU device): with `field` off, a battle frame's middle 320 columns equal the software
 image byte for byte, its sides are drawn, the present is 16:9, the field stays 4:3, the frame log equals the run
@@ -408,7 +402,7 @@ runs after the cloud sync (so a pulled v1 file is migrated too). The pair's sha 
 not a local change and cannot make a false conflict with a newer cloud save. A migrated file's old copy is
 `<file>.v<N>.bak`, or `.v<N>.2.bak` and so on when that name is taken: no copy is replaced. A version is a whole number
 (`1.5` or `-1` is not one the game wrote, and the file is left as it is). The refresh rate lives in `tui.state` (`hz`) and is
-written to `settings.json` on every start; the launcher no longer reads it back from there.
+written to `settings.json` on every start; the launcher does not read it back from there.
 To add a migration: raise
 `SCHEMA_*` in `migrate.h`, append the step function to the file's table in `migrate.c`, raise the game's own number when
 it writes the file (`DEF_EXPANSION_VERSION`), and add the case to the launcher's `--self-test`.

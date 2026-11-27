@@ -51,8 +51,8 @@ rounding). At the frames compared with `--screenshot` the picture that reaches t
 | the game's own CPU (recompiled code, GTE, SPU mix) | the rest, ~14 |
 
 The last row includes the SPU mix (3.0-3.3 ms), which leaves about 11 ms for the game's own code by subtraction. The rows
-come from the renderer's per-second meter and do not add up to the ~24 ms the fps figure implies; the note labels the last
-row "the rest".
+come from the renderer's per-second meter and do not add up to the ~24 ms the fps figure implies, which is why the last
+row is "the rest".
 
 ## A software battle frame
 

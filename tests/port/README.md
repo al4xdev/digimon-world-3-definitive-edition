@@ -1,4 +1,4 @@
-# tests/port: the PC port's M1 test
+# tests/port: the PC port's replay test
 
 `tests/port/run.py` checks the PC port (`port/`) against the emulator: the port replays layer 2's `new_game` script (boot,
 CNTY_SEL, the opening movie skipped with START, the title, New Game, FIELDSTG's intro map 0x2D7 with WSTAG780) and must
@@ -60,7 +60,7 @@ the emulator's dump (`tests/replay/replay.py run tests/replay/scripts/new_game.j
 depends on timing (it joins `VOLATILE_RANGES` only by the rule in tests/README.md "The stable hash and the RNG"), or a
 real divergence.
 
-## The sound (`sound.py`, `sound_replay.c`; M3, docs/SOUND.md section 7)
+## The sound (`sound.py`, `sound_replay.c`; docs/SOUND.md section 7)
 ```sh
 tests/port/sound.py [--m32] [--sanitize]          # LIBSND on the emulator's timeline: the committed traces (~5 s)
 tests/port/sound.py TRACE                         # any emulator trace (tests/sound/spu_trace.py run SCRIPT --calls)

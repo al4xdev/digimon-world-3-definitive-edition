@@ -166,7 +166,7 @@ class Bar:
             self.power(byte != OFF)
         os.write(self.fd, bytes([byte]))
         if not keep_power and not was_up and byte != OFF:
-            # The first byte after the rail comes up is lost (docs/XF35H.md, "Open items": a blue nobody asked for,
+            # The first byte after the rail comes up is lost (a blue nobody asked for,
             # right after vcc-led rose). A lost mode byte leaves the MCU in its own demo - every colour cycling - which
             # looks exactly like the table being ignored. Repeating it costs one byte and closes that.
             os.write(self.fd, bytes([byte]))

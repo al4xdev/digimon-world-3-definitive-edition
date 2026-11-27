@@ -7,6 +7,7 @@ The licences of what this package contains.
   LiberationSans.txt      the launcher's font, Liberation Sans Bold (SIL Open Font License 1.1), embedded in
                           dw2003-launcher.exe
   stb_truetype.txt        stb_truetype (MIT or public domain), the launcher's font rasterizer, compiled into it
+  miniz.txt               miniz (MIT), the updater's unzip, compiled into dw2003-updater.exe
   cJSON.txt               cJSON (MIT), the game's reader and writer of its expansion save, compiled into dw2003.exe
   llvm.txt                the LLVM project (Apache 2.0 with the LLVM exception): the parts of its runtime linked
                           statically into both programs by llvm-mingw (compiler-rt's builtins, libunwind)

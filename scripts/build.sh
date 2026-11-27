@@ -30,7 +30,7 @@ if [[ $check == 1 ]]; then
     rm -rf asm build include/asm_generated build.ninja objdiff.json
 fi
 [[ -f build.ninja ]] || tools/venv/bin/python configure.py
-# DW3_JOBS limits ninja's and configure.py's parallelism (several agents on one machine).
+# DW3_JOBS limits ninja's and configure.py's parallelism (builds sharing a machine).
 ninja ${DW3_JOBS:+-j "$DW3_JOBS"} "${ninja_args[@]}"
 if [[ $check == 1 ]]; then
     echo "check passed: all outputs match their SHA-1"

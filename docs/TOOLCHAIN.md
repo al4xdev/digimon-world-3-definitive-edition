@@ -64,7 +64,7 @@ the tables that store them. All are named in `config/symbol_addrs.txt`.
 | `8002E77C` | `CdDataCallback` (LIBCD S_023) | `StUnSetRing` calls it with `CdReadyCallback(0)` in CD mode; `CdRead2` uses it |
 | `8002E7CC` | `DsDataCallback` (LIBDS DSCB_4) | `StUnSetRing`'s other branch (`D_8005AB40 == 1`, DS mode) calls it... |
 | `8002E7AC` | `DsReadyCallback` (LIBDS DSCB_2) | ...with this one, mirroring the CD branch's Data + Ready pair |
-| `8002BADC`, `8002E10C` | `CdPosToInt` (LIBCD SYS), `CdIntToPos` (LIBCD S_002) | the LIBDS twins would only be linked if referenced; the only LIBDS code in the EXE is the two callbacks above, pulled in by `StUnSetRing`. Callers: `StGetBackloc` (LIBCD) and the game (`filetable_get_cdloc`, `func_80013694`) |
+| `8002BADC`, `8002E10C` | `CdPosToInt` (LIBCD SYS), `CdIntToPos` (LIBCD S_002) | the LIBDS twins would only be linked if referenced; the only LIBDS code in the EXE is the two callbacks above, pulled in by `StUnSetRing`. Callers: `StGetBackloc` (LIBCD) and the game (`filetable_get_cdloc`, `cdload_check_sector`) |
 | `8003224C`, `800322AC`, `800322DC`, `8003230C` | `_SsSetNrpnVabAttr15/17/18/19` (LIBSND DE_15/17/18/19) | LIBSND fills its attribute-handler table in code: attribute N is stored at `0x44 + 4N`, and the four go to `0x80/0x88/0x8C/0x90` (`_SsSetNrpnVabAttr16`, uniquely matched, sits at `0x84`) |
 | `8003498C` | `SsUtReverbOff` (LIBSND UT_ROFF) | `SpuSetReverb(0)` (`SpuInit` would call `_SpuInit`) |
 | `800349AC` | `SsUtReverbOn` (LIBSND UT_RON) | `SpuSetReverb(1)` |
@@ -119,7 +119,7 @@ the original. 259 functions scored; 16 drafts fail to compile on every compiler 
 - Only 26% of unedited m2c drafts match outright; the misses have a median of 80.5% and 39 are ≥95%. That is
   normal for raw m2c output and doesn't count against 2.8.x.
 - **`-G`:** 12 functions match only at `-G0` (none use `$gp`); 11 match only at `-G8` (all in the `$gp` area).
-  34 of 343 game functions use `$gp`: `main`, `func_80013780`, and a cluster `0x8001D3F4`–`0x8001FF9C`, over
+  34 of 343 game functions use `$gp`: `main`, `cdload_sync_callback`, and a cluster `0x8001D3F4`–`0x8001FF9C`, over
   9 variables at `0x8005CCB4`–`0x8005CD20`.
 - **ASPSX (and maspsx) only use `$gp` for symbols defined earlier in the same file**, never for `.extern`s
   (cc1 writes those at the end of the file, and ASPSX is one-pass). So the original defined each `$gp`

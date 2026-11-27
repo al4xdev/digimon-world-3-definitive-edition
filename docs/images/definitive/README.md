@@ -29,7 +29,7 @@ The SVGs are the source. The numbers they show come from `port/game/definitive.h
 The battle, Rush, Bestiary, Black Market and hunt-board shots come from the SDL build on the GPU
 renderer at 8x internal resolution with smooth vertices and widescreen on (English, default HUD): PNGs at 1280×720,
 README GIFs at 480 wide and 8 fps, and the site's 1280×720 MP4 versions with a JPG poster in `site/assets/shots/`.
-The older ones (`battle-persona.png`, Velvet Room, GUIDE) are still software captures. Some states were staged with the
+`battle-persona.png`, the Velvet Room and GUIDE shots are software captures. Some states were staged with the
 debug channel to show a mechanic (an enemy's HP raised so a stagger is visible before it falls, or lowered for a KO;
 most of the Bestiary marked as discovered; the Rush offered by `DW3_RUSH_TEST`; the Black Market and the hunt board
 opened by their test pokes); the behaviour shown is the game's own.
@@ -51,8 +51,6 @@ opened by their test pokes); the behaviour shown is the game's own.
 | `super-hunt-dossier.gif` | a locked hunt's Target Dossier on the Sepikmon's board |
 | `guide-quest.png` | the GUIDE's Quest tab |
 
-Still to capture: the Digi-Lab's next-form requirements, Igor's dream panel, the Super Rare compass, hero skins, the
-forge's requirement line, the DRI Gauntlet, a Blast form, Girls Power, the Time Room and the launcher.
 
 ## Static figures (the technical reference)
 

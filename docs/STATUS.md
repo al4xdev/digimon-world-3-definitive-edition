@@ -78,7 +78,7 @@ The design is in [`PORT.md`](PORT.md).
 - **Platforms:** Linux x86_64, Linux ARM (handhelds, through PortMaster) and Windows x86_64, cross-built from Linux
   (`.ci-cd/windows/build_windows.sh`; upstream #37). Under Wine, headless, the game replays both layer-2 scripts with the Linux
   build's log, record and SPU trace byte for byte (`tests/port/run.py --exe build/port-win/dw2003.exe --wine`). The
-  Windows zip has been run under Wine 11.17 and GE-Proton 10-25; it has not run on real Windows. macOS is not planned.
+  Windows zip has been run under Wine 11.17 and GE-Proton 10-25; each release is also played on Windows 11 before it is published. macOS is not planned.
 - **The port stack:** the runtime, the Psy-Q shim, the build (`psxstack_add_game()`), the launcher and the debug tools
   live in the [`psxstack`](../psxstack) submodule, pinned by commit (`.gitmodules`; its `docs/PORT.md`,
   `docs/RUNTIME.md`, `docs/LAUNCHER.md`). This repository keeps the game's side: `include/port.h`, `port/game/` (the
@@ -88,8 +88,7 @@ The design is in [`PORT.md`](PORT.md).
 ## Launcher and mods
 - **Launcher** (`launcher/`, [`LAUNCHER.md`](LAUNCHER.md)): the one C99 launcher on every platform (SDL3 on Windows and the
   AppImage). Handles the disc (with a SHA-1 check), Play, settings, controls (rebinding, hotkeys, chords), the save
-  backups and the cloud sync. A headless self-test (`--self-test DIR`) runs in CI. psxstack's ImGui launcher is no longer
-  built or shipped. On handhelds the launcher is `.ci-cd/portmaster/handheld/Digimon World 3.sh` with the C99 pad menu `dw3-launcher` (`launcher/`; `.ci-cd/portmaster/handheld/README.md`,
+  backups and the cloud sync. A headless self-test (`--self-test DIR`) runs in CI. On handhelds the launcher is `.ci-cd/portmaster/handheld/Digimon World 3.sh` with the C99 pad menu `dw3-launcher` (`launcher/`; `.ci-cd/portmaster/handheld/README.md`,
   [`LAUNCHER.md`](LAUNCHER.md)).
 - **Android (arm64) APK:** `.ci-cd/android/build_android.sh` and `android/`: the C launcher's touch-first build linked with the
   game and a floating touch pad ([`LAUNCHER.md`](LAUNCHER.md)).

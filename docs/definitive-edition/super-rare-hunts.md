@@ -87,8 +87,6 @@
 - Through the MCP (`mcp__dw2003__*`): `mem_write` on `st` (hunt state; `st+1` = hunts done), `run` (the point), `hunt+1`
   (forces the regional Rare on the next battle), `skin_hero`. In Phoenix Bay: right for 200 frames, down for 250 gives an
   encounter (the Rush question; Confirm fights).
-- Link failures on `__start_dw2003_data_wstagNNN` come from objects cut by two builds at once: move the `wstagNNN` `.o`
-  files aside and rebuild.
 - To play in Portuguese through the MCP: write a settings file with `{"schema": 1, "video": {"window": false}, "mods":
   {"preset_language": {"enabled": true, "language": "portuguese"}}}`, pass its path as `game_start`'s `config`, then
   `state_load` an English state. To see the Super Rare colour without hunting: with a hunt active, `mem_write` `run+6`

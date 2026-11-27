@@ -25,7 +25,7 @@ STCRDSHP:
   into its count.
 
 Not here (UI state machines, docs/MECHANICS.md section 9 [C]): the buy/sell counts and the money (stitshop_buy_run,
-stitshop_sell_run, stcrdshp_run_buy) and the booster draw (stcrdshp_run_booster, still asm).
+stitshop_sell_run, stcrdshp_run_buy) and the booster draw (stcrdshp_run_booster).
 
 Fixture: pointer-free gamestate_data zeroed, Digimon 0's record (level 20, stats 60, Charisma 10, no equipment), bag
 counts 3 for the items used. Each overlay goes in the slot by a kept setup case (STITSHOP first, then STCRDSHP).

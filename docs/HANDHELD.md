@@ -173,8 +173,7 @@ chosen forms earning) are the Definitive Edition's own, in the game, not setting
 ([`definitive-edition/progression.md`](definitive-edition/progression.md#experience); the code's view in
 [`MECHANICS.md`](MECHANICS.md) section 6).
 
-`Select + R1` turns fast-forward on and off (the buttons chosen for SELECT and R1; it was `L3 + R3`, fixed in the
-runtime, before 0.8.6). Fast-forward goes up to 8x where the game has headroom (menus, dialogue, cutscenes). In the field and in a battle the CPU
+`Select + R1` turns fast-forward on and off (the buttons chosen for SELECT and R1). Fast-forward goes up to 8x where the game has headroom (menus, dialogue, cutscenes). In the field and in a battle the CPU
 is the limit, so it only mutes the audio there.
 
 ## Environment variables

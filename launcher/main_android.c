@@ -593,7 +593,7 @@ static void draw_home(void) {
     };
     static const char *const hints[HI_COUNT] = {
         "Start Digimon World 3 with your saved settings.",
-        "Language, fast-forward, skipping and battle text.",
+        "Language, fast-forward, faster loading and skipping.",
         "Widescreen, GPU resolution, filters and 3D vertices.",
         "Where each battle action sits on your pad.",
         "Your buttons, and the letters the game shows.",

@@ -191,7 +191,7 @@ int main(void) {
     const short two[7] = { 60, 60, 60, 100, 100, 100, 100 };      /* Fire and Water+Ice: two families */
     const short water[7] = { 100, 60, 100, 100, 100, 100, 100 };  /* Water low, Ice not (a modifier): the pair is one */
     const short machine[7] = { 100, 100, 100, 100, 100, 60, 100 };
-    const short three[7] = { 60, 60, 60, 60, 100, 100, 100 };     /* three families: no cap any more */
+    const short three[7] = { 60, 60, 60, 60, 100, 100, 100 };     /* three families: no cap */
     const short all_low[7] = { 60, 60, 60, 60, 60, 60, 100 };     /* every family: no median to hide them */
     const short edge_in[7] = { 80, 100, 100, 100, 100, 100, 100 }; /* DEF_WEAK_MAX itself */
     const short edge_out[7] = { 81, 100, 100, 100, 100, 100, 100 };

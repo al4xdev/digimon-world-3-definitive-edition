@@ -28,8 +28,7 @@ configured, tagged releases (or manual `workflow_dispatch` runs with `sync_portm
 
 1. Fix the source here (`.ci-cd/portmaster/handheld/`, `.ci-cd/portmaster/`), not the copy in the zip.
 2. Rebuild: the two commands above.
-3. Update the published release: `gh release upload dw3-port-1 dist/dw3.zip --clobber -R al4xdev/digimon-world-3-definitive-edition`.
-4. Copy the new zip's contents over `ports/dw3/` in the PortMaster-MV-New fork.
+3. Copy the new zip's contents over `ports/dw3/` in the PortMaster-MV-New fork.
 
 The menu on a test device must be built from the committed `launcher/`. To push it without a full install:
 see `.ci-cd/portmaster/handheld/README.md`, "Deploying the launcher".

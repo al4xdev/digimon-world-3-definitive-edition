@@ -137,7 +137,7 @@ IDs from the EXE's file table.
 
 | Overlay | ID | Parent | Size | `.text` | `.data` to | Functions | Evidence |
 |---|---|---|---|---|---|---|---|
-| `WFIGHTMN` | `0x208` | `FIGHTSTG` | `0x050C8` | `0x800A5ECC`–`0x800AAD08` | `0x800AAEA8` | 42 | `func_FIGHTSTG_80087070`: `overlay_load_file(0x208)`, then `jal 0x800A9FF0` (its entry); FIGHTSTG also calls `800A6920`, `800AA110`, `800AA1F0`, `800AA9F0`, `800AAB10`. FIELDSTG queues the file before a battle (`8008A20C`, with FIGHTSTG `0x167` and the data files `0x1CB`/`0x1CC`/`0x1CF`) |
+| `WFIGHTMN` | `0x208` | `FIGHTSTG` | `0x050C8` | `0x800A5ECC`–`0x800AAD08` | `0x800AAEA8` | 42 | `fightstg_main_update`: `overlay_load_file(0x208)`, then `jal 0x800A9FF0` (its entry); FIGHTSTG also calls `800A6920`, `800AA110`, `800AA1F0`, `800AA9F0`, `800AAB10`. FIELDSTG queues the file before a battle (`8008A20C`, with FIGHTSTG `0x167` and the data files `0x1CB`/`0x1CC`/`0x1CF`) |
 | `WFIGHTTS` | `0x209` | `FIGHTSTG` | `0x0390C` | `0x800A67B8`–`0x800A9368` | `0x800A96EC` | 14 | Same function: `overlay_load_file(0x209)` and `jal 0x800A7A60` when `gamestate_data.unk_26FC.unk_0C()` is non-zero. Its `.rodata` is mostly Shift-JIS strings (a test/debug battle?) |
 
 References (`jal` + `lui`/`lo` pairs) by target: WFIGHTMN 90 into the EXE, 187 into FIGHTSTG
@@ -147,7 +147,7 @@ References (`jal` + `lui`/`lo` pairs) by target: WFIGHTMN 90 into the EXE, 187 i
 follows an update/create pair and helpers that only `800A6C44` calls), WFIGHTTS one (`wfightts_800A67B8`).
 
 **`WSTAG###` (293 stage overlays, parent `FIELDSTG`).** Each is a field stage's own code and data. FIELDSTG's
-`func_FIELDSTG_800920F8` looks the current stage up in one of two tables of 12-byte records (stage, file ID,
+`fieldstg_get_actor_width` looks the current stage up in one of two tables of 12-byte records (stage, file ID,
 entry), back to back in its `.data`: `fieldstg_stages_2d` (55 records, used when `gamestate_data.unk_263C == 0x2D`)
 and `fieldstg_stages` (239 records), and stores the file ID and entry in `fieldstg_stage.code_file`/`entry`;
 FIELDSTG then calls `overlay_load_file(unk_00)` and the entry. The 293 tier-2 records name each `WSTAG` file

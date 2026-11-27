@@ -50,7 +50,7 @@ EXPECTED = ROOT / "tests/replay/expected"
 DISC = ROOT / "iso/dw2003.cue"
 VENV_BIN = ROOT / "tools/venv/bin"
 RUN_TIMEOUT = 600  # seconds; a plain run takes well under one, the sanitizer build a few
-# Scripts whose -m32 log must equal the -m64 log byte for byte (the M1 criterion). In the others the game frees cached
+# Scripts whose -m32 log must equal the -m64 log byte for byte. In the others the game frees cached
 # files by heap address (FIELDSTG's cdload free_above(0x8015C674)), and the host's heap layout differs between the two
 # pointer widths (as both differ from the PS1's), so which files stay cached, and so the CD timing and the frames, can
 # differ; their cross-core view must still be the same.

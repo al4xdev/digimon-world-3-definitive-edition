@@ -2,7 +2,7 @@
 #
 # With the maintainers' secret GAMEDATA_DEPLOY_KEY (a read-only deploy key of the private data checkout
 # <owner>/dw2003-gamedata) the jobs have the disc and the pinned emulator: they rebuild every game file byte-identical
-# (scripts/build.sh --check) and run the reference tests (scripts/test.sh), the PC port's M1 test (tests/port) among
+# (scripts/build.sh --check) and run the reference tests (scripts/test.sh), the PC port's replay test (tests/port) among
 # them, also on the port's -m32 build. Fork pull requests get no secrets, so they only get the disc-free part: the
 # toolchain is built and smoke-tested, the scripts parse, the Python compiles, every game unit compiles for the host
 # at -m64 and for Windows (tools/port_inventory.py probe and link, the PC port's gate), the SDL game, the launcher and
@@ -25,7 +25,7 @@
 #   port      port/ (its runtime, Psy-Q shim, mods' manifests, CMake), tools/port_gen.py, tests/port, tests/spu,
 #             tests/xa, tests/saves, tests/host
 #             -> `check`'s probes (the host's gcc and llvm-mingw's clang), `port`: layer 1 (the goldens, their host
-#                replays, the SPU and XA units) and the port layer (the M1 test, on the -m32 build too, and the port's
+#                replays, the SPU and XA units) and the port layer (the replay test, on the -m32 build too, and the port's
 #                checks), `port-mods`: layer 3 (formats, save round trips) and the mods (the longest test: its own
 #                job), `windows`: the cross-build, the launcher's self-test, the crash report and the layer-2 replays
 #                under Wine; and below
@@ -193,7 +193,7 @@ jobs:
         run: scripts/test.sh --no-probe --layer 2
 
   # The PC port with the disc: layer 1 (the goldens regenerated in the emulator, their host replays, the SPU and XA
-  # units) and the port layer: the M1 test (tests/port/run.py: the layer-2 scripts replayed by the port, twice, against
+  # units) and the port layer: the replay test (tests/port/run.py: the layer-2 scripts replayed by the port, twice, against
   # the emulator's record; --m32: the -m32 build must write the same log and record, the layout check) and the port's
   # checks (settings, 60 Hz, the battle scripts, VRAM, the debug channel, save states, the crash report).
   port:

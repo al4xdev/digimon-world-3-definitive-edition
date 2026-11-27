@@ -1,4 +1,4 @@
-# Game mechanics reference for the reference tests (Track A)
+# Game mechanics reference for the reference tests
 
 Purpose: give the golden tests (layer 1), record/replay tests (layer 2) and save round trips (layer 3) names, fixtures
 and expected behaviours.

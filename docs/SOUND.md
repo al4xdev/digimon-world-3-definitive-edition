@@ -188,7 +188,7 @@ game's own driver, but no pad route reaches it.
 
 ## 6. The SPU core (`psxstack/runtime/spu.c`, `spu_dsp.c`)
 Our own, written from psx-spx "Sound Processing Unit (SPU)" and, for the ADPCM filter tables, its CD-ROM page
-("XA-ADPCM", which psx-spx names as the same algorithm). psx-spx's source, where its site is unreachable:
+("XA-ADPCM", which psx-spx names as the same algorithm). psx-spx's source:
 `https://raw.githubusercontent.com/psx-spx/psx-spx.github.io/master/docs/ps1/spu/soundprocessingunitspu.md`
 (and `.../ps1/cdr/cdromformat.md`). No emulator source was read; PCSX-Redux served as an oracle only. It implements
 `psxstack/include/psxstack/spu.h`; the pure pieces and a read-only view of the voices are in `psxstack/runtime/spu_internal.h`
@@ -198,22 +198,19 @@ Our own, written from psx-spx "Sound Processing Unit (SPU)" and, for the ADPCM f
 
 ### What it costs (measured on the handheld)
 
-The mix is the second largest item of a frame after the game's own code. Per vsync it was 4.7-4.9 ms (4.9 ms at the
-game's 50 Hz rate, 882 samples; 4.7 at the machine's **60 Hz** setting, 735 samples) and is now 3.1 ms in the scripted
-field/menu run (voices 2.27, of which interpolation 0.31, + reverb 0.71 + rest 0.13) and 3.0-3.3 ms in a battle (`aud`
-in `DW3_GPU_LOG=1`'s output, which prints this breakdown). The rendered WAV is byte for byte what it was before (md5
-`39757ffd…`, 1200 vsyncs of the scripted run). A figure here is only comparable with another measured at the same rate:
-a vsync at 60 Hz carries a sixth fewer samples than one at 50 Hz. Three changes made the difference:
+The mix is the second largest item of a frame after the game's own code: 3.1 ms a vsync in the scripted field/menu run
+at 60 Hz (735 samples; voices 2.27, of which interpolation 0.31, + reverb 0.71 + rest 0.13) and 3.0-3.3 ms in a battle
+(`aud` in `DW3_GPU_LOG=1`'s output, which prints this breakdown). A figure here is only comparable with another
+measured at the same rate: a vsync at 60 Hz carries a sixth fewer samples than one at 50 Hz (882). What keeps it there:
 
-1. `spu_envelope_tick` is a `static inline` in `spu_internal.h` (it was a call in `spu_dsp.c`, used three times per
-   voice per sample).
+1. `spu_envelope_tick` is a `static inline` in `spu_internal.h`, called three times per voice per sample.
 2. A voice **released with its envelope at 0 is skipped**: its tick would step an internal counter that no register
    exposes and that every transition resets (key-on, key-off, the block end's End+Mute), and the level it would add is
    negative and clamped back to 0. Most voices are in that state most of the time.
 3. The reverb's 39-tap FIR runs on NEON (`vmlal_s16`, 4 taps a step). The lanes are summed in another order, which cannot
-   change an integer sum, and the build wraps on overflow (`-fwrapv`), so the WAV stays exact.
+   change an integer sum, and the build wraps on overflow (`-fwrapv`), so the WAV is exact.
 
-What is left is the voice loop itself (2.3 ms): the envelope, the two volume sweeps and the pitch counter of 24 voices
+The rest is the voice loop itself (2.3 ms): the envelope, the two volume sweeps and the pitch counter of 24 voices
 × 735 samples are carried per voice and cannot be vectorised without a rewrite that processes voices in parallel. The
 GPU side's costs are in `docs/PERFORMANCE.md`.
 
@@ -332,7 +329,7 @@ decompiles; its disassembly may be read to learn constants, tables, formulas and
 port's C is our own, with no routine translated instruction by instruction or function by function and no data copied
 beyond numeric facts (a table of numbers is a fact, cited where it is used). The code is MIT like the rest of the repo;
 its structure (the state, the files, the names) is ours. The disassembly (`asm/main/psyq/libsnd/`, `libspu/`; m2c's
-pseudo-C of it served as a reading aid only, in scratch) gave:
+pseudo-C of it served as a reading aid only) gave:
 - **Start-up**: `SsInit`'s order of stores (LIBSPU's register set-up, the 16-byte silent block written through the
   FIFO, every voice pointed at it, keyed on and off; the reverb work area of types 7/8 cleared in 1 KB DMA blocks, each
   waited for; LIBSND's 16 control registers; every voice set to pitch 1000h, address 1000h, ADSR 80FFh/4000h and keyed
@@ -442,7 +439,7 @@ slow-tempo frame counter, `SsSetTickMode`'s other codes (the 60 Hz mode, `0x1000
 out (on no SEP on the disc, or never called by the game):
 noise voices, RPN/VAG attributes and NRPN attributes other than 15 and 16 (a trace line when one occurs), CC
 11/64/91/100/101/121, timer tick modes, the next-SEP chaining, crescendo and tempo changes by call. The first group is
-in section 5's per-key goldens; a port run of that driver, which would check them, is not written yet.
+in section 5's per-key goldens; no port run of that driver checks them.
 
 ## 8. CD audio: the movies' XA (`psxstack/psyq/xa.c`, `libcd.c`)
 **The data (verified, every sector of the 14 `AAA/STR/MOVIE*.STR`):** one audio channel per movie, file 1 channel 1,

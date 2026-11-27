@@ -147,9 +147,9 @@ extern int port_mod_skip_dialogues;
  * its child command would have started, results[3] + 1); *sound_id and *sound_arg: the hit sound it would have played
  * (0: none), for fightstg_sound_play. The rules ran before the script started. */
 extern int port_mod_battle_animations;
-/* port_mod_battle_text: the battle text's mode, fixed at 1 (skip) since the battle
- * never waits for its message box; it is no longer a mod and the launcher has no option for it. 0 as the disc, 1 skip,
- * 2 async remain, for FIGHTSTG's message box (src/fightstg/fightstg_8008D3B4.c); the async toast's state (arena
+/* port_mod_battle_text: the battle text's mode, fixed at 1 (skip): the battle
+ * never waits for its message box, and the launcher has no option for it. 0 as the disc, 1 skip,
+ * 2 async exist for FIGHTSTG's message box (src/fightstg/fightstg_8008D3B4.c); the async toast's state (arena
  * windows, frames left) is game_mods.c's, named in its save state. */
 extern int port_mod_battle_text;
 s32 port_battle_cut(const s16 *stream, s32 stage, const s32 *results, s32 hit_sound, s32 *sound_id, s32 *sound_arg);

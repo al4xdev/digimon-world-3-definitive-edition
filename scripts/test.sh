@@ -5,10 +5,10 @@
 # DW3_JOBS > 1 (CI: 4, the runner's cores).
 # Usage: scripts/test.sh [--build] [--layer 1|2|3|port|mods]... [--m32] [--no-probe]
 #   --build     run scripts/build.sh first (the matching build must stay byte-identical; tests never change it)
-#   --layer N   run only that layer (repeatable); the census and the probe still run. "port": the PC port's M1 test
+#   --layer N   run only that layer (repeatable); the census and the probe still run. "port": the PC port's replay test
 #               and its checks (tests/port); "mods": the mods that change the game (tests/port/mods.py, the longest:
 #               CI's own job)
-#   --m32       the port layer's M1 test also on the -m32 build (tests/port/run.py --m32; needs gcc-multilib)
+#   --m32       the port layer's replay test also on the -m32 build (tests/port/run.py --m32; needs gcc-multilib)
 #   --no-probe  skip the host-compile probe (tools/port_inventory.py probe + link: every unit compiles at -m64 with no
 #               pointer/int cast, implicit declaration or incompatible pointer type, and no global is defined twice)
 set -euo pipefail

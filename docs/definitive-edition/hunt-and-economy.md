@@ -373,7 +373,6 @@ enemy counters are untouched).
   orange, a rares-only challenge); rewards (each tier once, the best stage only rises, capped at 3); record 2 (DRI state
   alone writes it at bytes 152..157, read back, a damaged record reads nothing unlocked, a rares-only record, record 1's
   read resets them before record 2 brings them back, out-of-range challenges); nothing in a replay script.
-- Known bug: the debrief reward line overflows its box.
 
 ### Guide, Guardromon network, Rush
 
@@ -450,7 +449,7 @@ not on the screen. The results lines start at step 22 of `stfgtrep_main_run`; th
 `$HuntSpace`, so no game text is embedded.
 
 **Bestiary rows.** Under the five family rows: "Hunt" (`$HuntDrops`), up to two materials of the species
-(`def_hunt_species_materials`) with the amount held (`BS_HELD_X`, grey at zero), and the rare collection ("Rare Cores
+(`def_hunt_common_of`) with the amount held (`BS_HELD_X`, grey at zero), and the rare collection ("Rare Cores
 4/13", orange when complete). Unknown species show `???`, species without a target material `-`. `fieldmenu.c`
 preprocesses the same without `PC_PORT`.
 

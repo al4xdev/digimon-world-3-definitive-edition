@@ -260,7 +260,7 @@ static const char *home_name[HI_COUNT] = {
     "PLAY", "GAME", "VIDEO", "BATTLE HUD", "CONTROLS", "SAVES & CLOUD", "LED BAR", "DEBUG", "RESET SETTINGS"
 };
 static const char *home_hint[HI_COUNT] = {
-    "Start Digimon World 3 with your saved settings.", "Language, fast-forward, faster loading, skipping and battle text.",
+    "Start Digimon World 3 with your saved settings.", "Language, fast-forward, faster loading and skipping.",
     "Widescreen battles, monitor scale, fullscreen and filter.",
     "Where each battle action sits on your pad.", "Your buttons, and the letters the game shows.",
     "Cloud cross-play sync, 1-100 local save rotation and backup restore.",
@@ -1711,7 +1711,7 @@ static void start_game(void) {
             recomp_mirror_write(game_dir, cloud.device_id, cloud.device_name, cloud.last_seq, 0);
         }
     }
-    /* What the script used to export after its menu: the game reads the player's pad map itself, and the log level
+    /* The game reads the player's pad map itself, and the log level
      * is the DEBUG screen's choice (the game gets "off" unless it was asked for more). */
     if (is_portmaster) setenv("DW3_PAD_REMAP", "1", 1);
     setenv("DW3_LOG", c.logs == 2 ? "heavy" : c.logs == 1 ? "soft" : "off", 1);

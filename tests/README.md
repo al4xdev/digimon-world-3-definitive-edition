@@ -16,11 +16,11 @@ each layer is in `docs/STATUS.md`.
 
 - **Tests never change the matching build.** `scripts/build.sh --check` must stay byte-identical: tests live in
   `tests/` and `tools/`, never in `src/`, `include/` or `config/`. A test that needs a change in `src/` has found a bug;
-  prove it with a golden and ask before touching the source.
+  prove it with a golden before touching the source.
 - **One entry point:** `scripts/test.sh` runs every layer that is available on this machine (emulator and disc present,
-  host compiler present) and exits non-zero on the first failure. It runs headless with `DW3_JOBS=1`, as cloud sessions do;
+  host compiler present) and exits non-zero on the first failure. It runs headless, by default with `DW3_JOBS=1`;
   with `DW3_JOBS=N` the layer-2 replays and the mods' tests run N at a time (CI: 4). `--layer` picks layers (`1`, `2`, `3`,
-  `port`, `mods`), `--m32` adds the port's -m32 build to the M1 test.
+  `port`, `mods`), `--m32` adds the port's -m32 build to the replay test.
   Before the layers it runs the PC port's host-compile gate (`tools/port_inventory.py probe` and `link`, ~5 s: every unit
   compiles at `-m64` with no pointer/int cast, implicit declaration or incompatible pointer type, and no global is defined
   twice; `--no-probe` skips it). The gate needs only the host gcc and nm (no disc, not even `include/asm_generated/`), so
@@ -322,7 +322,7 @@ about 30 game frames per wall second for a replay.
 
 Replays run under the interpreter here. Both scripts wait on game state, so they reach every checkpoint under it
 (`new_game` reproduces its expected file; `first_battle_save` its checkpoints, with other frames). A full `run` takes
-about 23 minutes on this machine (the oracle 36 s, `new_game` 72 s, `first_battle_save` 21 min at ~37 frames per second).
+about 23 minutes on a 4-core machine (the oracle 36 s, `new_game` 72 s, `first_battle_save` 21 min at ~37 frames per second).
 
 Coverage (functions run / total, game functions without Psy-Q):
 

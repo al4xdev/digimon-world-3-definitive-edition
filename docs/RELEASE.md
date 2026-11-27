@@ -1,14 +1,15 @@
 # Releases
 
-**One Linux x86_64 AppImage**, **one Windows x86_64 zip** and **one RK3326 PortMaster zip (`dw3.zip`)** for players
+**One Linux x86_64 AppImage**, **one Windows x86_64 zip**, **one PortMaster zip (`dw3.zip`, armhf and aarch64)** and
+**one Android arm64 APK** for players
 (each the launcher/menu, the game and the mods' manifests; the player supplies the disc and never compiles anything),
 all built on CI's `ubuntu-24.04` runner (the AppImage against glibc 2.39, the Windows programs cross-compiled with
-llvm-mingw and linked statically, and `dw3.zip` cross-compiled in Debian 12 `armhf` Docker via
-`.ci-cd/portmaster/Dockerfile.armhf`), for a pushed tag `vX.Y.Z` or a manual run given a tag, and **published** as a
+llvm-mingw and linked statically, `dw3.zip` cross-compiled in Debian 10 Docker images via
+`.ci-cd/portmaster/Dockerfile.armhf` and `Dockerfile.aarch64`, the APK in `.ci-cd/android/`'s image), for a pushed tag `vX.Y.Z` or a manual run given a tag, and **published** as a
 GitHub Release. (With the repository variable `RELEASE_DRAFT` = `true` it is a draft.) No release file ever holds game
 data: `.ci-cd/common/check_release_contents.py` holds every package to the list of files a release has (programs, the
 mods' `mod.json`, licences, READMEs), before it is kept and again before it is published. The Windows build is tested
-on Linux under Wine; real Windows comes from testers.
+on Linux under Wine by CI and on Windows 11 by hand, from a draft pre-release's files.
 
 [`.ci-cd/portmaster/PUBLISHING.md`](../.ci-cd/portmaster/PUBLISHING.md) documents the PortMaster catalogue details; when the secret
 `PORTMASTER_REPO_TOKEN` is set, `release.yml` also updates `ports/dw3/` in `al4xdev/PortMaster-MV-New` and dispatches
@@ -20,7 +21,7 @@ its `release.yaml` workflow automatically.
   repository secret `PSXSTACK_TOKEN` holding a token that can read it (a fine-grained token, Contents: read on that
   repository), which every checkout then uses.
 - **Optional secrets and variables:**
-  - `GAMEDATA_DEPLOY_KEY`: read-only deploy key of `<owner>/dw2003-gamedata` for Release M1 + disc smoke tests.
+  - `GAMEDATA_DEPLOY_KEY`: read-only deploy key of `<owner>/dw2003-gamedata` for the Release replay test and the disc smoke tests.
   - `PORTMASTER_REPO_TOKEN`: PAT with `Contents: write` + `Actions: write` on `al4xdev/PortMaster-MV-New` so tagged
     releases (or `workflow_dispatch` with `sync_portmaster=true`) automatically update `ports/dw3/` there and trigger
     its release workflow.
@@ -38,29 +39,28 @@ its `release.yaml` workflow automatically.
    ```
    The pattern is `v[0-9]+.[0-9]+.[0-9]+*` (`v0.1.0`, `v0.2.0-rc1`); the decomp's milestone tags such as
    `v0.1-matching-closed` do not match it and start nothing.
-3. `.github/workflows/release.yml` runs (`gh run watch`): with `RELEASE_RUN_CI` the whole of `ci.yml` first, then two
-   jobs side by side: `appimage` (with the disc the game's Release build through the port's M1 test; the AppImage
+3. `.github/workflows/release.yml` runs (`gh run watch`): with `RELEASE_RUN_CI` the whole of `ci.yml` first, then the
+   package jobs side by side: `appimage` (with the disc the game's Release build through the port's replay test; the AppImage
    build, its smoke test and the contents check) and `windows` (the Windows package cross-built and tested unzipped
-   under Wine, "The Windows package" below), then a release named `Digimon World 3: Definitive Edition v0.1.0` with
+   under Wine, "The Windows package" below), `portmaster` (`dw3.zip`) and `android` (the APK), then a release named `Digimon World 3: Definitive Edition v0.1.0` with
    `dw2003-0.1.0-x86_64.AppImage`, `dw2003-0.1.0-x86_64.debug` (the game's debug info, for crash reports; below),
    `dw2003-0.1.0-windows-x86_64.zip`, `dw2003-0.1.0-windows-x86_64-symbols.zip` (the PDBs), `SHA256SUMS`,
-   `SHA256SUMS-windows` and notes generated from the merged pull requests: published, a pre-release when the tag has a
+   `SHA256SUMS-windows`, `dw3.zip`, the APK and notes generated from the merged pull requests: published, a pre-release when the tag has a
    suffix (`v0.2.0-rc1`), a draft with `RELEASE_DRAFT`.
 4. Or by hand, for a tag that does not exist yet: Actions > Release > Run workflow with `tag` (`gh workflow run
    release.yml --ref main -f tag=v0.1.0`; `-f draft=true` for a draft): the tag is created on the run's commit.
 
 A failed run publishes nothing. To retry after a fix, rerun the workflow (a rerun for a tag whose release exists
-replaces its files and keeps any other, such as the handheld's `dw3.zip`), or delete the tag (`git push --delete
+replaces its files and keeps any other), or delete the tag (`git push --delete
 origin v0.1.0; git tag -d v0.1.0`), tag the fixed commit and push again.
 
 ## The port stack in a release
 
-The port and the launcher are built from the `psxstack` submodule at its pin (`.gitmodules`). release.yml's checkouts
+The port's runtime comes from the `psxstack` submodule at its pin (`.gitmodules`); the launcher is `launcher/`. release.yml's checkouts
 fetch it (`submodules: recursive`, with `PSXSTACK_TOKEN` when it is set); `release_local.sh` fetches it on the host.
 The release's tag is the input in one place, `DW3_VERSION` (release.yml, `release_local.sh`); `package_appimage.sh` and
 `package_windows.sh` export it as `PSXSTACK_VERSION`, which psxstack's `cmake/version.cmake` stamps into both programs
-(over `git describe` of this repository: `-DPSXSTACK_VERSION_ROOT`). A new runtime or launcher reaches a release by
-bumping the pin.
+(over `git describe` of this repository: `-DPSXSTACK_VERSION_ROOT`). A new runtime reaches a release by bumping the pin.
 
 ## A local release
 
@@ -74,7 +74,7 @@ the maintainer's machine:
 
 It builds in a Docker `ubuntu:24.04` container (the runner's base, so the same glibc floor; with `wine64` for the
 Windows package's test) with the appimage and windows jobs' own steps: the tools, the disc, the game's Release build
-through the port's M1 test, `package_appimage.sh --test`, `package_windows.sh --test`. Then it pushes the tag,
+through the port's replay test, `package_appimage.sh --test`, `package_windows.sh --test`. Then it pushes the tag,
 cancels the release.yml run the tag starts and creates the same draft with the local files. It does **not** run the
 whole CI: check that `main`'s CI is green for that commit first. Needs `docker`, `gh` and the disc (`iso/dw2003.bin`
 or `DW3_DISC_BIN`); the container's tools stay in `build/release-local/`. Step 4 above (test, then Publish) is
@@ -109,7 +109,7 @@ usr/bin/dw2003-updater                   the program that replaces the AppImage 
 usr/bin/dw2003                           the game (the SDL build), found by the launcher beside itself
 usr/bin/mods/<id>/mod.json               the mods' manifests (port/mods/), listed by the launcher
 dw2003recomp.desktop, dw2003recomp.svg   .ci-cd/linux/appimage/ (the icon is our own drawing)
-LICENSES/                                ours, SDL3, the launcher's font and stb_truetype, the AppImage runtime (README.txt)
+LICENSES/                                ours, SDL3, the launcher's font, stb_truetype, miniz, cJSON, the AppImage runtime (README.txt)
 ```
 
 Both programs are stripped, link SDL3 statically (`tools/sdl3-desktop`: X11, Wayland, PipeWire, PulseAudio and ALSA
@@ -142,7 +142,7 @@ dw2003-<version>-windows-x86_64/
   recomplauncher.json        how RecompLauncher sets the game up
   mods/<id>/mod.json         the mods' manifests (port/mods/)
   README.txt                 .ci-cd/windows/package/README.txt: the disc, SmartScreen, where settings and crash reports live
-  LICENSES/                  ours, SDL3, the launcher's font and stb_truetype, LLVM's runtime, the mingw-w64 runtime, winpthreads
+  LICENSES/                  ours, SDL3, the launcher's font, stb_truetype, miniz, cJSON, LLVM's runtime, the mingw-w64 runtime, winpthreads
                              (.ci-cd/windows/package/LICENSES/README.txt)
 dw2003-<version>-windows-x86_64-symbols/
   dw2003.pdb, dw2003-launcher.pdb   the symbols of crash reports and minidumps (not needed to play)

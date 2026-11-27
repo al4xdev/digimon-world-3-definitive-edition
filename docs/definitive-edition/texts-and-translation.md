@@ -10,7 +10,7 @@
   characters.
 - Fonts: the 11px font has no `/ : , '` and no accents (the 14px one is similar). A speech box holds 3 lines (split with
   `<2,2><3>`).
-- **PT-BR is a 6th language**, falling back to English per entry (`port_language_ptbr`; `records_language` stays 2). The
+- **PT-BR is a 6th language**, falling back to English per entry (`def_is_ptbr()`; `records_language` stays 2). The
   other languages (FR/IT/DE/ES) show the disc's text for the original entries, their own translation (`fr.txt`, `de.txt`,
   `it.txt`, `es.txt`) for the Definitive delta, their own story rewrite (see below) and English for what is not
   translated. The language is `def_lang()` (0 en, 1 pt, 2 fr, 3 de,
@@ -26,8 +26,8 @@
   `Digi-Lab`, `Load Tech`, `Blast Gauge`, `Bits`, `TP`, `MP`, `HP` and proper names; use Fogo, Agua, Gelo, Vento,
   Trovao, Maquina, Trevas for elements.
 - **PT-BR in the game:** `portuguese` is a value of `preset_language`; with it active `records_language` stays `2` (the
-  `ES*.BIN` English files) and `port_language_ptbr = 1`; `def_text_override(data, i)` and the `def_str_*` strings return
-  the entry of `definitive_text_pt` (binary search by `(file_id, subtable, index)`), falling back to English. The European
+  `ES*.BIN` English files) and `def_is_ptbr()` is true; `def_text_override(data, i)` and the `def_str_*` strings return
+  the entry of `def_text_overrides_pt` (binary search by `(file_id, subtable, index)`), falling back to English. The European
   font has accented slots under `01 xx` (`0x3B..0x72`); whether `ã`/`õ` exist is unverified, and the current texts avoid
   accents in the small fonts.
 - **Translation checks:** every control code (`<1>`, `<2,...>`, `<5,1>`, `\n`, variables, colour codes) is preserved
@@ -36,5 +36,4 @@
   ("Atq+2 no usuario, 3 turnos.").
 - **FR/DE/IT/ES:** the EU disc has the original campaign in French (`records_language` 3), Italian (4), German (5) and
   Spanish (6); the Definitive delta is `tools/text_override/{fr,de,it,es}.txt`, one line per key of `en.txt`, read by
-  `tools/gen_text_override.py` into `definitive_text_lang.inc`. Open: a native read in game (width of the 14 px labels,
-  the heavy dialogue pages, plates kept in English).
+  `tools/gen_text_override.py` into `definitive_text_lang.inc`. Plates stay in English.

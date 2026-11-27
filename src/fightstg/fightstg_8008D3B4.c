@@ -6556,7 +6556,7 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
         data->notice = message_create_window(0x1005, 1, FIGHTSTG_NOTICE_X + wide_pad, FIGHTSTG_NOTICE_Y);
         data->notice->set_page_lines(data->notice, FIGHTSTG_NOTICE_LINES); /* a window pages two lines by default */
         fightstg_battle_menu_notice_set(obj, data, def_battle_menu_notice());
-        /* The temptation has no line of its own any more: the Blast tab itself calls, turning
+        /* The temptation has no line of its own: the Blast tab itself calls, turning
          * bright cyan with a dark word and shaking (fightstg_battle_menu_show's glow 4). The window stays, empty. */
         data->tempt = message_create_window(0x1005, 1, FIGHTSTG_TEMPT_X + wide_pad, FIGHTSTG_TEMPT_Y);
         data->tempt->set_text(data->tempt, (u8 *)fightstg_inspect_empty, -1);
@@ -10631,7 +10631,7 @@ void fightstg_message_draw(FightstgMessage *obj) {
 }
 
 #ifdef PC_PORT
-/* battle_text (docs/LAUNCHER.md "Battle text"; port_mod_battle_text: 0 off, 1 skip, 2 async). The message box is pure
+/* battle_text (port_mod_battle_text: 0 off, 1 skip, 2 async). The message box is pure
  * presentation: the rules ran before it was shown. Classes, set by fightstg_message_show:
  *  - KEEP: the message is the game's pacing (victory: closed by wfightmn_victory_wait after 100 frames; defeat),
  *    so it runs as on the disc in every mode;
@@ -14359,7 +14359,7 @@ s32 fightstg_math_wave(s32 mode, s32 angle, s32 scale) {
     }
 }
 
-/* The tables below point to these WIP functions (asm unless NON_MATCHING). */
+/* The tables below point to these functions, defined further down. */
 void fightstg_events_cure_status(u8 side, s32 member, s32 id);
 s32 fightstg_rules_roll_wake(u8 side, s32 amount);
 

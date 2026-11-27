@@ -82,7 +82,7 @@ the button. Two actions on one button fall back to the defaults with a log line.
   game already uses (`message_create_window(0x1005, 1, x, y)`, button glyphs from `CMFONTCS` or the HUD bank, layer
   0x1005).
 - **Place names:** the battle menu's places are the physical buttons (the launcher's names) and `pad.map` uses the
-  game's names. `bm_place_to_game`, `dw3_pad_bit_by_place` and `port_battle_menu_symbol_bit`
+  game's names. `bm_place`, `dw3_pad_permute` and `port_battle_menu_symbol_bit`
   (`port/game/game_mods.c`) translate; `fightstg_battle_menu_icon_text` shows the `pad.map` button in the action's
   place.
 
@@ -97,7 +97,7 @@ the button. Two actions on one button fall back to the defaults with a log line.
   the window) discards the edits without writing `settings.json`.
 - `pad.map` defaults to Circle and Triangle rotated together with the glyphs (`CONFIRM` = game action `cross` ->
   physical SOUTH, `BACK` = `triangle` -> EAST, so every in-game "back" shows `B` or circle; `MENU` = `circle` -> NORTH,
-  `CARD` = `square` -> WEST). `BUTTON GLYPHS` cycles XBOX, NINTENDO, PS1, CUSTOM.
+  `CARD` = `square` -> WEST). `BUTTON GLYPHS` cycles XBOX, NINTENDO, PS1.
 - `LED BAR`: detects the XF35H (`/proc/device-tree/model`, `/sys/firmware/devicetree/base/model` and `/dev/ttyS2`);
   other hardware gets a warning and two confirmations.
 - Loading screen (**Trio Runner**): 1-bit sprites with coloured outline, Kumamon (cyan), Guilmon (orange) and Agumon

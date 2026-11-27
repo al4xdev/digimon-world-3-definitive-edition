@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""The port's VRAM in the first battle against the emulator's (issue #7; M2's VRAM checks covered new_game only).
+"""The port's VRAM in the first battle against the emulator's (issue #7).
 
 Usage: tests/port/vram.py [--out DIR] [--frames N] [--keep]
 

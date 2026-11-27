@@ -8,15 +8,14 @@ holdouts are left), so this guide serves retries of FAKE matches, new splits, an
 
 ```sh
 scripts/worktree_init.sh          # in a fresh worktree: links tools/, iso/, extracted/ from the main checkout (~1 s)
-export DW3_JOBS=1                 # when several builds share a machine: one job each
+export DW3_JOBS=1                 # fewer jobs on a shared machine
 scripts/build.sh                  # splat + ninja; must end "build passed" (also makes build/expected/ for unit_diff)
 ```
 
-- A from-scratch `scripts/build.sh --check` splits ~315 targets (~2 min, memory-hungry). Run it only after config or
-  symbol-file changes, and once before you hand in work. For C-only changes the incremental `scripts/build.sh` is
+- A from-scratch `scripts/build.sh --check` splits ~315 targets (~2 min, memory-hungry). Run it after config or
+  symbol-file changes. For C-only changes the incremental `scripts/build.sh` is
   enough: ninja still checks every output's SHA-1.
-- Trust only the build script's exit code; never pipe it into `head` before `&&`.
-- Scratch files go in your own scratch directory. Never run a broad `pkill`/`killall`; stop only PIDs you started.
+- Trust only the build script's exit code.
 
 ## Tools
 
@@ -61,10 +60,10 @@ GCC 2.8.1's sources, for reading why the compiler chose something:
    the build proves a match.
 3. **Iterate on natural C**: types, struct fields, statement order, a variable per job (the patterns below). Look for
    an already matched sibling first.
-4. **Stop** after about 30-45 minutes on one function: put the C under `#ifdef NON_MATCHING` with the `INCLUDE_ASM` in
+4. **Park** a function that does not match: put the C under `#ifdef NON_MATCHING` with the `INCLUDE_ASM` in
    the `#else`, plus a comment with the score and the remaining difference. Every WIP must compile with
    `-DNON_MATCHING` (`unit_diff.py <unit> -t <t> -D NON_MATCHING`).
-5. **Build and commit** every ~10 matches: `scripts/build.sh` must say "build passed" (`--check` after config or symbol
+5. **Build:** `scripts/build.sh` must say "build passed" (`--check` after config or symbol
    changes).
 
 ## Conventions
@@ -80,8 +79,7 @@ GCC 2.8.1's sources, for reading why the compiler chose something:
   through a unique temporary name first, so the compiler reports every use (`clang -fsyntax-only` names the struct of
   each error); a field-rename map must never be applied tree-wide, since `unk_304` exists in many structs.
 - Never decompile Psy-Q code (`psyq/` units).
-- Shared files (`include/common.h`, EXE headers, `configure.py`): add what you need, append rather than reorder, and
-  list every change when you hand in.
+- Shared files (`include/common.h`, EXE headers, `configure.py`): add what you need, append rather than reorder.
 
 ## Splitting a target into files
 
@@ -269,7 +267,7 @@ copy of a parameter), mixed spellings of one access (`(p + i)->f` and `p[i].f`),
 two jobs (a remainder then a sum, a step through a local shared with another case, one pointer over unrelated arrays, a
 counter shared by loops or set inside another loop), a pointer computed from an index instead of stepped. Before forcing
 one, check the US decomp's C for the same function (by EU address through its link maps; `docs/THIRD_PARTY.md`): its
-shapes often replace a FAKE with a natural or milder form (`docs/THIRD_PARTY.md` has the history).
+shapes often replace a FAKE with a natural or milder form.
 
 ### The census: `tools/hacks.py`
 `tools/hacks.py --list` prints every workaround with file:line and function: the `FAKE:` comments, the `LOOP_BLOCK`/
@@ -291,19 +289,8 @@ those `docs/STATUS.md` quotes (STATUS owns the numbers). A change that adds or r
   permuting declarations and types.
 - **Mini reproductions:** a standalone C file with the function's shape (fake types), compiled with `tools/cc_psx.sh`
   and cut down until the choice flips, finds a scheduler or reorg cause in minutes.
-- **Permuter:** a hint only, about 10 minutes per function, `-j1`; keep its output only if it reads as natural C (a
+- **Permuter:** a hint only, `-j1`; keep its output only if it reads as natural C (a
   shape that states intent, not a forced temporary). `import.py src/<t>/X.c asm/<t>/nonmatchings/X/func.s`. For GTE
   inline asm: `--preserve-macros 'gte_\w+'` and run `strip_other_fns` on `base.c` after importing. For allocation
   differences, raise the weights of `perm_temp_for_expr`, `perm_reorder_decls`, `perm_refer_to_var`; for a difference
   inside one basic block, permute a copy reduced to that block. Re-score its outputs with an instruction diff.
-
-## Working in parallel
-
-- Several builds on one machine: `DW3_JOBS` limits `configure.py` and ninja; several from-scratch builds at once
- exhaust memory.
-- Never trust git's line merge on a big C unit two branches edited: merge per function by address and compare each side's
-  per-function objdump, also with `-DNON_MATCHING`. When a scalar field becomes an array, old uses silently become
-  pointer compares in WIP code.
-- Hand in: functions matched (count and bytes per unit), WIPs with their score, functions not tried; names added;
-  every change to a shared file; new facts (one line each); split evidence; the final build result and the last
-  commit hash.

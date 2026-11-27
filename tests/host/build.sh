@@ -38,7 +38,7 @@ for u in "${UNITS[@]}"; do
 done
 # heap.c gives heap_objects and its search (gamestate_cond_object): its scratchpad-stack switch (heap_run_object, never
 # reached here) is the MIPS inline asm of include/port.h's PORT_SCRATCHPAD_STACK_ENTER/LEAVE, since the harness builds
-# without -DPC_PORT (the PC_PORT side declares port_* symbols nothing implements yet: M1); -D__asm__= and
+# without -DPC_PORT (the PC_PORT side declares port_* symbols nothing implements here); -D__asm__= and
 # tests/host/no_asm.h compile it away. Its heap_funcs is made weak so the shims' libc heap wins.
 o="$(dirname "$OUT")/heap.o"
 gcc "${CFLAGS[@]}" -include "$ROOT/tests/host/no_asm.h" -D__asm__= -c "$ROOT/src/main/heap.c" -o "$o"

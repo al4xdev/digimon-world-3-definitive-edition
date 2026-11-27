@@ -1,7 +1,7 @@
 # The Definitive Edition: technical reference
 
 The long form behind the [player README](../../README.md): rules, numbers, files, save bytes, tests and pitfalls, so
-nothing depends on remembering it. Where a point could not be verified while writing, it says so ("unverified").
+nothing depends on remembering it.
 
 The decompilation and the port's own internals (formats, matching, performance, sound) are in
 [`docs/`](../README.md).

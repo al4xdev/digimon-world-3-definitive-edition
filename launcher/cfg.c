@@ -145,9 +145,9 @@ void cfg_set_fight_place(Cfg *c, int right) {
 
 void cfg_defaults(Cfg *c) {
     memset(c, 0, sizeof(*c));
-    c->hz = 60; /* the game's own NTSC mode (it was 50) */
+    c->hz = 60; /* the game's own NTSC mode */
     c->ff = 3;
-    c->load = 3; /* faster loading on at 8x (it was 4x) */
+    c->load = 3; /* faster loading on at 8x */
     c->bmem = 1;
     c->bbuf = 1;
     c->led = (!is_pc && !is_android);

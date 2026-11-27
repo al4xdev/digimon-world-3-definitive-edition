@@ -55,8 +55,8 @@ lab, and the lab keeps the third slot closed. The choice is saved with the game.
   hands it over and takes it back ("Take the Demon Bell. Foes grow stronger and faster... but they pay more Bits and more
   materials.").
 - While held: enemy Speed x1.5 (Speed may pass 999 and make the enemy act twice), enemy damage x1.25, the party's
-  direct damage x0.5, **Bits x2 and Hunt Materials x2**. Enemy HP is not raised (`DEF_SUPER_HP_PCT` 100): HP has a cap,
-  and the halved damage already doubles it; with the old HP x1.5 an enemy took three times the blows.
+  direct damage x0.5, **Bits, XP and hunt bonuses x2, common Hunt Materials x3**. Enemy HP is not raised
+  (`DEF_SUPER_HP_PCT` 100): HP has a cap, and the halved damage already doubles it.
 - Hooks: `def_super_on` (`port/game/definitive_super.c`; the mode is the item in the bag, which the card already saves, so
   there is no flag of ours); HP in `wfightmn_init_members` (`def_super_hp`); Speed in `fightstg_rules_get_enemy_stats`
   (`def_super_speed`); Bits in `stfgtrep_main_run` and the Rush's `def_rush_apply_quiet` (`def_super_reward`, both paths);

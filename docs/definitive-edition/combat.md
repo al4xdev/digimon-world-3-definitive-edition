@@ -37,14 +37,14 @@ recalibrated to the magic table (MP costs unchanged), so a physical technique or
 technique lists show it where the game drew its red (physical) and blue (magic) class marks: a fist for a physical
 technique, the element's picture for elemental magic, the Spirit picture for magic with no element; healing and support
 keep the game's mark. An enemy using one of these techniques casts it as magic too. Thirteen player signature
-techniques that had no element as physical blows became magic (elements from his pop-culture research): Fire:
+techniques that had no element as physical blows became magic, with elements that fit each one: Fire:
 WarGreymon's Terra Force, Taomon, Marsmon, Seraphimon; Machine: Armormon, Paildramon, Cannondramon, Imperialdramon-F;
 Dark: Beelzemon, Devimon, Imperialdramon, GranKuwagamon; and no element: Omnimon's T-Sword and Imperialdramon-P's Omega
 Blade. Each one's power (times its hits) keeps the rank its physical blow had among the signatures of about the same
 MP, carried to the same rank among the player's magic of that MP (ratio kept within 0.7..1.4, a hit never past 800).
 Left physical on purpose: the counter stance of Gallantmon's Final Purification and Grizzmon's Maul Attack (a counter
 does not go through the technique's damage), Hookmon's Captain Cannon (its critical chance is a physical blow's) and
-the ones the research left as pure physical (Kumamon, Monmon, Veemon, Dinohumon, Stingmon, GrapLeomon, Rosemon,
+the ones that stay pure physical blows (Kumamon, Monmon, Veemon, Dinohumon, Stingmon, GrapLeomon, Rosemon,
 GuardiAngemon).
 
 Hitting a weakness with elemental magic **staggers** the enemy (it takes its tired pose) and gives you **one
@@ -89,8 +89,7 @@ neutral hit against an enemy that is not staggered it does nothing. Affinity = t
 the stat counting up to 999. Fire and Wind count on their own stat, up to 0.4; Water with Ice and Thunder with Machine
 count as pairs, on the mean of the two stats' squares, up to 0.8 (a Water and an Ice technique get the same affinity;
 999 + 0 is half the ceiling, 999 + 999 all of it); Dark counts on its own stat, up to 0.8. The strongest hit there is,
-a weakness on a staggered target with full affinity, is 2.5 for Fire or Wind and 3.3 for the pairs and Dark (it was
-2.3 and 2.9 when affinity grew in a straight line up to 0.3 / 0.6).
+a weakness on a staggered target with full affinity, is 2.5 for Fire or Wind and 3.3 for the pairs and Dark.
 
 Because it grows with the square, the ceiling only shows near 999: the middle of the road pays about what it did
 before, and the last 100 points are worth almost a fifth of the ceiling.
@@ -269,8 +268,7 @@ selectable **Xbox / Nintendo / PS1** button glyphs.
 `DEF_WEAK_MAX` 80, `DEF_RESIST_MIN` 250 (a family's resistance: weak at 80 or less, resisted at 250 or more). Resisted
 hits are a fixed 0.5. Affinity ceilings: single 0.4, pair 0.8, Dark 0.8 (convex in the stat). Weak +0.5, stagger +0.2. The player's reference
 resistance is 100. Relay costs 50 MP. Resist Down is a delta of 80 and Mega Break 100, for 3 enemy turns. The Baton Pass
-is free (`DEF_BATON_PASS_MP` 0) and offered only while the enemy is staggered. **Overlevel gap 3** (`DEF_OVERLEVEL_GAP`,
-it was 15). The Rush question lasts 300 ticks, the Rush panel 175 ticks and 10 rows.
+is free (`DEF_BATON_PASS_MP` 0) and offered only while the enemy is staggered. **Overlevel gap 3** (`DEF_OVERLEVEL_GAP`). The Rush question lasts 300 ticks, the Rush panel 175 ticks and 10 rows.
 
 Their names: multipliers and affinities are fixed point in thousandths (`DEF_MULT_ONE` 1000): `DEF_MULT_WEAK` 500,
 `DEF_MULT_STAGGER` 200, `DEF_MULT_RESISTED` 500, `DEF_AFF_SINGLE_MAX` 400 (Fire, Wind; resist 999), `DEF_AFF_PAIR_MAX`
@@ -334,7 +332,7 @@ enemy's element is measured against when it hits the player. Resist Down / Mega 
     adds Dark as an extra weakness outside any count. Stagger and chain state is a `DefChain` in `definitive_mask.c`
     (`staggered[3]`, `extra_pending`, `next_extra` / `cur_extra`, `window_used`, `swap_used`, `relay`); a Baton Pass or
     a Relay swap sets `extra_pending`, so the free swap keeps the turn.
-- **Stagger.** One flag per enemy (`def_staggered[3]`), unrelated to HP. It opens when the player hits a weakness with
+- **Stagger.** One flag per enemy (`DefChain.staggered[3]`), unrelated to HP. It opens when the player hits a weakness with
   an elemental technique (`defense_stat >= 2`); a physical blow with no element and a crest's element
   (`attack_element`) never open it. It closes when the staggered enemy takes the next player blow (which still gets the
   bonus) or acts. A multi-hit technique counts as one blow. The next player turn is rescheduled at command time
@@ -369,7 +367,7 @@ enemy's element is measured against when it hits the player. Resist Down / Mega 
   `tools/convert_save_mp.py` uses the same table, keep both in sync.
 - **Bestiary save:** the card file has 4 blocks and the game used up to 0x7800, the last 0x800
   were never written, so one 0x100 record per slot went there; absent, unknown version or bad checksum reads as all zero.
-  The slot tail is not usable: 0x26C4..0x26EB is the `global_save`, 0x26EC..0x26EF the MP converter marker. Start (bit 0x8,
+  The slot tail is not usable: 0x26C4..0x26EB holds the map state (`include/gamestate.h`), 0x26EC..0x26EF the MP converter marker. Start (bit 0x8,
   free in battle) opens the battle memory; Inspect respects the same table. Wiring: part 5 of `memcard.c`
   (`DEF_BESTIARY_PART`), read by STGMCARD step 0x48 (`def_bestiary_record_read`; any failure reads as an empty table,
   never an error screen) and written by step 0x36 after the slot (`def_bestiary_record_write`); the record is "BEST",

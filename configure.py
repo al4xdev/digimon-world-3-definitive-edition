@@ -508,7 +508,7 @@ def main():
                 split(t)
         # The stage overlays are small and independent once FIELDSTG's names exist: split them in parallel.
         print(f"splat: {len(WSTAG_TARGETS)} WSTAG configs ({GEN_CONFIG}/wstag*.yaml)")
-        # DW3_JOBS limits it (parallel agents on one machine share its memory; docs/MATCHING.md "Working in parallel").
+        # DW3_JOBS limits it (builds sharing a machine share its memory).
         with concurrent.futures.ThreadPoolExecutor(int(os.environ.get("DW3_JOBS", os.cpu_count()))) as pool:
             list(pool.map(split, WSTAG_TARGETS, [True] * len(WSTAG_TARGETS)))
 
