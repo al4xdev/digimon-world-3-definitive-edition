@@ -2443,6 +2443,20 @@ static int is_program(const char *path, const char *name) {
     return r == 4 && !memcmp(m, "\x7f" "ELF", 4);
 }
 
+/* One file; 0 when the copy is whole, else no copy is left. */
+static int copy_file(const char *src, const char *dst) {
+    FILE *in = fopen(src, "rb"), *out = in ? fopen(dst, "wb") : NULL;
+    char buf[1 << 15];
+    size_t r;
+    int ok = in && out;
+    while (ok && (r = fread(buf, 1, sizeof(buf), in)) > 0) ok = fwrite(buf, 1, r, out) == r;
+    if (in && ferror(in)) ok = 0;
+    if (in) fclose(in);
+    if (out && fclose(out) != 0) ok = 0;
+    if (out && !ok) remove(dst); /* only the half-written copy */
+    return ok ? 0 : -1;
+}
+
 /* Copies what `from` holds into `to`, never over a file `to` has. Skips links, programs, files over 64 MB (a disc
  * image), portable.txt, and in the program's own folder its mods/ (the release's). */
 static void copy_tree(const char *from, const char *to, int program_dir) {
@@ -2463,14 +2477,7 @@ static void copy_tree(const char *from, const char *to, int program_dir) {
         if (!S_ISREG(st.st_mode) || st.st_size > 64L * 1024 * 1024 || access(dst, F_OK) == 0 ||
             is_program(src, e->d_name))
             continue;
-        FILE *in = fopen(src, "rb"), *out = in ? fopen(dst, "wb") : NULL;
-        char buf[1 << 15];
-        size_t r;
-        int ok = in && out;
-        while (ok && (r = fread(buf, 1, sizeof(buf), in)) > 0) ok = fwrite(buf, 1, r, out) == r;
-        if (in) fclose(in);
-        if (out && fclose(out) != 0) ok = 0;
-        if (out && !ok) remove(dst); /* only the half-written copy */
+        copy_file(src, dst);
     }
     if (d) closedir(d);
 }
@@ -2494,6 +2501,16 @@ static void recomp_data_adopt(const char *exe, const char *data) {
     char a[PATH_MAX], b[PATH_MAX];
     if (!realpath(old, a) || (realpath(data, b) && !strcmp(a, b))) return;
     fprintf(stderr, "dw3-launcher: first start in %s: copying the saves and settings from %s\n", data, old);
+    /* RecompLauncher writes {data}/settings.json at Play, before this start (its schema and the disc path, both in
+     * the old file too): the player's old one takes its place. */
+    char src[1200], dst[1200], tmp[1300];
+    struct stat st;
+    snprintf(src, sizeof(src), "%s/settings.json", old);
+    snprintf(dst, sizeof(dst), "%s/settings.json", data);
+    snprintf(tmp, sizeof(tmp), "%s.old", dst);
+    if (lstat(src, &st) == 0 && S_ISREG(st.st_mode) && st.st_size <= 64L * 1024 * 1024 && access(dst, F_OK) == 0 &&
+        copy_file(src, tmp) == 0 && rename(tmp, dst) != 0)
+        remove(tmp);
     copy_tree(old, data, program_dir);
 }
 #endif
@@ -2640,6 +2657,29 @@ static int self_test(const char *root) {
         snprintf(cp, sizeof(cp), "%s/a.elf", exe);
         remove(cp);
         snprintf(cp, sizeof(cp), "%s/dw2003-launcher", exe);
+        remove(cp);
+        /* RecompLauncher's Play wrote {data}/settings.json before the first start: the old one replaces it */
+        snprintf(data, sizeof(data), "%s/recompdata-play", root);
+        setenv("RECOMPLAUNCHER_DATA", data, 1);
+        mkdir(data, 0755);
+        static const char *const fresh2[] = {"card1.mcd", "settings.json.old"};
+        for (size_t i = 0; i < sizeof(fresh2) / sizeof(fresh2[0]); i++) {
+            snprintf(cp, sizeof(cp), "%s/%s", data, fresh2[i]);
+            remove(cp); /* an earlier run's */
+        }
+        snprintf(cp, sizeof(cp), "%s/settings.json", data);
+        write_text(cp, "{\"schema\": 1, \"disc\": {\"path\": \"/d.bin\"}}");
+        snprintf(cp, sizeof(cp), "%s/settings.json", exe);
+        write_text(cp, "{\"schema\": 1, \"old\": true}");
+        recomp_data_adopt(exe, data);
+        snprintf(cp, sizeof(cp), "%s/settings.json", data);
+        t = read_text(cp);
+        snprintf(q, sizeof(q), "%s/settings.json.old", data);
+        snprintf(what, sizeof(what), "%s/card1.mcd", data);
+        check(t && strstr(t, "\"old\"") && access(q, F_OK) != 0 && access(what, F_OK) == 0,
+              "data folder: the first start's old settings.json replaces the one RecompLauncher wrote at Play");
+        free(t);
+        snprintf(cp, sizeof(cp), "%s/settings.json", exe);
         remove(cp);
         if (rl_saved) setenv("RECOMPLAUNCHER_DATA", rl_keep, 1);
         else unsetenv("RECOMPLAUNCHER_DATA");
