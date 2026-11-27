@@ -1,7 +1,7 @@
 // Symbol names for AAA/PRO/STGMCARD.PRO (splat format). Tier-1 overlays share one address range,
 // so each overlay has its own symbol file; the EXE's names come from config/symbol_addrs.txt.
 
-// Game code: module structs and tables that splat would otherwise label inside (DECISIONS "Module state structs")
+// Game code: module structs and tables that splat would otherwise label inside
 stgmcard_module = 0x80088768; // size:0x38
 stgmcard_icon_clut = 0x800887A0;
 stgmcard_icon_frame_0 = 0x800887C0;
@@ -16,7 +16,7 @@ stgmcard_status_messages = 0x80088310;
 stgmcard_map_names = 0x8008833C;
 stgmcard_map_areas = 0x800883A4;
 
-// Game code: names (DECISIONS "Naming conventions")
+// Game code: names
 stgmcard_root_update = 0x80082CD0; // type:func
 stgmcard_create_root = 0x80082DC8; // type:func
 stgmcard_fade_start = 0x80082DF4; // type:func

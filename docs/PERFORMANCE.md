@@ -2,7 +2,7 @@
 
 Measured frame costs of the handheld port, in one place. Hardware: RK3326 (4x Cortex-A35 in AArch32 at 1.3 GHz, Mali-G31,
 1 GB of RAM, 640x480 panel), one handheld and one firmware, at the machine's 60 Hz setting unless a figure says 50 Hz.
-The design notes behind the GPU numbers are in [`gpu/`](gpu/README.md); the audio ones are in [`SOUND.md`](SOUND.md).
+The audio's design notes are in [`SOUND.md`](SOUND.md).
 
 - [The budget](#the-budget)
 - [Where a frame goes, by scene](#where-a-frame-goes-by-scene)
@@ -36,8 +36,7 @@ The 2D figures were recorded with the audio mix at 4.7 ms (a town frame: GPU 1.2
 
 ## The heaviest battle: software against gles
 
-The steps that took `gles` from 18.75 fps to 41.85 fps in that battle, each measured on the same state
-(details in [`gpu/16-frame-budget.md`](gpu/16-frame-budget.md)):
+The steps that took `gles` from 18.75 fps to 41.85 fps in that battle, each measured on the same state:
 
 | Step | fps |
 |---|---|
@@ -54,7 +53,7 @@ is byte-identical.
 
 ## A gles battle frame
 
-From [`gpu/16-frame-budget.md`](gpu/16-frame-budget.md), "What is left":
+What is left:
 
 | Part | ms |
 |---|---|
@@ -81,8 +80,7 @@ This split was taken earlier, in a heavier fight (~30 ms of CPU time per frame, 
 | the game's own logic (GTE, models), left over by subtraction | 6-8 |
 
 Do not combine these rows with the `gles` ones. The two splits come from different fights and different ways of
-attributing the remainder; where they disagree on the game's own cost (6-8 ms against ~14 ms), the `gles` figure is the
-one backed by the measurements in `gpu/16-frame-budget.md`.
+attributing the remainder; where they disagree on the game's own cost (6-8 ms against ~14 ms), trust the `gles` figure.
 
 ## Audio
 

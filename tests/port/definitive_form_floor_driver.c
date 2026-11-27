@@ -2,7 +2,7 @@
 #include "definitive.h"
 
 /* The 44 forms of records_digimon rows 9..52 and the stage each is (A Adult, P Perfect, M Mega), as the franchise has
- * them and the owner confirmed: Armormon and GrapLeomon are Perfect, MetalGarurumon is Mega. */
+ * them and review confirmed: Armormon and GrapLeomon are Perfect, MetalGarurumon is Mega. */
 static const struct {
     const char *name;
     char stage;

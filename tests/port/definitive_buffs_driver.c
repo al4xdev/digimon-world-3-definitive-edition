@@ -222,7 +222,7 @@ int main(void) {
           def_blast_top_step(1) == 0 && def_blast_top_step(9) == 0 && def_blast_top_step(10) == 1 &&
               def_blast_top_step(34) == 2 && def_blast_top_step(35) == 3 && def_blast_top_step(40) == 4 &&
               def_blast_top_step(99) == 4);
-    { /* the DV Plug's last stand (owner, 2026-11-21): the revived Rookie's Blast is the strongest its level reaches,
+    { /* the DV Plug's last stand: the revived Rookie's Blast is the strongest its level reaches,
        * where the sequence (def_record_blast_next, 0 here) would give the first, the Champion's; a later Blast is
        * the sequence's again */
         FightstgMember *m = &fightstg_battle.state.members[0][0];

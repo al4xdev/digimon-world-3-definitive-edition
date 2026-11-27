@@ -77,9 +77,9 @@ static int kv_set(char **text, const char *key, const char *value) {
 
 /* 0 -> 1. Both are defaults a tui.state written before this never chose, so a file still on them takes the new ones;
  * anything else was the player's and stays:
- *  - The Fight button (2026-11-23, was bm_v=2): Fight moved to the bottom face button. A file with Fight right and Tag
+ *  - The Fight button (was bm_v=2): Fight moved to the bottom face button. A file with Fight right and Tag
  *    bottom had the old defaults (every save writes all eight buttons): the two swap, as cfg_set_fight_place does.
- *  - 60 Hz (2026-11-24): the launcher had no screen for the refresh rate, so its 50 was never a choice. */
+ *  - 60 Hz: the launcher had no screen for the refresh rate, so its 50 was never a choice. */
 static int tui_0_to_1(char **text) {
     if (kv_int(*text, "bm_v", 0) < 2 && kv_is(*text, "bm_fight", "east") && kv_is(*text, "bm_tag", "south")) {
         if (kv_set(text, "bm_fight", "south") || kv_set(text, "bm_tag", "east")) return -1;

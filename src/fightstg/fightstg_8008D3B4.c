@@ -38,7 +38,7 @@
 s32 fightstg_bm_in_menu;
 #ifdef PC_PORT
 /* The vsync (port_frames) of the battle menu's last RUN tick: while it is fresh the menu is up, and the HUD leaves the
- * original Blast bar out (the menu's Blast tab carries the gauge then; the owner, 2026-11-23). A stamp, not a flag, so
+ * original Blast bar out (the menu's Blast tab carries the gauge then). A stamp, not a flag, so
  * the bar is back the frame after the menu goes, however it goes. */
 extern long port_frames;
 long fightstg_bmenu_seen = -100;
@@ -5181,7 +5181,7 @@ typedef struct FightstgBattleMenuData {
 } FightstgBattleMenuData; /* only pointers: the block is run and scanned as objects */
 
 /* The menu's object: FightstgCommandMenu's own fields, then what the drawing and the animation need (never in the data
- * block). The layout is the pad's (2026-11-23 redesign, .plan/tasks/battle-hud-redesign.md): the four face buttons are
+ * block). The layout is the pad's: the four face buttons are
  * a diamond as on the pad, each a chip with the button's glyph and the command written out beside it in the callouts'
  * polygon capitals (def_poly_text: no texture, sharp at any scale), the word on the outside; the shoulders are a
  * separate group of tabs above it, the left ones on the left and the right ones on the right, L2/R2 above L1/R1 as on
@@ -5233,7 +5233,7 @@ typedef struct FightstgBattleMenu {
                                        * seam between the 4:3 buffer and the wide canvas (100..109 leave the band over
                                        * the commands) */
 
-/* The places (4:3 screen), one compact block in the left middle (the owner, round 6: the v3 cut's placement, which he
+/* The places (4:3 screen), one compact block in the left middle (round 6: the v3 cut's placement, which he
  * prefers to the split layout's one along the bottom edge): the shoulders' two rows on top, L2/L1 at the block's left
  * and R2/R1 at its right, then the face diamond below them on a dark rhombus of its own, so it reads as the pad's
  * diamond and not as a list. The block spans x 6-157 and y 136-225: the arena's middle (the enemy) and the fighter on
@@ -5260,7 +5260,7 @@ typedef struct FightstgBattleMenu {
 #define FIGHTSTG_BMENU_WEST_W 34   /* but the left face's: between the left tabs' plates and its chip (RUN fits) */
 
 /* The eight spots, by place on the pad (port_battle_menu_screen_place: 0 south, 1 west, 2 north, 3 east, 4 L1, 5 R1,
- * 6 L2, 7 R2). An action is drawn at the spot of the button it is mapped to (the owner, 2026-11-23: a remapped action
+ * 6 L2, 7 R2). An action is drawn at the spot of the button it is mapped to (a remapped action
  * moves with its button; the chip shows that button's glyph). kind 0: a face chip with its word on the right; 1: a face
  * chip with its word on the left (the diamond's left arm); 2: a left shoulder tab (chip at the block's left edge, then
  * the word); 3: a right shoulder tab (word, then chip at the block's right edge). */
@@ -5288,7 +5288,7 @@ static s32 fightstg_bmenu_spot(s32 action) {
 
 /* The command's word, in the language in use (capitals of the callouts' letters: accents in UTF-8). */
 static const char *fightstg_bmenu_word(s32 action) {
-    /* English only (the owner, 2026-11-23): these words are read at 320x240 in a fraction of a second, and a
+    /* English only: these words are read at 320x240 in a fraction of a second, and a
      * translated set makes them change length, wrap and shrink per language - a UI/UX problem, not a translation one.
      * The game's own texts stay in the player's language; only the eight commands are fixed. */
     static const char *const words[FIGHTSTG_BMENU_ACTIONS] = {"FIGHT", "TECH",   "DIGIVOLVE", "TAG",
@@ -5611,9 +5611,9 @@ static void fightstg_battle_menu_show(FightstgBattleMenu *obj, FightstgBattleMen
     s32 gauge = i == FIGHTSTG_BMENU_BLAST ? fightstg_battle_menu_gauge() : 0;
     s32 full = i == FIGHTSTG_BMENU_BLAST && gauge >= 1000;
     /* lit: full AND spendable. A full gauge the battle refuses (no TP, a status, a purification) keeps the charging
-     * blue and only turns its word white: the amber and the buzz mean "you can spend it now" (the owner) */
+     * blue and only turns its word white: the amber and the buzz mean "you can spend it now" */
     s32 lit = full && !obj->grey[i];
-    /* the full tab alternates between its two looks (the owner): the dark amber with the word white, then the pale
+    /* the full tab alternates between its two looks: the dark amber with the word white, then the pale
      * straw with the word dark, so the word keeps its contrast on whichever fill is showing */
     s32 blink = (obj->age / FIGHTSTG_BMENU_BLINK) % 2;
     const u8 *rgb = glow == 4                                       ? shadow
@@ -5653,7 +5653,7 @@ static void fightstg_battle_menu_show(FightstgBattleMenu *obj, FightstgBattleMen
         fightstg_battle_menu_plate(x + obj->plate_x[i], y - 1, obj->plate_w[i], h + 2, FIGHTSTG_BMENU_SKEW, -1, 70, 215, 245);
     }
     if (i == FIGHTSTG_BMENU_BLAST) {
-        /* the tab itself is the gauge (the owner, round 6: a bar of its own was one more thing to read). The tab is a
+        /* the tab itself is the gauge (round 6: a bar of its own was one more thing to read). The tab is a
          * dark slot filled from its left end as the gauge charges, in the Blast's cyan (never Fight's warm colour, never
          * a refusal's red), so the fill grows towards the button it stands for; full, it is white-cyan, and glow 3's
          * pulse and glow 4's bright plate still mark ready and tempting. Queued after the word and the chip and before
@@ -5663,19 +5663,19 @@ static void fightstg_battle_menu_show(FightstgBattleMenu *obj, FightstgBattleMen
         s32 tw = obj->plate_w[i];
 
         g = g < 0 ? 0 : g > 1000 ? 1000 : g;
-        /* the fill alone, with no slot of its own behind it (the owner): the tab's empty part is the arena, and the
+        /* the fill alone, with no slot of its own behind it: the tab's empty part is the arena, and the
          * charge is what shows over it. Queued after the word and the chip, so drawn under them, and before the dark
          * plate, so over it. */
         if (g > 0) {
             /* mode 0, the half blend: the charge reads as a translucent slab over the arena, as the tabs' own veils
-             * do, instead of the additive mode that clipped to solid cyan over the bright floor (the owner) */
+             * do, instead of the additive mode that clipped to solid cyan over the bright floor */
             fightstg_battle_menu_plate(tx, y - 1, tw * g / 1000, h + 2, FIGHTSTG_BMENU_SKEW, 0,
                                        lit ? (blink ? 250 : 230) : 80, lit ? (blink ? 225 : 160) : 230,
                                        lit ? (blink ? 160 : 40) : 255);
         }
     }
     /* the dark plate: darkens the arena so the word reads over any stage */
-    /* Three weights by PLACE, not by action (the owner, round 6): the bottom and left arms carry the diamond's own
+    /* Three weights by PLACE, not by action (round 6): the bottom and left arms carry the diamond's own
      * black, the right arm sits between that and the shoulders' veil, the top arm keeps the plain veil. Swapping Fight
      * and Tag between arms keeps the weights where they are. */
     {
@@ -5687,7 +5687,7 @@ static void fightstg_battle_menu_show(FightstgBattleMenu *obj, FightstgBattleMen
             g = 195;
             b = 150;
         } else if (spot == 3) { /* east (right): between the shoulders' veil (90,95,65) and the diamond's black
-                                 * (200,195,150), a touch under halfway (the owner: 145 was too strong, 118 too weak) */
+                                 * (200,195,150), a touch under halfway (145 was too strong, 118 too weak) */
             r = 131;
             g = 133;
             b = 97;
@@ -5730,7 +5730,7 @@ static void fightstg_battle_menu_paint(FightstgBattleMenuData *data, s32 i, u8 p
 #define FIGHTSTG_NOTICE_LINES 3
 static const u8 fightstg_inspect_empty[1] = { 0 };
 
-/* The INFO panel's second part (.plan/tasks/battle-hud-part2-info.md): what kind of enemy it is. Under the title a
+/* The INFO panel's second part: what kind of enemy it is. Under the title a
  * traits row: one picture per trait (SHIFT's two halves, the guard's shield, the speed's chevrons, the cracked block
  * of a lowered Defense), and at its right end the next turns as a queue of chips (red diamond the enemy, blue disc
  * us: two diamonds before the disc is the old "Enemy x2"), for every enemy, so it needs no legend; under the grid the
@@ -5847,7 +5847,7 @@ static s32 fightstg_inspect_lines(const u8 *text) {
     return n;
 }
 
-/* The panel's animation (the owner, 2026-11-24; .plan/tasks/battle-hud-part2b-anim.md): it comes out of INFO's tab
+/* The panel's animation : it comes out of INFO's tab
  * and goes back into it. One parameter, obj->panel_t, from 0 (closed) to FIGHTSTG_PANEL_OPEN (open) in game ticks,
  * walks toward what obj->inspect says: the menu's state still changes at once, input never waits for the picture, and a
  * press mid-way turns it around from where it is. The close is the open played backwards, faster. Stages: a trace
@@ -5866,8 +5866,8 @@ static s32 fightstg_inspect_lines(const u8 *text) {
 #define FIGHTSTG_PANEL_BLIP 4        /* ticks INFO's tab lights as the panel leaves it, and as it comes back */
 static const u8 fightstg_panel_trace_rgb[2][3] = { { 90, 190, 255 }, { 225, 248, 255 } }; /* the line, its head */
 
-/* The INFO panel's state. It lived in the battle menu; the HUD holds it now (battle HUD part 3, the owner 2026-11-24:
- * INFO opens and closes inside Tech / Item too, without stopping anything, the sheet on the left half and INFO on the
+/* The INFO panel's state. It lived in the battle menu; the HUD holds it now
+ * (INFO opens and closes inside Tech / Item too, without stopping anything, the sheet on the left half and INFO on the
  * right). A menu that shows it (the battle menu, Tech's or Item's sheet) holds it each frame and says where INFO's tab
  * is; when none has for FIGHTSTG_INFO_LOST frames the turn went on, and it is cut. */
 #define FIGHTSTG_INFO_LOST 6
@@ -6054,7 +6054,7 @@ static void fightstg_info_frame(s32 ox, s32 oy) {
                                     : fightstg_anim_ease(w + FIGHTSTG_PANEL_OVERSHOOT, w, t - FIGHTSTG_PANEL_PEAK,
                                                          FIGHTSTG_PANEL_WIDE - FIGHTSTG_PANEL_PEAK);
         /* the bar is the trace turned along the panel's top, in its colours: the frame's own thin blue lines over
-         * the arena did not read (capture, 2026-11-24) */
+         * the arena did not read (capture) */
         fightstg_inspect_pixels(x + w - 2, y - 1, 3, 3, fightstg_panel_trace_rgb[1], 0);
         fightstg_inspect_pixels(x, y, w, 2, fightstg_panel_trace_rgb[0], 0);
         return;
@@ -6539,7 +6539,7 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
         data->labels[FIGHTSTG_BMENU_TAG] = message_create_window(0x1005, 1, 0, 0);
         data->labels[FIGHTSTG_BMENU_TAG]->set_text(data->labels[FIGHTSTG_BMENU_TAG], (u8 *)fightstg_inspect_empty, -1);
         obj->tag_free = 0;
-        /* The next turns (the old "Enemy x2", which left the middle of the screen: the owner, 2026-11-24) live in the
+        /* The next turns (the old "Enemy x2", which left the middle of the screen) live in the
          * panel only. Read here, once: def_turn_queue asks the turn delays, which rewrites fightstg_rules.stats. */
         fightstg_info.queue_n = def_on() ? def_turn_queue(fightstg_info.queue) : 0;
         fightstg_info.seen = port_frames;
@@ -6557,7 +6557,7 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
         data->notice = message_create_window(0x1005, 1, FIGHTSTG_NOTICE_X + wide_pad, FIGHTSTG_NOTICE_Y);
         data->notice->set_page_lines(data->notice, FIGHTSTG_NOTICE_LINES); /* a window pages two lines by default */
         fightstg_battle_menu_notice_set(obj, data, def_battle_menu_notice());
-        /* The temptation has no line of its own any more (the owner, 2026-11-23): the Blast tab itself calls, turning
+        /* The temptation has no line of its own any more: the Blast tab itself calls, turning
          * bright cyan with a dark word and shaking (fightstg_battle_menu_show's glow 4). The window stays, empty. */
         data->tempt = message_create_window(0x1005, 1, FIGHTSTG_TEMPT_X + wide_pad, FIGHTSTG_TEMPT_Y);
         data->tempt->set_text(data->tempt, (u8 *)fightstg_inspect_empty, -1);
@@ -6672,7 +6672,7 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
                     dx += (obj->age & 1) ? 2 : -2; /* sideways only: a vertical pixel blurs the word at 320 */
                 }
             } else if (i == FIGHTSTG_BMENU_BLAST && !obj->grey[i] && obj->press < 0) {
-                /* the full tab buzzes in place (the owner): one pixel each way on every tick, this tab only */
+                /* the full tab buzzes in place: one pixel each way on every tick, this tab only */
                 dx += (obj->age & 1) ? 1 : -1;
             }
             fightstg_battle_menu_show(obj, data, i, dx, dy, glow);
@@ -7866,7 +7866,7 @@ static void fightstg_tech_menu_set_element(MessageWindow *icon, MessageWindow *n
     }
 }
 
-/* The sheet (battle HUD part 3, .plan/tasks/battle-hud-part3-tech-menu.md): the Tech and Item screens redone in the
+/* The sheet: the Tech and Item screens redone in the
  * battle menu's and INFO's design, in the left half of the 4:3 screen (INFO keeps the right half, and opens over
  * neither), in widescreen too (fightstg_sheet_x). Top to bottom: a header (the action's chip and word as on
  * its tab, and the MP or the count), the page's rows, the page arrows, and the description, re-wrapped to the
@@ -7882,7 +7882,7 @@ static void fightstg_tech_menu_set_element(MessageWindow *icon, MessageWindow *n
 #define FIGHTSTG_SHEET_DESC_LINE 14
 
 /* A screen's layout. The description's lines: the longest re-wrapped text in the six languages takes two (measured
- * 2026-11-24, every technique and item). Item's page arrows are in its header: its seven rows leave no line for them. */
+ * every technique and item). Item's page arrows are in its header: its seven rows leave no line for them. */
 typedef struct FightstgSheetLayout {
     u8 action;    /* FIGHTSTG_BMENU_*: its chip and word in the header */
     u8 rows;
@@ -7908,7 +7908,7 @@ static s32 fightstg_sheet_on(void) {
     return port_mod_battle_menu != 0; /* the new screens go with the new battle menu */
 }
 
-/* Inside the 4:3 picture in widescreen too (the owner, 2026-11-24): following the menu block's shift put the header's
+/* Inside the 4:3 picture in widescreen too: following the menu block's shift put the header's
  * polygon word on the seam between the 4:3 buffer and the wide canvas, which cuts it. The lift carries the tab from
  * the block into it. */
 static s32 fightstg_sheet_x(void) {
@@ -8157,7 +8157,7 @@ static void fightstg_sheet_frame(const FightstgSheetLayout *l, s32 sel, s32 page
     }
 }
 
-/* The sheet's paper (the owner, 2026-11-24: "the menu itself turns into the screen, like a sheet of paper"). On Tech or
+/* The sheet's paper ("the menu itself turns into the screen, like a sheet of paper"). On Tech or
  * Item the pressed tab lifts into the header and the block under it becomes the sheet's foot (P0, the lift); then the
  * two panels above it unfold upwards like an accordion, each turning on its hinge from folded down (180 degrees) to
  * flat (P1 on P0's top edge, P2 on P1's), with a small overshoot that settles. Cancelling folds it back, twice as fast,
@@ -9687,7 +9687,7 @@ void fightstg_member_menu_show(FightstgMemberMenu *obj, FightstgMemberMenuData *
     }
 }
 
-/* Shape from the US decomp (func_800967A4; DECISIONS "Independent EU-only project on the unpatched disc"): case 0 reads the current member
+/* Shape from the US decomp (func_800967A4): case 0 reads the current member
  * into a local and the loop re-reads the global, case 1 keeps the cursor's sel in a local. */
 extern FightstgCursorParams fightstg_member_menu_cursor;
 

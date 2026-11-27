@@ -1,7 +1,7 @@
-# A CI job's setup (ci.yml; DECISIONS "CI per area"): the job's own tool cache, scripts/setup.sh for the tools the
+# A CI job's setup (ci.yml): the job's own tool cache, scripts/setup.sh for the tools the
 # job names (cmake and ninja among them, pip-installed into the venv: tools/venv/bin goes on the PATH), ccache for the
 # host builds, with the maintainers' deploy key the data checkout and the disc, and apt only for what has no pinned
-# install (gcc-multilib, Wine): the runners' Ubuntu mirror stalls on package fetches now and then (2026-10-07: a
+# install (gcc-multilib, Wine): the runners' Ubuntu mirror stalls on package fetches now and then (a
 # 4.5 min `apt-get install gcc-multilib`), so the jobs that need no package run no apt at all. Every job runs this
 # once, right after its checkout.
 #
@@ -42,8 +42,7 @@ runs:
         echo "DW3_UBUNTU_MIRROR=http://azure.archive.ubuntu.com/ubuntu" >> "$GITHUB_ENV"
         echo "DW3_GAMEDATA=$GITHUB_WORKSPACE/dw2003-gamedata" >> "$GITHUB_ENV"
 
-    # The psxstack submodule (the PC port's runtime, shim, build and launcher; DECISIONS "The port stack lives in
-    # psxstack") at the commit the gitlink names. The job's actions/checkout fetches it (submodules: recursive, with
+    # The psxstack submodule (the PC port's runtime, shim, build and launcher) at the commit the gitlink names. The job's actions/checkout fetches it (submodules: recursive, with
     # PSXSTACK_TOKEN when the repository is private: ci.yml's header), so this is a no-op then; a job whose checkout
     # does not fetches it here, which works only while it is public.
     - name: psxstack submodule

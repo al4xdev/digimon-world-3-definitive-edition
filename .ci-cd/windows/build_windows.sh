@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Cross-builds the PC port and the launcher for Windows x86_64 from Linux (psxstack/cmake/windows-x86_64.cmake: llvm-mingw's
-# clang and lld, SDL3 for Windows; DECISIONS "Windows: cross-built from Linux").
+# clang and lld, SDL3 for Windows).
 #
 # Usage: .ci-cd/windows/build_windows.sh [--launcher] [--configure-only] [--test] [--jobs N]
 #   (default)         the game into build/port-win (the SDL build, Release): every object (ninja -k 0), then the link
@@ -15,7 +15,7 @@
 # shaders, compiled on this host); cmake and ninja (tools/venv's when the
 # system has none). Exit 0 when everything asked for built (and the test passed), else 1 with a summary: which objects
 # did not compile and whether the link failed. The game links since the overlay sections stopped needing a linker
-# script (DECISIONS "Overlay sections by renaming"); tests/port/run.py --exe build/port-win/dw2003.exe --wine replays
+# script; tests/port/run.py --exe build/port-win/dw2003.exe --wine replays
 # the layer-2 scripts with it under Wine.
 set -euo pipefail
 

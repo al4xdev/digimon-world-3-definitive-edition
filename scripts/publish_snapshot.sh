@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Build the public snapshot of this checkout: a new repository holding one commit with the tracked tree minus the
-# paths that stay in the data checkout (gamedata/, tools/prebuilt/), and prove it clean. DECISIONS "Going public: the working repo is public".
+# paths that stay in the data checkout (gamedata/, tools/prebuilt/), and prove it clean.
 #
 # Usage: scripts/publish_snapshot.sh <empty or absent dir> [--tag v0.1-matching-closed] [--remote <url>]
 #   The tree must be clean (no modified tracked files). The commit message names the source commit.

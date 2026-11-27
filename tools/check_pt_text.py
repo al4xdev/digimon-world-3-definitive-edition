@@ -3,7 +3,7 @@
 encodable, the control codes kept, the speech boxes respected (3 lines a page, letters and pixels a line, and a pace
 limit per page so a long speech is split into more pages instead of being crammed into one).
 
-  # one translated chunk against its source chunk (same `## file` sections and lines; the work of one subagent)
+  # one translated chunk against its source chunk (same `## file` sections and lines)
   tools/venv/bin/python tools/check_pt_text.py --chunk IN.txt OUT.txt
 
   # the repository's own pairs: en.txt/pt.txt (only the keys en.txt has), en_story/pt_story, en_choices/pt_choices,

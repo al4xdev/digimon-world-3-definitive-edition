@@ -297,13 +297,13 @@ static const struct {
 /* The options' order is the original list's (and the menu's result's): Fight, Tech, Digivolve, Tag, Item, Run. */
 enum { BM_FIGHT, BM_TECH, BM_DV, BM_TAG, BM_ITEM, BM_RUN, BM_COUNT, BM_REMEMBER = BM_COUNT, BM_BUFFER, BM_INSPECT_OPT,
        BM_BLAST_OPT, BM_OPTIONS };
-/* Fight on the bottom face button, Tag on the right (the owner, 2026-11-23: the launcher's "Fight button" row gives the
+/* Fight on the bottom face button, Tag on the right (the launcher's "Fight button" row gives the
  * old Fight right, Tag bottom back; replay scripts never see these, they keep the original list menu) */
 static const u8 bm_default_places[BM_COUNT] = { 0, 5, 2, 3, 4, 1 }; /* south r1 north east l1 west */
 #define BM_OPTION(name, default_place) \
     { .id = name, .type = PORT_MOD_ENUM, .def = default_place, .values = bm_places, .applies = "live" }
 static const char *const bm_buffers[] = { "off", "short", "long", NULL };
-static const int bm_buffer_ms[] = { 0, 1000, 1500 }; /* off, short, long (the owner played with 1.0 s: now the default) */
+static const int bm_buffer_ms[] = { 0, 1000, 1500 }; /* off, short, long (1.0 s is the default) */
 static const PortModOption bm_options[BM_OPTIONS] = {
     BM_OPTION("fight", "\"south\""),  BM_OPTION("tech", "\"r1\""),   BM_OPTION("digivolve", "\"north\""),
     BM_OPTION("tag", "\"east\""),    BM_OPTION("item", "\"l1\""),   BM_OPTION("run", "\"west\""),
@@ -522,7 +522,7 @@ void port_bm_remember(s32 kind, s32 member, s32 value) {
     bm_memory[kind][member & 63] = value;
 }
 
-/* ---- battle text: always skipped (the owner, 2026-11-23). It was the `battle_text` mod, with off / skip / async;
+/* ---- battle text: always skipped. It was the `battle_text` mod, with off / skip / async;
  * from now on the battle's message box (FightstgMessage) never waits and never shows: every action goes on, and the
  * player reads the result rather than the box. The mode stays a code variable (BT_SKIP: 1) for the FIGHTSTG side and
  * for a future change. The toast's windows are arena objects held here (FIGHTSTG runs and draws them), so they are
@@ -880,7 +880,7 @@ static int bm_place_in_file(int action) {
 }
 
 /* Where the action is drawn on the battle menu: its place on the pad (bm_places' index: 0 south, 1 west, 2 north,
- * 3 east, 4 l1, 5 r1, 6 l2, 7 r2), so a remapped action appears at its button's spot (the owner, 2026-11-23). Display
+ * 3 east, 4 l1, 5 r1, 6 l2, 7 r2), so a remapped action appears at its button's spot. Display
  * only: the input never reads it. Unique once bm_start has resolved the clashes. */
 int port_battle_menu_screen_place(int action) {
     return action >= 0 && action < BM_ACTIONS ? bm_place[action] : -1;

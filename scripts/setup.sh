@@ -13,7 +13,7 @@
 #   ccache: the pinned static ccache binary into tools/ccache (CI's host builds of the port and the launcher:
 #          .github/actions/setup; no apt package, the runners' mirror stalls)
 #   llvm-mingw: the pinned llvm-mingw release (clang + lld, UCRT) into tools/llvm-mingw: the Windows cross toolchain
-#          (psxstack/cmake/windows-x86_64.cmake, .ci-cd/windows/build_windows.sh; DECISIONS "Windows")
+#          (psxstack/cmake/windows-x86_64.cmake, .ci-cd/windows/build_windows.sh)
 #   sdl3-windows: SDL3 cross-built static for Windows into tools/sdl3-windows (needs llvm-mingw)
 #   dxc:   the pinned DirectX Shader Compiler release into tools/dxc: HLSL to SPIR-V (and DXIL) for the hardware renderer's
 #          shaders (issue #31)
@@ -80,7 +80,7 @@ REDUX_URL=https://distrib.app/storage/assets/d9b/f74/b48/50eac9b83609cd54f27b63a
 REDUX_SHA256=5c0138d8a948c021e67aaba62648924c0a6e05d9d933c945d2c5077b4c758980
 # DW3_UBUNTU_MIRROR: the Ubuntu archive the sysroot's packages (and binutils' fallback) come from. CI sets the runners'
 # own mirror (http://azure.archive.ubuntu.com/ubuntu): archive.ubuntu.com is slow or stalls from GitHub's runners now
-# and then (2026-10-07: three runs stuck in this download).
+# and then (three runs stuck in this download).
 REDUX_UBUNTU="${DW3_UBUNTU_MIRROR:-http://archive.ubuntu.com/ubuntu}"
 REDUX_SYSROOT_DEBS=(
     "pool/main/g/glibc/libc6_2.43-2ubuntu2_amd64.deb c13775dc0c984403f3fcad229d14507a9f387763bd07ace1e5f93897ee6b8434"
@@ -103,7 +103,7 @@ REDUX_SYSROOT_DEBS=(
 log() { printf '\033[1;34m[setup]\033[0m %s\n' "$*"; }
 die() { printf '\033[1;31m[setup]\033[0m %s\n' "$*" >&2; exit 1; }
 # fetch URL FILE: a download that survives a transient failure. CI's runners get connection resets and stalls from
-# the mirrors now and then (archive.ubuntu.com, 2026-10-07: two runs died, two hung); a cold tool cache must not die
+# the mirrors now and then (archive.ubuntu.com has died and hung in CI); a cold tool cache must not die
 # or stall on that: a transfer under 1 KB/s for a minute is given up (--speed-limit/--speed-time), 5 retries on any
 # error, no connect longer than 30 s, no transfer longer than 10 min.
 fetch() {
@@ -166,7 +166,7 @@ step_mkpsxiso() {
     log "mkpsxiso: installed to $prefix"
 }
 
-# SDL3 (zlib licence) for the PC port's window (port/README.md "The window"; DECISIONS "PC port architecture"):
+# SDL3 (zlib licence) for the PC port's window (port/README.md "The window"):
 # the pinned release tarball (signed by Sam Lantinga; the SHA-256 pins it), built with CMake into
 # tools/sdl3/ as a static library. Static: the port stays one binary that runs from anywhere (no rpath, no
 # LD_LIBRARY_PATH), and SDL still loads its platform libraries (X11, Wayland, ALSA, PulseAudio, PipeWire, udev, ...)
@@ -176,8 +176,7 @@ step_mkpsxiso() {
 # (libwayland-dev libxkbcommon-dev wayland-protocols) libasound2-dev libpulse-dev libudev-dev first, then rebuild with
 # `rm -rf tools/sdl3 && scripts/setup.sh sdl3`. Optional (not in the default steps): scripts/setup.sh sdl3
 #
-# sdl3-desktop: the same SDL into tools/sdl3-desktop/, for the release (.ci-cd/linux/package_appimage.sh; DECISIONS
-# "Releases"). It REQUIRES the desktop backends (X11, Wayland, PipeWire, PulseAudio, ALSA; SDL3_DESKTOP_APT lists
+# sdl3-desktop: the same SDL into tools/sdl3-desktop/, for the release (.ci-cd/linux/package_appimage.sh). It REQUIRES the desktop backends (X11, Wayland, PipeWire, PulseAudio, ALSA; SDL3_DESKTOP_APT lists
 # Ubuntu's -dev packages for them) and fails instead of turning one off, and its library is checked for each backend's
 # driver (nm). Its own directory, so a headless tools/sdl3 (CI's cache) never stands in for it. Optional:
 # scripts/setup.sh sdl3-desktop
@@ -270,7 +269,7 @@ step_sdl3() { sdl3_build sdl3 "$INSTALL/sdl3" 0; }
 step_sdl3-desktop() { sdl3_build sdl3-desktop "$INSTALL/sdl3-desktop" 1; }
 
 # llvm-mingw (Apache-2.0 with LLVM exceptions; mingw-w64 runtime under its own permissive licences): clang, lld and the
-# UCRT mingw-w64 sysroot, the Windows cross toolchain (DECISIONS "Windows"; psxstack/cmake/windows-x86_64.cmake is the
+# UCRT mingw-w64 sysroot, the Windows cross toolchain (psxstack/cmake/windows-x86_64.cmake is the
 # CMake toolchain file, .ci-cd/windows/build_windows.sh builds the game and the launcher with it). One pinned release tarball for
 # Linux x86_64, SHA-256 checked, unpacked into tools/llvm-mingw. Self-contained: no system package, the same build
 # here and on CI. Optional (not in the default steps): scripts/setup.sh llvm-mingw
@@ -334,7 +333,7 @@ step_sdl3-windows() {
     log "$name: installed $SDL3_VER to $prefix"
 }
 
-# The AppImage tools for the release (.ci-cd/linux/package_appimage.sh; DECISIONS "Releases: tagged drafts, published by hand"): appimagetool (MIT) and the
+# The AppImage tools for the release (.ci-cd/linux/package_appimage.sh): appimagetool (MIT) and the
 # static type-2 runtime (MIT, with musl, libfuse 3 (LGPL-2.1), squashfuse, zstd and zlib linked in: the AppImage needs
 # no libfuse2 on the player's machine), each a pinned release asset checked by SHA-256, and the runtime's LICENSE at
 # its tag's commit (bundled in the AppImage's LICENSES/). appimagetool is itself an AppImage: it is unpacked once
@@ -504,8 +503,7 @@ step_gcc() {
 
 # objdiff-cli (prebuilt, checksum-pinned) into tools/bin/.
 # Optional (not in the default steps): Sony's Psy-Q 4.3/4.4 compilers and assembler (the binaries decomp.me uses,
-# from mkst/esa's releases), run through wibo; for checking the open toolchain against the real one (DECISIONS
-# "Psy-Q check"). Never committed (tools/psyq is gitignored). Usage: scripts/setup.sh psyq
+# from mkst/esa's releases), run through wibo; for checking the open toolchain against the real one. Never committed (tools/psyq is gitignored). Usage: scripts/setup.sh psyq
 PSYQ=(
     "psyq4.3.tar.gz https://github.com/mkst/esa/releases/download/psyq-binaries/psyq4.3.tar.gz 577038d66507d3aa5423de0ba3f540e121a4f60f637f4794aa4350135d4f9a46"
     "psyq4.4.tar.gz https://github.com/mkst/esa/releases/download/psyq-binaries/psyq4.4.tar.gz 72e73934bab0d51933eb95af514afb14f3d432f01530eac3ddb16dfbb57ab66c"

@@ -47,7 +47,7 @@ static unsigned char buffer2[DEF_RECORD2_SIZE];
 typedef char rec2_dri_fits[DEF_DRI_CHALLENGES <= 16 && REC2_DRI + 6 <= DEF_RECORD2_SIZE ? 1 : -1];
 static unsigned short dri_unlocked;
 static unsigned int dri_best;
-/* The Blast Gauge (owner's redesign, 2026-11-17), after the DRI's bytes: each partner's next dark form in its sequence
+/* The Blast Gauge, after the DRI's bytes: each partner's next dark form in its sequence
  * (a byte each), the TP the Blast took from each (2 bytes each, low first) that the purification gives back, the
  * quest's stage, the quest's forms purified (a bit per entry of the third record, 2 bytes), the Chosen Evolution's
  * partner + 1 (0: none) and its charge; then the Blast's boost bought from the false Gennai (steps of

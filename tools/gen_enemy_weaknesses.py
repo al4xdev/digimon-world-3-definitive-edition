@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-"""LEGACY (owner, 2026-11-23): frozen. The table it wrote is now hand-maintained, one case at a time, so
+"""LEGACY: frozen. The table it wrote is now hand-maintained, one case at a time, so
 it no longer writes into port/game/; it still runs as a library and for its proposal under .dumps/.
 
 The enemy table of the definitive combat (weaknesses): every species gets its archetype's weaknesses and strong
-resistances, counted by element family (Fire, Water+Ice, Wind, Thunder+Machine, Dark: the owner's rule of 2026-11-13,
+resistances, counted by element family (Fire, Water+Ice, Wind, Thunder+Machine, Dark: a design rule,
 a pair is one affinity, so its two elements always share one value): plain 2+1, wall 1+2, late 2+2, boss 2+2, final
 boss 1+3 (and its Dark mark), the rest neutral; a few species carry the Dark mark.
 
   tools/venv/bin/python tools/gen_enemy_weaknesses.py            # proposal: .dumps/tasks/persona/{fraquezas.md,
                                                                  #   definitive_enemies.proposed.c}; the game is not touched
-  tools/venv/bin/python tools/gen_enemy_weaknesses.py --apply    # also write port/game/definitive_enemies.c (the owner approved)
+  tools/venv/bin/python tools/gen_enemy_weaknesses.py --apply    # also write port/game/definitive_enemies.c (after review)
 
 Deterministic (fixed seed). Reads SDIGIEDT.PRO and the names from the user's disc, the techniques from src/main/records.c
 and the battles from src/fieldstg/fieldstg_80083784.c; the disc is never written. Rules (by family):
@@ -52,7 +52,7 @@ TYPE_HOUSE = {2: 0, 3: 6, 4: 6, 5: 5, 6: 2, 7: 3, 8: 4, 10: 1, 11: 3}
 OPPOSE = {0: [1, 2, 3], 1: [4, 2, 3], 2: [0, 4, 3], 3: [4, 2, 5], 4: [3, 0, 1], 5: [4, 1, 0], 6: [0, 4, 3]}
 DARK_ONLY = {447, 452, 178, 453}      # BK Seraphimon, MagnaAngemon, Knightmon, Taomon: holy, weak only to Dark
 DARK_EXTRA = {269, 442, 466, 467}     # Valkyrimon and Galacticmon (the three phases): Dark on top of two others
-# Resisting Dark is as rare as being weak to it (owner's rule: Dark must stay a useful element): only these eight, the
+# Resisting Dark is as rare as being weak to it (Dark must stay a useful element): only these eight, the
 # demons and the undead of the list, have it as their strong resistance; every other species gets another element.
 DARK_RESIST = {382, 236, 177, 223, 364, 312, 302, 251}  # Armageddemon, VenomMyotismon, LadyDevimon, Phantomon, Mummymon,
                                                         # Ghoulmon, Gargoylemon, Apokarimon
@@ -335,7 +335,7 @@ def main():
     rows = propose(species(), battles(), tech_elements())
     check(rows)
     if a.apply:
-        sys.exit("LEGACY: port/game/definitive_enemies.c is hand-maintained now (2026-11-23); "
+        sys.exit("LEGACY: port/game/definitive_enemies.c is hand-maintained now; "
                  "this tool no longer overwrites it")
     write(rows, False)
 

@@ -4,7 +4,7 @@
  *   Every control is sized from the screen's height (a thumb is the same size on any phone), so the D-pad and the face
  *   diamond reach past a 20:9 phone's side margins onto the picture's edges, drawn translucent there; the shoulders and
  *   Select/Start stay in the margins. The first cut fitted everything inside the margins and came out too small for a
- *   thumb (owner, 2026-11-18). Two small buttons in the top corners: hide the pad (left) and edit it (right).
+ *   thumb. Two small buttons in the top corners: hide the pad (left) and edit it (right).
  *
  * Editing: the right corner button opens the layout editor over the running game (the pad sends nothing while it is
  *   open). Each group (D-pad, face buttons, L1/L2/SELECT, R1/R2/START) is dragged to its place and sized with the

@@ -32,7 +32,7 @@ OUT_DEFAULT = ROOT / "build/host"
 # case; the host stores that buffer's host address there instead (P command). A target "@<function>" is a method: the
 # PS1 word is 0 (left 0) or that function's address (config/*.symbols.txt), and the host stores its own function; such a
 # field may also lie past the prefix (CardgameGame.get_score). Segments ({PS1 offset: host layout key}): a pointer field
-# in the middle of the tail (CardgameGame.opponents at 0x2F0, a struct pointer since session 15) is wider on the host, so
+# in the middle of the tail (CardgameGame.opponents at 0x2F0, a struct pointer) is wider on the host, so
 # the fields after it shift by more than the prefix does; each such field is one PS1 word, zero in every fixture (dropped:
 # the host's field stays NULL) unless listed under the pointer fields, and the segment after it is named by its first
 # field. The fields to verify are checked against the segment they lie in.

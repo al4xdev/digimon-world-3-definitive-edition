@@ -2127,8 +2127,8 @@ int dw3_android_launcher_run(int kind, const char *script, int *out_touch_pad, i
     plat_release();
 
     if (out_touch_pad) *out_touch_pad = c.touch_pad;
-    /* With the Xbox layout the touch pad's face buttons carry the letters the game's prompts print for them (owner's
-     * check on the phone: circle is A, triangle B, square X, cross Y) at an Xbox pad's places (A bottom, B right, X
+    /* With the Xbox layout the touch pad's face buttons carry the letters the game's prompts print for them
+     * (checked on the phone: circle is A, triangle B, square X, cross Y) at an Xbox pad's places (A bottom, B right, X
      * left, Y top); each still sends its own PS1 button. Any other layout keeps the PS1 diamond and shapes. */
     {
         int place[4];

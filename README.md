@@ -356,9 +356,10 @@ The Definitive Edition does not change where the story goes. It changes how it i
 - **Your choices, and their echoes.** Over 135 scenes and 27 NPC mini-arcs let the hero answer in their own words, with
   hundreds of later lines changing based on what you chose. Every decision is remembered — shaping bonds, reputation, and
   10 boss battles, which can make the adventure easier or harder.
-- **A rewritten script** (written and personally curated in Brazilian Portuguese, with English translated directly from
-  it): the childish lines grown up, the order and the quests untouched, and the hero written for whoever is playing. The
-  script embraces the humor, slang and spirit of classic 80s and 90s Brazilian anime dubs.
+- **A rewritten script** (written and personally curated in Brazilian Portuguese, with English, French, German, Italian
+  and Spanish translated from it): the childish lines grown up, the order and the quests untouched, and the hero
+  written for whoever is playing. The script embraces the humor, slang and spirit of classic 80s and 90s Brazilian
+  anime dubs.
 - **A hooded figure** blocks the way in the Bug Maze, and **a room where time stands still** waits before the point of
   no return, to make sure you are ready.
 - **The last battle is not where it used to end.** No more on that here.
@@ -431,9 +432,9 @@ The game is playable from start to end, and every system described above is impl
 it has only been played through a few times, so expect rough edges and frequent hotfixes. What remains:
 
 - **Translation review.** The rewritten narrative was written, revised and personally curated in Brazilian Portuguese
-  (with classic 80s/90s anime dub slang and tone), and translated directly into English. French, German, Italian and
-  Spanish cover the Definitive Edition's own strings (not yet read in game by native speakers: expect
-  clumsy lines and a few labels too wide for their box); in those four languages the disc's original campaign plays.
+  (with classic 80s/90s anime dub slang and tone), and translated from it into English, French, German, Italian and
+  Spanish. The last four have not been read in game by native speakers yet: expect clumsy lines and a few labels too
+  wide for their box.
 - **Overall game balance.** So far it was balanced by calculation only. I am playing through it in parallel and
   shipping hotfixes as I go, the Chosen Evolution and the endgame's secret battles included.
 

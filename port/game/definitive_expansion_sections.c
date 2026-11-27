@@ -1,5 +1,5 @@
-/* The expansion save's sections (definitive_expansion.h), in a fixed order: the savestate's. A new one is appended
- * (.plan/tasks/expansion-save.md "How to add a section"); none is ever removed or renamed while a save may have it. */
+/* The expansion save's sections (definitive_expansion.h), in a fixed order: the savestate's. A new one is appended;
+ * none is ever removed or renamed while a save may have it. */
 #include <stddef.h>
 
 #include "definitive_expansion.h"

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""The Time Room's trials (owner, 2026-11-17): the gatekeeper before the Warp Gate to
+"""The Time Room's trials: the gatekeeper before the Warp Gate to
 the Gunslinger. Each trial is one battle of three enemy members brought in one after the other (a boss battle's native
 entrance, as the DRI Gauntlet's), the challenger's own team; the levels climb towards Galacticmon's (65, then 70) so the
 three together tell whether the party is ready for the point of no return.
@@ -29,7 +29,7 @@ TRIALS = [
     ("Myotismon", [231, 115, 228], [63, 65, 67]),     # Puppetmon, Machinedramon, Piedmon: the Dark Masters
 ]
 # The Oikawa's arc (definitive_story.c, step 27): he blocks the way out of the Bug Maze Pit, around the party's level
-# there (~30). The owner's Dinohyumon and MaloMyotismon are not on the disc: Mummymon and VenomMyotismon stand in, the
+# there (~30). The wanted Dinohyumon and MaloMyotismon are not on the disc: Mummymon and VenomMyotismon stand in, the
 # same team he brings again to the Time Room.
 ARC = ("Oikawa's arc", [365, 364, 236], [28, 30, 32])  # Arukenimon, Mummymon, VenomMyotismon
 

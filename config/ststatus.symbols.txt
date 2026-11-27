@@ -1,12 +1,12 @@
 // Symbol names for AAA/PRO/STSTATUS.PRO (splat format). Tier-1 overlays share one address range,
 // so each overlay has its own symbol file; the EXE's names come from config/symbol_addrs.txt.
 
-// Game code: module structs and tables that splat would otherwise label inside (DECISIONS "Module state structs")
+// Game code: module structs and tables that splat would otherwise label inside
 ststatus_pages = 0x8009A988; // size:0x38
 ststatus_module = 0x8009AF68; // size:0x690
 ststatus_map = 0x8009B6EC; // size:0xC
 
-// Game code: names (DECISIONS "Naming conventions")
+// Game code: names
 ststatus_update_main = 0x80083558; // type:func
 ststatus_start = 0x80083654; // type:func
 ststatus_party_create_windows = 0x80083680; // type:func

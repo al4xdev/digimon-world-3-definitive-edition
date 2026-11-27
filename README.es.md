@@ -361,8 +361,8 @@ La Definitive Edition no cambia adónde va la historia. Cambia cómo se cuenta, 
   palabras, y cientos de líneas posteriores cambian según lo que elegiste. Cada decisión se recuerda — moldeando vínculos,
   reputación y 10 combates contra jefes, pudiendo hacer la aventura más fácil o más difícil.
 - **Un guion reescrito** (escrito, revisado y curado personalmente en portugués de Brasil con la jerga y el tono de los
-  doblajes clásicos de anime de los 80/90, y traducido directamente al inglés; en español se juega la campaña original
-  del disco): las frases infantiles se han hecho adultas, el orden y las misiones no se tocan, y el héroe está escrito
+  doblajes clásicos de anime de los 80/90, y traducido a partir de él al inglés, francés, alemán, italiano y
+ español): las frases infantiles se han hecho adultas, el orden y las misiones no se tocan, y el héroe está escrito
   para quien esté jugando.
 - **Una figura encapuchada** corta el paso en el Bug Maze, y **una sala donde el tiempo se detiene** espera antes del
   punto sin retorno, para asegurarse de que estás listo.
@@ -440,10 +440,9 @@ El juego se puede jugar de principio a fin, y todos los sistemas descritos arrib
 joven: parte de él solo se ha jugado unas pocas veces, así que cuenta con asperezas y hotfixes frecuentes. Lo que queda:
 
 - **Revisión de las traducciones.** La historia reescrita fue escrita, revisada y curada personalmente en portugués de
-  Brasil (con jerga y tono de animes clásicos de los 80/90), y traducida directamente al inglés. Francés, alemán, italiano
-  y español cubren los textos propios de la Definitive Edition (aún no leídos en el juego
-  por hablantes nativos: espera frases torpes y algunas etiquetas demasiado anchas para su caja); en esos cuatro idiomas
-  se juega la campaña original del disco.
+  Brasil (con jerga y tono de animes clásicos de los 80/90), y traducida a partir de ella al inglés, francés, alemán,
+  italiano y español. Los cuatro últimos aún no los han leído en el juego hablantes nativos: espera frases torpes y
+  algunas etiquetas demasiado anchas para su caja.
 - **El equilibrio general del juego.** Hasta ahora se equilibró solo por cálculo. Lo estoy jugando en paralelo y
   publicando hotfixes sobre la marcha, la Chosen Evolution y los combates secretos del final incluidos.
 

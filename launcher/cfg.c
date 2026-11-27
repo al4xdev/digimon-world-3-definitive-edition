@@ -145,9 +145,9 @@ void cfg_set_fight_place(Cfg *c, int right) {
 
 void cfg_defaults(Cfg *c) {
     memset(c, 0, sizeof(*c));
-    c->hz = 60; /* the game's own NTSC mode (owner, 2026-11-24; it was 50) */
+    c->hz = 60; /* the game's own NTSC mode (it was 50) */
     c->ff = 3;
-    c->load = 3; /* faster loading on at 8x (owner, 2026-11-18; it was 4x) */
+    c->load = 3; /* faster loading on at 8x (it was 4x) */
     c->bmem = 1;
     c->bbuf = 1;
     c->led = (!is_pc && !is_android);
@@ -164,7 +164,7 @@ void cfg_defaults(Cfg *c) {
     c->update_check = 1;
     c->sync_enabled = 1;
     c->sync_interval_min = 10;
-    /* Fight on the bottom face button, Tag on the right (the owner, 2026-11-23; the "Fight button" row restores the
+    /* Fight on the bottom face button, Tag on the right (the "Fight button" row restores the
      * old Fight right, Tag bottom) */
     int h[H_COUNT] = {K_SOUTH, K_R1, K_NORTH, K_EAST, K_L1, K_WEST, K_L2, K_R2};
     memcpy(c->hud, h, sizeof(h));
@@ -497,7 +497,7 @@ void cfg_load(Cfg *c) {
         }
     }
     if (f) fclose(f);
-    /* Migration (2026-11-22): the Android launcher's remap stored a row's new button without its letter, so the pad read
+    /* Migration: the Android launcher's remap stored a row's new button without its letter, so the pad read
      * as LAYOUT_CUSTOM and every glyph fell back to the PS1 shapes. No screen reaches LAYOUT_CUSTOM on purpose (cycling
      * the glyphs leaves it for PS1), so a pad.map in it is that bug's: keep every button, and give the letters back from
      * the layout most rows still match. */

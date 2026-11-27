@@ -5,8 +5,7 @@ How this game runs as a native program on [psxstack](../psxstack): what is this 
 runtime, the memory arena, the overlays, the pump, the debug channel, the Psy-Q shim, rendering, sound and the crash
 report are psxstack's `docs/PORT.md`; building and running the binary, its options, the per-frame log and the record
 formats are psxstack's `docs/RUNTIME.md`; the shim's per-function behaviour is psxstack's `psyq/README.md`; sound is
-in `docs/SOUND.md`. The choices behind this design are in `docs/DECISIONS.md` (its PC port entries). The measured
-case for a GPU backend - and what the device answered - is in `docs/gpu/`.
+in `docs/SOUND.md`.
 
 ## Overview
 - The game's C (`src/`, all 388 units) is compiled for the host with `-DPC_PORT -DNON_MATCHING` and linked with
@@ -77,7 +76,7 @@ needs that path). `tier` is a slot's 1-based index in `port/game/game.json`'s `m
 wrapped). The mods' flags (`port_mod_skip_dialogues`, `port_mod_battle_animations`, `port_battle_cut`) are also
 declared there; they are read only inside `#ifdef PC_PORT` blocks.
 
-**The adapter** (DECISIONS "The port is split into runtime and game adapter"; psxstack's `GAME_CONTRACT.md` "4"): the
+**The adapter** (psxstack's `GAME_CONTRACT.md` "4"): the
 runtime reaches the game only through `psxstack/game.h` (`game_main`, `game_apply_rate`, the `game_state_*` probes and
 checkpoint image, `game_state_read`/`game_state_host` for PS1 addresses outside the arena, `game_mods`), implemented
 in `port/game/`. The probes read `overlay_module.stage`/`.file`, `gamestate_data.map`, `pad_random.index` and the
@@ -176,7 +175,7 @@ battle state of `port/game/definitive.c`). The debug channel's `save_state`/`loa
 - **Coverage of the game:** the replays reach 14 of 19 tier-1 overlays and a small share of the WSTAG files; the
   debug overlays (STAGSLCT, SOUNDTST, SHOCKTST) and WFIGHTTS cannot be reached by pad input.
 - **Windows (run under Wine and Proton, not yet on real Windows):**
-  - *Build:* the cross build (DECISIONS "Windows: cross-built from Linux"): `scripts/setup.sh llvm-mingw
+  - *Build:* the cross build: `scripts/setup.sh llvm-mingw
     sdl3-windows`, psxstack's CMake toolchain file `psxstack/cmake/windows-x86_64.cmake`,
     `.ci-cd/windows/build_windows.sh [--launcher] [--test]` (the game into `build/port-win`, the launcher into
     `build/launcher-win`, the launcher's self-test under Wine) and `tools/port_inventory.py probe --target windows`

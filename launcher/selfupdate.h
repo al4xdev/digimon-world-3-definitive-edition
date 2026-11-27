@@ -4,7 +4,7 @@
 #include "update.h"
 
 /* The launcher installing a newer release over itself (Windows and the Linux AppImage), with dw2003-updater
- * (updater.c) doing every file operation; .plan/tasks/launcher-auto-updater.md has the design. This side decides whether
+ * (updater.c) doing every file operation. This side decides whether
  * it can, starts the updater from a COPY (<work>/run/), and shows what it says: the old launcher stays up on its
  * minigame meanwhile and only closes when the player says so. */
 enum {

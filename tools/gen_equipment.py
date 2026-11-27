@@ -68,7 +68,7 @@ STAT = {1: "Power", 2: "Guard", 3: "Spirit", 4: "Wisdom", 5: "Boost", 6: "Charis
 ENUM = {v: k for k, v in BONUS.items() if k != "0"}
 FAMILIES = [(8,), (9, 10), (11,), (12, 13), (14,)]  # definitive_mask.c's: Fire, Water+Ice, Wind, Thunder+Machine, Dark
 SPEED, ELEMENT, TANK, ELEMENT_WEAPON, TRADE = 0, 1, 2, 3, 4
-# The Elemental weapons (the owner's list of 2026-11-17): one per tier, two in the last, picked
+# The Elemental weapons: one per tier, two in the last, picked
 # by hand so every Rookie gets one and the families rotate. Each is a plain one-handed weapon that gives up
 # ELEMENT_WEAPON_COST % of the tier's best power for its family's resists (the heads give up guard instead), at most
 # DEF_EQUIP_ELEM_MAX each. The game sees an Elemental piece (DEF_EQUIP_ELEMENT) with the weapon's fields.

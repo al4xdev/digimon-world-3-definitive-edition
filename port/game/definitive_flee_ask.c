@@ -1,4 +1,4 @@
-/* The battle's escape asks first (owner, 2026-11-19: one press on Escape fled at once, an easy slip). Choosing Escape
+/* The battle's escape asks first (one press on Escape fled at once, an easy slip). Choosing Escape
  * in the command menu opens this question instead of acting (fightstg_command_update's substep 10): the confirm button
  * flees, the cancel button (or triangle) goes back to the menu. It is the Overlevel Rush question's panel
  * (definitive_rush_panel.c): a heading in the callouts' polygon letters and, under it, the two answers after their

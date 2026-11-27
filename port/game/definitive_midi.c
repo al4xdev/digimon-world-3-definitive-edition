@@ -49,7 +49,7 @@ void dw3_midi_sound_forget(void); /* sound.c: the sound entries that hold the ba
 #define DW3_MIDI_BANK 74 /* after the Velvet Room's 72 and the Adventure score's 73 */
 #define OBOE_PROGRAM 5       /* BGM031's reed: its tone is centred two octaves off for the notes a score plays */
 #define OBOE_CENTER 62
-/* The "middle setting" (owner, 2026-11-23): the bank's own tones attack in 0.2-2 ms (a click) and release in 6-46 ms (the note
+/* The "middle setting": the bank's own tones attack in 0.2-2 ms (a click) and release in 6-46 ms (the note
  * is cut at its note-off), which no file was written for. Every melodic tone of the piece gets the same linear attack
  * (~46 ms) and release (~186 ms), the SPU's nearest shift/step to what the Velvet Room's score picks per instrument
  * (tools/gen_velvet_music.py), and the reverb flag, with LIBSND's reverb (type 3, depth 64) raised by the piece and put

@@ -445,7 +445,7 @@ void wfightmn_main_update(WfightmnMain *obj, WfightmnMainData *data) {
                         fightstg_events_add_party_turn(0);
 #ifdef PC_PORT
                         /* definitive combat: the enemy's first turn comes after its own full delay, not half the
-                         * player's, so a faster party gets its extra actions from the start (owner's request) */
+                         * player's, so a faster party gets its extra actions from the start  */
                         if (def_on()) {
                             fightstg_events_add_enemy_turn(fightstg_events.get_delay(0x10, 0));
                         } else
@@ -1233,7 +1233,7 @@ void wfightmn_blast(WfightmnMain *obj, WfightmnMainData *data) {
             def_blast_started(id); /* Blast Gauge phase 1: the battle's end takes its price from this Digimon */
 #endif
 #ifdef PC_PORT
-            /* No duration timer (owner, 2026-11-20): the Blast and Chosen forms last until a KO, a switch or the battle's
+            /* No duration timer: the Blast and Chosen forms last until a KO, a switch or the battle's
              * end, since One More made the timed return read as a bug. Without the 0x13 event nothing else ends the form. */
             if (!def_on()) {
                 fightstg_events_start_blast(id);
@@ -2180,7 +2180,7 @@ s32 wfightmn_cap_damage(u8 side, s32 value, s32 count) {
     return value;
 }
 
-/* The overlay's .data (DECISIONS "Data in C, split per object"): all of it is this file's. */
+/* The overlay's .data: all of it is this file's. */
 RECT wfightmn_screen_rect = { 0, 0, 320, 240 };
 WfightmnKindEffect wfightmn_kind_effects[7] = {
     { 2, 19, 26 }, { 3, 20, 26 }, { 4, 21, 27 }, { 5, 22, 50 }, { 6, 26, 50 }, { 8, 28, 39 }, { -1, 37, 49 },

@@ -1,15 +1,15 @@
 /* The Super Rare hunts, the game's side (the rules are definitive_superhunt.c).
  *
  * The Sepikmon of the Velvet Room (definitive_velvet.c) says his line and his board opens: every hunt with its level,
- * its state and its target's name (locked ones too: the owner wants the levels shown from the start, "whoever wants to
+ * its state and its target's name (locked ones too: the levels are shown from the start, "whoever wants to
  * try, tries"), and for the one under the cursor where it roams, the HP it has left or the crystals held and their
  * price. The confirm button starts an open or finished hunt (one at a time) or, pressed twice, cancels the active one
  * (its target heals); the square sells one of the chosen hunt's crystals for its price. The first time the board opens
  * it gives the tutorial hunt (Ogremon in Central Park) at once. R1 turns the board to the hero's skins (definitive_skins.c:
- * each hunt won unlocks one, so the hunts' master hands them out; the owner's of 2026-11-17, no NPC of their own): the
+ * each hunt won unlocks one, so the hunts' master hands them out; no NPC of their own): the
  * confirm button wears an unlocked one, a locked one names the hunt that opens it; L1 turns back.
  *
- * The story sends the player to him (definitive_story.c, owner's of 2026-11-17): in Seiryu City the Leader is gone
+ * The story sends the player to him (definitive_story.c): in Seiryu City the Leader is gone
  * and the Guide asks for the Sepikmon, whose tutorial is the hunt that finds him. Meeting him earlier through any inn's
  * door counts the same.
  *

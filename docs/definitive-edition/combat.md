@@ -15,7 +15,7 @@ one weakness or one resistance. Every enemy has its own, counted in families:
   or struggle;
 - from level 45 on, enemies are weak to two families and resist two, and so are bosses;
 - the final boss is weak to one family and to Dark, and resists three; its second phase (Galacticmon 466) resists Dark
-  instead of being weak to it, so a Dark build cannot burst it down (owner, 2026-11-24);
+  instead of being weak to it, so a Dark build cannot burst it down;
   the three phases also carry 150% of the disc's HP (5040, 3600 and 5400 become 7560, 5400 and 8100: `def_boss_hp`,
   `DEF_FINAL_HP_PCT`);
 - Dark is rare on both sides: only a handful of enemies are weak to it (eight common species, from Numemon to
@@ -33,11 +33,19 @@ at the moment of the hit, so a debuff that takes a neutral family to 80 or less 
 ### Stagger and One More
 
 **Only magic carries an element.** Every elemental physical technique the player can learn became magic, its power
-recalibrated to the magic table (MP costs unchanged), so a physical technique or a basic attack is purely physical.
-The technique lists show it where the game drew its red (physical) and blue (magic) class marks: a fist for a physical
+recalibrated to the magic table (MP costs unchanged), so a physical technique or a basic attack is purely physical. The
+technique lists show it where the game drew its red (physical) and blue (magic) class marks: a fist for a physical
 technique, the element's picture for elemental magic, the Spirit picture for magic with no element; healing and support
-keep the game's mark. An enemy using one of these techniques casts it as magic too.
-Thirteen player signature techniques that had no element as physical blows became magic (owner, 2026-11-24, elements from his pop-culture research): Fire: WarGreymon's Terra Force, Taomon, Marsmon, Seraphimon; Machine: Armormon, Paildramon, Cannondramon, Imperialdramon-F; Dark: Beelzemon, Devimon, Imperialdramon, GranKuwagamon; and no element: Omnimon's T-Sword and Imperialdramon-P's Omega Blade. Each one's power (times its hits) keeps the rank its physical blow had among the signatures of about the same MP, carried to the same rank among the player's magic of that MP (ratio kept within 0.7..1.4, a hit never past 800). Left physical on purpose: the counter stance of Gallantmon's Final Purification and Grizzmon's Maul Attack (a counter does not go through the technique's damage), Hookmon's Captain Cannon (its critical chance is a physical blow's) and the ones the research left as pure physical (Kumamon, Monmon, Veemon, Dinohumon, Stingmon, GrapLeomon, Rosemon, GuardiAngemon).
+keep the game's mark. An enemy using one of these techniques casts it as magic too. Thirteen player signature
+techniques that had no element as physical blows became magic (elements from his pop-culture research): Fire:
+WarGreymon's Terra Force, Taomon, Marsmon, Seraphimon; Machine: Armormon, Paildramon, Cannondramon, Imperialdramon-F;
+Dark: Beelzemon, Devimon, Imperialdramon, GranKuwagamon; and no element: Omnimon's T-Sword and Imperialdramon-P's Omega
+Blade. Each one's power (times its hits) keeps the rank its physical blow had among the signatures of about the same
+MP, carried to the same rank among the player's magic of that MP (ratio kept within 0.7..1.4, a hit never past 800).
+Left physical on purpose: the counter stance of Gallantmon's Final Purification and Grizzmon's Maul Attack (a counter
+does not go through the technique's damage), Hookmon's Captain Cannon (its critical chance is a physical blow's) and
+the ones the research left as pure physical (Kumamon, Monmon, Veemon, Dinohumon, Stingmon, GrapLeomon, Rosemon,
+GuardiAngemon).
 
 Hitting a weakness with elemental magic **staggers** the enemy (it takes its tired pose) and gives you **one
 more** action. Each weak family gives its extra action once per round (a round starts with each normal action; an
@@ -53,9 +61,9 @@ lends a basic attack, never staggers.
 - **You hear and see how a technique landed**: a slanted **WEAK!** or **RESIST!** over the enemy, and a distinct
   sound for a weakness, a neutral hit and a resisted one.
 - **You open the fight** unless you are ambushed. Speed no longer decides who starts. An enemy twice as fast as your
-  active Digimon acts twice (the disc's rule), and the INFO panel's turn queue shows it; a faster party counts only the square root
-  of its lead, so it needs four times the enemy's speed to act twice every time (`def_turn_speeds`, in
-  `fightstg_events_get_delay`; owner, 2026-11-22): the party's extra actions are One More's and Baton Pass's.
+  active Digimon acts twice (the disc's rule), and the INFO panel's turn queue shows it; a faster party counts only the
+  square root of its lead, so it needs four times the enemy's speed to act twice every time (`def_turn_speeds`, in
+  `fightstg_events_get_delay`): the party's extra actions are One More's and Baton Pass's.
 
 <p align="center"><img src="../images/definitive/stagger.svg" width="800" alt="Hit a weakness: WEAK!, the enemy staggers, ONE MORE! Then hit a weakness again, Baton Pass, or any other blow, which gets the bonus and ends the stagger."></p>
 
@@ -159,7 +167,7 @@ way round, an enemy's magic of power 100 (stat scale 16, so × 1) with Spirit 15
   counting both its elements) by 80, and **Mega Break** your two strongest families by 100 each, for three of the
   enemy's turns. On a neutral family that opens a weakness that was not there; a resisted one (300) only drops to
   neutral. In an enemy's hands 202, 203 and 207 all act as Resist Down (80, your best family) and 208 as Mega Break
-  (100, your two best), for 3 turns; Libra and Relay mean nothing to an enemy (owner's choice; `def_tech_effect`).
+  (100, your two best), for 3 turns; Libra and Relay mean nothing to an enemy (`def_tech_effect`).
 - The HUD shows every active buff and debuff as an up or down arrow beside the Digimon, on both sides; a lowered
   elemental resistance shows as a down arrow in the element's colour, one per family.
 
@@ -208,13 +216,14 @@ draining MP with every blow, to teach you the rule.
   still gives its extra action): physical blows and counters always take 30%; **speed** (two chevrons): its Speed is the party's times n; a **lowered Defense** (a
   cracked block). At the traits row's right end, for every enemy, the **next turns** as a queue of chips (red diamond
   the enemy, blue disc you): two diamonds before the disc is an enemy that acts twice (the old "Enemy x2" label). The values of a phase not learnt yet stay `???`.
-- **Where the red guard is** (owner, 2026-11-24): against a party that plays only physical, which no guard ever stops
-  for long, and kept rare, since magic finds it easy. The first is its gatekeeper, the Vemmon of the Admin Center's
-  story fight (Lv28): the weakest Digimon of its levels raised to the Lv28 bosses (HP 1584, twice its own; Power
-  x1.8) and acting twice per action of yours, each blow draining 6.25% of the target's max MP (its own technique,
-  431), its two weaknesses kept, so the fight teaches the guard. Campaign commons that always have it: Blossomon (34), Kurisarimon (40), Tuskmon (42), Shadramon (47), Machinedramon (51), Apokarimon (56); Creepymon (55) has the
-  orange guard in one phase and the red one in the other. The story's BK WarGreymon (Lv53) is weak to Dark alone,
-  resists every other family and has the red guard, its HP untouched.
+- **Where the red guard is**: against a party that plays only physical, which no guard ever stops for long, and kept
+  rare, since magic finds it easy. The first is its gatekeeper, the Vemmon of the Admin Center's story fight (Lv28):
+  the weakest Digimon of its levels raised to the Lv28 bosses (HP 1584, twice its own; Power x1.8) and acting twice per
+  action of yours, each blow draining 6.25% of the target's max MP (its own technique, 431), its two weaknesses kept,
+  so the fight teaches the guard. Campaign commons that always have it: Blossomon (34), Kurisarimon (40), Tuskmon (42),
+  Shadramon (47), Machinedramon (51), Apokarimon (56); Creepymon (55) has the orange guard in one phase and the red one
+  in the other. The story's BK WarGreymon (Lv53) is weak to Dark alone, resists every other family and has the red
+  guard, its HP untouched.
 - **Libra** reveals all of an enemy's elements at once.
 - The **Bestiary** (field menu) keeps what you learnt of every species, saved with your game, and lists its Hunt
   Materials: the common one with how many you hold, and its rare items as a collection (see [The hunt](hunt-and-economy.md#the-hunt)).
@@ -255,23 +264,6 @@ selectable **Xbox / Nintendo / PS1** button glyphs.
 
 ![The direct-button battle HUD and the INFO panel](../images/definitive/shots/battle-inspect.png)
 
-### The combat layers, with the owner's decisions
-
-The combat PRD was built in layers 0-10 (the older PRDs 2 and 3 added layers A-J and the mod-to-native move):
-
-- **0** closed without a baseline table; the battle log (`DW3_BATTLE_LOG`) is enough to measure.
-- **1** text override: hooks `font_get_entry` (`src/main/font.c`), so any text can be replaced from
-  `tools/text_override/`.
-- **2-3** weakness table and stagger/chain (the multiplier and the Baton Pass above).
-- **4** turn order: the player opens unless ambushed; the enemy's first turn comes after its full delay.
-- **5** the Overfinish (10% of the damage in Bits, `DEF_OVERFINISH_BITS_PCT`).
-- **6** the four remade techniques: Libra (202), Relay (203), Resist Down (207), Mega Break (208).
-- **7** Defense defends against magic; the old "Tolerance" texts became "Affinity".
-- **8** the MP table: Kotemon, Kumamon, Monmon and Guilmon 140 MP, gain 57; Veemon 150; Guilmon gain 60.
-- **9** the bestiary save.
-- **10** balance: the owner tunes it.
-- PRD 3: the launcher mods `evo_buff`, `party_xp` and `xp_boost` were removed and became the game's own rules.
-
 ### Constants worth knowing
 
 `DEF_WEAK_MAX` 80, `DEF_RESIST_MIN` 250 (a family's resistance: weak at 80 or less, resisted at 250 or more). Resisted
@@ -287,28 +279,24 @@ enemy's element is measured against when it hits the player. Resist Down / Mega 
 `DEF_BREAK_MEGA_DELTA` 100, `DEF_BREAK_TURNS` 3; on a boss the original made immune, a stat debuff is scaled by
 `DEF_BOSS_DEBUFF_PCT` (100). `DEF_RELAY_MP` 50. TP: `DEF_TP_GAIN_LV_2_20` 7, `DEF_TP_GAIN_LV_21_40` 9,
 `DEF_TP_GAIN_LV_41_50` 30, `DEF_TP_GAIN_LV_51_UP` 0, `DEF_TP_CAP` 99. Short digivolution: hold Circle or Cross
-`DEF_EVO_SKIP_HOLD_FRAMES` (4) frames (the PRD's switch `DEF_EVO_ANIM_SKIP` never existed in code).
+`DEF_EVO_SKIP_HOLD_FRAMES` (4) frames.
 
-### Combat design record (details from the PRDs that the sections above summarise)
-
-Working rules of the PRDs (kept because they explain why the code looks as it does):
+### How combat hooks into the game
 
 - **Not a mod.** Always on, no `mod.json` option, no `port_mod_*` flag. Game C is touched only under `#ifdef PC_PORT`
   with short hooks; new battle state goes into `game_savestate` (`port/game/game_mods.c`). Disc data is never edited or
   versioned: enemies (`SDIGIEDT.PRO`) and texts (`ES*.BIN`) change through port override tables, techniques and Digimon
   (`src/main/records.c`, matching source) through a patch applied at port boot. Fractions are fixed point (the game uses
-  no float). Removing a file: move it to `/tmp`, never `rm`.
+  no float).
 - **Vocabulary.** Elements, fixed order: Fire, Water, Ice, Wind, Thunder, Machine, Dark = `resists[0..6]`. In a technique
   `RecordsTechnique.defense_stat` 2..8 is the element (`resists[defense_stat - 2]`), 1 = none; `RecordsTechnique.element`
   is the class (2 physical, 3 magic, 4 heal, 5 buff/debuff, 6 field). Stats: `stats[0]` Strength, `[1]` Defense, `[2]`
   Spirit, `[3]` Wisdom, `[4]` Speed. `side == 0` is the player attacking; `fightstg_rules.stats[0]` is the attacker and
   `[1]` the target. Only the final boss has `state.type == 6`; other bosses are recognised by `records_state.blocked[]`.
-- **Layer 0 decision (2026-11-12):** closed without a baseline table, no autoplay and no `DW3_FORCE_BATTLE`; the owner
-  balances by playing. Rule checks are host tests with calculation, not play. Layer 10 (balance) is the owner's, done on the
-  constants of `definitive.h`. The owner's guidance for it: if a boss falls in 2-3 turns, **raise boss HP first** (a
-  constant multiplier on `RecordsEnemy.hp` of boss fights) and only then touch magic; only if the magic team still loses
-  badly to the physical one revisit the `[power/2, 2 x power]` clamp of `get_special_damage`.
-- **The battle log (`DW3_BATTLE_LOG=<file>`, layer 0's measuring tool).** One plain-text line per event (`definitive.c`
+- **Balance:** the numbers are constants of `definitive.h`. If a boss falls in 2-3 turns, **raise boss HP first** (a
+  constant multiplier on `RecordsEnemy.hp` of boss fights) and only then touch magic; the `[power/2, 2 x power]` clamp of
+  `get_special_damage` is the last resort. Rule checks are host tests with calculation, not play.
+- **The battle log (`DW3_BATTLE_LOG=<file>`).** One plain-text line per event (`definitive.c`
   `LOG`): `battle` (id, kind, type) with a line per party member and per enemy (digimon, level, HP, MP, scale); `turn`
   (side, number, member); `action` (side, kind, technique, class, element, power, MP); `damage` (value, the target's HP
   before and after) with a `mult` line (the multiplier and its terms: weak, open, resisted, affinity); `end battle`
@@ -316,19 +304,18 @@ Working rules of the PRDs (kept because they explain why the code looks as it do
   `extra action granted`, `baton pass`, `relay swap`, `stagger closed by the enemy's turn`, `libra`, `resist down`,
   `overfinish damage`, `twice E Pe P` (the "Enemy x2" test), `blast gauge`, `mod` lines. The battle code calls
   `def_log_begin`, `def_log_turn`, `def_log_action` (`fightstg_80086A00.c`, `wfightmn_800A6440.c`) and `def_log_end`.
-  The PRD's acceptance checks of layers 2-4 (chain, window, close, free swap) were read from this log. The first plan
-  of measuring 4-6 bosses with a physical and a magic team (`baseline.md`) was dropped.
-- **Layer 2 (HUD, Inspect, sound, "Enemy x2").** The HUD became mandatory (the list menu is unreachable). Three distinct
-  sounds (weak, neutral, resisted) are picked from effects the battle already loads. The "Enemy x2" indicator (since 2026-11-24 the INFO panel's turn queue, `def_turn_queue`, read once per menu) shows when
-  `E + Pe < P`, where E is the enemy's remaining turn delay in the queue, Pe = `get_delay(0x10, 0)` and P the player's
-  remaining delay after the current action (`get_delay(0, 0)`); `get_delay` of type 0 draws nothing but **overwrites
-  `fightstg_rules.stats[]`**, so call it only with the command menu open, never in the middle of a damage calculation.
-- **Layer 3 (enemy table), the generator's rules** (`tools/gen_enemy_weaknesses.py`, fixed seed 20261112, `--apply` writes
-  `port/game/definitive_enemies.c`, a readable proposal goes to `.dumps/tasks/persona/fraquezas.md`):
-  - archetypes by family: plain 2 weak + 1 strong, wall 1 + 2 (about 20% of the mobs of level <= 30), late 2 + 2 (level >=
-    45), boss 2 + 2 and final boss 1 + 3 (plus its Dark mark); the original asked 2 + 3 for bosses but only four
-    families exist outside Dark, so it did not fit. Weak = 60, strong = 300 (or the disc's own value from 250), neutral
-    100..115 (the current value when already there), the same for both elements of a pair;
+  Chain, window, close and free swap can be
+  checked from this log.
+- **Sound and turn queue.** The list menu is unreachable. Three distinct sounds (weak, neutral, resisted) are picked
+  from effects the battle already loads. The INFO panel's turn queue (`def_turn_queue`, read once per menu) shows two
+  enemy turns first when `E + Pe < P`, where E is the enemy's remaining turn delay in the queue, Pe = `get_delay(0x10,
+  0)` and P the player's remaining delay after the current action (`get_delay(0, 0)`); `get_delay` of type 0 draws
+  nothing but **overwrites `fightstg_rules.stats[]`**, so call it only with the command menu open, never in the middle
+  of a damage calculation.
+- **Enemy table** (`port/game/definitive_enemies.c`, hand-maintained). The rules it follows:
+  - archetypes by family: plain 2 weak + 1 strong, wall 1 + 2 (about 20% of the mobs of level <= 30), late 2 + 2 (level
+    >= 45), boss 2 + 2 and final boss 1 + 3 (plus its Dark mark); Weak = 60, strong = 300 (or the disc's own value from
+    250), neutral 100..115 (the current value when already there), the same for both elements of a pair;
   - the "house" family of a species (the family of its techniques' commonest element, else of its one high resist, else
     of its type) is never a weakness and is the natural strong resistance; a plain species that already has exactly two
     weak families keeps them, otherwise they are filled by opposition to the house element, then by balance, so the
@@ -338,8 +325,7 @@ Working rules of the PRDs (kept because they explain why the code looks as it do
     Armageddemon, VenomMyotismon, LadyDevimon, Phantomon, Mummymon, Ghoulmon, Gargoylemon, Apokarimon. The rule: resisting
     Dark is as rare as being weak to it so Dark stays a useful element;
   - `def_weakness_mask` marks the whole family when one of its values is at `DEF_WEAK_MAX` (80) or less, with **no median
-    and no cap**: a Break that creates a third weakness hides no natural one. (The first design used a median and
-    `DEF_WEAK_GAP` / `DEF_WEAK_COUNT`; they are gone.)
+    and no cap**: a Break that creates a third weakness hides no natural one.
   - where the table enters: `fightstg_enemy_get_record` (`fightstg_8008D3B4.c`, found by `fightstg_enemy_find_record` in
     file 0x1CF) calls `def_enemy_override` on the record in memory, so the disc's SDIGIEDT is never edited; the field's
     own SDIGIEDT reads call it too (`definitive.c`), and a purification's dark form (no disc record) comes from
@@ -348,59 +334,56 @@ Working rules of the PRDs (kept because they explain why the code looks as it do
     adds Dark as an extra weakness outside any count. Stagger and chain state is a `DefChain` in `definitive_mask.c`
     (`staggered[3]`, `extra_pending`, `next_extra` / `cur_extra`, `window_used`, `swap_used`, `relay`); a Baton Pass or
     a Relay swap sets `extra_pending`, so the free swap keeps the turn.
-- **Layer 4 (stagger).** One flag per enemy (`def_staggered[3]`), unrelated to HP. It opens when the player hits a weakness
-  with an elemental technique (`defense_stat >= 2`); a physical blow with no element and a crest's element (`attack_element`)
-  never open it. It closes when the staggered enemy takes the next player blow (which still gets the bonus) or acts. A
-  multi-hit technique counts as one blow. The next player turn is rescheduled at command time (`wfightmn_party_turn`, end of
-  step 2), before the blow resolves, so on a hit set `extra_pending` and when the action ends find the player's turn in the
-  queue (`fightstg_events.find(2)`) and zero its delay (check the tie rule of `fightstg_events_take_next`). With 2 actions
-  from speed and 2 weaknesses the chain is up to 6 actions: that is design, not a bug. The chain is the player's only; the
-  PRD flagged "does the enemy get an extra action" as to confirm with the owner; the code answers no (checked 2026-11-18:
-  `def_action_resolved` returns at `side != 0`, `def_chain_enemy_acts` only closes the stagger, and `extra_pending` is set
-  only by the player's hits and free swaps in `definitive_mask.c`). The staggered pose comes from the flag on the enemy side (never from HP;
-  the low-HP pose is removed on the player side), and the final boss shows its tired pose when `final_phase || staggered`.
-  The Tag button shows a different icon while a free swap is available. A save state in the middle of a chain restores equal.
-- **Layer 5 acceptance cases** used by the host test (`tests/port/definitive_driver.c`): neutral 1.0; weakness 1.5;
+- **Stagger.** One flag per enemy (`def_staggered[3]`), unrelated to HP. It opens when the player hits a weakness with
+  an elemental technique (`defense_stat >= 2`); a physical blow with no element and a crest's element
+  (`attack_element`) never open it. It closes when the staggered enemy takes the next player blow (which still gets the
+  bonus) or acts. A multi-hit technique counts as one blow. The next player turn is rescheduled at command time
+  (`wfightmn_party_turn`, end of step 2), before the blow resolves, so on a hit set `extra_pending` and when the action
+  ends find the player's turn in the queue (`fightstg_events.find(2)`) and zero its delay (check the tie rule of
+  `fightstg_events_take_next`). With 2 actions from speed and 2 weaknesses the chain is up to 6 actions: that is
+  design, not a bug. The chain is the player's only; the enemy gets no extra action (`def_action_resolved` returns at
+  `side != 0`, `def_chain_enemy_acts` only closes the stagger, and `extra_pending` is set only by the player's hits and
+  free swaps in `definitive_mask.c`). The staggered pose comes from the flag on the enemy side (never from HP; the
+  low-HP pose is removed on the player side), and the final boss shows its tired pose when `final_phase || staggered`.
+  The Tag button shows a different icon while a free swap is available. A save state in the middle of a chain restores
+  equal.
+- **Multiplier cases** checked by the host test (`tests/port/definitive_driver.c`): neutral 1.0; weakness 1.5;
   weakness + stagger with full Fire affinity 1.0 + 0.5 + 0.2 + 0.4 + 0.4 = 2.5; the Water + Ice pair with 999 + 0 gives
   0.4 of affinity (half the pair's 0.8), 999 + 999 gives 0.8. The magic clamp
-  `[power/2, 2 x power]` was deliberately not changed. Status rolls still read the player's resists as before.
-- **Layer 5 hook points.** With `def_on` the multiplier replaces the element step of `fightstg_rules_scale_damage`
+  `[power/2, 2 x power]` is the original's. Status rolls still read the player's resists as before.
+- **Damage hook points.** With `def_on` the multiplier replaces the element step of `fightstg_rules_scale_damage`
   (physical, `def_scale_physical`) and the resist bands of `fightstg_rules_get_special_damage` (magic, `def_scale_magic`)
   when the player attacks. When an enemy's element hits the player the old scale stays, with the player counted at
   `DEF_PLAYER_REF_RESIST` (100): physical `value + value * power * 2 / 100`, magic unchanged (the old bands at resist 100
-  are 100%). Layer 7's Defense against magic is `def_magic_defense` in the same function. The staggered pose is set
+  are 100%). Defense against magic is `def_magic_defense` in the same function. The staggered pose is set
   through `wfightmn_update_idle_anim`; the Baton Pass is a row of the swap menu (`fightstg_switch_menu_update`).
-- **Layer 6 (techniques).** `records_techniques[]` is global: re-aiming a technique changes every form and enemy that uses
-  it, so list who uses an ID first (`.dumps/tasks/persona/techs.txt`, regenerate with `tools/venv/bin/python
-  .dumps/tasks/persona/dump.py`). Remade: 202 Speed Up -> Libra, 203 Mega Boost -> Relay (50 MP), 207 Slow Down -> elemental
-  resist debuff, 208 Mega Break -> stronger or wider. Inheritance stays as it was (Digi-Lab mark, +20% MP, no new limit).
-  Candidates the PRD listed to become elemental techniques (the owner approves before any is applied): 129, 130 (empty);
-  194, 195 (no form learns them); 146, 148, 204, 211, 212 (enemy only: do not change the record); 131-136 (Busters per
-  type); 213-219 (Fields); 190, 192; 127, 128. Goal: every evolution line reaches at least 2 elements and none all 6
-  (unverified how far this went; see `definitive.c` `patch_techniques` and `def_mod_tech_spec`).
-- **Layer 7 texts.** The status menu's "Tolerance" of the 7 elements became affinity; text that described Spirit as defence
+- **Techniques.** `records_techniques[]` is global: re-aiming a technique changes every form and enemy that uses it, so
+  list who uses an ID first. Remade: 202 Speed Up -> Libra, 203 Mega Boost -> Relay (50 MP), 207 Slow Down -> elemental
+  resist debuff, 208 Mega Break -> stronger or wider. Inheritance stays as it was (Digi-Lab mark, +20% MP, no new
+  limit). See `patch_techniques` (`definitive.c`) and `def_mod_tech_spec`.
+- **Texts.** The status menu's "Tolerance" of the 7 elements became affinity; text that described Spirit as defence
   was corrected (`ESSTATUS` 92-98, `ESTRAINI` 29+).
-- **Layer 8 originals** (start MP -> new, gain per level -> new): Kotemon 100 -> 140 and 55 -> 57; Kumamon 10 -> 140 and 30 ->
+- **MP originals** (start MP -> new, gain per level -> new): Kotemon 100 -> 140 and 55 -> 57; Kumamon 10 -> 140 and 30 ->
   57; Monmon 80 -> 140 and 45 -> 57; Veemon 150 (gain 50 -> 57); Guilmon 130 -> 140 (gain 60). Forms have no MP of their own:
   MP is the rookie's (`RecordsDigimon.start_mp`, `hp_mp_gains[1]`). It is applied by a patch at port boot (`def_mp_hook`);
   `tools/convert_save_mp.py` uses the same table, keep both in sync.
-- **Layer 9 (bestiary save), original reasoning:** the card file has 4 blocks and the game used up to 0x7800, the last 0x800
+- **Bestiary save:** the card file has 4 blocks and the game used up to 0x7800, the last 0x800
   were never written, so one 0x100 record per slot went there; absent, unknown version or bad checksum reads as all zero.
   The slot tail is not usable: 0x26C4..0x26EB is the `global_save`, 0x26EC..0x26EF the MP converter marker. Start (bit 0x8,
   free in battle) opens the battle memory; Inspect respects the same table. Wiring: part 5 of `memcard.c`
   (`DEF_BESTIARY_PART`), read by STGMCARD step 0x48 (`def_bestiary_record_read`; any failure reads as an empty table,
   never an error screen) and written by step 0x36 after the slot (`def_bestiary_record_write`); the record is "BEST",
   version, XOR checksum and the 193-byte table (bits 0..6 = element learnt).
-- **Boss immunity (PRD 2 layer A).** `records_state.blocked[12]` per fight: indexes 0-4 and 7 are status and still count;
+- **Boss immunity.** `records_state.blocked[12]` per fight: indexes 0-4 and 7 are status and still count;
   8, 9, 10 are Strength, Defense and Speed reductions, which the definitive edition ignores (the effect enters, scaled by
   `DEF_BOSS_DEBUFF_PCT / 100`, see `def_stat_blocked`); do not touch 5, 6 and 11 (11 is "no escape"). The hunt's boss-fight
   Rare Targets may carry `blocked[11]`, which is why the flee roll is forced before checking it.
-- **Buff reaching magic (PRD 2 layer B).** The engine has 3 modifiers per member (`modifiers[0]` Strength, `[1]` Defense,
+- **Buff reaching magic.** The engine has 3 modifiers per member (`modifiers[0]` Strength, `[1]` Defense,
   `[2]` Speed); Spirit has none. The fix is in `get_special_damage`, not `get_stats` (for an enemy Spirit is magic attack
   and defence at once): the attacker's Spirit is scaled by the Strength modifier ratio, the target's magic-defence stat
   (Defense on the player, Spirit on an enemy) by the Defense modifier ratio; the player's Defense already comes modified, so
   it is not applied twice; the final boss (`type == 6`) keeps its own Defense/Spirit adjustments.
-- **Training facts (PRD 2 layers E and I).** A round succeeds with chance 75 (+3 or +6 with the training item). Trainings
+- **Training facts.** A round succeeds with chance 75 (+3 or +6 with the training item). Trainings
   below id 13 have 3 rounds and an automatic bonus round if all 3 hit; from 13 on, 5 rounds with an optional bonus of chance
   50 (0 if the previous bonus was won). The pity counter is RAM only (not saved: it resets when the game closes), one for all
   Digimon, "perfect" = every normal round hit (resets the counter, anything else adds 1), at `DEF_TRAIN_PITY_AFTER` the next
@@ -416,34 +399,25 @@ Working rules of the PRDs (kept because they explain why the code looks as it do
   level, capped at level 50) - (5 x levels gained up to 50), never negative, respecting the 99 cap; what does not fit is
   lost and `--dry-run` says so. Marker at slot + 0x26EC: `MPV1` is MP only, `DFV2` is MP and TP; the converter is idempotent
   and upgrades `MPV1` to `DFV2` keeping the MP. Original TP: +5 per level (`stfgtrep_add_exp`, `stfgtrep_80082E70.c`).
-- **Blast gauge was a bug of the original:** `records_state.gauges[8]` (s16, 0..1000 per Digimon) lived only in RAM and was
+- **Blast gauge:** in the original `records_state.gauges[8]` (s16, 0..1000 per Digimon) lived only in RAM and was
   cleared at the title (`records_clear_gauges`, `stdwtitl_80085CD4.c`); the port saves it in the slot tail at +0x26F0 (an
   out-of-range value reads as 0, an old save loads with 0, a new game still zeroes it; also in `game_savestate`).
-- **Digivolution requirements (PRD 2 layer J).** Each partner has a list of 44 forms (`stfgtrep_learn_lists[digimon]`,
+- **Digivolution requirements.** Each partner has a list of 44 forms (`stfgtrep_learn_lists[digimon]`,
   `StfgtrepLearn`): up to two required forms with a minimum level (`requires[i] = {form, level}`) and one minimum stat
   (`stat` 1-6 the six stats, 7 the Digimon's level, 8-14 resistances; `min`), checked in `stfgtrep_learn_technique`. The
   Digi-Lab panel is read only, shows one step ahead (`DEF_EVO_HINT_DEPTH` 1; 0 off, 99 all), and the form is still learned
-  at the next level-up as in the original; the numbers were checked against `stfgtrep_learn_lists` for Kotemon and Kumamon.
+  at the next level-up as in the original.
   The panel lists the forms in reach with their requirements met / total ("Ready" in green when all are met), and for
   the chosen form one block per requirement with its current value against the goal, green when met (`EH_PAL_MET`).
-- **Second pass on techniques (PRD 2 layer H, now `def_mod_tech_spec`).** The player had only 13 buff/debuff techniques in 55
-  forms and no attack reduction (technique 204 existed only for enemies); the table "form, technique, current effect,
-  proposed effect, MP" went to `.dumps/tasks/persona/tecnicas-v2.md` for the owner, with the goals one identity per form, at
-  least one attack reduction for the player, and nothing that gives an extra turn (the chain already does). Damage techniques
-  with a side debuff are tier 1 for 2 turns; dedicated single-target ones tier 2 for 3-4 turns;
-  strong or group ones tier 2 for the group or tier 3 on a single target.
-- **Native XP rules (PRD 3), what each launcher mod became.** `party_xp` share 100 (`knocked_out` and `catch_up` removed:
-  a knocked-out member gets no shared XP, no level-gap bonus); `xp_boost` EXP and Bits 1x (path removed), form EXP 14x
-  (disables the original form-EXP cap), all forms on, card boosters 15 per drop (`DEF_XP_PARTY_SHARE`, `DEF_XP_FORM_MULT`,
-  `DEF_XP_ALL_FORMS`, `DEF_CARD_BOOST_PACKS`); `evo_buff` removed with no leftover
-  (`grep -ri "evo_buff\|evo buff\|evo_shield"` outside `.plan/` and `.dumps/` must stay empty). An old `settings.json`
-  with those keys still works (unknown keys are ignored). `all_forms` credits the three chosen forms of each member
-  (the old mod text said "every digivolution the member owns", `LAUNCHER.md` said "the three chosen forms"; the code and
-  the README line are the three chosen). Rules moved to `docs/MECHANICS.md` section 6.
-- **OVERFINISH Bits** were "maybe 0.1" in the PRD, the owner will lower it if it turns out high; the red callout reuses the
-  WEAK!/RESIST! creation flow.
-- **Teleport fix** (PRD 3 roadmap, done): the Guardromon teleport used to spawn the player outside the map with inverted
-  controls; the destination now uses each map's standard start coordinates.
+- **Technique tiers** (`def_mod_tech_spec`): damage techniques with a side debuff are tier 1 for 2 turns; dedicated
+  single-target ones tier 2 for 3-4 turns; strong or group ones tier 2 for the group or tier 3 on a single target.
+  Nothing gives an extra turn (the chain already does).
+- **XP rules:** party share 100 (a knocked-out member gets no shared XP, no level-gap bonus); EXP and Bits 1x, form EXP
+  14x (disables the original form-EXP cap), all forms on, card boosters 15 per drop (`DEF_XP_PARTY_SHARE`,
+  `DEF_XP_FORM_MULT`, `DEF_XP_ALL_FORMS`, `DEF_CARD_BOOST_PACKS`). `all_forms` credits the three chosen forms of each
+  member. An old `settings.json` with the former mods' keys still works (unknown keys are ignored). Rules:
+  `docs/MECHANICS.md` section 6.
+- **Teleport:** the Guardromon destination uses each map's standard start coordinates.
 
 ## Buff and debuff tiers (no stacking)
 
@@ -518,8 +492,8 @@ Stagger the boss first and the same spell lands more than twice as often.
 
 ### The formulas (reference)
 
-Measured in `.plan/tasks/status-balance-report.md` (a level-50 Digimon has median Wisdom 338, Spirit 316 and max HP 3383;
-training gives about 4.1 points per TP).
+A level-50 Digimon by level-ups alone has median Wisdom 338, Spirit 316 and max HP 3383; training gives about 4.1 points
+per TP.
 
 - **Chance** = value + (attacker Wisdom - target Wisdom) / 8 - resist_sum / 8, out of 128. On a boss x0.6
   (`DEF_BOSS_STATUS_PCT` 60); on a staggered target x1.5 + 24; a boss cap of 100/128; the result is clamped to 1..127.
@@ -537,8 +511,8 @@ training gives about 4.1 points per TP).
 | Max Charge (item 46) | 100% | 100% | 9999 | 3000 sell |
 
 The chance scales down by rated max HP / the target's max HP when its max HP is above the rating (never under 15%,
-`DEF_REVIVE_MIN_CHANCE`; `def_revive_chance`; the revives were made scarcer in `d6c9675`). By the fallen ally's max HP
-(computed from that rule, not measured):
+`DEF_REVIVE_MIN_CHANCE`; `def_revive_chance`). By the fallen ally's max HP
+(computed from that rule):
 
 | Max HP | Revive Disk | Life Disk |
 |---|---|---|
@@ -553,62 +527,9 @@ The chance scales down by rated max HP / the target's max HP when its max HP is 
 Max Charge is 100% at any max HP. On a 3000 max HP ally a success costs about 10,000 Bits in Revive Disks (5 of them)
 or 15,400 in Life Disks (1.5).
 
-### Balance measurements behind the status rework (`status-balance-report.md`, simulated from the disc tables and the port's formulas)
-
-Names: Power, Guard, Spirit (`stats[2]`), Wisdom (`stats[3]`, the game's "precision" and the heal's stat), Boost (speed).
-Poison reads Wisdom + Spirit + Wind affinity.
-
-- **A level-50 Digimon by level-ups alone** (8 party species x 40 rolls, no gear, no training): Wisdom p10/median/p90/max
-  305 / 338 / 371 / 401; Spirit 204 / 316 / 382 / 409; max HP 2644 / 3383 / 4629 / 4693.
-- **Training:** pure stat trainings (ids 1-5, below 13: 3 rounds, bonus after 3 wins, `stat_2` = 0 so nothing is lost) with
-  round chance 75 + item (0/3/6) succeed 76/79/82 in 100; cost 1 / 5 / 10 TP per session at trainer level 0 / 1 / 2. About
-  **4.1 points per TP whatever the trainer** (the three tiers are balanced on purpose): 4.09 at 76%, 4.33 at 79%, 4.59 at 82%.
-  The report assumed the original +5 TP per level (245 TP, about 1001 points); with the Definitive TP table (613 by level 50)
-  there is more to spend. Reaching 999 Wisdom from the median 338 costs 661 points = 161 TP of the original 245 (66%), the rest
-  buys about 340 Spirit or Wind resist (153 TP for the best-growth species): 999 Wisdom is reachable at 50 but eats most TP.
-  Profiles used: casual (Wis 250 / Spirit 250), focused (600 / 400), pure (999 / 656, Wind resist about 300 -> affinity 90
-  on the report's straight-line affinity; the convex curve of `a878bc6` gives 36, so the pure profile's poison tick below
-  is about 9 lower today).
-- **Bosses** (kind 2 with at least 9 of 12 `blocked` flags): 48 battles, 47 at level >= 30, 41 at >= 45. Level >= 30: HP p10/
-  median/p90 1776 / 3120 / 5040, precision (Wisdom x scale) 400 / 738 / 1053, median poison resist sum 163. Level >= 45: HP
-  2052 / 3360 / 5040, precision 552 / 750 / 1053, resist sum 164.
-- **Poison damage** (technique powers [80, 88, 96, 127]; tick = power/2 + Wind affinity/6 + Wisdom/4 + Spirit/4, capped at
-  max HP/4 by `def_poison_dot_calc` / `def_poison_cap`; a boss ticks 10 times): casual 164-187 per tick (5.3-6.0% of a median
-  3120 HP boss, 53-60% over 10 ticks), focused 300-323 (96-100%), pure 468-491 (100%); on the p90-HP boss (5040) 10 ticks do
-  33-37% / 60-64% / 93-97%.
-- **Chance to land a status on a boss**, medians over bosses of level >= 30 (chance = effect_chance + (my Wisdom - boss
-  precision)/8 - boss resist sum/8, x0.6 on a boss, then x1.5 + 24 if staggered, boss cap 100/128 = 78%): Poison with the
-  best technique (127): casual 19% normal / 47% staggered, focused 39% / 77%, pure 62% / 78%; with the 72 technique casual 1% /
-  8%. Sleep best (127): casual 20% / 48%, focused 40% / 78%, pure 63% / 78%. Confusion best (127): 19% / 47%, 39% / 77%,
-  62% / 78%. Worst boss with the best technique: casual 1%, focused 5% poison (26% staggered), pure 28% (61% staggered).
-- **The report's full cells** (chance %, normal / staggered, medians over bosses of level >= 30; base chances: Poison
-  [72, 80, 96, 112, 127], Confusion [80, 127], Sleep [80, 96, 127]):
-
-  | Profile | Poison 72 / 96 / 127 | Confusion 80 / 127 | Sleep 80 / 96 / 127 | Worst boss, best tech (P / C / S) |
-  |---|---|---|---|---|
-  | casual, normal | 1 / 4 / 19 | 1 / 19 | 1 / 5 / 20 | 1 / 1 / 1 |
-  | casual, staggered | 8 / 24 / 47 | 14 / 47 | 15 / 26 / 48 | 1 / 1 / 1 |
-  | focused, normal | 13 / 24 / 39 | 17 / 39 | 18 / 26 / 40 | 5 / 1 / 1 |
-  | focused, staggered | 38 / 55 / 77 | 45 / 77 | 45 / 57 / 78 | 26 / 19 / 19 |
-  | pure, normal | 37 / 48 / 62 | 41 / 62 | 41 / 49 / 63 | 28 / 23 / 23 |
-  | pure, staggered | 73 / 78 / 78 | 78 / 78 | 78 / 78 / 78 | 61 / 54 / 54 |
-
-  Training per session (ids 1-5): trainer level 0 / 1 / 2 costs 1 / 5 / 10 TP and gives 4.1 / 20.4 / 40.9 points at a
-  76% round chance, 4.3 / 21.7 / 43.3 at 79%, 4.6 / 23.0 / 45.9 at 82%; the 5-round trainings from id 13 pay more at
-  the same cost and were left out, so these numbers are the safe side. The boss with the lowest HP of the set (912) dies
-  to 10 poison ticks at every profile. Generator: `.dumps/tasks/status_balance_sim.py` (local, gitignored), from the
-  disc tables and the port's formulas (`def_poison_dot_calc`, `def_poison_cap`, `def_revive_hp`,
-  `fightstg_rules_get_heal`); it assumed the original +5 TP per level.
-- **Would it be annoying?** Sleep and Confusion last at most 2 boss turns (`DEF_STATUS_BOSS_TURNS`) and end on any direct hit
-  (`def_wake_on_hit`), so control is for healing and setup, not the damage turn. A sleeping boss regains 6% max HP a turn
-  (12% over 2 turns). Expected attempts for the best Sleep: casual 5.1 normal / 2.1 staggered, focused 2.5 / 1.3, pure 1.6 / 1.3.
-- **Revive for a pure healer:** the report's table used rated HP 400 (Revive Disk) and 1500 (Life Disk); **the code now rates
-  them at 1500 and 4000** (`DEF_REVIVE_T1_RATED_HP`, `DEF_REVIVE_T2_RATED_HP`), so the tables under "Revive items" above are
-  the current ones and the report's numbers are older. Expected cost per success on a 3000 max HP ally in the report: Revive Disk 20% (about 5 items,
-  2000 Bits), Life Disk 42% (about 5952 Bits). Heal = power x 64 + Wisdom x power / 8 (`fightstg_rules_get_heal`, cap 9999),
-  so Wisdom is the healer's stat too: technique 0xB8 (power 8, 16 MP) heals 762 / 1112 / 1511 at Wisdom 250 / 600 / 999; 0xB9
-  (32, 74 MP) 3048 / 4448 / 6044; 0xBA (127, 120 MP) 9999 at any of them; 0xBB (32, 188 MP) like 0xB9; 0xBC (64, 240 MP) 6096 /
-  8896 / 9999; 0x190 (8, 0 MP) like 0xB8.
+**Healing:** heal = power x 64 + Wisdom x power / 8 (`fightstg_rules_get_heal`, cap 9999), so Wisdom is the healer's
+stat too: technique 0xB8 (power 8, 16 MP) heals 762 / 1112 / 1511 at Wisdom 250 / 600 / 999; 0xB9 (power 32, 74 MP)
+3048 / 4448 / 6044; 0xBA (power 127, 120 MP) 9999 at any of them.
 
 ## Turn order, stagger, chain, XP, training, digivolution: the numbers
 

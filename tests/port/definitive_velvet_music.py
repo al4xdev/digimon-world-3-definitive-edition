@@ -3,7 +3,7 @@
 disc goes through the port's hooks in a host driver; the result is checked here: the SEP is one the port's LIBSND reads
 (tests/sound/sound_formats.py's parser), the VAB header only changed in its tone records, the oboe and the piano are
 retuned, the piano's samples are in the vag 14 slot, the reverb is put back. Needs the disc and the generated
-port/game/definitive_velvet_music.inc (the owner's local MIDI): without them the test says so and passes."""
+port/game/definitive_velvet_music.inc (a local MIDI): without them the test says so and passes."""
 import struct
 import subprocess
 import sys
@@ -19,7 +19,7 @@ INC = ROOT / "port/game/definitive_velvet_music.inc"
 
 def main():
     if not INC.is_file():
-        print("definitive_velvet_music: skip (no generated score: the MIDI is the owner's, tools/gen_velvet_music.py)")
+        print("definitive_velvet_music: skip (no generated score: the MIDI is local, tools/gen_velvet_music.py)")
         return 0
     import disc_files
     import sound_formats as sf

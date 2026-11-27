@@ -1,4 +1,4 @@
-/* The Time Room (owner, 2026-11-17): the gatekeeper before the point of no return.
+/* The Time Room: the gatekeeper before the point of no return.
  *
  * Step 40: in the Master Room of Asuka (map 0x288, WSTAG311) Megadeath's voice opens the Warp Gate to the Gunslinger
  * (a map event of type 14 to map 0x2DD), and nothing on the Gunslinger leads back. The port holds the gate shut until
@@ -73,7 +73,7 @@ enum {
     TM_WARN = 312        /* and with it */
 };
 
-/* The trials' areas (owner, 2026-11-17: regions of the game, the room's blue behind them): the area's map, the
+/* The trials' areas (regions of the game, the room's blue behind them): the area's map, the
  * challenger's figure (actor ID; VRAM place 4, the slot the area's own first townsfolk take, free while the trial
  * leaves them out: a slot no figure of the stage uses shows garbage, as the bar's did) and where he stands, facing the
  * player, who comes in two steps in front of him. Spots measured on the attribute layer (DW3_TIME_TEST's survey): open

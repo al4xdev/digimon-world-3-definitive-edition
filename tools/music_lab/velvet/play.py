@@ -7,7 +7,7 @@ are left alone), waits until a music bank is loaded and a sequence is playing,
 then points that sequence at the MIDI's notes. The game's vsync calls
 SsSeqCalledTbyT, which keys the already-loaded samples.
 
-The score is the MIDI the owner put in Downloads. Note-offs become note-on
+The score is a MIDI from Downloads. Note-offs become note-on
 velocity 0, because this LIBSND skips 8n. Tempo is FF 51 with no length byte.
 Stay on the title screen: leaving it reloads the bank and drops the pointer.
 """

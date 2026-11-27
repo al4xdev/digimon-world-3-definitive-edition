@@ -1,5 +1,5 @@
 /* Digimon Adventure ("Butter-Fly") music (tools/gen_adventure_music.py): played by the game's LIBSND from a SEP
- * generated from the owner's local MIDI, on the samples of BGM031 (sound bank 33) with BOSS02's vag 8 guitar sample
+ * generated from a local MIDI, on the samples of BGM031 (sound bank 33) with BOSS02's vag 8 guitar sample
  * copied into vag 14 and program 5 retargeted to it.
  *
  * The score is in definitive_adventure_music.inc, which is generated and not committed. Without it (no MIDI or no disc

@@ -32,7 +32,6 @@ one launcher, the C99 `launcher/`, with the same screens and options everywhere;
 - **A desktop checkout's quick build** (`launcher/Makefile`, `-DDW3_TARGET_PC`, SDL2): `make -C launcher SDL=1`, then
   `./launcher/dw3-launcher --sdl` finds `build/port-sdl/dw2003`.
 
-The decisions behind the design: DECISIONS "Launcher and mods".
 
 Code cites this file as `docs/LAUNCHER.md "<heading>"`; keep the headings stable.
 
@@ -135,7 +134,7 @@ checks the scanner against every script on the disc; `tests/port/mods.py` runs t
 
 ### Battle text
 
-**Not a mod any more: the battle text is always skipped** (the owner, 2026-11-23 — "from now on it is all skip"). The
+**Not a mod any more: the battle text is always skipped**. The
 launcher has no option for it and the settings file no longer carries one; `port_mod_battle_text` stays as a code
 constant (`BT_SKIP`, 1, in `port/game/game_mods.c`) for the FIGHTSTG side and for a future change. 0 (as the disc) and
 2 (async) remain in the flag's vocabulary, unused.
@@ -310,37 +309,36 @@ Outside a battle the bar goes dark and its power rail drops: nothing is being wa
 - **Known limits:** the palette is the measured one, not the names of the vendor script, and the breathing modes were
   judged by eye on one console (`docs/XF35H.md`). Mode 25 and the `times` argument are untested.
 
-The daemon's own tests are the device (`/.dumps/led-test/`): the palette map, the cost of each path and the singleton
-lock. On the host there is nothing to see: `tests/port/mods.py` keeps the mod's silent no-op honest.
+The daemon (palette, cost of each path, singleton lock) can only be tested on the device. On the host there is nothing
+to see: `tests/port/mods.py` keeps the mod's silent no-op honest.
 
 ### Battle menu
 
-`battle_menu`. **Always on** (the definitive combat:
-[`definitive-edition/combat.md`](definitive-edition/combat.md)); the mod's record only carries its options (the
-buttons, `remember_cursor`, `buffer_input`), which apply while it is enabled and otherwise hold their defaults. The one
-exception is a replay script (`--script`), which keeps the original list. A seventh button, **Inspect** (L2, or R2 and
-then the free places when the player put an action there), opens a panel with the enemy's five element families (weak,
-neutral or resisted once found out, `???` otherwise; combat.md "Knowing your enemy") and spends no turn; what kind of enemy it is (its traits and their legend) and the next turns (enemy twice before us: two red chips before the blue one). An eighth button, **Blast** (R2, the right tab
-above Tech; the free places when it clashes), sets the acting Digimon's Blast off once its gauge is full and spends the
-turn (see [`definitive-edition/blast.md`](definitive-edition/blast.md#the-gauge) "The gauge"); the tab **is** the
-gauge's bar (a dark slot that fills from its left end as the gauge charges), so with the gauge not full it is grey and
-refused; full, it is lit and the acting Digimon may Blast; at a critical moment (a partner fell, or the acting Digimon
-is at a quarter of its HP) the lit tab shines and shakes: it calls, with no line of its own. Both launchers list it: the
-C one's BATTLE HUD screen (`bm_blast`), the psxstack one from the manifest.
-Redesigns **only the battle's main command menu** (Fight, Tech, Digivolve, Tag, Item,
-Run): the list and its cursor are gone, each action has its own button, and the menu is one compact block in the left
-middle of the screen, clear of the enemy and of the fighter the player watches: the shoulders' two rows on top (L2
-Inspect over L1 Item at the block's left, R2 Blast over R1 Tech at its right, as on the pad) and the four face buttons
-below them as a diamond on a dark rhombus (top Digivolve, left Run, right Tag, bottom Fight; each action sits on the
-button the player mapped it to). Each action is a chip with its button's glyph (opaque, outlined in the Xbox letter's
-colour, or the PlayStation symbol) and the command written out in the callouts' polygon capitals, the chip where the
-button is (on the diamond, on the block's edge for a shoulder) and the word beside it. Fight has the largest word and a
-warm edge; a refused press flashes its tab red. The Inspect panel and the refusal's box open in the right middle, and
-the battle's portrait window (the acting Digimon's close-up) is not opened with the menu.
-A short slide-in and press feedback (`fightstg_battle_menu_update`,
-`src/fightstg/fightstg_8008D3B4.c`; the 2026-11-23 redesign: `.plan/tasks/battle-hud-redesign.md`).
-The submenus (techniques, items, Digivolve, Tag), the confusion menu and the rest of the battle are the game's own.
-With the mod off nothing runs: the dispatch is one `#ifdef PC_PORT` test where the menu is created.
+`battle_menu`. **Always on** (the definitive combat: [`definitive-edition/combat.md`](definitive-edition/combat.md));
+the mod's record only carries its options (the buttons, `remember_cursor`, `buffer_input`), which apply while it is
+enabled and otherwise hold their defaults. The one exception is a replay script (`--script`), which keeps the original
+list. A seventh button, **Inspect** (L2, or R2 and then the free places when the player put an action there), opens a
+panel with the enemy's five element families (weak, neutral or resisted once found out, `???` otherwise; combat.md
+"Knowing your enemy") and spends no turn; what kind of enemy it is (its traits and their legend) and the next turns
+(enemy twice before us: two red chips before the blue one). An eighth button, **Blast** (R2, the right tab above Tech;
+the free places when it clashes), sets the acting Digimon's Blast off once its gauge is full and spends the turn (see
+[`definitive-edition/blast.md`](definitive-edition/blast.md#the-gauge) "The gauge"); the tab **is** the gauge's bar (a
+dark slot that fills from its left end as the gauge charges), so with the gauge not full it is grey and refused; full,
+it is lit and the acting Digimon may Blast; at a critical moment (a partner fell, or the acting Digimon is at a quarter
+of its HP) the lit tab shines and shakes: it calls, with no line of its own. Both launchers list it: the C one's BATTLE
+HUD screen (`bm_blast`), the psxstack one from the manifest. Redesigns **only the battle's main command menu** (Fight,
+Tech, Digivolve, Tag, Item, Run): the list and its cursor are gone, each action has its own button, and the menu is one
+compact block in the left middle of the screen, clear of the enemy and of the fighter the player watches: the
+shoulders' two rows on top (L2 Inspect over L1 Item at the block's left, R2 Blast over R1 Tech at its right, as on the
+pad) and the four face buttons below them as a diamond on a dark rhombus (top Digivolve, left Run, right Tag, bottom
+Fight; each action sits on the button the player mapped it to). Each action is a chip with its button's glyph (opaque,
+outlined in the Xbox letter's colour, or the PlayStation symbol) and the command written out in the callouts' polygon
+capitals, the chip where the button is (on the diamond, on the block's edge for a shoulder) and the word beside it.
+Fight has the largest word and a warm edge; a refused press flashes its tab red. The Inspect panel and the refusal's
+box open in the right middle, and the battle's portrait window (the acting Digimon's close-up) is not opened with the
+menu. A short slide-in and press feedback (`fightstg_battle_menu_update`, `src/fightstg/fightstg_8008D3B4.c`). The
+submenus (techniques, items, Digivolve, Tag), the confusion menu and the rest of the battle are the game's own. With
+the mod off nothing runs: the dispatch is one `#ifdef PC_PORT` test where the menu is created.
 
 | option | default | |
 |---|---|---|
@@ -388,7 +386,7 @@ everything up, music and the play-time clock included.
 `tests/port/hz60.py` compares the port at 60 Hz with the patched game in the emulator (`tests/port/ntsc_patch.lua`
 writes the two words at `main`'s entry; references in `tests/port/hz60/`).
 
-## Schema versions and migrations (2026-11-24)
+## Schema versions and migrations
 
 Every file that is kept between releases carries a schema number, and a release that changes one adds a step to
 `launcher/migrate.c` (from N to N+1) instead of the code reading the old shape. The launcher applies the steps in

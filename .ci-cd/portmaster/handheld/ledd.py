@@ -56,7 +56,7 @@ REJECTED = (10, 11, 12, 13, 14, 15, 16)  # mcu_led's own range check refuses the
 
 # What the bar actually does, as measured on the device. The names in the
 # middle column are what mcu_led_ctrl.sh calls each byte - its author's intent -
-# and the last column is what the owner's eye reported. Two places where the two
+# and the last column is what the eye saw. Two places where the two
 # disagree, both worth remembering:
 #   * mode 17 (LED_BREATH_G) was seen breathing BLUE in one run, then green in
 #     another. The blue came right after the rail had been raised again, so the
@@ -75,7 +75,7 @@ REJECTED = (10, 11, 12, 13, 14, 15, 16)  # mcu_led's own range check refuses the
 #   9     LED_OFF              dark (the rail stays up)
 #
 #   17..23 = the same seven in the same order, breathing (17 green, 18 blue,
-#   19 red, 20 cyan, 21 yellow, 22 purple, 23 white). The owner's rule: "the
+#   19 red, 20 cyan, 21 yellow, 22 purple, 23 white). The rule: "the
 #   same colour as the plain one, only breathing". 21..23 were not told apart by
 #   eye - three breathing reds in a row - and the rule is what settles them.
 MODES = {
@@ -203,7 +203,7 @@ def resolve(req):
 
 
 # ---- the pulse: what the bar cannot say with colour, it says with time ----
-# The ladder the owner asked for. Every step but the last is ONE byte and the
+# The ladder. Every step but the last is ONE byte and the
 # MCU animates it: green, green breathing, lilac breathing, red breathing. The
 # last step is the only thing the bar cannot do itself - 17..24 are all breath,
 # none of them a blink - so it is the one case where the daemon runs its own

@@ -310,7 +310,7 @@ def wfightmn_cases(party0):
 
 
 def wfightmn_state_cases():
-    """Two more WFIGHTMN rules that write the battle's state (appended 2026-10-05, sweep2; WFIGHTMN.PRO in the tier-2 slot
+    """Two more WFIGHTMN rules that write the battle's state ( WFIGHTMN.PRO in the tier-2 slot
     as above):
     - wfightmn_add_gauge(side, value), on every hit: only a hit on the party (side != 0) with value != 0, on an acting
       member alive and not blasted, adds get_gauge_gain(value) to records_state.gauges[the member's Digimon index] (not

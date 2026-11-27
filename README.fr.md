@@ -368,8 +368,8 @@ une voix.
   mots, et des centaines de répliques changent selon vos décisions. Chaque choix est retenu — façonnant liens,
   réputation et 10 combats de boss, rendant l'aventure plus facile ou plus difficile.
 - **Un script réécrit** (écrit, relu et soigné personnellement en portugais du Brésil dans l'esprit et l'argot des
-  doublages d'anime classiques des années 80/90, avec l'anglais traduit directement à partir de lui ; en français, c'est
-  la campagne d'origine du disque) : les répliques puériles ont mûri, l'ordre et les quêtes sont intacts, et le héros
+  doublages d'anime classiques des années 80/90, puis traduit à partir de lui en anglais, français, allemand, italien et
+ espagnol) : les répliques puériles ont mûri, l'ordre et les quêtes sont intacts, et le héros
   est écrit pour qui tient la manette.
 - **Une silhouette encapuchonnée** barre la route dans le Bug Maze, et **une pièce où le temps s'arrête** attend avant
   le point de non-retour, pour s'assurer que vous êtes prêt.
@@ -448,10 +448,9 @@ certaines parties n'ont été jouées que quelques fois, alors attendez-vous à 
 Ce qui reste :
 
 - **Relecture des traductions.** L'histoire réécrite a été entièrement écrite, relue et soignée personnellement en
-  portugais du Brésil (argot et ton des anime classiques des années 80/90), et traduite directement en anglais. Le
-  français, l'allemand, l'italien et l'espagnol couvrent les textes propres à la Definitive Edition (pas encore relus en jeu
-  par des locuteurs natifs : attendez-vous à des phrases maladroites et à quelques
-  libellés trop larges pour leur cadre) ; dans ces quatre langues, c'est la campagne originale du disque qui se joue.
+  portugais du Brésil (argot et ton des anime classiques des années 80/90), puis traduite à partir de là en anglais,
+  français, allemand, italien et espagnol. Les quatre dernières versions n'ont pas encore été relues en jeu par des
+  locuteurs natifs : attendez-vous à des phrases maladroites et à quelques libellés trop larges pour leur cadre.
 - **L'équilibrage général du jeu.** Jusqu'ici, il n'a été équilibré que par le calcul. Je le joue en parallèle et
   je publie des hotfixes au fur et à mesure, Chosen Evolution et combats secrets de fin de jeu compris.
 

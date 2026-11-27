@@ -17,9 +17,9 @@
  * The launcher carries this file with the card as one save (launcher/cloud.h: the sha, backups, restore, cloud, the
  * RecompLauncher mirror). Changing the schema (bumping "version"): the game only reads its own version or older, so the
  * migration belongs to the launcher: one step in launcher/migrate.c (SCHEMA_SAVE), applied before the game starts, the
- * old file kept as <file>.v<N>.bak. A new section alone is still a bump (owner, 2026-11-24).
+ * old file kept as <file>.v<N>.bak. A new section alone is still a bump.
  *
- * Adding a section: .plan/tasks/expansion-save.md "How to add a section". */
+ * Adding a section: append it in definitive_expansion_sections.c and bump the version. */
 #ifndef DEFINITIVE_EXPANSION_H
 #define DEFINITIVE_EXPANSION_H
 
@@ -47,7 +47,7 @@ typedef struct DefExpansionSection {
 extern const DefExpansionSection *const def_expansion_sections[];
 
 #define DEF_EXPANSION_CARD_BYTES 18
-#define DEF_EXPANSION_VERSION 2 /* 2 (2026-11-24): the "respec" section; a version 1 file reads as it is */
+#define DEF_EXPANSION_VERSION 2 /* 2: the "respec" section; a version 1 file reads as it is */
 
 /* ---- The card's side (definitive_bestiary.c's first record). */
 void def_expansion_reset(void);                       /* a new game: every section empty, no generation */

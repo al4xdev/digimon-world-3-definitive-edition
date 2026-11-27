@@ -103,8 +103,7 @@ int def_chain_take_extra(DefChain *c) {
     return 1;
 }
 
-/* ---- The damage multiplier. Affinity is convex in the stat so the ceiling is only reached at 999 (owner, 2026-11-25:
- * 555 must not be half the ceiling): ceiling * (stat / 999)^2. Fire and Wind count on their own resist, Water with Ice
+/* ---- The damage multiplier. Affinity is convex in the stat so the ceiling is only reached at 999 (555 must not be half the ceiling): ceiling * (stat / 999)^2. Fire and Wind count on their own resist, Water with Ice
  * and Thunder with Machine on the mean of the pair's squares (999+0 is still half the ceiling), Dark on its own. */
 static int stat_cap(int v) {
     return v < 0 ? 0 : v > 999 ? 999 : v;

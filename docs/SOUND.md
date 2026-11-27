@@ -1,7 +1,7 @@
 # Sound: what the game asks of LIBSND, what reaches the SPU, and how the port reproduces it
 
 The game's sound path and the PC port's implementation of it: our own SPU core and LIBSND, checked against the
-emulator's SPU register-write traces (DECISIONS "The port is checked against the emulator"), and the movies' XA audio.
+emulator's SPU register-write traces, and the movies' XA audio.
 Every claim is marked **verified** (with how) or **assumed** (with the source). "The trace" is the SPU write trace of
 `tests/sound/spu_trace.py` (section 4); `new_game` and `first_battle_save` are the layer-2 scripts.
 
@@ -215,7 +215,7 @@ a vsync at 60 Hz carries a sixth fewer samples than one at 50 Hz. Three changes 
 
 What is left is the voice loop itself (2.3 ms): the envelope, the two volume sweeps and the pitch counter of 24 voices
 × 735 samples are carried per voice and cannot be vectorised without a rewrite that processes voices in parallel. The
-GPU side's costs are in `docs/gpu/README.md` and `docs/bench`.
+GPU side's costs are in `docs/PERFORMANCE.md`.
 
 ### What is modelled
 - **Registers** by offset from `0x1F801C00`, 16-bit: each stores what is written and reads it back, except ENVX
@@ -327,7 +327,7 @@ with the game's LIBSND calls as comments (`# <tick> call SsSepPlay(2, 2, 1, 1)`,
 VAB header, the console's reset as `reset()`).
 
 ### Provenance
-The project's rule (DECISIONS "Psy-Q libraries are identified, never decompiled"): LIBSND is Sony's library code, in the EXE as split asm that this project never
+The project's rule: LIBSND is Sony's library code, in the EXE as split asm that this project never
 decompiles; its disassembly may be read to learn constants, tables, formulas and the order of operations, and the
 port's C is our own, with no routine translated instruction by instruction or function by function and no data copied
 beyond numeric facts (a table of numbers is a fact, cited where it is used). The code is MIT like the rest of the repo;

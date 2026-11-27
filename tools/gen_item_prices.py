@@ -9,7 +9,7 @@ Reads the items from src/main/records.c (records_items: buying and selling price
 comment) and the shops' goods from src/stitshop/stitshop_800859C0.c (stitshop_goods_N); no disc. The rule's numbers
 are definitive.h's (DEF_PRICE_*, DEF_SELL_*). Rule: a weapon, armour or accessory a shop sells whose buying price is at
 least DEF_PRICE_KNEE costs DEF_PRICE_DRAIN_PCT of it, and sells for DEF_SELL_BASE plus DEF_SELL_ABOVE_PCT of what its old
-price had above the knee (the owner's example: a 60000 sword that sold for 30000 sells for 9000), never more than half
+price had above the knee (for example, a 60000 sword that sold for 30000 sells for 9000), never more than half
 its new price; both rounded to 100. Everything else keeps the game's prices (half the price on resale, as the game
 has it). The game applies the table through def_item_buy / def_item_sell (port/game/definitive_economy.c).
 """

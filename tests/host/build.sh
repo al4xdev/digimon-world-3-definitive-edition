@@ -23,8 +23,8 @@ UNITS+=(src/stgdglab/stgdglab_8008EB30.c)
 UNITS+=(src/wfightmn/wfightmn_800A6440.c)
 # FIELDSTG's battle table (fieldstg_battles, data only): fieldstg_start_battle (wfightmn_spoils).
 UNITS+=(src/fieldstg/fieldstg_80083784.c)
-# FIELDSTG's field unit (fieldstg_encounter) and FIGHTSTG's first unit (wfightmn_enemy_ai): built like the others since
-# session 15 (their forward calls have real prototypes in the C; tools/port_inventory.py probe keeps every unit clean of
+# FIELDSTG's field unit (fieldstg_encounter) and FIGHTSTG's first unit (wfightmn_enemy_ai): built like the others (their
+#  forward calls have real prototypes in the C; tools/port_inventory.py probe keeps every unit clean of
 # implicit declarations and incompatible pointer types, so no -fpermissive here).
 UNITS+=(src/fieldstg/fieldstg_80087DB0.c src/fightstg/fightstg_80086A00.c)
 CFLAGS=(-m64 -std=gnu99 -fwrapv -fsigned-char -fno-strict-aliasing -fno-stack-protector -DNON_MATCHING -w

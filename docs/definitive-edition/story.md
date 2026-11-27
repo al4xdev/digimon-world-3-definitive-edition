@@ -4,16 +4,13 @@
 
 ## The story layer (Velvet Room in the main story)
 
-**Status: implemented and committed (`c5e58e4` dreams, choices and echoes; `9dba2cf` the Time Room gate, the Oikawa's arc and
-Act III; `91f12d2` the Oinkmon dream).** `port/game/definitive_story.c`
-(the hooks, Igor, the dreams, the rewrite's lookup), `definitive_time_room.c` and its generated `definitive_time_room_table.c`
-(`tools/gen_time_room.py`), `definitive_velvet_igor.c/.h` (Igor's head), generated `definitive_story_text.c`
-(`tools/gen_text_override.py` from `tools/text_override/en_story.txt`, `en_kaili.txt`, `pt_kaili.txt`, `en_choices.txt`,
-`en_echoes.txt`). Everything is keyed on the story step `gamestate_data.progress` and is off in a replay script (`def_on`).
-A story talk is the game's own talk balloon on the player (or on a given actor) with no actor talked to: the hook asks for
-an entry of the stage's talk file whose disc text is the unused letter "a", and the port's override fills it; the field is
-held (`event_running`) until the last balloon closes and the confirm button is let go. Plans of origin:
-`velvet-historia.md` (the arcs) and `velvet-sonhos.md` (dreams, rewrite).
+Code: `port/game/definitive_story.c` (the hooks, Igor, the dreams, the rewrite's lookup), `definitive_time_room.c` and
+its generated `definitive_time_room_table.c` (`tools/gen_time_room.py`), `definitive_velvet_igor.c/.h` (Igor's head),
+generated `definitive_story_text.c` (`tools/gen_text_override.py` from the story files of `tools/text_override/`).
+Everything is keyed on the story step `gamestate_data.progress` and is off in a replay script (`def_on`). A story talk
+is the game's own talk balloon on the player (or on a given actor) with no actor talked to: the hook asks for an entry
+of the stage's talk file whose disc text is the unused letter "a", and the port's override fills it; the field is held
+(`event_running`) until the last balloon closes and the confirm button is let go.
 
 **The room grows with the story** (`def_story_velvet_level`; a save from before the port's story is placed by its step alone):
 
@@ -26,13 +23,13 @@ held (`event_running`) until the last balloon closes and the confirm button is l
 | 4 | step 22, "Free Asuka City" | Etemon and the pig |
 | 5 (`DEF_VELVET_LEVEL_MAX`) | the Oikawa beaten (`DEF_STORY_OIKAWA_BEATEN`), or a save past step 27 | Oikawa behind the counter: the Black Market |
 
-Steps 10/16/22 were picked to spread the guests over the campaign (`steps[]` in `def_story_velvet_level`); owner order of
-2026-11-17: Gennai comes with Igor at step 10 ("the start drags"), Guilmon at 16. The first visit after the level rose,
-the guest of the highest level that greets calls the player over (`vl_newcomer`; codes `DW3_VELVET_PULL_SEPIK`, `_MENTOR`,
-`_IGOR`, `_ETEMON`, `_MERCHANT`, plus `_TRIAL` for the Time Room in `include/port.h`); the Bell's keeper and the pig never call,
-so at level 3 it is still Gennai. The level last greeted is saved in bits 12..14 of the story flags (`def_record_velvet_seen`).
-The room is entered by portal (`dw3_velvet_pull_by`) for the scenes; `dw3_velvet_cut(who)` re-enters the map in place "as its
-level has it" (a screen cut). `dw3_velvet_pull` (the old Seiryu pull, the Sepikmon's) is still defined but has no caller.
+Steps 10/16/22 were picked to spread the guests over the campaign (`steps[]` in `def_story_velvet_level`). The first
+visit after the level rose, the guest of the highest level that greets calls the player over (`vl_newcomer`; codes
+`DW3_VELVET_PULL_SEPIK`, `_MENTOR`, `_IGOR`, `_ETEMON`, `_MERCHANT`, plus `_TRIAL` for the Time Room in
+`include/port.h`); the Bell's keeper and the pig never call, so at level 3 it is still Gennai. The level last greeted
+is saved in bits 12..14 of the story flags (`def_record_velvet_seen`). The room is entered by portal
+(`dw3_velvet_pull_by`) for the scenes; `dw3_velvet_cut(who)` re-enters the map in place "as its level has it" (a screen
+cut). `dw3_velvet_pull` is still defined but has no caller.
 
 **Step 0, "Digimon Online": the opening cut in two.** At New Game the scene (WSTAG785, map 0x2D8, event 1; text of event text
 file 0x14A, table 1) is cut where Junior cannot pick a starter pack, after event text 12 (Ivy's "choose, and let's go"):
@@ -44,7 +41,7 @@ cut: actors put back (PLACE, idle facing) and the camera snapped, then Ivy and T
 replaced by `$OpenIvy1`, `$OpenTeddy`, `$OpenJunior`, `$OpenIvy2`; the Kaili mode swaps the names), then the game's own scene
 from text 13 ("You still haven't made up your mind?"). If the script is not the expected one the cut is skipped (logged).
 
-**Step 4, "The Seiryu Badge": Repeating Tom** (replaces the first tutorial's direct pull at Seiryu City). The Guide's row asks
+**Step 4, "The Seiryu Badge": Repeating Tom**. The Guide's row asks
 the player to ask around Seiryu City for the Leader (`DEF_STORY_COND_SEIRYU_ASK`, map 0x230). Talked to on the stairs of the
 city's inn, Repeating Tom's own line (`TALK01` 0xCC entry 79, "Seiryu Leader is training at the Protocol Ruins") is said as
 `$TomNews` (the Leader is gone), then the player's feeling (`TALK01` 178) with the portal sound, and `DEF_STORY_SEIRYU_CALL`
@@ -57,7 +54,7 @@ the won hunt (`def_super_done() > 0`) gives `TALK05` 16 (his trackers saw the Le
 
 **Igor** (`VL_IGOR` 109, the game's man in a black suit `P055GMGD`, file 0x356, 24 px frames; actor 53 `P068SARM` is the
 game's other suit). **His head** is hand-drawn for this port (`definitive_velvet_igor.c/.h`, 92 runs of one palette colour,
-one quad each, from `.dumps/tasks/velvet/art/v2/igor.txt` via `igor.py header`): over frames 9, 10 and 11 of his down-left idle
+one quad each): over frames 9, 10 and 11 of his down-left idle
 (11 is 9 a row lower; 10 keeps 9's place), mirrored when he faces right; any other frame keeps the game's head; body, idle
 and shadow stay the game's. `dw3_velvet_actor_art` calls `dw3_velvet_igor_head` before FIELDSTG adds the figure, so the quads
 draw over it in the same ordering-table entry; he keeps his facing (`no_turn`). In his scenes (the dreams, Seiryu's showing:
@@ -80,7 +77,7 @@ the button that closed the last balloon is let go), answers the choice, and send
 last step, a game flag that must be set (or 0), Igor's ask, 3 options, 3 replies, the slot of an earlier answer to recall
 and its 3 recall pages. A new dream is a row plus its `$Dr*` lines in `tools/text_override/en.txt`. Rows, in table order:
 
-| `DW3_DREAM` | Slot | Step | Trigger | Theme (owner's text) |
+| `DW3_DREAM` | Slot | Step | Trigger | Theme |
 |---|---|---|---|---|
 | 1 | 0 | 12..18 | game flag 0x1C0E (set by WSTAG305's event 351, the Game Master blames Lucky Mouse, DMG305:1) | Act I, the Game Master's lie: the eyes see the shadow on the wall, not every mask is the culprit's; every answer goes on hunting Lucky Mouse (at 19 his side is heard) |
 | 2 | 1 | 27 | the first free frame once the Oikawa no longer bars the Bug Maze (maps 0x244..0x246, `oikawa_ahead`) | Act II, the burden: past this threshold there is no easy way back; do you carry it by your own will? |
@@ -112,36 +109,35 @@ is byte q >> 2, bits (q & 3) x 2; 0 not answered, 1..3 the option); slots 0..7 a
 (Q8..Q39 existed first, at one byte each, until the bytes ran out). A compile-time check keeps them clear of the skin byte;
 an older record reads 0. See [Save format](save-format.md#save-format-memory-card-records).
 
-**The story rewrite (PT-BR and English).** Written in Brazilian Portuguese, with the English translated from it. The
-sources are in `tools/text_override/`. `pt_story.txt` / `en_story.txt` (`FILE:sub index: text` for an event scene's table,
-`FILE index: text` for a talk file): childish or simple dialogue made more serious without changing order or quests, and
-gender-neutral wherever the hero is concerned. `pt_kaili.txt` / `en_kaili.txt`: Girls Power's mode, the lines the
-automatic name swap gets wrong; a text starting `>hero ` is said by the hero (the balloon moves to the player).
-FR/IT/DE/ES show the disc's text. `DW3_STORY=0` turns the layer off (the game's own text, to compare). Logs:
-`story: echo ...`, `story: kaili line ...`, `story: ... choice N answered M`. Checkers:
-`tools/check_story_text.py [FILE]` (the English sources and `pt_kaili.txt` by default; exit 1 on an error): the same
-speaker plate and control codes as the disc's line, 22 letters a line in balloons (38 in unplated narration), 3 lines a
-page, the page structure (each page ends with `<2,2>`, every later page starts with `<3>`), and no gendered word about
-the hero; `tools/check_pt_text.py`: each Portuguese file against its English pair. Girls Power's swap
-(`tools/gen_text_override.py`, `NAMES`): every line without its own entry names Junior as Ivy, and Ivy or Kail as Junior
-(Smith Junior keeps his name), rewrapped within its page. With their own entries in `en_kaili.txt`: the brother's lines,
-the "he/him" ones (DMG700:0 2, DMG200:32 3, DMG600:15 18/20/23) and the account-name joke (DMG200:3/4/5 7-8);
-`$OpenIvy1K`/`$OpenJuniorK` were removed (the swap makes the `$Open*` lines). Portuguese swaps the same names: its
-rewrite is written without gendered words or articles next to them, and a line that still needs its own Girls Power
-wording has one in `pt_kaili.txt`.
+**The story rewrite.** Written in Brazilian Portuguese, with the English, French, German, Italian and Spanish
+translated from it. The sources are in `tools/text_override/`. `pt_story.txt` / `en_story.txt` (`FILE:sub index: text`
+for an event scene's table, `FILE index: text` for a talk file): childish or simple dialogue made more serious without
+changing order or quests, and gender-neutral wherever the hero is concerned. `pt_kaili.txt` / `en_kaili.txt`: Girls
+Power's mode, the lines the automatic name swap gets wrong; a text starting `>hero ` is said by the hero (the balloon
+moves to the player). FR/DE/IT/ES have the same four files (`tools/check_story_lang.py` `--all` checks them against the
+Portuguese). `DW3_STORY=0` turns the layer off (the game's own text, to compare). Logs: `story: echo ...`, `story:
+kaili line ...`, `story: ... choice N answered M`. Checkers: `tools/check_story_text.py [FILE]` (the English sources
+and `pt_kaili.txt` by default; exit 1 on an error): the same speaker plate and control codes as the disc's line, 22
+letters a line in balloons (38 in unplated narration), 3 lines a page, the page structure (each page ends with `<2,2>`,
+every later page starts with `<3>`), and no gendered word about the hero; `tools/check_pt_text.py`: each Portuguese
+file against its English pair. Girls Power's swap (`tools/gen_text_override.py`, `NAMES`): every line without its own
+entry names Junior as Ivy, and Ivy or Kail as Junior (Smith Junior keeps his name), rewrapped within its page. With
+their own entries in `en_kaili.txt`: the brother's lines, the "he/him" ones (DMG700:0 2, DMG200:32 3, DMG600:15
+18/20/23) and the account-name joke (DMG200:3/4/5 7-8); the swap makes the `$Open*` lines. Portuguese swaps the same
+names: its rewrite is written without gendered words or articles next to them, and a line that still needs its own
+Girls Power wording has one in `pt_kaili.txt`.
 
-**The Oikawa's arc (step 26 -> 27, `oikawa_hook`).** After Bulbmon, event 711 sets step 27 and leaves the player in the Bug
-Maze Pit's hall (map 0x245, WSTAG540) at (1800,524). While he is unbeaten the hooded dealer is added to that map's figures
-(`def_story_stage_setup`): actor 42 with the Black Market trader's hand-drawn art over it, in VRAM place 6 (the map's third
-figure, actor 78, is left out while he waits), at (1778,502) dir 7, two steps up-left. He calls the player over once per
-visit (the player turns to him) and, after his line (`TALK06` 0xEF entry 5, or 6 after a lost try), fights:
-**Arukenimon Lv28, Mummymon Lv30, VenomMyotismon Lv32** (`def_oikawa_fight`, boss battle template 7, Bulbmon's scenery and
-music: stage 10, `0x60880000`; no escape). The plan's Dinohyumon and MaloMyotismon are not on the disc: Mummymon and
-VenomMyotismon stand in. A defeat is no game over (`def_story_defeat` from WFIGHTMN: the party back as it went in, he
-calls again); beaten, he says `TALK06` 7 (his name is Oikawa) and is gone, the room reaches level 5, and the Guide sends the
-player to the Velvet Room (`DEF_STORY_COND_MARKET`) until he first opens the market behind the counter (`TALK05` 99,
-`def_story_market_opened`, `DEF_STORY_MARKET_OPEN`). The Velvet Room's Black Market is closed before that (he is not in the
-room); the houses' traders of maps 0x20C/0x27B are unchanged.
+**The Oikawa's arc (step 26 -> 27, `oikawa_hook`).** After Bulbmon, event 711 sets step 27 and leaves the player in the
+Bug Maze Pit's hall (map 0x245, WSTAG540) at (1800,524). While he is unbeaten the hooded dealer is added to that map's
+figures (`def_story_stage_setup`): actor 42 with the Black Market trader's hand-drawn art over it, in VRAM place 6 (the
+map's third figure, actor 78, is left out while he waits), at (1778,502) dir 7, two steps up-left. He calls the player
+over once per visit (the player turns to him) and, after his line (`TALK06` 0xEF entry 5, or 6 after a lost try),
+fights: **Arukenimon Lv28, Mummymon Lv30, VenomMyotismon Lv32** (`def_oikawa_fight`, boss battle template 7, Bulbmon's
+scenery and music: stage 10, `0x60880000`; no escape). A defeat is no game over (`def_story_defeat` from WFIGHTMN: the
+party back as it went in, he calls again); beaten, he says `TALK06` 7 (his name is Oikawa) and is gone, the room
+reaches level 5, and the Guide sends the player to the Velvet Room (`DEF_STORY_COND_MARKET`) until he first opens the
+market behind the counter (`TALK05` 99, `def_story_market_opened`, `DEF_STORY_MARKET_OPEN`). The Velvet Room's Black
+Market is closed before that (he is not in the room); the houses' traders of maps 0x20C/0x27B are unchanged.
 
 **The Time Room (step 40, the gatekeeper before the point of no return).** In the Master Room of Asuka (map 0x288, WSTAG311,
 talk file `TALK03` 0xDA) Megadeath's voice opens the Warp Gate to the Gunslinger (a map event of type 14 to map 0x2DD), and
@@ -151,7 +147,7 @@ Blast quest is not done: finish Gennai's road or prove your own strength; 312 wi
 Velvet Room's way in stands in the nook left of the gate's platform at (160,440); the room's front door brings the player
 back beside it at (184,448). Through it the room is the Time Room (`def_time_on`, title "TIME / ROOM"): Igor and the three
 challengers (Gennai or, while the quest is still DECEIVED, Myotismon in his shape; the Sepikmon; Oikawa), time stands still.
-**No prize** (owner): it is mandatory and measures the player's level instead of throwing them into a no-return zone. Igor
+**No prize**: it is mandatory and measures the player's level instead of throwing them into a no-return zone. Igor
 opens by recalling the Act II answer (`TALK05` 47..49 by that answer, 50 if never asked; 51 talked to again, 52 after a
 lost or abandoned run, 53 all won); the guests 54 (Gennai), 55 (Myotismon), 56 (Sepikmon), 57 (Oikawa). The upper door
 (open only here) starts a run of three trial areas, each with the room's music, no random battles, the area's own events
@@ -210,7 +206,6 @@ idle step: `def_story_frame`, `dw3_velvet_frame`, `dw3_velvet_draw`); `src/field
 
 ## The Extended Final Act and the farewell (spoilers)
 
-**Status: implemented and committed** (`cf2d207`; fixes `8fc54b8`, `acb4ade`, `7b4aa45`, `c7bee86`, `7e23a70`).
 `port/game/definitive_finale.c`, story bits `DEF_STORY_FINALE_DONE` and `DEF_STORY_IGOR_GONE`. Off in a replay script.
 
 **For the player, in short:** beating Galacticmon is no longer the end of the fight. It rises again as a dark form you
@@ -230,13 +225,13 @@ How it is built, phase by phase:
 3. **The last Velvet Room and the Blue Room.** Igor asks for the Velvet Key, says it has changed and gives it back with the
    item sparkle. The upper door (0x20A) opens on the solid-blue **Bonds Room**: the screen blinks black through lines
    from the journey's allies, then they gather around the hero. The controls are locked there and the room's state is
-   reset before phase 4 (`7e23a70`).
+   reset before phase 4.
 4. **Super Chosen Evolution.** The strongest partner who joined (a random pick on a tie) goes back in against Dark
    Galacticmon in its Rookie form, with only the Blast open (the tutorial's lock). Setting the Blast off announces the
    Super Chosen Evolution and chains DNA fusions across every Digimon who joined (party and Digi-Lab, odd counts
    included) into a golden Imperialdramon Paladin Mode (0x17D, `DEF_RECOLOR_GOLD`, Omega Blade only, high HP; the boss's
    HP is calibrated for it). Where the build carries the Adventure score (`definitive_adventure_music.c`, generated from
-   the owner's local MIDI and not committed: without it the hook does nothing), Butter-Fly plays. Winning sets
+   a local MIDI and not committed: without it the hook does nothing), Butter-Fly plays. Winning sets
    `DEF_STORY_FINALE_DONE` and the credits roll (0xE0B).
 5. **After the credits** (progress 0x2D, `DEF_STORY_IGOR_GONE` clear): the Velvet Room opens on the Blue Room, Igor says
    goodbye (`$FinIgorBye`: "a prison, a limousine... or perhaps an elevator") and leaves; **Pipimon** (Oikawa's partner)
@@ -244,8 +239,8 @@ How it is built, phase by phase:
 
 ## Small things the story layer does
 
-- **A choice asks twice** (`1d86a1c`, `a7e2121`): on the story's answer panel the first press picks a row, the second
+- **A choice asks twice**: on the story's answer panel the first press picks a row, the second
   confirms it, and the second press is only read 350 ms after the first, so a held or doubled button cannot answer for
   you.
-- **The Guardromon network's lore** (`6f4281b`): the first time you register a Guardromon it tells, in two pages, why
+- **The Guardromon network's lore**: the first time you register a Guardromon it tells, in two pages, why
   the network opens to a Tamer who walked up to it, with a pop-culture joke for each of the 13 places (English only).

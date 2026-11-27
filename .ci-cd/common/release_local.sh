@@ -3,8 +3,7 @@
 # package in a Docker ubuntu:24.04 container (the CI runner's base, so the same glibc floor), with release.yml's own
 # steps (the tools, the disc, the game's Release build through the port's M1 test, package_appimage.sh --test,
 # package_windows.sh --test under the container's Wine), then pushes the tag, cancels the release.yml run the tag
-# starts and creates the same DRAFT release with the local files. Publishing stays the maintainer's decision
-# (DECISIONS "Releases: tagged drafts, published by hand").
+# starts and creates the same DRAFT release with the local files. Publishing stays the maintainer's decision.
 #
 # Usage: .ci-cd/common/release_local.sh vX.Y.Z [--commit REF] [--build-only]
 #   --commit REF   what to release (default origin/main; it must be pushed: the tag goes to origin)

@@ -1,8 +1,6 @@
 /* Igor's head in the Velvet Room, drawn by hand for this port: painted over the game's suited figure (actor 109,
  * P055GMGD, file 0x356), whose body stays the game's own. Its runs are in the frame's own pixels, for the 3/4 front
- * frame 9 (and its bobbing copy, a row lower); the port mirrors them as the game mirrors the frame. From
- * .dumps/tasks/velvet/art/v2/igor.txt (igor.py, `header` command). Do not edit by hand: change the set and run
- * the tool. */
+ * frame 9 (and its bobbing copy, a row lower); the port mirrors them as the game mirrors the frame. */
 #define VELVET_IGOR_FILE 0x356
 #define VELVET_IGOR_FRAME 9
 #define VELVET_IGOR_W 24 /* the frame's width */

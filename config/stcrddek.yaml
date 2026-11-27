@@ -47,10 +47,10 @@ segments:
     type: code
     start: 0x0
     vram: 0x80082CB0
-    # Unnamed symbols are func_STCRDDEK_<addr>, D_STCRDDEK_<addr> (overlays share addresses; DECISIONS naming).
+    # Unnamed symbols are func_STCRDDEK_<addr>, D_STCRDDEK_<addr> (overlays share addresses).
     symbol_name_format: STCRDDEK_$VRAM
     subsegments:
-      # .rodata and .text per file (DECISIONS "File boundaries come from evidence"). All five jump tables are at an
+      # .rodata and .text per file. All five jump tables are at an
       # even offset and every table's length is a multiple of 8, so parity proves nothing here; the
       # boundaries come from shared code (tools/overlay_xref.py, masked cross-overlay comparison).
       - [0x0,   .rodata, stcrddek_800831F0]
@@ -68,8 +68,7 @@ segments:
                                         # loaded?, window open/step, lerp start/step): the same tail ends
                                         # STCRDSHP, STCRDABM, STGMCARD, STITSHOP, STGDGLAB, ...; its own
                                         # window_anim copy can't be in 867E8's file (position moderate)
-      # .data, then .bss (zeros in the file), each per file in link order (tools/data_owners.py -t stcrddek;
-      # DECISIONS "Data in C, split per object"). The name entry's .bss comes after
+      # .data, then .bss (zeros in the file), each per file in link order (tools/data_owners.py -t stcrddek). The name entry's .bss comes after
       # 8A100's .data, so it is .bss.
       - [0x77D4, .data, stcrddek_800831F0]   # 0x8008A484 (after the last function's jr ra)
       - [0x77EC, .data, stcrddek_800867E8]   # 0x8008A49C the name entry's character tables

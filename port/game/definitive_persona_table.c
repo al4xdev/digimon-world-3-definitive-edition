@@ -11,14 +11,13 @@
 #endif
 
 const DefPersona def_personas[] = {
-    /* DRAFT 2026-11-23, written without the owner from the design guide; the review table is
-     * .dumps/tasks/persona/personas.proposed.json. The molds' names are the guide's (Fechadura, Agulha, ...).
-     * The red guard (owner, 2026-11-24, RED_*): about one campaign common Fechadura in three from Lv28, a reversed
+    /* DRAFT, not yet tuned. The molds have names (Fechadura, Agulha, ...).
+     * The red guard (RED_*): about one campaign common Fechadura in three from Lv28, a reversed
      * tide at Lv55 and the BK WarGreymon story boss, so that physical play meets a guard it never opens; few on
      * purpose, a red guard being easy for the magic the game was planned around. */
     { CAMPAIGN(313, 141), GUARD_ALWAYS }, /* Datamon, Lv34: guard_campanha */
     { CAMPAIGN(15, 444), GUARD_ALWAYS }, /* BK Imperialdramon, Lv46: guard_campanha */
-    /* owner, 2026-11-24: the campaign's red-guard boss, weak to Dark alone; its HP is kept (no lowering) */
+    /*  the campaign's red-guard boss, weak to Dark alone; its HP is kept (no lowering) */
     { CAMPAIGN(31, 448), KEEP(111), WEAK(DARK), RESIST(FIRE | WATER | WIND | THUNDER), RED_ALWAYS }, /* BK WarGreymon, Lv53: fechadura vermelha */
     { SUPER(1), KEEP(0), WEAK(WATER), RESIST(FIRE | WIND) }, /* MasterTyrannomon, Lv29: fraqueza_unica */
     { SUPER(2), KEEP(1), WEAK(WIND), RESIST(FIRE | THUNDER), GUARD_ALWAYS }, /* Pharaohmon, Lv37: fechadura */
@@ -129,7 +128,7 @@ const DefPersona def_personas[] = {
     { SPECIES(42), GUARD_A, ON_STAGGER }, /* Etemon, Lv20: fechadura */
     { SPECIES(40), SPEED_X(2), DEF_PCT(60) }, /* Andromon, Lv24: relampago */
     { SPECIES(460), GUARD_A, PHASES(2) }, /* Cardmon, Lv27: mare */
-    /* owner, 2026-11-24: the red guard's gatekeeper, a story fight of its own in the Admin Center (battle 322):
+    /*  the red guard's gatekeeper, a story fight of its own in the Admin Center (battle 322):
      * the weakest Digimon of its levels brought up to the Lv28 bosses (HP 1584, Power ~415) and acting twice per
      * action of the party (its MP-draining blow, twice: ~125 of the ~1000 MP a party has there), its two weaknesses
      * kept so the lesson is the guard, not a lock */

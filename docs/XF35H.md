@@ -63,7 +63,7 @@ as the option changes, so the screen is a live preview and the config file only 
 
 ### The wire protocol behind `mcu_led`
 
-Disassembly of `/usr/bin/mcu_led` (stripped aarch64 ELF, 67 KB; `.dumps/emuelec/mcu_led.dis`):
+Disassembly of `/usr/bin/mcu_led` (stripped aarch64 ELF, 67 KB):
 
 - `open(path, O_WRONLY | O_NOCTTY | O_NONBLOCK)`; termios with `PARENB`, `CSTOPB` and `CSIZE` cleared, `CS8`
   and `CLOCAL` set — **9600 8N1**, no flow control. The tool never reads from the port.

@@ -13,7 +13,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 MAIN="$(dirname "$(git -C "$ROOT" rev-parse --path-format=absolute --git-common-dir)")"
-# psxstack (the PC port's runtime, shim, build and launcher; DECISIONS "The port stack lives in psxstack"): the
+# psxstack (the PC port's runtime, shim, build and launcher): the
 # submodule at its pin. A worktree shares the main checkout's objects, so when the main checkout has the submodule
 # populated it is the alternate (--reference: no download); without network the sibling clone ../psxstack beside the
 # main checkout is linked instead, and the build then runs against whatever that clone has checked out (said so).

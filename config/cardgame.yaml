@@ -47,10 +47,10 @@ segments:
     type: code
     start: 0x0
     vram: 0x80082CB0
-    # Unnamed symbols are func_CARDGAME_<addr>, D_CARDGAME_<addr> (overlays share addresses; DECISIONS naming).
+    # Unnamed symbols are func_CARDGAME_<addr>, D_CARDGAME_<addr> (overlays share addresses).
     symbol_name_format: CARDGAME_$VRAM
     subsegments:
-      # .rodata and .text per file (DECISIONS "File boundaries come from evidence"). CARDGAME shares no code with the
+      # .rodata and .text per file. CARDGAME shares no code with the
       # other overlays (no window_anim/fade/tween/stage-module copies; only the entry point matches), so the
       # evidence is its own:
       # - Jump-table parity: tables at 0 mod 8 up to 82FB0, at 4 mod 8 from 8326C (8642C's), at 0 from 836A0
@@ -95,8 +95,7 @@ segments:
                                           # forward calls in the overlay besides the root's
       - [0x20A34, c, cardgame_cpu]   # 0x800A36E4 (strong) the CPU player: A4978 (called by 9FDD8) and its
                                           # helpers, its tables 83B04..83E34; no .data
-      # .data, then .bss (zeros in the file), per file in link order (tools/data_owners.py -t cardgame; DECISIONS
-      # "Overlay .data/.bss per file"). Each table is referenced by its own file only, in link order, except:
+      # .data, then .bss (zeros in the file), per file in link order (tools/data_owners.py -t cardgame). Each table is referenced by its own file only, in link order, except:
       # - D_800A5958 (the slot origins [screen mode][side]) is read by 85DE8 and 9D6E0 but sits between 954F8's
       #   .data and 96950's: defined in one of those two (neither reads it) or a data-only file; given to 96950,
       #   whose .text start was placed by it (weak, see above). D_800A5C20 (card IDs, also read by 85DE8) starts

@@ -9,7 +9,6 @@ Related documents:
 - [`LAUNCHER.md`](LAUNCHER.md): the mods, the settings file and the LED bar.
 - [`XF35H.md`](XF35H.md): the panel, LED bar and rumble of the XF35H.
 - [`PERFORMANCE.md`](PERFORMANCE.md): frame costs and how to measure them.
-- [`gpu/README.md`](gpu/README.md): how the GLES renderer was designed and measured.
 
 - [Renderers and video](#renderers-and-video)
 - [Running](#running)
@@ -221,8 +220,7 @@ Measurement switches (off in the launcher, where they are commented out; see [`P
 ## Known limitations
 
 - **The movies show an artefact on `gles`**: a rectangle of wrong pixels in the top-right corner of the film, in some frames
-  and not others. The software renderer is clean. No cause is known; [`gpu/17-movie-artefact.md`](gpu/17-movie-artefact.md)
-  records what the game does there and every hypothesis already ruled out. No movie has been watched end to end on the
+  and not others. The software renderer is clean. No cause is known. No movie has been watched end to end on the
   `gles` renderer.
 - **The heaviest battles are over budget**: about 24 ms of work against 20 with `gles` (41.85 fps) and about 27 ms with
   software (37.70 fps). Light battles fit.

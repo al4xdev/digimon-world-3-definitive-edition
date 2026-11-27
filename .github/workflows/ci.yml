@@ -1,5 +1,4 @@
-# CI (DECISIONS "Going public: the working repo is public", decision 8; "CI per area"). First green run 2026-10-05
-# (session 13), the data steps included; split into parallel jobs 2026-10-07 (from one 15-20 min job to ~6 min).
+# CI, split into parallel jobs by area.
 #
 # With the maintainers' secret GAMEDATA_DEPLOY_KEY (a read-only deploy key of the private data checkout
 # <owner>/dw2003-gamedata) the jobs have the disc and the pinned emulator: they rebuild every game file byte-identical
@@ -9,7 +8,7 @@
 # at -m64 and for Windows (tools/port_inventory.py probe and link, the PC port's gate), the SDL game, the launcher and
 # the Windows cross-build with their self-tests.
 #
-# When it runs (DECISIONS "CI per area"): on pull requests (not while they are drafts: marking one ready for review
+# When it runs: on pull requests (not while they are drafts: marking one ready for review
 # starts the run) and on pushes to main, not on changes that touch only documentation (paths-ignore: no step reads
 # those files), and a newer push to a pull request cancels the run of the older one. A branch without a pull request:
 # `gh workflow run CI --ref <branch>`. release.yml calls this workflow (workflow_call) before it builds a release when
@@ -29,7 +28,7 @@
 #                replays, the SPU and XA units) and the port layer (the M1 test, on the -m32 build too, and the port's
 #                checks), `port-mods`: layer 3 (formats, save round trips) and the mods (the longest test: its own
 #                job), `windows`: the cross-build, the launcher's self-test, the crash report and the layer-2 replays
-#                under Wine (DECISIONS "Windows: cross-built from Linux"); and below
+#                under Wine; and below
 #   launcher  launcher/ (the port's json.c/sha1.c it compiles are port/, which implies launcher)
 #             -> `launcher`: the SDL game's build and input self-tests, the launcher's build and self-test, the
 #                self-test with the disc and that game
@@ -356,7 +355,7 @@ jobs:
             build/**/crash-*.txt
           if-no-files-found: ignore
 
-  # The Windows build (DECISIONS "Windows: cross-built from Linux, tested under Wine and Proton"): cross-built on the
+  # The Windows build: cross-built on the
   # same ubuntu-24.04 runner with llvm-mingw and SDL3 for Windows, then run under Ubuntu's Wine (9.0) headless. Fork
   # pull requests get the disc-free part: the cross-build and the launcher's self-test under Wine.
   windows:

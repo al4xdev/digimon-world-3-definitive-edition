@@ -46,14 +46,13 @@ segments:
     type: code
     start: 0x0
     vram: 0x80082CB0
-    # Unnamed symbols are func_STCRDABM_<addr>, D_STCRDABM_<addr> (overlays share addresses; DECISIONS naming).
+    # Unnamed symbols are func_STCRDABM_<addr>, D_STCRDABM_<addr> (overlays share addresses).
     symbol_name_format: STCRDABM_$VRAM
     subsegments:
-      # One file (DECISIONS "File boundaries come from evidence"): .rodata is a single jump table (no parity break),
+      # One file: .rodata is a single jump table (no parity break),
       # .data is one block of tables used by the overlay's last functions; no evidence for a second object.
       - [0x0,  .rodata, stcrdabm_80082D88]
       - [0xD8, c, stcrdabm_80082D88]   # 0x80082D88: .text (tools/overlay_layout.py)
-      # .data, then .bss (zeros in the file), each per file in link order (tools/data_owners.py -t stcrdabm;
-      # DECISIONS "Data in C, split per object").
+      # .data, then .bss (zeros in the file), each per file in link order (tools/data_owners.py -t stcrdabm).
       - [0x2D9C, .data, stcrdabm_80082D88]   # 0x80085A4C (after the last function's jr ra); no .bss
   - [0x2DCC]

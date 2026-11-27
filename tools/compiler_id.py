@@ -5,8 +5,7 @@ For a set of game functions: m2c drafts C from the original asm (only mechanical
 `--valid-syntax` plus m2c_macros.h; for -G8, `extern`s of the variables the original reaches
 through $gp become definitions, see do_function), the draft is compiled with every GCC in tools/gcc via
 tools/cc_psx.sh at -G0 and -G8, and objdiff scores each object against the original function
-assembled from asm/main/. Scores come from natural m2c C only, never from permuter output
-(DECISIONS 2026-10-01, Milestone 1).
+assembled from asm/main/. Scores come from natural m2c C only, never from permuter output.
 
 Needs a split tree (scripts/build.sh); reads every game unit in asm/main/. Work files go to build/compiler_id/; the results are
 build/compiler_id/results.csv and a summary on stdout.

@@ -1,4 +1,4 @@
-/* The Velvet Room in the main story (owner, 2026-11-17): the hooks that send the
+/* The Velvet Room in the main story: the hooks that send the
  * player into the room's arcs at set story steps (gamestate_data.progress), and the talks they show.
  *
  * A story talk is the game's own talk balloon (fieldstg_dialog_create_talk, the stage's talk file) on the player, with
@@ -6,7 +6,7 @@
  * letter "a", and the port's text override (tools/text_override, def_story_text_own) fills it. Several messages run one
  * after the other; the field is held (event_running) until the last closes and the confirm button is let go.
  *
- * The Velvet Room grows with the story (owner, 2026-11-17): its doors stay closed until step 4, and its guests come in
+ * The Velvet Room grows with the story: its doors stay closed until step 4, and its guests come in
  * one level at a time (def_story_velvet_level), the Black Market last. Each new guest calls the player over on the
  * first visit after it came (definitive_velvet.c).
  *
@@ -572,7 +572,7 @@ static void igor_read(int first) {
     def_glyph_put(buf, &p, size, told ? def_str_IgorBye : def_str_IgorBlank);
 }
 
-/* ---- Igor's dreams (owner, 2026-11-17): at set moments of the story Igor pulls the
+/* ---- Igor's dreams: at set moments of the story Igor pulls the
  * player into the room alone, as in the opening (the portal's sound, the room with him only, the two face to face),
  * says his piece and asks; the answer is kept in the save, in the order the story asks (def_record_story_answer), and
  * changes no event: later dreams recall it. Then the player is sent back to the very spot the dream took them from. A
@@ -619,7 +619,7 @@ static const Dream dreams[] = {
     /* Act II, the burden: the first free moment on the Amaterasu Server (step 27, past the Bug Maze Pit). */
     { 1, 27, 27, 0, def_str_Dr2Ask, { def_str_Dr2Op1, def_str_Dr2Op2, def_str_Dr2Op3 },
       { def_str_Dr2Re1, def_str_Dr2Re2, def_str_Dr2Re3 }, -1, { NULL, NULL, NULL } },
-    /* The Oinkmon (owner, 2026-11-17): the Destromon stopped, yet Teddy and Kurt are still Oinkmon, as everyone on
+    /* The Oinkmon: the Destromon stopped, yet Teddy and Kurt are still Oinkmon, as everyone on
      * the server (WSTAG226's event 935, DMG200:41: "Wait here. I'll look into it."). It ends at step 0x26 and leaves
      * the player free on map 0x270 (WSTAG201: nothing runs there); the step lasts until the Master Room's events (0x27),
      * the restoration machine of Qing Long being within it (flag 0x1A0A). Igor recalls Act I's answer (the mask has
@@ -734,7 +734,7 @@ static s32 choice_top(void) {
  * punctuation: `:` (01 07) and the rest came out as a stray "0" ("Sharp0 twenty minutes"; every label is
  * "Tone: words", a few have commas, a dream's has parentheses). The missing ones borrow a picture another font already
  * keeps in VRAM, drawn with this font's own palette row: `:` and `/` the 9-pixel font's, `,` `(` `)` the 14-pixel
- * font's, raised so their baseline meets this font's. Checked on the panel (2026-11-21); `;` and `...` borrowed that
+ * font's, raised so their baseline meets this font's. Checked on the panel; `;` and `...` borrowed that
  * way came out wrong, so they are left out (no label uses them). Filled once; only empty slots are touched. */
 extern FontGlyph font_glyphs_9_ext[], font_glyphs_11_ext[], font_glyphs_14_ext[];
 

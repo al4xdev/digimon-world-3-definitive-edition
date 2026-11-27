@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""The battle menu's INFO panel (src/fightstg/fightstg_8008D3B4.c, .plan/tasks/battle-hud-part2-info.md): every legend
+"""The battle menu's INFO panel (src/fightstg/fightstg_8008D3B4.c): every legend
 line, in every language and with the table's largest values, fits the legend's room in the 14-pixel font; no entry
 has more than two lines; with each persona row's traits the panel ends inside the 240-line screen; and the traits
 row's pictures never reach the turn queue at the row's right end. The widths are the font's own

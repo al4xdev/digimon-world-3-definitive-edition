@@ -1,4 +1,4 @@
-/* The rare foes' colours (the owner's "shiny"): a regional Rare Target and a Super
+/* The rare foes' colours ("shiny"): a regional Rare Target and a Super
  * Rare come with their palette swapped, a real palette swap (their texture's CLUT turned on the colour wheel as it is
  * uploaded), not a tint.
  *
@@ -143,7 +143,7 @@ static unsigned short rotate(unsigned short c, const double m[3][3]) {
     return (unsigned short)(o | (c & 0x8000));
 }
 
-/* The Blast Gauge's dark forms (owner, 2026-11-17: "paint them black"): the colour's luminance, dimmed to
+/* The Blast Gauge's dark forms ("paint them black"): the colour's luminance, dimmed to
  * RC_DARK_PCT and tinted RC_DARK_TINT (a little purple), so the shapes still read. 0 stays 0, the STP bit stays, and a
  * colour never becomes 0 (transparent). */
 #define RC_DARK_PCT 40

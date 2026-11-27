@@ -21,16 +21,18 @@ Ivy and Kail become Junior; Smith Junior keeps his name). Portuguese swaps the s
   `girls_power_art.h` holds `GP_PASTE` (a piece of a disc frame read at run time; how 1 mirrored, 2 through the colour
   table) and `GP_ART` rows (`.` keeps the pixel, `0` empties it, `1`-`9`/`A`-`F` paint it); no disc pixel is stored there.
 
-### Girls Power: how it was built, decisions, and the hand-drawing workflow
+### How it works
 
-**Owner decisions (2026-11-14):** swap the roles (the old Kail becomes Junior); the new art, technically, was left to the implementer; deliver everything at once; **no text changes**
-(Kail is called "Junior" and Junior "Kail" in the game's strings); it lives in the game itself, not on the memory card (only the choice is saved, `DEF_SAVE_KAILI`).
+The feature lives in the game, not on the memory card: only the choice is saved. Everything is under `PC_PORT`.
 
-**Disc census (2026-11-14).** Field characters are 2D 4-bit sprites (`FIELD/SPRT/P###xxxx.BIN`, `docs/FORMATS.md` "Actor sprites"). Junior's exact 16-colour palette was searched in all
-2382 disc files and appears only in: `P001PLAY` (0x186, Junior in cutscenes, actor 1, 27 animations) and `P002PLAY` (0x187, controllable, actor 2) -> become Kail; `P002PLYD/F/K/L`
-(0x3C9-0x3CC: actions `PLYD`, fishing, kick, `PLYL`) -> become Kail; `P011MINO` (0x190) and `P012MINT` (0x2F8), the Kail NPCs (actors 11 and 178) -> become Junior; the VRAM pages of the name
-screens (`NAMEENT/STNMETTM` 0x28B, `SCREEN/NAMEDTTM` 0x771: name entry, confirmation, Digimon name and deck, with Junior's front frame 85) receive Kail's own front standing frame and her CLUT. The
-original premise ("Kail has almost all the sprites") was false: she has 9 animations against his 27 plus the actions; so the solution **repaints his frames** instead of pointing the actor at her file.
+**Disc census.** Field characters are 2D 4-bit sprites (`FIELD/SPRT/P###xxxx.BIN`, `docs/FORMATS.md` "Actor sprites").
+Junior's exact 16-colour palette was searched in all 2382 disc files and appears only in: `P001PLAY` (0x186, Junior in
+cutscenes, actor 1, 27 animations) and `P002PLAY` (0x187, controllable, actor 2) -> become Kail; `P002PLYD/F/K/L`
+(0x3C9-0x3CC: actions `PLYD`, fishing, kick, `PLYL`) -> become Kail; `P011MINO` (0x190) and `P012MINT` (0x2F8), the
+Kail NPCs (actors 11 and 178) -> become Junior; the VRAM pages of the name screens (`NAMEENT/STNMETTM` 0x28B,
+`SCREEN/NAMEDTTM` 0x771: name entry, confirmation, Digimon name and deck, with Junior's front frame 85) receive Kail's
+own front standing frame and her CLUT. She has 9 animations against his 27 plus the actions, so the port **repaints his
+frames** instead of pointing the actor at her file.
 
 **Method.** As soon as `cdload` finishes reading one of the 8 files (`src/main/cdload.c`, transition 2->3) every frame the animation tables cite is repainted in its own buffer.
 - **Whole frame of the other** in animations both have for the same thing (1 idle, 4 walk, 7 talk, 9 startle, 12 wave, 51 hop): the frame gets the other's original frame (same animation and direction)
@@ -39,61 +41,94 @@ original premise ("Kail has almost all the sprites") was false: she has 9 animat
   (another gesture, another side); running, kick, fishing and the cutscenes that only one has keep the head swap.
 - **Running (his animations 5 and 6):** she has no such drawing: head and trunk come from her walk frame (same step and direction) down to the belt; of Junior only the legs stay, in her colours. He runs
   crouched (head up to 4 rows lower) and her trunk is longer, so she drops only half. With this the walkable file has no frame with a glued head: 47 originals + 40 running.
-- **The head:** the character's own idle heads (animation 1, 5 directions) are matched to the frame pixel by pixel, also mirrored; direction = the frame's slot in the animation table (5 slots = 5 directions) when a
-  single-slot script cites it, else the matched head's. With at least half the pixels equal the other's head goes exactly where the original is (it follows the original motion); otherwise (tilted or lying head) it goes
-  on the chin found under the cap/hair. The two heads are aligned face to face (mean x of the skin). Pieces of up to 8 pixels that the removal leaves loose (a pigtail tip, a cap corner) go with it. A head that
-  covers the body (lying, seen from above: 3/4 of the frame would be removed): none of the 5 heads fits, so the cap/hair is only tinted with the other's colours, no paste. Her hair falling on her back (below the
-  chin with body on both sides) is not removed (it would leave a hole): it becomes Junior's clothes. (Before 2026-11-14 the direction was guessed from the face skin frame by frame: it was wrong in almost every 3/4 and
-  back view and turned the head inside the idle, "head spinning".)
+- **The head:** the character's own idle heads (animation 1, 5 directions) are matched to the frame pixel by pixel,
+  also mirrored; direction = the frame's slot in the animation table (5 slots = 5 directions) when a single-slot script
+  cites it, else the matched head's. With at least half the pixels equal the other's head goes exactly where the
+  original is (it follows the original motion); otherwise (tilted or lying head) it goes on the chin found under the
+  cap/hair. The two heads are aligned face to face (mean x of the skin). Pieces of up to 8 pixels that the removal
+  leaves loose (a pigtail tip, a cap corner) go with it. A head that covers the body (lying, seen from above: 3/4 of
+  the frame would be removed): none of the 5 heads fits, so the cap/hair is only tinted with the other's colours, no
+  paste. Her hair falling on her back (below the chin with body on both sides) is not removed (it would leave a hole):
+  it becomes Junior's clothes.
 - **Clothes:** recoloured with a 16-index table and the CLUT becomes the other's. **Unchanged:** animations, timings and scripts stay the game's, so kick, fishing and all cutscenes work without animation translation.
-- **References:** heads come from the original standing frames read straight from the disc (`port_disc_read_user`, new in `psxstack/runtime/disc.c`). **Menu screens:** `tim_load_all` (`src/main/tim.c`) calls
-  `port_girls_tim` before each upload; the page with Junior's frame 85 and CLUT receives Kail's (animation 1, direction 0) and her CLUT, recognised by content. **Switch:** the question "CHOOSE YOUR HERO!" on New
-  Game right after the difficulty, same panel (`src/stdwtitl/stdwtitl_800852F0.c`, step 11; X goes back to difficulty), Kail first; `port_girls_refresh` (New Game, save read in `stgmcard`) drops the 8 files from the cache if the heroine
-  changed; off under a replay script; `DW3_GIRLS=0/1` forces it; letters J and P were added to the polygon font (`definitive_callout.c`). The matching build is untouched (all under `PC_PORT`).
-- **Verified:** the C equals the Python prototype (`tools/girls_power_preview.py`) in the 465 frames of the 8 files (`DW3_GIRLS_DUMP=<dir>` writes the repainted files); `tests/port/girls_power.py` (every frame's CLUT is the
-  other's, the frame changed and has the other's head; off under a script); `tests/port/run.py` passes; in game (captures `.dumps/tasks/girls-power/st/`): Kail walks in several directions; the Kusanagi street shows Kail, Junior (the ex-Kail) and Takuya
-  together; the Digimon Online confirmation screen shows Kail.
-- **Playtest checklist for the owner:** lying poses (anims 16, 38, 39 of the cutscenes: cap becomes hair seen from above, no pigtail); tree kick, fishing and the `PLYD`/`PLYL` actions (checked frame by frame on sheets, not in play); the deck
-  and Digimon name screens (same page `0x771`, never seen running); anywhere else Junior appears (the exact-palette census found none, but an image with another palette would slip through). To tune the algorithm:
-  `tools/venv/bin/python tools/girls_power_preview.py <dir>` generates before/after sheets; change the Python, compare by eye, then replicate in C; `DW3_GIRLS_DUMP` plus the test confirm both match.
+- **References:** heads come from the original standing frames read straight from the disc (`port_disc_read_user` in
+  `psxstack/runtime/disc.c`). **Menu screens:** `tim_load_all` (`src/main/tim.c`) calls `port_girls_tim` before each
+  upload; the page with Junior's frame 85 and CLUT receives Kail's (animation 1, direction 0) and her CLUT, recognised
+  by content. **Switch:** the question "CHOOSE YOUR HERO!" on New Game right after the difficulty, same panel
+  (`src/stdwtitl/stdwtitl_800852F0.c`, step 11; X goes back to difficulty), Kail first; `port_girls_refresh` (New Game,
+  save read in `stgmcard`) drops the 8 files from the cache if the heroine changed; off under a replay script;
+  `DW3_GIRLS=0/1` forces it. The polygon font's J and P are in `definitive_callout.c`.
+- **Checks:** the C must equal the Python prototype (`tools/girls_power_preview.py`) in every frame of the 8 files
+  (`DW3_GIRLS_DUMP=<dir>` writes the repainted files); `tests/port/girls_power.py` checks every frame's CLUT and head,
+  and that nothing changes under a script. To tune the algorithm: generate before/after sheets with the preview tool,
+  change the Python, compare by eye, then replicate in C.
 
-**The hand-drawn frames (owner, 2026-11-14): "do all 174, one by one, no shortcuts, cost and time are not a problem, I want quality"**: every frame the automatic head swap still built was drawn by hand as pixel art, each studied alone,
-compared with Junior's original frame of the same pose and with Kail's own sprites (so her identity does not change), and checked **mirrored** (the game draws the left directions by mirroring the right ones). Whole frames and the run bust swap are not
-in that list (they already use real sprites). **All 174 are drawn**; what is left is the owner's in-game review and redoing what they point at. Numbers: kick `3CB` 25 frames (done 2026-11-14), fishing `3CA` 70 (2026-11-15), `3C9` 7, `3CC` 16
-(2026-11-14), `P001PLAY` `186` scene gestures 37 (2026-11-15: arms crossed 92-96, tapping 97-99/100-102, 103 105 107, 108-110, 106, 111, 112, 116, 119-121, 122 123, 127 128, lying 132-138 with her own head pasted, 139 140 her own hop frame with sparks in white),
-`P011MINO` `190` (her file becomes Junior in **his** palette) 19 (2026-11-15). Redrawn after the owner's review of 2026-11-16 (sets `ladder`, `fish_profile`, `fish_34front`, `fish_34back`): `3CC` 2-10, 14, 15 whole (one bent arm from her shoulder, legs alternating
-as his; 0, 1, 11-13 as first done); `3CA` 27-33 (her 3/4 front head, bowed, instead of a profile head pushed 5 px ahead of her shoulders), 37-39 (striking arm bent, far foot forward), 41-48 and 14-19 (head back over her shoulders, down instead of forward);
-front 55-68 and back 0-13 looked at, not changed. **A head that leans is never slid ahead of the shoulders: it goes down, or it is another head (turned), as his.**
+### The hand-drawn frames
 
-**Where each drawn frame is** (from the frame comments in `girls_power_art.h`): kick `3CB` (`P002PLYK`): back 0-4, 3/4 back 5-9, profile
-10-14, 3/4 front 15-19, front 20-24. Fishing `3CA` (`P002PLYF`): back 0-13, 3/4 back 14-26 and 69, profile 27-40, 3/4 front 41-54, front
-55-68. `3C9` (`P002PLYD`) 0-6: the actions, all 3/4 from the front. `3CC` (`P002PLYL`) 0-15: the ladder (up over the edge, at its foot,
-climbing 3/4 from behind, the top, jumping down and landing, holding on). `186` (`P001PLAY`): the run 30-69 and the scene gestures listed
-above. `190` (`P011MINO`, Junior in his palette): 28, 29, 36-52. `187` (`P002PLAY`): the run 30-69. The run frames of `186` and
-`187` (80) are on top of the 174: the first hand retouches of `187` came with the run bust (`5214165`), the rest were drawn later
-(`685214b`, `86c6d0c`, `9f21e31`).
+Every frame the automatic head swap would otherwise build is hand-drawn pixel art, compared with Junior's frame of the
+same pose and with Kail's own sprites (so her identity does not change), and checked **mirrored** (the game draws the
+left directions by mirroring the right ones). Whole frames and the run bust swap use real sprites. **A head that leans is
+never slid ahead of the shoulders: it goes down, or it is another head (turned), as his.**
 
-Tools (`FILE` is hex, `FRAME` decimal sub-file number): `tools/girls_power_draw.py edit FILE FRAME` (creates `.dumps/tasks/girls-power/draw/<FILE>_<FRAME>.txt` from the header; no-op if it exists), `base FILE FRAME` (rewrites the drawing as automatic frame + its `paste`
-lines; hand pixels are lost: use right after changing pastes), `show FILE FRAME [FILE:FRAME ...]` (run with `uv run --no-project --with pillow`; writes a PNG with disc / auto / drawing on a 4-px grid, the references (hers in `190` by default), all 3x including the
-drawing **mirrored**, and the animation script as the game places it, normal and mirrored, current frame boxed), `build` (regenerates `port/game/girls_power_art.h` from all drawing files: pastes + only the pixels that differ from the automatic frame), `check` (runs
-`build/port/dw2003` with `DW3_GIRLS_DUMP` and compares the 8 repainted files with the Python prototype byte for byte; rebuild the port first). Drawing file: `#` lines = the header comment; `paste SRC SRCFRAME X Y W H TOX TOY HOW` (a piece of a disc frame put on the frame at run
-time; HOW 1 mirrored, 2 through the colour table); `%` lines ignored (column ruler, each pixel row ends with `%row`); pixel rows: `.` empty, `1`-`F` palette index. **The header must never hold disc pixels**: her real head/trunk at another angle is `paste`d (read from the disc at run time);
-what is hand-drawn goes in the rows. The drawing files are local (`.dumps/`, gitignored) because they hold disc pixels; the header is the source of truth (`edit` recreates a drawing from it). After a batch: `build` -> `make -C build/port -j8` and `ninja -C build/port-sdl` (the owner plays the SDL one;
--Werror) -> `check` -> `tools/venv/bin/python tests/port/girls_power.py` -> `tests/port/run.py`. Commit in English (`feat(girls-power): ...`), no AI attribution in the repo's files, **no tag, nothing copied to ~/Applications** (the owner pulls from `build/port-sdl`).
-Local helpers in `.dumps/tasks/girls-power/helpers/` (rewrite if lost; thin wrappers over `read`/`write` of `girls_power_draw.py`): `compose.py FILE FRAME "comment" SRCFRAME:X0-X1:A-B@DST:DX ...`, `over.py FILE FRAME` (stdin `ROW:pixels`, `.` keep, `0` erase), `cpdraw.py`, `where.py FILE frames`, `stamp.py` + `st/*` (arm stamps
-per direction), `rev.py` (disc / drawn / mirrored strip), `addpaste.py`, `mv.py`; copies in `.dumps/tasks/girls-power/backup/` with a patch of the paste support.
+**Where each drawn frame is** (from the frame comments in `girls_power_art.h`): kick `3CB` (`P002PLYK`): back 0-4, 3/4
+back 5-9, profile 10-14, 3/4 front 15-19, front 20-24. Fishing `3CA` (`P002PLYF`): back 0-13, 3/4 back 14-26 and 69,
+profile 27-40, 3/4 front 41-54, front 55-68. `3C9` (`P002PLYD`) 0-6: the actions, all 3/4 from the front. `3CC`
+(`P002PLYL`) 0-15: the ladder (up over the edge, at its foot, climbing 3/4 from behind, the top, jumping down and
+landing, holding on). `186` (`P001PLAY`): the run 30-69 and the scene gestures (arms crossed 92-96, tapping 97-102,
+103-112, 116, 119-123, 127, 128, lying 132-138, hop 139-140). `190` (`P011MINO`, Junior in his palette): 28, 29, 36-52.
+`187` (`P002PLAY`): the run 30-69.
 
-**Placement rule (learned on the kick).** Her head moves against **her** standing frame exactly as his head moves against **his** standing frame of the same direction (template match of his idle head; "his head moved (dx,dy)"). In paste terms: offset for her idle frame of direction d = (her idle script x
+Tools (`FILE` is hex, `FRAME` decimal sub-file number): `tools/girls_power_draw.py edit FILE FRAME` (creates
+`.dumps/tasks/girls-power/draw/<FILE>_<FRAME>.txt` from the header; no-op if it exists), `base FILE FRAME` (rewrites
+the drawing as automatic frame + its `paste` lines; hand pixels are lost: use right after changing pastes), `show FILE
+FRAME [FILE:FRAME ...]` (run with `uv run --no-project --with pillow`; writes a PNG with disc / auto / drawing on a
+4-px grid, the references (hers in `190` by default), all 3x including the drawing **mirrored**, and the animation
+script as the game places it, normal and mirrored, current frame boxed), `build` (regenerates
+`port/game/girls_power_art.h` from all drawing files: pastes + only the pixels that differ from the automatic frame),
+`check` (runs `build/port/dw2003` with `DW3_GIRLS_DUMP` and compares the 8 repainted files with the Python prototype
+byte for byte; rebuild the port first). Drawing file: `#` lines = the header comment; `paste SRC SRCFRAME X Y W H TOX
+TOY HOW` (a piece of a disc frame put on the frame at run time; HOW 1 mirrored, 2 through the colour table); `%` lines
+ignored (column ruler, each pixel row ends with `%row`); pixel rows: `.` empty, `1`-`F` palette index. **The header
+must never hold disc pixels**: her real head/trunk at another angle is `paste`d (read from the disc at run time); what
+is hand-drawn goes in the rows. The drawing files are local (`.dumps/`, gitignored) because they hold disc pixels; the
+header is the source of truth (`edit` recreates a drawing from it). After a batch: `build` -> `make -C build/port -j8`
+and `ninja -C build/port-sdl` (-Werror) -> `check` -> `tools/venv/bin/python tests/port/girls_power.py` ->
+`tests/port/run.py`.
+
+**Placement rule.** Her head moves against **her** standing frame exactly as his head moves against **his** standing
+frame of the same direction (template match of his idle head; "his head moved (dx,dy)"). In paste terms: offset for her
+idle frame of direction d = (her idle script x
 - his idle script x + dx, her idle script y - his idle script y + dy); her feet stay on **her** idle ground (her idle feet row + her idle script y - this frame's script y). When his head drops (crouch, wind-up) her body is shortened to fit: drop jacket rows (leaning) and leg rows (bent knees), never squash the head.
 Aligning by his chin (what the automatic swap does) makes her body too short and puts her 1-2 px off her idle position (a visible hop at the start/end of the animation).
 
-**Procedure for one frame:** `edit`, then `show` with 2-4 of her references in the same direction/pose; read Junior's original (the action, hands/feet, where the head turns, what is in front); head: her idle head of the right direction is what the swap put there, if the pose wants another angle or tilt `paste` her head from the frame that has it, then `base`;
-body: redraw in **her** design, not his recoloured: jacket light blue-grey `D` with green `F` lapels/collar and `C` shading, white shirt `A` in the middle, outline `8` on clothes and `7` darkest, skin `1`/`2` with `B`/`3` edges, trousers `C`/`5` with `D`/`A` highlights, green shoes `F` with `8`/`7` outline; keep his silhouette and motion
-(his timing and offsets), change the costume; look at the 3x row and the mirrored copy (no stray pixels, shapes read at game size, pigtails do not flip into something odd); look at the animation strip (the head must not jump between consecutive frames, match neighbours, draw neighbours from the same key drawing); write the `#` comment, `build`.
-**Palettes.** Kail (her files, and Junior's files after the swap): `1` f8c0b0 skin, `2` e88880 skin shadow, `3` 8870a0 purple shade, `4` e05860 hair, `5` 383880 navy, `6` a03058 hair dark, `7` 301820 outline darkest, `8` 485048 clothes outline, `9` 907880 mauve grey, `A` f0f0f0 white, `B` 704850 brown edge, `C` 6868b0 violet blue, `D` 98a0c0 light blue grey, `E` 581850 hair outline, `F` 98c828 green.
-Junior (his files, and P011MINO/P012MINT after the swap): `1` f85058 red, `2` 5068a0 blue, `3` 80b0f8 light blue (cap), `4` d05830 orange-brown, `5` 784078 purple, `6` 6858a0 violet, `7` 9880c0 lavender, `8` f8c098 skin, `9` f88888 skin shadow, `A` d09038 orange, `B` 507068 dark green, `C` 582050 dark purple, `D` 404858 outline, `E` 788898 grey, `F` f0f0f0 white.
-**Her references (`P011MINO`, `190`):** idle (anim 1) slots 0-4 = frames 4 / 3 / 2 / 1 / 0 (+ breathing 82-83, 80-81, 78-79, 76-77, 74-75); walk (anim 4): front 56 57 55 58 59, 3/4 front 20-24, profile 66 67 65 68 69, 3/4 back 10-14, back 61 62 60 63 64; gestures 37-40 front arms out / eyes closed / mouth open, 41-48 3/4 and profile variants, 49-54 profile/back, 19 29 31 34 36 jumps, back views and a lying pose.
-**Review in the game:** `DW3_GIRLS_NUMBERS=1` writes each repainted frame's sub-file number in its top-left corner (3x5 digits, mirrored when the game mirrors the frame); the owner sends a screenshot, the number names the frame, the file is known from the action (fishing `3CA`, kick `3CB`, climbing `3CC`, scene gestures `186`, walking `187`, the Junior NPC `190`).
-Known weak spots, first candidates if the owner complains: the rod is one pixel wide in her dark hair colour (index 6); 3/4 frames in 24-wide files lose 1-2 px of the pigtail tip at the frame edge (95, 97-99, 108-110, 119-123, 93, 100-103, 107); the lying frames keep the automatic body; 122/123 differ from standing only by head height and elbow. Fishing plan used (`3CA`): per direction compose her body (the head of that
-direction; the 3/4 head where he turns his head to look at his hands, 55-58 in front), then `paste` his own arms and rod from the same frame with how=2 (recoloured: his white short sleeves become her green upper sleeves, his skin hers), then hand-fix (his bare forearms -> her light sleeves D/C with a white A cuff, clean any of his torso pasted along); the rod/line keep his motion exactly.
-Notes for whoever continues: in-game verification through the MCP `dw2003` tools did not get past the title's Continue with the owner's memory cards, so rely on `show` + `check` and ask for screenshots; Junior's files share one palette, hers another, frame sizes vary (24/28/32 wide, 24-32 tall); `girls_power_preview.py repaint` order per frame: whole -> bust -> head swap -> the header's steps (pastes, then art, in header order).
+**Procedure for one frame:** `edit`, then `show` with 2-4 of her references in the same direction/pose; read Junior's
+original (the action, hands/feet, where the head turns, what is in front); head: her idle head of the right direction
+is what the swap put there, if the pose wants another angle or tilt `paste` her head from the frame that has it, then
+`base`; body: redraw in **her** design, not his recoloured: jacket light blue-grey `D` with green `F` lapels/collar and
+`C` shading, white shirt `A` in the middle, outline `8` on clothes and `7` darkest, skin `1`/`2` with `B`/`3` edges,
+trousers `C`/`5` with `D`/`A` highlights, green shoes `F` with `8`/`7` outline; keep his silhouette and motion (his
+timing and offsets), change the costume; look at the 3x row and the mirrored copy (no stray pixels, shapes read at game
+size, pigtails do not flip into something odd); look at the animation strip (the head must not jump between consecutive
+frames, match neighbours, draw neighbours from the same key drawing); write the `#` comment, `build`. **Palettes.**
+Kail (her files, and Junior's files after the swap): `1` f8c0b0 skin, `2` e88880 skin shadow, `3` 8870a0 purple shade,
+`4` e05860 hair, `5` 383880 navy, `6` a03058 hair dark, `7` 301820 outline darkest, `8` 485048 clothes outline, `9`
+907880 mauve grey, `A` f0f0f0 white, `B` 704850 brown edge, `C` 6868b0 violet blue, `D` 98a0c0 light blue grey, `E`
+581850 hair outline, `F` 98c828 green. Junior (his files, and P011MINO/P012MINT after the swap): `1` f85058 red, `2`
+5068a0 blue, `3` 80b0f8 light blue (cap), `4` d05830 orange-brown, `5` 784078 purple, `6` 6858a0 violet, `7` 9880c0
+lavender, `8` f8c098 skin, `9` f88888 skin shadow, `A` d09038 orange, `B` 507068 dark green, `C` 582050 dark purple,
+`D` 404858 outline, `E` 788898 grey, `F` f0f0f0 white. **Her references (`P011MINO`, `190`):** idle (anim 1) slots 0-4
+= frames 4 / 3 / 2 / 1 / 0 (+ breathing 82-83, 80-81, 78-79, 76-77, 74-75); walk (anim 4): front 56 57 55 58 59, 3/4
+front 20-24, profile 66 67 65 68 69, 3/4 back 10-14, back 61 62 60 63 64; gestures 37-40 front arms out / eyes closed /
+mouth open, 41-48 3/4 and profile variants, 49-54 profile/back, 19 29 31 34 36 jumps, back views and a lying pose.
+**Review in the game:** `DW3_GIRLS_NUMBERS=1` writes each repainted frame's sub-file number in its top-left corner (3x5
+digits, mirrored when the game mirrors the frame); on a screenshot the number names the frame, the file is known from
+the action (fishing `3CA`, kick `3CB`, climbing `3CC`, scene gestures `186`, walking `187`, the Junior NPC `190`).
+Known weak spots: the rod is one pixel wide in her dark hair colour (index 6); 3/4 frames in 24-wide files lose 1-2 px
+of the pigtail tip at the frame edge (95, 97-99, 108-110, 119-123, 93, 100-103, 107); the lying frames keep the
+automatic body; 122/123 differ from standing only by head height and elbow. Fishing plan used (`3CA`): per direction
+compose her body (the head of that direction; the 3/4 head where he turns his head to look at his hands, 55-58 in
+front), then `paste` his own arms and rod from the same frame with how=2 (recoloured: his white short sleeves become
+her green upper sleeves, his skin hers), then hand-fix (his bare forearms -> her light sleeves D/C with a white A cuff,
+clean any of his torso pasted along); the rod/line keep his motion exactly. Junior's files share one palette, hers
+another, frame sizes vary (24/28/32 wide, 24-32 tall); `girls_power_preview.py repaint` order per frame: whole -> bust
+-> head swap -> the header's steps (pastes, then art, in header order).

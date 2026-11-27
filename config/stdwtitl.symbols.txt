@@ -18,7 +18,7 @@ DecDCTvlc2 = 0x8008780C; // type:func
 // LIBPRESS.LIB/BUILD.OBJ
 DecDCTvlcBuild = 0x80087B5C; // type:func
 
-// Game code: module structs and tables that splat would otherwise label inside (DECISIONS "Module state structs")
+// Game code: module structs and tables that splat would otherwise label inside
 stdwtitl_movies = 0x80087C98; // size:0xA8
 stdwtitl_background_anim_0 = 0x80087DDC; // size:0x44
 stdwtitl_background_anim_1 = 0x80087E20; // size:0x54
@@ -31,7 +31,7 @@ stdwtitl_background_anim_7 = 0x800881BC; // size:0x58
 stdwtitl_module = 0x80088234; // size:0x18
 stdwtitl_decoder = 0x80089214; // size:0x38
 
-// Game code: names (DECISIONS "Naming conventions")
+// Game code: names
 stdwtitl_picture_screen_update = 0x80082D70; // type:func
 stdwtitl_picture_screen_create = 0x80082E9C; // type:func
 stdwtitl_root_update = 0x80082EC8; // type:func

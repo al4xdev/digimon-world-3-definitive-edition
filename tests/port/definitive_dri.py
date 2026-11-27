@@ -4,7 +4,7 @@ driver with stand-in challenges and agents: the stage-to-tier rule, the agents' 
 texts, the unlock (once, paid exactly,
 never again), the rewards (each tier once, the best stage only rises), the second card record's bytes 152..157 written
 and read back (an older record as nothing unlocked) and a replay script (nothing). Then the table (hand-maintained since
-2026-11-23, no longer held to tools/gen_dri_challenges.py's rule) checked against the game's data: every stage an enemy species, every
+no longer held to tools/gen_dri_challenges.py's rule) checked against the game's data: every stage an enemy species, every
 battle and reward an existing one, every unlock's material and rare item in range. Needs only the host gcc."""
 import re
 import subprocess

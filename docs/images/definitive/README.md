@@ -22,18 +22,17 @@ show.
 | `super-rare-compass.svg` | the temperature compass, the flee and return, the 13 hunts, crystals and skins | README, Super Rares |
 | `cross-play.svg` | cloud sync between a handheld and a PC, pairing, conflicts, snapshots | README, platforms |
 
-Their generator scripts were scratch (`.dumps/tasks/readme/battle/` and `world/`, local only); the SVGs are the
-source now. The numbers they show come from `port/game/definitive.h`: when one changes, redraw the picture.
+The SVGs are the source. The numbers they show come from `port/game/definitive.h`: when one changes, redraw the picture.
 
 ## Game captures (`shots/`)
 
-Since 2026-11-25 the battle, Rush, Bestiary, Black Market and hunt-board shots come from the SDL build on the GPU
+The battle, Rush, Bestiary, Black Market and hunt-board shots come from the SDL build on the GPU
 renderer at 8x internal resolution with smooth vertices and widescreen on (English, default HUD): PNGs at 1280×720,
 README GIFs at 480 wide and 8 fps, and the site's 1280×720 MP4 versions with a JPG poster in `site/assets/shots/`.
 The older ones (`battle-persona.png`, Velvet Room, GUIDE) are still software captures. Some states were staged with the
 debug channel to show a mechanic (an enemy's HP raised so a stagger is visible before it falls, or lowered for a KO;
 most of the Bestiary marked as discovered; the Rush offered by `DW3_RUSH_TEST`; the Black Market and the hunt board
-opened by their test pokes); the behaviour shown is the game's own. How: `.agents/skills/drive-dw2003/`.
+opened by their test pokes); the behaviour shown is the game's own.
 
 | File | What it shows |
 |---|---|
@@ -44,7 +43,7 @@ opened by their test pokes); the behaviour shown is the game's own. How: `.agent
 | `battle-tech.png` | the R1 technique list with each technique's element and MP |
 | `battle-tag.png` | Tag's close-up of the bench partner with its forms in a ring (WarGreymon picked) |
 | `battle-digivolve.gif`, `battle-digivolve.png` | Digivolve's ring, the two-step confirm and the digivolution |
-| `battle-persona.png` | INFO on an enemy with a persona: the `!` mark, SHIFT and the guard explained at the foot (2026-11-25, Woodmon on map 0x23B) |
+| `battle-persona.png` | INFO on an enemy with a persona: the `!` mark, SHIFT and the guard explained at the foot (Woodmon on map 0x23B) |
 | `overlevel-rush.gif`, `overlevel-rush-panel.png` | the Rush prompt while walking and its rewards panel |
 | `velvet-way-in.gif` | an inn's blue light, the prompt, the VELVET / SERVER card, the room |
 | `velvet-room.png` | the room at its highest guest level |

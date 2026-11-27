@@ -437,10 +437,9 @@ O jogo é jogável do começo ao fim, e todos os sistemas descritos acima estão
 dele só foi jogada algumas vezes, então espere arestas e hotfixes frequentes. O que resta:
 
 - **Revisão das traduções.** A narrativa reescrita foi toda escrita, revisada e curada pessoalmente em português do
-  Brasil (com gírias e tom de animes clássicos dos anos 80/90), com o inglês traduzido diretamente a partir dela.
-  Francês, alemão, italiano e espanhol cobrem os textos próprios da Definitive Edition (ainda não lidos
-  no jogo por falantes nativos: espere frases desajeitadas e alguns rótulos largos demais para a caixa);
-  nesses quatro idiomas roda a campanha original do disco.
+  Brasil (com gírias e tom de animes clássicos dos anos 80/90), com o inglês, o francês, o alemão, o italiano e o
+  espanhol traduzidos a partir dela. Os quatro últimos ainda não foram lidos no jogo por falantes nativos: espere
+  frases desajeitadas e alguns rótulos largos demais para a caixa.
 - **O equilíbrio geral do jogo.** Até agora ele foi balanceado só por cálculo. Estou jogando em paralelo e lançando
   hotfixes pelo caminho, a Chosen Evolution e as batalhas secretas do fim do jogo incluídas.
 

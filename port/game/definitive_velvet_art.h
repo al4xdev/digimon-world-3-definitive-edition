@@ -1,8 +1,7 @@
 /* The Black Market's dealer in the Velvet Room, drawn by hand for this port (no disc pixels): black hair to the
  * shoulders, a plain long dark coat, a gold coin in his far hand; 3/4 front facing down-left, the only way he
- * faces. His frames as horizontal runs of one palette colour, from .dumps/tasks/velvet/art/v2/hand.txt (hand.py,
- * `header` command); the port draws each run as a flat quad in the actor's own place in the field's drawing
- * order, so the sprite costs no VRAM and no CLUT. Do not edit by hand: change the set and run the tool. */
+ * faces. His frames are horizontal runs of one palette colour; the port draws each run as a flat quad in the actor's own place in the field's drawing
+ * order, so the sprite costs no VRAM and no CLUT. */
 #define VELVET_ART_W 24
 #define VELVET_ART_H 40
 #define VELVET_ART_LEFT 13 /* the frame's left edge, left of the actor's spot (as a townsman's frame sits) */

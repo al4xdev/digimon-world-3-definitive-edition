@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """The forge's recipes. The shops keep their own buying screen, but every weapon, armour and accessory
-they sell asks for Hunt Materials as well as Bits, and those of the hunting regions around the shop (the owner,
-2026-11-17: the vendor's own region; commons in large amounts, a rare for the best gear). One item sold in two towns
+they sell asks for Hunt Materials as well as Bits, and those of the hunting regions around the shop (the vendor's own region; commons in large amounts, a rare for the best gear). One item sold in two towns
 can ask for different materials in each, so the table is by shop and item.
 
   tools/venv/bin/python tools/gen_recipes.py            # write port/game/definitive_recipes.c and the list for review
@@ -19,7 +18,7 @@ The numbers are definitive.h's (DEF_RECIPE_*) and LEVEL_AT / AMOUNT below. Rule,
     the DEF_RECIPE_REACH regions);
   - an item's common, the shop's equipment walked cheapest first: of the commons whose species' mid level is at most
     WINDOW further from the item's level than the nearest one's, the best by |mid level - item level| + SPREAD * the
-    times this shop already asked it (the owner, 2026-11-17: every material in some recipe, no shop on one material); a
+    times this shop already asked it (every material in some recipe, no shop on one material); a
     weapon takes the best, an armour or accessory the second when it is within SECOND of the best (the same shelf asks
     for both); AMOUNT of it by price;
   - a common no recipe asks then goes to the shop of its regions' server whose dearest item's level is nearest the

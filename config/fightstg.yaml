@@ -47,10 +47,10 @@ segments:
     type: code
     start: 0x0
     vram: 0x80082CB0
-    # Unnamed symbols are func_FIGHTSTG_<addr>, D_FIGHTSTG_<addr> (overlays share addresses; DECISIONS naming).
+    # Unnamed symbols are func_FIGHTSTG_<addr>, D_FIGHTSTG_<addr> (overlays share addresses).
     symbol_name_format: FIGHTSTG_$VRAM
     subsegments:
-      # .rodata and .text per file (DECISIONS "File boundaries come from evidence"): boundaries proven by jump-table
+      # .rodata and .text per file: boundaries proven by jump-table
       # parity; positions strong unless marked weak.
       - [0x0,     .rodata, fightstg_model]
       - [0x1C,    .rodata, fightstg_stage]
@@ -66,8 +66,7 @@ segments:
       - [0x8980,  c, fightstg_8008B630]   # 0x8008B630 objects 8C590, 8C93C, 8CB70
       - [0xA704,  c, fightstg_8008D3B4]   # 0x8008D3B4 battle core: objects, effect dispatcher 92684, modules
       - [0x1F330, c, fightstg_800A1FE0]   # 0x800A1FE0 object A1FE0 (position weak: 9E428..A1FE0)
-      # .data, then .bss (zeros in the file), per file in link order (tools/data_owners.py -t fightstg; DECISIONS
-      # "Overlay .data/.bss per file"). Every table is referenced by its own file only; the module structs
+      # .data, then .bss (zeros in the file), per file in link order (tools/data_owners.py -t fightstg). Every table is referenced by its own file only; the module structs
       # 800A37FC, 800A3868, 800A43F4..800A469C (also used by other files and by WFIGHTMN/WFIGHTTS) hold pointers to
       # 8D3B4's functions. 800832D0 and 8008B118 have no data.
       # - .bss: 8B630's D_800A46D0 comes after A1FE0's .data (the last file), so it is .bss (position strong).

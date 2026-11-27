@@ -310,7 +310,7 @@ void stplnmet_entry_run(StplnmetNameEntry *obj, StplnmetNameEntryData *data) {
     s32 i;
     s32 j;
     u16 c;
-    u32 glyph; /* the typed character: its own u32 (DECISIONS "Independent EU-only project on the unpatched disc") */
+    u32 glyph; /* the typed character: its own u32 */
 
     switch (obj->base.step) {
     case 0:

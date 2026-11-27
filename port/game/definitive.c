@@ -88,7 +88,7 @@ static unsigned char plug_last_stand_notice; /* 1 until the next battle menu sho
 static signed char plug_last_stand_slot = -1; /* the slot it revived, until its Blast (-1: none); wfightmn sets the form
                                                 * before def_blast_form, so the Rookie is the member's base_digimon then */
 
-/* The Blast opens at the Ogremon (owner, 2026-11-18, so nobody sets it off by accident before the tutorial): in the tutorial
+/* The Blast opens at the Ogremon (so nobody sets it off by accident before the tutorial): in the tutorial
  * hunt's battle, and for good once that hunt is won. */
 static int blast_unlocked(void) {
     return def_super_tutorial_battle() || def_super_done() > DEF_SUPER_TUTORIAL;
@@ -926,7 +926,7 @@ int def_tech_element(int tech) {
     return stat >= 2 && stat <= 8 ? stat - 2 : -1;
 }
 
-/* A technique's picture where the game drew its class (red physical, blue magic; owner, 2026-11-22): a physical blow is
+/* A technique's picture where the game drew its class (red physical, blue magic): a physical blow is
  * physical only, so it shows the fist (the Strength picture, glyph 01 25); magic shows its element, or the Spirit
  * picture (01 27: Spirit is the magic attack) when it has none. Healing and support techniques keep the game's own
  * class picture: empty text here, and def_tech_class_sprite says to draw it. */
@@ -1223,7 +1223,7 @@ static void blast_add(int amount, const char *why) {
     }
 }
 
-/* ---- The dark forms in sequence, their record, and the Chosen Evolution (owner's redesign, 2026-11-17). */
+/* ---- The dark forms in sequence, their record, and the Chosen Evolution. */
 
 
 int def_blast_chosen_mode(void) {
@@ -1271,7 +1271,7 @@ int def_blast_form(int partner, int band) {
         k = atoi(force) % DEF_BLAST_STEPS;
     } else if (plug_last_stand_slot >= 0 && plug_last_stand_slot == fightstg_battle.state.current[0] &&
                fightstg_battle.state.members[0][plug_last_stand_slot].base_digimon == records_digimon[partner].id) {
-        /* The last stand (owner, 2026-11-21): the Rookie the DV Plug got back up with 1 HP and 1 MP so it can Blast takes
+        /* The last stand: the Rookie the DV Plug got back up with 1 HP and 1 MP so it can Blast takes
          * the strongest dark form its level reaches, not the sequence's next (which can be the Champion's); the
          * sequence is left where it was, so the Gennai quest's forms still come in turn. */
         k = def_blast_top_step(level);
@@ -1371,7 +1371,7 @@ int def_blast_boost_pct(void) {
 }
 
 /* fightstg_rules_get_stats, the party's side: a member in its Blast or Chosen form fights with the boost on its five
- * stats. Only the Chosen goes past 999 (the owner: it is the one power that breaks the cap; the last bosses are scaled
+ * stats. Only the Chosen goes past 999 (it is the one power that breaks the cap; the last bosses are scaled
  * for it), up to 9999 to keep the damage formulas in range; the Blast's boost stops at the game's 999 (a stat already
  * past it keeps its value). */
 void def_blast_boost_stats(int member, FightstgStats *out) {
@@ -1384,7 +1384,7 @@ void def_blast_boost_stats(int member, FightstgStats *out) {
     if (!def_on() || boost_off || !m->blasted || def_purify_fighting()) {
         return;
     }
-    /* The blessed Blast (the tutorial's, or the game's first): every stat at the 999 cap (owner, 2026-11-20: a +50% was
+    /* The blessed Blast (the tutorial's, or the game's first): every stat at the 999 cap (a +50% was
      * too weak, and a tutorial must not be lost). */
     if (!def_blast_chosen_mode() && (blessed_now || def_super_tutorial_battle())) {
         for (i = 0; i < 5; i++) {
@@ -1535,7 +1535,7 @@ void def_blast_price(void) {
 
 extern void fightstg_events_add_gauge_full(void);
 
-/* After the quest the DV Plug revives each fallen partner in its Rookie form with 1 HP and 1 MP (the owner: one who
+/* After the quest the DV Plug revives each fallen partner in its Rookie form with 1 HP and 1 MP (one who
  * fell after spending the Chosen stays a weak Rookie; one who still has it can take it and be healed). The item runs
  * the game's revive path (item 0x46, fightstg_8008D3B4.c), which calls this per fallen slot and writes the HP returned.
  * A fallen member keeps the form it fell in, so the Rookie is set here, with the Blast flag off. */
@@ -1654,7 +1654,7 @@ int def_blast_ready(void) {
            (blast_blessed() || gamestate_data.funcs.get_record(id)->stats.values[1] >= DEF_BLAST_PLUG_TP);
 }
 
-/* The temptation (owner's brief: "the temptation to use it at critical moments"): the gauge is full and the moment is
+/* The temptation (to tempt the player at critical moments): the gauge is full and the moment is
  * critical, a partner fell this battle or the acting Digimon is at DEF_BLAST_TEMPT_HP_PCT of its HP or less. The battle
  * menu then pulses the Blast button and says so; nothing is forced. None after the quest: the curse is gone. */
 int def_blast_tempt(void) {
@@ -1849,7 +1849,7 @@ const unsigned char *def_baton_label(void) {
     return def_str_BatonPass;
 }
 
-/* The player chose Tag (party command 5). Owner's rule (2026-11-12): only Baton Pass, offered only while the enemy is
+/* The player chose Tag (party command 5). Only Baton Pass, offered only while the enemy is
  * open (and once a window), keeps the turn; a plain Switch spends it, unless Relay made the next swap free. */
 void def_swap_chosen(void) {
     if (!def_on()) {
@@ -1963,8 +1963,8 @@ int def_tech_effect(u8 side, int tech, int *msg) {
         *msg = 1;
         return 1;
     }
-    /* Resist Down / Mega Break, and in an enemy's hands all four (owner's choice: Libra and Relay mean nothing to an
-     * enemy): the target's resists of the user's best families go down, both elements of a pair (owner, 2026-11-13: a
+    /* Resist Down / Mega Break, and in an enemy's hands all four (Libra and Relay mean nothing to an
+     * enemy): the target's resists of the user's best families go down, both elements of a pair (a
      * pair is one affinity). The best is the user's highest affinity as the multiplier counts it (def_affinity_fine: a pair's
      * squares), ties by the family order. On the player they are its affinities. */
     me = fightstg_rules.get_stats(side, 1, fightstg_battle.state.current[enemy]);
@@ -2006,15 +2006,14 @@ const unsigned char *def_message(int i) {
 
 /* The records the techniques and Digimon forms change (written with the MP rows, every time: the reset restores the table). */
 /* The player's elemental physical techniques that patch_techniques makes magic, with their magic power. 88 (WarGreymon's
- * special, Fire) and 103 (Beelzemon's, Dark) had no element as physical blows: patch_techniques gives them one
- * (owner, 2026-11-24). Their power keeps the place the physical blow had among the player's signatures of about the
+ * special, Fire) and 103 (Beelzemon's, Dark) had no element as physical blows: patch_techniques gives them one. Their power keeps the place the physical blow had among the player's signatures of about the
  * same MP, moved to the same place among the player's magic of that MP (medians, +-20 MP; at equal stats the physical
  * and magic formulas both give 1x the power): WarGreymon's 480 is 1.2x the physical median of 400 at 140 MP, and the magic
  * median there is 490, so 590; Beelzemon's 300 is 0.67x the median 450 at 250 MP, and the magic median there is 750,
  * so 500 by the ranking. His blow strikes 3 times (hit_count 3, kind 9, kept), which the ranking above did not count: the
- * method gives 350 a hit. The owner chose 400 a hit, 1200 in all, a little over the 3-hit magic 171 and Inferno (350 a hit)
+ * method gives 350 a hit. 400 a hit, 1200 in all, a little over the 3-hit magic 171 and Inferno (350 a hit)
  * so it stays the strongest magic of the player, and took Dark away from Galacticmon's second phase (466) to keep the
- * last bosses from falling to it (owner, 2026-11-24). */
+ * last bosses from falling to it. */
 static const struct {
     short tech, power;
 } to_magic[] = {
@@ -2031,7 +2030,7 @@ static const struct {
  * damage; so does Hookmon's Captain Cannon (62, kind 11): the critical chance it has is a physical blow's (a magic's
  * critical roll does not read it). Their power (to_magic) is each blow's power x hits ranked among the player's signatures of about the same MP,
  * carried to the same rank among the player's magic of that MP, the ratio kept within 0.7..1.4 and the power per hit
- * within the strongest single hit of the player's magic (800) (owner, 2026-11-24, from the list he researched). */
+ * within the strongest single hit of the player's magic (800) (from the list he researched). */
 static const struct {
     short tech;
     unsigned char stat, power;
@@ -2106,7 +2105,7 @@ static void patch_techniques(void) {
     records_techniques[195 - 1].hit_sound = 49;
     records_techniques[195 - 1].anim_script = 16;
 
-    /* Only magic carries an element (owner, 2026-11-22): the player's elemental physical techniques become magic, so a
+    /* Only magic carries an element: the player's elemental physical techniques become magic, so a
      * physical blow is purely physical and WEAK!/One More come from magic alone. The power is recalibrated to the magic
      * table (the median power per MP of the player's elemental magic, by MP band: x5 up to 60 MP, x5.5 up to 100, x3.15
      * past it), since the magic formula is clamped to 0.5x..2x of the power while the physical one scales with
@@ -2771,7 +2770,7 @@ void def_enemy_status_turn(void) {
     }
 }
 
-/* ---- Waves (Option A, owner 2026-11-21): when the battle's last enemy member falls, a mode with more to come (the DRI's
+/* ---- Waves: when the battle's last enemy member falls, a mode with more to come (the DRI's
  * Mega) sets a fallen enemy slot up again as the next one, and wfightmn_knockout brings it in with the DRI's entrance (its
  * model is loaded then, as for any stage). The slot's port state goes with the one that fell there: a wave starts clean. */
 int def_enemy_next_wave(void) {

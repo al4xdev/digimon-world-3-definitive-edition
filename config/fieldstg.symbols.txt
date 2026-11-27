@@ -7,7 +7,7 @@ fieldstg_stage = 0x80099D80; // size:0x80
 fieldstg_attr = 0x8009B6C4; // size:0x5C
 fieldstg_shatter_tiles = 0x8009B900; // size:0xF0
 
-// Functions (DECISIONS "Naming conventions").
+// Functions.
 fieldstg_effects_update = 0x80083784; // type:func
 fieldstg_effects_message = 0x800837EC; // type:func
 fieldstg_effects_start = 0x80083CD8; // type:func

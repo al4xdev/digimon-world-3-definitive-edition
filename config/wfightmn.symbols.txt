@@ -1,7 +1,7 @@
 // Symbol names for AAA/PRO/WFIGHTMN.PRO (splat format). Tier-2 overlays share one address range (0x800A5DE0+),
 // so each has its own symbol file. The EXE's names come from config/symbol_addrs.txt, FIGHTSTG's from
 // config/fightstg.symbols.txt (configure.py passes them on as build/fightstg/names_for_tier2.txt).
-// Game code: names (DECISIONS "Naming conventions"). WFIGHTMN runs a normal battle: a main object and one handler
+// Game code: names. WFIGHTMN runs a normal battle: a main object and one handler
 // per battle event type (wfightmn_handlers, wfightmn_run_events).
 wfightmn_loader_update = 0x800A5ECC; // type:func
 wfightmn_loader_create = 0x800A6414; // type:func

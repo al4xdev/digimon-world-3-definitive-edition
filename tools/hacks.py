@@ -8,7 +8,7 @@
 
 Reads only tracked text (src/**/*.c, src/**/*.h, include/**/*.h, config/*.yaml, config/wstag*.txt, docs/STATUS.md):
 stdlib only, no build, no disc, well under a second. Comments and strings are told apart from code first, so a marker
-named in a note is not a use. The markers it counts (DECISIONS "Match status and forced (FAKE) matches", "LOOP_BLOCK"):
+named in a note is not a use. The markers it counts:
   fake      a `FAKE:` comment (docs/MATCHING.md "Forced (FAKE) matches"); a forced match: a function with one or more
   loop      a use of LOOP_BLOCK(...) or LOOP_BARRIER() (include/common.h), with its evidence class (A1, A2, B, C;
             docs/MATCHING.md "LOOP_BLOCK and LOOP_BARRIER") or FAKE (a barrier that is part of a forced shape)
@@ -45,7 +45,7 @@ STATUS = ROOT / "docs/STATUS.md"
 # The functions still in asm (INCLUDE_ASM, WIP C under #ifdef NON_MATCHING). Empty since issue #55 matched the last 8:
 # any INCLUDE_ASM or NON_MATCHING in game code fails. A function that has to go back to asm is listed here, on purpose.
 HOLDOUTS: set[str] = set()
-# Functions that may use a macro wrapping inline asm (DECISIONS "Match status and forced (FAKE) matches": accepted).
+# Functions that may use a macro wrapping inline asm (accepted).
 ASM_ALLOWED = {
     "heap_run_object": "the original's inline asm moves $sp to the scratchpad (include/port.h PORT_SCRATCHPAD_STACK_*)",
 }

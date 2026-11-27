@@ -185,7 +185,7 @@ int main(void) {
     p = def_persona_slot(0, 13);
     CHECK(p == &def_personas[2] && def_persona_phase(0) == 0 && p->speed_x == 3, "the next stage: the line's row");
 
-    /* The rules catch the mistakes the owner will make. */
+    /* The rules catch the mistakes an edit is likely to make. */
     {
         static const struct {
             DefPersona row;

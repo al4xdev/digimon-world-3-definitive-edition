@@ -1,4 +1,4 @@
-/* The stat swap: the Velvet Room's pig (definitive_velvet.c, owner's of 2026-11-22) moves DEF_RESPEC_POINTS of one raw
+/* The stat swap: the Velvet Room's pig (definitive_velvet.c) moves DEF_RESPEC_POINTS of one raw
  * stat of a partner into another of the same partner, for a price that climbs with each swap (def_respec_price).
  *
  * The raw stats are the partner's, not a form's: gamestate_data.digimon[i].record.stats.values[6..18] (Strength,

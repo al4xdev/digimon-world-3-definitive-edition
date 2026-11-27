@@ -1,4 +1,4 @@
-/* Versioned files and their migrations (owner, 2026-11-24). Every file the launcher or the game keeps carries a schema
+/* Versioned files and their migrations. Every file the launcher or the game keeps carries a schema
  * number; a release that changes a schema adds ONE step to the file's table in migrate.c (from N to N+1) and raises the
  * file's current number. The launcher applies the steps in sequence from the file's own number up to the current one,
  * keeping the old file beside it as <file>.v<N>.bak first (never overwritten, so the oldest copy stays).
@@ -18,7 +18,7 @@
 
 #define SCHEMA_TUI_STATE 2 /* 0 -> 1: Fight/60Hz defaults; 1 -> 2: drop USA lang (6 -> 0, 7 -> 6) */
 #define SCHEMA_SAVE 2      /* 1 -> 2: the "respec" section (the pig's swaps); the data of version 1 is unchanged */
-/* TODO, next SCHEMA_SAVE bump, 3 (owner, 2026-11-26): a clean cut, saves from before 0.9.1 are not migrated (players
+/* TODO, next SCHEMA_SAVE bump, 3: a clean cut, saves from before 0.9.1 are not migrated (players
  * were on a near-alpha), and the fresh-save notice (Cfg.v091_save_ok, main.c and main_android.c) goes with it.
  * 0.9.1 added the "story" section without bumping: 0.9.0 and 0.9.1 files are both version 2, told apart only by
  * "story", which an older save continued in 0.9.1 has too. The README's "Coming from an older version?" promises the

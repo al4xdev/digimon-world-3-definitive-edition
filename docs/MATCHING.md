@@ -1,8 +1,7 @@
 # Matching functions
 
 The practical guide to turning a function's assembly into C that rebuilds byte-identical, for contributors and
-agents. The rules behind it are in `docs/DECISIONS.md` ("Match status and forced (FAKE) matches", "Naming
-conventions", "LOOP_BLOCK"); the compiler evidence is in `docs/TOOLCHAIN.md`. Every game function is matching C (no
+agents. The compiler evidence is in `docs/TOOLCHAIN.md`. Every game function is matching C (no
 holdouts are left), so this guide serves retries of FAKE matches, new splits, and anyone checking how a shape was found.
 
 ## Setup
@@ -77,7 +76,7 @@ GCC 2.8.1's sources, for reading why the compiler chose something:
 
 ## Conventions
 
-- Function-pointer tables and module state are sized structs (DECISIONS "Module state structs"). A label-only mismatch
+- Function-pointer tables and module state are sized structs. A label-only mismatch
   inside a struct is fixed with a `size:` entry, never with scalar externs per label; don't add the `size:` while a
   WIP's asm still uses the inner label.
 - Types used by one file stay in it; shared ones go in `include/<module>.h` (EXE) or `include/<target>.h`; types shared
@@ -93,7 +92,7 @@ GCC 2.8.1's sources, for reading why the compiler chose something:
 
 ## Splitting a target into files
 
-Evidence (DECISIONS "File boundaries come from evidence"):
+Evidence:
 - `tools/overlay_xref.py <target>`: lines starting `|` are jump-table parity breaks: a table whose `(address - base)
   mod 8` differs from the previous one starts a new object (objects are packed at 4, tables 8-aligned within their
   object). A zero pad word after an odd-length table ties the next table to the same object.
@@ -271,7 +270,7 @@ the evidence class, found by compiling the macro form and the plain form:
 A bare `do { } while (0)` stays forbidden.
 
 ### Forced (FAKE) matches
-Only after natural C has been given up for that function (DECISIONS "Match status and forced (FAKE) matches"). Mark the
+Only after natural C has been given up for that function. Mark the
 forced line with `/* FAKE: <what is forced and why> */`. Forms in use: a copy variable (`arrow = ofs`, a local
 copy of a parameter), mixed spellings of one access (`(p + i)->f` and `p[i].f`), a cast chain, one variable reused for
 two jobs (a remainder then a sum, a step through a local shared with another case, one pointer over unrelated arrays, a

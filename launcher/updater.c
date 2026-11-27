@@ -1,6 +1,6 @@
 /* dw2003-updater: the only program that touches the installed files when the launcher updates itself. A small
- * program of its own, no SDL and no window, so that it is the part that almost never changes (.plan/tasks/
- * launcher-auto-updater.md has the plan). The launcher runs a COPY of it from <work>/run/ (an installed copy is a
+ * program of its own, no SDL and no window, so that it is the part that almost never changes .
+ *  The launcher runs a COPY of it from <work>/run/ (an installed copy is a
  * file the update itself may replace; inside an AppImage it would hold the mount), then keeps its minigame up and
  * reads <status> while this program:
  *

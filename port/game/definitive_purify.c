@@ -1,4 +1,4 @@
-/* The Blast Gauge's quest (owner's redesign, 2026-11-17): Gennai, the Velvet Room's old
+/* The Blast Gauge's quest: Gennai, the Velvet Room's old
  * man, his simulator and the Chosen Evolution.
  *
  * The stages (def_record_blast_quest), each opened by his talk (the panel comes after his line, definitive_velvet.c):
@@ -627,7 +627,7 @@ static void list_of(unsigned int mask) {
     put_forms(t_list, &p, sizeof(t_list), mask);
 }
 
-/* The Blast's boost on sale (owner, 2026-11-17): a step for each form recorded, the next one's price. */
+/* The Blast's boost on sale: a step for each form recorded, the next one's price. */
 static int boost_offer(void) {
     return def_record_blast_quest() == DEF_BLAST_QUEST_DECEIVED && def_record_blast_boost() < def_record_blast_count();
 }

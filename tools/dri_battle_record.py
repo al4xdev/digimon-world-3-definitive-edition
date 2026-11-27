@@ -5,8 +5,7 @@ rarely), keep the party alive, record an mp4 and print the enemy's state.
 
   python3 tools/dri_battle_record.py CHALLENGE [--frames N] [--name NAME] [--god] [--every K] [--turns T]
 
-Needs .dumps/dri/field.state made by THIS build (see .plan/tasks/dri-player-forms.md "Testing without going through
-the story"). Output: .dumps/dri/NAME.mp4, NAME.log and the battle log NAME.battle.log (DW3_BATTLE_LOG: every action's
+Needs .dumps/dri/field.state, a field save state made by THIS build. Output: .dumps/dri/NAME.mp4, NAME.log and the battle log NAME.battle.log (DW3_BATTLE_LOG: every action's
 technique). With --turns T, a stage that has taken T turns is left at 1 HP, so the party's next hit fells it and the
 next stage comes in: every stage of the line is seen, each in its own clip (NAME_s0.mp4 ...), short enough for a video
 model to read.

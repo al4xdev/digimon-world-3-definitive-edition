@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Which parts of CI a change needs (.github/workflows/ci.yml; DECISIONS "CI per area"). Prints game=, port=,
+# Which parts of CI a change needs (.github/workflows/ci.yml). Prints game=, port=,
 # launcher=, and portmaster= (true/false) for $GITHUB_OUTPUT, and each file's area on stderr.
 #
 # Usage: .ci-cd/common/ci_areas.sh FILE...            the areas of these paths (as `git diff --name-only` prints them)

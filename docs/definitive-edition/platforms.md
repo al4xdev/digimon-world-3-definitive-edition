@@ -4,57 +4,24 @@
 
 ## Launcher, cloud sync, handhelds, Android, PortMaster
 
-- **C launcher** (`launcher/`, `dw3-launcher`, C99): 9 screens: Home, GAME, BATTLE HUD, CONTROLS, DEBUG, LED BAR (with two
+- **C launcher** (`launcher/`, `dw3-launcher`, C99): screens Home, GAME, BATTLE HUD, CONTROLS, DEBUG, LED BAR (with two
   confirmations on incompatible hardware), RESET/CLEAN confirmations, and the Trio Runner loading game (jump: Left =
-  Kumamon, Up = Guilmon, Right = Agumon). Colour palette and duplicate-button blocking are documented in the closed plan 13
-  (now here). It starts the game with a `port: start:` handoff.
+  Kumamon, Up = Guilmon, Right = Agumon). The game reports `port: start:` when it takes the screen.
 - **Cloud sync** (`cloud-sync/`, a Cloudflare Worker, TypeScript): routes `/v1/health`, `/v1/register`, `/v1/pair/*`
   (create, claim, poll, status, approve), `/v1/me`, `/v1/devices` and `/v1/devices/revoke`, saves, and admin ban/cleanup;
   PS1 card validation (0x20000 bytes) and rate limits; tests in `cloud-sync/test/`; schema `cloud-sync/schema.sql`.
   `DW3_SYNC_URL`, `DW3_CLOUD_CURL`.
-- **Android** (`android/`, `.ci-cd/android/build_android.sh`): `arm64-v8a`, SDL3 GPU, a touch pad (`android/touch_pad.c`), SAF disc
-  picker, `FLOATING PAD` toggle. The touch pad hides while a gamepad is connected and comes back on the next tap. The SDL3
-  runtime maps the gamepad from `settings.json` (`input.gamepad`, real SDL places on Android: `launcher/cfg.c` `sdl3_name`),
-  so the Android build does not set `DW3_PAD_REMAP` (that is the handheld SDL2 runtime's; on Android it permuted the touch
-  pad's buttons and the gamepad a second time). System Back steps back in the launcher and does nothing in the game.
-  `versionCode` comes from the tag (MAJOR*10000 + MINOR*100 + PATCH); the release key from `DW3_ANDROID_KEYSTORE*`
-  (`release.yml`: the secrets `ANDROID_KEYSTORE_B64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`,
-  `ANDROID_KEY_PASSWORD`), else a debug key. The original design (a Kotlin overlay, Fase 0 audit of `psxstack` for the NDK) is in the
-  backlog list below.
-- **Handhelds / PortMaster:** entry `.ci-cd/portmaster/handheld/Digimon World 3.sh` (the old `dw3-menu.py` menu was removed in `cbf34ce`; the C launcher `dw3-launcher` replaced it), `.ci-cd/portmaster/` (`port.json`
-  arch `["armhf","aarch64"]`), docs `docs/HANDHELD.md`, `docs/XF35H.md`. Probe with `Debug logs: heavy` and `logs/probe.txt`.
-- **Console deploy handoff (ssh to a handheld, procedure of 2026-11-12; it predates the multi-arch package: the binaries are now `dw2003.armhf` / `dw2003.aarch64` and `dw3-launcher.*`, see `docs/HANDHELD.md`):** the owner supplies `<USER>@<IP>`, the password or key and the PortMaster folder
-  (usually `/roms/ports`, or `/roms2/ports`, `/storage/roms/ports`; find it with `ssh <console> 'ls -d /roms*/ports /storage/roms/ports 2>/dev/null'`); `PORTS` below.
-  Source is `../portmaster/` (a sibling of the checkout) (the device mirror `.ci-cd/portmaster/build_arm.sh` writes the new build into): copy `dw3/dw2003` (the 32-bit ARM binary; check `file` says
-  `ELF 32-bit LSB ... ARM` and the date is current, else run `.ci-cd/portmaster/build_arm.sh`, Docker image `dw3-armhf-builder`), `dw3/mods/`, and only if changed `ledd.py`, `probe.sh`,
-  `README.txt` and `Digimon World 3.sh`. **Never overwrite or delete:** `PORTS/dw3/game/` (the player's disc), `card1.mcd`, `card2.mcd`, `settings.json`, `pad.map`, `tui.state`, `logs/`,
-  `log.txt`, `menu.log`; no `rsync --delete`, no `scp -r` of the whole folder. **Step 1, mandatory backup:** create `PORTS/dw3-backup-<date>` with `card1.mcd`, `card2.mcd`, `settings.json`,
-  `pad.map`, `tui.state`, `dw2003.old`, `mods.old`, the `.sh`; then bring a copy of the saves to `../backups-console/` and check they exist and are not empty (`card1.mcd`
-  should be 131072 bytes; if the player never saved, tell the owner and go on). **Step 2:** `scp` the binary and the mods, `chmod +x`, compare `sha1sum` local and remote; the mods `party_xp`, `xp_boost`
-  and `evo_buff` no longer exist (rules of the game or removed): **move** the old folders into the backup, do not delete; the launcher also changed (no XP screen, no EVO BUFF); an old
-  `settings.json` with those keys keeps working. **Step 3, old saves and MP (the owner's decision, never alone):** the game does not migrate old saves (they open with the old MP); to convert,
-  run `tools/convert_save_mp.py --dry-run` then the real one **always on the local copy** in `backups-console/`, only if the owner says so, and only then `scp` the card back after the step-1
-  backup. The card gained a bestiary record at the file's tail (last 0x800 bytes, never used by the game): an old save opens with everything "???". **Step 4, verify:** `ls -la PORTS/dw3/`, ask the owner to
-  open the game, read `PORTS/dw3/log.txt` and `logs/` (`tail -n 40`) and report an ARM library error, `fatal` or `crash`; to roll back restore `dw2003.old`, `mods.old` and the `.mcd`s from the backup.
-  What the owner would see different at the time (to tell bug from intent): the new battle HUD always (7th button Inspect on L2, Start opens the enemy's memory), the player always opens the fight, a
-  weakness with an elemental technique staggers and gives an extra action, and enemies kept the disc's resistance values until the owner approved `.dumps/tasks/persona/fraquezas.md`.
-- **PortMaster CFW research (plan 11):** muOS 32-bit and TrimUI are **unverified**; see "PortMaster CFW research" under [History](history.md#history--decisions-log) for the plan and the partial results.
-- **CI and release (GitHub Actions, state 2026-11-13).** Workflows `.github/workflows/ci.yml` (Linux and Windows; ignores pushes that only touch `docs/**`, `**/*.md`, `LICENSE`, `.gitignore`) and
-  `release.yml` (release by tag); `docs/RELEASE.md` has the flow: `git tag v0.1.0; and git push origin v0.1.0` (a suffix such as `v0.1.0-rc1` is a pre-release). At the time of the handoff the push of
-  `2d0f647` had triggered **no workflow** (0 runs in total although Actions was enabled; maybe GitHub delay) and both were dispatched by hand (`workflow_dispatch`; the release without a tag only builds
-  artifacts, the AppImage and the Windows zip); to check: `gh run watch <id> -R al4xdev/dw3 --exit-status`, `gh run view <id> -R al4xdev/dw3 --log-failed`, `gh run list -R al4xdev/dw3` (the next push to `main`
-  touching code should start CI by itself, event `push`; if not, Settings -> Actions -> General). No secrets or variables were configured: `GAMEDATA_DEPLOY_KEY` (optional secret: with it CI and release run
-  the tests with the disc; without it only the smoke tests without a disc), `PSXSTACK_TOKEN` not needed (`al4xdev/dw3-psxstack` is public), `RELEASE_DRAFT=true` (variable) before the first tag if the release
-  should be a draft. (`gh` is not installed on this machine, so those commands are for wherever it is.) The `main` of GitHub had received a force-push (`841521a` -> `ca5867d`) before `2d0f647`; `ca5867d` was
-  already in the local history so the push was a fast-forward that deleted nothing; if `841521a` held something, it is not on `main`.
-- **Widescreen field (handoff note, since superseded on PC):** the battle mod existed (`port/mods/widescreen` 0.1) and shipped in both packages; the field mod 0.2 of the original fork (`7c47270`)
-  needed runtime changes the pin did not have, which first had to enter `dw3-psxstack`. The README above says PC now has 16:9 in battles and the field; whether the handheld package carries the
-  field part is **unverified**.
-
-### Performance and what failed (closed plans 1-4, summary)
-
-The R36S/XF35H port, the GLES backend (41.85 fps against software 37.70 in battle; 23.9 ms a frame, present about 3.2 ms,
-0.7% VRAM difference), SPU/NEON audio (4.9 ms down to 3.0-3.3 ms), environment detection and the single PortMaster launcher
-were done in the closed plans; their conclusions are in `docs/HANDHELD.md`, and the plans' own account of what failed or was left
-undone is in the [History](history.md#history--decisions-log) section below. Widescreen field: see `docs/LAUNCHER.md`.
-Handoff notes: GitHub Actions / CI and the psxstack pin fix are under "CI and release" above; the first release goes out with a `v0.1.0` tag.
+- **Android** (`android/`, `.ci-cd/android/build_android.sh`): `arm64-v8a`, SDL3 GPU, a touch pad
+  (`android/touch_pad.c`), SAF disc picker, `FLOATING PAD` toggle. The touch pad hides while a gamepad is connected and
+  comes back on the next tap. The SDL3 runtime maps the gamepad from `settings.json` (`input.gamepad`, real SDL places
+  on Android: `launcher/cfg.c` `sdl3_name`), so the Android build does not set `DW3_PAD_REMAP` (that is the handheld
+  SDL2 runtime's; on Android it permuted the touch pad's buttons and the gamepad a second time). System Back steps back
+  in the launcher and does nothing in the game. `versionCode` comes from the tag (MAJOR*10000 + MINOR*100 + PATCH); the
+  release key from `DW3_ANDROID_KEYSTORE*` (`release.yml`: the secrets `ANDROID_KEYSTORE_B64`,
+  `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`), else a debug key.
+- **Handhelds / PortMaster:** entry `.ci-cd/portmaster/handheld/Digimon World 3.sh` (it runs the C launcher),
+  `.ci-cd/portmaster/` (`port.json` arch `["armhf","aarch64"]`), docs `docs/HANDHELD.md`, `docs/XF35H.md`. Probe with
+  `Debug logs: heavy` and `logs/probe.txt`.
+- **CI and release:** `.github/workflows/ci.yml` and `release.yml`; the flow, secrets and variables are in
+  `docs/RELEASE.md`.
+- **Performance and renderers:** `docs/HANDHELD.md` and `docs/PERFORMANCE.md`. Widescreen: `docs/LAUNCHER.md`.

@@ -36,7 +36,7 @@ done
 # GCC version -> ASPSX version of the same Psy-Q release (decomp.me's table), except 2.8.1: 2.80, not
 # 2.79, because the game takes the address of $gp variables as `addiu rX, $gp, %gp_rel(x)` (cdload's
 # &D_8005CCF8, main's &D_8005CCB4), which maspsx only emits from 2.80 on (gp_allow_la). It changes
-# nothing else in any game unit (session 5).
+# nothing else in any game unit .
 case "$ver" in
     2.7.2) aspsx=2.56 ;; 2.8.0) aspsx=2.77 ;; 2.8.1) aspsx=2.80 ;;
     2.91.66) aspsx=2.81 ;; 2.95.2) aspsx=2.86 ;;
@@ -50,7 +50,7 @@ gcc="$T/gcc/$ver"
 
 "$gcc/cpp" -nostdinc -lang-c -D_LANGUAGE_C -D__GNUC__=2 "${cpp_flags[@]}" "$in" "$out.i"
 # No -fno-builtin: the game's memcpy calls are GCC's built-in (its argument evaluation order;
-# overlay). Every other unit compiles identically either way (session 5).
+# overlay). Every other unit compiles identically either way .
 "$gcc/cc1" -quiet -O2 -mips1 -mcpu=3000 -mgas -msoft-float -G"$g" "$out.i" -o "$out.s"
 # --use-comm-section: C definitions without an initializer stay COMMON instead of getting
 # storage in this object, so they resolve to the definitions in the data asm (a unit whose data

@@ -17,8 +17,8 @@ Issue numbers written `#NN` below are issues of the upstream repository
   excluded): 3,606 of 3,606 functions, 100%. No holdouts are left (no `INCLUDE_ASM` or `NON_MATCHING` in game code); the
   last 8 matched with the shapes of ReGame-Labs/dw3_decomp's C for the same functions, rewritten in our names
   ([`THIRD_PARTY.md`](THIRD_PARTY.md)).
-- **10 forced matches** (11 `FAKE:` comments; `grep -rn "FAKE:" src`), allowed as an endgame step (DECISIONS).
-- **39 `LOOP_BLOCK`/`LOOP_BARRIER` uses** (DECISIONS "LOOP_BLOCK"), by evidence class: A1 5, A2 6, B 14, C 14.
+- **10 forced matches** (11 `FAKE:` comments; `grep -rn "FAKE:" src`), allowed as an endgame step.
+- **39 `LOOP_BLOCK`/`LOOP_BARRIER` uses**, by evidence class: A1 5, A2 6, B 14, C 14.
 - These counts are `tools/hacks.py`'s (`--list`: each one). CI's `--check` fails when they differ from this page, and on
   game code that is not C: any `INCLUDE_ASM` or `NON_MATCHING`, a `LOOP_BLOCK` without its evidence comment, and so on.
 - **Data:** split per object and in C, except crt0's `.sbss`, a FIELDSTG zero block with psylink padding, and STDWTITL's
@@ -47,7 +47,7 @@ Issue numbers written `#NN` below are issues of the upstream repository
   (needs party Charisma 60) and STDGNAME (later in the story). `tools/coverage.py` reports which functions the tests run.
 
 ## PC port
-The design is in [`PORT.md`](PORT.md); the reasons are in [`DECISIONS.md`](DECISIONS.md).
+The design is in [`PORT.md`](PORT.md).
 - **Boot and replay:** all 388 units compile for the host (`-m64 -Werror` gate in CI); the port boots the disc (SHA-1
   checked) and replays both layer-2 scripts with the emulator's checkpoints.
 - **Software GPU:** the whole VRAM equals the emulator's at the checked points (new_game; the first battle's textures,
@@ -111,8 +111,7 @@ The design is in [`PORT.md`](PORT.md); the reasons are in [`DECISIONS.md`](DECIS
 - **CI** (`.github/workflows/ci.yml`) runs per area (game, port, launcher; `.ci-cd/common/ci_areas.sh`) on pull requests and
   pushes to `main`, and skips docs-only changes. An `areas` job gates parallel jobs (`check`, `game`, `port`,
   `port-mods`, `launcher`, `windows`), each set up by `.github/actions/setup`. A deploy key adds the disc-dependent
-  build and tests. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the checks and [`DECISIONS.md`](DECISIONS.md) "CI per
-  area" for the design.
+  build and tests. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the checks.
 - **Worktrees:** local work happens in git worktrees (`scripts/worktree_init.sh` shares the main checkout's tools).
 - **Emulator:** a pinned PCSX-Redux build runs headless (`scripts/check_emulator.sh`), with OpenBIOS or the retail BIOS.
 
@@ -128,4 +127,3 @@ The design is in [`PORT.md`](PORT.md); the reasons are in [`DECISIONS.md`](DECIS
 ## Where work is tracked
 - **Bugs and problems:** [GitHub Issues](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues).
 - **Planned work:** the upstream [project board](https://github.com/users/gascarcella/projects/1).
-- **Why things are the way they are:** [`DECISIONS.md`](DECISIONS.md).

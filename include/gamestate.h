@@ -40,7 +40,7 @@ typedef struct GamestateRecord {
 
 /* A Digimon's record: gamestate_data.digimon[i] (0x80049490). The overlays take the record's address as
  * gamestate_data + 0x75C + i * 0x3DC and read the form at +8 (STGDGLAB, STSTATUS), so the record starts at 0x75C,
- * not 0x760, and GamestateRecord is 0x3D0 bytes (session 6). */
+ * not 0x760, and GamestateRecord is 0x3D0 bytes . */
 typedef struct GamestateDigimon {
     /* 0x000 */ s32 unk_000;
     /* 0x004 */ s32 joined;  /* i + 3 once Digimon i has joined (gamestate_cond_digimon type 3), 0: not yet;

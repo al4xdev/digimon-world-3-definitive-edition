@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # apt_install.sh PACKAGE...: apt-get update + install on a CI runner, bounded and retried.
 #
-# The runners' Ubuntu mirror stalls on a fetch now and then: a 4.5 min `apt-get install gcc-multilib` (2026-10-07),
+# The runners' Ubuntu mirror stalls on a fetch now and then: a 4.5 min `apt-get install gcc-multilib`,
 # and the v0.7.4 release's Windows job hung twice in "System packages" for 13+ min while other runs of the same hour
 # took 20 s. A stall is the machine, not the packages, so each attempt gets a deadline (DW3_APT_DEADLINE seconds,
 # default 300) and up to three attempts; apt itself retries a failed fetch and gives up on a silent connection after

@@ -38,7 +38,7 @@ Memory map (from crt0, Psy-Q signatures and the byte-identical Milestone 0 rebui
 
 crt0: clears `.bss`, sets `sp`, calls `InitHeap(0x80082CB0, …)` at `0x8002507C`, sets `gp`, calls `main` at `0x80014524`.
 The header has no bss fields: the whole range up to `0x800F1000` is file content, so the build links
-`.bss` as part of the loaded image (DECISIONS 2026-10-01, "Milestone 0 build layout").
+`.bss` as part of the loaded image.
 
 ## File table in the EXE
 The game addresses disc files by **file ID**, not by name. Two parallel tables in `.data`, checked against
@@ -131,9 +131,9 @@ Overlay SHA-1s: `config/overlays.sha1`. `SOUNDTST`, `SHOCKTST` and `STAGSLCT` lo
 ### Tier-2 overlays
 The EXE's `overlay_load_file(id)` (`overlay_module.unk_C`) copies a file to `main_file_base` = `0x800A5DE0`, just past
 the largest tier-1 overlay, while the tier-1 overlay that called it (its **parent**) stays loaded. Tier-2 code
-therefore calls and reads its parent as well as the EXE, and links against both (`configure.py` `TIER2_PARENT`,
-DECISIONS "Overlays link against the EXE and their parent"). Same psylink layout as tier 1 (`.rodata`, `.text`,
-`.data`); `tools/overlay_layout.py --tier2` finds the boundaries. File IDs from the EXE's file table.
+therefore calls and reads its parent as well as the EXE, and links against both (`configure.py` `TIER2_PARENT`). Same
+psylink layout as tier 1 (`.rodata`, `.text`, `.data`); `tools/overlay_layout.py --tier2` finds the boundaries. File
+IDs from the EXE's file table.
 
 | Overlay | ID | Parent | Size | `.text` | `.data` to | Functions | Evidence |
 |---|---|---|---|---|---|---|---|

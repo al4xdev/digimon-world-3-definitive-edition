@@ -27,7 +27,7 @@ wfightmn_count_boss_hits = 0x800AAB10; // type:func absolute:True
 wfightmn_check_final_phase_end = 0x800AABA0; // type:func absolute:True
 wfightmn_cap_damage = 0x800AABF0; // type:func absolute:True
 
-// Names (DECISIONS "Naming conventions"; fightstg-names).
+// Names (fightstg-names).
 fightstg_player_reaction_pos = 0x80082D30;
 fightstg_model_blend_part = 0x800832D0; // type:func
 fightstg_model_pose_part = 0x800835F4; // type:func

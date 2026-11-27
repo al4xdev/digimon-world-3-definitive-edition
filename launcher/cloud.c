@@ -545,7 +545,7 @@ static const char *client_platform(int is_portmaster) {
 
 static void default_device_name(char *out, size_t n, int is_portmaster) {
 #ifdef __ANDROID__
-    /* An app's hostname is "localhost"; the model ("moto g84 5G") is what the owner recognizes in the device list. */
+    /* An app's hostname is "localhost"; the model ("moto g84 5G") is what the player recognizes in the device list. */
     char model[PROP_VALUE_MAX] = "";
     if (__system_property_get("ro.product.model", model) > 0) {
         for (size_t i = 0; model[i]; i++) {

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Builds the Windows release package (DECISIONS "Releases: tagged drafts, published by hand"; docs/RELEASE.md): the game
+# Builds the Windows release package (docs/RELEASE.md): the game
 # (the SDL build) and the launcher (launcher/) cross-compiled for Windows x86_64 in Release (.ci-cd/windows/build_windows.sh: llvm-mingw,
 # static, a PDB beside each executable), zipped as one folder with the mods' manifests, LICENSES/ and a README, plus a
 # second zip with the two PDBs (the symbols of crash minidumps and reports: docs/PORT.md "Crash report"). Players

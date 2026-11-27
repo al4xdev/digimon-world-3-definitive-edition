@@ -130,5 +130,5 @@ the original. 259 functions scored; 16 drafts fail to compile on every compiler 
 ## Outcome
 The toolchain this page points to is the one that builds the game: GCC 2.8.1 with maspsx, `-O2`, `-G8` for the EXE's
 C and `-G0` for every overlay (`configure.py` `DEFAULT_G`; there are no per-file overrides). All game code, the
-EU-only post-game code included, rebuilds byte-identical (DECISIONS "Compiler: GCC 2.8.1 with maspsx"; progress in
+EU-only post-game code included, rebuilds byte-identical (progress in
 [`PROGRESS.md`](PROGRESS.md)).

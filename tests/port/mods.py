@@ -439,7 +439,7 @@ def battle_menu(binary, out):
     check(state is not None, "the first battle's start saved as a state")
     if state is None:
         return
-    # the default places (2026-11-23): south Fight, r1 Tech, north Digivolve, east Tag, l1 Item, west Run (script names
+    # the default places: south Fight, r1 Tech, north Digivolve, east Tag, l1 Item, west Run (script names
     # are the runtime's)
     for button, action, bit in (("CROSS", 0, 14), ("R1", 1, 11), ("TRIANGLE", 2, 12), ("CIRCLE", 3, 13),
                                 ("L1", 4, 10), ("SQUARE", 5, 15)):
@@ -447,7 +447,7 @@ def battle_menu(binary, out):
         got = bm_chosen(lines)
         check(rc == 0 and len(got) == 1 and got[0][1:] == (action, bit),
               f"{button}: action {action} from bit {bit} ({got})")
-    # the launcher's "Fight button: Right" (the layout before 2026-11-23): Fight east, Tag south
+    # the launcher's "Fight button: Right" (the older layout): Fight east, Tag south
     for button, action, bit in (("CIRCLE", 0, 13), ("CROSS", 3, 14)):
         rc, lines = bm_press(binary, out, state, f"right_{button}", button, {"fight": "east", "tag": "south"})
         got = bm_chosen(lines)

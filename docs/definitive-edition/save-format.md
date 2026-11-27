@@ -19,7 +19,7 @@ last 0x800 bytes hold eight 0x100 records the game never writes.
 
 `REC_EXTRA` (record 1, offsets): 0-1 "X1"; 2 flags (`DEF_SAVE_HARD` 1, `DEF_SAVE_KAILI` 2); 4-7 Guardromon network mask; 8
 region_area; 9 region_chain; 10-25 sixteen common materials (u8, cap 99); 26-27 replica bits (16); 28-29 and 30-33 DRI
-unlocked/best stage per one PRD (see the DRI note above).
+unlocked/best stage.
 
 Record 2: 128 rare-item slots (cap 99) plus "ever held" bits; DRI bytes 152-153 unlocked and 154-157 best stage (2 bits
 each); the Blast data (next step per partner `REC2_BLAST`, owed TP, quest stage, purified bits, the chosen partner and
@@ -31,14 +31,14 @@ skin byte (`REC2_SKIN`); and the last 24 bytes, `DEF_SUPER_RECORD`. Compile-time
 Rare bytes and the answers before the skin byte; an older record reads all of these as 0.
 
 Rules for any new saved state: write only when something is non-zero; zero it in `def_bestiary_reset`; register it in
-`def_bestiary_savestate` (`PORT_STATE_VAR`); validate on read (the extras have no checksum). In detail (PRD 4's
-checklist): `def_bestiary_record_write` writes record 1, and its "X1" part, only when the table or `extra_any()` has
-something, so a new `REC_EXTRA` field must enter `extra_any()`, or a save holding only that state loses it; the record is
-zeroed before writing and read only when "X1" is present, so an old save reads zero for every new field and a save with
+`def_bestiary_savestate` (`PORT_STATE_VAR`); validate on read (the extras have no checksum). In detail :
+`def_bestiary_record_write` writes record 1, and its "X1" part, only when the table or `extra_any()` has something, so
+a new `REC_EXTRA` field must enter `extra_any()`, or a save holding only that state loses it; the record is zeroed
+before writing and read only when "X1" is present, so an old save reads zero for every new field and a save with
 nothing gained stays byte for byte the same; `out[5]` (the XOR checksum) covers only the species table, so clamp on
 read (a material count past `DEF_HUNT_MATERIAL_CAP` reads as the cap); never grow `REC_EXTRA`: add a record per slot
-instead (record 2 "HUNT" and record 3 "BLST" did exactly that). Converter:
-`tools/convert_save_mp.py card1.mcd` (`--dry-run`; writes "DFV2"). Tests: `tests/saves`, `tests/port/definitive_bestiary.py`.
+instead (as record 2 "HUNT" and record 3 "BLST" are). Converter: `tools/convert_save_mp.py card1.mcd` (`--dry-run`;
+writes "DFV2"). Tests: `tests/saves`, `tests/port/definitive_bestiary.py`.
 
 ## The expansion save (`card1.def.json`)
 
@@ -52,10 +52,10 @@ loaded and written whole, before the card, when one is saved (`port/game/definit
 - **Pairing.** `REC_EXTRA` + 30 (the last 18 bytes of record 1) hold "EXP1" and the slot's generation (u32, low byte
   first). An entry whose `gen` is not the card's (a card restored or synced without its JSON) reads as empty, logged.
   Those bytes held the old persona solved bits (144), imported into the file on the first load.
-- **Sections.** One named object per slot each (`definitive_expansion_sections.c`: `"personas"` and `"respec"`, the Velvet Room pig's swaps paid). Keys the
-  build does not know are kept when the file is written again; a file of a newer `version` is read as empty and never
-  overwritten. Adding a section: `.plan/tasks/expansion-save.md`.
-- **Schema versions** (owner, 2026-11-24): `"version"` is 2 (1: the personas alone; 2: the `"respec"` section). Any schema change, a new
+- **Sections.** One named object per slot each (`definitive_expansion_sections.c`: `"personas"` and `"respec"`, the
+  Velvet Room pig's swaps paid). Keys the build does not know are kept when the file is written again; a file of a
+  newer `version` is read as empty and never overwritten. Sections are declared in `definitive_expansion_sections.c`.
+- **Schema versions**: `"version"` is 2 (1: the personas alone; 2: the `"respec"` section). Any schema change, a new
   section included, bumps it, and the launcher migrates the file before the game starts (`launcher/migrate.c`: one step per
   version, applied in sequence, the old file kept as `card1.def.json.v<N>.bak`). The game reads its own version or older.
 - **A read that fails.** When the file cannot be read as the slot loads (a lock, an antivirus), the slot's sections are empty

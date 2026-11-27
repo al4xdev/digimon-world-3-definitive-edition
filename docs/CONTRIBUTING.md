@@ -81,10 +81,11 @@ match are in [`docs/MATCHING.md`](MATCHING.md). In short:
 
 - A function is **matching** when it compiles from C and the full build is byte-identical. Work-in-progress C goes
   under `#ifdef NON_MATCHING` beside the `INCLUDE_ASM` and must still compile with `-DNON_MATCHING`.
-- **Naming** ([`DECISIONS.md`](DECISIONS.md) "Naming conventions"): game symbols are `<module>_<verb>_<noun>` in
-  snake_case, with the module prefix being the source file's name (`src/main/filetable.c` → `filetable_get_lba`);
-  types are PascalCase, constants `MODULE_UPPER_SNAKE`, unknown fields `unk_1C`. Unnamed symbols keep splat's defaults
-  (`func_8001xxxx`, `D_8001xxxx`, `jtbl_…`; in overlays `func_FIELDSTG_8008xxxx`). Name only what you understand.
+- **Naming**: game symbols are `<module>_<verb>_<noun>` in snake_case, with the module prefix being the source file's
+  name (`src/main/filetable.c` → `filetable_get_lba`); types are PascalCase, constants `MODULE_UPPER_SNAKE`, unknown
+  fields `unk_1C`, padding `pad_<offset>`; an original name found in the binary wins and Psy-Q names stay Sony's.
+  Unnamed symbols keep splat's defaults (`func_8001xxxx`, `D_8001xxxx`, `jtbl_…`; in overlays
+  `func_FIELDSTG_8008xxxx`). Name only what you understand.
 - New names go in `config/symbol_addrs.txt` (the EXE, `name = 0x80012345; // type:func`) or
   `config/<overlay>.symbols.txt` (overlays).
 - The C must also compile for the PC port: `tools/venv/bin/python tools/port_inventory.py probe` must pass. Use the
@@ -108,8 +109,8 @@ without a trailing slash if the directory is not already ignored). `setup.sh` in
 ### Documentation
 
 `docs/` holds reference documentation only: how things are and why. Plans go in the project board, problems in
-issues; there is no session log. Update [`docs/STATUS.md`](STATUS.md) when the state changed, and record a decision
-that changes how the project works in [`docs/DECISIONS.md`](DECISIONS.md) (a few lines: what and why).
+issues; there is no session log, and no record of past decisions (git has it). Update [`docs/STATUS.md`](STATUS.md)
+when the state changed.
 
 ## Checks before a pull request
 

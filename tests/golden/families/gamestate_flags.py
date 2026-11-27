@@ -70,7 +70,7 @@ def conditions():
 def cases(sym):
     fx = fixture()
     saves = [("gamestate_data", GS_SIZE), ("gamestate_flags", 0x1C)]
-    # two reads around playtime_frames (0x48), which the vsync handler counts (DECISIONS "Replay and golden contracts")
+    # two reads around playtime_frames (0x48), which the vsync handler counts
     after = [Read("gamestate_data", 0, 0x48, "gamestate_data[0..0x48) after the call"),
              Read("gamestate_data", 0x4C, GS_FUNCS - 0x4C, "gamestate_data[0x4C..funcs) after the call (SHA-1)")]
     out = []

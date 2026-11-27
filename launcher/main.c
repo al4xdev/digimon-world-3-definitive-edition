@@ -2580,7 +2580,7 @@ static int self_test(const char *root) {
     check(!memcmp(&a, &b, sizeof(a)), "settings: read back as written");
     check(!strcmp(disc_path, p), "settings: the disc read back");
     {
-        /* The Fight button (2026-11-23): Fight at the bottom by default; the row swaps it with Tag, and a button another
+        /* The Fight button: Fight at the bottom by default; the row swaps it with Tag, and a button another
          * action held moves to the row it left; an old tui.state still on the old defaults takes the new one. */
         Cfg f, g;
         char tp[1200];

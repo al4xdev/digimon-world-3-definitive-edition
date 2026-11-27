@@ -1,4 +1,4 @@
-/* Igor's head in the Velvet Room (the owner's, 2026-11-17): the room's host is the game's suited figure (actor 109,
+/* Igor's head in the Velvet Room: the room's host is the game's suited figure (actor 109,
  * P055GMGD) with a head drawn by hand for this port over the figure's own (definitive_velvet_igor.h). Only the head is
  * ours: the body, its idle and its shadow stay the game's. */
 #include "common.h"

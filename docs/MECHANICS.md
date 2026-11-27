@@ -1,24 +1,20 @@
 # Game mechanics reference for the reference tests (Track A)
 
-Purpose: give the golden tests (layer 1), record/replay tests (layer 2) and save round trips (layer 3) of
-DECISIONS "Reference tests: three layers" names, fixtures and expected behaviours.
-Date: 2026-10-04 (first pass, research agent, read-only over the repo; the `[T]` marks were added by later sessions).
-
-**Budget used:** 2 web fetches (both blocked), about 140k tokens (almost all of it reading the C and headers).
+Purpose: give the golden tests (layer 1), record/replay tests (layer 2) and save round trips (layer 3) names, fixtures
+and expected behaviours.
+The `[T]` marks name behaviours a test pins.
 
 **Marking convention.** Each claim carries a tag. `[source]` means taken from a written guide (cite the URL once per
-section); `[C]` means inferred from the decompiled C in this repo; `[T]` (added from session 9 on) means pinned by a
-reference test, named where it is used: a layer-1 golden (`tests/golden/<family>.json`, the original's code run in the
-emulator, replayed on the host) or a layer-2 checkpoint (`tests/replay/`). **No `[source]` claim exists in this file**:
-gamefaqs.gamespot.com and strategywiki.org were both refused by the network egress proxy (EGRESS_BLOCKED), so by
-the rules of the task I stopped after two blocked hosts. Everything not `[T]` is `[C]`, and the "Sources wanted" list at
-the end says what to fetch from an unblocked machine. Where a guide and the C disagree, the C wins (it is the game).
-"Names" (Power, Guard, Spirit, Wisdom, Boost, Charisma, element names) come from item-name comments in
-`include/records.h` and are `[C]` too.
+section); `[C]` means inferred from the decompiled C in this repo; `[T]` means pinned by a reference test, named where
+it is used: a layer-1 golden (`tests/golden/<family>.json`, the original's code run in the emulator, replayed on the
+host) or a layer-2 checkpoint (`tests/replay/`). **No `[source]` claim exists in this file**: everything not `[T]` is
+`[C]`, and the "Sources wanted" list at the end says what to fetch from an unblocked machine. Where a guide and the C
+disagree, the C wins (it is the game). "Names" (Power, Guard, Spirit, Wisdom, Boost, Charisma, element names) come from
+item-name comments in `include/records.h` and are `[C]` too.
 
 Provenance of the golden values: goldens come from the emulator-run original (the oracle runs the disc's own code), never
 from this document's hand arithmetic; the hand-computed numbers below check that a harness is wired right.
-`fightstg_rules_get_stats` (`src/fightstg/fightstg_8008D3B4.c`) is matching C since 2026-10-07, so the host replays
+`fightstg_rules_get_stats` (`src/fightstg/fightstg_8008D3B4.c`) is matching C, so the host replays
 the original's code too.
 
 ## 0. Shared conventions
@@ -169,7 +165,7 @@ Facts [C]:
   would index `resists[-2..]`, so it is only meant for element techniques.)
 
 [T] `fightstg_rules` pins the four rolls over the same techniques, sides, RNG indexes and modifiers (boss included), and
-(appended 2026-10-05) the enemy's floor at both sides of 32 (residue 31 hits, 32 misses, from a chance of -61) and the party's
+ the enemy's floor at both sides of 32 (residue 31 hits, 32 misses, from a chance of -61) and the party's
 missing floor (a chance of -33 misses even on residue 0).
 
 Code map: `fightstg_rules_roll_hit`, `_roll_special_hit`, `_roll_critical`, `_roll_special_critical` (`fightstg_8008D3B4.c` 7602-7765);
@@ -243,10 +239,11 @@ slot, statuses, crests; all `(next() & 0x7F) < chance` unless noted; `blocked[]`
   is removed from the stat first.
 - Gauge gain (blast gauge, max 1000): `percent = dmg * 100 / max_hp`, `value = percent^2 / 20`, crest 0x149 +20 %, 0x14A +40 %
   (equipment slots 4 and 5, per copy), cap 1000.
-- Gauge accumulation (`wfightmn_add_gauge(side, value)`, WFIGHTMN, on every hit) [T] (`fightstg_rules`, appended by sweep2): only a hit
-  on the party (`side != 0`) with `value != 0`, on an acting member with HP and not blasted, adds `get_gauge_gain(value)` to
-  `records_state.gauges[the member's Digimon index]` (not its party slot); at >= 1000 the gauge is set to 1000 and a gauge-full event
-  (type 0x12, delay 0) is queued (874 + 125 = 999: none; 875 + 125: 1000 and the event). The DV Plug's cap is 999 (section 9).
+- Gauge accumulation (`wfightmn_add_gauge(side, value)`, WFIGHTMN, on every hit) [T] (`fightstg_rules`): only a hit on
+  the party (`side != 0`) with `value != 0`, on an acting member with HP and not blasted, adds `get_gauge_gain(value)`
+  to `records_state.gauges[the member's Digimon index]` (not its party slot); at >= 1000 the gauge is set to 1000 and a
+  gauge-full event (type 0x12, delay 0) is queued (874 + 125 = 999: none; 875 + 125: 1000 and the event). The DV Plug's
+  cap is 999 (section 9).
 - MP cost `get_tech_cost(side, id)`: `records_techniques[(id & 0x1FFF) - 1].mp_cost`; party only: MP-saving crest 0x143/0x144 subtracts
   `bonus_value` (min 1); `id & 0x4000` (boosted use) adds `cost / 5` (at least +1). Enemies pay the plain cost.
 - First strike (`wfightmn_roll_first_strike`, WFIGHTMN, at the battle's start) [T]: none and no draw when the battle's
@@ -256,7 +253,7 @@ slot, statuses, crests; all `(next() & 0x7F) < chance` unless noted; `blocked[]`
   leaves the enemy at `limit = (s16)(max_hp / 11)` or above (`hp - limit`, or `(hp - limit) / count` per hit of a multi-hit; 0
   when the enemy is already at or below it); type 3: the party deals 0; the enemy's damage and the other types pass unchanged.
 
-- Event queue and delays (`fightstg_events`, 99 entries `{type, delay, args[6]}`) [T] (`wfightmn_events`, sweep3):
+- Event queue and delays (`fightstg_events`, 99 entries `{type, delay, args[6]}`) [T] (`wfightmn_events`):
   `fightstg_events_get_delay(side, kind)`: kinds 0 (a turn), 1 (escape) and 3..7 (blast) = `base * other.Boost / root` with
   `root` = 10 integer Newton steps `(r + p / r) / 2` from 999 on `p = own.Boost * other.Boost` (at `p = k*k - 1` it ends on `k`,
   where an exact isqrt gives `k - 1`: Boost 50 against 48 -> 979, not 1000); kind 2 (regen ends) `next() % 2001 + Spirit * 10`;
@@ -272,34 +269,35 @@ slot, statuses, crests; all `(next() & 0x7F) < chance` unless noted; `blocked[]`
   modifiers [1] and [3] set to `-stat >> 1` of record 0x1D3 (750, 730: even, so `>> 1` and `/ 2` agree on the game's data).
 - Copied techniques (`wfightmn_note_copied_tech(side, id)`, battle type 4) [T]: the party's technique becomes
   `state.copied_tech` when its `anim_script` is not 5 or 12 and its kind is 2..8, 11 or >= 13, or its `defense_stat` >= 2 (`wfightmn_events`).
-- The enemy's choice (`fightstg_enemy_turn_update`, FIGHTSTG) [T] (`wfightmn_enemy_ai`, sweep4): in battle type 1 an enemy under
-  `(s16)(max_hp / 10)` HP flees (ends the battle, result 0) [C]; asleep (status 8), paralysed (status 2 and `roll_paralyzed`) or
-  confused (status 4: a random message, `next() % 8`) it loses the turn [C]; else the first of its record's `actions[3]` whose
-  condition holds is taken, and when none holds the 4 bytes after them (record + 0x3E, `{1 or 2, 0, 0}` in every record) are the
-  default action (FINDINGS 5). Conditions `fightstg_enemy_check_condition(type, value)` [T]: 0 always; 1 `next() % 128 < value`
-  (one draw; the conditions are evaluated in order, so a later roll is drawn only when the earlier ones fail); 2/3 own HP
-  `(s16)(max_hp / 100) * (value * 100 / 128)` `>` hp / `<=` hp, both divisions truncated (max_hp 450, value 26: 80, not 90 or
-  91; max_hp < 100: 0, never under); 4/5 own MP `<` / `>=` value; 6/7 as 2/3 on the party's current member; 8 the party member's
-  Digimon is `records_digimon[0..7].id` (the partners); 9 the party member asleep; 10 another enemy slot alive with Digimon
-  `value` (0: any), never the current slot; 11 field element; 12 `records_state.battle`; 13 `records_state.battle_kind`; 14 own
-  `power_up`; 15..17 own `modifiers[0..2] < 0`; 18 own `turns % value == 0` (turn 0 holds; values 2..4 in the data, never 0);
+- The enemy's choice (`fightstg_enemy_turn_update`, FIGHTSTG) [T] (`wfightmn_enemy_ai`): in battle type 1 an enemy
+  under `(s16)(max_hp / 10)` HP flees (ends the battle, result 0) [C]; asleep (status 8), paralysed (status 2 and
+  `roll_paralyzed`) or confused (status 4: a random message, `next() % 8`) it loses the turn [C]; else the first of its
+  record's `actions[3]` whose condition holds is taken, and when none holds the 4 bytes after them (record + 0x3E, `{1
+  or 2, 0, 0}` in every record) are the default action (FINDINGS 5). Conditions `fightstg_enemy_check_condition(type,
+  value)` [T]: 0 always; 1 `next() % 128 < value` (one draw; the conditions are evaluated in order, so a later roll is
+  drawn only when the earlier ones fail); 2/3 own HP `(s16)(max_hp / 100) * (value * 100 / 128)` `>` hp / `<=` hp, both
+  divisions truncated (max_hp 450, value 26: 80, not 90 or 91; max_hp < 100: 0, never under); 4/5 own MP `<` / `>=`
+  value; 6/7 as 2/3 on the party's current member; 8 the party member's Digimon is `records_digimon[0..7].id` (the
+  partners); 9 the party member asleep; 10 another enemy slot alive with Digimon `value` (0: any), never the current
+  slot; 11 field element; 12 `records_state.battle`; 13 `records_state.battle_kind`; 14 own `power_up`; 15..17 own
+  `modifiers[0..2] < 0`; 18 own `turns % value == 0` (turn 0 holds; values 2..4 in the data, never 0);
   > 18: 1. Actions `fightstg_enemy_get_action(type)` [T]: 1 attack (`fightstg_attack_create`), 2/3 `tech_2`/`tech_3` of the current
   enemy's record, 4 flee (`fightstg_events_add_escape(0x10)`), 5..8 call member 0/1/2/any (-2..-5), else 0. A technique costs its
   `mp_cost` and fails with a message when MP is short [C]. A call (`fightstg_enemy_turn_find_target`) [T]: -2..-4 name a slot,
   refused when it is dead or has the current member's Digimon (an ID compare: a second 0x20 cannot be called by a 0x20);
   -5 any other live slot, two candidates by `next() & 1`, one without a draw. The record's counter action (`counter_*`,
   `fightstg_counter_update`) uses the same two functions [C].
-- Battle end (`wfightmn_battle_end`, WFIGHTMN) [T] (`wfightmn_spoils`, sweep5): on a result != 0 (won 1, lost 2: a loss runs
-  the same drop, which STFGTREP then never reads) `results.battle = records_state.battle`, `results.member = current[0]`;
-  `count` = the enemies with a Digimon and `item != 0` (a stolen item is -1 and counts; an empty slot never does), `pick =
-  next() % count` (count 0 when none holds one: a division by zero, harmless on the R3000A but a trap on x86, FINDINGS 7; the
-  story's first battle does it), and the item and record read are `enemies[k]` with k the holder's **rank**, not its slot (one
-  holder in slot 1 reads `enemies[0]`: no item); `item > 0` drops when `next() % 1024 < drop_rate + 1` (0xD9, rate 128:
-  residue 128 drops, 129 not), else (or `item <= 0`: stolen) item 0 with no second draw; `records_state.has_prize == 1`
-  replaces the item with `prize_item`. Every party slot with a Digimon writes HP and MP back to its record; HP <= 0 comes
-  back as 1 and clears `took_part` and `forms[]`. Result 1 goes to the report (0x1400; battle type 6: 0xE0B), 2 to 0xE00,
-  0 (escape: no item logic, the write-back only) back to the field [C]. Layer 2's first battle pins the no-holder path (no
-  item, HP 150 -> 93, `battle_won`/`battle_end`).
+- Battle end (`wfightmn_battle_end`, WFIGHTMN) [T] (`wfightmn_spoils`): on a result != 0 (won 1, lost 2: a loss runs
+  the same drop, which STFGTREP then never reads) `results.battle = records_state.battle`, `results.member =
+  current[0]`; `count` = the enemies with a Digimon and `item != 0` (a stolen item is -1 and counts; an empty slot
+  never does), `pick = next() % count` (count 0 when none holds one: a division by zero, harmless on the R3000A but a
+  trap on x86, FINDINGS 7; the story's first battle does it), and the item and record read are `enemies[k]` with k the
+  holder's **rank**, not its slot (one holder in slot 1 reads `enemies[0]`: no item); `item > 0` drops when `next() %
+  1024 < drop_rate + 1` (0xD9, rate 128: residue 128 drops, 129 not), else (or `item <= 0`: stolen) item 0 with no
+  second draw; `records_state.has_prize == 1` replaces the item with `prize_item`. Every party slot with a Digimon
+  writes HP and MP back to its record; HP <= 0 comes back as 1 and clears `took_part` and `forms[]`. Result 1 goes to
+  the report (0x1400; battle type 6: 0xE0B), 2 to 0xE00, 0 (escape: no item logic, the write-back only) back to the
+  field [C]. Layer 2's first battle pins the no-holder path (no item, HP 150 -> 93, `battle_won`/`battle_end`).
 - Battle start (`fieldstg_start_battle(battle)`, FIELDSTG) [T] (`wfightmn_spoils`): needs the field manager (kind 7) on the
   object list, else nothing; copies `fieldstg_battles[battle]`'s enemies, first strike, `unk_3D` and blocked effects into
   `records_state`, sets the manager's next map (0x600; 0xE0A at progress 0x2B) and `has_prize` = enemy 0 in 0x1C9..0x1D0
@@ -443,15 +441,16 @@ forms that fought, then skills, then the Digimon's experience, then a new form):
   (`level_thresholds[5]`, 100 for the early forms, 95, 90, 80 or 60 for later ones) level L needs total exp >= `L * 10`; past it
   `x * 10 + (L - x) * 50` with `x = t5 - 1` (form 150, t5 60: level 60 -> 61 needs 640). Several levels per call; level cap 99. A form already
   at 99 returns 0 **without storing the exp**.
-- **Form experience from a battle** (`stfgtrep_get_technique_exp(d, form, exp, n)`): `a = exp * 10 / level` (Digimon level < 51) or
-  `exp / 5` (the two agree below overflow); n users: 0 or 1 -> a, 2 -> `a * 6 / 10`, more -> `a / n`; then at least 1, and at most 10
-  while the form's level < t5, else at most 50. `exp` is `stfgtrep_rewards[battle].tech_exp`; a chosen form (ID >= 4) earns it when
-  `records_battle_results.members[slot].forms[i]` was set in battle (`wfightmn_mark_took_part`: `took_part` for the acting member, and
-  the form it was fighting as when it acted, digivolved or switched, by its place `i` in `get_chosen_forms`' packed list: chosen
-  {386, -1, 367} fighting as 367 marks `forms[1]`; its own form or an unchosen one marks none [T] (`fightstg_rules`, appended by sweep2)).
-  **That 10/50 ceiling is the pacing behind "one form level a battle"** (99 battles for a form at 99). The Definitive Edition
-  multiplies this number by 14 and skips the ceiling (section 6), so a battle can raise several form levels - `add_technique_exp`
-  already loops.
+- **Form experience from a battle** (`stfgtrep_get_technique_exp(d, form, exp, n)`): `a = exp * 10 / level` (Digimon
+  level < 51) or `exp / 5` (the two agree below overflow); n users: 0 or 1 -> a, 2 -> `a * 6 / 10`, more -> `a / n`;
+  then at least 1, and at most 10 while the form's level < t5, else at most 50. `exp` is
+  `stfgtrep_rewards[battle].tech_exp`; a chosen form (ID >= 4) earns it when
+  `records_battle_results.members[slot].forms[i]` was set in battle (`wfightmn_mark_took_part`: `took_part` for the
+  acting member, and the form it was fighting as when it acted, digivolved or switched, by its place `i` in
+  `get_chosen_forms`' packed list: chosen {386, -1, 367} fighting as 367 marks `forms[1]`; its own form or an unchosen
+  one marks none [T] (`fightstg_rules`)). **That 10/50 ceiling is the pacing behind "one form level a battle"** (99
+  battles for a form at 99). The Definitive Edition multiplies this number by 14 and skips the ceiling (section 6), so
+  a battle can raise several form levels - `add_technique_exp` already loops.
 - **Skills** (`stfgtrep_learn_skill(d, form)`): the first empty slot i (0..5) whose `RecordsDigimon.techniques[i + 1]` exists and whose
   `technique_levels[i] <= form level` is filled (slot 5 with flag 0x8000); one per call; a later slot can fill first when the levels are out
   of order (form 375 learns slot 2 at level 10 before slot 1 at 25), and a missing technique leaves its slot empty for good.
@@ -690,11 +689,15 @@ writing side by `gamestate_actions` (marked below):
 - `gamestate_update_map_flags` (on entering a field map): `map_is_new` clears `map_flags` (the 24 type-0 flags); back from a card game (`prev_map == 0x700`) sets flags 0x11 and
   0x12, sets flag 0x10 to `card_game_won` and clears `card_game_won` [T] (`gamestate_actions`).
 - `gamestate_check_flags(list)`: list of `(flag, value)` u16 pairs ending in 0xFFFF; true when every pair matches (empty list true). `gamestate_set_flags` same shape.
-- Where flag words come from (census [C], `tools/flag_census.py`; DECISIONS "Reference tests: three layers"): the field's talk lists (`FieldstgTalk.flags_required`, `flags_set`), placed actors'
-  `flags_required`, `FieldstgMapEvent.flag`/`flag_2`, `fieldstg_flag_events` and constants in FIELDSTG/STSTATUS/WSTAG code; nothing else reads them (no event or card script, text or
-  battle data). 16,169 uses (12,658 get, 3,511 set) of 31 types. Computed: `set_flag(get_map() + 0x1E00, 1)` on entering a field map sets the visited-map bit (type 0x20, index
-  `map - 0x200`, maps 0x200..0x2EE), which STSTATUS's map reads back as `(i & 0xFF) | 0x2000`. Every bit-array index used is inside its array [T] (layer 3, `flag_census.py --check`; the tightest: type 0x04 index 15 of 16 bits, 0x06 7 of 8), and **type 0x72 is used only with
-  indexes 0..14** (1,498 reads, 45 WSTAG files; 14 = the 2472 threshold, `wstag725.c` only), so `gamestate_party_stat_levels`' overrun (FINDINGS 1) is never reached by the game.
+- Where flag words come from (census [C], `tools/flag_census.py`): the field's talk lists
+  (`FieldstgTalk.flags_required`, `flags_set`), placed actors' `flags_required`, `FieldstgMapEvent.flag`/`flag_2`,
+  `fieldstg_flag_events` and constants in FIELDSTG/STSTATUS/WSTAG code; nothing else reads them (no event or card
+  script, text or battle data). 16,169 uses (12,658 get, 3,511 set) of 31 types. Computed: `set_flag(get_map() +
+  0x1E00, 1)` on entering a field map sets the visited-map bit (type 0x20, index `map - 0x200`, maps 0x200..0x2EE),
+  which STSTATUS's map reads back as `(i & 0xFF) | 0x2000`. Every bit-array index used is inside its array [T] (layer
+  3, `flag_census.py --check`; the tightest: type 0x04 index 15 of 16 bits, 0x06 7 of 8), and **type 0x72 is used only
+  with indexes 0..14** (1,498 reads, 45 WSTAG files; 14 = the 2472 threshold, `wstag725.c` only), so
+  `gamestate_party_stat_levels`' overrun (FINDINGS 1) is never reached by the game.
 - Condition table `gamestate_conditions[]` ({id, type, arg}, terminated by id 0xFF): `type & 0xF0` selects the family, `type & 0xF` the sub-case:
   0x00 item sets, 0x10 Digimon (party set, joined, in party, join (side effect `joined = arg + 3`), level >= 45, party level sum >= `arg * 15 + 30`, not joined, all joined Digimon >= 45,
   full heal (side effect), all eight joined), 0x20 money (check `>= gamestate_money_check[arg]` / add `gamestate_money_add` / subtract `gamestate_money_sub`),

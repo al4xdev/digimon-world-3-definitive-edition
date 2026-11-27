@@ -15,8 +15,8 @@ disc). The numbers are definitive.h's (DEF_REPLICAS, DEF_BM_REPLICA_BITS). Rule:
     must not be fed by the Black Market);
   - the DEF_REPLICAS with the highest selling price, ties by item ID;
   - a replica costs DEF_BM_REPLICA_BITS times that selling price in Bits, rounded to 1000, and one each of its own two
-    Rare Targets' rare items (CORES below, picked by hand by the item's theme and strength, the owner's choice of
-    2026-11-17: an element's Power S takes two late bosses of that element, the cheaper replicas earlier ones; no Rare
+    Rare Targets' rare items (CORES below, picked by hand by the item's theme and strength:
+     an element's Power S takes two late bosses of that element, the cheaper replicas earlier ones; no Rare
     Target serves two replicas), read from port/game/definitive_hunt_targets.c by the target's species name.
 The row's index is the replica's bit in the card record (REC_EXTRA + 26..27): once saves carry it, a change of the list
 must keep the rows already shipped where they are.

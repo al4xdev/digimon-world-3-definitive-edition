@@ -17,7 +17,7 @@ Drawing (a set is sets/NAME.txt: the frames of one animation and direction, type
   set NAME [--open] [--slow N]    review/NAME.png (Junior's frames, the drawn ones big, both small and mirrored) and
                                   review/NAME.gif (Junior, Kaili as she was, Kaili drawn, at the game's pace; --slow N
                                   times slower); --open shows a numbered copy of the GIF. Nothing else is written:
-                                  this is what the owner approves.
+                                  the one to review.
   lean NAME                       per frame, where his and her head, torso and legs sit across (the centre of each
                                   band: top 40%, next 30%, the rest), without her pigtails: a body running upright
                                   or on tiptoe shows as legs under the torso where his are behind it
@@ -595,7 +595,7 @@ def cmd_set(name, show=False, slow=1):
     parts += [strip.resize((strip.width * 2, strip.height * 2), Image.NEAREST), strip]
     sheet = REVIEW / (name + ".png")
     lay(parts, horizontal=False, gap=14).save(sheet)
-    # the GIF: what the owner approves
+    # the GIF: the one to review
     scale, cw, ims = 6, w + 8, []
     for f in order:
         im = Image.new("RGB", (cw * 3, (h + 4) * 2), FIELD)

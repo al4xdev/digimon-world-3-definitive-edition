@@ -52,7 +52,7 @@ cardgame_game_end_round = 0x800A0F94; // type:func
 cardgame_game_run_menu = 0x800A2608; // type:func
 cardgame_cpu_choose_card = 0x800A4978; // type:func
 
-// Names (DECISIONS "Naming conventions"; cardgame names pass).
+// Names (cardgame names pass).
 cardgame_skip_if_played_by = 0x80083F48; // type:func
 cardgame_skip_if_hand_at_most = 0x80083F84; // type:func
 cardgame_skip_if_hand_above = 0x80083FC8; // type:func

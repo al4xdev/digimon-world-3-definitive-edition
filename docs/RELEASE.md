@@ -1,13 +1,12 @@
 # Releases
 
-**One Linux x86_64 AppImage**, **one Windows x86_64 zip** and **one RK3326 PortMaster zip (`dw3.zip`)** for
-players (each the launcher/menu, the game and the mods' manifests; the player supplies the disc and never compiles
-anything), all built on CI's `ubuntu-24.04` runner (the AppImage against glibc 2.39, the Windows programs
-cross-compiled with llvm-mingw and linked statically: DECISIONS "Windows: cross-built from Linux", and `dw3.zip`
-cross-compiled in Debian 12 `armhf` Docker via `.ci-cd/portmaster/Dockerfile.armhf`), for a pushed tag `vX.Y.Z` or a manual run
-given a tag, and **published** as a GitHub Release. (Upstream's rule, DECISIONS "Releases: tagged drafts, published by
-hand", made a draft; the repository variable `RELEASE_DRAFT` = `true` brings that back.) No release file ever holds
-game data: `.ci-cd/common/check_release_contents.py` holds every package to the list of files a release has (programs, the
+**One Linux x86_64 AppImage**, **one Windows x86_64 zip** and **one RK3326 PortMaster zip (`dw3.zip`)** for players
+(each the launcher/menu, the game and the mods' manifests; the player supplies the disc and never compiles anything),
+all built on CI's `ubuntu-24.04` runner (the AppImage against glibc 2.39, the Windows programs cross-compiled with
+llvm-mingw and linked statically, and `dw3.zip` cross-compiled in Debian 12 `armhf` Docker via
+`.ci-cd/portmaster/Dockerfile.armhf`), for a pushed tag `vX.Y.Z` or a manual run given a tag, and **published** as a
+GitHub Release. (With the repository variable `RELEASE_DRAFT` = `true` it is a draft.) No release file ever holds game
+data: `.ci-cd/common/check_release_contents.py` holds every package to the list of files a release has (programs, the
 mods' `mod.json`, licences, READMEs), before it is kept and again before it is published. The Windows build is tested
 on Linux under Wine; real Windows comes from testers.
 
@@ -53,12 +52,12 @@ origin v0.1.0; git tag -d v0.1.0`), tag the fixed commit and push again.
 
 ## The port stack in a release
 
-The port and the launcher are built from the `psxstack` submodule at its pin (`.gitmodules`; DECISIONS "The port stack
-lives in psxstack"). release.yml's checkouts fetch it (`submodules: recursive`, with `PSXSTACK_TOKEN` when it is set);
-`release_local.sh` fetches it on the host. The release's tag is the input in one place, `DW3_VERSION` (release.yml, `release_local.sh`);
-`package_appimage.sh` and `package_windows.sh` export it as `PSXSTACK_VERSION`, which psxstack's `cmake/version.cmake`
-stamps into both programs (over `git describe` of this repository: `-DPSXSTACK_VERSION_ROOT`). A new runtime or
-launcher reaches a release by bumping the pin.
+The port and the launcher are built from the `psxstack` submodule at its pin (`.gitmodules`). release.yml's checkouts
+fetch it (`submodules: recursive`, with `PSXSTACK_TOKEN` when it is set); `release_local.sh` fetches it on the host.
+The release's tag is the input in one place, `DW3_VERSION` (release.yml, `release_local.sh`); `package_appimage.sh` and
+`package_windows.sh` export it as `PSXSTACK_VERSION`, which psxstack's `cmake/version.cmake` stamps into both programs
+(over `git describe` of this repository: `-DPSXSTACK_VERSION_ROOT`). A new runtime or launcher reaches a release by
+bumping the pin.
 
 ## A local release
 
@@ -128,9 +127,9 @@ scripts/setup.sh venv llvm-mingw sdl3-windows
 ```
 
 `package_windows.sh` cross-builds the game (the SDL build) and the launcher in Release through
-`.ci-cd/windows/build_windows.sh` (llvm-mingw's clang and lld, everything static, a PDB beside each executable: DECISIONS
-"Windows: cross-built from Linux"), checks both executables (GUI subsystem, the application manifest, no DLL of the
-toolchain's or SDL's imported: only Windows' own), and zips one folder:
+`.ci-cd/windows/build_windows.sh` (llvm-mingw's clang and lld, everything static, a PDB beside each executable), checks
+both executables (GUI subsystem, the application manifest, no DLL of the toolchain's or SDL's imported: only Windows'
+own), and zips one folder:
 
 ```
 dw2003-<version>-windows-x86_64/

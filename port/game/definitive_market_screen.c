@@ -50,7 +50,7 @@ extern const unsigned char def_str_BMTitle[], def_str_BMTabTrade[], def_str_BMTa
 
 /* The trader: a figure whose own talk sets no flag and that no event script moves, so taking its talk over loses
  * nothing (tools/bm_npc_candidates.py lists the towns' figures with their lines). The pick is to confirm on the lab with
- * the lines decoded [owner]; a map's copy in the second half of the game keeps the trader there too. */
+ * the lines decoded; a map's copy in the second half of the game keeps the trader there too. */
 typedef struct BmTrader {
     s16 map;   /* the field map */
     s16 actor; /* FieldstgPlacedActor.id: its actor's key1 */

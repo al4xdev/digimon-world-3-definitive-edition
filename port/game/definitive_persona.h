@@ -1,4 +1,4 @@
-/* Enemy personas (owner, 2026-11-23): a hand-picked puzzle per encounter instead of more HP or damage. One row per
+/* Enemy personas: a hand-picked puzzle per encounter instead of more HP or damage. One row per
  * special enemy in definitive_persona_table.c, written with the helpers below; what a row does not say comes from the
  * species (definitive_enemies.c). The engine side (definitive_persona.c, the battle's glue in definitive.c) never
  * changes when rows are added: a new rule is a new helper here plus one `if` there.
@@ -8,9 +8,7 @@
  *   { DRI(3), KEEP(2), RESIST_ALL, SPEED_X(3) },                            a whole DRI line
  *   { CAMPAIGN(31, 448), GUARD_ALWAYS },                                    a story boss (battle + species)
  *   { SPECIES(80), PHASES(2), GUARD_A },                                    every Goburimon: guarded every other 2 turns
- *   { SPECIES(80), RED_ALWAYS },                                            a red guard: no stagger opens it
- *
- * The design guide: .plan/tasks/enemy-personas.md. */
+ *   { SPECIES(80), RED_ALWAYS },                                            a red guard: no stagger opens it */
 #ifndef DEFINITIVE_PERSONA_H
 #define DEFINITIVE_PERSONA_H
 
@@ -50,12 +48,12 @@ typedef struct DefPersona {
 #define DEF_PERSONA_RESIST 300 /* the enemy table's strong resistance (DEF_RESIST_MIN and up) */
 #define DEF_PERSONA_NEUTRAL 100
 
-/* The guard kinds (owner, 2026-11-24). Orange: every blow of the party at DEF_GUARD_PCT until a stagger opens it.
+/* The guard kinds. Orange: every blow of the party at DEF_GUARD_PCT until a stagger opens it.
  * Red: the same cut, but a stagger never opens it and a blow on a weakness goes through whole: against physical play,
  * which no stagger ever opened anyway, it never goes down; magic has to find the weakness to get past it. */
 enum { DEF_GUARD_NONE, DEF_GUARD_ORANGE, DEF_GUARD_RED };
 
-/* Who. DRI: the whole line (owner: the persona is the line's, its stages only scale). */
+/* Who. DRI: the whole line (the persona is the line's, its stages only scale). */
 #define SUPER(i) .kind = DEF_PERSONA_SUPER, .a = (i)
 #define RARE(region) .kind = DEF_PERSONA_RARE, .a = (region)
 #define DRI(c) .kind = DEF_PERSONA_DRI, .a = (c)
@@ -85,12 +83,12 @@ enum { DEF_GUARD_NONE, DEF_GUARD_ORANGE, DEF_GUARD_RED };
 #define B_RESIST_ALL .phase[1].resist = DEF_PERSONA_FAMILIES
 #define GUARD_B .phase[1].guard = DEF_GUARD_ORANGE
 #define RED_B .phase[1].guard = DEF_GUARD_RED
-/* Speed relative to the party (owner: a fixed 999 means little late in the game). */
+/* Speed relative to the party (a fixed 999 means little late in the game). */
 #define SPEED_X(n) .speed_x = (n)
-/* Its Defense at n% (owner, 2026-11-23: the molds that are fought hard, Brutamontes going physical and Relampago
+/* Its Defense at n% (the molds that are fought hard, Brutamontes going physical and Relampago
  * hit in one go, take a lower Defense instead of the guide's lower HP, which a row cannot set). */
 #define DEF_PCT(n) .def_pct = (n)
-/* Its HP and Power raised to n% (owner, 2026-11-24: Vemmon, the first red guard, the weakest Digimon of its levels,
+/* Its HP and Power raised to n% (Vemmon, the first red guard, the weakest Digimon of its levels,
  * brought up to the bosses around it as a gatekeeper). HP is set as the battle starts (def_persona_enemies_scale),
  * so it is meant for CAMPAIGN rows: a SPECIES row would raise every encounter of the species. */
 #define HP_PCT(n) .hp_pct = (n)

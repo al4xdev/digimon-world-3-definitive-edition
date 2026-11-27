@@ -271,7 +271,7 @@ static void fieldmenu_bestiary_name(MessageWindow *win, s32 index, s32 chosen) {
     }
 }
 
-/* The owner's materials model of 2026-11-13: under the families, the species' Hunt line. The
+/* Under the families, the species' Hunt line. The
  * first line its common material and how many the player holds (grey at none; "-" for a species no random encounter
  * has); the second, for a species that leads Rare Targets, its rare items as a collection: how many of its regions'
  * ones were ever held, of how many ("4/13", orange when all). "???" while nothing of the species is known. */

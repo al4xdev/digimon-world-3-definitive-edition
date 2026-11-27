@@ -1,4 +1,4 @@
-/* The Velvet Room's music (tools/gen_velvet_music.py): the owner's own arrangement,
+/* The Velvet Room's music (tools/gen_velvet_music.py): an original arrangement,
  * played by the game's LIBSND from a SEP the generator writes from his local MIDI, on the samples of BGM031 (sound bank
  * 33) with the piano of BOSS01 in the place of BGM031's noise-burst one.
  *

@@ -28,7 +28,7 @@ configured, tagged releases (or manual `workflow_dispatch` runs with `sync_portm
 
 - [x] **Open a testing thread** in the PortMaster Discord. It is required before a pull request. Give the device and CFW
       tested, the resolution and the known issues (see "Known issues" in `.ci-cd/portmaster/README.md`). Done: the release is
-      in its testing phase there (2026-11-18), not yet in the catalogue; it was run under emulation on every CFW of
+      in its testing phase there, not yet in the catalogue; it was run under emulation on every CFW of
       the test matrix ("Tested on" in `.ci-cd/portmaster/README.md`).
 - [ ] **Fork `PortMaster-MV-New`**, sparse-checkout it, put the contents of `dist/dw3.zip` under `ports/dw3/`, run the
       repository's check (`python3 tools/build_release.py --do-check`; this script is not in this repository and its

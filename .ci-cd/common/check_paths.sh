@@ -9,7 +9,7 @@
 #   .ci-cd/common/check_paths.sh      exit 1, printing the offending lines
 #
 # Excluded: this file (its patterns are the thing it searches for), the game's own decompiled strings, where a
-# "C:\DEVELOP\..." is data from the original disc, not a path of ours, and .plan/, the owner's working notes,
+# "C:\DEVELOP\..." is data from the original disc, not a path of ours, and .plan/, local working notes,
 # which name the lab machine by design.
 set -eu
 cd "$(dirname "$0")/../.."

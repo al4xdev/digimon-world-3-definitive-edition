@@ -1,4 +1,4 @@
-/* The Velvet Room (the owner's design): the Asuka City bar (map 0x20F, WSTAG255) run as a
+/* The Velvet Room: the Asuka City bar (map 0x20F, WSTAG255) run as a
  * room of its own, where the Black Market's trader, a mentor and Etemon live, reached through a blue door that stands in
  * every inn of the Guardromon network (port/game/definitive_travel.c's nodes).
  *
@@ -9,7 +9,7 @@
  *
  * The way in: a spot of each inn (`doors`: one per inn map, the second half's copies sharing the first half's layouts)
  * in front of a piece of its own scenery (a wardrobe, a door, a crate) that a soft blue light marks (`looks`: no door
- * of its own, the owner's call). Standing there (VL_RADIUS) shows the map exits' prompt; CIRCLE takes it, as a map exit
+ * of its own). Standing there (VL_RADIUS) shows the map exits' prompt; CIRCLE takes it, as a map exit
  * is taken. `dw3_velvet_leave` takes the room's front door back to the inn the way was taken in, and closes the other
  * one (`dw3_velvet_event_closed`).
  *
@@ -52,7 +52,7 @@ extern const unsigned char def_str_VelvetTitle[], def_str_VelvetTitle2[], def_st
 #define VL_ICON_TYPE 10     /* the prompt's animation: a map exit's "go in" arrow (a type 1 event facing 4) */
 #define VL_ICON_ID 6        /* the map events' own prompt object id */
 /* The room's music: the bank and the track of the game's that map 0x25F alone uses (the field plays
- * `fieldstg_stage.sound` after loading `fieldstg_stage.music`'s bank, so both have to change; the owner composes the
+ * `fieldstg_stage.sound` after loading `fieldstg_stage.music`'s bank, so both have to change; the room has its own composed
  * room's own later). */
 #define VL_MUSIC 0x3B
 #define VL_SOUND 0x60EC0000
@@ -60,15 +60,15 @@ void dw3_velvet_music(s32 *music, s32 *sound); /* definitive_velvet_music.c: the
 int dw3_velvet_igor_head(FieldstgActor *actor, u32 *ot, s32 x, s32 y); /* definitive_velvet_igor.c: his own head */
 int dw3_velvet_pipimon_art(FieldstgActor *actor, u32 *ot, s32 x, s32 y); /* definitive_finale.c: Pipimon post-credits */
 #define VL_MERCHANT 42  /* the Black Market's trader: the figure that traded in map 0x20C */
-/* The mentor (the Gennai of the room, owner 2026-11-16: an old figure of the game until one is drawn): 0x39, the old man
+/* The mentor (the Gennai of the room,  an old figure of the game until one is drawn): 0x39, the old man
  * the game's Grandpas and Tamer Genji wear (P074JIJI): bald, white-bearded, five facings. Its frame is 24x32, which the
  * VRAM place below holds (its neighbour starts 32 pixels on). It was 0x178, a Kotemon no map places. */
 #define VL_MENTOR 0x39
 /* The Demon Bell's keeper (Super Hard Mode, definitive_super.c): 370 (0x172), a small Guilmon no map places, the red
  * one of the room. Talking to him hands over the Bell or takes it back (dw3_velvet_shop_talk picks the line). */
 #define VL_DEMON 0x172
-#define VL_ETEMON 0x61  /* Etemon, at the bar's piano (the owner's joke: he "heard this tune in another game") */
-#define VL_PIG 0x13E    /* 318: the one figure of the game whose art no stage uses (P182BOMP) — the owner's toy-box joke */
+#define VL_ETEMON 0x61  /* Etemon, at the bar's piano (he "heard this tune in another game") */
+#define VL_PIG 0x13E    /* 318: the one figure of the game whose art no stage uses (P182BOMP) (a toy-box joke) */
 /* Their lines: entries of the bar's talk file (records_language + 0xE8) that the game itself has no use for (entries 81
  * and 82 are the letter "a" in the disc's English), replaced by tools/text_override/en.txt and pt.txt: the room's own
  * text, translated like every other port text. */
@@ -84,7 +84,7 @@ int dw3_velvet_pipimon_art(FieldstgActor *actor, u32 *ot, s32 x, s32 y); /* defi
 #define VL_SEPIK_INTRO 14
 #define VL_SEPIK_LINE 15
 /* Igor, the room's master (the story's, definitive_story.c): until his own art is drawn,
- * actor 109 (0x6D), WSTAG212's man in a black suit (P055GMGD; the owner's "NPC de terno"). Actor 53 (P068SARM) is the
+ * actor 109 (0x6D), WSTAG212's man in a black suit (P055GMGD). Actor 53 (P068SARM) is the
  * other suit of the game, brown with goggles. His line is the story's to pick (def_story_igor_line): the key at the
  * opening, then his reading of the party's DNA forms. */
 #define VL_IGOR 109
@@ -108,9 +108,8 @@ int dw3_velvet_pipimon_art(FieldstgActor *actor, u32 *ot, s32 x, s32 y); /* defi
                           * half that tall (fieldstg_actor_find_at), so the player may stand up to 24 pixels below him —
                           * the counter's own front row */
 #define VL_MERCHANT_Y 255
-#define VL_MERCHANT_DIR 1 /* facing down-left, the way the counter runs (the owner picked it on the screenshots) */
-#define VL_MENTOR_X 352 /* in front of the room's upper door (its cells x 336..376, y 168..184), the Time Room's way
-                         * (owner, 2026-11-18): the door is still reached from the left, along the strip at y 176 */
+#define VL_MERCHANT_DIR 1 /* facing down-left, the way the counter runs  */
+#define VL_MENTOR_X 352 /* in front of the room's upper door (its cells x 336..376, y 168..184), the Time Room's way: the door is still reached from the left, along the strip at y 176 */
 #define VL_MENTOR_Y 194
 #define VL_MENTOR_DIR 1 /* down-left: towards the room */
 #define VL_DEMON_X 126 /* upstairs, by the stairs' head */
@@ -120,7 +119,7 @@ int dw3_velvet_pipimon_art(FieldstgActor *actor, u32 *ot, s32 x, s32 y); /* defi
                          * player finds his back; he turns to talk) */
 #define VL_ETEMON_Y 284
 #define VL_ETEMON_DIR 5
-#define VL_SEPIK_X 86 /* upstairs in the corner left of the Demon Bell's keeper (owner, 2026-11-18): off the way from
+#define VL_SEPIK_X 86 /* upstairs in the corner left of the Demon Bell's keeper: off the way from
                        * the stairs' head to the upper floor (free ground x 72..100 there) */
 #define VL_SEPIK_Y 214
 #define VL_SEPIK_DIR 7 /* down-right: towards the stairs' head */
@@ -134,12 +133,12 @@ int dw3_velvet_pipimon_art(FieldstgActor *actor, u32 *ot, s32 x, s32 y); /* defi
 #define VL_SCENE_Y 340
 #define VL_SCENE_DIR 5      /* up-right, at him */
 #define VL_SCENE_IGOR_DIR 1 /* down-left, at the player */
-#define VL_PIG_X 226 /* on the room's floor, by the carpet's edge, left of the counter's front (owner: room for it) */
+#define VL_PIG_X 226 /* on the room's floor, by the carpet's edge, left of the counter's front (room for it) */
 #define VL_PIG_Y 296
 #define VL_PIG_DIR 0
 
 #define VL_BANDS 16 /* the backdrop's horizontal bands: 240 / 16 = one every 15 lines */
-#define VL_TOP_R 8  /* the room's blue at the top of the screen, from the owner's mock */
+#define VL_TOP_R 8  /* the room's blue at the top of the screen, from the mock-up */
 #define VL_TOP_G 14
 #define VL_TOP_B 60
 #define VL_BOTTOM_R 17 /* and at the bottom (a straight ramp between them) */
@@ -149,7 +148,7 @@ int dw3_velvet_pipimon_art(FieldstgActor *actor, u32 *ot, s32 x, s32 y); /* defi
 #define VL_SND_PORTAL 0x40004 /* the map warps' sound: the portal's */
 
 /* A portal: the inn's map and the centre of its foot, in pixels. Every layout has two maps (the second half of the game
- * repeats the first half's inns), so both are listed. Not const: the owner's test build moves a door with a poke. */
+ * repeats the first half's inns), so both are listed. Not const: a test build moves a door with a poke. */
 typedef struct VelvetDoor {
     s16 map;
     s16 x;
@@ -367,9 +366,9 @@ static FieldstgPlacedActor vl_pig = { NULL, vl_pig_talks, VL_PIG, 6, VL_PIG_X, V
 /* VRAM place 11 (the bar's 13th): the last patron's, free while they are away */
 static FieldstgPlacedActor vl_sepik = { NULL, vl_sepik_talks, VL_SEPIK, 11, VL_SEPIK_X, VL_SEPIK_Y, VL_SEPIK_DIR };
 /* VRAM place 8 (the bar's 10th patron's). Of the bar's places the room leaves free, 8, 9 and 10 draw him; 7, 12 and 13
- * show garbage for any figure here, the Sepikmon's too (tried 2026-11-17, .dumps/tasks/story/try). */
+ * show garbage for any figure here, the Sepikmon's too. */
 static FieldstgPlacedActor vl_igor = { NULL, vl_igor_talks, VL_IGOR, 8, VL_IGOR_X, VL_IGOR_Y, VL_IGOR_DIR };
-/* The room's guests and the level each comes in at (def_story_velvet_level, owner 2026-11-17: they arrive with the
+/* The room's guests and the level each comes in at (def_story_velvet_level, they arrive with the
  * story, the Sepikmon first and the Black Market last), with the code it calls the player over by on the first visit
  * after (0: never; the Bell's keeper would hand the Bell over by being talked to). */
 static const struct {
@@ -384,7 +383,7 @@ static const struct {
 };
 #define VL_GUESTS ((s32)(sizeof(vl_guests) / sizeof(vl_guests[0])))
 static FieldstgPlacedActor *vl_actors[VL_GUESTS + 1]; /* the guests of the room's level (vl_guests_now) */
-/* Igor alone, a scene (the owner's, 2026-11-17): the opening's dream, and Seiryu's showing of the room. */
+/* Igor alone, a scene: the opening's dream, and Seiryu's showing of the room. */
 static FieldstgPlacedActor *vl_dream_actors[] = { &vl_igor, NULL };
 
 static s32 vl_shop_greet;  /* which greeting the next visit begins with (they cycle) */
@@ -521,7 +520,7 @@ static void vl_quad(s32 layer_id, s32 depth, s32 x0, s32 y0, s32 x1, s32 y1, s32
 }
 
 /* The room's blue behind the map: the void the bar's tiles leave is the layer's own background, a band of colour per
- * VL_BANDS lines ramping from VL_TOP_* to VL_BOTTOM_*, as the owner's mock has it. */
+ * VL_BANDS lines ramping from VL_TOP_* to VL_BOTTOM_*, as the mock-up has it. */
 static void vl_backdrop(void) {
     s32 band_h = 240 / VL_BANDS;
     s32 i;
@@ -538,7 +537,7 @@ static void vl_backdrop(void) {
 }
 
 /* The blue of the hints' light at full power, and the pulse that breathes it (a triangle of VL_PULSE frames, from
- * VL_PULSE_LOW/256 up to full): slow, a light that is there more than one that calls. Owner, 2026-11-18: the first
+ * VL_PULSE_LOW/256 up to full): slow, a light that is there more than one that calls. The first
  * cut (26,62,150 breathing from 150/256) hid most ways in from a player not looking for them; the light is now half
  * as bright again at its peak and breathes deeper, so the eye catches it moving, still on the same scenery. */
 #define VL_HINT_R 40
@@ -554,7 +553,7 @@ static void vl_backdrop(void) {
 #define VL_GLOW_SIDES 16
 #define VL_SEAM_SPREAD 4 /* a crack's halo, pixels either side of its line */
 /* The aura: one wide, faint glow over a way in's whole light, so a crack or a pin a few pixels across still reads as a
- * place from across the room (owner, 2026-11-18: the way in should be easy to see for a player not looking for it). It
+ * place from across the room (the way in should be easy to see for a player not looking for it). It
  * is the hints' own blue, breathing with them, and nothing at its rim, so it lights the scenery rather than marks it. */
 #define VL_AURA_POWER 230
 #define VL_AURA_PAD 18 /* pixels past the light's own extent, each way */
@@ -1196,7 +1195,7 @@ void dw3_velvet_leave(s32 *map, s32 *x, s32 *y, s32 *dir) {
 }
 
 /* 1 when the room's map event (`type`, `param`) is closed while the room runs: the bar's side door, the one that in the
- * game goes back to the inn of Asuka City (the owner's "porta de cima fica fechada"). The bar's other door, at the
+ * game goes back to the inn of Asuka City (the top door stays shut). The bar's other door, at the
  * bottom of the room, is the room's way out (dw3_velvet_leave). */
 int dw3_velvet_event_closed(s32 type, s32 param) {
     if (def_time_warp_closed(type, param)) {

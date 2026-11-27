@@ -119,7 +119,7 @@ the device, the CFW and its version, and the resolution. Two facts make a report
 - the frame-rate line the game writes at exit: `port: window: N frames presented in X s (Y per second)` in
   `ports/dw3/logs/game.log` (this needs `LOGS` set to soft or heavy in the DEBUG group);
 - whether the **films** show a rectangle of wrong pixels in the top-right corner. That is the one known rendering defect
-  (see [the notes](https://github.com/al4xdev/digimon-world-3-definitive-edition/blob/main/docs/gpu/17-movie-artefact.md)); knowing which devices and
+  (`--renderer gles`; no cause is known); knowing which devices and
   drivers show it is worth more than a fix nobody can test.
 
 ## Known issues
@@ -154,7 +154,7 @@ cd digimon-world-3-definitive-edition
 |---|---|
 | [gascarcella/dw2003recomp](https://github.com/gascarcella/dw2003recomp) | the decompilation of the game's own C and the PC port; the base this repository forks |
 | [gascarcella/psxstack](https://github.com/gascarcella/psxstack) (fork used here: [al4xdev/dw3-psxstack](https://github.com/al4xdev/dw3-psxstack)) | the host runtime: arena, overlays, video, SPU, audio, input, memory cards, settings, the mods engine, the GPU backend, the crash report and the measurement switches |
-| [stenzek/duckstation](https://github.com/stenzek/duckstation) | studied, not linked: the VRAM-as-a-texture design, the batch key that became per-vertex state here, and the framebuffer-fetch strategy for the mask bit and semi-transparency. The notes in [`docs/gpu`](https://github.com/al4xdev/digimon-world-3-definitive-edition/tree/main/docs/gpu) record what was kept and what was rejected; the implementation is this project's own |
+| [stenzek/duckstation](https://github.com/stenzek/duckstation) | studied, not linked: the VRAM-as-a-texture design, the batch key that became per-vertex state here, and the framebuffer-fetch strategy for the mask bit and semi-transparency. |
 | [psx-spx](https://psx-spx.consoledev.net/) | the hardware reference: the SPU's voices, envelopes and reverb, the GPU's commands, the GTE's arithmetic |
 | PCSX-Redux | the oracle for the tests (SPU traces, replay runners), never a source of code |
 | [SDL2](https://github.com/libsdl-org/SDL) | the window, the gamepad, the audio device and the threads on the host |

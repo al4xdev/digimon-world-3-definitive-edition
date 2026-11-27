@@ -772,7 +772,7 @@ static void list_request(void) {
     fieldstg_stage.event_running = 1; /* the player stands still from the talk on */
 }
 
-/* ---- The agents' own DDNA quests (the owner's, 2026-11-17).
+/* ---- The agents' own DDNA quests.
  *
  * In the game an agent gives his quest only inside a window of the party's level sum (below it he is "too busy", over
  * it the party "doesn't need" his Digimon), so a strong party could never get it. Each talk with an agent rewrites his

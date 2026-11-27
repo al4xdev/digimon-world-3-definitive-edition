@@ -12,7 +12,7 @@ wfightts_script_name_0 = 0x800A67A8; // size:0x10
 wfightts_digimon_menu_cursors = 0x800A93B4; // size:0x8
 wfightts_digimon_menu_first_lines = 0x800A93BC; // size:0x8
 
-// Game code: names (DECISIONS "Naming conventions"). WFIGHTTS is the test battle: a main object and five menus.
+// Game code: names. WFIGHTTS is the test battle: a main object and five menus.
 wfightts_init_layers = 0x800A67B8; // type:func
 wfightts_load_images = 0x800A6A28; // type:func
 wfightts_main_update = 0x800A6B90; // type:func

@@ -1,7 +1,7 @@
 /* A player form fighting as an enemy (the DRI's simulators, the Blast's purification) plays animations authored for the
- * party's row of the arena, because the disc wrote them for a player. This is the owner's idea (2026-11-22): during
+ * party's row of the arena, because the disc wrote them for a player. During
  * one such animation, exchange the two sides' places, so the caster stands where the author put the player and the
- * party stands where the author put the enemy (the owner asked for it always on, 2026-11-22).
+ * party stands where the author put the enemy (always on).
  *
  * Evidence, the reason a form's animation lands on the wrong side:
  *  - fightstg_slots_reset_pos (fightstg_80086A00.c): the party's slot 0 is at z = -0x1400 - depth with rot.y 0x800

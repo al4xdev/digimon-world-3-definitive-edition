@@ -1,5 +1,5 @@
 /* The enemies' weaknesses and resistances, one row per species. First written by tools/gen_enemy_weaknesses.py;
- * hand-maintained since 2026-11-23 (the generator is LEGACY and no longer writes here). */
+ * hand-maintained (the generator is LEGACY and no longer writes here). */
 #include "definitive.h"
 
 const DefEnemyRow def_enemy_rows[] = {
@@ -194,7 +194,7 @@ const DefEnemyRow def_enemy_rows[] = {
     { 463, { 390, 390, 390, 60, 60, 60, 107 }, 0 }, /* Cardmon */
     { 464, { 390, 390, 390, 60, 60, 60, 111 }, 0 }, /* Cardmon */
     { 465, { 103, 60, 60, 300, 60, 60, 103 }, 0 }, /* Vemmon */
-    { 466, { 505, 505, 505, 505, 60, 60, 505 }, 0 }, /* Galacticmon, 2nd phase: resists Dark (owner, 2026-11-24) */
+    { 466, { 505, 505, 505, 505, 60, 60, 505 }, 0 }, /* Galacticmon, 2nd phase: resists Dark */
     { 467, { 505, 505, 505, 505, 60, 60, 60 }, 1 }, /* Galacticmon */
 };
 const int def_enemy_row_count = 193;
