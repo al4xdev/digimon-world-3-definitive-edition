@@ -179,7 +179,10 @@ are never loaded. Nothing else on the EU disc reads the choice; the title's New 
 (`gamestate_init_records`) in that language. A reset goes through CNTY_SEL again, so the language stays. The screen
 offers only the five EU languages, but the USA and Japanese text sets are on the disc too (`docs/DISC_LAYOUT.md`) and
 the EU code handles them: Japanese takes the opening's 0xE01 path, with the Japanese release's intro art (both
-play-tested to the memory card screen).
+play-tested to the memory card screen). The launcher does not offer `usa` (a `usa` setting loads as `english`): it is
+the EU English text over again, and the game names its save after the region (`memcard_set_file_name`: USA's
+`BASLUS-01436DMW3-USA`, every EU language's `BESLES-03936DMW3-EUR`), so a save made in one was missing in the other
+(issue #16).
 
 `tests/port/mods.py` boots each language (the opening's map and `records_language`, and the mod off still at the
 screen) and runs `new_game`'s route from the opening in French, whose new game has the French deck names.
