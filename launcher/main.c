@@ -2,6 +2,7 @@
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <limits.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -1366,6 +1367,15 @@ static void draw(void) {
 /* ---- launching ---- */
 static const char *game_extra[8]; /* more arguments for the game: the self-test's --max-frames */
 
+#if defined(DW3_TARGET_PC) && defined(__linux__)
+/* RecompLauncher's {data} (RECOMPLAUNCHER_DATA, an absolute path): on Linux it unpacks the AppImage and replaces usr/
+ * on every update, so beside the program is no place for a save. Set, it is the settings directory, over portable.txt. */
+static const char *recomp_data_dir(void) {
+    const char *d = getenv("RECOMPLAUNCHER_DATA");
+    return d && d[0] == '/' ? d : NULL;
+}
+#endif
+
 static void find_game_bin(char *out, size_t n) {
     const char *env_bin = getenv("DW3_GAME_BIN");
     if (env_bin && env_bin[0] && exe_ok(env_bin)) {
@@ -1425,6 +1435,14 @@ static void game_argv(const char *bin, const char **argv, int max) {
         argv[ac++] = "--renderer";
         argv[ac++] = fr;
     }
+#if defined(DW3_TARGET_PC) && defined(__linux__)
+    if (recomp_data_dir()) { /* the game's own RecompLauncher lookup would take the program's folder or ~/.local/share */
+        argv[ac++] = "--crash-dir";
+        argv[ac++] = "./crashes";
+        argv[ac++] = "--mods-dir";
+        argv[ac++] = "./mods";
+    }
+#endif
     for (int i = 0; game_extra[i] && ac < max - 1; i++) argv[ac++] = game_extra[i];
     argv[ac] = NULL;
 }
@@ -1674,6 +1692,13 @@ static void start_game(void) {
             close(sp[0]);
             snprintf(fd_str, sizeof(fd_str), "%d", sp[1]);
             setenv("DW3_STATUS_FD", fd_str, 1);
+#if defined(DW3_TARGET_PC) && defined(__linux__)
+            if (recomp_data_dir()) { /* the disc check's stamps and any other cache: {data}/cache */
+                char cache[1100];
+                snprintf(cache, sizeof(cache), "%s/cache", game_dir);
+                setenv("XDG_CACHE_HOME", cache, 1);
+            }
+#endif
             if (chdir(game_dir) != 0) _exit(126);
             if (c.logs == 2 && access("./probe.sh", R_OK) == 0) {
                 (void)system("sh ./probe.sh >/dev/null 2>&1 || true");
@@ -2388,6 +2413,14 @@ static void on_press(int code) {
  * the current directory nor the program's (an AppImage is read-only). */
 static int settings_dir_for(const char *exe, char *out, size_t n) {
     char p[1200];
+#ifdef __linux__
+    const char *data = recomp_data_dir();
+    if (data) {
+        mkdir(data, 0755); /* RecompLauncher makes it; a hand-made start may not have */
+        snprintf(out, n, "%s", data);
+        return 0;
+    }
+#endif
     snprintf(p, sizeof(p), "%s/portable.txt", exe);
     if (access(p, F_OK) == 0) {
         snprintf(out, n, "%s", exe);
@@ -2395,6 +2428,61 @@ static int settings_dir_for(const char *exe, char *out, size_t n) {
     }
     return plat_pref_dir(out, n);
 }
+
+#ifdef __linux__
+/* Copies what `from` holds into `to`, never over a file `to` has. Skips links, programs, files over 64 MB (a disc
+ * image), portable.txt, and in the program's own folder its mods/ (the release's). */
+static void copy_tree(const char *from, const char *to, int program_dir) {
+    DIR *d = opendir(from);
+    struct dirent *e;
+    mkdir(to, 0755);
+    while (d && (e = readdir(d))) {
+        char src[1400], dst[1400];
+        struct stat st;
+        if (!strcmp(e->d_name, ".") || !strcmp(e->d_name, "..") || !strcmp(e->d_name, "portable.txt")) continue;
+        snprintf(src, sizeof(src), "%s/%s", from, e->d_name);
+        snprintf(dst, sizeof(dst), "%s/%s", to, e->d_name);
+        if (lstat(src, &st) != 0) continue;
+        if (S_ISDIR(st.st_mode)) {
+            if (!(program_dir && !strcmp(e->d_name, "mods"))) copy_tree(src, dst, 0);
+            continue;
+        }
+        if (!S_ISREG(st.st_mode) || (st.st_mode & 0111) || st.st_size > 64L * 1024 * 1024 || access(dst, F_OK) == 0)
+            continue;
+        FILE *in = fopen(src, "rb"), *out = in ? fopen(dst, "wb") : NULL;
+        char buf[1 << 15];
+        size_t r;
+        int ok = in && out;
+        while (ok && (r = fread(buf, 1, sizeof(buf), in)) > 0) ok = fwrite(buf, 1, r, out) == r;
+        if (in) fclose(in);
+        if (out && fclose(out) != 0) ok = 0;
+        if (out && !ok) remove(dst); /* only the half-written copy */
+    }
+    if (d) closedir(d);
+}
+
+/* A player who played under RecompLauncher before {data} has their saves and settings where the rule above put them
+ * (beside the program with portable.txt, else ~/.local/share/dw2003). The first start with an empty {data} copies
+ * them in; the old files stay. */
+static void recomp_data_adopt(const char *exe, const char *data) {
+    char p[1200], old[1100];
+    snprintf(p, sizeof(p), "%s/tui.state", data);
+    if (access(p, F_OK) == 0) return;
+    snprintf(p, sizeof(p), "%s/card1.mcd", data);
+    if (access(p, F_OK) == 0) return;
+    snprintf(p, sizeof(p), "%s/portable.txt", exe);
+    int program_dir = access(p, F_OK) == 0;
+    const char *xdg = getenv("XDG_DATA_HOME"), *home = getenv("HOME");
+    if (program_dir) snprintf(old, sizeof(old), "%s", exe);
+    else if (xdg && xdg[0] == '/') snprintf(old, sizeof(old), "%s/dw2003", xdg); /* SDL_GetPrefPath's, without making it */
+    else if (home && home[0] == '/') snprintf(old, sizeof(old), "%s/.local/share/dw2003", home);
+    else return;
+    char a[PATH_MAX], b[PATH_MAX];
+    if (!realpath(old, a) || (realpath(data, b) && !strcmp(a, b))) return;
+    fprintf(stderr, "dw3-launcher: first start in %s: copying the saves and settings from %s\n", data, old);
+    copy_tree(old, data, program_dir);
+}
+#endif
 #endif
 
 /* ---- the self-test (--self-test DIR): the release packages run it, under Wine for Windows ---- */
@@ -2479,6 +2567,43 @@ static int self_test(const char *root) {
     write_text(p, "");
     check(settings_dir_for(exe, got, sizeof(got)) == 0 && !strcmp(got, exe),
           "settings directory: the launcher's own folder with portable.txt");
+#ifdef __linux__
+    {
+        char data[1200], cp[1300];
+        const char *rl_saved = getenv("RECOMPLAUNCHER_DATA");
+        char rl_keep[1200];
+        snprintf(rl_keep, sizeof(rl_keep), "%s", rl_saved ? rl_saved : "");
+        snprintf(data, sizeof(data), "%s/recompdata", root);
+        setenv("RECOMPLAUNCHER_DATA", data, 1);
+        check(settings_dir_for(exe, got, sizeof(got)) == 0 && !strcmp(got, data),
+              "settings directory: RecompLauncher's data folder, over portable.txt");
+        snprintf(cp, sizeof(cp), "%s/card1.mcd", data);
+        remove(cp); /* an earlier run's */
+        snprintf(cp, sizeof(cp), "%s/card1.mcd", exe);
+        write_text(cp, "old card");
+        snprintf(cp, sizeof(cp), "%s/mods", exe);
+        mkdir(cp, 0755);
+        recomp_data_adopt(exe, data);
+        snprintf(cp, sizeof(cp), "%s/card1.mcd", data);
+        char *t = read_text(cp);
+        snprintf(q, sizeof(q), "%s/portable.txt", data);
+        snprintf(what, sizeof(what), "%s/mods", data);
+        check(t && !strcmp(t, "old card") && access(q, F_OK) != 0 && access(what, F_OK) != 0,
+              "data folder: the first start copies the old card in (not portable.txt nor the release's mods)");
+        free(t);
+        snprintf(cp, sizeof(cp), "%s/card1.mcd", exe);
+        write_text(cp, "newer old card");
+        recomp_data_adopt(exe, data);
+        snprintf(cp, sizeof(cp), "%s/card1.mcd", data);
+        t = read_text(cp);
+        snprintf(q, sizeof(q), "%s/card1.mcd", exe);
+        check(t && !strcmp(t, "old card") && access(q, F_OK) == 0,
+              "data folder: a later start copies nothing over it, and the old card stays");
+        free(t);
+        if (rl_saved) setenv("RECOMPLAUNCHER_DATA", rl_keep, 1);
+        else unsetenv("RECOMPLAUNCHER_DATA");
+    }
+#endif
     check(update_is_newer("v0.8.2", "0.8.1") && !update_is_newer("v0.8.1", "0.8.1") && !update_is_newer("v0.8.0", "0.8.1") &&
               !update_is_newer("v0.8.2", "0.8.1-3-gabcdef1") && !update_is_newer("v0.8.2", "dev"),
           "update notice: a newer release is told; an equal, older or non-release build is not");
@@ -3026,6 +3151,9 @@ int main(int argc, char **argv) {
         fprintf(stderr, "dw3-launcher: no per-user settings directory (SDL_GetPrefPath failed)\n");
         return 3;
     }
+#ifdef __linux__
+    if (recomp_data_dir() && !self_test_dir) recomp_data_adopt(exe_dir, game_dir);
+#endif
 #else
     if (getenv("DW3_PORTMASTER") || getenv("CFW_NAME")) is_portmaster = 1;
     if (getenv("DW3_PC")) { is_pc = 1; is_portmaster = 0; }
