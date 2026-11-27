@@ -76,7 +76,7 @@ LEVEL_AT = [(40, 3), (200, 6), (500, 10), (1000, 14), (2500, 21), (5000, 27), (9
             (30000, 48), (60000, 50)]
 AMOUNT = [(40, 2), (200, 3), (500, 5), (1000, 6), (2500, 8), (5000, 12), (9500, 15), (15000, 20), (22000, 25),
           (30000, 30), (60000, 40)]
-# The commons' spread (measured in .dumps/tasks/forge/proto.py): a shop's pool widens up to
+# The commons' spread: a shop's pool widens up to
 # REACH_MAX exits while it has fewer than MIN_POOL commons; an item's candidates are within WINDOW levels of the nearest,
 # scored by the level gap plus SPREAD per earlier use in the shop; armour takes the second within SECOND points.
 MIN_POOL, REACH_MAX, WINDOW, SPREAD, SECOND = 3, 7, 8, 2, 2

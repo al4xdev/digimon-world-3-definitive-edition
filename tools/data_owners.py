@@ -48,7 +48,7 @@ ELF = ROOT / "build/main/SLES_039.36.elf"
 NM = ROOT / "tools/binutils/bin/mipsel-linux-gnu-nm"
 VRAM, ROM = 0x80010000, 0x800
 
-# Regions, from crt0 and the plan (docs/DISC_LAYOUT.md): .data, .sdata from _gp, .sbss, .bss.
+# Regions, from crt0 (docs/DISC_LAYOUT.md): .data, .sdata from _gp, .sbss, .bss.
 GP = 0x8005CB50
 REGIONS = [  # name, start, end
     ("data", 0x8003EDCC, GP),

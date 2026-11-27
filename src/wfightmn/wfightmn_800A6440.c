@@ -874,7 +874,7 @@ void wfightmn_battle_end(WfightmnMain *obj, WfightmnMainData *data) {
             break;
         case 2:
 #ifdef PC_PORT
-            /* The Gauntlet, Blast phase 2, the Time Room, the Oikawa's arc, the Extended Final Act: a lost
+            /* The Gauntlet, the purification, the Time Room, the Oikawa's arc, the Extended Final Act: a lost
              * simulation, purification, trial, Oikawa fight or scripted Dark Galacticmon defeat is no game over */
             if (def_dri_defeat() || def_purify_defeat() || def_time_defeat() || def_story_defeat() ||
                 def_finale_defeat()) {
@@ -1230,7 +1230,7 @@ void wfightmn_blast(WfightmnMain *obj, WfightmnMainData *data) {
 #endif
             member->blasted = 1;
 #ifdef PC_PORT
-            def_blast_started(id); /* Blast Gauge phase 1: the battle's end takes its price from this Digimon */
+            def_blast_started(id); /* Blast Gauge: the battle's end takes its price from this Digimon */
 #endif
 #ifdef PC_PORT
             /* No duration timer: the Blast and Chosen forms last until a KO, a switch or the battle's
@@ -1475,7 +1475,7 @@ void wfightmn_knockout(WfightmnMain *obj, WfightmnMainData *data) {
             fightstg_battle.state.current[1] = obj->msg_args[0];
 #ifdef PC_PORT
             def_dri_stage_enters(obj->msg_args[0]); /* a DRI simulation's next stage, its callout */
-            def_purify_stage_enters(obj->msg_args[0]); /* Blast phase 2: a purification's next dark form */
+            def_purify_stage_enters(obj->msg_args[0]); /* a purification's next dark form */
 #endif
             obj->base.substep++;
         }
@@ -1865,7 +1865,7 @@ void wfightmn_add_gauge(u8 side, s32 value) {
     s32 id = gamestate_data.funcs.get_party_member(fightstg_battle.state.current[0]);
 
 #ifdef PC_PORT
-    /* Blast Gauge phase 1: the definitive gauge fills with the party's offence (def_action_resolved) and only the
+    /* Blast Gauge: the definitive gauge fills with the party's offence (def_action_resolved) and only the
      * player sets it off (the battle menu's Blast): the damage taken neither fills it nor triggers it. */
     if (!def_blast_auto()) {
         return;

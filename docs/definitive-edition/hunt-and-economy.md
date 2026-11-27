@@ -244,7 +244,7 @@ enemy counters are untouched).
   outside the level-gap check: its cheap rings and gems ask Giga Crystal and Tera Prism because no region near it is
   low, and the player reaches it late. The recipes are a code table, so old saves are unaffected. Checks:
   `gen_recipes.py --check` and `tests/port/definitive_economy.py`.
-- The 27 base variants, by shop tier (from `tools/gen_equipment.py`'s proposal; original price in brackets):
+- The 27 base variants, by shop tier (from `tools/gen_equipment.py`; original price in brackets):
 
   | Tier | Shops (maps) | Speed | Elemental (head) | Tank |
   |---|---|---|---|---|

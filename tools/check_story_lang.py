@@ -50,7 +50,7 @@ PLATE = re.compile(r"<7>.*?<7>")
 NAME_WORDS = cp.NAME_WORDS
 EFFECT = re.compile(r"\s*(\[[^\]]+\])\s*$")
 # A word that takes the hero's gender in a line the hero says (Kaili mode: the hero is a girl). Warnings only: the
-# critics read the rest (a line said to the hero, a friend named).
+# rest (a line said to the hero, a friend named) takes reading.
 HERO_GENDER = {
     "fr": r"\b(prêt|prête|seul|seule|fatigué|fatiguée|désolé|désolée|sûr|sûre|content|contente|heureux|heureuse|"
           r"nerveux|nerveuse|surpris|surprise|perdu|perdue|ravi|ravie|inquiet|inquiète|fou|folle|venu|venue|allé|allée)\b",

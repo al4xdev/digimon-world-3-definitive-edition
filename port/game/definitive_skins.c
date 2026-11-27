@@ -42,7 +42,7 @@ typedef char skin_per_hunt[DEF_SKIN_COUNT == DEF_SUPER_COUNT ? 1 : -1];
 #define SAME ROT(0, 100, 100)
 #define TINT_MIN_SAT 0.45
 
-/* In unlock order: skin i + 1 is hunt i's (def_super_rares order). Owner-tunable. Names: $Skin1..$Skin13 ($Skin0 the
+/* In unlock order: skin i + 1 is hunt i's (def_super_rares order). Names: $Skin1..$Skin13 ($Skin0 the
  * own colours) in tools/text_override. Chosen on both heroes' field sprites (Kaili's pink hair and small outfit,
  * Junior's light blue cap and white clothes): every skin changes the hair, the part that shows most on Kaili, or the
  * clothes strongly enough to see; the hair hues keep away from pink (~345) and light blue (~215), which one hero

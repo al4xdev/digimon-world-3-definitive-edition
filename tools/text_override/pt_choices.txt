@@ -1,4 +1,4 @@
-# Portuguese choices — Fase 1 revisada em tom dublagem clássica 80/90 + mini-arcos de Asuka City (Q200..Q202).
+# Portuguese choices and the NPC mini-arcs of Asuka City (Q200..Q202).
 Q8 DMG200:0 1@1: Queixinho caído [teddy:+1] | <7><9><7>Caramba...<1>Então é isso aqui o<1>Digimon Online?!<2,2>
 Q8 DMG200:0 1@2: Pé atrás [ivy:+1] | <7><9><7>Bonito demais pra ser<1>verdade... Onde tá a<1>pegadinha?<2,2>
 Q8 DMG200:0 1@3: Sangue nos olhos [rep:+1] | <7><9><7>Finalmente! Digimon<1>Online! Vamos ver se<1>dá caldo mesmo!<2,2>
@@ -26,7 +26,7 @@ Q43 DMG200:22 5@3: Até a próxima [keith:+2] | <7><9><7>Então treina direito.<
 Q14 DMG200:23 3@1: Passou a mão? [rep:+1] | <7><9><7>Não foi você que<1>pegou a máscara do<1>Sepikmon?<2,2>
 Q14 DMG200:23 3@2: Na educação [lisa:+1] | <7><9><7>Com licença, ô rei...<1>A máscara do Sepikmon<1>caiu no teu bolso?<2,2>
 Q14 DMG200:23 3@3: Cara de suspeito [ivy:+1] | <7><9><7>A máscara sumiu e você<1>tá suando frio.<1>Coincidência?<2,2>
-# Fase 1: Mini-arcos de NPCs de Asuka City (TALK00, mapas 0x200 / 0x201 / 0x203)
+# Mini-arcos de NPCs de Asuka City (TALK00, mapas 0x200 / 0x201 / 0x203)
 Q200 TALK00 19@1: Dá a dica do Ginásio [rep:+1] | <7>Mika<7>Pô, Patamon, quando<1>você vira Angemon?!<2,2><3><7><9><7>Sem batalha e Ginásio<1>ele não evolui, moça!<2,2><3><7>Mika<7>Sério?! Então bora pro<1>Ginásio, Patamon!<1>Obrigada pela dica!<2,2>
 Q200 TALK00 19@2: Zoa o Patamon [rep:-1] | <7>Mika<7>Pô, Patamon, quando<1>você vira Angemon?!<2,2><3><7><9><7>Esse pão de queijo<1>voador? Vira Angemon<1>nunca!<2,2><3><7>Mika<7>Ei! Não chama meu<1>Patamon assim! Ainda<1>vou provar seu valor!<2,2>
 Q200 TALK00 19@3: Pede paciência [teddy:+1] | <7>Mika<7>Pô, Patamon, quando<1>você vira Angemon?!<2,2><3><7><9><7>Pega leve com o bicho!<1>No aperto ele brilha!<2,2><3><7>Mika<7>É verdade... desculpa,<1>Patamon! Vamos no seu<1>ritmo, parceiro!<2,2>
@@ -361,7 +361,7 @@ Q39 DMG900:5 7@1: Ambição | <7><9><7>Pode deixar.<2,2><3>Vou ser o World Champ
 Q39 DMG900:5 7@2: Humildade: só o começo | <7><9><7>Vou dar o meu melhor.<1>E vou continuar<1>aprendendo.<2,2><3>O título é só o<1>começo.<2,2>
 Q39 DMG900:5 7@3: Agridoce: sem mais perdas | <7><9><7>Vou ser forte. Forte<1>o bastante pra que<1>ninguém se perca mais.<2,2>
 
-# Fase 2: Mini-arcos de NPCs de Seiryu City (TALK01, mapas 0x22E / 0x22F / 0x230)
+# Mini-arcos de NPCs de Seiryu City (TALK01, mapas 0x22E / 0x22F / 0x230)
 Q208 TALK01 10@1: Procura na outra torre [rep:+1] | <7>Maria Chorona<7>Buáá! Perdi a Elle!<1>O que eu faço agora?!<2,2><3><7><9><7>Calma! Procura lá na<1>torre das lojas!<2,2><3><7>Maria Chorona<7>Na torre das lojas?!<1>Snif... obrigada! Vou<1>olhar por lá agora!<2,2>
 Q208 TALK01 10@2: Para de chorar, ué [keith:+1] | <7>Maria Chorona<7>Buáá! Perdi a Elle!<1>O que eu faço agora?!<2,2><3><7><9><7>Chorar aqui não vai<1>trazer ela, moça!<2,2><3><7>Maria Chorona<7>Snif... tá bom, vou<1>respirar fundo e ir<1>procurar ela sozinha!<2,2>
 Q208 TALK01 10@3: Come algo antes [teddy:+1] | <7>Maria Chorona<7>Buáá! Perdi a Elle!<1>O que eu faço agora?!<2,2><3><7><9><7>Pega um salgado ali e<1>esfria a cabeça.<2,2><3><7>Maria Chorona<7>Snif... um lanche até<1>que ajuda! Depois eu<1>procuro a Elle!<2,2>
@@ -380,7 +380,7 @@ Q212 TALK01 78@3: Competitiva assim? [keith:+1] | <7>Sra. Olivia<7>Ai, por que e
 Q213 TALK01 12@1: Descansa um pouco! [teddy:+1] | <7>Agumon<7>Ufa... acabei o treino<1>de hoje. Tô acabado.<2,2><3><7><9><7>Merece um descanso,<1>rapaz! Toma uma água!<2,2><3><7>Agumon<7>Valeu! Vou recuperar o<1>fôlego pra voltar mais<1>forte amanhã!<2,2>
 Q213 TALK01 12@2: Treinou pouco ainda! [keith:+1] | <7>Agumon<7>Ufa... acabei o treino<1>de hoje. Tô acabado.<2,2><3><7><9><7>Já cansou? Assim não<1>aguenta dois rounds!<2,2><3><7>Agumon<7>Grrr! Pegou pesado!<1>Beleza, vou fazer mais<1>cem abdominais agora!<2,2>
 Q213 TALK01 12@3: Onde fica o Líder? [rep:+1] | <7>Agumon<7>Ufa... acabei o treino<1>de hoje. Tô acabado.<2,2><3><7><9><7>Legal, mas cadê o<1>Líder de Seiryu?!<2,2><3><7>Agumon<7>Ele fica lá na Torre<1>de Seiryu, mas hoje<1>ninguém viu ele lá!<2,2>
-# Fase 3: Mini-arcos de NPCs de Suzaku City (TALK01, mapas 0x23E / 0x240)
+# Mini-arcos de NPCs de Suzaku City (TALK01, mapas 0x23E / 0x240)
 Q214 TALK01 112@1: Esse cara é herói? [rep:+1] | <7>Lena<7>Soube?! O famoso<1>Lucky Mouse voltou!<2,2><3><7><9><7>Lucky Mouse? Ele é<1>tipo um justiceiro?<2,2><3><7>Lena<7>Uns dizem que sim,<1>outros que é encrenca.<1>Fica de olho aberto!<2,2>
 Q214 TALK01 112@2: Cheiro de problema [ivy:+1] | <7>Lena<7>Soube?! O famoso<1>Lucky Mouse voltou!<2,2><3><7><9><7>Hacker sumido voltando<1>do nada? Mau sinal.<2,2><3><7>Lena<7>Pois é! Também acho<1>que vem tempestade por<1>aí... toma cuidado!<2,2>
 Q214 TALK01 112@3: Nunca ouvi falar [teddy:+1] | <7>Lena<7>Soube?! O famoso<1>Lucky Mouse voltou!<2,2><3><7><9><7>Quem?! Nunca nem ouvi<1>falar desse rato!<2,2><3><7>Lena<7>Nossa, sério?! Ele é o<1>hacker mais famoso da<1>rede! Logo você vê!<2,2>
@@ -393,7 +393,7 @@ Q216 TALK01 147@3: Abre caminho logo [keith:+1] | <7>Renamon<7>Só Tamers fortes
 Q217 TALK01 151@1: Quero entrar no clube! [teddy:+1] | <7>Patamon<7>A Líder não é fofa?!<1>Entrei pro fã-clube!<2,2><3><7><9><7>Haha, sobrou vaga?<1>Quero carteirinha!<2,2><3><7>Patamon<7>Eba!! Bem-vindo ao<1>clube! Agora temos que<1>torcer juntos por ela!<2,2>
 Q217 TALK01 151@2: Ela parece perigosa [ivy:+1] | <7>Patamon<7>A Líder não é fofa?!<1>Entrei pro fã-clube!<2,2><3><7><9><7>Fofa? Tem cara de quem<1>não perdoa na arena!<2,2><3><7>Patamon<7>É fofa E forte! Esse é<1>o motivo do fã-clube<1>ser tão grande!<2,2>
 Q217 TALK01 151@3: Faz uma coreografia! [rep:+1] | <7>Patamon<7>A Líder não é fofa?!<1>Entrei pro fã-clube!<2,2><3><7><9><7>Pra brilhar no clube<1>tem que ter dancinha!<2,2><3><7>Patamon<7>Genial!! Vou ensaiar<1>uma dancinha voando<1>agora mesmo!<2,2>
-# Fase 4: Mini-arcos de NPCs de Byakko City (TALK01, mapas 0x25D / 0x25E)
+# Mini-arcos de NPCs de Byakko City (TALK01, mapas 0x25D / 0x25E)
 Q218 TALK01 327@1: Acabou o sufoco! [rep:+1] | <7>Maya<7>Byakko voltou! Chega<1>de correr no deserto!<2,2><3><7><9><7>Relaxa, o pior já<1>passou por aqui!<2,2><3><7>Maya<7>Que alívio ouvir isso!<1>Agora dá pra curtir a<1>cidade em paz!<2,2>
 Q218 TALK01 327@2: Areia até no tênis! [teddy:+1] | <7>Maya<7>Byakko voltou! Chega<1>de correr no deserto!<2,2><3><7><9><7>Nem me fala! Tô com<1>areia até na meia!<2,2><3><7>Maya<7>Haha, eu também! Nunca<1>mais quero ver uma<1>duna na minha frente!<2,2>
 Q218 TALK01 327@3: Fica alerta [ivy:+1] | <7>Maya<7>Byakko voltou! Chega<1>de correr no deserto!<2,2><3><7><9><7>Aproveita, mas fica<1>esperta com a A.o.A.<2,2><3><7>Maya<7>Pode deixar! Se eles<1>derem as caras aqui,<1>eu aviso na hora!<2,2>
@@ -406,14 +406,14 @@ Q226 TALK01 189@3: Vou virar sucata! [keith:+1,rep:+1] | <7>Aluno Tony<7>Quase a
 Q227 TALK01 190@1: Ele segurou a barra! [rep:+1] | <7>Aiko Representante<7>O Líder de Byakko é<1>incrível! Retomamos<1>a cidade!<2,2><3><7><9><7>O cara segurou firme<1>quando apertou!<2,2><3><7>Aiko Representante<7>Demais! Com líderes<1>assim, a cidade volta<1>ao normal rapidinho!<2,2>
 Q227 TALK01 190@2: Falta saber o plano [lisa:+1] | <7>Aiko Representante<7>O Líder de Byakko é<1>incrível! Retomamos<1>a cidade!<2,2><3><7><9><7>Ainda precisamos saber<1>o plano real da A.o.A.<2,2><3><7>Aiko Representante<7>Bem lembrado... não<1>podemos baixar a guarda<1>antes de descobrir.<2,2>
 Q227 TALK01 190@3: Eu também ajudei! [keith:+1] | <7>Aiko Representante<7>O Líder de Byakko é<1>incrível! Retomamos<1>a cidade!<2,2><3><7><9><7>Ei, eu também ralei<1>pra limpar isso aqui!<2,2><3><7>Aiko Representante<7>Haha, desculpa! Você<1>também mandou super<1>bem! Obrigada mesmo!<2,2>
-# Fase 5: Mini-arcos de NPCs de Genbu City (TALK01, mapa 0x26F)
+# Mini-arcos de NPCs de Genbu City (TALK01, mapa 0x26F)
 Q229 TALK01 247@1: Ainda bem! [teddy:+1] | <7>Guarda DO<7>Fortaleza de Genbu!<1>Aqui a A.o.A não<1>entra nunca!<2,2><3><7><9><7>Ufa! Um lugar onde<1>dá pra respirar!<2,2><3><7>Guarda DO<7>Pode descansar sem<1>medo! Nossos muros<1>aguentam qualquer uma!<2,2>
 Q229 TALK01 247@2: Não confie demais [lisa:+1,rep:+1] | <7>Guarda DO<7>Fortaleza de Genbu!<1>Aqui a A.o.A não<1>entra nunca!<2,2><3><7><9><7>Byakko achava o mesmo.<1>Redobrem a vigília.<2,2><3><7>Guarda DO<7>Hmm... ponto válido.<1>Vou avisar a patrulha<1>pra redobrar o olho!<2,2>
 Q229 TALK01 247@3: Se vierem, eu encaro [keith:+1] | <7>Guarda DO<7>Fortaleza de Genbu!<1>Aqui a A.o.A não<1>entra nunca!<2,2><3><7><9><7>Se aparecerem aqui,<1>pode chamar que eu<1>resolvo!<2,2><3><7>Guarda DO<7>Haha, gostei do gás!<1>Com reforço assim,<1>ninguém passa mesmo!<2,2>
 Q230 TALK01 261@1: A gente vai virar! [rep:+1] | <7>Guarda DO<7>Levaram o Juggernaut!<1>Não há mais o que<1>fazer, há?<2,2><3><7><9><7>Ainda não acabou!<1>Eu vou impedir eles!<2,2><3><7>Guarda DO<7>Sério?! Então não<1>desisto também! Vai<1>com tudo, Tamer!<2,2>
 Q230 TALK01 261@2: Firmeza, guarda! [ivy:+1] | <7>Guarda DO<7>Levaram o Juggernaut!<1>Não há mais o que<1>fazer, há?<2,2><3><7><9><7>Cabeça erguida!<1>Desistir agora só<1>ajuda a A.o.A!<2,2><3><7>Guarda DO<7>Tem razão... desculpa<1>o desânimo! Vou manter<1>meu posto firme!<2,2>
 Q230 TALK01 261@3: Cadê o Líder Genbu? [lisa:+1] | <7>Guarda DO<7>Levaram o Juggernaut!<1>Não há mais o que<1>fazer, há?<2,2><3><7><9><7>Foca no plano! O que<1>o Líder Genbu disse?<2,2><3><7>Guarda DO<7>Ele mandou proteger a<1>cidade e esperar pelo<1>contra-ataque!<2,2>
-# Fase 6: Mini-arcos de Amaterasu City (TALK03, mapas 0x270 / 0x271, prog 38 -> 43 pós-game)
+# Mini-arcos de Amaterasu City (TALK03, mapas 0x270 / 0x271, prog 38 -> 43 pós-game)
 Q231 TALK03 194@1: Quase me mata! [teddy:+1] | <7>Jim Mentiroso<7>Olha a A.o.A aí!!<2,2><3>...Pegadinha do<1>malandro!<2,2><3><7><9><7>Pô, Jim! Depois de<1>tudo, quer me matar<1>do coração?!<2,2><3><7>Jim Mentiroso<7>Hahahaha! Foi mal!<1>Sua cara de susto foi<1>impagável demais!<2,2>
 Q231 TALK03 194@2: Piada sem graça [lisa:+1] | <7>Jim Mentiroso<7>Olha a A.o.A aí!!<2,2><3>...Pegadinha do<1>malandro!<2,2><3><7><9><7>Cedo demais pra essa<1>piada, espertinho.<2,2><3><7>Jim Mentiroso<7>Ih, peguei pesado...<1>Desculpa! Prometo que<1>essa foi a última!<2,2>
 Q231 TALK03 194@3: Se vierem, eu encaro [keith:+1,rep:+1] | <7>Jim Mentiroso<7>Olha a A.o.A aí!!<2,2><3>...Pegadinha do<1>malandro!<2,2><3><7><9><7>Se aparecerem mesmo,<1>eu derrubo de novo!<2,2><3><7>Jim Mentiroso<7>Uau, nem tremeu! Com<1>você aqui não dá nem<1>pra assustar ninguém!<2,2>

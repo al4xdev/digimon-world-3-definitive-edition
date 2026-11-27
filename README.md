@@ -455,7 +455,7 @@ This is built on the [Digimon World 2003 decompilation](https://github.com/gasca
 which are the upstream project's work: every game file rebuilds byte-identical from matching C. This fork adds the
 handheld path and the Definitive Edition.
 
-- **How the Definitive Edition works**, every rule, number, file and design decision:
+- **How the Definitive Edition works**, every rule, number and file:
   [`docs/definitive-edition/`](docs/definitive-edition/README.md).
 - **The decompilation and the port**, formats, performance, the GPU work: [`docs/`](docs/README.md).
 

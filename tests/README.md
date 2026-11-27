@@ -124,7 +124,7 @@ division by zero the R3000A does not trap on) answers `trap` instead of a return
 
 `tests/replay/replay.py run tests/replay/scripts/<name>.json [--record] [--repeat 2] [--bios retail] [--interpreter]
 [--speed S] [--iso CUE] [-v]` runs one script; `replay.py check [--interpreter] [--iso CUE]` runs every script that has an
-expected file (what `scripts/test.sh` calls). `--iso` boots another image than `iso/dw2003.cue` (the holdout validation's). The runner is psxstack's (`psxstack/tools/replay/emulator.py` drives PCSX-Redux, its `run.lua` is the step engine in the emulator;
+expected file (what `scripts/test.sh` calls). `--iso` boots another image than `iso/dw2003.cue`. The runner is psxstack's (`psxstack/tools/replay/emulator.py` drives PCSX-Redux, its `run.lua` is the step engine in the emulator;
 `tests/replay/replay.py` configures them and `tests/replay/probes.lua` reads this game's state: `psxstack/docs/GAME_CONTRACT.md` "6. Tests"). The emulator runs unthrottled (PCSX-Redux's `spu.Speed` = 0, set by `run.lua` from
 `PSXSTACK_REPLAY_SPEED`; `--speed 1` is real time): about 500 game frames per wall second on the default dynarec core, 250 on
 `-interpreter`. The speed paces the host only: new_game's record is identical at speed 1 and 0.
@@ -210,7 +210,7 @@ every card costs more than the 2 BIT left: nothing bought). Tier-1 overlays reac
 FIELDSTG, STPLNMET, FIGHTSTG (+ tier-2 WFIGHTMN), STFGTREP, STGMCARD, STITSHOP, STGDGLAB, STSTATUS, STCRDABM, STCRDDEK,
 STCRDSHP (13 of 19). Coverage of the tour (`tools/coverage.py run --replay first_battle_save`, functions run / total):
 STGDGLAB 19/71, STSTATUS 22/123, STCRDABM 25/29, STCRDDEK 17/55, STCRDSHP 33/45 (with the FAKE match `stcrdshp_update_buy`;
-the holdout `stcrdshp_run_booster` needs a booster pack, which money cannot buy here); the script as a whole runs 1,025 of
+`stcrdshp_run_booster` needs a booster pack, which money cannot buy here); the script as a whole runs 1,025 of
 3,608 game functions. Not reached:
 - **STAGSLCT, SOUNDTST, SHOCKTST, WFIGHTTS: not reachable by pad input.** The only maps that load STAGSLCT (0x15xx) are set by
   STAGSLCT itself, SOUNDTST, SHOCKTST and CARDGAME (`get_map() & 0xF ? 0x1500 : field_map`, a match started from STAGSLCT's
@@ -338,10 +338,3 @@ overlay is mostly UI (object update/draw/run, windows, cursors) that the replays
 STGDGLAB 20/71, STSTATUS 34/123 in the union. Tier-1 overlays run by the replays: 14 of 19 (not CARDGAME, STDGNAME,
 STAGSLCT, SOUNDTST, SHOCKTST); tier 2: WFIGHTMN and 15 of 293 WSTAG files, not WFIGHTTS. FAKE matches run: see
 `build/coverage/report.md`.
-
-## Holdout validation (retired)
-
-`tests/holdouts/run.sh` replayed a `-DNON_MATCHING` PS1 image through the layer-2 scripts to validate the holdouts' WIP
-C (the code the port compiled for them). Since #55 there are no holdouts, and `tools/hacks.py --check` keeps any new
-`INCLUDE_ASM`/`NON_MATCHING` out of game code, so the script was removed; it is in the history (`git show
-26bace0:tests/holdouts/run.py`) should a function ever have to go back to asm.

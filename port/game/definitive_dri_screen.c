@@ -3,16 +3,14 @@
  * A DRI Agent (def_dri_agents; FIELDSTG's talk hook tells def_dri_talk) talks as in the game until his DDNA quest is
  * done (one per agent for the whole game). From then on his talk is the network's own: a line of his and three answers,
  * the simulations, his talk (the game's, run again from the hook with the network out of the way) or leaving. Nothing
- * waits for a talk to end: the list opens from the question only. (It used to open once the field had been idle a while
- * after his talk; walking off and stopping later then opened it out of nowhere.) The list of simulations is in the
- * Guardromon network's layout: the agent's own challenges (DefDriAgent.challenges, two each: no agent holds them all),
- * each line by its Rookie and its Mega, its best stage (or locked), and for the one under the cursor its four stages (level,
- * name, reward) and what unlocking it takes. The confirm button chooses once and acts on a second press:
- * a locked challenge is unlocked (its materials handed over), an open one shows its Tamer's page (def_dri_rival: the
- * classic Tamer whose battle data it replays, and their line), whose confirm starts it.
- * The screen is a field overlay run from
- * FIELDSTG's idle step (def_dri_frame, next to dw3_travel_frame); while it is up fieldstg_stage.event_running stays set,
- * which freezes the player, the map's events and the encounters.
+ * waits for a talk to end: the list opens from the question only. The list of simulations is in the Guardromon
+ * network's layout: the agent's own challenges (DefDriAgent.challenges, two each: no agent holds them all), each line
+ * by its Rookie and its Mega, its best stage (or locked), and for the one under the cursor its four stages (level,
+ * name, reward) and what unlocking it takes. The confirm button chooses once and acts on a second press: a locked
+ * challenge is unlocked (its materials handed over), an open one shows its Tamer's page (def_dri_rival: the classic
+ * Tamer whose battle data it replays, and their line), whose confirm starts it. The screen is a field overlay run from
+ * FIELDSTG's idle step (def_dri_frame, next to dw3_travel_frame); while it is up fieldstg_stage.event_running stays
+ * set, which freezes the player, the map's events and the encounters.
  *
  * Starting a simulation sets up an existing boss battle (fieldstg_start_battle: its kind, immunities and, on a win, its
  * XP and Bits) and then gives records_state the line's first three stages as its three enemies, on the boss battles'

@@ -27,5 +27,5 @@ the reference tests have to be run by you. -->
 - [ ] No game data: no disc image, extracted files, `asm/`, assets, BIOS or SDK files
 - [ ] Anything borrowed from another project is recorded in `docs/THIRD_PARTY.md`
 - [ ] New names follow the conventions (`docs/CONTRIBUTING.md` "Decompilation") and are in `config/*symbol*.txt`
-- [ ] Docs updated if behaviour or a decision changed
+- [ ] Docs updated if behaviour changed
 - [ ] AI-generated parts, if any, are said here and I have checked them

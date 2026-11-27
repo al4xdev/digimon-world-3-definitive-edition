@@ -985,7 +985,8 @@ void fightstg_item_update(FightstgItem *obj, FightstgMessage **data) {
                             }
                         }
                     }
-                    /* Blast Gauge phase 1: the DV Plug is the cursed catalyst, one use sets the Blast off (the Blast, not the Plug, costs TP) */
+                    /* Blast Gauge: the DV Plug is the cursed catalyst, one use sets the Blast off (the Blast, not the
+                     * Plug, costs TP) */
                     blasted = def_blast_plug();
                     if (revived_any || blasted) {
                         *data = fightstg_message_create();
@@ -3805,7 +3806,7 @@ blast_bar_done:
 }
 
 #ifdef PC_PORT
-/* The Tech / Item sheet (battle HUD part 3), defined with the Tech screen: the HUD draws it, the menus drive it. */
+/* The Tech / Item sheet of the battle HUD, defined with the Tech screen: the HUD draws it, the menus drive it. */
 static void fightstg_sheet_tick(MessageWindow *icon);
 static void fightstg_sheet_begin(s32 action, s32 ox, s32 oy, s32 plate_x, s32 plate_w);
 static void fightstg_sheet_retab(s32 action, s32 ox, s32 oy, s32 plate_x, s32 plate_w);
@@ -5228,14 +5229,12 @@ typedef struct FightstgBattleMenu {
 #define FIGHTSTG_BMENU_TAG 3
 #define FIGHTSTG_BMENU_INSPECT 6
 #define FIGHTSTG_BMENU_BLINK 8 /* ticks of each look of the full Blast tab */
-#define FIGHTSTG_BMENU_WIDE_SHIFT 110 /* % of the widescreen pad the block follows in widescreen: the owner's
-                                       * walk of the range on screen, and 110 is the minimum where the words clear the
-                                       * seam between the 4:3 buffer and the wide canvas (100..109 leave the band over
-                                       * the commands) */
+#define FIGHTSTG_BMENU_WIDE_SHIFT 110 /* % of the widescreen pad the block follows in widescreen: 110 is the minimum
+                                       * where the words clear the seam between the 4:3 buffer and the wide canvas
+                                       * (100..109 leave the band over the commands) */
 
-/* The places (4:3 screen), one compact block in the left middle (round 6: the v3 cut's placement, which he
- * prefers to the split layout's one along the bottom edge): the shoulders' two rows on top, L2/L1 at the block's left
- * and R2/R1 at its right, then the face diamond below them on a dark rhombus of its own, so it reads as the pad's
+/* The places (4:3 screen), one compact block in the left middle: the shoulders' two rows on top, L2/L1 at the block's
+ * left and R2/R1 at its right, then the face diamond below them on a dark rhombus of its own, so it reads as the pad's
  * diamond and not as a list. The block spans x 6-157 and y 136-225: the arena's middle (the enemy) and the fighter on
  * the right stay clear, and the right middle, which the portrait window used, holds the Inspect panel and the
  * refusal's box. In each tab the chip is on the outside (where the button is on the pad) and the word inside; in the
@@ -5653,7 +5652,7 @@ static void fightstg_battle_menu_show(FightstgBattleMenu *obj, FightstgBattleMen
         fightstg_battle_menu_plate(x + obj->plate_x[i], y - 1, obj->plate_w[i], h + 2, FIGHTSTG_BMENU_SKEW, -1, 70, 215, 245);
     }
     if (i == FIGHTSTG_BMENU_BLAST) {
-        /* the tab itself is the gauge (round 6: a bar of its own was one more thing to read). The tab is a
+        /* the tab itself is the gauge (no bar of its own to read). The tab is a
          * dark slot filled from its left end as the gauge charges, in the Blast's cyan (never Fight's warm colour, never
          * a refusal's red), so the fill grows towards the button it stands for; full, it is white-cyan, and glow 3's
          * pulse and glow 4's bright plate still mark ready and tempting. Queued after the word and the chip and before
@@ -5675,7 +5674,7 @@ static void fightstg_battle_menu_show(FightstgBattleMenu *obj, FightstgBattleMen
         }
     }
     /* the dark plate: darkens the arena so the word reads over any stage */
-    /* Three weights by PLACE, not by action (round 6): the bottom and left arms carry the diamond's own
+    /* Three weights by PLACE, not by action: the bottom and left arms carry the diamond's own
      * black, the right arm sits between that and the shoulders' veil, the top arm keeps the plain veil. Swapping Fight
      * and Tag between arms keeps the weights where they are. */
     {
@@ -5687,7 +5686,7 @@ static void fightstg_battle_menu_show(FightstgBattleMenu *obj, FightstgBattleMen
             g = 195;
             b = 150;
         } else if (spot == 3) { /* east (right): between the shoulders' veil (90,95,65) and the diamond's black
-                                 * (200,195,150), a touch under halfway (145 was too strong, 118 too weak) */
+                                 * (200,195,150), a touch under halfway */
             r = 131;
             g = 133;
             b = 97;
@@ -5733,9 +5732,9 @@ static const u8 fightstg_inspect_empty[1] = { 0 };
 /* The INFO panel's second part: what kind of enemy it is. Under the title a
  * traits row: one picture per trait (SHIFT's two halves, the guard's shield, the speed's chevrons, the cracked block
  * of a lowered Defense), and at its right end the next turns as a queue of chips (red diamond the enemy, blue disc
- * us: two diamonds before the disc is the old "Enemy x2"), for every enemy, so it needs no legend; under the grid the
+ * us: two diamonds before the disc is "Enemy x2"), for every enemy, so it needs no legend; under the grid the
  * legend, one entry per trait with the same picture and the row's own values. The pictures are new on purpose,
- * drawn as flat pixels on the panel's layer, so none reads as an element (part 1's critic). The panel grows down
+ * drawn as flat pixels on the panel's layer, so none reads as an element. The panel grows down
  * over the player's Digimon, inside the 240 lines with the most traits a row has (6 legend lines). */
 #define FIGHTSTG_INSPECT_PICT 11       /* a picture's side */
 #define FIGHTSTG_INSPECT_TRAIT_STEP 15 /* picture to picture on the traits row */
@@ -6665,8 +6664,8 @@ void fightstg_battle_menu_update(FightstgBattleMenu *obj, FightstgBattleMenuData
             } else if (i == FIGHTSTG_BMENU_INSPECT && fightstg_info.blip > 0) {
                 glow = 1; /* the panel leaves the tab, or comes back into it */
             } else if (i == FIGHTSTG_BMENU_BLAST && !obj->grey[i] && obj->press < 0 && obj->tempt) {
-                /* the temptation: the tab stays lit (bright cyan, dark word) and shakes in bursts, 8 ticks in 24 (critic, round 5:
-                 * any more and it nears the meter above and Tech below) */
+                /* the temptation: the tab stays lit (bright cyan, dark word) and shakes in bursts, 8 ticks in 24 (any
+                 * more and it nears the meter above and Tech below) */
                 glow = 4;
                 if (obj->age % FIGHTSTG_TEMPT_SHAKE_EVERY < FIGHTSTG_TEMPT_SHAKE) {
                     dx += (obj->age & 1) ? 2 : -2; /* sideways only: a vertical pixel blurs the word at 320 */
@@ -7526,7 +7525,7 @@ typedef struct FightstgItemMenuData {
     /* 0x14 */ MessageWindow *description; /* the item's description */
     /* 0x18 */ MessageWindow *item_windows[7]; /* the page's items */
 #ifdef PC_PORT
-    /* The sheet (battle HUD part 3): each row's count. NULL in the original's screen. */
+    /* The battle HUD's sheet: each row's count. NULL in the original's screen. */
     MessageWindow *row_counts[7];
 #endif
 } FightstgItemMenuData; /* size 0x34 */
@@ -7534,7 +7533,7 @@ typedef struct FightstgItemMenuData {
 extern FightstgCursorParams fightstg_item_menu_cursor;
 
 #ifdef PC_PORT
-static s32 fightstg_sheet_on(void); /* the sheet (battle HUD part 3), after the Tech screen's code */
+static s32 fightstg_sheet_on(void); /* the battle HUD's sheet, after the Tech screen's code */
 void fightstg_info_sheet_input(u32 pad);
 static void fightstg_sheet_turn(s32 dir);
 static void fightstg_item_sheet_draw(FightstgItemMenu *obj, FightstgItemMenuData *data);
@@ -7842,7 +7841,7 @@ typedef struct FightstgTechMenuData {
     MessageWindow *elem_icons[6];
     MessageWindow *elem_icon;
     MessageWindow *elem_name;
-    /* The sheet (battle HUD part 3): each row's cost. NULL in the original's screen. */
+    /* The battle HUD's sheet: each row's cost. NULL in the original's screen. */
     MessageWindow *row_costs[6];
 #endif
 } FightstgTechMenuData; /* size 0x40 */

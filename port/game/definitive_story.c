@@ -1184,7 +1184,7 @@ typedef struct DefNpcArc {
 /* Registered NPC mini-arcs: when progress is in [min_progress, max_progress] and the player hasn't seen `stage`,
  * a floating thought-bubble indicator appears over the NPC's head in FIELDSTG. */
 static const DefNpcArc npc_arcs[] = {
-    /* Phase 1 (Asuka City) — aligned to exact wstag200/202/210 progress ranges */
+    /* Asuka City: wstag200/202/210 progress ranges */
     { 0, 0x200, 46, 0, 4, 0 },     /* Mika — Stage 0 (prog 4: TALK00 19, Q200) */
     { 0, 0x200, 46, 12, 12, 1 },   /* Mika — Stage 1 (prog 12: TALK00 623) */
     { 0, 0x200, 46, 14, 14, 2 },   /* Mika — Stage 2 (prog 14: TALK00 624) */
@@ -1211,7 +1211,7 @@ static const DefNpcArc npc_arcs[] = {
     { 8, 0x203, 52, 0, 3, 0 },     /* Digimon Fan Mary — Stage 0 (prog 2: TALK00 239, Q207) */
     { 8, 0x203, 52, 4, 4, 1 },     /* Digimon Fan Mary — Stage 1 (prog 4: TALK00 330) */
     { 8, 0x203, 52, 5, 10, 2 },    /* Digimon Fan Mary — Stage 2 Finale (prog 5..10: TALK00 431) */
-    /* Phase 2 (Seiryu City) — aligned to exact wstag420/425/430 progress ranges */
+    /* Seiryu City: wstag420/425/430 progress ranges */
     { 9, 0x22E, 46, 0, 4, 0 },     /* Crybaby Maria — Stage 0 (prog 4: TALK01 10, Q208) */
     { 9, 0x22E, 46, 5, 10, 1 },    /* Crybaby Maria — Stage 1 (prog 5..10: TALK01 16) */
     { 9, 0x22E, 46, 24, 26, 2 },   /* Crybaby Maria — Stage 2 (prog 24..26: TALK01 41) */
@@ -1228,7 +1228,7 @@ static const DefNpcArc npc_arcs[] = {
     { 13, 0x230, 54, 24, 26, 2 },  /* Ms. Olivia — Stage 2 (prog 24..26: TALK01 97) */
     { 14, 0x22E, 365, 0, 4, 0 },   /* Seiryu Agumon — Stage 0 (prog 4: TALK01 12, Q213) */
     { 14, 0x22E, 365, 5, 10, 1 },  /* Seiryu Agumon — Stage 1 (prog 5..10: TALK01 15) */
-    /* Phase 3 (Suzaku City) — aligned to exact wstag500/520 progress ranges */
+    /* Suzaku City: wstag500/520 progress ranges */
     { 15, 0x23E, 50, 10, 10, 0 },  /* Lena — Stage 0 (prog 10: TALK01 112, Q214) */
     { 15, 0x23E, 50, 12, 12, 1 },  /* Lena — Stage 1 (prog 12: TALK01 114) */
     { 15, 0x23E, 50, 25, 26, 2 },  /* Lena — Stage 2 (prog 25..26: TALK01 124) */
@@ -1238,7 +1238,7 @@ static const DefNpcArc npc_arcs[] = {
     { 17, 0x240, 65, 14, 14, 1 },  /* Suzaku Renamon — Stage 1 (prog 14: TALK01 150) */
     { 18, 0x240, 66, 14, 14, 0 },  /* Suzaku Patamon — Stage 0 (prog 14: TALK01 151, Q217) */
     { 18, 0x240, 66, 15, 18, 1 },  /* Suzaku Patamon — Stage 1 (prog 15..18: TALK01 154) */
-    /* Phase 4 (Byakko City) — aligned to exact wstag660/675 progress ranges */
+    /* Byakko City: wstag660/675 progress ranges */
     { 19, 0x25D, 54, 24, 26, 0 },  /* Maya — Stage 0 (prog 24..26: TALK01 327, Q218) */
     { 19, 0x25D, 54, 27, 37, 1 },  /* Maya — Stage 1 (prog 27..37: TALK01 328) */
     { 20, 0x25D, 58, 24, 26, 0 },  /* Grandma Plum — Stage 0 (prog 24..26: TALK01 332, Q219) */
@@ -1247,13 +1247,13 @@ static const DefNpcArc npc_arcs[] = {
     { 21, 0x25E, 47, 27, 37, 1 },  /* Student Tony — Stage 1 (prog 27..37: TALK01 194) */
     { 22, 0x25E, 48, 24, 26, 0 },  /* Class Pres Aiko — Stage 0 (prog 24..26: TALK01 190, Q227) */
     { 22, 0x25E, 48, 27, 37, 1 },  /* Class Pres Aiko — Stage 1 (prog 27..37: TALK01 195) */
-    /* Phase 5 (Genbu City, 0x26F) — aligned to exact wstag760 progress ranges */
+    /* Genbu City, 0x26F: wstag760 progress ranges */
     { 23, 0x26F, 37, 30, 30, 0 },  /* Genbu Gate Guard — Stage 0 (prog 30: TALK01 247, Q229) */
     { 23, 0x26F, 37, 33, 37, 1 },  /* Genbu Gate Guard — Stage 1 (prog 33..37: TALK01 249) */
     { 23, 0x26F, 37, 38, 38, 2 },  /* Genbu Gate Guard — Stage 2 Finale (prog 38: TALK01 250) */
     { 24, 0x26F, 39, 33, 37, 0 },  /* Genbu Veteran Guard — Stage 0 (prog 33..37: TALK01 261, Q230) */
     { 24, 0x26F, 39, 38, 38, 1 },  /* Genbu Veteran Guard — Stage 1 (prog 38: TALK01 262) */
-    /* Phase 6 (Amaterasu City, 0x270 & 0x271) — aligned to wstag201/203 (TALK03) */
+    /* Amaterasu City, 0x270 & 0x271: wstag201/203 (TALK03) */
     { 25, 0x270, 45, 38, 38, 0 },  /* Liar Jim — Stage 0 (prog 38: TALK03 194, Q231) */
     { 25, 0x270, 45, 43, 999, 1 }, /* Liar Jim — Stage 1 Post-Game (prog 43+: TALK03 196) */
     { 26, 0x271, 51, 38, 38, 0 },  /* Big Eater — Stage 0 (prog 38: TALK03 216, Q232) */

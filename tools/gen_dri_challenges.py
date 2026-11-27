@@ -361,7 +361,7 @@ def c_text(rows_, names):
 
 def write_md(rows_, names, its, battles, rows):
     mats = material_names()
-    out = ["# Desafios do Gauntlet DRI (proposta para o dono)", "",
+    out = ["# Desafios do Gauntlet DRI", "",
            "Cada desafio é uma batalha só com os quatro estágios da linha, do Rookie ao Mega, em ordem: quando um cai,",
            "o próximo entra com o HP cheio e a party continua como estava (o Mega entra no lugar de um caído). Nível do Champion: "
            "`DEF_DRI_LEVEL_FIRST` + rank × `DEF_DRI_LEVEL_GAP` (rank: o lugar na dificuldade); cada estágio `DEF_DRI_LEVEL_STEP` acima do anterior.",

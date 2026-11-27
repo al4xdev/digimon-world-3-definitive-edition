@@ -71,61 +71,61 @@ static int bp_lang(void) {
 }
 
 static const DefBattlePrompt prompts[BP_PROMPTS] = { /* their words: bp_texts, same order */
-    /* Fase 1: Tamer Genji (wstag200, battle 200) */
+    /* Tamer Genji (wstag200, battle 200) */
     { 0, 220, 200, 100, 3, {
         { BP_FX_MOD, 0, 0, 1, 3, -1, 0, 1 },
         { BP_FX_LIBRA, 1, 0, 0, 0, DEF_BOND_TEDDY, 1, 1 },
         { BP_FX_MOD, 0, 1, -1, 2, -1, 0, -1 },
     } },
-    /* Fase 1/2: Keith em Asuka (wstag205, battle 263) */
+    /* Keith in Asuka (wstag205, battle 263) */
     { 1, 221, 263, 100, 3, {
         { BP_FX_MOD, 0, 0, 2, 3, DEF_BOND_KEITH, 1, 1 },
         { BP_FX_LIBRA, 1, 0, 0, 0, DEF_BOND_TEDDY, 1, 1 },
         { BP_FX_MOD, 0, 1, 2, 3, DEF_BOND_LISA, 1, 0 },
     } },
-    /* Fase 2: MasterTyrannomon (wstag405, battle 2) */
+    /* MasterTyrannomon (wstag405, battle 2) */
     { 2, 222, 2, 50, 3, {
         { BP_FX_MOD, 1, 1, -1, 3, -1, 0, 2 },
         { BP_FX_MOD, 0, 2, 1, 3, DEF_BOND_TEDDY, 1, 0 },
         { BP_FX_MOD, 0, 0, -1, 2, DEF_BOND_IVY, -1, -1 },
     } },
-    /* Fase 2: Líder de Seiryu (wstag420, battle 3) */
+    /* Seiryu Leader (wstag420, battle 3) */
     { 3, 223, 3, 50, 3, {
         { BP_FX_MOD, 0, 1, 2, 3, DEF_BOND_LISA, 1, 2 },
         { BP_FX_MOD, 0, 2, 1, 3, DEF_BOND_TEDDY, 1, 1 },
         { BP_FX_MOD, 1, 0, 1, 2, DEF_BOND_KEITH, 1, -1 },
     } },
-    /* Fase 3: Líder de Suzaku (wstag520, battle 4) */
+    /* Suzaku Leader (wstag520, battle 4) */
     { 4, 224, 4, 50, 3, {
         { BP_FX_MOD, 0, 0, 2, 3, DEF_BOND_KEITH, 1, 2 },
         { BP_FX_LIBRA, 1, 0, 0, 0, DEF_BOND_LISA, 1, 1 },
         { BP_FX_MOD, 0, 1, -1, 2, DEF_BOND_IVY, -1, -1 },
     } },
-    /* Fase 4: Duelo em Byakko (wstag675, battle 5) */
+    /* Byakko duel (wstag675, battle 5) */
     { 5, 225, 5, 100, 3, {
         { BP_FX_MOD, 0, 0, 2, 3, DEF_BOND_KEITH, 1, 2 },
         { BP_FX_LIBRA, 1, 0, 0, 0, DEF_BOND_LISA, 1, 1 },
         { BP_FX_MOD, 0, 1, -1, 2, DEF_BOND_TEDDY, -1, -1 },
     } },
-    /* Fase 5: Game Master no Centro Admin (wstag310, battle 10) */
+    /* Game Master, Admin Center (wstag310, battle 10) */
     { 6, 228, 10, 50, 3, {
         { BP_FX_MOD, 0, 0, 2, 3, DEF_BOND_TEDDY, 2, 2 },
         { BP_FX_MOD, 0, 1, 2, 3, DEF_BOND_LISA, 1, 1 },
         { BP_FX_MOD, 1, 2, 1, 2, DEF_BOND_IVY, -1, -1 },
     } },
-    /* Fase 6: Oficial-Chefe / Presidente da MAGAMI (wstag311, battle 32) */
+    /* Chief Officer / MAGAMI President (wstag311, battle 32) */
     { 7, 233, 32, 50, 3, {
         { BP_FX_MOD, 0, 0, 2, 3, DEF_BOND_LISA, 2, 2 },
         { BP_FX_MOD, 0, 1, 2, 3, DEF_BOND_TEDDY, 1, 1 },
         { BP_FX_MOD, 1, 0, 1, 2, DEF_BOND_KEITH, 1, -1 },
     } },
-    /* Fase 6: Lord Megadeath na Gunslinger (wstag820, battle 33) */
+    /* Lord Megadeath on the Gunslinger (wstag820, battle 33) */
     { 8, 234, 33, 50, 3, {
         { BP_FX_MOD, 0, 0, 2, 3, DEF_BOND_TEDDY, 2, 2 },
         { BP_FX_LIBRA, 1, 0, 0, 0, DEF_BOND_LISA, 2, 1 },
         { BP_FX_MOD, 0, 1, -1, 2, DEF_BOND_IVY, -1, -1 },
     } },
-    /* Fase 6: Galacticmon — Batalha Final (wstag820, battle 324 / 0x144) */
+    /* Galacticmon, the final battle (wstag820, battle 324 / 0x144) */
     { 9, 235, 324, 50, 3, {
         { BP_FX_MOD, 0, 0, 2, 4, DEF_BOND_TEDDY, 2, 2 },
         { BP_FX_MOD, 0, 1, 2, 4, DEF_BOND_LISA, 2, 2 },

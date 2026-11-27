@@ -256,7 +256,7 @@ int def_gauge_clamp(int val);
 void def_gauges_encode(const short gauges[DEF_GAUGE_SLOTS], unsigned char out[DEF_GAUGE_SLOTS * 2]);
 void def_gauges_decode(const unsigned char in[DEF_GAUGE_SLOTS * 2], short out[DEF_GAUGE_SLOTS]);
 
-/* Blast Gauge, phase 1 ("the cursed evolution"): the gauge fills with risky offence instead of
+/* Blast Gauge ("the cursed evolution"): the gauge fills with risky offence instead of
  * with the damage taken, and the player sets the Blast off (the battle menu's Blast button, R2 by default) instead of
  * the full gauge doing it. What one party blow that hits adds (they add up): */
 #define DEF_BLAST_WEAK 150      /* it struck a weakness (WEAK!) */

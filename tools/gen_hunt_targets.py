@@ -333,11 +333,10 @@ def compass_md(sup):
 
 def write_md(rows, sup):
     OUT.mkdir(parents=True, exist_ok=True)
-    lines = ["# Raros regionais e super raros (proposta)", "",
+    lines = ["# Raros regionais e super raros", "",
              f"Raro regional: 1 Digimon, nível = média dos encontros da região + {LEVEL_OVER}, HP × {HP_MULT} (teto 30000). "
              "Escolha: fora dos encontros da própria região, o menos repetido, nível próprio perto do da região, depois o "
-             "tema (o tipo mais comum nos encontros dela), depois um que não aparece em encontro aleatório. "
-             "Aprove, risque ou troque qualquer linha (diga a espécie que quer).", "",
+             "tema (o tipo mais comum nos encontros dela), depois um que não aparece em encontro aleatório.", "",
              "| região | área | servidor | setor | média | maior | raro | tema? | fonte (batalha:slot, nível próprio) | nível | HP | Núcleo |",
              "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |"]
     for r in rows:

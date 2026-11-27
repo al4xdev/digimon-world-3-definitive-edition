@@ -460,7 +460,7 @@ Isto é construído sobre a [decompilação do Digimon World 2003](https://githu
 dela para PC, que são trabalho do projeto original: todo arquivo do jogo é reconstruído byte a byte idêntico a partir de
 C equivalente. Este fork acrescenta o caminho para portáteis e a Definitive Edition.
 
-- **Como a Definitive Edition funciona**, cada regra, número, arquivo e decisão de design:
+- **Como a Definitive Edition funciona**, cada regra, número e arquivo:
   [`docs/definitive-edition/`](docs/definitive-edition/README.md).
 - **A decompilação e o port**, formatos, desempenho, o trabalho de GPU: [`docs/`](docs/README.md).
 

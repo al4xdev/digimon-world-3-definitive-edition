@@ -57,7 +57,7 @@ INVARIANT_DOLLAR_KEYS = {
     "$GuideBit", "$EvoLv",
 }
 
-# Pre-approved exact glossary translations for critical short HUD/UI labels ($NAME)
+# Exact glossary translations for critical short HUD/UI labels ($NAME)
 FIXED_DOLLAR_PT = {
     "$Fire": "Fogo",
     "$Water": "Água",

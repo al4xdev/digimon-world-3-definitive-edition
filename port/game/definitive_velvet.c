@@ -138,7 +138,7 @@ int dw3_velvet_pipimon_art(FieldstgActor *actor, u32 *ot, s32 x, s32 y); /* defi
 #define VL_PIG_DIR 0
 
 #define VL_BANDS 16 /* the backdrop's horizontal bands: 240 / 16 = one every 15 lines */
-#define VL_TOP_R 8  /* the room's blue at the top of the screen, from the mock-up */
+#define VL_TOP_R 8  /* the room's blue at the top of the screen */
 #define VL_TOP_G 14
 #define VL_TOP_B 60
 #define VL_BOTTOM_R 17 /* and at the bottom (a straight ramp between them) */
@@ -520,7 +520,7 @@ static void vl_quad(s32 layer_id, s32 depth, s32 x0, s32 y0, s32 x1, s32 y1, s32
 }
 
 /* The room's blue behind the map: the void the bar's tiles leave is the layer's own background, a band of colour per
- * VL_BANDS lines ramping from VL_TOP_* to VL_BOTTOM_*, as the mock-up has it. */
+ * VL_BANDS lines ramping from VL_TOP_* to VL_BOTTOM_*. */
 static void vl_backdrop(void) {
     s32 band_h = 240 / VL_BANDS;
     s32 i;
@@ -989,7 +989,7 @@ void dw3_velvet_draw(void) {
         }
         if (vl_mentor_phase == 1 && fieldstg_stage.actor_busy == 0) {
             vl_mentor_phase = 0;
-            def_purify_offer(); /* Blast phase 2 (definitive_purify.c) */
+            def_purify_offer(); /* the purification (definitive_purify.c) */
         }
         if (vl_shop_phase == 1 && fieldstg_stage.actor_busy == 0) {
             vl_shop_phase = 2; /* the greeting is over: the market takes the field */

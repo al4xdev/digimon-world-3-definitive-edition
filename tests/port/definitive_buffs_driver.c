@@ -100,7 +100,7 @@ void def_skin_savestate(struct PortState *s) { (void)s; }
 void def_story_savestate(struct PortState *s) { (void)s; }
 const unsigned char *def_story_text(int base_id, int index) { (void)base_id; (void)index; return NULL; }
 const unsigned char *def_story_line(int file, int index) { (void)file; (void)index; return NULL; }
-/* Blast Gauge phase 2: the save's record and the purification (definitive_bestiary.c, definitive_purify.c) */
+/* Blast Gauge's purification: the save's record and the fights (definitive_bestiary.c, definitive_purify.c) */
 void def_purify_battle_begin(void) {}
 void def_purify_battle_end(int r) { (void)r; }
 int def_purify_fighting(void) { return 0; }
@@ -210,7 +210,7 @@ int main(void) {
 
     /* 1. Overlevel Rush gap = 8 */
     reset_battle();
-    { /* the Blast's forms in sequence (owner's redesign): the next one when the level has it, else the last reached */
+    { /* the Blast's forms in sequence: the next one when the level has it, else the last reached */
         int a1, a2, a3, a4, a5, a6;
         int k1 = def_blast_step(0, 1, &a1), k2 = def_blast_step(1, 9, &a2), k3 = def_blast_step(1, 10, &a3),
             k4 = def_blast_step(4, 40, &a4), k5 = def_blast_step(4, 39, &a5), k6 = def_blast_step(9, 30, &a6);

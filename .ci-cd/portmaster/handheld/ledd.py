@@ -3,7 +3,7 @@
 
 Started by the game's led_bar mod (port/game/led.c) from the package's directory, and installed there by the handheld
 launcher (launcher/cfg.c). The palette and the measurements behind it are docs/XF35H.md, "The LED bar is on a
-UART, not in sysfs"; the prototype it grew from, with every experiment that produced it, is .dumps/led-test/.
+UART, not in sysfs".
 
 Why a daemon at all: the bar is an MCU on /dev/ttyS2, and what makes a change
 expensive is not the byte (1 ms on the wire at 9600 8N1) but paying the setup

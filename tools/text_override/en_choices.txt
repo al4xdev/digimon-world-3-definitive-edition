@@ -109,7 +109,7 @@ Q38 DMG800:17 11@3: Sorrowful: please | <7><9><7>...Don't. Please.<2,2><3>That's
 Q39 DMG900:5 7@1: Ambitious | <7><9><7>Don't worry.<2,2><3>I'm going to be the<1>strongest World Champ<1>there's ever been.<2,2>
 Q39 DMG900:5 7@2: Humble: only the start | <7><9><7>I'll do my best.<1>And I'll keep<1>learning.<2,2><3>The title is only<1>the start.<2,2>
 Q39 DMG900:5 7@3: Bittersweet: no one lost | <7><9><7>I'll be strong.<1>Strong enough that<1>nobody is lost again.<2,2>
-# round 2, chapter 1
+# chapter 1
 Q40 DMG700:0 7@1: Sharp: twenty minutes | <7><9><7>About time, Teddy.<2,2><3>Twenty minutes. I<1>counted every one.<2,2>
 Q40 DMG700:0 7@2: Easygoing: you're here | <7><9><7>You made it. That's<1>what matters.<2,2><3>Next time, set an<1>alarm.<2,2>
 Q40 DMG700:0 7@3: Wry: nice of you | <7><9><7>Nice of you to show<1>up, Teddy.<2,2><3>Twenty minutes. I<1>almost left.<2,2>
@@ -167,7 +167,7 @@ Q57 DMG500:0 10@3: Suspicious | <7><9><7>What's with her...?<2,2><3>That act is 
 Q58 DMG500:1 2@1: Confident | <7><9><7>Of course. I didn't<1>come this far to turn<1>back.<2,2>
 Q58 DMG500:1 2@2: Steady: ready | <7><9><7>Of course. Whatever<1>you've got, I'm ready.<2,2>
 Q58 DMG500:1 2@3: Cheeky: born ready | <7><9><7>Born ready. Let's<1>go.<2,2>
-# round 2, chapter 2
+# chapter 2
 Q70 DMG500:2 4@1: Grateful | <7><9><7>Thank you. I'll take<1>good care of it.<2,2><3>One more to go: the<1>Byakko Badge.<2,2>
 Q70 DMG500:2 4@2: Hungry for the last | <7><9><7>The Suzaku Badge.<1>Mine.<2,2><3>One more: Byakko.<1>Then nobody stands in<1>my way.<2,2>
 Q70 DMG500:2 4@3: Measured | <7><9><7>Two down. The Byakko<1>Badge is the last.<2,2><3>Let's not get ahead<1>of ourselves.<2,2>
@@ -228,7 +228,7 @@ Q88 DMG600:15 32@3: Protective | <7><9><7>Stay behind me, all<1>of you.<2,2><3>Y
 Q89 DMG600:22 17@1: Dread | <7><9><7>...What?! Keith and<1>Nick?!<2,2>
 Q89 DMG600:22 17@2: Wry: of course | <7><9><7>Keith and Nick.<2,2><3>Of course it had to<1>be those two.<2,2>
 Q89 DMG600:22 17@3: Relieved | <7><9><7>Keith and Nick?<2,2><3>Good. We could use<1>them.<2,2>
-# round 2, chapter 3
+# chapter 3
 Q100 DMG600:23 10@1: Wry: very good friends | <7><9><7>Don't look at me. I'm<1>no wiser. Very good<1>friends, apparently.<2,2>
 Q100 DMG600:23 10@2: Suspicious: too obedient | <7><9><7>Don't look at me. I'm<1>no wiser.<2,2><3>But those two take<1>orders very well.<2,2>
 Q100 DMG600:23 10@3: Trusting: she's earned it | <7><9><7>Don't look at me. I'm<1>no wiser. But Lisa has<1>earned some trust.<2,2>
@@ -286,7 +286,7 @@ Q117 DMG700:10 2@3: Wry: I'd love to | <7><9><7>Go home? Believe me,<1>I'd love 
 Q118 DMG700:14 2@1: Polite | <7><9><7>I'm <8,1><5,1>. Excuse me.<1>I'd like to pass.<2,2>
 Q118 DMG700:14 2@2: Cold: move | <7><9><7>I'm <8,1><5,1>. You're in<1>my way. Move.<2,2>
 Q118 DMG700:14 2@3: Cheeky: the best | <7><9><7>I'm <8,1><5,1>, the best<1>tamer around. Excuse<1>me, you're in my way.<2,2>
-# round 2, chapter 4
+# chapter 4
 Q130 DMG700:25 2@1: Wry: how that sounds | <7><9><7>Military Base<1>Magasta, in the<1>Real World.<2,2><3>On the ocean floor.<1>Yes, I know how<1>that sounds.<2,2>
 Q130 DMG700:25 2@2: Grave: I'm not joking | <7><9><7>Military Base Magasta.<1>The Real World. Under<1>the ocean.<2,2><3>I'm not joking.<1>Just send me there.<2,2>
 Q130 DMG700:25 2@3: Evasive: don't ask | <7><9><7>Military Base Magasta.<1>Real World. Ocean<1>floor.<2,2><3>Don't ask. I'll tell<1>you if I make it back.<2,2>

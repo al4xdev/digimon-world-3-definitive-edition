@@ -69,7 +69,7 @@ static int log_on(void) {
 static void persona_battle_begin(void);
 static const DefPersona *persona_at(int slot);
 
-/* Blast Gauge phase 1: the Digimon (bits by id) that took their Blast form this battle (def_blast_started), whose price
+/* Blast Gauge: the Digimon (bits by id) that took their Blast form this battle (def_blast_started), whose price
  * the battle's end takes (def_blast_price). Emptied when a battle begins. */
 static unsigned char blast_cursed;
 /* A party member was knocked out this battle: a critical moment, when a full gauge tempts (def_blast_tempt). */
@@ -120,7 +120,7 @@ void def_log_begin(void) {
     def_dri_battle_begin(); /* whether this battle is the DRI simulation just set up */
     def_flee_ask_reset();   /* the escape's question: a new battle's heap */
     def_battle_prompt_reset();
-    def_purify_battle_begin(); /* Blast phase 2: whether it is a purification's wave */
+    def_purify_battle_begin(); /* whether this battle is a purification's wave */
     def_time_battle_begin();   /* the Time Room: whether it is a trial */
     def_story_battle_begin();  /* the Oikawa's arc: whether it is his */
     def_finale_battle_begin(); /* Extended Final Act: Dark Galacticmon / Super Chosen Evolution */
@@ -220,7 +220,7 @@ static int target_class(int e, const short *resists, int species) {
         return 3;
     }
     /* Dark is the enemy table's mark (dark_mark), not its resistance; a persona's own map writes its Dark weakness
-     * into resists[6] (def_persona_resists), so that is read instead (a WEAK(DARK) row used to never stagger). */
+     * into resists[6] (def_persona_resists), so that is read instead. */
     return (def_weakness_mask(resists, persona_map_of(species) != NULL ? resists[6] <= DEF_WEAK_MAX : dark_mark(species)) >>
             e) & 1
                ? 1
@@ -650,7 +650,7 @@ void def_log_end(int result) {
     def_super_battle_end(result, fightstg_battle.state.members[1][0].hp);
     def_dri_battle_end(result);  /* a DRI simulation's stages felled and their rewards */
     def_persona_battle_end();      /* won, lost or fled: the same encounter again starts from phase A */
-    def_purify_battle_end(result); /* Blast phase 2: the dark forms felled, the next wave or the TP back */
+    def_purify_battle_end(result); /* the purification: the dark forms felled, the next wave or the TP back */
     def_time_battle_end(result);   /* the Time Room: a trial won or lost */
     def_story_battle_end(result);  /* the Oikawa's arc */
     if (!log_on()) {
@@ -1135,7 +1135,7 @@ void def_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, boost_logged);
     PORT_STATE_VAR(s, plug_last_stand_used);
     def_dri_savestate(s); /* a battle loaded mid-DRI-simulation is still one */
-    def_purify_savestate(s); /* Blast phase 2: and mid-purification */
+    def_purify_savestate(s); /* and mid-purification */
     def_finale_savestate(s); /* Extended Final Act & Post-Credits Farewell */
     def_superhunt_screen_savestate(s); /* the Sepikmon's board and the hunts' reward panel */
     def_respec_savestate(s); /* the pig's stat swap */
@@ -1196,7 +1196,7 @@ void def_party_turn_begins(void) {
     }
 }
 
-/* ---- Blast Gauge, phase 1: the acting Digimon's gauge (records_state.gauges, by Digimon, as the game keeps it). */
+/* ---- Blast Gauge: the acting Digimon's gauge (records_state.gauges, by Digimon, as the game keeps it). */
 static FightstgMember *blast_member(void) {
     return &fightstg_battle.state.members[0][fightstg_battle.state.current[0]];
 }

@@ -1,14 +1,14 @@
 # Matching functions
 
-The practical guide to turning a function's assembly into C that rebuilds byte-identical, for contributors and
-agents. The compiler evidence is in `docs/TOOLCHAIN.md`. Every game function is matching C (no
+The practical guide to turning a function's assembly into C that rebuilds byte-identical, for
+ contributors. The compiler evidence is in `docs/TOOLCHAIN.md`. Every game function is matching C (no
 holdouts are left), so this guide serves retries of FAKE matches, new splits, and anyone checking how a shape was found.
 
 ## Setup
 
 ```sh
 scripts/worktree_init.sh          # in a fresh worktree: links tools/, iso/, extracted/ from the main checkout (~1 s)
-export DW3_JOBS=1                 # when several agents share a machine: one job each
+export DW3_JOBS=1                 # when several builds share a machine: one job each
 scripts/build.sh                  # splat + ninja; must end "build passed" (also makes build/expected/ for unit_diff)
 ```
 
@@ -17,8 +17,6 @@ scripts/build.sh                  # splat + ninja; must end "build passed" (also
   enough: ninja still checks every output's SHA-1.
 - Trust only the build script's exit code; never pipe it into `head` before `&&`.
 - Scratch files go in your own scratch directory. Never run a broad `pkill`/`killall`; stop only PIDs you started.
-- An agent worktree may start from `main`: if `git log --oneline -1` is not the branch your brief names, reset onto it
-  before your first commit.
 
 ## Tools
 
@@ -307,9 +305,9 @@ those `docs/STATUS.md` quotes (STATUS owns the numbers). A change that adds or r
 
 ## Working in parallel
 
-- Several agents on one machine: `DW3_JOBS` limits `configure.py` and ninja; a from-scratch build per agent at once
-  exhausts memory. Size the number of agents to the machine.
-- Never trust git's line merge on a big C unit two agents edited: merge per function by address and compare each side's
+- Several builds on one machine: `DW3_JOBS` limits `configure.py` and ninja; several from-scratch builds at once
+ exhaust memory.
+- Never trust git's line merge on a big C unit two branches edited: merge per function by address and compare each side's
   per-function objdump, also with `-DNON_MATCHING`. When a scalar field becomes an array, old uses silently become
   pointer compares in WIP code.
 - Hand in: functions matched (count and bytes per unit), WIPs with their score, functions not tried; names added;

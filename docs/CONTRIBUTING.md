@@ -109,7 +109,7 @@ without a trailing slash if the directory is not already ignored). `setup.sh` in
 ### Documentation
 
 `docs/` holds reference documentation only: how things are and why. Plans go in the project board, problems in
-issues; there is no session log, and no record of past decisions (git has it). Update [`docs/STATUS.md`](STATUS.md)
+issues; history is in git. Update [`docs/STATUS.md`](STATUS.md)
 when the state changed.
 
 ## Checks before a pull request

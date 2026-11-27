@@ -36,7 +36,7 @@ extern void port_log(const char *fmt, ...);
 #define RC_CLUTS 32 /* CLUTs turned per page (a model names a few) */
 #define RC_POOL 8192 /* a persona's CLUTs as they loaded, kept to turn them again when its phase changes */
 
-/* The turn of the colour wheel, in degrees, per kind: the regional Rare's and the Super Rare's (owner-tunable). An
+/* The turn of the colour wheel, in degrees, per kind: the regional Rare's and the Super Rare's. An
  * enemy persona with its own colours (definitive_persona.h HUES) is DEF_RECOLOR_PERSONA, turned rc_persona_deg. */
 static const int rc_degrees[DEF_RECOLOR_KINDS] = { 0, 120, 200, 0, 0, 0, 0, 0 };
 static int rc_persona_deg;

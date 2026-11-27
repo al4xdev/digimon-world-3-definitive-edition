@@ -1,4 +1,4 @@
-# Portuguese (PT-BR) story rewrite — Fase 1 (Prólogo & Asuka City) em tom dublagem clássica 80/90.
+# Portuguese (PT-BR) story rewrite, em tom de dublagem clássica 80/90.
 DMG200:0 1: <7><9><7>Caramba...<1>Então é isso aqui o<1>Digimon Online?!<2,2>
 DMG200:0 2: <7>Atendente de Contas<7><8,1><5,1>!<1>Conta ativada no<1>Servidor Asuka!<2,2><3>Seus Digimon já estão<1>esperando no saguão.<1>Corre pra buscar!<2,2>
 DMG200:0 3: <7><9><7>Meus próprios<1>Digimon?!<2,2><3>Tô indo! Não perco<1>mais um segundo!<2,2>

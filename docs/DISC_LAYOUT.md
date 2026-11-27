@@ -22,7 +22,7 @@ PS-X EXE header: entry `pc0 = 0x80010E90`, `gp0 = 0`, text at `0x80010000`, size
 (921,600 bytes, the whole payload), no data/bss fields, stack `0x801FFFF0`, marker
 "Sony Computer Entertainment Inc. for Europe area". File SHA-1 `d1b7e4d6…` (`config/SLES_039.36.sha1`).
 
-Memory map (from crt0, Psy-Q signatures and the byte-identical Milestone 0 rebuild; all boundaries exact):
+Memory map (from crt0, Psy-Q signatures and the byte-identical rebuild; all boundaries exact):
 
 | Range | File offset | Contents |
 |---|---|---|

@@ -33,7 +33,7 @@ Drawing (a set is sets/NAME.txt: the frames of one animation and direction, type
                                   model that watches video: 60 fps, each pose held its vsyncs as in the game, three
                                   cycles at the game's speed and then two at a quarter of it, scaled up without
                                   smoothing (nearest neighbour), the speed written in the corner
-  save NAME                       the approved set's drawing files (draw/FILE_FRAME.txt, the old ones kept in
+  save NAME                       the set's drawing files (draw/FILE_FRAME.txt, the old ones kept in
                                   backup/), with the recipe: what equals a frame of the disc becomes a `paste` line
   edit FILE FRAME                 a drawing file from the header as it is (to touch one frame by hand)
   base FILE FRAME                 redo a drawing's pixels: the automatic frame + its pastes

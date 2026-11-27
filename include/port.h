@@ -531,7 +531,7 @@ int def_dri_fighting(void);
 int def_dri_queued_enemies(void);
 void def_dri_stage_enters(int member);
 int def_dri_defeat(void);
-/* The Blast Gauge's phase 2, the purification (port/game/definitive_purify.c): the dark forms' enemy records (none on
+/* The Blast Gauge's purification (port/game/definitive_purify.c): the dark forms' enemy records (none on
  * the disc), the field's frame (the mentor's panel, the next wave), a wave's next member and a lost wave. */
 struct FightstgEnemyRecord *def_purify_record(s32 id);
 /* The DRI Gauntlet's stages that are player forms: their enemy records, made from a base species' (definitive_dri_screen.c). */

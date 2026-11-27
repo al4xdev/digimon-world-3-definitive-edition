@@ -4,7 +4,7 @@ bank (BGM031) needs to sound like the intended arrangement.
 
   tools/venv/bin/python tools/gen_velvet_music.py            # summary and the smoothing's before/after table
   tools/venv/bin/python tools/gen_velvet_music.py --apply    # write port/game/definitive_velvet_music.inc
-  tools/venv/bin/python tools/gen_velvet_music.py --apply --smooth off   # the accepted mix as it was heard, unsmoothed
+  tools/venv/bin/python tools/gen_velvet_music.py --apply --smooth off   # the unsmoothed mix
 
 The MIDI is a local file, read from $DW3_VELVET_MIDI (default below). It is never copied into the tree: the
 generated .inc (the score, and the piano sample read from the disc's BOSS01 bank) is gitignored. Without the MIDI or the
@@ -12,7 +12,7 @@ disc nothing is written, an existing .inc is left alone, and port/game/definitiv
 room's old music (the build works either way).
 
 Everything one may want to change by ear is a named constant under "Smoothing". --smooth off drops all of it
-(hard attacks and cut-off releases of the bank's own tones, no reverb), which is the mix as it was first heard.
+(hard attacks and cut-off releases of the bank's own tones, no reverb), a dry mix.
 """
 import argparse
 import functools
@@ -50,7 +50,7 @@ PIANO_VAG = 14
 PIANO_BANK_DIR = "BOSS01"
 PIANO_BANK_VAG = 9
 
-# ---- Smoothing (owner decides by ear; --smooth off turns all of it off) ----
+# ---- Smoothing (--smooth off turns all of it off) ----
 # The bank's own tones attack in 0.2-2 ms (a click) and release in 6-46 ms (the note is cut off at its note-off). The
 # envelopes below are what the SPU's ADSR can do: a linear attack and a linear release, picked from the nearest
 # shift/step to these times. The piano keeps its attack and release.

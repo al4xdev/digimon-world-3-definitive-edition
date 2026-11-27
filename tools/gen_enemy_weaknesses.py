@@ -300,12 +300,12 @@ def write(rows, apply):
         for f in range(5):
             sc[f] += r["after"][FAM[f][0]] >= STRONG_MIN
     kinds = Counter(r["kind"] for r in rows)
-    lines = ["# Fraquezas dos inimigos: proposta, aguardando aprovação", "",
+    lines = ["# Fraquezas dos inimigos", "",
              "Por família (Fogo, Água+Gelo, Vento, Trovão+Máquina, Trevas; um par é uma afinidade só, os dois elementos com o mesmo valor). "
              "Arquétipos (estilo Persona): **plain** 2 famílias fracas + 1 forte; **wall** (mob fraco) 1 fraca + 2 fortes; **late** (nível ≥ "
              f"{LATE_LEVEL}) 2 fracas + 2 fortes; **boss** (luta de chefe) 2 fracas + 2 fortes; **final** (Galacticmon) 1 fraca + 3 fortes, mais a marca de Trevas. "
              "Contagem: " + ", ".join(f"{k} {kinds[k]}" for k in ("plain", "wall", "late", "boss", "final")) + ".", "",
-             f"{len(rows)} espécies. Semente {SEED}. Fraco = 60, forte = 300, neutro 100–115. Marca de Trevas (fraco a Trevas): **D** (só Trevas: **D!**). Resistir a Trevas é raro de propósito (regra do dono).",
+             f"{len(rows)} espécies. Semente {SEED}. Fraco = 60, forte = 300, neutro 100–115. Marca de Trevas (fraco a Trevas): **D** (só Trevas: **D!**). Resistir a Trevas é raro de propósito.",
              "Colunas `antes`/`depois`: um caractere por elemento (Fogo Água Gelo Vento Trovão Máquina Trevas): `W` fraco, `S` forte, `.` neutro.", "",
              "| Família | Fraquezas | Resistências fortes |", "|---|---|---|"]
     dark_weak = sum(r["dark"] for r in rows)

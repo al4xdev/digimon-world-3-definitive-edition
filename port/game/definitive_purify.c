@@ -68,7 +68,7 @@ extern const unsigned char def_str_PfDomTitle[], def_str_PfDominated[], def_str_
 #define PF_SND_MOVE 0x8004513E
 #define PF_SND_OK 0x8004503C
 #define PF_SND_BACK 0x800450BD
-#define PF_SND_CURSE 0x800429BF /* the black screen's: a field event's sound (owner-tunable) */
+#define PF_SND_CURSE 0x800429BF /* the black screen's: a field event's sound */
 #define PF_FADE 90              /* frames of the black screen */
 #define PF_PROGRESS_SPECIAL 0x2B /* fieldstg_start_battle sends every battle elsewhere at this progress (the DRI's) */
 
