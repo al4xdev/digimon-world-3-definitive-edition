@@ -2,7 +2,8 @@
 """Names the addresses of a crash report (docs/PORT.md "Crash report"): `pc: exe+0x...` and the stack's `#N exe+0x...`
 lines are resolved against the build that made it. A Linux report: addr2line over the unstripped game (build/port*/dw2003)
 or the release's debug file (dw2003-<version>-x86_64.debug beside the AppImage on the release page; the report's
-`build:` line says which release). A Windows report (its `platform:` line says Windows, or --binary ends in .exe):
+`build:` line says which release). REPORT may also be a game.log, or a pasted
+excerpt of one: the launcher's `[launcher] crash:` line (the report in one line) is read as its pc and stack. A Windows report (its `platform:` line says Windows, or --binary ends in .exe):
 llvm-symbolizer (llvm-mingw's, tools/llvm-mingw) over the executable and its PDB (dw2003.pdb beside it, or --pdb; the
 release's symbols zip holds it). A return address is resolved one byte back (the call site's line); the pc as it is.
 
@@ -21,6 +22,22 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 ADDR = re.compile(r"^(pc: |  #\d+ )exe\+(0x[0-9a-fA-F]+)")
+
+
+def expand_summary(lines):
+    """The launcher's one-line summary (launcher/main.c crash_summary) followed by the report's pc and stack lines."""
+    out = []
+    for line in lines:
+        out.append(line)
+        if "[launcher] crash:" not in line:
+            continue
+        pc = re.search(r"\| pc=(\S+)|crash: pc=(\S+)", line)
+        stack = re.search(r"stack=([^\s|]+)", line)
+        if pc:
+            out.append(f"pc: {pc.group(1) or pc.group(2)}")
+        if stack:
+            out += [f"  #{i} {a}" for i, a in enumerate(stack.group(1).split(","))]
+    return out
 
 
 def tool_dirs():
@@ -74,7 +91,7 @@ def main():
     binary = Path(args.binary)
     if not binary.is_file():
         sys.exit(f"symbolize: no such binary: {binary}")
-    lines = Path(args.report).read_text(errors="replace").splitlines()
+    lines = expand_summary(Path(args.report).read_text(errors="replace").splitlines())
     windows = binary.suffix.lower() == ".exe" or any(l.startswith("platform: Windows") for l in lines)
     wanted = []  # (line index, address to resolve)
     for i, line in enumerate(lines):

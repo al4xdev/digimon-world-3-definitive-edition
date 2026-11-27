@@ -197,6 +197,11 @@ because the launcher appends to it - and the crash report keeps its last lines e
 without them. The separate one-off meters (`DW3_PRESENT_LOG`, `DW3_GPU_LOG`, `DW3_PHASE`) are commented in that launcher and
 are not the same thing: they write their own files and some cost real frames.
 
+When the game ends with a crash report, the PC launcher appends the report to `logs/game.log` as one line, before
+`[launcher] THE GAME CRASHED`: `[launcher] crash:` with its kind, build, reason, stage, map, pc and first 16 stack
+addresses (`launcher/main.c` `crash_summary`). A bug report that pastes only the log's end (RecompLauncher's) then
+carries the addresses; `scripts/symbolize.py` takes the log or the excerpt.
+
 `SEND LOGS`, in the same group, saves `dw3-logs-<date>.zip` beside the port: `logs/*`, `crash-*.txt`, `settings.json`,
 `pad.map`, `tui.state`, the player's `card1.mcd` (and `card1.def.json` up to 512 KB, 256 KB in the upload: an RPG's progress, nothing
 personal, and what reproduces a battle or quest bug) and a `system.txt` (OS, CPU, cores, memory, launcher version). The

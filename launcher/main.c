@@ -50,6 +50,7 @@ static int launch_fd = -1, status_fd = -1; /* the game's output and its status p
 #endif
 static long launch_t0, splash_t0 = -1;
 static FILE *game_log;
+static long game_log_start; /* where this run begins in logs/game.log */
 static char launch_stage[64] = "CHECKING THE DISC";
 
 /* The game refused the disc (its "port: fatal: disc:" line, psxstack runtime/disc.c): the check doing its job, not a
@@ -1476,6 +1477,106 @@ static int game_reap(int *code, char *why, size_t n) {
 #endif
 }
 
+#define CRASH_SUMMARY_FRAMES 16
+
+/* A report line's value: copied into out when the line starts with key and out is still empty. */
+static void crash_field(const char *line, const char *key, char *out, size_t n) {
+    size_t k = strlen(key);
+    if (!out[0] && !strncmp(line, key, k)) snprintf(out, n, "%.*s", (int)(n - 1), line + k);
+}
+
+/* The crash report (psxstack runtime/crash.c) as one line for game.log: a player's issue often carries only the log's
+ * last lines (RecompLauncher writes it so), which named the report's file and nothing in it. One line, so a short
+ * excerpt keeps all of it; scripts/symbolize.py reads it. out is left empty when the report has no reason or address.
+ * The report's own copy of the log is indented, so it matches no key here. */
+static void crash_summary(const char *report, char *out, size_t n) {
+    char kind[16] = "", build[96] = "", why[96] = "", fault[24] = "", access[12] = "", stage[12] = "", map[12] = "",
+         pc[32] = "", stack[CRASH_SUMMARY_FRAMES * 24] = "";
+    int in_stack = 0, frames = 0;
+    out[0] = 0;
+    for (const char *p = report; *p;) {
+        char line[256];
+        size_t len = strcspn(p, "\r\n");
+        snprintf(line, sizeof(line), "%.*s", (int)(len < sizeof(line) ? len : sizeof(line) - 1), p);
+        p += len;
+        p += strspn(p, "\r\n");
+        crash_field(line, "kind: ", kind, sizeof(kind));
+        crash_field(line, "build: ", build, sizeof(build));
+        crash_field(line, "exception: ", why, sizeof(why));
+        crash_field(line, "signal: ", why, sizeof(why));
+        crash_field(line, "reason: ", why, sizeof(why));
+        crash_field(line, "fault address: ", fault, sizeof(fault));
+        crash_field(line, "access: ", access, sizeof(access));
+        crash_field(line, "stage: ", stage, sizeof(stage));
+        crash_field(line, "map: ", map, sizeof(map));
+        crash_field(line, "pc: ", pc, sizeof(pc));
+        if (!strncmp(line, "stack (", 7)) in_stack = 1;
+        else if (in_stack && !strncmp(line, "  #", 3) && frames < CRASH_SUMMARY_FRAMES) {
+            const char *a = strchr(line + 3, ' ');
+            size_t used = strlen(stack);
+            if (!a) continue;
+            snprintf(stack + used, sizeof(stack) - used, "%s%.*s", frames ? "," : "", (int)strcspn(a + 1, " "), a + 1);
+            frames++;
+        }
+    }
+    if (!why[0] && !pc[0] && !frames) return;
+    const struct { const char *name, *value; } part[] = {
+        {"kind=", kind}, {"build=", build}, {"", why}, {"access=", access}, {"fault=", fault},
+        {"stage=", stage}, {"map=", map}, {"pc=", pc}, {"stack=", stack},
+    };
+    snprintf(out, n, "[launcher] crash:");
+    for (size_t i = 0; i < sizeof(part) / sizeof(part[0]); i++) {
+        size_t used = strlen(out);
+        const char *sep = out[used - 1] == ':' ? " " : " | ";
+        if (part[i].value[0]) snprintf(out + used, n - used, "%s%s%s", sep, part[i].name, part[i].value);
+    }
+}
+
+/* Appends the summary of the report this run named ("port: crash report: PATH") to the open game.log. */
+static void log_crash_summary(void) {
+    static const char head[] = "port: crash report: ";
+    static char report[32 * 1024];
+    char path[1700], tail[8192 + 1], line[1024];
+    fflush(game_log);
+    snprintf(path, sizeof(path), "%s/logs/game.log", game_dir);
+    FILE *f = fopen(path, "rb");
+    if (!f) return;
+    fseek(f, 0, SEEK_END);
+    long from = ftell(f) - (long)(sizeof(tail) - 1);
+    if (from < game_log_start) from = game_log_start; /* never an earlier run's crash */
+    fseek(f, from, SEEK_SET);
+    tail[fread(tail, 1, sizeof(tail) - 1, f)] = 0;
+    fclose(f);
+    const char *hit = NULL;
+    for (const char *p = tail; (p = strstr(p, head)) != NULL; p++) hit = p + sizeof(head) - 1;
+    if (!hit) return;
+    int len = (int)strcspn(hit, "\r\n");
+    int absolute = hit[0] == '/' || hit[0] == '\\' || (hit[0] && hit[1] == ':');
+    snprintf(path, sizeof(path), "%s%s%.*s", absolute ? "" : game_dir, absolute ? "" : "/", len, hit);
+    f = fopen(path, "rb");
+    if (!f) return;
+    report[fread(report, 1, sizeof(report) - 1, f)] = 0;
+    fclose(f);
+    crash_summary(report, line, sizeof(line));
+    if (line[0]) fprintf(game_log, "%s\n", line);
+}
+
+/* The ended game's last output into game.log, then what went wrong; closes the game's channels (the log stays open). */
+static void game_log_end(int code, const char *why) {
+    char buf[1024];
+    long n;
+    while ((n = game_read(0, buf, sizeof(buf))) > 0) {
+        if (game_log) fwrite(buf, 1, (size_t)n, game_log);
+    }
+    game_close();
+    if (!game_log) return;
+    if (code != 0) {
+        log_crash_summary();
+        fprintf(game_log, "[launcher] %s\n", why);
+    }
+    fflush(game_log);
+}
+
 /* The periodic cloud push while the game runs (it only pushes: the running game's card is never overwritten): a child
  * process on Linux, a thread on Windows (a copy of the cloud state; the launcher reloads the file afterwards). */
 #ifdef _WIN32
@@ -1667,6 +1768,10 @@ static void start_game(void) {
         mkdir(lp, 0755);
         snprintf(lp, sizeof(lp), "%s/logs/game.log", game_dir);
         game_log = fopen(lp, "a");
+        if (game_log) {
+            fseek(game_log, 0, SEEK_END);
+            game_log_start = ftell(game_log);
+        }
     }
     launch_t0 = plat_now_ms();
     launch_pct = 0;
@@ -1736,7 +1841,7 @@ static void pump_game(void) {
     if (launch_pid > 0 && game_reap(&code, why, sizeof(why))) {
         launch_pid = -1;
         ln = sln = 0;
-        game_close();
+        game_log_end(code, why);
         if (game_log) { fclose(game_log); game_log = NULL; }
         if (code == 0) {
             char card_p[1024], smsg[128] = "";
@@ -2801,6 +2906,46 @@ static int self_test(const char *root) {
         game_output_line("port: fatal: settings: something else");
         check(disc_bad == DISC_OK && fatal_seen, "refused disc: any other fatal error stays on the error screen");
 
+        /* A crash report as the runtime writes it on Windows (CRLF too), its copy of the log included. */
+        char sum[1024];
+        crash_summary("dw2003 crash report\r\nkind: crash\nstatus: -1073741819\nbuild: 0.9.1 (abc)\n"
+                      "stage: 3\nmap: 258\n\nlog (last 1 lines):\n  pc: not this one\n\nexception: "
+                      "EXCEPTION_ACCESS_VIOLATION (0xc0000005)\nfault address: 0x10\naccess: read\npc: exe+0x1a2b\n"
+                      "\nstack (unwound):\n  #0 exe+0x1a2b\n  #1 0x7ff812340000 ?\n  #2 exe+0x3c4d\n",
+                      sum, sizeof(sum));
+        check(!strcmp(sum, "[launcher] crash: kind=crash | build=0.9.1 (abc) | EXCEPTION_ACCESS_VIOLATION "
+                           "(0xc0000005) | access=read | fault=0x10 | stage=3 | map=258 | pc=exe+0x1a2b | "
+                           "stack=exe+0x1a2b,0x7ff812340000,exe+0x3c4d"),
+              "crash report: one line with its reason and addresses");
+        crash_summary("not a report\n", sum, sizeof(sum));
+        check(!sum[0], "crash report: nothing to say, no line");
+
+        /* Into game.log, from the report this run named; an earlier run's line in the same log is not this run's. */
+        char lp[1700], rp[1700], got[2048];
+        snprintf(lp, sizeof(lp), "%s/logs", game_dir);
+        mkdir(lp, 0755);
+        snprintf(lp, sizeof(lp), "%s/logs/game.log", game_dir);
+        snprintf(rp, sizeof(rp), "%s/selftest-crash.txt", game_dir);
+        FILE *rf = fopen(rp, "wb");
+        if (rf) { fputs("kind: crash\npc: exe+0x1a2b\n", rf); fclose(rf); }
+        for (int old = 0; old < 2; old++) {
+            game_log = fopen(lp, "wb");
+            if (!game_log) { check(0, "crash report: the self-test's game.log"); break; }
+            fputs("port: crash report: selftest-crash.txt\n", game_log);
+            game_log_start = old ? ftell(game_log) : 0;
+            log_crash_summary();
+            fclose(game_log);
+            game_log = NULL;
+            rf = fopen(lp, "rb");
+            got[rf ? fread(got, 1, sizeof(got) - 1, rf) : 0] = 0;
+            if (rf) fclose(rf);
+            check((strstr(got, "[launcher] crash: kind=crash | pc=exe+0x1a2b") != NULL) == !old,
+                  old ? "crash report: an earlier run's report is left alone" : "crash report: the line reaches game.log");
+        }
+        game_log_start = 0;
+        remove(rp);
+        remove(lp);
+
         /* Every language fits the panel (16 px inside its right edge), for both reasons and each way the launcher
          * runs: its own (CHOOSE DISC), under RecompLauncher, on PortMaster. */
         const char *rl_env = getenv("RECOMPLAUNCHER");
@@ -3200,14 +3345,7 @@ int main(int argc, char **argv) {
 
                 if (syncing && sync_end(1, &sync_ok) && sync_ok) cloud_state_load(&cloud, game_dir);
 
-                while ((n = game_read(0, buf, sizeof(buf))) > 0) {
-                    if (game_log) { fwrite(buf, 1, (size_t)n, game_log); fflush(game_log); }
-                }
-                game_close();
-                if (code != 0 && game_log) {
-                    fprintf(game_log, "[launcher] %s\n", why);
-                    fflush(game_log);
-                }
+                game_log_end(code, why);
 
                 /* Final local backup rotation + cloud push on game exit */
                 if (save_is_valid_mc(card1_p, cur_sha)) {
