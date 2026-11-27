@@ -1368,8 +1368,9 @@ static void draw(void) {
 static const char *game_extra[8]; /* more arguments for the game: the self-test's --max-frames */
 
 #if defined(DW3_TARGET_PC) && defined(__linux__)
-/* RecompLauncher's {data} (RECOMPLAUNCHER_DATA, an absolute path): on Linux it unpacks the AppImage and replaces usr/
- * on every update, so beside the program is no place for a save. Set, it is the settings directory, over portable.txt. */
+/* RecompLauncher's {data} (RECOMPLAUNCHER_DATA, an absolute path): on Linux it unpacks the AppImage, and its backups,
+ * cloud saves and Uninstall follow only the folders its manifest names ({data} on Linux). Set, it is the settings
+ * directory, over portable.txt. */
 static const char *recomp_data_dir(void) {
     const char *d = getenv("RECOMPLAUNCHER_DATA");
     return d && d[0] == '/' ? d : NULL;
