@@ -10,7 +10,7 @@ $Resist: Resist
 $Neutral: -
 $Unknown: ???
 $BlastTempt: Il Blast chiama...
-$BlastNoGauge: Riempi prima la barra Blast<1>(debolezze, stordimenti,<1>One More, OVERFINISH).
+$BlastNoGauge: Riempi prima la barra Blast<1>(debolezze,<1>One More, OVERFINISH).
 $BlastOverheated: Troppo surriscaldato per<1>usare il Blast ora.
 $BlastNoTp: Il Blast richiede 10 TP.
 $ChosenNoRookie: Devi essere in forma<1>Rookie (base) per attivare<1>l'Evoluzione Scelta.
@@ -345,14 +345,14 @@ $HuntSpace: " "
 $PersonaMark: "! "
 $InfoShiftTurnsA: "SHIFT ogni "
 $InfoShiftTurnsB: " turni"
-$InfoShiftStagger: SHIFT se stordito
+$InfoShiftStagger: SHIFT su WEAK!
 $InfoShiftWeak: nuova debolezza
 $InfoShiftGuard: guardia sì/no
 $InfoShiftBoth: debolezza + guardia
 $InfoShiftRed: la guardia cambia
 $InfoGuardA: "Solo "
 $InfoGuardB: %dei danni
-$InfoGuardUntil: finché stordito
+$InfoGuardUntil: fino a WEAK!
 $InfoGuardRed: tranne debolezze
 $InfoSpeedA: "Velocità "
 $InfoSpeedB: x la tua

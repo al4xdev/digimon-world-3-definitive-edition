@@ -4154,7 +4154,7 @@ $Resist: Resist
 $Neutral: -
 $Unknown: ???
 $BlastTempt: Blast chama...
-$BlastNoGauge: Encha o Blast Gauge primeiro<1>(fraquezas, atordoamento,<1>One More, OVERFINISH).
+$BlastNoGauge: Encha o Blast Gauge primeiro<1>(fraquezas,<1>One More, OVERFINISH).
 $BlastOverheated: Superaquecido demais para<1>usar o Blast agora.
 $BlastNoTp: O Blast exige 10 TP.
 $ChosenNoRookie: Você precisa estar na forma<1>base (Rookie) para ativar<1>a Chosen Evolution.
@@ -4278,14 +4278,14 @@ $HuntSpace: " "
 $PersonaMark: "! "
 $InfoShiftTurnsA: "SHIFT cada "
 $InfoShiftTurnsB: " turnos"
-$InfoShiftStagger: SHIFT ao atordoar
+$InfoShiftStagger: SHIFT ao dar WEAK!
 $InfoShiftWeak: nova fraqueza
 $InfoShiftGuard: guarda liga/desliga
 $InfoShiftBoth: fraqueza + guarda
 $InfoShiftRed: guarda muda de cor
 $InfoGuardA: "Só "
 $InfoGuardB: %do dano
-$InfoGuardUntil: até ser atordoado
+$InfoGuardUntil: até WEAK!
 $InfoGuardRed: exceto fraquezas
 $InfoSpeedA: "Velocidade "
 $InfoSpeedB: x a sua

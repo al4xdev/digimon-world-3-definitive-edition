@@ -47,8 +47,8 @@ does not go through the technique's damage), Hookmon's Captain Cannon (its criti
 the ones that stay pure physical blows (Kumamon, Monmon, Veemon, Dinohumon, Stingmon, GrapLeomon, Rosemon,
 GuardiAngemon).
 
-Hitting a weakness with elemental magic **staggers** the enemy (it takes its tired pose) and gives you **one
-more** action. Each weak family gives its extra action once per round (a round starts with each normal action; an
+Hitting a weakness with elemental magic **staggers** the enemy (the game's word for it is the `WEAK!` callout, then the
+enemy takes its tired pose) and gives you **one more** action. Each weak family gives its extra action once per round (a round starts with each normal action; an
 extra one does not start a new round), so two weaknesses can chain into several actions in a row, but Ice after Water
 gives none. Hitting a weakness again keeps the enemy staggered. Any other blow ends it, and still gets the stagger
 bonus unless it hits a resistance; the enemy's own action ends it too. A blow with no element, or the element a crest
@@ -179,7 +179,7 @@ Target, a few story bosses and, from level 10 on, about half of the common speci
 
 | Rule | What you see | What it means for you |
 |---|---|---|
-| **Guard** | an orange shield; `GUARDED` over the enemy when a blow is cut | it takes only 30% of your damage until you stagger it. Some are guarded all fight, some only in one phase |
+| **Guard** | an orange shield; `GUARDED` over the enemy when a blow is cut | it takes only 30% of your damage until a `WEAK!` hit staggers it (the INFO panel says "until WEAK!"). Some are guarded all fight, some only in one phase |
 | **Red guard** | the shield on a red field; `GUARDED` in red | 30% of every blow, except a blow on its weakness, which goes through whole. No stagger ever opens it, and physical blows always take 30%: find the weakness with magic |
 | **SHIFT** | `SHIFT!` over the enemy, and its colours change | every few of its turns (or each time you stagger it) it changes weakness, guard or both. Each colour keeps its own weakness for the whole fight |
 | **Speed** | two chevrons | its Speed is two or three times your party's, so it acts more than once per turn of yours |

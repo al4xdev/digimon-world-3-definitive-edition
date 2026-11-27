@@ -12,7 +12,7 @@ $Neutral: -
 $Unknown: ???
 # Blast Gauge: the battle menu's temptation (a full gauge at a critical moment), above the cross.
 $BlastTempt: Blast calls...
-$BlastNoGauge: Fill the Blast Gauge first<1>(weaknesses, staggers,<1>One More, OVERFINISH).
+$BlastNoGauge: Fill the Blast Gauge first<1>(weaknesses,<1>One More, OVERFINISH).
 $BlastOverheated: Too overheated to Blast<1>right now.
 $BlastNoTp: Blast needs 10 TP.
 # After the quest, why a press on the grey Blast button refuses the Chosen Evolution (def_chosen_refusal):
@@ -388,14 +388,14 @@ $PersonaMark: "! "
 # legend's 116 pixels in every language (tests/port/inspect_legend.py). A..B pairs go around the row's number.
 $InfoShiftTurnsA: "SHIFT every "
 $InfoShiftTurnsB: " turns"
-$InfoShiftStagger: SHIFT on stagger
+$InfoShiftStagger: SHIFT on WEAK!
 $InfoShiftWeak: new weakness
 $InfoShiftGuard: guard on/off
 $InfoShiftBoth: weakness + guard
 $InfoShiftRed: guard orange/red
 $InfoGuardA: "Takes only "
 $InfoGuardB: "%"
-$InfoGuardUntil: until staggered
+$InfoGuardUntil: until WEAK!
 $InfoGuardRed: except weaknesses
 $InfoSpeedA: "Speed "
 $InfoSpeedB: x yours

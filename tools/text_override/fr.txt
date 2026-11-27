@@ -10,7 +10,7 @@ $Resist: Resist
 $Neutral: -
 $Unknown: ???
 $BlastTempt: Blast appelle...
-$BlastNoGauge: Remplissez la jauge Blast<1>(faiblesses, étourdissements,<1>One More, OVERFINISH).
+$BlastNoGauge: Remplissez la jauge Blast<1>(faiblesses,<1>One More, OVERFINISH).
 $BlastOverheated: Trop en surchauffe pour<1>lancer le Blast maintenant.
 $BlastNoTp: Le Blast exige 10 TP.
 $ChosenNoRookie: Il faut être en forme Rookie<1>(de base) pour déclencher<1>l'Évolution Chosen.
@@ -345,14 +345,14 @@ $HuntSpace: " "
 $PersonaMark: "! "
 $InfoShiftTurnsA: "SHIFT après "
 $InfoShiftTurnsB: " tours"
-$InfoShiftStagger: SHIFT si étourdi
+$InfoShiftStagger: SHIFT sur WEAK!
 $InfoShiftWeak: nouvelle faiblesse
 $InfoShiftGuard: garde on/off
 $InfoShiftBoth: faiblesse + garde
 $InfoShiftRed: la garde change
 $InfoGuardA: "Ne subit que "
 $InfoGuardB: "%"
-$InfoGuardUntil: jusqu’à l’étourdir
+$InfoGuardUntil: jusqu’à WEAK!
 $InfoGuardRed: sauf faiblesses
 $InfoSpeedA: "Vitesse "
 $InfoSpeedB: x la vôtre

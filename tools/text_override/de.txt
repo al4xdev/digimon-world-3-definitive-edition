@@ -10,7 +10,7 @@ $Resist: RESIST
 $Neutral: -
 $Unknown: ???
 $BlastTempt: Blast lockt...
-$BlastNoGauge: Fülle erst die Blast-Leiste<1>(Schwächen, Betäubung,<1>One More, OVERFINISH).
+$BlastNoGauge: Fülle erst die Blast-Leiste<1>(Schwächen,<1>One More, OVERFINISH).
 $BlastOverheated: Zu überhitzt, um jetzt<1>Blast zu nutzen.
 $BlastNoTp: Blast braucht 10 TP.
 $ChosenNoRookie: Nur in der Rookie-Form<1>(Grundform) ist die<1>Chosen-Evolution möglich.
@@ -345,14 +345,14 @@ $HuntSpace: " "
 $PersonaMark: "! "
 $InfoShiftTurnsA: "SHIFT alle "
 $InfoShiftTurnsB: " Züge"
-$InfoShiftStagger: SHIFT bei Betäubung
+$InfoShiftStagger: SHIFT bei WEAK!
 $InfoShiftWeak: neue Schwäche
 $InfoShiftGuard: Deckung an/aus
 $InfoShiftBoth: Schwäche + Deckung
 $InfoShiftRed: Deckung wechselt
 $InfoGuardA: "Nur "
 $InfoGuardB: %Schaden
-$InfoGuardUntil: bis zur Betäubung
+$InfoGuardUntil: bis WEAK!
 $InfoGuardRed: außer Schwächen
 $InfoSpeedA: "Tempo "
 $InfoSpeedB: x deins

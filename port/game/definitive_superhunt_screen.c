@@ -316,12 +316,12 @@ static const char *hunter_hint_text(int hunt) {
             continue;
         }
         if (p->phases > 1 && p->turns == 0) {
-            return def_pick("Adapts its affinity whenever staggered.",
-                            "Muda de afinidade ao levar stagger.",
-                            "Change d'affinite apres un stagger.",
-                            "Wechselt Affinitaet bei Taumeln.",
-                            "Cambia affinita dopo uno stagger.",
-                            "Cambia de afinidad al aturdirlo.");
+            return def_pick("Adapts its affinity on every WEAK! hit.",
+                            "Muda de afinidade a cada WEAK!.",
+                            "Change d'affinite a chaque WEAK!.",
+                            "Wechselt Affinitaet bei jedem WEAK!.",
+                            "Cambia affinita a ogni WEAK!.",
+                            "Cambia de afinidad en cada WEAK!.");
         }
         if (p->phases > 1 && def_persona_shifts_map(p)) {
             return def_pick("Shifts its affinities every few turns.",
