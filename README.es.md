@@ -445,6 +445,10 @@ joven: parte de él solo se ha jugado unas pocas veces, así que cuenta con aspe
   algunas etiquetas demasiado anchas para su caja.
 - **El equilibrio general del juego.** Hasta ahora se equilibró solo por cálculo. Lo estoy jugando en paralelo y
   publicando hotfixes sobre la marcha, la Chosen Evolution y los combates secretos del final incluidos.
+- **Cierres conocidos.** Algunos jugadores tienen cierres que aún no podemos reproducir, sobre todo en Windows (código
+  `0xC0000005`). Si te pasa, pon DEBUG > REGISTROS en COMPLETO (o LEVE, para enviar menos), juega hasta que vuelva a pasar y
+  luego DEBUG > ENVIAR LOGS: el registro del juego y su informe del cierre son lo que hace posible una corrección. Con
+  enviarlo basta; una issue con el código del informe nos permite responderte.
 
 No hay nada más planeado: de aquí en adelante el trabajo son hotfixes. Los errores van al
 [issue tracker](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues).

@@ -197,7 +197,8 @@ addresses (`launcher/main.c` `crash_summary`). A bug report that pastes only the
 carries the addresses; `scripts/symbolize.py` takes the log or the excerpt.
 
 `SEND LOGS`, in the same group, refuses while `LOGS` is `OFF` (a report without the game's log cannot be reproduced: the
-line asks for `HEAVY`, or `SOFT`, and the bug played again). Otherwise it saves `dw3-logs-<date>.zip` beside the port: `logs/*`, `crash-*.txt` (beside the settings, or in `crashes/` when RecompLauncher started the game), `settings.json`,
+line asks for `HEAVY`, or `SOFT`, and the bug played again) and ignores a second press within 30 s (the upload blocks
+the screen, so presses made meanwhile arrive after it). Otherwise it saves `dw3-logs-<date>.zip` beside the port: `logs/*`, `crash-*.txt` (beside the settings, or in `crashes/` when RecompLauncher started the game), `settings.json`,
 `pad.map`, `tui.state`, the player's `card1.mcd` (and `card1.def.json` up to 512 KB, 256 KB in the upload: an RPG's progress, nothing
 personal, and what reproduces a battle or quest bug) and a `system.txt` (OS, CPU, cores, memory, launcher version). The
 disc and the cloud token are left out. It then uploads a second zip (`dw3-send-<date>.zip`, deleted after, each log cut

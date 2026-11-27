@@ -448,6 +448,10 @@ Manches wurde erst ein paar Mal durchgespielt, rechne also mit Ecken und Kanten 
   im Spiel gelesen: rechne mit holprigen Sätzen und ein paar Beschriftungen, die zu breit für ihr Feld sind.
 - **Die allgemeine Spielbalance.** Bisher wurde sie nur rechnerisch ausbalanciert. Ich spiele es parallel durch und
   liefere Hotfixes nach, sobald sie fertig sind, die Chosen Evolution und die geheimen Endgame-Kämpfe eingeschlossen.
+- **Bekannte Abstürze.** Manche Spieler haben Abstürze, die wir noch nicht nachstellen können, meist unter Windows
+  (Code `0xC0000005`). Wenn es dir passiert, stell DEBUG > LOGS auf VOLL (oder LEICHT, um weniger zu senden), spiel, bis
+  es wieder passiert, und dann DEBUG > LOGS SENDEN: Das Log des Spiels und sein Absturzbericht machen eine Korrektur erst
+  möglich. Das Senden reicht; ein Issue mit dem Berichtscode erlaubt uns, dir zu antworten.
 
 Sonst ist nichts geplant: ab jetzt besteht die Arbeit aus Hotfixes. Fehler gehören in den
 [Issue Tracker](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues).

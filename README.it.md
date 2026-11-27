@@ -445,6 +445,10 @@ stata giocata solo poche volte, quindi aspettati qualche spigolo e hotfix freque
   etichetta troppo larga per il suo riquadro.
 - **Il bilanciamento generale del gioco.** Finora è stato bilanciato solo a calcolo. Lo sto giocando in parallelo e
   rilascio hotfix man mano, Chosen Evolution e battaglie segrete di fine gioco comprese.
+- **Crash noti.** Alcuni giocatori hanno crash che non riusciamo ancora a riprodurre, soprattutto su Windows (codice
+  `0xC0000005`). Se succede anche a te, imposta DEBUG > LOG su COMPLETO (o LEGGERO, per inviare meno), gioca finché non
+  succede di nuovo, poi DEBUG > INVIA LOG: il log del gioco e il suo rapporto del crash sono ciò che rende possibile una
+  correzione. Basta inviarlo; una issue con il codice del rapporto ci permette di risponderti.
 
 Nient'altro è in programma: da qui in avanti il lavoro sono hotfix. I bug vanno nell'
 [issue tracker](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues).

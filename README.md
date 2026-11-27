@@ -437,6 +437,10 @@ it has only been played through a few times, so expect rough edges and frequent 
   wide for their box.
 - **Overall game balance.** So far it was balanced by calculation only. I am playing through it in parallel and
   shipping hotfixes as I go, the Chosen Evolution and the endgame's secret battles included.
+- **Known crashes.** Some players hit crashes we cannot reproduce yet, mostly on Windows (code `0xC0000005`). If it
+  happens to you, set DEBUG > LOGS to HEAVY (or SOFT, to send less), play until it happens again, then DEBUG > SEND
+  LOGS: the game's log and its crash report are what makes a fix possible. Sending it is enough; an issue with the
+  report code lets us answer you.
 
 Nothing else is planned: from here on the work is hotfixes. Bugs go to the
 [issue tracker](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues).

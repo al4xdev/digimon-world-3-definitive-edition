@@ -72,6 +72,12 @@ static inline void app_step_sync_interval(Cfg *c, int dir) {
 static inline void app_send_logs(const CloudState *cloud, const char *version, int portmaster,
                                  char *status_out, size_t status_n) {
     char nm[128], up[128], id[40] = "", err[96] = "";
+    /* The upload blocks the screen, so presses made meanwhile arrive after it: each one sent the same zip again and
+     * spent the player's 5 uploads an hour. A second press within 30 s keeps the result already shown. */
+    static time_t last_send;
+    time_t now = time(NULL);
+    if (last_send != 0 && now - last_send < 30 && now >= last_send) return;
+    last_send = now;
     if (logs_save(nm, sizeof(nm)) != 0) {
         snprintf(status_out, status_n, "COULD NOT SAVE THE ZIP");
         return;

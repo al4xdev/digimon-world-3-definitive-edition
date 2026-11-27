@@ -465,7 +465,9 @@ jobs:
           **PortMaster (armhf and aarch64)**: \`dw3.zip\`: unpack into \`ports/\` and put your \`.bin\` + \`.cue\` in \`ports/dw3/game/\`.
           **Android (arm64)**: \`dw2003-*-android-arm64-v8a.apk\`: install it (allow installs from your browser or file manager), then pick your \`.bin\` (and \`.cue\`) in the launcher; it copies them into the app. Android 7 or newer; a touch pad is on screen, and it hides while a gamepad is connected.
           **Widescreen**: the launcher's VIDEO screen, WIDESCREEN; it needs RENDERER \"gpu\".
-          The .debug file and the -symbols.zip are the programs' debug info for crash reports (not needed to play)." \
+          The .debug file and the -symbols.zip are the programs' debug info for crash reports (not needed to play).
+
+          **Known crashes**: some players hit crashes we cannot reproduce yet, mostly on Windows (\`0xC0000005\`). If it happens to you, set DEBUG > LOGS to HEAVY (or SOFT, to send less), play until it happens again, then DEBUG > SEND LOGS: the game's log and its crash report are what makes a fix possible. Sending it is enough; a [bug report](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues/new?template=bug_report.yml) with the report code lets us answer you." \
             "${files[@]}"
           echo "### Release $TAG ($([[ $DRAFT == true ]] && echo draft || echo published))" >> "$GITHUB_STEP_SUMMARY"
 

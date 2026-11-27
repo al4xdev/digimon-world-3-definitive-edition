@@ -453,6 +453,10 @@ Ce qui reste :
   locuteurs natifs : attendez-vous à des phrases maladroites et à quelques libellés trop larges pour leur cadre.
 - **L'équilibrage général du jeu.** Jusqu'ici, il n'a été équilibré que par le calcul. Je le joue en parallèle et
   je publie des hotfixes au fur et à mesure, Chosen Evolution et combats secrets de fin de jeu compris.
+- **Plantages connus.** Certains joueurs ont des plantages que nous ne savons pas encore reproduire, surtout sous
+  Windows (code `0xC0000005`). Si cela vous arrive, mettez DEBUG > JOURNAUX sur COMPLET (ou LÉGER, pour envoyer moins), jouez
+  jusqu'à ce que cela se reproduise, puis DEBUG > ENVOYER : le journal du jeu et son rapport de plantage sont ce qui
+  rend une correction possible. L'envoi suffit ; une issue avec le code du rapport nous permet de vous répondre.
 
 Rien d'autre n'est prévu : désormais, le travail se résume à des hotfixes. Les bugs vont dans l'
 [issue tracker](https://github.com/al4xdev/digimon-world-3-definitive-edition/issues).
