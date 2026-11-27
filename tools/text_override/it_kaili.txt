@@ -1,4 +1,4 @@
-# it_kaili.txt: translated from pt_kaili.txt (tools/check_story_lang.py; same format).
+# it_kaili.txt: translated from pt_kaili.txt (same format).
 DMG200:3 7: <7>Junior<7>Anche qui è Junior.<1>Non ho cambiato nome.<2,2>
 DMG200:3 8: <7><9><7>Il tuo vero nome?!<2,2><3>Che coraggio... così<1>ti trovano tutti!<2,2>
 DMG200:3 9: <7>Junior<7>Non ho nulla da<1>nascondere! È pure più<1>facile trovarmi.<2,2>

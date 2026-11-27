@@ -750,7 +750,7 @@ void wstag780_setup(void) {
     }
 }
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag780_setup(void);
 
 s16 D_WSTAG780_800A7798[473] = {

@@ -139,7 +139,7 @@ void wstag481_setup(void) {
 
 const CVECTOR wstag481_color = { 0x80, 0x80, 0x80, 0 };
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag481_setup(void);
 
 WstagSeqKey D_WSTAG481_800A6384[4] = {

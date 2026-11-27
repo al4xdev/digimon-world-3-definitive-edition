@@ -53,7 +53,7 @@ void wstag360_setup(void) {
     fieldstg_attr.init_layer(0);
 }
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag360_setup(void);
 
 s16 D_WSTAG360_800A5FA8[57] = {

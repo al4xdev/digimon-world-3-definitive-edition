@@ -1,7 +1,7 @@
 # WSTAG### stage overlays that are C units (src/wstag/wstag###.c, configure.py WSTAG_C): one name per line.
 # configure.py generates their splat configs with a `c` subsegment for .text (and `.rodata`), splat writes the
-# INCLUDE_ASM stub the first time. tools/wstag_groups.py shows which files share a code shape.
-# `WSTAG### data`: the file's .data is in its C file too (a `.data` subsegment; tools/wstag_data.py --apply).
+# INCLUDE_ASM stub the first time.
+# `WSTAG### data`: the file's .data is in its C file too (a `.data` subsegment).
 # `split=R:T:D`: the file is two objects (configure.py wstag_c_splits): the second (src/wstag/wstag###_<vram>.c)
 # starts at file offsets R (.rodata), T (.text) and D (.data).
 WSTAG200 data

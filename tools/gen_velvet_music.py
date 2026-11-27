@@ -317,7 +317,7 @@ def c_bytes(name, blob):
 
 
 def build(smooth, midi):
-    """(sep, tone edits, piano sample, smoothing report, tracks): everything the .inc and the listening tools carry."""
+    """(sep, tone edits, piano sample, smoothing report, tracks): everything the .inc carries."""
     div, tempos, tracks = parse_midi(midi)
     sep = build_sep(div, tempos, tracks, smooth)
     edits, report = tone_edits(smooth)

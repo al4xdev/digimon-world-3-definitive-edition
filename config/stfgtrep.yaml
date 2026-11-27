@@ -55,6 +55,6 @@ segments:
       # comes before D_STFGTREP_8008905C, used by 0x80083744.
       - [0x0,   .rodata, stfgtrep_80082E70]
       - [0x1C0, c, stfgtrep_80082E70]   # 0x80082E70: .text (tools/overlay_layout.py)
-      # .data, then .bss (zeros in the file), each per file in link order (tools/data_owners.py -t stfgtrep).
+      # .data, then .bss (zeros in the file), each per file in link order.
       - [0x3DD8, .data, stfgtrep_80082E70]   # 0x80086A88 (after the last function's jr ra); no .bss
   - [0x65F8]

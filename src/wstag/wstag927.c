@@ -120,7 +120,7 @@ void wstag927_setup(void) {
     fieldstg_attr.init_layer(0);
 }
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag927_setup(void);
 extern s16 D_WSTAG927_800A6508[];
 extern s16 D_WSTAG927_800A65FC[];

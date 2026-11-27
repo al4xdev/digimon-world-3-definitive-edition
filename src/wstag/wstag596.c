@@ -50,7 +50,7 @@ void wstag596_setup(void) {
     fieldstg_attr.init_layer(0);
 }
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag596_setup(void);
 
 FieldstgListedBattle D_WSTAG596_800A5F94 = { 116, 12, 0x60080000 };

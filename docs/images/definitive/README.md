@@ -20,7 +20,7 @@ show.
 | `velvet-room.svg` | the room's guests arriving with the story, the way in, Igor, the dreams, the Time Room | README, Velvet Room |
 | `blast.svg` | the Blast arc: unlock, gauge, dark forms, the price, Purify, the Chosen Evolution | README, Blast |
 | `super-rare-compass.svg` | the temperature compass, the flee and return, the 13 hunts, crystals and skins | README, Super Rares |
-| `cross-play.svg` | cloud sync between a handheld and a PC, pairing, conflicts, snapshots | README, platforms |
+| `cross-play.svg` | cloud sync between a handheld and a PC, pairing, conflicts, snapshots | README |
 
 The SVGs are the source. The numbers they show come from `port/game/definitive.h`: when one changes, redraw the picture.
 
@@ -37,19 +37,18 @@ opened by their test pokes); the behaviour shown is the game's own.
 | File | What it shows |
 |---|---|
 | `battle-weak.gif` | a Thunder technique on a weakness: WEAK!, the stagger, the HUD back for the extra action, INFO |
-| `battle-baton-pass.gif`, `battle-baton-pass-menu.png` | Baton Pass while the enemy is staggered |
+| `battle-baton-pass.gif` | Baton Pass while the enemy is staggered |
 | `battle-overfinish.gif` | OVERFINISH! on a knocked-out enemy |
 | `battle-inspect.png`, `battle-hud.png` | the direct-button HUD and the INFO panel |
-| `battle-tech.png` | the R1 technique list with each technique's element and MP |
 | `battle-tag.png` | Tag's close-up of the bench partner with its forms in a ring (WarGreymon picked) |
-| `battle-digivolve.gif`, `battle-digivolve.png` | Digivolve's ring, the two-step confirm and the digivolution |
+| `battle-digivolve.gif` | Digivolve's ring, the two-step confirm and the digivolution |
 | `battle-persona.png` | INFO on an enemy with a persona: the `!` mark, SHIFT and the guard explained at the foot (Woodmon on map 0x23B) |
-| `overlevel-rush.gif`, `overlevel-rush-panel.png` | the Rush prompt while walking and its rewards panel |
+| `overlevel-rush.gif` | the Rush prompt while walking |
 | `velvet-way-in.gif` | an inn's blue light, the prompt, the VELVET / SERVER card, the room |
 | `velvet-room.png` | the room at its highest guest level |
-| `black-market-replicas.png`, `black-market.gif` | the Black Market: a Core traded for materials (the DEAL! stamp), then the Replicas tab |
-| `bestiary.gif`, `bestiary.png` | the 3D Bestiary stage through its tabs (ALL, WILD, BOSS, RARE, SUPER, DRI, DARK) |
-| `super-hunt-board.png`, `super-hunt-dossier.gif`, `super-hunt-dossier.png` | the Sepikmon's hunt board and a locked hunt's Target Dossier |
+| `black-market-replicas.png` | the Black Market's Replicas tab |
+| `bestiary.gif` | the 3D Bestiary stage through its tabs (ALL, WILD, BOSS, RARE, SUPER, DRI, DARK) |
+| `super-hunt-dossier.gif` | a locked hunt's Target Dossier on the Sepikmon's board |
 | `guide-quest.png` | the GUIDE's Quest tab |
 
 Still to capture: the Digi-Lab's next-form requirements, Igor's dream panel, the Super Rare compass, hero skins, the
@@ -64,7 +63,6 @@ forge's requirement line, the DRI Gauntlet, a Blast form, Girls Power, the Time 
 | `damage.svg` | the multiplier part by part and each family's affinity ceiling (0.4 Fire/Wind, 0.8 pairs and Dark) |
 | `damage-pipeline.svg` | where the multiplier sits among the game's own damage steps |
 | `definitive_ui.png` | a capture: the bestiary, the five-family weakness panel, the technique menu's element |
-| `banner.svg` | the previous title banner (no longer shown) |
 
 ## Rules for the SVGs
 

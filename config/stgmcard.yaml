@@ -55,7 +55,7 @@ segments:
       - [0x0,    .rodata, stgmcard_80082CD0]
       - [0x20,   c, stgmcard_80082CD0]   # 0x80082CD0 .text: root object (82DC8 is the entry) and the memory card screen
       - [0x4F68, c, stgmcard_80087C18]   # 0x80087C18 stage module stgmcard_module (save icon, fades) (position strong)
-      # .data, then .bss (zeros in the file), each per file in link order (tools/data_owners.py -t stgmcard).
+      # .data, then .bss (zeros in the file), each per file in link order.
       - [0x53D8, .data, stgmcard_80082CD0]   # 0x80088088 (after the last function's jr ra)
       - [0x5AB8, .data, stgmcard_80087C18]   # 0x80088768 the stage module (its function table); no .bss
   - [0x5CA0]

@@ -1,7 +1,7 @@
 // Symbol names for AAA/PRO/FIGHTSTG.PRO (splat format). Tier-1 overlays share one address range,
 // so each overlay has its own symbol file; the EXE's names come from config/symbol_addrs.txt.
 
-// Functions spimdisasm cut short at a switch case (tools/split_case_sizes.py).
+// Functions spimdisasm cut short at a switch case.
 fightstg_script_get_slot = 0x8008B630; // type:func size:0x6C
 fightstg_message_list_members = 0x80098DE0; // type:func size:0x360
 

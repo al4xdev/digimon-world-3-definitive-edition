@@ -54,6 +54,6 @@ segments:
       # referenced in code order (856E4..85A40), no duplicated helpers.
       - [0x0,    .rodata, soundtst_80084370]
       - [0x16C0, c, soundtst_80084370]   # 0x80084370 .text (tools/overlay_layout.py)
-      # .data, then .bss (zeros in the file), each per file in link order (tools/data_owners.py -t soundtst).
+      # .data, then .bss (zeros in the file), each per file in link order.
       - [0x20C4, .data, soundtst_80084370]   # 0x80084D74 (after the last function's jr ra); no .bss
   - [0x2D98]

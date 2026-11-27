@@ -1,7 +1,7 @@
 /* The DRI Agents' Gauntlet, an evolution line's
  * four stages in one battle (the first three its enemy members, the Mega a wave), the battle it is set up as,
- * the Synergy accessory of each tier, and what unlocking it takes; then the DRI Agents. First written by
- * tools/gen_dri_challenges.py; hand-maintained (the generator is LEGACY). */
+ * the Synergy accessory of each tier, and what unlocking it takes; then the DRI Agents.
+ * Hand-maintained. */
 #include "definitive.h"
 
 const DefDriChallenge def_dri_challenges[] = {

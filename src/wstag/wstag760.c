@@ -53,7 +53,7 @@ void wstag760_setup(void) {
     }
 }
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag760_setup(void);
 
 s16 D_WSTAG760_800A5FAC[57] = {

@@ -82,7 +82,7 @@ void wstag968_setup(void) {
     fieldstg_attr.init_layer(0);
 }
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag968_setup(void);
 
 WstagExit D_WSTAG968_800A60D8 = { 0x2EE, 1, 1, 0x3A0, 0x1A0, 1, NULL };

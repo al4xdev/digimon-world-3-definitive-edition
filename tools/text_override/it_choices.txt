@@ -1,4 +1,4 @@
-# it_choices.txt: translated from pt_choices.txt (tools/check_story_lang.py; same format).
+# it_choices.txt: translated from pt_choices.txt (same format).
 Q8 DMG200:0 1@1: A bocca aperta [teddy:+1] | <7><9><7>Accidenti...<1>Allora è questo<1>Digimon Online?!<2,2>
 Q8 DMG200:0 1@2: Sul chi vive [ivy:+1] | <7><9><7>Troppo bello per<1>essere vero... Dov’è<1>la fregatura?<2,2>
 Q8 DMG200:0 1@3: Carica al massimo [rep:+1] | <7><9><7>Finalmente! Digimon<1>Online! Vediamo se<1>mantiene le promesse!<2,2>

@@ -504,7 +504,7 @@ s32 wstag210_fade_update(WindowAnim *fade) {
 
 const CVECTOR wstag210_color = { 0x54, 0x67, 0x96, 0 };
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag210_setup(void);
 
 s16 D_WSTAG210_800A77EC[44] = {

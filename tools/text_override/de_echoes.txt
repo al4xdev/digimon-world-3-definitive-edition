@@ -1,4 +1,4 @@
-# de_echoes.txt: translated from pt_echoes.txt (tools/check_story_lang.py; same format).
+# de_echoes.txt: translated from pt_echoes.txt (same format).
 Q8=1 DMG200:0 2: <7>Mitarbeiter<7><8,1><5,1>, willkommen<1>auf dem Asuka−Server.<1>Erst staunen alle.<2,2><3>Hol dir bitte deine<1>Digimon−Daten in der<1>Lobby ab.<2,2>
 Q8=2 DMG200:0 2: <7>Mitarbeiter<7><8,1><5,1>, willkommen<1>auf dem Asuka−Server.<1>Wirkt perfekt, ja.<2,2><3>Das fällt jedem auf.<2,2><3>Hol dir bitte deine<1>Digimon−Daten in der<1>Lobby ab.<2,2>
 Q8=3 DMG200:0 2: <7>Mitarbeiter<7><8,1><5,1>, willkommen<1>auf dem Asuka−Server.<1>Zeit loszulegen.<2,2><3>Hol dir bitte deine<1>Digimon−Daten in der<1>Lobby ab.<2,2>

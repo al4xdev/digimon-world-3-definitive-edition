@@ -94,7 +94,7 @@ void wstag949_setup(void) {
     fieldstg_attr.init_layer(0);
 }
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag949_setup(void);
 
 GamestatePos D_WSTAG949_800A6174[36] = {

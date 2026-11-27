@@ -67,11 +67,11 @@ segments:
       - [0x2640, c, stdwtitl_800852F0]   # 0x800852F0 85594 (own callback 85BE4) (position strong)
       - [0x3024, c, stdwtitl_80085CD4]   # 0x80085CD4 fade 85F44, 86544, title menu 86C70 (position weak: 85CD4..86834)
       - [0x4148, c, stdwtitl_80086DF8]   # 0x80086DF8 stage module: stdwtitl_module and its table (position strong)
-      # Psy-Q 4.7 LIBPRESS (tools/psyq_match.py --raw), 16-byte padded like the EXE's libraries.
+      # Psy-Q 4.7 LIBPRESS (matched by signature), 16-byte padded like the EXE's libraries.
       - [0x449C, asm, psyq/libpress/libpress]  # 0x8008714C LIBPRESS.LIB/LIBPRESS.OBJ
       - [0x4B2C, asm, psyq/libpress/vlc_c]     # 0x800877DC LIBPRESS.LIB/VLC_C.OBJ
       - [0x4EAC, asm, psyq/libpress/build]     # 0x80087B5C LIBPRESS.LIB/BUILD.OBJ
-      # .data, then .bss (zeros in the file), each per file in link order (tools/data_owners.py -t stdwtitl). Units without .data: 849D8, 84E44.
+      # .data, then .bss (zeros in the file), each per file in link order. Units without .data: 849D8, 84E44.
       # The game's .bss comes after LIBPRESS's .data, so it is .bss; LIBPRESS has no .bss.
       - [0x4F9C, .data, stdwtitl_80082D70]   # 0x80087C4C (after BUILD.OBJ's padding)
       - [0x5090, .data, stdwtitl_80083F80]   # 0x80087D40

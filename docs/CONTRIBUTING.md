@@ -42,7 +42,7 @@ This page covers what you need before you open a pull request. Background on the
   or [`help wanted`](https://github.com/al4xdev/digimon-world-3-definitive-edition/labels/help%20wanted).
 - **Planned work** on the [project board](https://github.com/users/gascarcella/projects/1).
 - **Names and types:** many overlay functions and fields are still `func_…`/`unk_…`.
-- **Matching workarounds:** every function matches ([`PROGRESS.md`](PROGRESS.md): 3606 of 3606), but some need
+- **Matching workarounds:** every function matches (3606 of 3606), but some need
   tricks to get there; `tools/venv/bin/python tools/hacks.py --list` shows each one, and cleaner C that still matches
   is welcome.
 - **Play-testing the PC port** against the original and reporting differences.
@@ -140,7 +140,6 @@ areas your change touches.
   why.
 - Fill in the [pull request template](../.github/PULL_REQUEST_TEMPLATE.md): what changed, how you tested it, and the
   checklist.
-- Update progress with `tools/venv/bin/python tools/progress.py --readme` if your change affects the counts.
 - A maintainer reviews and merges. CI must be green.
 
 ## Reporting issues

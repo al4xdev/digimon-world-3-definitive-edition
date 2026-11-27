@@ -1,7 +1,7 @@
 /* The Black Market's trader and its screen (the rules are definitive_market.c).
  *
  * The trader is one placed actor of the field (traders below: a map and the actor's FieldstgPlacedActor.id, which is
- * its object's key1), a figure of a secondary area chosen with tools/bm_npc_candidates.py. Talking to it does not
+ * its object's key1), a figure of a secondary area. Talking to it does not
  * start its own talk: FIELDSTG's talk asks def_bm_talk first, and when that takes it the screen opens on the field's
  * next idle frame (def_bm_frame, from fieldstg_manager_update's idle step, after the Guardromon's dw3_travel_frame).
  *
@@ -49,8 +49,8 @@ extern const unsigned char def_str_BMTitle[], def_str_BMTabTrade[], def_str_BMTa
     def_str_HuntSpace[], def_str_HuntHeld[], def_str_RecipeSep[], def_str_Slash[];
 
 /* The trader: a figure whose own talk sets no flag and that no event script moves, so taking its talk over loses
- * nothing (tools/bm_npc_candidates.py lists the towns' figures with their lines). The pick is to confirm on the lab with
- * the lines decoded; a map's copy in the second half of the game keeps the trader there too. */
+ * nothing A map's
+ * copy in the second half of the game keeps the trader there too. */
 typedef struct BmTrader {
     s16 map;   /* the field map */
     s16 actor; /* FieldstgPlacedActor.id: its actor's key1 */

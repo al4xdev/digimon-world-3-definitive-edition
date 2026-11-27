@@ -7,7 +7,7 @@ three together tell whether the party is ready for the point of no return.
   tools/venv/bin/python tools/gen_time_room.py           # print the table
   tools/venv/bin/python tools/gen_time_room.py --apply   # write port/game/definitive_time_room_table.c
 
-The stats of a species at a level come from its own rows in the game's battles (gen_dri_challenges.stage_of), the
+The stats of a species at a level come from its own rows in the game's battles (game_tables.stage_of), the
 battle it is set up as is an existing boss battle near the trial's top level (no escape, not one of the special ones),
 so its kind and immunities are a boss's. The trials give nothing (definitive_time_room.c skips the results screen)."""
 import argparse
@@ -16,7 +16,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
-import gen_dri_challenges as g  # noqa: E402
+import game_tables as g  # noqa: E402
 
 GEN = ROOT / "port/game/definitive_time_room_table.c"
 
@@ -36,7 +36,7 @@ ARC = ("Oikawa's arc", [365, 364, 236], [28, 30, 32])  # Arukenimon, Mummymon, V
 
 def table(trials=None):
     c = g.constants()
-    names, _order = g.species()
+    names, _order = g.species_names()
     rows, battles = g.battle_rows()
     out = []
     for who, species, levels in trials or TRIALS:

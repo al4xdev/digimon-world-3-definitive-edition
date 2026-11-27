@@ -1,5 +1,4 @@
-/* The enemies' weaknesses and resistances, one row per species. First written by tools/gen_enemy_weaknesses.py;
- * hand-maintained (the generator is LEGACY and no longer writes here). */
+/* The enemies' weaknesses and resistances, one row per species. Hand-maintained. */
 #include "definitive.h"
 
 const DefEnemyRow def_enemy_rows[] = {

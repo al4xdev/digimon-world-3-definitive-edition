@@ -1,7 +1,7 @@
 // Symbol names for AAA/PRO/STDWTITL.PRO (splat format). Tier-1 overlays share one address range,
 // so each overlay has its own symbol file; the EXE's names come from config/symbol_addrs.txt.
 
-// Psy-Q 4.7 (tools/psyq_match.py --raw)
+// Psy-Q 4.7
 // LIBPRESS.LIB/LIBPRESS.OBJ
 DecDCTReset = 0x8008714C; // type:func
 DecDCTGetEnv = 0x80087180; // type:func

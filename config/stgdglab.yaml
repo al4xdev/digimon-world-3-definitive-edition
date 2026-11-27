@@ -76,7 +76,7 @@ segments:
       - [0x95C8, c, stgdglab_8008C278]   # 0x8008C278 screen 8C960/8D774 (moderate)
       - [0xAB1C, c, stgdglab_8008D7CC]   # 0x8008D7CC screen 8E8D0/8EABC (run 8E018) (position strong: create 8D774 before it)
       - [0xBE80, c, stgdglab_8008EB30]   # 0x8008EB30 stage module: main object 8ED0C/8EFD0, helper table D_STGDGLAB_8008FD90.. (moderate)
-      # .data per file in link order (tools/data_owners.py -t stgdglab); no
+      # .data per file in link order; no
       # .bss. 8F470 is referenced by 82F48 only, 8F490 by 886DC, 8F4A4 by 8A92C (its own copy of 8F490's table).
       # 8F4B8 (the menu's screen creates: functions of 8A92C, 87070 and 82F48) is referenced only by 8EB30's
       # stgdglab_main_run, so it starts 8EB30's .data (weak: it could also end 8A92C's); 8F4C4..8FCA8 are the

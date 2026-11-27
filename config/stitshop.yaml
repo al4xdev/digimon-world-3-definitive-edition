@@ -59,6 +59,6 @@ segments:
       - [0x56C,  c, stitshop_8008321C]   # 0x8008321C .text: entry point, fade, the first window object
       - [0x2D10, c, stitshop_800859C0]   # 0x800859C0: the second window object, ..., the main object and the
                                          # module's function table (8D1AC); finer splits not proven
-      # .data, then .bss (zeros in the file), each per file in link order (tools/data_owners.py -t stitshop). 8321C has no .data.
+      # .data, then .bss (zeros in the file), each per file in link order. 8321C has no .data.
       - [0x9DF8, .data, stitshop_800859C0]   # 0x8008CAA8 (only 859C0 references it); no .bss
   - [0xA528]

@@ -63,7 +63,7 @@ segments:
       - [0x6174, c, stcrdshp_80088E24]  # 0x80088E24 the overlay's helper table D_STCRDSHP_8008CB80 (as
                                         # STCRDDEK 8A100), then the price lookups 89160, 8923C (tables
                                         # 8CB98/8CB9C; maybe their own file: data after the helper table's)
-      # .data, then .bss (zeros in the file), each per file in link order (tools/data_owners.py -t stcrdshp).
+      # .data, then .bss (zeros in the file), each per file in link order.
       - [0x65D8, .data, stcrdshp_8008300C]   # 0x80089288 (after the last function's jr ra)
       - [0x9E60, .data, stcrdshp_800853B4]   # 0x8008CB10 (8CAF8 is 8300C's, 8CB10 853B4's: references)
       - [0x9ED0, .data, stcrdshp_80088E24]   # 0x8008CB80 stcrdshp_util (its function table); no .bss

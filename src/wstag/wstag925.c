@@ -178,7 +178,7 @@ OBJECT_V0(WstagSpriteAnimObject *) wstag925_sprite_anim_create(s32 arg0) {
     OBJECT_V0_RETURN(obj) /* PC_PORT: FINDINGS 8: callers use the object (v0) */
 }
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag925_setup(void);
 extern s16 D_WSTAG925_800A65E4[];
 

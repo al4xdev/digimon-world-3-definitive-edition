@@ -407,7 +407,7 @@ Object *wstag935_event_1618_start(void) {
     return object_new(wstag935_menu_1618_update, sizeof(WstagMenu), sizeof(WstagMenuData));
 }
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag935_setup(void);
 
 FieldstgVramPlace wstag935_vram_places[15] = {

@@ -50,7 +50,7 @@ void wstag255_setup(void) {
 #endif
 }
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag255_setup(void);
 
 FieldstgVramPlace wstag255_vram_places[16] = {

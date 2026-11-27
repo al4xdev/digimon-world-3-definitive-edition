@@ -1,4 +1,4 @@
-# fr_echoes.txt: translated from pt_echoes.txt (tools/check_story_lang.py; same format).
+# fr_echoes.txt: translated from pt_echoes.txt (same format).
 Q8=1 DMG200:0 2: <7>Responsible Compte<7><8,1><5,1>, bienvenue<1>sur le serveur Asuka.<1>Tous admirent au début.<2,2><3>Merci de retirer les<1>données de ton Digimon<1>dans le hall.<2,2>
 Q8=2 DMG200:0 2: <7>Responsible Compte<7><8,1><5,1>, bienvenue<1>sur le serveur Asuka.<1>Ça a l’air parfait, oui.<2,2><3>Tout le monde le note.<2,2><3>Merci de retirer les<1>données de ton Digimon<1>dans le hall.<2,2>
 Q8=3 DMG200:0 2: <7>Responsible Compte<7><8,1><5,1>, bienvenue<1>sur le serveur Asuka.<1>L’heure de commencer.<2,2><3>Merci de retirer les<1>données de ton Digimon<1>dans le hall.<2,2>

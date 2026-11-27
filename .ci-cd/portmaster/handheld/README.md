@@ -4,7 +4,7 @@ The files that run on the console, versioned with the port they start. This fold
 package except the binaries (`dw2003` and the `dw3-launcher` menu, built from [`launcher/`](../../../launcher)), the mods, the
 licences and what belongs to the player. For running and deploying, see
 [`docs/HANDHELD.md`](../../../docs/HANDHELD.md); the player page is [`.ci-cd/portmaster/README.md`](../README.md); the
-publishing checklist is [`.ci-cd/portmaster/PUBLISHING.md`](../PUBLISHING.md).
+publishing steps are in [`.ci-cd/portmaster/PUBLISHING.md`](../PUBLISHING.md).
 
 | file | what it is |
 |---|---|

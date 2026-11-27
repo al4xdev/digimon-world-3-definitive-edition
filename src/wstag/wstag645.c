@@ -120,7 +120,7 @@ void wstag645_setup(void) {
     fieldstg_attr.init_layer(0);
 }
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag645_setup(void);
 
 WstagAnimKey D_WSTAG645_800A6230[13] = {

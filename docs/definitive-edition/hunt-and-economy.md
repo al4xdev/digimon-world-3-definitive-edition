@@ -189,8 +189,7 @@ enemy counters are untouched).
 - 25% common drop per enemy; the 16 commons are listed above.
 - Hooks: `fieldstg_encounter_start` (the Rare Target swap happens **before** the Rush); `def_log_end` ->
   `def_hunt_battle_end`; `def_hunt_flee`. The chain resets on a map region change and on a Guardromon teleport.
-- The table `port/game/definitive_hunt_targets.c` is hand-maintained; `tools/gen_hunt_targets.py` is legacy and refuses to
- overwrite it. The forge's recipes are checked by `tools/gen_recipes.py --check`.
+- The table `port/game/definitive_hunt_targets.c` is hand-maintained. The forge's recipes are checked by `tools/gen_recipes.py --check`.
 - Tests: `tests/port/definitive_hunt.py` (+ driver), the market, economy and DRI tests below.
 - The Rare Target's battle (`def_hunt_scale`): the target's slot of the drawn battle is moved to the first position and
   the three members are zeroed around it (one Digimon); its HP follows the level up or down (a strong
@@ -212,7 +211,6 @@ enemy counters are untouched).
   nothing on a miss, defeat or script); the caps; record 1 with only the hunt state or only materials written and read
   back (a count past the cap reads as the cap), a new game writes all zeros, an older record reads zero; record 2
   (counts and "ever held", damaged or missing reads empty); nothing changes or draws in a replay script.
-  `gen_hunt_targets.py` asserts the 13 Super Rares distinct and the 193-species commons table.
 - In-game recipe for the chain: load the map 0x21D field state (see "Making a battle state for tests"
   below), `mem_write` the chain near the threshold and `gamestate_data+0x30` (`encounter_timer`) = 1, walk, then check the
   Rare Target, the RARE! callout, that no Rush question appears and that fleeing succeeds.
@@ -327,10 +325,10 @@ enemy counters are untouched).
   the Ultimate, S for the Mega (the Rookie gives none), each tier the first time it is reached.
 - Tamer titles, one per line (`$DriRival<index>*`, in the order of `LINES`): the first five lines keep the slots they
   had in 0.8.5, so saves from before still match.
-- The table `port/game/definitive_dri_table.c` is hand-maintained (`tools/gen_dri_challenges.py` is legacy, so its `--check` differs); tests: `tests/port/definitive_dri.py` (+ driver).
+- The table `port/game/definitive_dri_table.c` is hand-maintained; tests: `tests/port/definitive_dri.py` (+ driver).
 - Save: unlocked bits (2 bytes, low first) and best stage per challenge (2 bits each, 4 bytes) in record 2 at
   `REC2_DRI` (right after the rare items' "ever held" bits; `port/game/definitive_bestiary.c`).
-- The agents (`AGENTS` in `tools/gen_dri_challenges.py`, `def_dri_agents` in `definitive_dri_table.c`; DDNA item and
+- The agents (`def_dri_agents` in `definitive_dri_table.c`; DDNA item and
   quest flag read from each agent's stage file, the DDNA boss's from the stage file that places him):
 
   | Agent | Map / actor | Rookie | DDNA item | DDNA from (boss, place, stage file) | Quest flag | Old level window (party level sum) |
@@ -472,7 +470,7 @@ that share a user. Never converted: items with an effect by ID in FIGHTSTG, with
 `OTHER_TEXTS` (port text for items 26, 46, 67, 70, 76).
 
 **Black Market.** `def_bm_talk(map, key1)` in `fieldstg_actor_talk_to` takes the talk and the screen opens on the next
-idle frame (`def_bm_frame`); `tools/bm_npc_candidates.py` lists each town's candidate actors. Each exchange swaps one
+idle frame (`def_bm_frame`). Each exchange swaps one
 rare for `DEF_BM_COMMONS` (12), only if all fit under the cap. A bought replica sets its bit (`def_record_replica`);
 with it on, `def_item_sell` pays 0 for that ID, and the bit clears when the player has none left (`def_bm_sweep`, every
 field frame). Tests: `tests/port/definitive_market.py`, `gen_replicas.py --check`.

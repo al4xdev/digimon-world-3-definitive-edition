@@ -56,7 +56,7 @@ void wstag381_setup(void) {
     }
 }
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag381_setup(void);
 
 FieldstgListedBattle D_WSTAG381_800A5FF8 = { 106, 13, 0x60080000 };

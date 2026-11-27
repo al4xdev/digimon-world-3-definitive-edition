@@ -352,7 +352,7 @@ $TravelKeys2: × button: Travel<1>△ button: Back
 
 # The Rare Target's Hunt Material line on the results screen (ESFGTRPT 11's layout,
 # without the indent: the loader trims a text's ends), and the materials' names: one per Rare Target battle, the
-# weakest battle's first (tools/gen_hunt_targets.py).
+# weakest battle's first.
 $HuntGotPrefix: Hunt material:<1>
 $HuntGotSuffix: <2,2>
 $HuntMat0: Bit Shard
@@ -588,7 +588,7 @@ $DriKeysUnlock: × button: Unlock<1>△ button: Back
 $DriKeysStart: × button: Start<1>△ button: Back
 $DriKeysConfirm: × button: Confirm<1>△ button: Back
 # The Tamers the simulations replay (classic characters, the old Digimon tamers, as rivals), one per
-# challenge in gen_dri_challenges.py's LINES order: the title on their page, the line before the fight, after a full clear
+# challenge in def_dri_challenges' order: the title on their page, the line before the fight, after a full clear
 # and after less. By title, not by name. The 11-pixel font has no comma, colon, slash or apostrophe here: none is used.
 $DriKeysFight: × button: Fight<1>△ button: Back
 $DriRival0: The Calm Tamer

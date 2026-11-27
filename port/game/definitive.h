@@ -417,7 +417,7 @@ void def_hunt_savestate(struct PortState *s);
 #define DEF_SUPER_COUNT 13
 #define DEF_SUPER_TUTORIAL 0         /* the tutorial hunt's index */
 #define DEF_HUNT_AREAS 0x2E          /* the world map areas of a server (ststatus_map_areas & 0x7F) */
-#define DEF_HUNT_SECTORS 5           /* North, East, Center, West, South (hand-made: tools/gen_hunt_targets.py) */
+#define DEF_HUNT_SECTORS 5           /* North, East, Center, West, South (hand-made) */
 #define DEF_SUPER_FLEE_PCT 25        /* of its full HP lost in one battle: it flees */
 /* The hits a Super Rare takes (but the tutorial's) do this percent of their damage: the battle's HP is an s16, so its bar
  * cannot be doubled (the rows already hold 15000 to 30000); halving the damage is the same, and each 25% takes twice as
@@ -693,7 +693,7 @@ int def_dri_unlock(int c);
 int def_dri_award(int c, int fallen, short items[DEF_DRI_TIERS]);
 const unsigned char *def_dri_cost_label(int c, int *palette);
 /* The Tamers the simulations replay (classic characters, the old Digimon tamers, as rivals), one per
- * challenge in the table's order (gen_dri_challenges.py's LINES, which checks en.txt has them): its title, its line
+ * challenge in the table's order: its title, its line
  * before the fight, after a full clear and after less (glyph bytes, $DriRival<n>*); NULL past them or in a replay. */
 #define DEF_DRI_RIVALS 16      /* Tamers with texts */
 #define DEF_DRI_RIVAL_NAME 0

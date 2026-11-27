@@ -28,7 +28,8 @@ one launcher, the C99 `launcher/`, with the same screens and options everywhere;
 - **Android (`arm64-v8a`) APK releases** (`.ci-cd/android/build_android.sh`, `android/`) link the parallel touch-first C99
   launcher (`launcher/main_android.c`, with larger clickable rows, `< BACK` header/footer pills, SAF disc picker, and
   the `FLOATING PAD` toggle in `GAME`) directly with the `PSXSTACK_SDL2` game and floating virtual gamepad
-  (`android/touch_pad.c`), using Android's native controller detection via SDL2.
+  (`android/touch_pad.c`), using Android's native controller detection via SDL2. The touch pad hides while a gamepad is
+  connected and comes back on the next tap.
 - **A desktop checkout's quick build** (`launcher/Makefile`, `-DDW3_TARGET_PC`, SDL2): `make -C launcher SDL=1`, then
   `./launcher/dw3-launcher --sdl` finds `build/port-sdl/dw2003`.
 

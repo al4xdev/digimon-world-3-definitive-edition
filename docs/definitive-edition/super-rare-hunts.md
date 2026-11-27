@@ -34,8 +34,8 @@
   sold at the Sepikmon's board (Square), not at the Black Market. Super Rares by order: MasterTyrannomon (29),
   Pharaohmon (37), Cherrymon (40), Knightmon (46), Whamon (46), WaruMonzaemon (47), BK Seraphimon (47), Kimeramon (52),
   Gryphonmon (56), GrapLeomon (57), HiAndromon (59), Kyukimon (61).
-- Sectors (`SECTORS` in `tools/gen_hunt_targets.py`): North, East, Center, West, South, each a list of world map areas,
-  per server (Asuka, Amaterasu).
+- Sectors (`def_hunt_sector_of` in `definitive_hunt_targets.c`): North, East, Center, West, South, each a list of world
+  map areas, per server (Asuka, Amaterasu).
 - **Map graph:** `tools/gen_map_graph.py --apply` -> `port/game/definitive_map_graph.c` (map event types 1 and 14 are
   exits): 239 maps, 415 exits, 123 with encounters (`def_map_wild`); `def_map_distance` is a BFS.
 

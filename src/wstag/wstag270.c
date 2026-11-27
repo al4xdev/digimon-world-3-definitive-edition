@@ -316,7 +316,7 @@ s32 wstag270_fade_update(WindowAnim *fade) {
     return 0;
 }
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag270_setup(void);
 
 s16 D_WSTAG270_800A6D08[84] = {

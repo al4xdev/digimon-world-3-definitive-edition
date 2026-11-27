@@ -922,7 +922,7 @@ void wstag310_setup(void) {
     fieldstg_attr.init_layer(0);
 }
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag310_setup(void);
 
 s16 D_WSTAG310_800A7AD8[204] = {

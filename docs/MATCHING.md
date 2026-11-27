@@ -25,16 +25,11 @@ scripts/build.sh                  # splat + ninja; must end "build passed" (also
 | splat (`configure.py`) | Splits each target from `config/<target>.yaml` into `asm/<t>/` and `src/<t>/` stubs; `configure.py` also writes `build.ninja` and `objdiff.json` |
 | `tools/cc_psx.sh` | The one compile path: cpp → cc1 (GCC 2.8.1 `-O2`) → maspsx (ASPSX 2.80) → GNU as. ninja, the permuter and the scripts all use it. `-V`, `-G`, `-D`, `--data-in-c` |
 | m2c (`tools/ext/m2c`) | First draft: `m2c.py --target mipsel-gcc-c --context <ctx.h> asm/<t>/nonmatchings/<unit>/<func>.s` |
-| `tools/compiler_id.py --target <t> --rodata-end <addr>` | m2c drafts of a whole target, scored; the exact ones are free matches |
 | `tools/unit_diff.py <unit> [func] [-t <target>] [-D NON_MATCHING]` | Scores one C unit against the original per function and data section, no ninja, parallel-safe; with a function, a side-by-side instruction diff |
 | objdiff (`tools/bin/objdiff-cli`) | Per-function diff and the progress report (`objdiff.json`) |
 | asm-differ (`tools/ext/asm-differ/diff.py -mw <func>`) | Live terminal diff; EXE functions only |
 | decomp-permuter (`tools/ext/decomp-permuter`) | Random source mutations scored against the target; a hint, never the answer |
-| `tools/psyq_compare.sh [-D NON_MATCHING] <file.c> <func>` | One function through Sony's real Psy-Q chain and ours (needs the optional `setup.sh psyq`) |
-| `tools/split_case_sizes.py asm/<t>/X.s` | `size:` lines that merge switch-case pieces spimdisasm split off as `jlabel` functions |
-| `tools/overlay_layout.py`, `tools/overlay_xref.py` | An overlay's section boundaries; per-function evidence for file boundaries |
-| `tools/data_owners.py`, `tools/data_to_c.py` | Which C file owns each data symbol; a symbol as a C initializer |
-| `tools/wstag_groups.py --funcs/--add/--propagate/--rename` | Functions shared by WSTAG stage files: match one, copy to the rest |
+| `tools/overlay_layout.py` | An overlay's section boundaries |
 | cc1 dump flags | `-dL` (loop.c hoisting decisions), `-dl`/`-dg` (local/global allocation priorities) |
 
 `tools/ext/*` (m2c, asm-differ, decomp-permuter) and `tools/bin/objdiff-cli` are not in a fresh checkout: they are
@@ -58,7 +53,7 @@ GCC 2.8.1's sources, for reading why the compiler chose something:
 
 ## The loop per function
 
-1. **Draft** with m2c (or take the `compiler_id.py` draft) and replace the `INCLUDE_ASM` in `src/<t>/<unit>.c`.
+1. **Draft** with m2c and replace the `INCLUDE_ASM` in `src/<t>/<unit>.c`.
    m2c misreads arguments of calls through function pointers (check `a2`/`a3` and stack stores in the asm) and its
    store order is not source order.
 2. **Score** with `tools/unit_diff.py <unit> <func> -t <t>`. A near-100% "label-only" difference can hide a real one
@@ -91,7 +86,7 @@ GCC 2.8.1's sources, for reading why the compiler chose something:
 ## Splitting a target into files
 
 Evidence:
-- `tools/overlay_xref.py <target>`: lines starting `|` are jump-table parity breaks: a table whose `(address - base)
+- Jump-table parity breaks: a table whose `(address - base)
   mod 8` differs from the previous one starts a new object (objects are packed at 4, tables 8-aligned within their
   object). A zero pad word after an odd-length table ties the next table to the same object.
 - Positions: create/update pairs, static helpers placed just before their only caller, define-before-use, `.data` and
@@ -207,7 +202,7 @@ Each pattern below matched at least one function. Try them before searching blin
   that already exists (`default:` just before `result = 1;`) is recorded and merged later. Put `case 0: default:` first
   to keep per-case tails separate. Branch sense decides which copies merge.
 - GCC emits a self tail call as `j` only for `return f(...)` in an int function.
-- spimdisasm may start a "function" at a jump-table target: merge it back with `split_case_sizes.py`'s `size:` line.
+- spimdisasm may start a "function" at a jump-table target: merge it back with a `size:` line.
 
 ### Loops
 - loop.c hoists an invariant when threshold × savings × lifetime ≥ the loop's insn count (threshold 1 + the number of
@@ -301,7 +296,6 @@ those `docs/STATUS.md` quotes (STATUS owns the numbers). A change that adds or r
   inline asm: `--preserve-macros 'gte_\w+'` and run `strip_other_fns` on `base.c` after importing. For allocation
   differences, raise the weights of `perm_temp_for_expr`, `perm_reorder_decls`, `perm_refer_to_var`; for a difference
   inside one basic block, permute a copy reduced to that block. Re-score its outputs with an instruction diff.
-- **Psy-Q cross-check:** `tools/psyq_compare.sh` when the toolchain itself is in doubt (so far it never was).
 
 ## Working in parallel
 

@@ -49,7 +49,7 @@ void wstag386_setup(void) {
     fieldstg_attr.init_layer(0);
 }
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag386_setup(void);
 
 s16 D_WSTAG386_800A5F7C[78] = {

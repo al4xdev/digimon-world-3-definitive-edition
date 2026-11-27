@@ -146,7 +146,7 @@ def roundtrip(tables, inv):
 # every text with no line of its own in en_kaili.txt / pt_kaili.txt names Junior as Ivy, and Ivy or Kail as Junior;
 # Smith Junior, the Black Market's boy, keeps his name. A line that no longer fits its box is rewrapped within its page.
 # Portuguese swaps the same names: its rewrite is written without gendered words next to them and without articles before
-# them (tools/check_pt_text.py warns), and a line that still needs its own Girls Power wording has one in pt_kaili.txt.
+# them, and a line that still needs its own Girls Power wording has one in pt_kaili.txt.
 # (Smith Junior, the Black Market's boy, is Herrero Junior on the Spanish disc)
 NAMES = re.compile(r"(?<!Smith )(?<!Herrero )(?<![A-Za-z])(Junior|Ivy|Kail)(?![a-z])")
 NAMES_PT = NAMES
@@ -486,7 +486,7 @@ def load_echoes(choices, path):
 
 # The story layer's languages, in def_lang()'s order (DEF_STORY_LANGS on the C side): each has <code>_story.txt,
 # _choices.txt, _echoes.txt and _kaili.txt (same formats as the English files). Portuguese is the source the others are
-# translated from (tools/check_story_lang.py checks a language against it); the English stands in, entry by entry, for
+# translated from; the English stands in, entry by entry, for
 # what a language lacks. Under the rewrite each language keeps its own disc text (STORY_DISC; Portuguese has pt.txt).
 STORY_LANGS = ["en", "pt", "fr", "de", "it", "es"]
 STORY_SOURCE = "pt"

@@ -112,7 +112,7 @@ void wstag232_setup(void) {
     }
 }
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag232_setup(void);
 
 WstagAnimKey D_WSTAG232_800A61CC[20] = {

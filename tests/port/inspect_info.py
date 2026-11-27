@@ -3,7 +3,7 @@
 line, in every language and with the table's largest values, fits the legend's room in the 14-pixel font; no entry
 has more than two lines; with each persona row's traits the panel ends inside the 240-line screen; and the traits
 row's pictures never reach the turn queue at the row's right end. The widths are the font's own
-(tools/translate_ptbr.py line_pixel_width, from the EXE's glyph metrics): needs the disc.
+(font_widths, from the EXE's glyph metrics): needs the disc.
 
 The layout numbers below mirror the FIGHTSTG_INSPECT_* defines; change both together."""
 import re
@@ -12,7 +12,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools"))
-import translate_ptbr as tp  # noqa: E402
+import dump_text as dt  # noqa: E402
 
 LANGS = ["en", "pt", "fr", "de", "it", "es"]
 X = 174                         # FIGHTSTG_INSPECT_X: the panel's text starts here
@@ -24,6 +24,36 @@ LEGEND_Y = 92 + LINE + LINE * 3 + 4  # under a traits row and the grid's three l
 SCREEN_H = 240
 BADGE_GAP = 3                   # pictures and queue never touch
 QUEUE_W = 12 * 2 + 7            # the three chips: FIGHTSTG_INSPECT_QUEUE_STEP, _CHIP
+
+
+def font_widths():
+    """{character: pixels} of Font 1 (14 px), from the disc's character tables and src/main/font.c's glyphs."""
+    chars, ext = dt.char_tables()
+    src = (ROOT / "src/main/font.c").read_text()
+
+    def parse_adv(name):
+        block = src[src.index(f"FontGlyph {name}["):]
+        block = block[:block.index("};")]
+        out = []
+        for line in block.splitlines()[1:]:
+            nums = [int(x, 0) for x in re.findall(r"-?0x[0-9A-Fa-f]+|-?\d+", line)]
+            if len(nums) == 11:
+                out.append(nums[7] + nums[9])
+        return out
+
+    g14 = parse_adv("font_glyphs_14")
+    g14_ext = parse_adv("font_glyphs_14_ext")
+    px = {}
+    for g, code in sorted(chars.items()):
+        if 0 <= g - 4 < len(g14):
+            px.setdefault(dt.sjis(code), g14[g - 4])
+    for g, code in sorted(ext.items()):
+        if 0 <= g - 1 < len(g14_ext):
+            px.setdefault(dt.sjis(code), g14_ext[g - 1])
+    for g, ch in dt.LATIN.items():
+        if 0 <= g - 1 < len(g14_ext):
+            px[ch] = g14_ext[g - 1]
+    return px
 
 
 def strings(lang):
@@ -55,6 +85,7 @@ def rows():
 def main():
     guard_pct = int(re.search(r"#define DEF_GUARD_PCT (\d+)", (ROOT / "port/game/definitive.h").read_text()).group(1))
     table = list(rows())
+    px = font_widths()
     turns = max([r["turns"] for r in table] + [1])
     speed = max([r["speed"] for r in table] + [1])
     bad = 0
@@ -80,7 +111,7 @@ def main():
                 if "<" in text:
                     print(f"inspect_info: {lang}: {kind}: a line of its own may not break: {text!r}")
                     bad += 1
-                w = tp.line_pixel_width(text)
+                w = sum(px.get(ch, 6) for ch in text)
                 if w > LEGEND_PX:
                     print(f"inspect_info: {lang}: {kind}: {text!r} is {w} px, the legend has {LEGEND_PX}")
                     bad += 1

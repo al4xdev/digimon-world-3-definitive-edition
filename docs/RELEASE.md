@@ -24,6 +24,9 @@ its `release.yaml` workflow automatically.
   - `PORTMASTER_REPO_TOKEN`: PAT with `Contents: write` + `Actions: write` on `al4xdev/PortMaster-MV-New` so tagged
     releases (or `workflow_dispatch` with `sync_portmaster=true`) automatically update `ports/dw3/` there and trigger
     its release workflow.
+  - `ANDROID_KEYSTORE_B64` (the release keystore in base64), `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`,
+    `ANDROID_KEY_PASSWORD`: the APK's release key. Without it the APK is signed with a throwaway debug key, which does
+    not install over a release-signed one.
   - Repository variables `RELEASE_RUN_CI` = `true` and `RELEASE_DRAFT` = `true`.
 
 ## Making a release

@@ -1,4 +1,4 @@
-# es_story.txt: translated from pt_story.txt (tools/check_story_lang.py; same format).
+# es_story.txt: translated from pt_story.txt (same format).
 DMG200:0 1: <7><9><7>¡Vaya...!<1>¿Así que esto es<1>Digimon Online?<2,2>
 DMG200:0 2: <7>Administrador.<7>¡<8,1><5,1>!<1>¡Cuenta activada en<1>el Servidor Asuka!<2,2><3>Tus Digimon ya te<1>esperan en el<1>vestíbulo. ¡Corre!<2,2>
 DMG200:0 3: <7><9><7>¿¡Mis propios<1>Digimon?!<2,2><3>¡Voy ya! ¡No pierdo<1>ni un segundo más!<2,2>

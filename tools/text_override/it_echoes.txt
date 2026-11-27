@@ -1,4 +1,4 @@
-# it_echoes.txt: translated from pt_echoes.txt (tools/check_story_lang.py; same format).
+# it_echoes.txt: translated from pt_echoes.txt (same format).
 Q8=1 DMG200:0 2: <7>Impieg.<7><8,1><5,1>, diamo il<1>benvenuto sul server<1>Asuka. All’inizio<2,2><3>tutti si incantano.<2,2><3>Ritira i dati del tuo<1>Digimon nell’atrio,<1>prego.<2,2>
 Q8=2 DMG200:0 2: <7>Impieg.<7><8,1><5,1>, diamo il<1>benvenuto sul server<1>Asuka. Sembra proprio<2,2><3>perfetto, sì. Lo<1>notano tutti.<2,2><3>Ritira i dati del tuo<1>Digimon nell’atrio,<1>prego.<2,2>
 Q8=3 DMG200:0 2: <7>Impieg.<7><8,1><5,1>, diamo il<1>benvenuto sul server<1>Asuka. Ora d’iniziare.<2,2><3>Ritira i dati del tuo<1>Digimon nell’atrio,<1>prego.<2,2>

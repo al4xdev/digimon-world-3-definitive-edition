@@ -95,7 +95,7 @@ Object *wstag926_lowering_create(s32 arg0) {
     return object_create(wstag926_lowering_update, sizeof(Wstag926Lowering), 0, arg0);
 }
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag926_setup(void);
 extern s16 D_WSTAG926_800A6424[];
 

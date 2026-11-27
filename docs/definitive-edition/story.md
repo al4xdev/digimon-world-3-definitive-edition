@@ -114,13 +114,10 @@ translated from it. The sources are in `tools/text_override/`. `pt_story.txt` / 
 for an event scene's table, `FILE index: text` for a talk file): childish or simple dialogue made more serious without
 changing order or quests, and gender-neutral wherever the hero is concerned. `pt_kaili.txt` / `en_kaili.txt`: Girls
 Power's mode, the lines the automatic name swap gets wrong; a text starting `>hero ` is said by the hero (the balloon
-moves to the player). FR/DE/IT/ES have the same four files (`tools/check_story_lang.py` `--all` checks them against the
-Portuguese). `DW3_STORY=0` turns the layer off (the game's own text, to compare). Logs: `story: echo ...`, `story:
-kaili line ...`, `story: ... choice N answered M`. Checkers: `tools/check_story_text.py [FILE]` (the English sources
-and `pt_kaili.txt` by default; exit 1 on an error): the same speaker plate and control codes as the disc's line, 22
-letters a line in balloons (38 in unplated narration), 3 lines a page, the page structure (each page ends with `<2,2>`,
-every later page starts with `<3>`), and no gendered word about the hero; `tools/check_pt_text.py`: each Portuguese
-file against its English pair. Girls Power's swap (`tools/gen_text_override.py`, `NAMES`): every line without its own
+moves to the player). FR/DE/IT/ES have the same four files. `DW3_STORY=0` turns the layer off (the game's own text, to compare). Logs: `story: echo ...`, `story:
+kaili line ...`, `story: ... choice N answered M`. Text rules: the same speaker plate and control codes as the disc's line, 22 letters a line in balloons (38 in unplated
+narration), 3 lines a page, each page ending with `<2,2>` and every later page starting with `<3>`, and no gendered word
+about the hero. Girls Power's swap (`tools/gen_text_override.py`, `NAMES`): every line without its own
 entry names Junior as Ivy, and Ivy or Kail as Junior (Smith Junior keeps his name), rewrapped within its page. With
 their own entries in `en_kaili.txt`: the brother's lines, the "he/him" ones (DMG700:0 2, DMG200:32 3, DMG600:15
 18/20/23) and the account-name joke (DMG200:3/4/5 7-8); the swap makes the `$Open*` lines. Portuguese swaps the same
@@ -167,7 +164,7 @@ is no game over (`def_time_defeat`, the party as it went in) and, like walking o
 room with the run reset (`story_gate` 0). The third win sets `DEF_STORY_GATE_PASSED` and the gate opens. The run is RAM (a
 save state carries it); the save keeps the gate bits and `story_gate` (0..3 trials won in the current run). `tools/gen_time_room.py
 [--apply]` builds the table: each species' stats at its level from its own rows in the game's battles
-(`gen_dri_challenges.stage_of`) and, as the template, an existing boss battle near the trial's top level (not one of the
+(`game_tables.stage_of`) and, as the template, an existing boss battle near the trial's top level (not one of the
 special ones, none with the final bosses); the levels climb towards Galacticmon's. Spots were measured on the attribute map:
 `DW3_TIME_TEST="map:x:y:step"` (hex or decimal) warps to the map at the first idle frame, then sets the step and reloads it
 (0x2B also holds Galacticmon, as event 1080's end); it logs the player's position every 30 frames and the landed map's size,

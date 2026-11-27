@@ -97,7 +97,7 @@ then `.text`, then `.data`, then `.bss`, **written into the file as zeros** like
 `0x8009B8EC`–`0x8009BB48` and FIGHTSTG's `0x800A46D0`–`0x800A47A0` are zero variables in code order, not `.data`
 order, and nothing is referenced past the file's end). Every tier-1 overlay builds byte-identical
 (`config/<overlay>.yaml`; boundaries from `tools/overlay_layout.py`). How much of each is matching C is in
-`docs/STATUS.md` and `docs/PROGRESS.md`. `STGTRAIN`'s `.text` starts 0x1CC bytes before where
+`docs/STATUS.md`. `STGTRAIN`'s `.text` starts 0x1CC bytes before where
 `overlay_layout.py` put it (11 frameless setters).
 
 | Overlay | Size | `.text` | `.data`+`.bss` | Psy-Q |

@@ -73,7 +73,7 @@ segments:
       - [0x26A4, c, wfightts_800A8484]  # 0x800A8484 menu 3 (stages) and its creator 8760
       - [0x29B8, c, wfightts_800A8798]  # 0x800A8798 menu 4 (techniques) and its creator 8CE8
       - [0x2F54, c, wfightts_800A8D34]  # 0x800A8D34 menu 5 (scripts) and its creator 931C
-      # .data, then .bss (zeros in the file), per file in link order, in C (tools/data_owners.py -t wfightts). .bss: the zeros from 0x800A9638 to the end (they could be
+      # .data, then .bss (zeros in the file), per file in link order, in C. .bss: the zeros from 0x800A9638 to the end (they could be
       # zero-initialised .data: weak); wfightts_camera_0 is 0x40 bytes, its last 0xC unreferenced.
       - [0x3588, .data, wfightts_800A67B8]  # 0x800A9368 (after the last function's jr ra)
       - [0x35D0, .data, wfightts_800A7A90]  # 0x800A93B0 menu 1's column, cursors, first lines

@@ -6,9 +6,9 @@ can ask for different materials in each, so the table is by shop and item.
   tools/venv/bin/python tools/gen_recipes.py            # write port/game/definitive_recipes.c and the list for review
   tools/venv/bin/python tools/gen_recipes.py --check    # exit 1 if the committed table is not the rule's
 
-Needs the user's disc (the species, through gen_hunt_targets): without it --check says so and passes. Reads the items
+Needs the user's disc (the species, through game_tables): without it --check says so and passes. Reads the items
 from src/main/records.c, the shops' goods and towns through gen_equipment, the regions, their encounters, their
-commons and the compass's map graph through gen_hunt_targets, the Rare Targets from port/game/definitive_hunt_targets.c.
+commons and the compass's map graph through game_tables, the Rare Targets from port/game/definitive_hunt_targets.c.
 The numbers are definitive.h's (DEF_RECIPE_*) and LEVEL_AT / AMOUNT below. Rule, on the old buying price:
   - the shop's regions: those whose maps are up to DEF_RECIPE_REACH exits from one of the shop's maps, on the shop's
     server, at most DEF_RECIPE_OVER over the level the shop's dearest item is bought at (LEVEL_AT); none: the lowest of
@@ -105,20 +105,20 @@ def world():
     """The hunt's data: {region: (mean level, Counter of commons over its encounters' enemies)}, {map: region},
     {common: its species' mid level}, the map graph and the map areas."""
     from collections import Counter
-    import gen_hunt_targets as gh
-    battles = gh.battle_info()
-    regions = gh.regions_of(battles)
-    com, level, sp = gh.commons(battles)
+    import game_tables as gt
+    battles = gt.battle_info()
+    regions = gt.regions_of(battles)
+    com, level, sp = gt.commons(battles)
     idx = {x["id"]: i for i, x in enumerate(sp)}
     info = {}
     for k, r in regions.items():
         c = Counter(com[idx[s]] for b in r["enc"] for s, _ in battles[b]["enemies"] if s in idx and com[idx[s]] != 0xFF)
-        info[k] = (gh.mean_level(r, battles), c)
+        info[k] = (gt.mean_level(r, battles), c)
     mid = {}
     for m in range(16):
         lv = [level[i] for i, c in enumerate(com) if c == m]
         mid[m] = (min(lv) + max(lv)) / 2
-    return info, {m: k for k, r in regions.items() for m in r["maps"]}, mid, gh.map_graph(), gh.map_areas()
+    return info, {m: k for k, r in regions.items() for m in r["maps"]}, mid, gt.map_graph(), gt.map_areas()
 
 
 def shop_regions(maps, info, map_region, graph, areas, top_level, c):
@@ -230,7 +230,7 @@ def render(rows):
 
 
 def write_md(rows):
-    import gen_hunt_targets as gh
+    import game_tables as gt
     OUT.mkdir(parents=True, exist_ok=True)
     en = (ROOT / "tools/text_override/en.txt").read_text()
     mats = {int(i): n.strip() for i, n in re.findall(r"^\$HuntMat(\d+): (.*)$", en, re.M)}
@@ -238,7 +238,7 @@ def write_md(rows):
                        .split("def_super_rares")[0])
     import gen_equipment as ge
     towns = ge.shop_towns()
-    areas = gh.map_areas()
+    areas = gt.map_areas()
     c = constants()
     lines = ["# The forge's recipes, by shop", "",
              "Every piece of equipment a shop sells asks, besides its Bits, for a common material of the hunting regions "
@@ -250,7 +250,7 @@ def write_md(rows):
     for sh, i, it, com, n, rare, rn in rows:
         if sh != shop:
             shop = sh
-            where = ", ".join(sorted({gh.area_name(areas[m & 0xFF]) for m in towns[sh]}))
+            where = ", ".join(sorted({gt.area_name(areas[m & 0xFF]) for m in towns[sh]}))
             lines += ["", f"## Shop {sh} ({where}; maps {' '.join('%X' % m for m in sorted(towns[sh]))})", "",
                       "| ID | item | old price | common | rare |", "| --- | --- | --- | --- | --- |"]
         r = "—" if rare < 0 else f"{names[rare] if rare < len(names) else rare} x{rn}"

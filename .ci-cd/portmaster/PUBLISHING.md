@@ -24,18 +24,6 @@ configured, tagged releases (or manual `workflow_dispatch` runs with `sync_portm
 .ci-cd/portmaster/make_release.sh   # dist/dw3.zip
 ```
 
-## Open steps
-
-- [x] **Open a testing thread** in the PortMaster Discord. It is required before a pull request. Give the device and CFW
-      tested, the resolution and the known issues (see "Known issues" in `.ci-cd/portmaster/README.md`). Done: the release is
-      in its testing phase there, not yet in the catalogue; it was run under emulation on every CFW of
-      the test matrix ("Tested on" in `.ci-cd/portmaster/README.md`).
-- [ ] **Fork `PortMaster-MV-New`**, sparse-checkout it, put the contents of `dist/dw3.zip` under `ports/dw3/`, run the
-      repository's check (`python3 tools/build_release.py --do-check`; this script is not in this repository and its
-      name has not been confirmed against the current PortMaster-MV-New), and open the pull request citing the thread.
-- [ ] **Test other firmware.** Only the XF35H on EmuELEC has been tested; the other rows of "Tested on" in
-      `.ci-cd/portmaster/README.md` are open.
-
 ## After any change
 
 1. Fix the source here (`.ci-cd/portmaster/handheld/`, `.ci-cd/portmaster/`), not the copy in the zip.

@@ -103,8 +103,8 @@ TARGETS += [Target(n.lower(), f"config/{n.lower()}.yaml", f"build/{n}.PRO", f"co
 # A file listed in WSTAG_C (one name per line) is a C unit: its .rodata (if any) and .text are the C file
 # src/wstag/wstag###.c (one src directory for all of them; splat writes the INCLUDE_ASM stub the first time).
 # Its .data stays generated asm unless the line says `data` (WSTAG### data): then the .data is the C file's too
-# (tools/wstag_data.py writes it; the file is DATA_IN_C). Every other file is asm units only. tools/wstag_groups.py groups the files by
-# code shape. unit_diff: `tools/unit_diff.py wstag### -t wstag` (expected objects go to build/expected/<src dir>/).
+# (the file is DATA_IN_C). Every other file is asm units only.
+# unit_diff: `tools/unit_diff.py wstag### -t wstag` (expected objects go to build/expected/<src dir>/).
 # A file's own names and sizes, if any, are in WSTAG_SYMBOLS (the files share addresses, so one each).
 # A `split=R:T:D` flag makes the file one more C unit src/wstag/wstag###_<.text vram>.c from those offsets
 # (wstag_c_splits; WSTAG924, whose jump tables start 4 mod 8 after the setup's CVECTOR).
@@ -258,7 +258,7 @@ def write_wstag_configs():
         write_if_changed(out / f"{name}.PRO.sha1", f"{sha1[name]}  {name}.PRO\n")
 
 # Compiler per C file; anything not listed uses DEFAULT_CC (tools/cc_psx.sh picks the matching
-# ASPSX version for maspsx). GCC 2.8.1 is confirmed by tools/compiler_id.py (docs/TOOLCHAIN.md).
+# ASPSX version for maspsx). GCC 2.8.1: docs/TOOLCHAIN.md.
 DEFAULT_CC = "2.8.1"
 CC_OVERRIDES: dict[str, str] = {}      # "src/main/foo.c": "2.7.2"
 # -G per target: the EXE's game files are -G8 (all match at -G8, 10 need it, and

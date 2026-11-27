@@ -73,7 +73,7 @@ void wstag200_setup(void) {
     }
 }
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag200_setup(void);
 
 s16 D_WSTAG200_800A60A0[86] = {

@@ -53,7 +53,7 @@ void wstag958_setup(void) {
     fieldstg_attr.init_layer(0);
 }
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag958_setup(void);
 extern s16 D_WSTAG958_800A6304[];
 

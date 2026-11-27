@@ -95,7 +95,7 @@ segments:
                                           # forward calls in the overlay besides the root's
       - [0x20A34, c, cardgame_cpu]   # 0x800A36E4 (strong) the CPU player: A4978 (called by 9FDD8) and its
                                           # helpers, its tables 83B04..83E34; no .data
-      # .data, then .bss (zeros in the file), per file in link order (tools/data_owners.py -t cardgame). Each table is referenced by its own file only, in link order, except:
+      # .data, then .bss (zeros in the file), per file in link order. Each table is referenced by its own file only, in link order, except:
       # - D_800A5958 (the slot origins [screen mode][side]) is read by 85DE8 and 9D6E0 but sits between 954F8's
       #   .data and 96950's: defined in one of those two (neither reads it) or a data-only file; given to 96950,
       #   whose .text start was placed by it (weak, see above). D_800A5C20 (card IDs, also read by 85DE8) starts

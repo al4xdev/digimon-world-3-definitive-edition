@@ -6,7 +6,7 @@
  * entry that FIELDSTG calls (fieldstg_stage.entry), a setup that fills fieldstg_stage and loads the
  * map attribute layers (fieldstg_attr), and the stage's own objects. Their .data (battle lists, VRAM places,
  * talk flags and texts, placed actors, sprites, map events, event scripts and the event table, the stage's
- * function table) is defined at the end of each file (tools/wstag_data.py, `data` in config/wstag_c.txt), in
+ * function table) is defined at the end of each file (`data` in config/wstag_c.txt), in
  * address order; the functions above it declare what they use extern. */
 
 #include "common.h"

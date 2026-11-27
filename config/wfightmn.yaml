@@ -65,7 +65,7 @@ segments:
       - [0x1C, .rodata, wfightmn_800A6440]
       - [0xEC,  c, wfightmn_800A5ECC]  # 0x800A5ECC .text (tools/overlay_layout.py: first stack frame)
       - [0x660, c, wfightmn_800A6440]  # 0x800A6440 (position moderate: 800A6440..800A6C44)
-      # .data in C (tools/data_owners.py -t wfightmn): every symbol is
+      # .data in C: every symbol is
       # 800A6440's (the screen RECT, two technique tables, the event-handler table, a script table); no .bss.
       - [0x4F28, .data, wfightmn_800A6440]  # 0x800AAD08 (after the last function's jr ra)
   - [0x50C8]

@@ -19,10 +19,9 @@ The decompilation and the port's own internals (formats, matching, performance, 
 | [Blast, Purify and Chosen Evolution](blast.md) | the Blast Gauge, overheat, the boost, the DV Plug, the Purify quest, the Chosen Evolution |
 | [Girls Power](girls-power.md) | playable Kail: sprite repaint, hand-drawn frames, the story text swap, the tools |
 | [Comfort, battle HUD and launcher options](interface.md) | the comfort and PC features list, the direct-button battle HUD, launcher design rules |
-| [Texts and translation](texts-and-translation.md) | text overrides, fonts, PT-BR as a 6th language, the translation pipeline, FR/DE/ES/IT |
+| [Texts and translation](texts-and-translation.md) | text overrides, fonts, PT-BR as a 6th language, FR/DE/ES/IT |
 | [Save format](save-format.md) | the memory card records the edition adds |
 | [Building, running, mods, tools, tests, debugging](port-and-tools.md) | command line options, environment variables, `port/mods/`, `tools/`, the tests, the MCP |
-| [Platforms](platforms.md) | the launcher, cloud sync, handhelds, Android, PortMaster, performance |
 
 The figures these pages show live in [`docs/images/definitive/`](../images/definitive/README.md).
 

@@ -53,7 +53,7 @@ void wstag411_setup(void) {
     }
 }
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag411_setup(void);
 
 FieldstgVramPlace wstag411_vram_places[10] = {

@@ -9,7 +9,7 @@
 #   THIS script into tools/, one tree for the game and the stack: psxstack's build reads them through
 #   PSXSTACK_TOOLS_DIR (port/CMakeLists.txt and the scripts pass $ROOT/tools); psxstack's own scripts/setup.sh is not
 #   run here. Its pins must stay equal to these (psxstack's CI builds its own copy from its pins).
-#          optional: psyq sdl3 sdl3-desktop appimage llvm-mingw sdl3-windows ccache dxc
+#          optional: sdl3 sdl3-desktop appimage llvm-mingw sdl3-windows ccache dxc
 #   ccache: the pinned static ccache binary into tools/ccache (CI's host builds of the port and the launcher:
 #          .github/actions/setup; no apt package, the runners' mirror stalls)
 #   llvm-mingw: the pinned llvm-mingw release (clang + lld, UCRT) into tools/llvm-mingw: the Windows cross toolchain
@@ -62,7 +62,6 @@ EXT=(
     "m2c             https://github.com/matt-kempster/m2c.git             708d2d2cb2698f091a92492b328f73b24209f72d"
     "asm-differ      https://github.com/simonlindholm/asm-differ.git      0dd09af8f8008f1f880327cf0aca3b26d2562ea2"
     "decomp-permuter https://github.com/simonlindholm/decomp-permuter.git 059609d4aec73eb0650726772954e1ad575825f8"
-    "psyq-sigs       https://github.com/lab313ru/psx_psyq_signatures.git e9e46e7e133ef275a79bfce650924f98edb086bc"
 )
 
 # SHA-1 of the unpatched "Digimon World 2003 (Europe) (En,Fr,De,Es,It)" .bin
@@ -502,31 +501,6 @@ step_gcc() {
 }
 
 # objdiff-cli (prebuilt, checksum-pinned) into tools/bin/.
-# Optional (not in the default steps): Sony's Psy-Q 4.3/4.4 compilers and assembler (the binaries decomp.me uses,
-# from mkst/esa's releases), run through wibo; for checking the open toolchain against the real one. Never committed (tools/psyq is gitignored). Usage: scripts/setup.sh psyq
-PSYQ=(
-    "psyq4.3.tar.gz https://github.com/mkst/esa/releases/download/psyq-binaries/psyq4.3.tar.gz 577038d66507d3aa5423de0ba3f540e121a4f60f637f4794aa4350135d4f9a46"
-    "psyq4.4.tar.gz https://github.com/mkst/esa/releases/download/psyq-binaries/psyq4.4.tar.gz 72e73934bab0d51933eb95af514afb14f3d432f01530eac3ddb16dfbb57ab66c"
-    "psyq-obj-parser.tar.gz https://github.com/decompme/compilers/releases/download/compilers/psyq-obj-parser.tar.gz 353495f13f6756773cd905ba3a0743843232f95719e306fc6ee56cbf7d731a3e"
-    "wibo https://github.com/decompals/wibo/releases/download/0.6.16/wibo 8a8490a6172aa4f0f6ddcadb144ca96f51da6e90e6648ce9adaf4f6babb6e00b"
-)
-step_psyq() {
-    local dir="$INSTALL/psyq" entry name url sha
-    mkdir -p "$dir"
-    for entry in "${PSYQ[@]}"; do
-        read -r name url sha <<<"$entry"
-        if [[ ! -f "$dir/$name" ]] || ! echo "$sha  $dir/$name" | sha256sum -c --quiet - 2>/dev/null; then
-            log "psyq: downloading $name"
-            fetch "$url" "$dir/$name.part"
-            echo "$sha  $dir/$name.part" | sha256sum -c --quiet - || die "psyq: checksum mismatch for $name"
-            mv "$dir/$name.part" "$dir/$name"
-        fi
-        [[ "$name" == *.tar.gz ]] && tar -C "$dir" -xzf "$dir/$name"
-    done
-    chmod +x "$dir/wibo" "$dir/psyq-obj-parser"
-    log "psyq: installed to $dir (wibo $dir/psyq4.4/CC1PSX.EXE ...)"
-}
-
 step_objdiff() {
     local bin="$INSTALL/bin/objdiff-cli"
     if [[ -x "$bin" ]] && echo "$OBJDIFF_CLI_SHA256  $bin" | sha256sum -c --quiet - 2>/dev/null; then

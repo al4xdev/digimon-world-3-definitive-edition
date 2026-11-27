@@ -1,5 +1,5 @@
 # splat config for the boot executable SLES_039.36 (Digimon World 2003, Europe).
-# Memory map: docs/DISC_LAYOUT.md. Library boundaries: tools/psyq_match.py (Psy-Q 4.7).
+# Memory map: docs/DISC_LAYOUT.md. Library boundaries: Psy-Q 4.7 signatures.
 # Run through configure.py (it splits, then writes build.ninja), or by hand:
 #   tools/venv/bin/splat split config/main.yaml
 #
@@ -116,8 +116,8 @@ segments:
       - [0x1051C, c, tim]              # 0x8001FD1C TIM loading; $gp tim_module
       - [0x10830, c, sound]            # 0x80020030 sound (libsnd)
       - [0x11358, c, overlay]          # 0x80020B58 loads and runs the stage overlays (table overlay_entries); own data, not sound's
-      # Psy-Q 4.7 libraries from 0x80020D8C, one unit per library object (tools/psyq_match.py;
-      # the ambiguous ones as settled in docs/TOOLCHAIN.md "Ambiguous objects"). Each object's
+      # Psy-Q 4.7 libraries from 0x80020D8C, one unit per library object (the ambiguous
+      # ones as settled in docs/TOOLCHAIN.md "Ambiguous objects"). Each object's
       # .text is padded to 16 bytes, which is where the next one starts.
       - [0x1158C, asm, psyq/libpad/pdcmd1]
       - [0x115CC, asm, psyq/libpad/pdcmd2]
@@ -402,7 +402,7 @@ segments:
       - [0x2EA7C, asm, psyq/libmcrd/low]
       - [0x2F50C, asm, psyq/libcard/a79]
       - [0x2F51C, asm, psyq/libmcrd/unformat]
-      # .data/.sdata/.sbss/.bss per file, in link order (evidence per symbol: tools/data_owners.py). Game objects' .data is
+      # .data/.sdata/.sbss/.bss per file, in link order. Game objects' .data is
       # packed at 4; their .sdata/.sbss/.bss start 8-aligned (configure.py align_small_data).
       - [0x2F5CC, .data, inn]                 # 0x8003EDCC inn_table
       - [0x2F67C, .data, fieldmenu]           # 0x8003EE7C

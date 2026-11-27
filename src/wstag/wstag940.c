@@ -52,7 +52,7 @@ void wstag940_setup(void) {
     fieldstg_attr.init_layer(0);
 }
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag940_setup(void);
 
 FieldstgVramPlace wstag940_vram_places[12] = {

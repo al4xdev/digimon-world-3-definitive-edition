@@ -49,7 +49,7 @@ void wstag720_setup(void) {
     fieldstg_attr.init_layer(0);
 }
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag720_setup(void);
 
 FieldstgListedBattle D_WSTAG720_800A5F78 = { 0, 0, 0x60040000 };

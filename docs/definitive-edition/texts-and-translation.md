@@ -6,8 +6,8 @@
 
 - Overrides live in `tools/text_override/en.txt` and `pt.txt`: lines `FILE index: text`, `FILE:sub index: text`, and
   `$NAME: text` for the port's own strings. `tools/gen_text_override.py` (with `--check`) generates
-  `port/game/definitive_text.c` and `definitive_text_lang.inc`. Technique descriptions are limited to 34 characters
-  (`tools/gen_tech_text.py`, `gen_affinity_text.py`).
+  `port/game/definitive_text.c` and `definitive_text_lang.inc`. Technique descriptions are limited to 34
+  characters.
 - Fonts: the 11px font has no `/ : , '` and no accents (the 14px one is similar). A speech box holds 3 lines (split with
   `<2,2><3>`).
 - **PT-BR is a 6th language**, falling back to English per entry (`port_language_ptbr`; `records_language` stays 2). The
@@ -18,17 +18,13 @@
   and `def_pick()` picks among six C literals (title questions, Rush and flee prompts, compass). The callout font
   (`def_poly_text`) draws capitals only: no apostrophe, `¿ ¡` or `ß` (write SS).
 - **The story rewrite** (`<lang>_story.txt`, `<lang>_kaili.txt`, `<lang>_choices.txt`, `<lang>_echoes.txt` for `en`,
-  `pt`, `fr`, `de`, `it` and `es`) is generated into `port/game/definitive_story_text.c`; `tools/check_story_text.py` checks
-  the English and `tools/check_story_lang.py` checks FR/DE/IT/ES against the Portuguese. Formats, counts and the lookup
+  `pt`, `fr`, `de`, `it` and `es`) is generated into `port/game/definitive_story_text.c`. Formats, counts and the lookup
   order are in [The story layer](story.md#the-story-layer-velvet-room-in-the-main-story).
 - **PT-BR is the story rewrite's source language**, in the tone of the classic 80s/90s Brazilian anime dubs; the
-  English files are translated from it. Control codes and box sizes are checked by `tools/check_pt_text.py`.
-- PT pipeline: `tools/translate_ptbr.py` talks to a local Gemma server (no sampling parameters sent; `--benchmark`
-  compares reasoning low vs medium on 20 real strings; `--tier p0|all`; `--export`). Glossary: keep in English `WEAK`,
-  `RESIST`, `OVERFINISH`, `Baton Pass`, `Relay`, `Libra`, `Digimon`, `Digi-Lab`, `Load Tech`, `Blast Gauge`, `Bits`,
-  `TP`, `MP`, `HP` and proper names; use Fogo, Agua, Gelo, Vento, Trovao, Maquina, Trevas for elements. The other four
-  languages are translated straight from `en.txt` and checked with `tools/check_pt_text.py` (0 errors; heavy-page and
-  width warnings remain, pixel widths are unverified in game).
+  English files are translated from it.
+- Glossary (PT-BR): keep in English `WEAK`, `RESIST`, `OVERFINISH`, `Baton Pass`, `Relay`, `Libra`, `Digimon`,
+  `Digi-Lab`, `Load Tech`, `Blast Gauge`, `Bits`, `TP`, `MP`, `HP` and proper names; use Fogo, Agua, Gelo, Vento,
+  Trovao, Maquina, Trevas for elements.
 - **PT-BR in the game:** `portuguese` is a value of `preset_language`; with it active `records_language` stays `2` (the
   `ES*.BIN` English files) and `port_language_ptbr = 1`; `def_text_override(data, i)` and the `def_str_*` strings return
   the entry of `definitive_text_pt` (binary search by `(file_id, subtable, index)`), falling back to English. The European

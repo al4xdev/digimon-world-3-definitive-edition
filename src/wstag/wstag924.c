@@ -83,7 +83,7 @@ s32 wstag924_fade_update(WindowAnim *fade) {
     return 0;
 }
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag924_setup(void);
 Object *wstag924_event_1602_start(void);
 Object *wstag924_event_1604_start(void);

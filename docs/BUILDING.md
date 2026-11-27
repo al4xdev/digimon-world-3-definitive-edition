@@ -44,7 +44,6 @@ scripts/rebuild_iso.sh      # rebuild build/dw2003.bin and check it is bit-ident
 scripts/build.sh            # split with splat, build with ninja, check every SHA-1 against config/*.sha1
 scripts/build.sh --check    # the same from scratch (deletes asm/ and build/ first)
 scripts/check_toolchain.sh  # smoke test of the compilers and diff tools
-tools/venv/bin/python tools/progress.py --readme   # recount the matched functions into docs/PROGRESS.md
 ```
 
 Outputs: `build/SLES_039.36` and every overlay (`build/*.PRO`), each checked byte-identical against the original.

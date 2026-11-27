@@ -33,9 +33,9 @@ def tables_ok():
         return [int(x, 0) for x in re.findall(r"0x[0-9A-Fa-f]+|\d+", b)]
 
     nodes, first, edges, wild = arr("def_map_nodes"), arr("def_map_first"), arr("def_map_edges"), arr("def_map_wild")
-    import gen_hunt_targets as gh
-    areas = gh.map_areas()
-    battles = gh.battle_info()
+    import game_tables as gt
+    areas = gt.map_areas()
+    battles = gt.battle_info()
     ok = (len(sup) == 13 and [s[2] for s in sup] == sorted(s[2] for s in sup) and len(sec) == 0x2E
           and all(0 < b < nb and k < 3 and 0 < lv <= 99 and 0 < hp <= 30000 and 0 <= se < 5 and sv < 2
                   for b, k, lv, hp, se, sv in sup)

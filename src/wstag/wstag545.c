@@ -421,7 +421,7 @@ void wstag545_setup(void) {
     fieldstg_attr.init_layer(0);
 }
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag545_setup(void);
 
 s16 D_WSTAG545_800A6B58[167] = {

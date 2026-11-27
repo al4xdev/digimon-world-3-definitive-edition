@@ -1,5 +1,5 @@
 # Brazilian Portuguese. Entries here are either the disc's English text translated earlier (no English override touches
-# them) or the translation of tools/text_override/en.txt (checked by tools/check_pt_text.py).
+# them) or the translation of tools/text_override/en.txt.
 
 AMTMAP 1: Gym Lendário
 AMTMAP 2: Lago de Gelo

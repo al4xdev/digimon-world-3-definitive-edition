@@ -1,7 +1,7 @@
 /* The Rare Target of each region (one enemy slot of an
  * existing battle, the level it fights at, its rare item's numeral: 0 when its species is no other region's),
- * the Super Rares in the hunts' order, then each bestiary species' common material. First written by
- * tools/gen_hunt_targets.py; hand-maintained (the generator is LEGACY). */
+ * the Super Rares in the hunts' order, then each bestiary species' common material.
+ * Hand-maintained. */
 #include "definitive.h"
 
 const DefHuntTarget def_hunt_targets[] = {

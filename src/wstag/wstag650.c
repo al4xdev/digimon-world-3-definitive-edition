@@ -63,7 +63,7 @@ void wstag650_setup(void) {
     }
 }
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag650_setup(void);
 
 s16 D_WSTAG650_800A5FFC[58] = {

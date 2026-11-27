@@ -17,7 +17,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
-import gen_hunt_targets as gh  # noqa: E402
+import game_tables as gt  # noqa: E402
 
 GEN = ROOT / "port/game/definitive_map_graph.c"
 EXITS = (1, 14)
@@ -36,11 +36,11 @@ def graph():
         maps.add(m)
         for body in re.findall(r"FieldstgMapEvent \w+\[\d+\] = \{(.*?)\n\};", s, re.S):
             for row in re.findall(r"\{([^{}]*)\}", body):
-                v = gh.ints(row)
+                v = gt.ints(row)
                 if len(v) >= 6 and v[4] in EXITS and v[5] != m:
                     edges[m].add(v[5])
                     maps.add(v[5])
-        if any(enc for enc, _ in gh.stage_lists(path)):
+        if any(enc for enc, _ in gt.stage_lists(path)):
             wild.add(m)
     return sorted(maps), edges, wild
 

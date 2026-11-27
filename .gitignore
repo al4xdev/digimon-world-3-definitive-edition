@@ -53,7 +53,6 @@ tools/dxc
 tools/local.env
 
 # --- Copyrighted SDK files (Psy-Q etc.): user-supplied only ---
-tools/psyq
 sdk/
 *.LIB
 *.OBJ

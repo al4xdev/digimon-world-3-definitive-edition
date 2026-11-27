@@ -1,4 +1,4 @@
-# de_choices.txt: translated from pt_choices.txt (tools/check_story_lang.py; same format).
+# de_choices.txt: translated from pt_choices.txt (same format).
 Q8 DMG200:0 1@1: Baff [teddy:+1] | <7><9><7>Wahnsinn...<1>Das hier ist also<1>Digimon−Online?!<2,2>
 Q8 DMG200:0 1@2: Misstrauisch [ivy:+1] | <7><9><7>Zu schön, um wahr zu<1>sein... Wo ist der<1>Haken?<2,2>
 Q8 DMG200:0 1@3: Voller Tatendrang [rep:+1] | <7><9><7>Endlich! Digimon−<1>Online! Mal sehen, was<1>es draufhat!<2,2>

@@ -17,7 +17,7 @@ The `$Id` dates bound the SDK from below (libgpu from Jan 1998 means Psy-Q ≥ 4
 Psy-Q releases kept those object revisions, so the strings alone can't pin the exact version.
 
 ## Psy-Q libraries in the EU EXE
-`tools/psyq_match.py` (our matcher, over lab313ru/psx_psyq_signatures for Psy-Q 2.6–4.7) on `SLES_039.36`:
+Matching lab313ru/psx_psyq_signatures (Psy-Q 2.6–4.7) against `SLES_039.36`:
 - **Psy-Q 4.7.** 284 library objects (123 KB) placed, every one consistent with 4.7, and 4.7 is the only
   version consistent with all of them. Four objects exist only in 4.7: LIBPAD `PDRESRES`, LIBGTE `MSC00`,
   LIBAPI `C114`, LIBSPU `S_SR`. ghidra_psx_ldr's own detection (headless) also reports `4.7.0`.
@@ -98,7 +98,7 @@ come out exactly with 2.8.0, 2.8.1 and 2.95.2. 2.7.2 addresses through `$at` (6 
 2.91.66 allocates `v1` instead of `v0`. One function proves little, but it fits the 2.8.x prior.
 
 ## Compiler-ID experiment: GCC 2.8.x, mostly `-G0`
-`tools/compiler_id.py` (reproducible, ~15 s): 275 game functions (4–139 instructions; no jump tables,
+Over 275 game functions (4–139 instructions; no jump tables,
 rodata references or split switch cases). m2c `--valid-syntax` drafts each one with no hand edits, the
 draft is compiled with all 5 GCCs at `-G0` and `-G8` via `tools/cc_psx.sh`, and objdiff scores it against
 the original. 259 functions scored; 16 drafts fail to compile on every compiler (m2c errors).
@@ -130,5 +130,4 @@ the original. 259 functions scored; 16 drafts fail to compile on every compiler 
 ## Outcome
 The toolchain this page points to is the one that builds the game: GCC 2.8.1 with maspsx, `-O2`, `-G8` for the EXE's
 C and `-G0` for every overlay (`configure.py` `DEFAULT_G`; there are no per-file overrides). All game code, the
-EU-only post-game code included, rebuilds byte-identical (progress in
-[`PROGRESS.md`](PROGRESS.md)).
+EU-only post-game code included, rebuilds byte-identical.

@@ -80,7 +80,7 @@ s32 wstag937_fade_update(WindowAnim *fade) {
     return 0;
 }
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag937_setup(void);
 
 FieldstgVramPlace wstag937_vram_places[13] = {

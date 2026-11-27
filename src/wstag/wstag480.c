@@ -164,7 +164,7 @@ void wstag480_setup(void) {
 
 const CVECTOR wstag480_color = { 0x80, 0x80, 0x80, 0 };
 
-/* The stage's .data (tools/wstag_data.py). */
+/* The stage's .data. */
 void wstag480_setup(void);
 
 s16 D_WSTAG480_800A6478[88] = {

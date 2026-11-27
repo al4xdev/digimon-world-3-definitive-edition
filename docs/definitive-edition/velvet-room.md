@@ -140,10 +140,8 @@ spare slot (tone volume 96, centre 66). Smoothing (why it sounded coarse: attack
 ms cut notes at note-off, and the game zeroes the reverb depth so the tones' reverb never sounded): attacks ~37-62 ms
 and releases ~186-372 ms on the sustained parts (piano untouched), reverb type 3 depth 64 raised by the score and
 dropped when its music stops; horn and piano get the reverb flag. Knobs at the top of the generator (`ATTACK_MS`,
-`RELEASE_MS`, `REVERB_DEPTH`, `REVERB_PARTS`, `LOOP_GAP_TICKS`); `--smooth off` gives the unsmoothed mix; audition
-tools in `tools/music_lab/velvet/` (`play.py --smooth on|off`, `--reverb N`; below). Test:
-`tests/port/definitive_velvet_music.py` (skips without the MIDI). A second tune (Adventure) is described below; it is
-not in the game.
+`RELEASE_MS`, `REVERB_DEPTH`, `REVERB_PARTS`, `LOOP_GAP_TICKS`); `--smooth off` gives the unsmoothed mix. Test:
+`tests/port/definitive_velvet_music.py` (skips without the MIDI).
 
 **The score.** The MIDI (`MIDI_DEFAULT` in the generator: format 1, 480 ticks per quarter, eight named tracks) is read
 at build time. The SEP is written for the port's LIBSND (`psxstack/psyq/libsnd_seq.c`, `docs/FORMATS.md` "SEP"): `pQES`,
@@ -151,48 +149,12 @@ version 0, 16 sequences when `SsSepOpen` is called with 16 (sequence 0 the piece
 note-off is a note-on with velocity 0 (`9n`): `8n` is **skipped and its data bytes are not consumed**; tempo is
 `FF 51 tt tt tt` with **no length byte**; the end is `FF 2F 00`; after a meta event the running status is `FF`, so the
 next event needs its own status byte. The oboe starts at ~36 s: the silence before is the score, not a mute. 24 voices:
-the octet steals voices. Levels, CC7 and pans are in `PARTS` (also `tools/music_lab/velvet/volumes.json`). An extra
+the octet steals voices. Levels, CC7 and pans are in `PARTS`. An extra
 bank's header buffer is `0xA000` (`sound_buffer_1`/`_2` in `src/main/sound.c`). Instruments: do not retune the flute
 (program 8: the oboe's waveform, whose centre 84 sits on the flute's register); the piano is BOSS01's vag 9 (program 3 of
 that bank, ~213 ms) copied over the spare slot of BGM031's vag 14 (at SPU `vag_end[13]*8`); its tone volume (96) and the
 channel level (30) are different knobs. **Pitfalls:** do not write the score over the VAB header; do not seek by poking
-`SndSeq.pos` (a bad landing runs the parser off the stream and a zero tempo divides by zero); do not trust `nm` of a
-binary another build replaced for `snd`'s address in a running process (`play.py` writes the live one to `session.txt`).
-
-**Audition tools (`tools/music_lab/`).** None patches the
-disc or the source; they start their own windowed port (`build/port-sdl/dw2003 --window`) on a private debug socket and
-point the playing title sequence at the score (stay on the title screen: starting a game reloads the bank). Runtime files
-next to them (`game.log`, `session.txt`, `mute.mask`, `*.index`, `piano_options.json`, `render/`) are gitignored
-(`tools/music_lab/.gitignore`). `tools/venv/bin/python tools/music_lab/velvet/play.py` installs the room's tune from
-`gen_velvet_music` (`--smooth on|off`, `--reverb N`; offline, for numbers only: `--wav render/x.wav --seconds 50`, `--probe`
-one 1 s note per part; `analyze.py` and `analyze_probe.py` compare two renders, run with `uv run --with numpy python ...`);
-`... play.py adventure` plays the Adventure score instead (socket `/tmp/adventure-music.sock`, without the Velvet retune).
-`velvet/solo.py` (`next`, `mute N`, `solo N`, `rem N...`, `add N`, `vol`, `vol N 0-100`, `reset`; parts 1..8 in play.py's
-order; a level is written into the score so a loop keeps it); `velvet/piano.py` (`next`, `prev`, `N`, `list`, `test`:
-auditions one of 51 deduplicated game samples, 80-250 ms, in the spare slot at centre 66 and solos the piano; `test` puts
-it back in the full piece); `adventure/guitar.py` (`next`, `prev`, `N`, `test`, `list`: the same 51 samples on the Adventure
-window's program 5, centre 64; `next`/`test` rewind to the score start, `SndSeq.start`, which must still be `FF 51`).
-`velvet/offsets.c` prints LIBSND's sequencer layout on the host and `offsets.json` holds the offsets the tools poke.
-
-**Adventure music (a second tune, not tied to any cue).** Same method as the room's, through the game's sequencer, no
-WAV, no source change: `play.py adventure`. Score: a local `~/Downloads/Digimon Adventure OP1 - Butterfly (Full) -
-Octet - Thymm Rayne.mid` (not in the repo, never committed): format 1, 480 ticks per quarter, one tempo 363636 (~165
-bpm) at tick 0, about 335650 ticks (~4.2 minutes), 7812 note events; the built SEP is 32009 bytes and fits
-`sound_buffer_2` (40960). Each named track gets its own channel (the file's shared channels do not matter). Nothing
-plays at tick 0: the guitar comes in at tick 1920 (~1.4 s), so a check of the first 40 vsyncs hears silence. Parts
-(`ADVENTURE_LEVELS` in `play.py`; channel, BGM031 program, first note, level, CC7, pan): Trumpet 0, 8, 74640, 90, 114,
-64; ElectricGuitarOverdriven 1, 5 (sample swapped), 1920, 80, 102, 40; Cymbal 2, 10, 1950, 45, 57, 100; Doublebass 3,
-4, 24960, 85, 108, 64; BassDrum 4, 6, 1728, 60, 76, 64; Harp 5, 1, 24960, 70, 89, 32; Saxophone 6, 2, 7680, 90, 114,
-96; SnareDrum 7, 3, 1950, 50, 64, 80. The programs are the loaded title bank's, longest usable sample first (8, 5, 10,
-4, 6, 1, 2, 3); program 10 is BGM031's noise burst and landed on the cymbal; kick, snare and cymbal are tonal samples
-played at drum notes, not a drum kit (replacing them is the same spare-slot copy, not done). The levels are a starting
-balance so the drums do not bury the melody (not tuned by ear). Guitar: program 5 of BGM031 is the flute-like waveform,
-so it uses **option 29 of 51** of `guitar.py`: BOSS02's vag 8 (program 3 of that bank, 3872 bytes, ~154 ms) copied into
-the spare slot (BGM031 vag 14, the slot the Velvet piano uses, 5824 bytes at `vag_end[13]*8`), program 5's tone pointed
-at it, tone volume 96, centre 64, shift 0; channel level stays 80 (CC7 102), pan 40; only program 5's tone record
-changes (on the Velvet piece program 8 shares a waveform with program 5's original vag: do not retarget the flute).
-`ENV019` is too small for it; if the tune is ever given to the room or another cue, both `fieldstg_stage.music` and
-`fieldstg_stage.sound` must change. The pitfalls above apply.
+`SndSeq.pos` (a bad landing runs the parser off the stream and a zero tempo divides by zero).
 
 **Music pitfall:** the field plays `fieldstg_stage.sound` (the track) *after* loading the bank of
 `fieldstg_stage.music`; changing only `music` changes the bank and the same tune keeps playing. The room uses the pair

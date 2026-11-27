@@ -50,16 +50,13 @@ reference in [`docs/LAUNCHER.md`](../LAUNCHER.md).
 
 ## Tools (`tools/`)
 
-- Text: `gen_text_override.py` (`--check`), `gen_tech_text.py`, `gen_affinity_text.py`, `translate_ptbr.py`, `dump_text.py`.
+- Text: `gen_text_override.py` (`--check`), `dump_text.py`.
 - Data generators: `gen_map_graph.py` (`--apply`), `gen_recipes.py`, `gen_replicas.py`, `gen_item_prices.py`, `gen_equipment.py`
- (all `--check`). Legacy, their tables now hand-maintained: `gen_enemy_weaknesses.py`, `gen_hunt_targets.py`, `gen_dri_challenges.py`.
-- Saves: `convert_save_mp.py`. Disc and finding things: `disc_files.py`, `disc_survey.py`, `find_dri_agents.py`,
-  `bm_npc_candidates.py`.
+ (all `--check`); `game_tables.py` reads the game's tables for them.
+- Saves: `convert_save_mp.py`. Disc: `disc_files.py`, `disc_survey.py`.
 - Girls Power: `girls_power_draw.py`, `girls_power_preview.py`.
 - Port and decompilation: `hacks.py`, `port_inventory.py`, `port_gen.py`, `port_inputs.py`, `flag_census.py`,
-  `progress.py`, `psyq_match.py`, `unit_diff.py`, `game_xref.py`, `data_owners.py`, `data_to_c.py`, `coverage.py`,
-  `overlay_layout.py`, `overlay_xref.py`, `ref_names.py`, `renames.py`, `split_case_sizes.py`, `wstag_data.py`,
-  `wstag_groups.py`, `compiler_id.py`, `mcp_game.py`.
+  `unit_diff.py`, `coverage.py`, `overlay_layout.py`, `mcp_game.py`.
 
 ## Tests
 

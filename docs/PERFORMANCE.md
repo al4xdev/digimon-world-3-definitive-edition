@@ -11,8 +11,7 @@ The audio's design notes are in [`SOUND.md`](SOUND.md).
 - [A software battle frame](#a-software-battle-frame)
 - [Audio](#audio)
 - [Where gles loses](#where-gles-loses)
-- [What the handheld work changed](#what-the-handheld-work-changed)
-- [Tried and rejected](#tried-and-rejected)
+- [Limits](#limits)
 - [Measuring](#measuring)
 
 ## The budget
@@ -30,30 +29,17 @@ inside the budget, not to drop frames.
 | Scripted first battle | ~13 ms of drawing | not measured | fits |
 | Heaviest battle (large enemy, ~150k textured pixels) | ~27 ms (37.70 fps) | ~24 ms (41.85 fps) | over budget |
 
-The 2D figures were recorded with the audio mix at 4.7 ms (a town frame: GPU 1.2 + audio 4.7 + present 1.0); the mix is
-3.1 ms in the same scenes now. The battle rows are 600 frames from one saved state, read from the
-`window: N frames presented in X s` line of `game.log`, with the same binary for both renderers.
+The 2D rows count an audio mix of 4.7 ms (a town frame: GPU 1.2 + audio 4.7 + present 1.0); [Audio](#audio) has the
+mix's own cost. The battle rows are 600 frames from one saved state, read from the `window: N frames presented in X s`
+line of `game.log`, with the same binary for both renderers.
 
 ## The heaviest battle: software against gles
 
-The steps that took `gles` from 18.75 fps to 41.85 fps in that battle, each measured on the same state:
-
-| Step | fps |
-|---|---|
-| a read copy per draw batch | 18.75 |
-| a read copy per vsync | 31.50 |
-| one draw call a frame (copies still uploads) | 29.98 |
-| plus GP0 80h as a GPU blit | 31.27 |
-| plus the buffered readback | **41.85** |
-| software renderer, same state | 37.70 |
-
-The VRAM of the `gles` renderer differs from the software one in 0.2% of its texels before the 3D models appear and 0.7%
-once they do (edges and 5-bit rounding). At the frames compared with `--screenshot` the picture that reaches the screen
-is byte-identical.
+`gles` runs it at 41.85 fps, the software renderer at 37.70 on the same state. The VRAM of the `gles` renderer differs
+from the software one in 0.2% of its texels before the 3D models appear and 0.7% once they do (edges and 5-bit
+rounding). At the frames compared with `--screenshot` the picture that reaches the screen is byte-identical.
 
 ## A gles battle frame
-
-What is left:
 
 | Part | ms |
 |---|---|
@@ -70,12 +56,12 @@ row "the rest".
 
 ## A software battle frame
 
-This split was taken earlier, in a heavier fight (~30 ms of CPU time per frame, not the 27 ms state above):
+A heavier fight than the one above (~30 ms of CPU time per frame):
 
 | Part | ms |
 |---|---|
 | rasteriser (the order-list walk) | 18-19 |
-| audio mix | 4.9 at the time, 3.0-3.3 now |
+| audio mix | 4.9 |
 | present | 1.0 |
 | the game's own logic (GTE, models), left over by subtraction | 6-8 |
 
@@ -84,11 +70,10 @@ attributing the remainder; where they disagree on the game's own cost (6-8 ms ag
 
 ## Audio
 
-The SPU mix is the second largest item of a frame after the game's own code. Per vsync it was 4.7-4.9 ms (4.9 at 50 Hz and
-882 samples, 4.7 at 60 Hz and 735 samples). It is now 3.1 ms in the scripted field/menu run (voices 2.27, of which
-interpolation 0.31, reverb 0.71, rest 0.13) and 3.0-3.3 ms in a battle. The output is byte-identical to before: the WAV
-of every run compared equal. The remaining cost is the voice loop. A sample count must accompany any figure, because it
-moves with the rate. See [`SOUND.md`](SOUND.md), "What it costs".
+The SPU mix is the second largest item of a frame after the game's own code: 3.1 ms a vsync in the scripted field/menu
+run (voices 2.27, of which interpolation 0.31, reverb 0.71, rest 0.13) and 3.0-3.3 ms in a battle. The cost is the
+voice loop. A sample count must accompany any figure, because it moves with the rate. See [`SOUND.md`](SOUND.md), "What
+it costs".
 
 ## Where gles loses
 
@@ -98,45 +83,25 @@ for the present, and on the boot and menu scenes the readback waits 10-14 ms, be
 re-uploads its art to the VRAM target) is queued before it and the driver drains it there. Giving the read two vsyncs of
 slack does not change this. A menu is fine either way, and a player who only uses 2D scenes can run `--renderer software`.
 
-## What the handheld work changed
+## Limits
 
-| Change | Effect |
-|---|---|
-| `Fbdev_PresentVram` (`psxstack/runtime/fbdev_present.c`) expands the PS1 VRAM straight into the XRGB8888 framebuffer with NEON at integer 2x, with no intermediate buffer | present 10 ms to 1.0 ms (15-bit), 23 ms to 1.5 ms (24-bit) |
-| The NEON textured span now covers `GPU_COPY` and the four semi-transparent modes, not only `GPU_OPAQUE` | vector spans 152 of 8212 to 4439 (the rest are untextured polygons); only ~4% faster, because the cost was already the texture fetch |
-| `-mcpu=cortex-a35 -mfpu=neon-fp-armv8` in `.ci-cd/portmaster/cmake/armhf-linux.cmake` instead of generic armv7-a | 17 `__aeabi_idiv` call sites to 0; the A35 has hardware SDIV/UDIV |
-| Meters off by default: the cycle-counter read costs 6-15 cycles and was done ~10 times a span | 1-2 ms back in a battle |
-| VRAM rows padded to 1056 pixels (2112 bytes) and 64-byte aligned, read through `psyq_gpu_vram_stride()` | fixes an L1 set alias (119 ns to 31 ns a pixel in the synthetic fetch test); no measurable gain in the real battle |
-
-The memory limit is latency, not bandwidth: the DDR does ~4.2 GB/s at 528 MHz and the game touches ~75 MB/s. A texture
-fetch walks one VRAM row per pixel, and the A35's micro-TLB has 10 entries, so a 2 KB row stride crosses a 4 KB page every
-two rows and a 100-row walk overflows it continuously. The hardware prefetcher only follows strides inside one page, and
-`PLD` prefetching measured no gain. A working set that fits the 32 KB L1 costs 14.6 ns a pixel; the whole 1 MB VRAM costs
-54.8.
-
-The meters were also a trap: `DW3_PHASE` wraps every GTE call (~111k a battle frame) and costs about 23 ms of a 20 ms
-budget. A battle ran at 19 fps with it on, which looked like a regression and was not.
-
-## Tried and rejected
-
-| Idea | Why it is out |
-|---|---|
-| Reciprocal division instead of `/` | all divisions in a battle frame add up to ~0.3 ms |
-| Direct packet dispatch, skipping the command buffer | the walk outside triangles is 0.6 ms of 19.3 |
-| Copying the CLUT once per triangle instead of per span | ~0.06 ms |
-| Letting the display controller scale 320x240 to 640x480 | the RK3326's VOP only scales bilinear or bicubic, with no nearest-neighbour mode, and it needs DRM/KMS instead of fbdev; it would blur the pixels |
-| 2 MB huge pages for the micro-TLB | this kernel has transparent huge pages disabled |
-| CPU and memory governors | already `performance`; the DMC's 528 MHz is the DTS ceiling |
-| Pinning the game away from interrupts | every IRQ goes to `cpu0` but the scheduler already ran the game on `cpu1` |
-| `-O2` for the game's own C | crashes at boot (`sound_init`, `sound_update_loading`, `cdload_get_subfile`): the decompilation has undefined behaviour the optimiser exploits. `PSXSTACK_GAME_OPT` allows a narrower retry per module |
-| `glBufferSubData` into a reused vertex buffer | 105 us of stall per draw, 60 ms a frame in 2D; the orphaning `glBufferData` stays |
-| Reading the `gles` target back as RGB565 | 28 ms a frame; a RGBA8 `glReadPixels` plus the 8-to-5-bit conversion costs 1.7-2.0 ms |
-| NEON for the SPU's voice interpolation | the interpolation is only 0.3 ms of the mix, so it would not have paid |
+- **Memory latency, not bandwidth.** The DDR does ~4.2 GB/s at 528 MHz and the game touches ~75 MB/s. A texture fetch
+  walks one VRAM row per pixel, and the A35's micro-TLB has 10 entries, so a 2 KB row stride crosses a 4 KB page every
+  two rows and a 100-row walk overflows it continuously. The hardware prefetcher only follows strides inside one page,
+  and `PLD` prefetching gains nothing. A working set that fits the 32 KB L1 costs 14.6 ns a pixel; the whole 1 MB VRAM
+  costs 54.8.
+- **The game's own C is not built with `-O2`.** It crashes at boot (`sound_init`, `sound_update_loading`,
+  `cdload_get_subfile`): the decompilation has undefined behaviour the optimiser exploits. `PSXSTACK_GAME_OPT` allows a
+  narrower try per module.
+- **`gles` buffers and readback.** The vertex buffer is orphaned with `glBufferData` (`glBufferSubData` into a reused
+  one stalls 105 us a draw, 60 ms a frame in 2D). The target is read back as RGBA8 and converted to 5 bits (1.7-2.0 ms;
+  reading it as RGB565 costs 28 ms a frame).
 
 ## Measuring
 
 The meters cost real frames, so `.ci-cd/portmaster/handheld/Digimon World 3.sh` leaves them off (commented exports). To measure one run,
-enable them by hand and read `logs/gpu.log` while the scene is on screen. `DW3_GPU_LOG` prints one line a second:
+enable them by hand and read `logs/gpu.log` while the scene is on screen. `DW3_PHASE` wraps every GTE call (~111k a
+battle frame) and costs about 23 ms of a 20 ms budget: a frame rate measured with it on says nothing. `DW3_GPU_LOG` prints one line a second:
 
 ```
 gpu: 19.3 ms fill 0 flat 0 ftex 130450 fblend 0 gour 1664 gtex 16155 gblend 0 |

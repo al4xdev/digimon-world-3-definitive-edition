@@ -68,7 +68,7 @@ segments:
       - [0x5450, c, stgtrain_80088100]   # 0x80088100: after the create/update pair 88070/87F28; an unused template
                                          # object 881CC/88138, then objects 89764, 8A274, 8B838 and the module
                                          # table's functions 8B8A4.. (position weak: 88100..88214)
-      # .data, then .bss (zeros in the file), each per file in link order (tools/data_owners.py -t stgtrain). .bss: four zero pointers only
+      # .data, then .bss (zeros in the file), each per file in link order. .bss: four zero pointers only
       # 88100 uses (its parse cursors, set before use); they could be zero-initialised .data (weak).
       - [0x9574, .data, stgtrain_80083058]   # 0x8008C224 (after the last function's jr ra)
       - [0x9654, .data, stgtrain_800861BC]   # 0x8008C304 (8C224 is 83058's, 8C304 861BC's: references)
