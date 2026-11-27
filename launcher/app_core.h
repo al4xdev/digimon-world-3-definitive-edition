@@ -8,6 +8,7 @@
 
 #include "cfg.h"
 #include "cloud.h"
+#include "compat.h" /* localtime_r on Windows */
 
 /* Canonical UI label tables shared by desktop (main.c) and Android (main_android.c). */
 static const char *const ff_label[5] = {"OFF", "2X", "4X", "8X", "UNLIMITED"};
