@@ -82,7 +82,7 @@ int plat_open_url(const char *url) {
 int plat_pref_dir(char *out, size_t n) {
 #if defined(HAVE_SDL2) || defined(HAVE_SDL3)
     /* The game's own default (psxstack/runtime/main.c: SDL_GetPrefPath("", <id>)), and RecompLauncher's
-     * (recomplauncher.json: {local}/dw2003 on Linux, {config}/dw2003 on Windows). SDL creates it. */
+     * (recomplauncher.json: {config}/dw2003 on Windows; on Linux RecompLauncher passes {data} instead). SDL creates it. */
     char *p = SDL_GetPrefPath("", "dw2003");
     if (!p) return -1;
     size_t l = strlen(p);

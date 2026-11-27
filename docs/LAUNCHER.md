@@ -10,7 +10,10 @@ one launcher, the C99 `launcher/`, with the same screens and options everywhere;
   UCRT spells differently. The game (`dw2003`, `dw2003.exe`) and its `mods/` sit beside the launcher.
   The settings directory has one rule, the game's too (`psxstack/runtime/main.c`) and `recomplauncher.json`'s: a
   `portable.txt` beside the launcher keeps everything in the launcher's folder, else the per-user folder
-  (`~/.local/share/dw2003/`, `%APPDATA%\dw2003\`). In it: `tui.state` (the launcher's settings), `pad.map` (its
+  (`~/.local/share/dw2003/`, `%APPDATA%\dw2003\`). On Linux, `RECOMPLAUNCHER_DATA` (RecompLauncher's `{data}`) wins
+  over both, since RecompLauncher's backups, cloud saves and Uninstall follow only the folders its manifest names; its first start copies the
+  old folder's files in (its `settings.json` over the one RecompLauncher's Play wrote just before) and leaves them
+  where they were. In it: `tui.state` (the launcher's settings), `pad.map` (its
   controls), `settings.json` (the game's, written by the launcher; its VIDEO, GAME and DEBUG LOGS values are read
   back, so what RecompLauncher changed shows in the launcher), the memory cards, `logs/`. `--self-test DIR` checks the
   rule, the files' round trip, settings.json's read-back and every screen, headless; with `DW3_SELFTEST_GAME=beside`

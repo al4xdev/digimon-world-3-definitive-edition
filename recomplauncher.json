@@ -26,9 +26,8 @@
       "id": "main",
       "format": "json",
       "file": [
+        { "path": "{data}/settings.json", "if": "/etc/os-release" },
         { "path": "{install}/settings.json", "if": "{install}/portable.txt" },
-        { "path": "{install}/usr/bin/settings.json", "if": "{install}/usr/bin/portable.txt" },
-        { "path": "{local}/dw2003/settings.json", "if": "/etc/os-release" },
         { "path": "{config}/dw2003/settings.json" }
       ],
       "game_path": "disc/path",
@@ -37,23 +36,22 @@
   ],
   "folders": {
     "saves": [
+      { "path": "{data}", "if": "/etc/os-release" },
       { "path": "{install}", "if": "{install}/portable.txt" },
-      { "path": "{install}/usr/bin", "if": "{install}/usr/bin/portable.txt" },
-      { "path": "{local}/dw2003", "if": "/etc/os-release" },
       { "path": "{config}/dw2003" }
     ],
     "logs": [
+      { "path": "{data}/logs", "if": "/etc/os-release" },
       { "path": "{install}/logs", "if": "{install}/portable.txt" },
-      { "path": "{install}/usr/bin/logs", "if": "{install}/usr/bin/portable.txt" },
-      { "path": "{local}/dw2003/logs", "if": "/etc/os-release" },
       { "path": "{config}/dw2003/logs" }
     ]
   },
   "saves": [
     "{install}/recomp",
-    "{install}/usr/bin/recomp",
+    "{data}/recomp",
     "{local}/dw2003/recomp",
-    "{config}/dw2003/recomp"
+    "{config}/dw2003/recomp",
+    "{install}/usr/bin/recomp"
   ],
   "exit_codes": {
     "1": "It stopped before the game could run. If it's the disc: the game plays only the Redump dump of the Europe release (SLES-03936), the one this page marks \"Matches the verified Europe disc\".",
