@@ -1,0 +1,415 @@
+# de_choices.txt: translated from pt_choices.txt (tools/check_story_lang.py; same format).
+Q8 DMG200:0 1@1: Baff [teddy:+1] | <7><9><7>Wahnsinn...<1>Das hier ist also<1>Digimon−Online?!<2,2>
+Q8 DMG200:0 1@2: Misstrauisch [ivy:+1] | <7><9><7>Zu schön, um wahr zu<1>sein... Wo ist der<1>Haken?<2,2>
+Q8 DMG200:0 1@3: Voller Tatendrang [rep:+1] | <7><9><7>Endlich! Digimon−<1>Online! Mal sehen, was<1>es draufhat!<2,2>
+Q9 DMG200:11 2@1: Selbstbewusst [rep:+1] | <7><9><7>Volltreffer! Grad mein<1>Digimon geholt und<1>ich mein’s ernst!<2,2>
+Q9 DMG200:11 2@2: Bescheiden [teddy:+1] | <7><9><7>Hab’ grad erst<1>angefangen, Opa. Bin<1>noch am Lernen.<2,2>
+Q9 DMG200:11 2@3: Verlegen [ivy:+1] | <7><9><7>Sieht man mir das so<1>an?! ...Ja, ich bin<1>gerade erst da.<2,2>
+Q10 DMG200:12 3@1: Ich hol’ den Pokal! [rep:+1] | <7><9><7>Weltmeistertitel?<1>Den Pokal hol’ ich<1>mir, versprochen!<2,2>
+Q10 DMG200:12 3@2: Vielleicht irgendwann [teddy:+1] | <7><9><7>Vielleicht irgendwann.<1>Erst mal nicht gleich<1>untergehen.<2,2>
+Q10 DMG200:12 3@3: Nur zum Spaß hier [rep:-1] | <7><9><7>Immer ruhig, Opa! Ich<1>will doch nur in Ruhe<1>zocken...<2,2>
+Q41 DMG200:12 7@1: Kann man das essen? [teddy:+1] | <7><9><7>...Eine was?!<2,2><3>Kann man das essen?<2,2>
+Q41 DMG200:12 7@2: Erklär mal [rep:+1] | <7><9><7>Aktentasche? Hab’<1>keine.<2,2><3>Wofür ist die gut?<2,2>
+Q41 DMG200:12 7@3: Dreist bluffen [keith:+1] | <7><9><7>Ach ja... Aktentasche.<2,2><3>...Noch nie gehört.<2,2>
+Q42 DMG200:21 4@1: Und wer bist du? [keith:+1] | <7><9><7>...Stimmt.<1>Und wer spielt hier<1>Verkehrspolizei?!<2,2>
+Q42 DMG200:21 4@2: Direkt heraus [rep:+1] | <7><9><7>Bin ich. Was gibt’s?<2,2>
+Q42 DMG200:21 4@3: Vorsichtig [ivy:+1] | <7><9><7>Kommt drauf an... wer<1>fragt?<2,2>
+Q11 DMG200:21 6@1: Zeig’s mir im Ring [keith:+1,rep:+1] | <7><9><7>Große Klappe, Champ.<1>Zeig’s mir im Ring!<2,2>
+Q11 DMG200:21 6@2: Ruhig bleiben [teddy:+1] | <7><9><7>Reden ist leicht. Im<1>Kampf zeigt sich’s.<2,2>
+Q11 DMG200:21 6@3: Sportlich [lisa:+1] | <7><9><7>Na gut! Dann zeig mal,<1>was du kannst.<2,2>
+Q12 DMG200:22 1@1: Wer hat das Sagen?! [keith:+1,rep:+1] | <7><9><7>Bämm! Und wer hat<1>jetzt hier das Sagen?!<2,2>
+Q12 DMG200:22 1@2: Guter Kampf [lisa:+1] | <7><9><7>Nicht schlecht, hey.<1>War ganz schön knapp.<2,2>
+Q12 DMG200:22 1@3: Trockene Ironie [keith:-1] | <7><9><7>Eins zu null für mich.<1>Noch ’ne Runde?<2,2>
+Q43 DMG200:22 5@1: Selber Flachpfeife! [keith:+1] | <7><9><7>Jaja, schon gut...<2,2><3>Selber Flachpfeife,<1>du Großmaul!<2,2>
+Q43 DMG200:22 5@2: Lautes Mundwerk [rep:+1] | <7><9><7>Schwer zu vergessen,<1>wenn einer so brüllt.<2,2>
+Q43 DMG200:22 5@3: Bis zum nächsten Mal [keith:+2] | <7><9><7>Dann trainier mal gut.<1>Nächstes Mal will ich<1>Feuer sehen!<2,2>
+Q14 DMG200:23 3@1: Lange Finger? [rep:+1] | <7><9><7>Hast nicht du Sepik−<1>mons Maske geklaut?<2,2>
+Q14 DMG200:23 3@2: Ganz höflich [lisa:+1] | <7><9><7>Verzeihung, King...<2,2><3>Ist Sepikmons Maske in<1>deine Tasche gefallen?<2,2>
+Q14 DMG200:23 3@3: Verdächtige Miene [ivy:+1] | <7><9><7>Die Maske ist weg und<1>du schwitzt.<1>Zufall?<2,2>
+Q200 TALK00 19@1: Trainingshalle raten [rep:+1] | <7>Mika<7>Mann, Patamon, wann<1>digitierst du endlich<1>zu Angemon?!<2,2><3><7><9><7>Ohne Kampf und Halle<1>digitiert es nie!<2,2><3><7>Mika<7>Echt?! Dann ab in die<1>Trainingshalle!<1>Danke für den Tipp!<2,2>
+Q200 TALK00 19@2: Patamon aufziehen [rep:-1] | <7>Mika<7>Mann, Patamon, wann<1>digitierst du endlich<1>zu Angemon?!<2,2><3><7><9><7>Diese fliegende<1>Kartoffel? Das wird<1>nie ein Angemon!<2,2><3><7>Mika<7>Hey! Nenn mein Patamon<1>nicht so! Das zeigen<1>wir dir noch!<2,2>
+Q200 TALK00 19@3: Um Geduld bitten [teddy:+1] | <7>Mika<7>Mann, Patamon, wann<1>digitierst du endlich<1>zu Angemon?!<2,2><3><7><9><7>Gib dem Kleinen Zeit!<1>Wenn’s drauf ankommt,<1>glänzt es!<2,2><3><7>Mika<7>Stimmt... tut mir<1>leid, Patamon! Ganz<1>in deinem Tempo!<2,2>
+Q201 TALK00 15@1: Danke, Meister! [rep:+1] | <7>Masato<7>Hör zu: Dein Ziel ist<1>der Seiryu Leader,<1>direkt östlich.<2,2><3><7><9><7>Danke für den Tipp!<1>Ich mach’ mich direkt<1>auf den Weg!<2,2><3><7>Masato<7>Viel Glück! Wenn du<1>das Abzeichen hast,<1>komm vorbei!<2,2>
+Q201 TALK00 15@2: Und du? Schon besiegt? [ivy:+1] | <7>Masato<7>Hör zu: Dein Ziel ist<1>der Seiryu Leader,<1>direkt östlich.<2,2><3><7><9><7>Wenn du so schlau<1>bist, was stehst du<1>dann hier rum?<2,2><3><7>Masato<7>Ähem! Ich... studiere<1>Taktik! Geh’ selbst<1>mal gucken!<2,2>
+Q201 TALK00 15@3: Vor dem Mittag erledigt! [keith:+1] | <7>Masato<7>Hör zu: Dein Ziel ist<1>der Seiryu Leader,<1>direkt östlich.<2,2><3><7><9><7>Kein Problem! Bin vor<1>dem Mittagessen durch!<2,2><3><7>Masato<7>Haha, ganz schön<1>frech! Mal sehen, wie<1>du zurückkommst!<2,2>
+Q202 TALK00 21@1: Ab ins Training! [rep:+1] | <7>Agumon<7>Kämpfen allein reicht<1>nicht! In der Halle<1>wird geschwitzt!<2,2><3><7><9><7>Abgemacht! Ich schau’<1>gleich mal in der<1>Halle vorbei!<2,2><3><7>Agumon<7>Top! Hart trainieren,<1>dann stoppt euch<1>niemand mehr!<2,2>
+Q202 TALK00 21@2: Lieber echte Kämpfe [keith:+1] | <7>Agumon<7>Kämpfen allein reicht<1>nicht! In der Halle<1>wird geschwitzt!<2,2><3><7><9><7>Trainingshalle? Nichts<1>da! Ich lerne lieber<1>im echten Kampf!<2,2><3><7>Agumon<7>Grrr! Wenn du draußen<1>Probleme kriegst,<1>denkst du an mich!<2,2>
+Q202 TALK00 21@3: Erstmal einen Snack [teddy:+1] | <7>Agumon<7>Kämpfen allein reicht<1>nicht! In der Halle<1>wird geschwitzt!<2,2><3><7><9><7>Auf leeren Magen?<1>Niemals! Erstmal was<1>essen!<2,2><3><7>Agumon<7>Hmm... da hast du<1>recht! Erst Fleisch,<1>dann Training!<2,2>
+Q203 TALK00 22@1: Welches denn, Opa? [teddy:+1] | <7>Jake<7>Ich wär’ so gern mal<1>ein Digimon! Nur<1>einmal! Hyo hyo hyo!<2,2><3><7><9><7>Haha, stark, Opa!<1>Welches Digimon wärst<1>du denn gern?<2,2><3><7>Jake<7>Ein großes, das hoch<1>fliegt! Hyo hyo!<1>Träumen darf man ja!<2,2>
+Q203 TALK00 22@2: Vorsicht mit Wünschen [ivy:+1] | <7>Jake<7>Ich wär’ so gern mal<1>ein Digimon! Nur<1>einmal! Hyo hyo hyo!<2,2><3><7><9><7>Pass’ auf, was du dir<1>wünschst, Opa...<1>Am Ende klappt’s!<2,2><3><7>Jake<7>Hyo hyo! Ach was!<1>Was soll in einem<1>Spiel schon passieren?<2,2>
+Q203 TALK00 22@3: Was für Typen hier... [rep:-1] | <7>Jake<7>Ich wär’ so gern mal<1>ein Digimon! Nur<1>einmal! Hyo hyo hyo!<2,2><3><7><9><7>Was man in dieser<1>Stadt für schräge<1>Leute trifft...<2,2><3><7>Jake<7>Hmpf! Die Jugend von<1>heute hat null<1>Fantasie! Hyo hyo!<2,2>
+Q204 TALK00 11@1: Guter Tipp, danke! [rep:+1] | <7>Irrer Jack<7>Waffen stärken den<1>Angriff! Guilmon lässt<1>seine nie los.<2,2><3><7><9><7>Super Tipp! Ich rüste<1>gleich das ganze Team<1>aus!<2,2><3><7>Irrer Jack<7>Genau! Mit guter Waffe<1>sehen die Gegner kein<1>Land mehr!<2,2>
+Q204 TALK00 11@2: Lieber ohne Waffe [keith:+1] | <7>Irrer Jack<7>Waffen stärken den<1>Angriff! Guilmon lässt<1>seine nie los.<2,2><3><7><9><7>Waffen sind für Leute,<1>die ihren Fäusten<1>nicht trauen!<2,2><3><7>Irrer Jack<7>Haha, alte Schule!<1>Wenn das klappt, zieh’<1>ich meinen Hut!<2,2>
+Q204 TALK00 11@3: Wo ist dein Guilmon? [lisa:+1] | <7>Irrer Jack<7>Waffen stärken den<1>Angriff! Guilmon lässt<1>seine nie los.<2,2><3><7><9><7>Wo wir dabei sind...<1>wo ist dein Guilmon<1>eigentlich?<2,2><3><7>Irrer Jack<7>Hä, hier... oh nein!<1>Es jagt wieder Brot<1>hinterher! Bin weg!<2,2>
+Q205 TALK00 17@1: Kneif’ dich mal! [teddy:+1] | <7>Neuling Shiro<7>Die Matrix−Kammer ist<1>top! Kaum zu fassen,<1>wir sind im Netz!<2,2><3><7><9><7>Kneif’ dich in die<1>Wange, ob’s kein Traum<1>ist!<2,2><3><7>Neuling Shiro<7>Aua! Tut echt weh!<1>Haha, wir sind echt<1>im Spiel! Wahnsinn!<2,2>
+Q205 TALK00 17@2: Ziemlich unheimlich [ivy:+1] | <7>Neuling Shiro<7>Die Matrix−Kammer ist<1>top! Kaum zu fassen,<1>wir sind im Netz!<2,2><3><7><9><7>Viel Maschine, wenig<1>Erklärung. Ich trau’<1>dem Ding nicht.<2,2><3><7>Neuling Shiro<7>Uff, da läuft’s mir<1>eiskalt den Rücken<1>runter...<2,2><3>Wird schon sicher<1>sein!<2,2>
+Q205 TALK00 17@3: Genieß’ die Tour! [rep:+1] | <7>Neuling Shiro<7>Die Matrix−Kammer ist<1>top! Kaum zu fassen,<1>wir sind im Netz!<2,2><3><7><9><7>Ziemlich cool, oder?!<1>Genieß’ es, solange<1>es noch ruhig ist!<2,2><3><7>Neuling Shiro<7>Mach’ ich! Ich erkunde<1>jeden Winkel dieses<1>Servers!<2,2>
+Q206 TALK00 13@1: Erklär’ das mal richtig [rep:+1] | <7>Faulpelz Alan<7>Das über dir ist ein<1>Satellit. Sichert die<1>Daten... gähn.<2,2><3><7><9><7>Hey, wach’ auf!<1>Erklär’ das mal<1>ordentlich!<2,2><3><7>Faulpelz Alan<7>Ja, ja... er liest<1>Daten und projiziert<1>sie hier... gähn.<2,2>
+Q206 TALK00 13@2: Hol’ dir ’nen Kaffee! [teddy:+1] | <7>Faulpelz Alan<7>Das über dir ist ein<1>Satellit. Sichert die<1>Daten... gähn.<2,2><3><7><9><7>Was für eine Trägheit!<1>Trink’ mal einen<1>starken Kaffee!<2,2><3><7>Faulpelz Alan<7>Kaffee? Gern, aber<1>hingehen ist so viel<1>Arbeit... gähn.<2,2>
+Q206 TALK00 13@3: Hab’s schon kapiert [keith:+1] | <7>Faulpelz Alan<7>Das über dir ist ein<1>Satellit. Sichert die<1>Daten... gähn.<2,2><3><7><9><7>Schon gut, hab’s<1>kapiert! Überanstreng’<1>dich nicht!<2,2><3><7>Faulpelz Alan<7>Puh... zum Glück.<1>Tagespensum an Atem<1>gespart... gähn.<2,2>
+Q207 TALK00 239@1: Gallantmon ist super! [rep:+1] | <7>Digimon−Fan Mary<7>Mein Traum ist es,<1>mein Digimon zu<1>Gallantmon zu bringen.<2,2><3><7><9><7>Stark! Gallantmon hat<1>echt Klasse, zieh’s<1>durch!<2,2><3><7>Digimon−Fan Mary<7>Oder?! Mit dem Rücken−<1>wind trainier’ ich<1>doppelt so hart!<2,2>
+Q207 TALK00 239@2: Wie wär’s mit Beelzemon? [keith:+1] | <7>Digimon−Fan Mary<7>Mein Traum ist es,<1>mein Digimon zu<1>Gallantmon zu bringen.<2,2><3><7><9><7>Und Beelzemon? Der<1>sorgt in der Arena<1>erst recht für Furore!<2,2><3><7>Digimon−Fan Mary<7>Beelzemon?! Wow, echt<1>stylisch! Das schau’<1>ich mir an!<2,2>
+Q207 TALK00 239@3: Fang’ mit den Basics an [lisa:+1] | <7>Digimon−Fan Mary<7>Mein Traum ist es,<1>mein Digimon zu<1>Gallantmon zu bringen.<2,2><3><7><9><7>Langsam! Erst leveln,<1>dann an Mega denken!<2,2><3><7>Digimon−Fan Mary<7>Stimmt... eins nach<1>dem anderen! Erst die<1>Basics, dann Mega!<2,2>
+Q16 DMG200:24 13@1: Lucky Mouse beschuldigen | <7><9><7>Wartung? Glaub’ ich<1>nicht. Das riecht nach<1>Lucky Mouse.<2,2>
+Q16 DMG200:24 13@2: Nicht so offensichtlich | <7><9><7>Wohl Lucky Mouse.<2,2><3>Oder jemand will, dass<1>wir das denken.<2,2>
+Q16 DMG200:24 13@3: Nach dem Warum fragen | <7><9><7>Wenn Lucky Mouse das<1>war, will ich wissen,<1>warum.<2,2>
+Q71 DMG200:24 15@1: Offen: alles, was ich weiß | <7><9><7>Nicht viel. Teddy<1>meinte nur, Lucky<1>Mouse sei aufgetaucht.<2,2>
+Q71 DMG200:24 15@2: Nachhaken: der Schock | <7><9><7>Wieso trifft dich der<1>Name so hart?<2,2><3>Ich weiß nur: Teddy<1>sagte, Lucky Mouse<1>sei aufgetaucht.<2,2>
+Q71 DMG200:24 15@3: Zurückhaltend: nur geraten | <7><9><7>Nur so geraten. Teddy<1>nannte bloß den Namen.<2,2><3>Dass Lucky Mouse<1>aufgetaucht sei.<1>Mehr nicht.<2,2>
+Q74 DMG200:28 1@1: Spielerisch | <7><9><7>Na? Geh’ ich durch?<1>Ich fühl’ mich schon<1>etwas digimoniger.<2,2>
+Q74 DMG200:28 1@2: Verlegen | <7><9><7>...Und so? Ich geh’<1>wohl als Digimon<1>durch. Vielleicht.<2,2>
+Q74 DMG200:28 1@3: Trockene Ironie | <7><9><7>Überzeugend. Ein<1>Digimon durch und<1>durch.<2,2>
+Q75 DMG200:28 5@1: Vertrauen: pass auf | <7><9><7>Okay. Aber pass auf<1>dich auf.<2,2>
+Q75 DMG200:28 5@2: Nachhaken: erklär’s später | <7><9><7>Geh. Aber nachher<1>erklärst du mir, was<1>hier läuft.<2,2>
+Q75 DMG200:28 5@3: Locker: nicht stolpern | <7><9><7>Klar. Stolper nicht<1>über den Schwanz.<2,2>
+Q78 DMG200:32 1@1: Entschlossen | <7><9><7>Ich finde Lucky Mouse.<1>Und hol’ Teddy zurück.<2,2>
+Q78 DMG200:32 1@2: Rache | <7><9><7>Lucky Mouse hat Teddy.<1>Ich find’ ihn und<1>rechne ab.<2,2>
+Q78 DMG200:32 1@3: Hoffnung: zurückholen | <7><9><7>Teddy ist da draußen.<2,2><3>Ich finde Lucky Mouse<1>und hol’ ihn wieder<1>nach Hause.<2,2>
+Q102 DMG200:33 2@1: Erleichtert | <7><9><7>Teddy! Zum Glück.<1>Geht’s dir gut? Haben<1>sie dir wehgetan?<2,2>
+Q102 DMG200:33 2@2: Sachlich: Lagebericht | <7><9><7>Teddy. Bericht.<1>Verletzt? Haben sie<1>dir was angetan?<2,2>
+Q102 DMG200:33 2@3: Schuldgefühl: zu spät | <7><9><7>Teddy... sorry für die<1>Verspätung.<1>Bist du verletzt?<2,2>
+Q103 DMG200:33 4@1: Misstrauisch | <7><9><7>Weiß ich. Den Leuten<1>da trau’ ich nicht.<1>Wer sind die?<2,2>
+Q103 DMG200:33 4@2: Offen: vom Team? | <7><9><7>Weiß ich. Sehen nach<1>Personal aus. Wer sind<1>die wirklich?<2,2>
+Q103 DMG200:33 4@3: Vorsicht: erst fragen | <7><9><7>Weiß ich. Bevor ich<1>wem traue: Wer sind<1>die da drüben?<2,2>
+Q23 DMG200:33 8@1: Schwur: ich beende das | <7><9><7>Ich hol’ euch alle<1>raus. Haltet durch.<2,2><3>Ich besieg’ die Game−<1>master. Ich schwör’s!<2,2>
+Q23 DMG200:33 8@2: Kalt: sie wird zahlen | <7><9><7>Haltet alle durch.<1>Ich helfe euch.<2,2><3>Die Gamemaster zahlt<1>dafür. Bis ins letzte<1>Detail.<2,2>
+Q23 DMG200:33 8@3: Sanft: haltet durch | <7><9><7>Ihr seid sicher.<1>Ruht euch aus. Nur<1>noch kurz durchhalten.<2,2><3>Ich besieg’ die Game−<1>master. Überlasst<1>das mir.<2,2>
+Q106 DMG200:34 16@1: Vertrauen: zähl’ auf dich | <7><9><7>Wenn du was findest,<1>sag Bescheid.<1>Ich zähl’ auf dich.<2,2>
+Q106 DMG200:34 16@2: Vorsicht: kein Risiko | <7><9><7>Wenn du was findest,<1>sag Bescheid. Und geh<1>kein Risiko ein.<2,2>
+Q106 DMG200:34 16@3: Dringend: jede Minute | <7><9><7>Sag mir, was du<1>findest. Schnell.<1>Jede Minute zählt.<2,2>
+Q34 DMG200:36 7@1: Trotz: ich hör’ nicht auf | <7><9><7>Was soll das?!<1>Wir sind so weit<1>gekommen!<2,2><3>Ich hör’ jetzt nicht<1>auf!<2,2>
+Q34 DMG200:36 7@2: Appell: Lisa, wach auf! | <7><9><7>Lisa, wach auf!<1>Schau, was wir durch−<1>gemacht haben!<2,2><3>Wieso kneifst du?!<2,2>
+Q34 DMG200:36 7@3: Hart: geh aus dem Weg | <7><9><7>Dann geh aus dem Weg.<2,2><3>Ich mach’ auch ohne<1>dich weiter!<2,2>
+Q137 DMG200:36 12@1: Verlegen: reingefallen | <7><9><7>Jawohl, Ma’am...<1>Das hast du also<1>gemeint.<2,2><3>Ich dacht’ echt, du<1>gibst auf.<2,2>
+Q137 DMG200:36 12@2: Beeindruckt: guter Zug | <7><9><7>Jawohl, Ma’am...<1>Das hast du also<1>gemeint.<2,2><3>Guter Zug. Muss ich<1>zugeben.<2,2>
+Q137 DMG200:36 12@3: Vorwurf: sag’s vorher | <7><9><7>Jawohl, Ma’am...<1>Das hast du also<1>gemeint.<2,2><3>’Ne Warnung wäre nett<1>gewesen.<2,2>
+Q36 DMG200:41 10@1: Mutig bleiben | <7><9><7>...Ja. Ganz sicher.<2,2><3>Wartet hier.<1>Ich schau’ mich um.<2,2>
+Q36 DMG200:41 10@2: Ehrlich: ich hoffe es | <7><9><7>...Ich hoffe es.<1>Wirklich.<2,2><3>Wartet hier. Ich<1>schau’ mich um.<2,2>
+Q36 DMG200:41 10@3: Entschlossen: ich lös’ es | <7><9><7>Ja. Und ich find’<1>einen Weg.<2,2><3>Wartet hier. Ich<1>bring’ das in Ordnung.<2,2>
+Q72 DMG300:0 6@1: Ehrlich: nie gehört | <7><9><7>Nie von ihm gehört.<2,2>
+Q72 DMG300:0 6@2: Bluff: so tun als ob | <7><9><7>Ach. Klar. Der.<2,2><3>Natürlich kenn’ ich<1>ihn.<2,2>
+Q72 DMG300:0 6@3: Neugierig: wer ist das | <7><9><7>Eigentlich nicht. Was<1>kann er denn so?<2,2>
+Q73 DMG300:0 11@1: Liebevoll: typisch Teddy | <7><9><7>Schon weg. Typisch.<2,2><3>Hat Teddy eine Idee,<1>hält ihn nichts auf.<2,2><3>Er taucht schon wieder<1>auf. Wie immer.<2,2>
+Q73 DMG300:0 11@2: Besorgt | <7><9><7>...Schon weg.<2,2><3>Hat Teddy eine Idee,<1>hält ihn nichts auf.<2,2><3>Hoffentlich bleibt’s<1>dabei.<2,2>
+Q73 DMG300:0 11@3: Genervt | <7><9><7>Schon weg. Mal wieder.<2,2><3>Hat Teddy eine Idee,<1>vergisst er uns alle.<2,2><3>Hoffentlich geht’s ihm<1>gut.<2,2>
+Q52 DMG300:1 4@1: Verlegen: sorry | <7><9><7>Oh. Klar. Sorry, Nick.<1>Einundzwanzig. Mein<1>Fehler.<2,2>
+Q52 DMG300:1 4@2: Ironisch: müde Augen | <7><9><7>Einundzwanzig. Sicher.<1>Die Augenringe sagen<1>was anderes.<2,2>
+Q52 DMG300:1 4@3: Höflich: nicht bös’ | <7><9><7>Nicht bös’ gemeint,<1>Nick. War nur ein<1>Versprecher.<2,2>
+Q53 DMG300:2 4@1: Konfrontieren | <7><9><7>Ich durchschau’ dich.<2,2><3>Ich sah dich da hinten<1>im Etemon−Anzug.<2,2>
+Q53 DMG300:2 4@2: Kühl: es ist aus | <7><9><7>Spar’s dir. Ich sah<1>den Etemon−Anzug da<1>hinten.<2,2><3>Aus und vorbei.<2,2>
+Q53 DMG300:2 4@3: Spöttisch: schwache Show | <7><9><7>Schickes Kostüm.<2,2><3>Ich sah den Etemon−<1>Anzug da hinten. So<1>gut bist du nicht.<2,2>
+Q54 DMG300:2 6@1: Pragmatisch | <7><9><7>Die Agumon−Anzüge...<2,2><3>Na gut. Die könnten<1>nützlich sein.<2,2>
+Q54 DMG300:2 6@2: Unbehagen: Schweigegeld | <7><9><7>Schweigegeld...<2,2><3>Gefällt mir nicht.<1>Aber nützlich könnten<1>sie sein.<2,2>
+Q54 DMG300:2 6@3: Neckend: abgemacht | <7><9><7>Agumon−Anzüge.<1>Abgemacht.<2,2><3>Dein Geheimnis ist<1>sicher. Vorerst.<2,2>
+Q101 DMG300:8 7@1: Schwächeren schaden | <7><9><7>Naja... Kurz gesagt,<1>böse ist, wer<1>Schwächeren schadet.<2,2>
+Q101 DMG300:8 7@2: Ehrlich: nicht sicher | <7><9><7>Naja... Kurz gesagt...<1>Bin mir nicht sicher.<2,2><3>Dachte, ich wüsst’ es.<2,2>
+Q101 DMG300:8 7@3: Scharf: die A.o.A | <7><9><7>Naja... Kurz gesagt,<1>böse sind die A.o.A.<1>Alle zusammen.<2,2>
+Q24 DMG300:11 8@1: Wütend | <7><9><7>Ich mach’ dich und<1>deinen Plan fertig.<2,2><3>Rede. Schnell. Was<1>planen die A.o.A?<2,2>
+Q24 DMG300:11 8@2: Ruhig und kühl | <7><9><7>Ich beende das hier.<1>Leise, wenn’s geht.<2,2><3>Sag mir, was die A.o.A<1>planen. Alles.<2,2>
+Q24 DMG300:11 8@3: Scharf: fang an zu reden | <7><9><7>Fang an zu reden, dann<1>bringen wir’s zu Ende.<2,2><3>Was planen die A.o.A?<1>Sag’s, oder ich zwing’<1>dich dazu.<2,2>
+Q104 DMG300:11 10@1: Kühl: du bist allein | <7><9><7>Die Wachen sind raus.<1>Jetzt bist du allein,<1>Gamemaster.<2,2>
+Q104 DMG300:11 10@2: Fair: letzte Chance | <7><9><7>Die Wachen sind raus.<1>Ruf deine Digimon<1>zurück, Gamemaster.<2,2><3>Letzte Chance.<2,2>
+Q104 DMG300:11 10@3: Gespannt: zeig her | <7><9><7>Die Wachen sind raus.<2,2><3>Zeig mal dein<1>kostbares Digimon.<2,2>
+Q105 DMG300:12 5@1: Genervt: verheimlicht | <7><9><7>Agenten der S.A.P?<2,2><3>Ihr habt so getan, als<1>wärt ihr normale<1>Leute?<2,2>
+Q105 DMG300:12 5@2: Beeindruckt | <7><9><7>Lisa, Nick... Agenten<1>der S.A.P?<2,2><3>Ihr zwei wart gut.<1>Echt gut.<2,2>
+Q105 DMG300:12 5@3: Ironisch: erklärt vieles | <7><9><7>Agenten der S.A.P?<1>...Das erklärt ehrlich<1>gesagt eine Menge.<2,2>
+Q109 DMG300:13 2@1: Ruhig: offene Hände | <7><9><7>Ganz ruhig! Ich bin<1>nicht bei den A.o.A.<2,2><3>Ich bin <8,1><5,1>, vom<1>Asuka−Server.<2,2>
+Q109 DMG300:13 2@2: Bestimmt: erst zuhören | <7><9><7>Waffe runter! Ich bin<1>nicht bei den A.o.A.<2,2><3>Ich bin <8,1><5,1>, vom<1>Asuka−Server. Hör erst<1>mal zu.<2,2>
+Q109 DMG300:13 2@3: Locker: im Scherz | <7><9><7>Hey, locker! Seh’ ich<1>etwa aus wie A.o.A?<2,2><3>Ich bin <8,1><5,1>, vom<1>Asuka−Server.<2,2>
+Q27 DMG300:13 8@1: Wut | <7><9><7>Schon wieder Oinkmon.<1>Nicht schon wieder.<2,2><3>Dafür zahlen sie.<1>Die kommen mir nicht<1>davon.<2,2>
+Q27 DMG300:13 8@2: Trauer | <7><9><7>Wieder Oinkmon...<1>Das waren Partner.<2,2><3>Damit kommen die mir<1>nicht durch.<2,2>
+Q27 DMG300:13 8@3: Schwur: ich beende es | <7><9><7>Schon wieder<1>Oinkmon...<2,2><3>Ich beende das.<1>Geschworen. Die kommen<1>nicht davon.<2,2>
+Q28 DMG300:13 10@1: Bedauern | <7><9><7>Ein Widerstand... Ich<1>würde gern helfen.<2,2><3>Aber jetzt geht’s<1>nicht.<2,2><3>Ich brauch’ das Digiei<1>des Wissens für die<1>echte Welt.<2,2>
+Q28 DMG300:13 10@2: Bestimmt: ich komm’ zurück | <7><9><7>Ein Widerstand. Gut.<1>Jetzt kann ich nicht<1>mitmachen.<2,2><3>Ich brauch’ das Digiei<1>des Wissens. Danach<1>komm’ ich zurück.<2,2>
+Q28 DMG300:13 10@3: Zwiespalt: erst warnen | <7><9><7>Ich will helfen.<2,2><3>Aber die echte Welt<1>muss zuerst gewarnt<1>werden.<2,2><3>Darum brauch’ ich das<1>Digiei des Wissens.<1>Verzeih mir.<2,2>
+Q110 DMG300:13 12@1: Herzlich: pass auf dich | <7><9><7>Du auch. Bleib in<1>Sicherheit, Kenny.<1>Ich mein’ es ernst.<2,2>
+Q110 DMG300:13 12@2: Direkt: fall nicht auf | <7><9><7>Du auch. Fall bloß<1>nicht auf.<2,2>
+Q110 DMG300:13 12@3: Versprechen: wir sehen uns | <7><9><7>Du auch. Wir sehen uns<1>wieder. Dafür sorg’<1>ich.<2,2>
+Q138 DMG300:15 3@1: Vorsicht: offene Tür | <7><9><7>!! Sie ging von selbst<1>auf. Warum?<2,2><3>Offene Türen sind<1>Fallen.<2,2><3>Na gut. Ich geh’ rein,<1>wer auch immer da ist.<2,2>
+Q138 DMG300:15 3@2: Trotz: annehmen | <7><9><7>!! Sie ging von selbst<1>auf.<2,2><3>Eine Einladung. Wäre<1>unhöflich abzulehnen.<2,2><3>Ich komm’ rein, wer<1>auch immer du bist.<2,2>
+Q138 DMG300:15 3@3: Neugier: wer ist da | <7><9><7>!! Sie ging von selbst<1>auf. Warum?<2,2><3>Jemand will, dass ich<1>reinkomm’. Mal sehen,<1>wer.<2,2><3>Gut. Ich geh’ rein,<1>wer auch immer da ist.<2,2>
+Q139 DMG300:17 4@1: Kühl: sofort | <7><9><7>Genug Spielchen.<1>Schalte Destromon<1>sofort ab.<2,2>
+Q139 DMG300:17 4@2: Dringend: Menschenleben | <7><9><7>Genug Spielchen.<1>Menschen werden<1>sterben.<2,2><3>Schalte Destromon<1>sofort ab.<2,2>
+Q139 DMG300:17 4@3: Spott: Chief Officer | <7><9><7>Genug Spielchen, Chief<1>Officer. Schalte<1>Destromon sofort ab.<2,2>
+Q35 DMG300:17 6@1: Verachtung | <7><9><7>Mich kaufen?! Du nutzt<1>Digimon als Waffen!<2,2><3>Lieber werd’ ich<1>gelöscht, als mich<1>schmutzig zu machen!<2,2>
+Q35 DMG300:17 6@2: Um keinen Preis | <7><9><7>Um keinen Preis der<1>Welt.<2,2><3>Du nutzt Digimon als<1>Waffen. Lieber lass’<1>ich mich löschen.<2,2>
+Q35 DMG300:17 6@3: Trockene Absage | <7><9><7>Nein. Kein Posten der<1>Welt bringt mich dazu!<2,2>
+Q140 DMG300:18 10@1: Vertrauen | <7><9><7>...Teddy, du weißt,<1>wie’s geht, oder? Ich<1>vertrau’ dir.<2,2>
+Q140 DMG300:18 10@2: Zweifel: ein Fehler... | <7><9><7>...Teddy, weißt du,<1>wie? Ein Fehler und<1>eine Stadt ist weg.<2,2>
+Q140 DMG300:18 10@3: Trocken: sag ja | <7><9><7>...Teddy. Sag bitte,<1>dass du weißt, wie.<2,2>
+Q141 DMG300:19 5@1: Ehrlich: ein Teil | <7><9><7>...Echt? Ein Teil hat<1>doch Spaß gemacht.<2,2>
+Q141 DMG300:19 5@2: Leer: kein Spaß mehr | <7><9><7>...Echt? Weiß nicht.<1>Macht schon lange<1>keinen Spaß mehr.<2,2>
+Q141 DMG300:19 5@3: Ironisch: definiere Spaß | <7><9><7>...Echt? Kommt drauf<1>an, was du unter Spaß<1>verstehst.<2,2>
+Q142 DMG300:23 7@1: Sanft: Ich bin da | <7><9><7>Teddy. Ich versteh’<1>kein Wort. Aber ich<1>bin da.<2,2><3>Warte hier mit Lisa<1>und den anderen.<2,2><3>Ich finde einen Weg,<1>das zu richten.<2,2>
+Q142 DMG300:23 7@2: Zögernd: Ich finde was | <7><9><7>Teddy... Ich versteh’<1>kein Wort.<2,2><3>Warte hier mit Lisa<1>und den anderen.<2,2><3>Ich werd’... einen<1>Weg finden.<2,2>
+Q142 DMG300:23 7@3: Fest: Um jeden Preis | <7><9><7>Teddy. Ich muss es<1>nicht verstehen.<2,2><3>Warte hier mit Lisa<1>und den anderen.<2,2><3>Ich richte das wieder.<1>Verlass’ dich drauf.<2,2>
+Q37 DMG300:25 6@1: Trotzig: Ich komme | <7><9><7>Gut, Lord Megadeath.<1>Ich komme.<2,2><3>Und ich werde dich<1>besiegen.<2,2>
+Q37 DMG300:25 6@2: Ängstlich, aber bereit | <7><9><7>...Ich hab’ Angst.<1>Aber ich komme, Lord<1>Megadeath.<2,2><3>Ob bereit oder nicht.<2,2>
+Q37 DMG300:25 6@3: Still: Ich komme | <7><9><7>Ich komme, Lord<1>Megadeath.<2,2><3>Warte auf mich.<2,2>
+Q76 DMG305:0 5@1: Misstrauisch | <7><9><7>Eine Suche. Pläne.<2,2><3>So redet niemand über<1>einen Fehler.<2,2>
+Q76 DMG305:0 5@2: Vertrauensvoll: Team aktiv | <7><9><7>Eine Suche und Pläne.<2,2><3>Sie arbeiten an dem<1>Problem. Super.<2,2>
+Q76 DMG305:0 5@3: Unruhig | <7><9><7>Eine Suche... Pläne...<2,2><3>Warum krieg’ ich davon<1>Gänsehaut?<2,2>
+Q77 DMG305:1 2@1: Verlegen | <7><9><7>Äh... wir... Wir<1>suchen einen Freund.<1>Teddy.<2,2>
+Q77 DMG305:1 2@2: Ruhig | <7><9><7>Ein Freund von uns<1>fehlt. Teddy.<2,2><3>Wir sind auf der<1>Suche nach ihm.<2,2>
+Q77 DMG305:1 2@3: Fordernd | <7><9><7>Wir wollen Teddy. Ein<1>Freund. Weißt du, wo<1>er ist?<2,2>
+Q17 DMG305:1 7@1: Empört | <7><9><7>Lucky Mouse hat uns<1>das angetan?<2,2><3>Dafür wird er büßen.<2,2>
+Q17 DMG305:1 7@2: Ungläubig | <7><9><7>Lucky Mouse...<1>Das kann ich nicht<1>glauben.<2,2>
+Q17 DMG305:1 7@3: Zweifelnd | <7><9><7>Stimmt das wirklich?<1>Lucky Mouse, ein<1>Schurke?<2,2>
+Q18 DMG305:1 10@1: Begeistert | <7><9><7>Klar! Sag’, wo wir<1>anfangen sollen.<2,2>
+Q18 DMG305:1 10@2: Unruhig | <7><9><7>Klar...<1>Wir tun, was wir<1>können.<2,2>
+Q18 DMG305:1 10@3: Nur für Teddy | <7><9><7>...Wenn das Teddy<1>zurückbringt, ja.<2,2>
+Q25 DMG305:4 21@1: Tröstend | <7><9><7>Keine Sorge.<1>Alles wird wieder gut.<2,2>
+Q25 DMG305:4 21@2: Ehrlich: Wir versuchen’s | <7><9><7>Versprechen kann ich’s<1>nicht. Aber wir<1>versuchen’s. Alle.<2,2>
+Q25 DMG305:4 21@3: Entschlossen | <7><9><7>Es wird klappen.<1>Dafür sorg’ ich.<2,2>
+Q134 DMG305:5 5@1: Beharrlich: Es muss gehen | <7><9><7>Es muss einen Weg<1>geben, ihn zu stoppen.<1>Irgendwas.<2,2>
+Q134 DMG305:5 5@2: Verzweifelt: Irgendwas | <7><9><7>Es muss doch einen Weg<1>geben. Irgendwas.<2,2><3>Wir können nicht nur<1>zusehen.<2,2>
+Q134 DMG305:5 5@3: Kühl: Sperre finden | <7><9><7>Denk’ nach. Jede Waffe<1>hat irgendwo eine<1>Sperre.<2,2><3>Es muss einen Weg<1>geben, ihn zu stoppen.<2,2>
+Q135 DMG305:6 21@1: Sicher: Überlass’ es mir | <7><9><7>Ich schaff’ das.<1>Überlass’ das mir.<2,2>
+Q135 DMG305:6 21@2: Vorsicht: Wartet auf mich | <7><9><7>Ich schaff’ das. Ich<1>pass’ auf. Wartet auf<1>mich.<2,2>
+Q135 DMG305:6 21@3: Müde: Keine Wahl | <7><9><7>Ich schaff’ das.<1>Irgendwie schaff’ ich<1>es immer.<2,2><3>Überlass’ das mir.<2,2>
+Q135 DMG305:8 22@1: Sicher: Überlass’ es mir | <7><9><7>Ich schaff’ das.<1>Überlass’ das mir.<2,2>
+Q135 DMG305:8 22@2: Vorsicht: Wartet auf mich | <7><9><7>Ich schaff’ das. Ich<1>pass’ auf. Wartet auf<1>mich.<2,2>
+Q135 DMG305:8 22@3: Müde: Keine Wahl | <7><9><7>Ich schaff’ das.<1>Irgendwie schaff’ ich<1>es immer.<2,2><3>Überlass’ das mir.<2,2>
+Q44 DMG400:0 1@1: Respektvolle Forderung | <7><9><7>MasterTyranno.<2,2><3>Ich fordere dich<1>heraus. Wenn du<1>annimmst.<2,2>
+Q44 DMG400:0 1@2: Direkt | <7><9><7>MasterTyranno.<2,2><3>Kämpf’ gegen mich.<2,2>
+Q44 DMG400:0 1@3: Ironisch: Schon gegessen? | <7><9><7>MasterTyranno. Kämpf’<1>gegen mich.<2,2><3>Hoffentlich bist du<1>satt. Ich hasse<1>Ausreden.<2,2>
+Q45 DMG400:2 1@1: Respektvoll [lisa:+1] | <7><9><7>Seiryu Leader!<1>Ich hab’ MasterTyranno<1>besiegt.<2,2><3>Ich bitte um die Ehre<1>eines Kampfes!<2,2>
+Q45 DMG400:2 1@2: Direkt [rep:+1] | <7><9><7>Seiryu Leader!<1>Ich hab’ MasterTyranno<1>besiegt.<2,2><3>Klär’n wir’s jetzt im<1>Kampf?<2,2>
+Q45 DMG400:2 1@3: Frech [keith:+1] | <7><9><7>Seiryu Leader!<1>Der Dino ist erledigt!<1>Jetzt bist du dran!<2,2>
+Q46 DMG400:3 2@1: Was für ein Kampf! [rep:+1] | <7><9><7>Ich bin <8,1><5,1>.<2,2><3>Was für ein Kampf!<1>Jede Sekunde wert!<2,2>
+Q46 DMG400:3 2@2: Haarscharf! [teddy:+1] | <7><9><7>Ich bin <8,1><5,1>.<2,2><3>Das war knapp! Ich<1>ging fast zu Boden!<2,2>
+Q46 DMG400:3 2@3: Merk’ dir den Namen! [keith:+1,rep:+1] | <7><9><7>Ich bin <8,1><5,1>.<2,2><3>Merk’ dir den Namen,<1>der Welt−Titel gehört<1>mir!<2,2>
+Q48 DMG400:6 1@1: Argwohn: Kein Zufall | <7><9><7>Südsektor. Endlich.<2,2><3>Das Digimon wusste<1>genau, wohin. Das<1>gefällt mir nicht.<2,2>
+Q48 DMG400:6 1@2: Unruhe: Noch hier | <7><9><7>Südsektor. Endlich.<2,2><3>Wovor ist es geflohen?<1>Was immer es war, es<1>ist noch hier.<2,2>
+Q48 DMG400:6 1@3: Neugier: Rausfinden | <7><9><7>Südsektor. Endlich.<2,2><3>Dieses Digimon...<1>Ich will wissen, was<1>es war.<2,2>
+Q49 DMG400:7 5@1: Schreck | <7><9><7>Wer ist da?<2,2><3>...Es ist ein Geist!<1>Ein echter Geist!<2,2>
+Q49 DMG400:7 5@2: Skepsis: Ein Trick | <7><9><7>Wer ist da?<2,2><3>...Ein Geist? Nein.<1>Geister gibt’s nicht.<2,2>
+Q49 DMG400:7 5@3: Ironisch: Na klar | <7><9><7>Wer ist da?<2,2><3>...Ein Geist. Na klar.<1>Warum nicht?<2,2>
+Q50 DMG400:8 4@1: Trotzig: Erstes Mal | <7><9><7>Nie? Es gibt immer<1>ein erstes Mal.<2,2>
+Q50 DMG400:8 4@2: Ruhig: Alle verlieren | <7><9><7>Nie? Jeder verliert<1>einmal.<2,2><3>Ich find’ raus, wie.<2,2>
+Q50 DMG400:8 4@3: Sticheln: Serie vorbei | <7><9><7>Nie? Ganz schöne<1>Serie.<2,2><3>Beenden wir sie.<2,2>
+Q51 DMG400:10 2@1: Ruhig | <7><9><7>Du musst Sepikmon<1>sein.<2,2>
+Q51 DMG400:10 2@2: Sanft: Tu’ dir nichts | <7><9><7>Bist du Sepikmon?<2,2><3>Ich tu’ dir nichts.<1>Bitte, komm raus.<2,2>
+Q51 DMG400:10 2@3: Ironisch: Geist hustet | <7><9><7>Ein Geist, der hustet.<2,2><3>Du musst Sepikmon<1>sein.<2,2>
+Q13 DMG400:10 9@1: Freundlich | <7><9><7>Na gut. Ich finde<1>deine Maske.<2,2>
+Q13 DMG400:10 9@2: Widerwillig | <7><9><7>Na gut. Eine Maske.<1>Ich such’ sie.<2,2>
+Q13 DMG400:10 9@3: Ironisch: Nicht abhauen | <7><9><7>OK. Versuch’, mir<1>nicht zu verschwinden.<2,2>
+Q55 DMG400:14 6@1: Höflich | <7><9><7>Klar. Ich schau’ in<1>die andere Richtung.<2,2>
+Q55 DMG400:14 6@2: Neckend: Spick’ nicht | <7><9><7>Gut. Ich spick’ nicht.<2,2><3>Aber jetzt bin ich<1>erst recht neugierig.<2,2>
+Q55 DMG400:14 6@3: Trocken | <7><9><7>...Klar. Hier schaut<1>niemand hin.<2,2>
+Q56 DMG400:15 5@1: Gelassen | <7><9><7>Genau.<2,2><3>Jetzt geh’ ich durch.<2,2>
+Q56 DMG400:15 5@2: Selbstsicher: Bekannt? | <7><9><7>Kennst du den Geruch?<2,2><3>Jetzt geh’ aus dem<1>Weg. Ich geh’ durch.<2,2>
+Q56 DMG400:15 5@3: Gnädig: Kein Kampf | <7><9><7>Ich will keinen Kampf.<1>Mach’ Platz, dann<1>pack’ ich’s weg.<2,2><3>Ich geh’ durch.<2,2>
+Q47 DMG400:30 3@1: Wütend: dafür büßen sie | <7><9><7>Moment. Das ist keine<1>Blaue Karte.<2,2><3>Das B ist eine 8. Eine<1>8laue Karte. Falsch!<2,2><3>Jemand hat mich<1>reingelegt. Das wird<1>bereut.<2,2>
+Q47 DMG400:30 3@2: Amüsiert: guter Streich | <7><9><7>Moment. Das B ist<1>eine 8.<2,2><3>Eine 8laue Karte.<1>Gefälscht!<2,2><3>Immerhin war der<1>Betrug echt kreativ.<2,2>
+Q47 DMG400:30 3@3: Selbstschuld: mein Fehler | <7><9><7>Eine 8laue Karte.<1>Das B ist eine 8, und<1>ich sah nicht hin.<2,2><3>Gefälscht. Meine<1>eigene Schuld.<2,2>
+Q112 DMG400:41 4@1: Trotzig | <7><9><7>Und wenn nicht?<1>Versuch’s. Schau’, was<1>es dich kostet.<2,2>
+Q112 DMG400:41 4@2: Kalt: geh’ aus dem Weg | <7><9><7>Bin ich nicht. Geh’<1>aus dem Weg. Sonst<1>wird’s unangenehm.<2,2>
+Q112 DMG400:41 4@3: Nachhaken: was passiert? | <7><9><7>Mich einsperren?<1>Sag’: Was passiert<1>mit den Gefangenen?<2,2>
+Q29 DMG400:42 3@1: Heimweh | <7><9><7>Keine Spur vom Digiei<1>des Wissens...<2,2><3>Ich vermisse die echte<1>Welt. Was dort wohl<1>passiert...<2,2>
+Q29 DMG400:42 3@2: Ängstlich | <7><9><7>Immer noch kein Digiei<1>des Wissens...<2,2><3>Was, wenn die echte<1>Welt schon zerbricht?<2,2>
+Q29 DMG400:42 3@3: Entschlossen | <7><9><7>Immer noch kein Digiei<1>des Wissens.<2,2><3>Was auch in der echten<1>Welt passiert, ich<1>finde es.<2,2>
+Q113 DMG400:44 2@1: Gebieterisch: der Chief | <7><9><7>...Ja. Klar. Ich bin<1>der Qing Long Chief.<2,2><3>Die Tarnung ist für<1>Kurzsichtige.<2,2><3>Das bleibt unter uns.<1>Verstanden?<2,2>
+Q113 DMG400:44 2@2: Nervös: stottern | <7><9><7>...J−ja. Ja! Klar.<2,2><3>Tarnung. Patrouille.<1>Bitte...<2,2><3>Bleibt unter uns.<1>Verstanden?<2,2>
+Q113 DMG400:44 2@3: Pokerface | <7><9><7>...Ja. Offensichtlich.<2,2><3>Chief in Zivil.<1>Niemand darf’s wissen.<2,2><3>Unter uns.<1>Verstanden?<2,2>
+Q57 DMG500:0 10@1: Amüsiert | <7><9><7>Was hat sie denn...?<2,2><3>...Ich mag sie jetzt<1>schon.<2,2>
+Q57 DMG500:0 10@2: Besorgt | <7><9><7>Was hat sie denn...?<2,2><3>Geht’s ihr wohl gut?<2,2>
+Q57 DMG500:0 10@3: Misstrauisch | <7><9><7>Was hat sie denn...?<2,2><3>Die Show ist zu gut.<1>Wer ist sie wirklich?<2,2>
+Q58 DMG500:1 2@1: Selbstsicher | <7><9><7>Klar. Ich kam nicht so<1>weit, um umzukehren.<2,2>
+Q58 DMG500:1 2@2: Ruhig: bereit | <7><9><7>Klar. Komm’ mit allem,<1>was du hast. Ich bin<1>bereit.<2,2>
+Q58 DMG500:1 2@3: Frech: dafür geboren | <7><9><7>Dafür bin ich geboren.<1>Los geht’s.<2,2>
+Q70 DMG500:2 4@1: Dankbar | <7><9><7>Danke. Ich passe gut<1>darauf auf.<2,2><3>Noch eins: das<1>Byakko−Abzeichen.<2,2>
+Q70 DMG500:2 4@2: Hungrig aufs letzte | <7><9><7>Das Suzaku−Abzeichen.<1>Meins.<2,2><3>Noch eins: Byakko.<1>Dann hält mich nichts<1>mehr auf.<2,2>
+Q70 DMG500:2 4@3: Besonnen | <7><9><7>Zwei geschafft. Das<1>Byakko−Abzeichen ist<1>das letzte.<2,2><3>Lieber nicht zu<1>voreilig sein.<2,2>
+Q15 DMG500:3 2@1: Dringend: Teddy finden | <7><9><7>Zwei Leader besiegt.<2,2><3>Aber Teddy ist noch da<1>draußen. Finden wir<1>ihn. Sofort.<2,2>
+Q15 DMG500:3 2@2: Besorgt: kein Zeichen | <7><9><7>Zwei Abzeichen, und<1>niemand hat was von<1>Teddy gehört.<2,2><3>Da stimmt was nicht.<2,2>
+Q15 DMG500:3 2@3: Schuldig: zu spät gesucht | <7><9><7>Ich hätte früher nach<1>Teddy suchen sollen.<2,2><3>Wo ist er hin?<2,2>
+Q79 DMG500:4 4@1: Ruhig | <7><9><7>...Warum nicht?<2,2>
+Q79 DMG500:4 4@2: Hartnäckig | <7><9><7>Warum nicht? Sag’ mir,<1>was da drin ist.<2,2>
+Q79 DMG500:4 4@3: Skeptisch: warum trauen | <7><9><7>Und warum sollte ich<1>dir trauen?<2,2>
+Q81 DMG500:5 8@1: Versprechen | <7><9><7>...Okay. Versprochen.<1>Danke.<2,2>
+Q81 DMG500:5 8@2: Ausweichend: vorerst | <7><9><7>...Ich bleibe fern.<1>Vorerst.<2,2>
+Q81 DMG500:5 8@3: Trotzig: kein Versprechen | <7><9><7>Kein Versprechen. Ich<1>brauche Antworten.<2,2>
+Q82 DMG500:23 1@1: Bestimmt | <7><9><7>Hab’ dich.<2,2><3>Diesmal lass’ ich dich<1>nicht entwischen.<2,2>
+Q82 DMG500:23 1@2: Sanft: nur reden | <7><9><7>Hab’ dich.<2,2><3>Ich will nur reden.<1>Bitte lauf’ nicht weg.<2,2>
+Q82 DMG500:23 1@3: Neckend | <7><9><7>Hab’ dich. Keine<1>Verstecke mehr übrig?<2,2>
+Q26 DMG500:29 6@1: Bitten | <7><9><7>Bitte. Ich muss rüber.<1>Du kennst die A.o.A.<2,2><3>Geht niemand jetzt,<1>wird’s schlimmer.<1>Lass’ mich durch.<2,2>
+Q26 DMG500:29 6@2: Bestimmt | <7><9><7>Ich muss auf die<1>andere Seite. Ich<1>stoppe die A.o.A.<2,2><3>Jemand muss jetzt hin,<1>sonst wird’s schlimm.<1>Ich geh’.<2,2>
+Q26 DMG500:29 6@3: Ehrlich: auch Angst | <7><9><7>Ich hab’ auch Angst.<1>Aber ich muss rüber.<2,2><3>Jemand muss jetzt hin,<1>sonst passiert noch<1>Schlimmeres.<2,2><3>Bitte versteh’ das.<2,2>
+Q108 DMG500:33 3@1: Entschlossen | <7><9><7>Die Beben kommen von<1>seinen Löchern.<2,2><3>Diesmal nicht.<1>Ich halte es auf.<2,2>
+Q108 DMG500:33 3@2: Vorsichtig: ich versuch’s | <7><9><7>Seine Löcher sind<1>schuld. Ich versuch’s<1>zu stoppen.<2,2><3>Keine Ahnung, ob’s<1>klappt.<2,2>
+Q108 DMG500:33 3@3: Wütend: jetzt ist Schluss | <7><9><7>Wegen diesen Löchern<1>werden Leute verletzt.<2,2><3>Damit ist jetzt<1>Schluss.<2,2>
+Q114 DMG500:34 7@1: Entschlossen | <7><9><7>Nicht, solange ich<1>hier bin.<2,2><3>Ich stoppe den Start<1>von Juggernaut.<2,2>
+Q114 DMG500:34 7@2: Erschüttert: finde Weg | <7><9><7>...Dann muss ich<1>Juggernaut stoppen.<2,2><3>Weiß noch nicht wie.<1>Aber ich find’s raus.<2,2>
+Q114 DMG500:34 7@3: Kalt: fange mit dir an | <7><9><7>Du hast genug gesagt.<2,2><3>Ich stoppe Juggernaut.<1>Und fang’ mit dir an.<2,2>
+Q115 DMG500:35 2@1: Erleichtert | <7><9><7>Endlich. Das Digiei<1>des Wissens.<2,2><3>Ich dachte schon, es<1>gibt das gar nicht.<2,2>
+Q115 DMG500:35 2@2: Vorsichtig: zu leicht | <7><9><7>Das Digiei des<1>Wissens. Das war zu<1>leicht.<2,2><3>Gefällt mir nicht.<1>Ich nehm’s trotzdem.<2,2>
+Q115 DMG500:35 2@3: Entschlossen: keine Zeit | <7><9><7>Das Digiei des<1>Wissens.<2,2><3>Jetzt steht nichts<1>mehr zwischen mir und<1>dem Nordsektor.<2,2>
+Q80 DMG600:0 4@1: Überheblich | <7><9><7>Okay. Ich verliere<1>nicht. Nicht heute,<1>nicht gegen dich.<2,2>
+Q80 DMG600:0 4@2: Höflich | <7><9><7>Geben wir beide unser<1>Bestes.<2,2>
+Q80 DMG600:0 4@3: Locker: fangen wir an | <7><9><7>Okay. Fangen wir an.<2,2>
+Q85 DMG600:5 5@1: Offen: suche Numemon | <7><9><7>Ich suche Numemon.<1>Es weiß vielleicht,<1>wo Teddy ist.<2,2>
+Q85 DMG600:5 5@2: Zurückhaltend: erst du | <7><9><7>...Ich? Folge nur<1>einer Spur. Erst du.<2,2>
+Q85 DMG600:5 5@3: Verlegen | <7><9><7>...Ich? Äh... Ich...<2,2>
+Q19 DMG600:5 11@1: Anklagend | <7><9><7>Du bist Lucky Mouse?!<2,2><3>Du warst die ganze<1>Zeit dieses Numemon?!<2,2>
+Q19 DMG600:5 11@2: Geschockt | <7><9><7>Lucky Mouse ist... das<1>Numemon?<2,2><3>Ich... Was?<2,2>
+Q19 DMG600:5 11@3: Misstrauisch | <7><9><7>Lucky Mouse. Das<1>Numemon.<2,2><3>Ich weiß nicht, was<1>ich glauben soll.<2,2>
+Q86 DMG600:15 2@1: Panisch | <7><9><7>Wo ist Teddy?<1>Wo ist er?!<2,2>
+Q86 DMG600:15 2@2: Beherrscht | <7><9><7>Wo ist Teddy?<2,2><3>Sag’s mir. Ruhig. Ich<1>frage nur einmal.<2,2>
+Q86 DMG600:15 2@3: Anklagend | <7><9><7>Wo ist Teddy?<2,2><3>Du hast ihn entführt.<1>Ich weiß es.<2,2>
+Q20 DMG600:15 6@1: Wut | <7><9><7>Sie hat mich<1>angelogen. Direkt ins<1>Gesicht.<2,2><3>Dafür wird sie büßen.<1>Aber erst Teddy.<2,2>
+Q20 DMG600:15 6@2: Verletzt | <7><9><7>Sie lächelte mich an,<1>und ich glaubte ihr...<2,2><3>Ich muss Teddy finden.<2,2>
+Q20 DMG600:15 6@3: Wem glauben? | <7><9><7>Sie log... oder du<1>lügst gerade.<2,2><3>So oder so, ich finde<1>Teddy.<2,2>
+Q87 DMG600:15 29@1: Entsetzt | <7><9><7>Nein... Er wurde zu<1>einem Digimon!<2,2>
+Q87 DMG600:15 29@2: Ungläubig | <7><9><7>Das kann nicht wahr<1>sein.<2,2><3>Er wurde zu einem<1>Digimon!<2,2>
+Q87 DMG600:15 29@3: Rasend | <7><9><7>Was hast du mit ihm<1>gemacht?!<2,2><3>Er wurde zu einem<1>Digimon!<2,2>
+Q88 DMG600:15 32@1: Trotzig | <7><9><7>Du willst kämpfen?<1>Dann musst du an mir<1>vorbei.<2,2>
+Q88 DMG600:15 32@2: Kalt: schnell beenden | <7><9><7>Ein Kampf? Na gut.<2,2><3>Komm. Ich mach’ es<1>kurz.<2,2>
+Q88 DMG600:15 32@3: Beschützend | <7><9><7>Bleibt hinter mir,<1>alle zusammen.<2,2><3>Du willst kämpfen?<1>Tritt gegen mich an.<2,2>
+Q21 DMG600:16 5@1: Rache | <7><9><7>Genug. Ich geh’ nach<1>Asuka City.<2,2><3>Die Gamemaster zahlt.<1>Und Teddy kommt heim.<2,2>
+Q21 DMG600:16 5@2: Pflicht | <7><9><7>Genug gewartet. Ich<1>geh’ nach Asuka City.<2,2><3>Ich hole Teddy zurück<1>und stelle die<1>Gamemaster.<2,2>
+Q21 DMG600:16 5@3: Hoffnung | <7><9><7>Das ist nicht vorbei.<1>Ich geh’ nach Asuka<1>City.<2,2><3>Ich rette Teddy, und<1>wir richten das.<2,2>
+Q22 DMG600:16 8@1: Zustimmen | <7><9><7>Verstanden. Kein<1>einziges Wort.<2,2>
+Q22 DMG600:16 8@2: Zögernd | <7><9><7>...Ich versuch’s.<2,2><3>Es fühlt sich nicht<1>richtig an.<2,2>
+Q22 DMG600:16 8@3: Nur fürs Erste | <7><9><7>Fürs Erste.<2,2><3>Nur fürs Erste.<2,2>
+Q83 DMG600:19 1@1: Höflich | <7><9><7>Entschuldigung. Weißt<1>du, wo Numemon ist?<2,2>
+Q83 DMG600:19 1@2: Direkt | <7><9><7>Numemon. Wo ist er?<2,2>
+Q83 DMG600:19 1@3: Dringend | <7><9><7>Bitte, es eilt.<1>Wo ist Numemon?<2,2>
+Q84 DMG600:21 9@1: Bestimmt: lass sie los | <7><9><7>Lass sie los,<1>WaruMonzaemon. Sofort.<2,2>
+Q84 DMG600:21 9@2: Ironisch: deine Größe | <7><9><7>WaruMonzaemon! Such<1>dir jemanden in deiner<1>Größe.<2,2>
+Q84 DMG600:21 9@3: Kalt: geh weg | <7><9><7>Sie hat Nein gesagt.<2,2><3>Geh weg von ihr.<2,2>
+Q89 DMG600:22 17@1: Schreck | <7><9><7>...Was?! Keith und<1>Nick?!<2,2>
+Q89 DMG600:22 17@2: Ironisch: natürlich | <7><9><7>Keith und Nick.<2,2><3>Klar mussten es die<1>beiden sein.<2,2>
+Q89 DMG600:22 17@3: Erleichtert | <7><9><7>Keith und Nick?<2,2><3>Super. Die können wir<1>gut brauchen.<2,2>
+Q100 DMG600:23 10@1: Ironisch: gute Freunde | <7><9><7>Schau mich nicht an.<1>Ich weiß es auch<1>nicht.<2,2><3>Offenbar sehr gute<1>Freunde.<2,2>
+Q100 DMG600:23 10@2: Misstrauisch: zu brav | <7><9><7>Schau mich nicht an.<1>Ich weiß es auch<1>nicht.<2,2><3>Aber die zwei folgen<1>verdammt gut.<2,2>
+Q100 DMG600:23 10@3: Vertrauen: sie verdient’s | <7><9><7>Schau mich nicht an.<1>Ich weiß es auch<1>nicht.<2,2><3>Aber Lisa hat etwas<1>Vertrauen verdient.<2,2>
+Q136 DMG600:25 3@1: Schroff: her damit | <7><9><7>Der weiße ID−Pass.<1>Her damit.<2,2>
+Q136 DMG600:25 3@2: Höflich: lieber ohne Kampf | <7><9><7>Ich kämpfe ungern.<1>Der weiße ID−Pass.<1>Gib ihn her.<2,2>
+Q136 DMG600:25 3@3: Spöttisch: keine Rede | <7><9><7>Der weiße ID−Pass.<1>Her damit, und spar<1>uns die große Rede.<2,2>
+Q107 DMG600:27 2@1: Kalt: eine Frage | <7><9><7>Nein. Nur eine Frage.<1>Wie kamen die A.o.A<1>auf diesen Server?<2,2>
+Q107 DMG600:27 2@2: Höflich: nur fragen | <7><9><7>Nein. Ich will nur<1>wissen, wie die A.o.A<1>herkamen.<2,2><3>Bitte.<2,2>
+Q107 DMG600:27 2@3: Trocken: heute nicht | <7><9><7>Heute nicht.<2,2><3>Wie kamen die A.o.A<1>auf diesen Server?<2,2>
+Q111 DMG600:28 4@1: Selbstständig | <7><9><7>Ich schaff’ das. Halt<1>die Stellung, ich<1>mach’ den Rest.<2,2>
+Q111 DMG600:28 4@2: Höflich: Stellung halten | <7><9><7>Die Stellung halten<1>ist auch Kampf.<2,2><3>Denk nicht gering<1>darüber.<2,2>
+Q111 DMG600:28 4@3: Ehrlich: ich nehm’ Hilfe | <7><9><7>Danke. Ehrlich gesagt,<1>ich nehm’ jede Hilfe,<1>die es gibt.<2,2>
+Q40 DMG700:0 7@1: Genervt: zwanzig Minuten | <7><9><7>Wird auch Zeit, Teddy.<2,2><3>Zwanzig Minuten. Ich<1>hab’ jede gezählt.<2,2>
+Q40 DMG700:0 7@2: Locker: du bist da | <7><9><7>Du bist da. Nur das<1>zählt.<2,2><3>Stell dir nächstes Mal<1>einen Wecker.<2,2>
+Q40 DMG700:0 7@3: Ironisch: wie nett | <7><9><7>Wie nett, dass du noch<1>auftauchst, Teddy.<2,2><3>Zwanzig Minuten. Ich<1>wär’ fast gegangen.<2,2>
+Q117 DMG700:10 2@1: Ungeduld | <7><9><7>Das kann nicht dein<1>Ernst sein. Ich hab’<1>keine Zeit dafür.<2,2>
+Q117 DMG700:10 2@2: Stolz: kein Kind mehr | <7><9><7>Kind? Ich hab’ schon<1>viel durch. Gib dir<1>mehr Mühe.<2,2>
+Q117 DMG700:10 2@3: Ironie: gern doch | <7><9><7>Nach Hause? Glaub’<1>mir, gern. Aber noch<1>nicht.<2,2>
+Q118 DMG700:14 2@1: Höflichkeit | <7><9><7>Ich bin <8,1><5,1>.<1>Entschuldigung.<1>Ich möchte vorbei.<2,2>
+Q118 DMG700:14 2@2: Kälte: aus dem Weg | <7><9><7>Ich bin <8,1><5,1>.<1>Du stehst im Weg.<1>Mach’ Platz.<2,2>
+Q118 DMG700:14 2@3: Mut: Nummer eins | <7><9><7>Ich bin <8,1><5,1>,<1>Nummer eins hier.<2,2><3>Entschuldigung, du<1>stehst mir im Weg.<2,2>
+Q116 DMG700:16 2@1: Bitte: gib es mir | <7><9><7>Genbu Leader, bitte.<1>Gib mir dein<1>Abzeichen.<2,2><3>Ich brauche es für<1>die echte Welt.<2,2>
+Q116 DMG700:16 2@2: Direkt: nenn den Preis | <7><9><7>Genbu Leader. Ich<1>brauche dein<1>Abzeichen.<2,2><3>Für die echte Welt.<1>Nenn’ deinen Preis.<2,2>
+Q116 DMG700:16 2@3: Respekt: darf ich fragen? | <7><9><7>Genbu Leader, darf<1>ich um dein Abzeichen<1>bitten?<2,2><3>Ich brauche es für<1>die echte Welt.<2,2>
+Q30 DMG700:17 3@1: Vergebung | <7><9><7>Ich verstehe. Kein<1>Problem.<2,2>
+Q30 DMG700:17 3@2: Ironie: fragen reicht | <7><9><7>Fragen hätte<1>gereicht. ...Aber<1>ich verstehe.<2,2>
+Q30 DMG700:17 3@3: Schweigen | <7><9><7>...Ich verstehe.<2,2>
+Q130 DMG700:25 2@1: Ironie: wie das klingt | <7><9><7>Militärstützpunkt<1>Magasta, in der<1>echten Welt.<2,2><3>Am Meeresgrund.<1>Ja, ich weiß, wie<1>das klingt.<2,2>
+Q130 DMG700:25 2@2: Ernst: kein Scherz | <7><9><7>Militärstützpunkt<1>Magasta. Echte Welt.<1>Unter dem Meer.<2,2><3>Kein Scherz. Schick’<1>mich einfach hin.<2,2>
+Q130 DMG700:25 2@3: Ausweichend: frag’ nicht | <7><9><7>Militärstützpunkt<1>Magasta. Echte Welt.<1>Meeresgrund.<2,2><3>Frag’ nicht. Wenn ich<1>zurückkomme, erzähl’<1>ich’s.<2,2>
+Q31 DMG700:25 5@1: Alarm: nur 180? | <7><9><7>Moment. Nur 180?<1>Was passiert, wenn<1>die Zeit um ist?<2,2>
+Q31 DMG700:25 5@2: Ruhig: ich beeil’ mich | <7><9><7>Dann beeil’ ich mich.<1>Und wenn’s nicht<1>reicht? Was dann?<2,2>
+Q31 DMG700:25 5@3: Ironie: toller Countdown | <7><9><7>Super. Ein Countdown.<1>Und was passiert bei<1>Null?<2,2>
+Q131 DMG700:26 1@1: Sehnsucht: es ist echt | <7><9><7>Die echte Welt.<1>Sie ist es wirklich...<2,2><3>Mein Körper ist hier.<1>Ich spür’ den Boden.<2,2><3>...Ich könnte bleiben.<1>Eine Sekunde.<1>Nur eine.<2,2><3>Nein. 180 Sekunden.<1>Los.<2,2>
+Q131 DMG700:26 1@2: Vorsicht: zu still | <7><9><7>Die echte Welt.<1>Sie ist es wirklich...<2,2><3>Mein Körper ist hier.<2,2><3>Warum fühlt sich das<1>wie eine Falle an?<2,2><3>Keine Zeit.<1>180 Sekunden. Los.<2,2>
+Q131 DMG700:26 1@3: Fokus: keine Zeit | <7><9><7>Die echte Welt.<1>Gut. Ich bin da.<2,2><3>Ich spür’ den Boden.<1>Das reicht.<2,2><3>180 Sekunden.<1>Los.<2,2>
+Q32 DMG700:28 4@1: Schuld: vor meiner Nase | <7><9><7>Nein... Direkt vor<1>meiner Nase<1>gestartet!<2,2><3>Ich hab’ versagt...<2,2>
+Q32 DMG700:28 4@2: Wut: einfach entwischt?! | <7><9><7>Er war direkt da!<1>Wie konnte er so<1>entkommen?!<2,2><3>Verdammt!<2,2>
+Q32 DMG700:28 4@3: Schock: sprachlos | <7><9><7>......<1>Er ist weg...<1>Zu spät.<2,2>
+Q33 DMG700:29 4@1: Schuld: so nah dran | <7><9><7>Was mach’ ich jetzt?<1>Ich konnte Juggernaut<1>nicht aufhalten.<2,2><3>Ich war so nah dran.<1>Und ließ ihn ziehen.<2,2>
+Q33 DMG700:29 4@2: Wut: entkommen | <7><9><7>So nah dran. Und er<1>ist trotzdem<1>entkommen!<2,2><3>Mist! Was mach’ ich<1>jetzt?<2,2>
+Q33 DMG700:29 4@3: Leere: nichts bleibt | <7><9><7>......<1>Ich konnte Juggernaut<1>nicht aufhalten.<2,2><3>Was mach’ ich jetzt?<2,2>
+Q133 DMG700:31 1@1: Sturheit: noch nicht | <7><9><7>...Aber ich gebe noch<1>nicht auf.<2,2><3>Es gibt bestimmt<1>einen anderen Weg.<2,2>
+Q133 DMG700:31 1@2: Ruhig: nachdenken | <7><9><7>...Durchatmen. Das<1>Schiff ist weg.<1>Der Plan nicht.<2,2><3>Ich gebe nicht auf.<1>Es gibt einen Weg.<2,2>
+Q133 DMG700:31 1@3: Hoffnung: für sie | <7><9><7>...Alle zählen noch<1>auf mich.<2,2><3>Ich gebe nicht auf.<1>Es gibt einen Weg.<2,2>
+Q146 DMG700:36 1@1: Wie ein Traum | <7><9><7>Nachdem ich<1>Galacticmon besiegte,<1>war die Welt heil.<2,2><3>Schon drei Monate.<1>Es wirkt immer noch<1>wie ein Traum.<2,2>
+Q146 DMG700:36 1@2: Last: verfolgt mich | <7><9><7>Nachdem ich<1>Galacticmon besiegte,<1>war die Welt heil.<2,2><3>Schon drei Monate.<1>Kein Traum. Es<1>verfolgt mich noch.<2,2>
+Q146 DMG700:36 1@3: Dankbar: noch hier | <7><9><7>Nachdem ich<1>Galacticmon besiegte,<1>war die Welt heil.<2,2><3>Schon drei Monate.<2,2><3>Ich bin dankbar. Es<1>wirkt immer noch wie<1>ein Traum.<2,2>
+Q147 DMG700:36 7@1: Neckend: schon wieder | <7><9><7>Ihr seid spät dran.<1>Schon wieder.<2,2>
+Q147 DMG700:36 7@2: Gelassen | <7><9><7>Ihr seid spät dran.<2,2>
+Q147 DMG700:36 7@3: Warm: froh, euch zu sehen | <7><9><7>Ihr seid spät dran.<1>...Schön, dass ihr<1>da seid.<2,2>
+Q132 DMG800:3 1@1: Wut: auf keinen Fall | <7><9><7>Bleib’ stehen.<1>Stopp’ den Start.<1>Sofort.<2,2><3>Damit lass’ ich dich<1>nicht durchkommen.<2,2>
+Q132 DMG800:3 1@2: Appell: denk’ an die Leute | <7><9><7>Stopp’ den Start.<1>Bitte. Denk’ daran,<1>was das anrichtet.<2,2><3>Da draußen sind<1>Menschen. Stopp’.<1>Sofort.<2,2>
+Q132 DMG800:3 1@3: Kälte: letzte Warnung | <7><9><7>Stopp’ den Start.<1>Sofort.<2,2><3>Das ist deine einzige<1>Warnung.<2,2>
+Q143 DMG800:13 1@1: Treue: sie warten | <7><9><7>Schnell. Teddy und<1>die anderen warten.<2,2><3>Wir müssen Lord<1>Megadeath besiegen<1>und alle zurückholen.<2,2>
+Q143 DMG800:13 1@2: Fokus: nichts zählt sonst | <7><9><7>Schnell. Nichts zählt<1>jetzt sonst.<2,2><3>Wir müssen Lord<1>Megadeath besiegen<1>und alle zurückholen.<2,2>
+Q143 DMG800:13 1@3: Last: darf nicht zögern | <7><9><7>Alle zählen auf mich.<1>Ich darf nicht zu<1>spät kommen.<2,2><3>Wir müssen Lord<1>Megadeath besiegen<1>und alle zurückholen.<2,2>
+Q144 DMG800:15 8@1: Entsetzen | <7><9><7>Was? Das sind die<1>Oinkmon also...<2,2><3>Menschen. Entleert.<2,2>
+Q144 DMG800:15 8@2: Mitleid | <7><9><7>...Das sind die<1>Oinkmon also.<2,2><3>Entleerte Menschen.<1>Es tut mir so leid,<1>euch allen.<2,2>
+Q144 DMG800:15 8@3: Wut: mit Absicht | <7><9><7>Das sind also die<1>Oinkmon?<2,2><3>Menschen. Entleert.<1>Das war Absicht.<2,2>
+Q145 DMG800:16 1@1: Spott | <7><9><7>Also, Lord Megadeath.<2,2><3>Hältst du dich immer<1>noch für den<1>Stärksten?<2,2>
+Q145 DMG800:16 1@2: Ernst: du hast verloren | <7><9><7>Lord Megadeath.<2,2><3>Du hast verloren.<1>Nennst du dich noch<1>den Stärksten?<2,2>
+Q145 DMG800:16 1@3: Müde: gib auf | <7><9><7>Lord Megadeath.<2,2><3>Es ist vorbei.<2,2><3>...Hältst du dich<1>noch für den<1>Stärksten?<2,2>
+Q38 DMG800:17 11@1: Appell: er schuf dich! | <7><9><7>Stopp! Er hat dich<1>erschaffen!<2,2><3>Tamer und Digimon<1>sind Seelenpartner!<2,2><3>Man verrät nicht,<1>wer einem das Leben<1>gab!<2,2>
+Q38 DMG800:17 11@2: Konfrontation: dein Tamer | <7><9><7>Sieh’, was du tust.<1>Das ist dein eigener<1>Tamer.<2,2><3>Tamer und Digimon<1>sind eins. Hast du<1>das vergessen?<2,2>
+Q38 DMG800:17 11@3: Trauer: bitte nicht | <7><9><7>...Nein. Bitte.<2,2><3>Er hat dich<1>erschaffen.<2,2><3>Tamer und Digimon<1>sind eins. Wir halten<1>zusammen.<2,2>
+Q148 DMG900:0 4@1: Begeisterung | <7><9><7>Alles klar. Auf<1>geht’s, jetzt aber<1>richtig.<2,2>
+Q148 DMG900:0 4@2: Ruhig: Schritt für Schritt | <7><9><7>Alles klar. Ein<1>Schritt nach dem<1>anderen.<2,2><3>Auf geht’s, jetzt<1>aber richtig.<2,2>
+Q148 DMG900:0 4@3: Wehmut: nicht wie früher | <7><9><7>Alles klar. Auf<1>geht’s, jetzt aber<1>richtig.<2,2><3>...Es wird nicht wie<1>früher. Nie wieder.<2,2>
+Q149 DMG900:4 3@1: Staunen | <7><9><7>Hä? Kurt?<2,2><3>Sag’ bloß, du bist<1>der stärkste Tamer.<2,2>
+Q149 DMG900:4 3@2: Freude | <7><9><7>Hä? Kurt?<2,2><3>Sag’ bloß, du bist<1>der stärkste Tamer.<1>...Perfekt.<2,2>
+Q149 DMG900:4 3@3: Ironie: klar ist er’s | <7><9><7>Kurt. Na klar.<2,2><3>Sag’ bloß, du bist<1>der stärkste Tamer.<2,2>
+Q150 DMG900:5 3@1: Dankbar: echter Kampf | <7><9><7>Danke. Das war ein<1>echter Kampf.<2,2>
+Q150 DMG900:5 3@2: Gerührt: für alles | <7><9><7>Danke...<1>Für all das.<2,2>
+Q150 DMG900:5 3@3: Trocken: geschont | <7><9><7>Danke. Du hast mich<1>geschont, oder?<2,2>
+Q39 DMG900:5 7@1: Ehrgeiz | <7><9><7>Verlass dich drauf.<2,2><3>Mein Weltmeister−<1>Titel wird der stärkste,<1>den es je gab!<2,2>
+Q39 DMG900:5 7@2: Demut: nur der Anfang | <7><9><7>Ich gebe mein Bestes.<1>Und ich lerne weiter.<2,2><3>Der Titel ist nur<1>der Anfang.<2,2>
+Q39 DMG900:5 7@3: Bittersüß: keine Verluste | <7><9><7>Ich werde stark. Stark<1>genug, dass niemand<1>mehr verloren geht.<2,2>
+Q208 TALK01 10@1: Such’ im anderen Turm [rep:+1] | <7>Heulsuse Maria<7>Buhuu! Ich hab’ Elle<1>verloren! Was mach’<1>ich jetzt?!<2,2><3><7><9><7>Ruhig! Schau’ mal drü−<1>ben beim Laden−Turm!<2,2><3><7>Heulsuse Maria<7>Beim Laden−Turm?!<1>Schnief... danke! Ich<1>seh’ sofort nach!<2,2>
+Q208 TALK01 10@2: Hör’ auf zu heulen [keith:+1] | <7>Heulsuse Maria<7>Buhuu! Ich hab’ Elle<1>verloren! Was mach’<1>ich jetzt?!<2,2><3><7><9><7>Vom Heulen kommt sie<1>auch nicht her!<2,2><3><7>Heulsuse Maria<7>Schnief... okay, tief<1>durchatmen, dann such’<1>ich sie selbst!<2,2>
+Q208 TALK01 10@3: Iss erst mal was [teddy:+1] | <7>Heulsuse Maria<7>Buhuu! Ich hab’ Elle<1>verloren! Was mach’<1>ich jetzt?!<2,2><3><7><9><7>Hol’ dir da einen<1>Snack und beruhig’<1>dich!<2,2><3><7>Heulsuse Maria<7>Schnief... ein Snack<1>hilft vielleicht! Dann<1>such’ ich Elle!<2,2>
+Q209 TALK01 65@1: Sie heult da drüben! [rep:+1] | <7>Charmante Elle<7>Wo ist Maria? Sie<1>heult wegen jeder<1>Kleinigkeit...<2,2><3><7><9><7>Schnell! Da drüben<1>fließen schon Tränen!<2,2><3><7>Charmante Elle<7>Oh nein, schon wieder?<1>Danke! Ich hol’ die<1>Heulsuse sofort!<2,2>
+Q209 TALK01 65@2: Lass’ sie mal machen [keith:+1] | <7>Charmante Elle<7>Wo ist Maria? Sie<1>heult wegen jeder<1>Kleinigkeit...<2,2><3><7><9><7>Entspann’ dich, etwas<1>Selbstständigkeit tut<1>ihr gut.<2,2><3><7>Charmante Elle<7>Haha, stimmt wohl!<1>Soll sie mal allein<1>klarkommen.<2,2>
+Q209 TALK01 65@3: Ihr passt zusammen [ivy:+1] | <7>Charmante Elle<7>Wo ist Maria? Sie<1>heult wegen jeder<1>Kleinigkeit...<2,2><3><7><9><7>Eine dort verirrt,<1>eine hier... ihr passt<1>zusammen.<2,2><3><7>Charmante Elle<7>Hey! Ich hab’ mich<1>nicht verirrt, ich<1>warte nur! Hmpf!<2,2>
+Q210 TALK01 11@1: Ich schlag’ ihn gleich [keith:+1,rep:+1] | <7>Sarah<7>Der Seiryu Leader ist<1>so süß und stilvoll!<2,2><3><7><9><7>Genieß’ den Anblick,<1>gleich besieg’ ich<1>ihn!<2,2><3><7>Sarah<7>Wow, ganz schön mutig!<1>So leicht fällt der<1>Leader nicht!<2,2>
+Q210 TALK01 11@2: Mit dem Hundeblick? [teddy:+1] | <7>Sarah<7>Der Seiryu Leader ist<1>so süß und stilvoll!<2,2><3><7><9><7>Mit diesem bettelnden<1>Hundeblick, oder?<2,2><3><7>Sarah<7>Hey! Genau das ist<1>sein Charme! Du hast<1>ja keine Ahnung!<2,2>
+Q210 TALK01 11@3: Trainier’ mal lieber [lisa:+1] | <7>Sarah<7>Der Seiryu Leader ist<1>so süß und stilvoll!<2,2><3><7><9><7>Ab ins Training!<1>Schönheit gewinnt<1>kein Turnier!<2,2><3><7>Sarah<7>Ja, ja, ich trainier’<1>ja! Aber schwärmen<1>darf ich doch!<2,2>
+Q211 TALK01 77@1: Mieser Spion, echt! [ivy:+1] | <7>Manager Sasaki<7>Wir sind MAGAMIs<1>Konkurrenz! Geheim:<1>Ich spioniere hier!<2,2><3><7><9><7>Das sagst du einfach<1>so? Toller Spion!<2,2><3><7>Manager Sasaki<7>Ups! Rausgerutscht!<1>Du hast nichts gehört,<1>abgemacht?!<2,2>
+Q211 TALK01 77@2: Dann stell’ mich ein! [rep:+1] | <7>Manager Sasaki<7>Wir sind MAGAMIs<1>Konkurrenz! Geheim:<1>Ich spioniere hier!<2,2><3><7><9><7>Noch ’ne Stelle frei?<1>Für paar BIT schreib’<1>ich den Bericht!<2,2><3><7>Manager Sasaki<7>Haha, Geschäftssinn!<1>Wenn du was Gutes<1>findest, meld’ dich!<2,2>
+Q211 TALK01 77@3: Ich sag’s MAGAMI! [rep:-1] | <7>Manager Sasaki<7>Wir sind MAGAMIs<1>Konkurrenz! Geheim:<1>Ich spioniere hier!<2,2><3><7><9><7>Spionage?! Ich ruf’<1>sofort MAGAMI!<2,2><3><7>Manager Sasaki<7>Hey, ruhig! War nur<1>Spaß! Ich spiel’ hier<1>ganz normal, echt!<2,2>
+Q212 TALK01 78@1: Spiel’ ohne Reue! [teddy:+1] | <7>Miss Olivia<7>Ach, warum macht das<1>Spiel so Spaß?! Das<1>macht mich wütend!<2,2><3><7><9><7>Wenn’s Spaß macht,<1>genieß’ es einfach!<2,2><3><7>Miss Olivia<7>Du hast recht... noch<1>ein kleiner Kampf<1>schadet ja keinem!<2,2>
+Q212 TALK01 78@2: Merk’ dir das Rezept [lisa:+1] | <7>Miss Olivia<7>Ach, warum macht das<1>Spiel so Spaß?! Das<1>macht mich wütend!<2,2><3><7><9><7>Wenn was süchtig<1>macht, find’ raus,<1>warum!<2,2><3><7>Miss Olivia<7>Stimmt! Ich notier’<1>alles für den Bericht<1>... beim Zocken!<2,2>
+Q212 TALK01 78@3: So ehrgeizig? [keith:+1] | <7>Miss Olivia<7>Ach, warum macht das<1>Spiel so Spaß?! Das<1>macht mich wütend!<2,2><3><7><9><7>Ruhig! Klingt, als<1>wärst du dagegen!<2,2><3><7>Miss Olivia<7>Ich kann nicht anders!<1>Aber ich komm’ vom<1>Server nicht los!<2,2>
+Q213 TALK01 12@1: Ruh’ dich mal aus! [teddy:+1] | <7>Agumon<7>Uff... Training für<1>heute fertig. Ich bin<1>fix und alle.<2,2><3><7><9><7>Pause verdient!<1>Trink’ mal Wasser!<2,2><3><7>Agumon<7>Danke! Ich schnauf’<1>kurz durch und bin<1>morgen noch stärker!<2,2>
+Q213 TALK01 12@2: Das war noch gar nix! [keith:+1] | <7>Agumon<7>Uff... Training für<1>heute fertig. Ich bin<1>fix und alle.<2,2><3><7><9><7>Schon schlapp? So<1>hältst du keine zwei<1>Runden durch!<2,2><3><7>Agumon<7>Grrr! Ganz schön hart!<1>Na gut, noch hundert<1>Sit−ups, sofort!<2,2>
+Q213 TALK01 12@3: Wo ist der Leader? [rep:+1] | <7>Agumon<7>Uff... Training für<1>heute fertig. Ich bin<1>fix und alle.<2,2><3><7><9><7>Cool, aber wo steckt<1>der Seiryu Leader?!<2,2><3><7>Agumon<7>Normal im Seiryu−Turm,<1>aber heute hat ihn da<1>keiner gesehen!<2,2>
+Q214 TALK01 112@1: Ist der Typ ein Held? [rep:+1] | <7>Lena<7>Schon gehört?! Der<1>berühmte Lucky Mouse<1>ist zurück!<2,2><3><7><9><7>Lucky Mouse? Ist er so<1>eine Art Rächer?<2,2><3><7>Lena<7>Die einen sagen ja,<1>andere sagen Ärger.<1>Augen offen halten!<2,2>
+Q214 TALK01 112@2: Riecht nach Ärger [ivy:+1] | <7>Lena<7>Schon gehört?! Der<1>berühmte Lucky Mouse<1>ist zurück!<2,2><3><7><9><7>Verschwundener Hacker<1>plötzlich zurück?<1>Schlechtes Zeichen.<2,2><3><7>Lena<7>Genau! Da braut sich<1>ein Sturm zusammen...<1>pass’ gut auf!<2,2>
+Q214 TALK01 112@3: Nie von ihm gehört [teddy:+1] | <7>Lena<7>Schon gehört?! Der<1>berühmte Lucky Mouse<1>ist zurück!<2,2><3><7><9><7>Wer?! Von der Maus<1>hab’ ich nie gehört!<2,2><3><7>Lena<7>Echt jetzt?! Er ist<1>der berühmteste Hacker<1>im Netz!<2,2>
+Q215 TALK01 113@1: War ja kinderleicht! [keith:+1,rep:+1] | <7>Starker Kyle<7>Du bist hier, also<1>hast du Zanbamon<1>besiegt! Stark!<2,2><3><7><9><7>Der Schwertkämpfer?<1>War ja kinderleicht!<2,2><3><7>Starker Kyle<7>Haha, der Wahnsinn!<1>Mit der Power macht<1>dir Suzaku nix aus!<2,2>
+Q215 TALK01 113@2: War ganz schön knapp! [teddy:+1] | <7>Starker Kyle<7>Du bist hier, also<1>hast du Zanbamon<1>besiegt! Stark!<2,2><3><7><9><7>Echt jetzt, ich wär’<1>fast in Scheiben<1>geendet!<2,2><3><7>Starker Kyle<7>Haha, versteh’ ich!<1>Aber du bist heil da,<1>das zählt!<2,2>
+Q215 TALK01 113@3: Wer ist am stärksten? [lisa:+1] | <7>Starker Kyle<7>Du bist hier, also<1>hast du Zanbamon<1>besiegt! Stark!<2,2><3><7><9><7>Danke! Welches Digimon<1>ist hier am stärksten?<2,2><3><7>Starker Kyle<7>Suzakus Feuer−Digimon<1>sind echt heftig!<1>Mach’ dich bereit!<2,2>
+Q216 TALK01 147@1: Ich will’s Abzeichen! [rep:+1] | <7>Renamon<7>Nur starke Tamer<1>kommen hier durch.<2,2><3><7><9><7>Kein Ausflug hier:<1>Ich hol’ mir das<1>Abzeichen!<2,2><3><7>Renamon<7>Gut. Dieser feste<1>Blick gefällt mir.<1>Zeig’s in der Arena!<2,2>
+Q216 TALK01 147@2: Wie ist der Leader? [lisa:+1] | <7>Renamon<7>Nur starke Tamer<1>kommen hier durch.<2,2><3><7><9><7>Ist der Suzaku Leader<1>echt so knallhart?<2,2><3><7>Renamon<7>Schnell und gnadenlos.<1>Einmal geblinzelt,<1>schon verloren.<2,2>
+Q216 TALK01 147@3: Mach’ endlich Platz! [keith:+1] | <7>Renamon<7>Nur starke Tamer<1>kommen hier durch.<2,2><3><7><9><7>Weniger Predigt, mehr<1>Platz da, bitte!<2,2><3><7>Renamon<7>Hmpf... wie frech.<1>Mal sehen, ob du das<1>beweist!<2,2>
+Q217 TALK01 151@1: Ich will in den Club! [teddy:+1] | <7>Patamon<7>Ist unser Leader nicht<1>süß?! Ich bin im<1>Fanclub!<2,2><3><7><9><7>Haha, noch Platz frei?<1>Ich will ’nen Ausweis!<2,2><3><7>Patamon<7>Juhu!! Willkommen im<1>Club! Jetzt feuern wir<1>sie zusammen an!<2,2>
+Q217 TALK01 151@2: Sie wirkt gefährlich [ivy:+1] | <7>Patamon<7>Ist unser Leader nicht<1>süß?! Ich bin im<1>Fanclub!<2,2><3><7><9><7>Süß? Die sieht aus,<1>als kennt sie im Ring<1>kein Pardon!<2,2><3><7>Patamon<7>Süß UND stark! Darum<1>ist der Fanclub ja<1>auch so riesig!<2,2>
+Q217 TALK01 151@3: Mach’ ’nen Fantanz! [rep:+1] | <7>Patamon<7>Ist unser Leader nicht<1>süß?! Ich bin im<1>Fanclub!<2,2><3><7><9><7>Für ’nen echten Club<1>braucht’s ’nen Tanz!<2,2><3><7>Patamon<7>Genial!! Ich üb’<1>sofort einen Flug−<1>Fantanz!<2,2>
+Q218 TALK01 327@1: Der Stress ist rum! [rep:+1] | <7>Maya<7>Byakko ist zurück!<1>Schluss mit dem<1>Wüstengestapfe!<2,2><3><7><9><7>Ruhig, das Schlimmste<1>liegt hinter uns!<2,2><3><7>Maya<7>Wie erleichternd!<1>Endlich die Stadt in<1>Ruhe genießen!<2,2>
+Q218 TALK01 327@2: Sand in den Schuhen! [teddy:+1] | <7>Maya<7>Byakko ist zurück!<1>Schluss mit dem<1>Wüstengestapfe!<2,2><3><7><9><7>Wem sagst du das! Ich<1>hab’ Sand bis in die<1>Socken!<2,2><3><7>Maya<7>Haha, ich auch! Nie<1>wieder will ich eine<1>Düne sehen!<2,2>
+Q218 TALK01 327@3: Bleib’ wachsam [ivy:+1] | <7>Maya<7>Byakko ist zurück!<1>Schluss mit dem<1>Wüstengestapfe!<2,2><3><7><9><7>Genieß’ es, aber halt’<1>die Augen nach den<1>A.o.A offen.<2,2><3><7>Maya<7>Abgemacht! Wenn sie<1>sich hier blicken<1>lassen, meld’ ich’s!<2,2>
+Q219 TALK01 332@1: Wir kriegen das hin! [rep:+1] | <7>Oma Plum<7>Wann haben wir hier<1>endlich echten<1>Frieden?<2,2><3><7><9><7>Keine Sorge, Oma!<1>Ich kümmer’ mich drum!<2,2><3><7>Oma Plum<7>Was für ein gutes<1>Herz! Ich drück’ dir<1>die Daumen, Schatz!<2,2>
+Q219 TALK01 332@2: Ist echt hart gerade [ivy:+1] | <7>Oma Plum<7>Wann haben wir hier<1>endlich echten<1>Frieden?<2,2><3><7><9><7>Ist hart, ehrlich.<1>Aber wir halten stand!<2,2><3><7>Oma Plum<7>Danke für die<1>Ehrlichkeit. Wer fest<1>bleibt, hat Hoffnung.<2,2>
+Q219 TALK01 332@3: Trink’ ’nen Tee, Oma [teddy:+1] | <7>Oma Plum<7>Wann haben wir hier<1>endlich echten<1>Frieden?<2,2><3><7><9><7>Trink’ ’nen Tee und<1>ruh’ dich aus. Lass’<1>mich machen!<2,2><3><7>Oma Plum<7>Oh, wie lieb! Ein Tee<1>tut der Seele gut.<1>Mach’s gut!<2,2>
+Q226 TALK01 189@1: Gerade noch entwischt! [teddy:+1] | <7>Schüler Tony<7>Ich hätt’ fast den<1>A.o.A geholfen! Sie<1>entführen Tamer!<2,2><3><7><9><7>Puh, da ging dir noch<1>rechtzeitig ein Licht<1>auf!<2,2><3><7>Schüler Tony<7>Und wie! Ich bin jetzt<1>schlauer und fall’ nie<1>wieder rein!<2,2>
+Q226 TALK01 189@2: Fall’ nicht drauf rein [lisa:+1] | <7>Schüler Tony<7>Ich hätt’ fast den<1>A.o.A geholfen! Sie<1>entführen Tamer!<2,2><3><7><9><7>Trau’ im Netz niemals<1>komischen Fremden!<2,2><3><7>Schüler Tony<7>Lektion gelernt! Ich<1>warn’ auch die anderen<1>Schüler!<2,2>
+Q226 TALK01 189@3: Ich mach’ die platt! [keith:+1,rep:+1] | <7>Schüler Tony<7>Ich hätt’ fast den<1>A.o.A geholfen! Sie<1>entführen Tamer!<2,2><3><7><9><7>Aus deren Armee mach’<1>ich Kleinholz!<2,2><3><7>Schüler Tony<7>Genau! Mach’ sie für<1>mich mit platt! Ich<1>drück’ die Daumen!<2,2>
+Q227 TALK01 190@1: Er hat standgehalten! [rep:+1] | <7>Klassenspr. Aiko<7>Der Byakko Leader ist<1>super! Wir haben die<1>Stadt zurück!<2,2><3><7><9><7>Er blieb echt stark,<1>als es eng wurde!<2,2><3><7>Klassenspr. Aiko<7>Total! Mit so einem<1>Leader ist die Stadt<1>bald wieder heil!<2,2>
+Q227 TALK01 190@2: Was planen sie echt? [lisa:+1] | <7>Klassenspr. Aiko<7>Der Byakko Leader ist<1>super! Wir haben die<1>Stadt zurück!<2,2><3><7><9><7>Wir müssen noch den<1>wahren Plan der A.o.A<1>rausfinden.<2,2><3><7>Klassenspr. Aiko<7>Stimmt... wir dürfen<1>nicht nachlassen,<1>bevor wir’s wissen.<2,2>
+Q227 TALK01 190@3: Ich hab’ auch geholfen! [keith:+1] | <7>Klassenspr. Aiko<7>Der Byakko Leader ist<1>super! Wir haben die<1>Stadt zurück!<2,2><3><7><9><7>Hey, ich hab’ hier<1>auch geschuftet!<2,2><3><7>Klassenspr. Aiko<7>Haha, sorry! Du warst<1>auch echt super!<1>Vielen lieben Dank!<2,2>
+Q229 TALK01 247@1: Zum Glück! [teddy:+1] | <7>DO Wache<7>Festung Genbu! Hier<1>kommen die A.o.A<1>niemals rein!<2,2><3><7><9><7>Puh! Endlich ein Ort<1>zum Durchatmen!<2,2><3><7>DO Wache<7>Ruh’ dich ruhig aus!<1>Unsere Mauern halten<1>alles ab!<2,2>
+Q229 TALK01 247@2: Sei nicht zu sicher [lisa:+1,rep:+1] | <7>DO Wache<7>Festung Genbu! Hier<1>kommen die A.o.A<1>niemals rein!<2,2><3><7><9><7>Das dachte Byakko<1>auch. Verdoppelt die<1>Wachen.<2,2><3><7>DO Wache<7>Hmm... guter Punkt.<1>Ich warne sofort die<1>Streife!<2,2>
+Q229 TALK01 247@3: Ich nehm’s mit auf [keith:+1] | <7>DO Wache<7>Festung Genbu! Hier<1>kommen die A.o.A<1>niemals rein!<2,2><3><7><9><7>Wenn sie hier auf−<1>tauchen, ruf’ mich,<1>ich regle das!<2,2><3><7>DO Wache<7>Haha, toller Einsatz!<1>Mit dir als Hilfe<1>kommt keiner durch!<2,2>
+Q230 TALK01 261@1: Wir drehen das noch! [rep:+1] | <7>DO Wache<7>Sie haben Juggernaut!<1>Da kann man nichts<1>mehr machen, oder?<2,2><3><7><9><7>Noch ist’s nicht aus!<1>Ich halt’ sie auf!<2,2><3><7>DO Wache<7>Echt?! Dann geb’ ich<1>auch nicht auf! Gib’<1>alles, Tamer!<2,2>
+Q230 TALK01 261@2: Kopf hoch, Wache! [ivy:+1] | <7>DO Wache<7>Sie haben Juggernaut!<1>Da kann man nichts<1>mehr machen, oder?<2,2><3><7><9><7>Kopf hoch! Aufgeben<1>hilft jetzt nur den<1>A.o.A!<2,2><3><7>DO Wache<7>Hast recht... sorry!<1>Ich bleib’ fest auf<1>meinem Posten!<2,2>
+Q230 TALK01 261@3: Was sagte Genbu? [lisa:+1] | <7>DO Wache<7>Sie haben Juggernaut!<1>Da kann man nichts<1>mehr machen, oder?<2,2><3><7><9><7>Bleib’ beim Plan! Was<1>hat der Genbu Leader<1>gesagt?<2,2><3><7>DO Wache<7>Stadt schützen und<1>auf den Gegenangriff<1>warten!<2,2>
+Q231 TALK03 194@1: Fast ’nen Herzinfarkt! [teddy:+1] | <7>Lügner Jim<7>Achtung, die A.o.A!!<2,2><3>...Reingelegt!<1>April, April!<2,2><3><7><9><7>Mann, Jim! Nach all<1>dem jagst du mir so<1>einen Schreck ein?!<2,2><3><7>Lügner Jim<7>Hahahaha! Sorry!<1>Dein Gesicht war<1>einfach unbezahlbar!<2,2>
+Q231 TALK03 194@2: Gar nicht witzig [lisa:+1] | <7>Lügner Jim<7>Achtung, die A.o.A!!<2,2><3>...Reingelegt!<1>April, April!<2,2><3><7><9><7>Viel zu früh für den<1>Witz, Schlaumeier.<2,2><3><7>Lügner Jim<7>Oh, zu heftig...<1>Sorry! Versprochen,<1>das letzte Mal!<2,2>
+Q231 TALK03 194@3: Sollen sie ruhig kommen [keith:+1,rep:+1] | <7>Lügner Jim<7>Achtung, die A.o.A!!<2,2><3>...Reingelegt!<1>April, April!<2,2><3><7><9><7>Wenn sie auftauchen,<1>hau’ ich sie wieder<1>um!<2,2><3><7>Lügner Jim<7>Whoa, null Angst!<1>Mit dir hier kann man<1>keinen erschrecken!<2,2>
+Q232 TALK03 216@1: Das gibt sich bald! [teddy:+1] | <7>Vielfraß<7>Was für ein Trauma!<2,2><3>Mir vergeht glatt der<1>Appetit auf Speck!<2,2><3><7><9><7>Locker! In einem Monat<1>langst du wieder zu!<2,2><3><7>Vielfraß<7>Hoffentlich!<2,2><3>Krosser Speck fehlt<1>mir, aber noch<1>gruselt’s mich!<2,2>
+Q232 TALK03 216@2: Dann halt Salat [ivy:+1] | <7>Vielfraß<7>Was für ein Trauma!<2,2><3>Mir vergeht glatt der<1>Appetit auf Speck!<2,2><3><7><9><7>Nutz das Trauma und<1>werde Salat−Fan!<2,2><3><7>Vielfraß<7>Salat?! Igitt... aber<1>mein Arzt würde die<1>Idee wohl lieben!<2,2>
+Q232 TALK03 216@3: Hauptsache gerettet [rep:+1] | <7>Vielfraß<7>Was für ein Trauma!<2,2><3>Mir vergeht glatt der<1>Appetit auf Speck!<2,2><3><7><9><7>Lieber ohne Speck als<1>für immer ein Oinkmon!<2,2><3><7>Vielfraß<7>Stimmt! Lieber gesund<1>auf Diät als wieder<1>ein Schweinchen!<2,2>

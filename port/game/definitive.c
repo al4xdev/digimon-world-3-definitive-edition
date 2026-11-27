@@ -732,8 +732,8 @@ void *def_text_override(void *data, s32 i) {
         if (def_story_text(match_file, i) != NULL) {
             return (void *)def_story_text(match_file, i); /* a line a story hook changes while it holds the story */
         }
-        if ((records_language == 1 || records_language == 2) && def_story_line(match_file, i) != NULL) {
-            return (void *)def_story_line(match_file, i); /* the story rewrite (in Portuguese: pt_story.txt, the English for an entry not translated yet) */
+        if (def_story_line(match_file, i) != NULL) {
+            return (void *)def_story_line(match_file, i); /* the story rewrite in the language shown (the English for an entry not translated yet) */
         }
         if (match_file == 0x63 && i == 76 && def_blast_chosen_mode()) {
             extern unsigned char def_str_PlugRevive[];

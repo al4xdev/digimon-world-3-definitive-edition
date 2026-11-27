@@ -888,9 +888,10 @@ static void dream_choose(void) {
     story_begin(reply, 1, DR_IGOR);
 }
 
-/* ---- The story rewrite (generated tables, definitive_story_text.c): English lines in place of the game's, the Kaili
- * mode's own lines, and the scenes' choices (a hero line the player picks; the scene goes on as the game's). Off in a
- * replay script and with DW3_STORY=0 (the game's own text, to compare). */
+/* ---- The story rewrite (generated tables, definitive_story_text.c): its lines in place of the game's, the Kaili
+ * mode's own lines, and the scenes' choices (a hero line the player picks; the scene goes on as the game's), in the
+ * language shown. Off in a replay script and with DW3_STORY=0 (the game's own text, to compare), and in the Japanese
+ * text set, whose font has none of its letters. */
 static int story_layer_on(void) {
     static int forced = -2;
 
@@ -899,7 +900,27 @@ static int story_layer_on(void) {
 
         forced = e != NULL ? atoi(e) != 0 : -1;
     }
-    return forced != 0 && def_on();
+    return forced != 0 && def_on() && records_language != 0;
+}
+
+/* The tables' language: def_lang() (English for a language the tables do not have). */
+static int story_lang(void) {
+    int l = def_lang();
+
+    return l > 0 && l < DEF_STORY_LANGS ? l : 0;
+}
+
+/* A choice's panel labels and its option k's lines in the language shown, the English's while it is not translated. */
+static const unsigned char *const *choice_labels(const DefStoryChoice *c) {
+    int l = story_lang();
+
+    return c->labels[l][0] != NULL ? c->labels[l] : c->labels[0];
+}
+
+static const unsigned char *choice_line(const DefStoryChoice *c, int k) {
+    int l = story_lang();
+
+    return c->lines[l][k] != NULL ? c->lines[l][k] : c->lines[0][k];
 }
 
 static const DefStoryLine *line_find(const DefStoryLine *tab, int count, int file, int index) {
@@ -954,7 +975,7 @@ static const unsigned char *echo_find(int file, int index) {
     }
     for (e = &def_story_echoes[lo]; lo < def_story_echo_count && e->file == file && e->index == index; e++, lo++) {
         if ((e->mode == 0 || e->mode == mode) && (e->answers >> def_record_story_answer(e->question) & 1)) {
-            const unsigned char *ret = def_is_ptbr() && e->pt_bytes != NULL ? e->pt_bytes : e->bytes;
+            const unsigned char *ret = e->bytes[story_lang()] != NULL ? e->bytes[story_lang()] : e->bytes[0];
 
             if (ret == NULL) {
                 continue;
@@ -972,21 +993,20 @@ static const unsigned char *echo_find(int file, int index) {
     return NULL;
 }
 
-/* The Kaili mode's line for an entry in the language shown (en_kaili.txt / pt_kaili.txt, and every other line that
- * names Kail with the name swapped to Junior), NULL outside that mode. */
-static const DefStoryLine *kaili_find(int file, int index, int pt) {
-    static unsigned char seen[2][256]; /* one log line per entry, not per frame it is drawn */
+/* The Kaili mode's line for an entry in language `lang` (<lang>_kaili.txt, and every other line that names Kail with
+ * the name swapped to Junior), NULL outside that mode. */
+static const DefStoryLine *kaili_find(int file, int index, int lang) {
+    static unsigned char seen[DEF_STORY_LANGS][256]; /* one log line per entry, not per frame it is drawn */
     const DefStoryLine *l;
     int k;
 
     if (!port_girls_on()) {
         return NULL;
     }
-    l = pt ? line_find(def_kaili_lines_pt, def_kaili_line_pt_count, file, index)
-           : line_find(def_kaili_lines, def_kaili_line_count, file, index);
-    if (l != NULL && (k = (int)(l - (pt ? def_kaili_lines_pt : def_kaili_lines))) < 256 && !seen[pt][k]) {
-        seen[pt][k] = 1;
-        port_log("story: kaili line 0x%X %d (%s)%s", file, index, pt ? "pt" : "en", l->hero ? ", the hero's" : "");
+    l = line_find(def_kaili_lines[lang], def_kaili_line_count[lang], file, index);
+    if (l != NULL && (k = (int)(l - def_kaili_lines[lang])) < 256 && !seen[lang][k]) {
+        seen[lang][k] = 1;
+        port_log("story: kaili line 0x%X %d (language %d)%s", file, index, lang, l->hero ? ", the hero's" : "");
     }
     return l;
 }
@@ -1033,14 +1053,14 @@ const unsigned char *def_story_line(int file, int index) {
     const DefStoryChoice *c;
     const DefStoryLine *l;
     const unsigned char *e;
-    int a, pt = def_is_ptbr();
+    int a, lang = story_lang();
 
     if (!story_layer_on()) {
         return NULL;
     }
     if (npc_choice.phase == 1 && file == npc_choice.file && index == npc_choice.msg &&
         (c = choice_find(file, index)) != NULL) {
-        const unsigned char *first = pt && c->lines_pt[0] != NULL ? c->lines_pt[0] : c->lines[0];
+        const unsigned char *first = choice_line(c, 0);
         const unsigned char *sep = find_hero_reply_sep(first);
 
         if (sep != NULL) {
@@ -1053,7 +1073,7 @@ const unsigned char *def_story_line(int file, int index) {
         }
     }
     if ((c = choice_find(file, index)) != NULL && (a = def_record_story_answer(c->question)) >= 1 && a <= c->count) {
-        const unsigned char *picked = pt && c->lines_pt[a - 1] != NULL ? c->lines_pt[a - 1] : c->lines[a - 1];
+        const unsigned char *picked = choice_line(c, a - 1);
         if (picked != NULL) {
             const unsigned char *hero_sep = find_hero_reply_sep(picked);
             const unsigned char *npc_sep = hero_sep != NULL ? find_npc_reply_sep(hero_sep + 8) : NULL;
@@ -1082,18 +1102,18 @@ const unsigned char *def_story_line(int file, int index) {
     if ((e = echo_find(file, index)) != NULL) {
         return e;
     }
-    if (pt) { /* the Portuguese rewrite; an entry not translated yet falls through to the English one below */
-        if ((l = kaili_find(file, index, 1)) != NULL) {
+    if (lang != 0) { /* the language's rewrite; an entry not translated yet falls through to the English one below */
+        if ((l = kaili_find(file, index, lang)) != NULL) {
             return l->bytes;
         }
-        if ((l = line_find(def_story_lines_pt, def_story_line_pt_count, file, index)) != NULL) {
+        if ((l = line_find(def_story_lines[lang], def_story_line_count[lang], file, index)) != NULL) {
             return l->bytes;
         }
     }
     if ((l = kaili_find(file, index, 0)) != NULL) {
         return l->bytes;
     }
-    if ((l = line_find(def_story_lines, def_story_line_count, file, index)) != NULL) {
+    if ((l = line_find(def_story_lines[0], def_story_line_count[0], file, index)) != NULL) {
         return l->bytes;
     }
     return NULL;
@@ -1121,11 +1141,11 @@ int def_story_event_dialog(s32 msg, s32 *actor) {
     const DefStoryLine *l;
     const unsigned char *const *labels;
 
-    if (!story_layer_on() || text == 0 || (records_language != 1 && records_language != 2)) {
+    if (!story_layer_on() || text == 0) {
         return 0;
     }
     file = (((text >> 16) & 0xFFFF) - records_language) | (((text & 0xFFFF) + 1) << 16);
-    if (((l = kaili_find(file, msg, def_is_ptbr())) != NULL || (l = kaili_find(file, msg, 0)) != NULL) && l->hero) {
+    if (((l = kaili_find(file, msg, story_lang())) != NULL || (l = kaili_find(file, msg, 0)) != NULL) && l->hero) {
         FieldstgActor *hero = (FieldstgActor *)heap_objects.find(5, -1, 0);
 
         if (hero != NULL) {
@@ -1135,7 +1155,7 @@ int def_story_event_dialog(s32 msg, s32 *actor) {
     if ((c = choice_find(file, msg)) == NULL || def_record_story_answer(c->question) != 0) {
         return 0;
     }
-    labels = def_is_ptbr() && c->labels_pt[0] != NULL ? c->labels_pt : c->labels;
+    labels = choice_labels(c);
     if (labels[0] == NULL) {
         return 0;
     }
@@ -1258,7 +1278,7 @@ int def_story_npc_talk(s32 actor_id, s32 msg) {
     const unsigned char *const *labels;
     const DefNpcArc *arc;
 
-    if (!story_layer_on() || (records_language != 1 && records_language != 2)) {
+    if (!story_layer_on()) {
         return 0;
     }
     arc = npc_arc_active(gamestate_data.funcs.get_map(), actor_id);
@@ -1272,7 +1292,7 @@ int def_story_npc_talk(s32 actor_id, s32 msg) {
     if ((c = choice_find(file, msg)) == NULL || def_record_story_answer(c->question) != 0) {
         return 0;
     }
-    labels = def_is_ptbr() && c->labels_pt[0] != NULL ? c->labels_pt : c->labels;
+    labels = choice_labels(c);
     if (labels[0] == NULL) {
         return 0;
     }
@@ -1303,10 +1323,7 @@ int def_story_npc_after_dialog(s32 actor_id, s32 *msg_out) {
     }
     if (npc_choice.phase == 3) {
         int a = def_record_story_answer(c->question);
-        int pt = def_is_ptbr();
-        const unsigned char *picked = (a >= 1 && a <= c->count)
-            ? (pt && c->lines_pt[a - 1] != NULL ? c->lines_pt[a - 1] : c->lines[a - 1])
-            : NULL;
+        const unsigned char *picked = a >= 1 && a <= c->count ? choice_line(c, a - 1) : NULL;
         const unsigned char *hero_sep = find_hero_reply_sep(picked);
         const unsigned char *npc_sep = hero_sep != NULL ? find_npc_reply_sep(hero_sep + 8) : NULL;
 
@@ -1320,7 +1337,7 @@ int def_story_npc_after_dialog(s32 actor_id, s32 *msg_out) {
         npc_choice.phase = 0;
         return 0;
     }
-    labels = def_is_ptbr() && c->labels_pt[0] != NULL ? c->labels_pt : c->labels;
+    labels = choice_labels(c);
     if (labels[0] == NULL) {
         npc_choice.phase = 0;
         return 0;
@@ -1360,7 +1377,7 @@ void def_story_npc_indicator_draw(s32 actor_id, void *layer_ptr, s32 x, s32 y) {
     const DefNpcArc *arc;
     s32 bob, bx, by, dot;
 
-    if (!story_layer_on() || (records_language != 1 && records_language != 2) || layer == NULL || fieldstg_stage.event_running) {
+    if (!story_layer_on() || layer == NULL || fieldstg_stage.event_running) {
         return;
     }
     arc = npc_arc_active(gamestate_data.funcs.get_map(), actor_id);

@@ -230,7 +230,7 @@ static const DefBattleText bp_texts[6][BP_PROMPTS] = {
             { "Ehm, questo dinosauro è troppo grosso...", "Che fifa! Attacco giù (-1)!" },
         } },
         { "GOV. DI SEIRYU", "Bella lotta! Reggi il vento di Seiryu?", {
-            { "Non mi muovo di qui! (DIF +2)", "Solido come roccia! Difesa su (+2)!" },
+            { "Non mi muovo di qui! (DIF +2)", "Come una roccia! Difesa su (+2)!" },
             { "Ho capito il tuo ritmo! (VEL +1)", "Lettura perfetta! Velocità su (+1)!" },
             { "Questo venticello non spaventa nessuno!", "Troppe provocazioni! Attacco nemico su (+1)!" },
         } },

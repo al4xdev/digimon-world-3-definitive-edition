@@ -149,11 +149,13 @@ typedef struct DefTextOverride {
     int index;
     const unsigned char *bytes;
 } DefTextOverride;
-/* The story rewrite (tools/text_override/en_story.txt, en_kaili.txt, en_choices.txt,
- * generated into definitive_story_text.c, read by definitive_story.c): sorted by file then entry, the file named as
- * def_text_override matches it (a DMG container's table: file | (table + 1) << 16). `hero` (Kaili mode): the balloon
- * moves to the hero. A choice: the hero line `index` the player picks among `count` (labels for the panel, lines for
- * the balloon); its answer is kept as story answer `question` (def_record_story_answer). */
+/* The story rewrite (tools/text_override/<lang>_story.txt, _kaili.txt, _choices.txt, _echoes.txt,
+ * generated into definitive_story_text.c, read by definitive_story.c), in every language of DEF_STORY_LANGS (def_lang()'s
+ * order): sorted by file then entry, the file named as def_text_override matches it (a DMG container's table:
+ * file | (table + 1) << 16). `hero` (Kaili mode): the balloon moves to the hero. A choice: the hero line `index` the
+ * player picks among `count` (labels for the panel, lines for the balloon); its answer is kept as story answer
+ * `question` (def_record_story_answer). What a language lacks (a NULL, an entry not in its table) is the English's. */
+#define DEF_STORY_LANGS 6 /* English, Portuguese, French, German, Italian, Spanish */
 typedef struct DefStoryLine {
     int file;
     int index;
@@ -165,33 +167,30 @@ typedef struct DefStoryChoice {
     int index;
     int question;
     int count;
-    const unsigned char *labels[3];
-    const unsigned char *lines[3];
-    const unsigned char *labels_pt[3]; /* the Portuguese choice (pt_choices.txt): all three NULL while untranslated */
-    const unsigned char *lines_pt[3];
+    const unsigned char *labels[DEF_STORY_LANGS][3]; /* a language's three NULL while it is not translated */
+    const unsigned char *lines[DEF_STORY_LANGS][3];
     signed char bond_ally[3]; /* -1: none, 0..4: Teddy, Ivy, Lisa, Keith, Kurt */
     signed char bond_delta[3];
     signed char rep_delta[3];
 } DefStoryChoice;
-extern const DefStoryLine def_story_lines[], def_story_lines_pt[], def_kaili_lines[], def_kaili_lines_pt[];
-extern const int def_story_line_count, def_story_line_pt_count, def_kaili_line_count, def_kaili_line_pt_count;
+extern const DefStoryLine *const def_story_lines[DEF_STORY_LANGS], *const def_kaili_lines[DEF_STORY_LANGS];
+extern const int def_story_line_count[DEF_STORY_LANGS], def_kaili_line_count[DEF_STORY_LANGS];
 extern const DefStoryChoice def_story_choices[];
 extern const int def_story_choice_count;
-/* A line that remembers an earlier answer (en_echoes.txt): said in place of the entry's line while story answer
+/* A line that remembers an earlier answer (<lang>_echoes.txt): said in place of the entry's line while story answer
  * `question` is one of `answers` (bit k: option k). `mode` 0 in both heroes' games, 1 only without Girls Power, 2 only
- * with it. An entry's echoes are in the file's order; the first that holds wins. */
+ * with it. An entry's echoes are in the source file's order; the first that holds wins. */
 typedef struct DefStoryEcho {
     int file;
     int index;
     int question;
     int answers;
     int mode;
-    const unsigned char *bytes;
-    const unsigned char *pt_bytes; /* pt_echoes.txt's line, NULL while untranslated (the English then stands) */
+    const unsigned char *bytes[DEF_STORY_LANGS];
 } DefStoryEcho;
 extern const DefStoryEcho def_story_echoes[];
 extern const int def_story_echo_count;
-const unsigned char *def_story_line(int file, int index); /* the rewrite's English line for an entry, NULL: the game's */
+const unsigned char *def_story_line(int file, int index); /* the rewrite's line for an entry, NULL: the game's */
 extern const DefTextOverride def_text_overrides[];
 extern const int def_text_override_count;
 extern const DefTextOverride *def_text_overrides_of(int lang, int *count); /* lang 1 pt, 2 fr, 3 de, 4 it, 5 es */

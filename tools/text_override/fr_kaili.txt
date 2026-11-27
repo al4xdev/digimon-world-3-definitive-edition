@@ -1,0 +1,115 @@
+# fr_kaili.txt: translated from pt_kaili.txt (tools/check_story_lang.py; same format).
+DMG200:3 7: <7>Junior<7>Ici aussi c’est Junior.<1>Je n’ai pas changé de<1>nom.<2,2>
+DMG200:3 8: <7><9><7>Ton vrai prénom ?!<2,2><3>Quel cran... tout le<1>monde va te repérer !<2,2>
+DMG200:3 9: <7>Junior<7>Je n’ai rien à cacher !<2,2><3>C’est même plus simple<1>pour me trouver ici.<2,2>
+DMG200:4 7: <7>Junior<7>Ici aussi c’est Junior.<1>Je n’ai pas changé de<1>nom.<2,2>
+DMG200:4 8: <7><9><7>Ton vrai prénom ?!<2,2><3>Quel cran... tout le<1>monde va te repérer !<2,2>
+DMG200:4 9: <7>Junior<7>Je n’ai rien à cacher !<2,2><3>C’est même plus simple<1>pour me trouver ici.<2,2>
+DMG200:5 7: <7>Junior<7>Ici aussi c’est Junior.<1>Je n’ai pas changé de<1>nom.<2,2>
+DMG200:5 8: <7><9><7>Ton vrai prénom ?!<2,2><3>Quel cran... tout le<1>monde va te repérer !<2,2>
+DMG200:5 9: <7>Junior<7>Je n’ai rien à cacher !<2,2><3>C’est même plus simple<1>pour me trouver ici.<2,2>
+DMG200:24 4: <7>Junior<7>... Attends. Qu’est−ce<1>qui se passe encore ?<2,2>
+DMG200:24 12: <7>Junior<7>Ils n’ont toujours pas<1>réparé.<2,2><3>Donc aucun retour vers<1>le Monde Réel. Super.<2,2>
+DMG200:24 14: <7>Junior<7>Lucky Mouse ?!<2,2><3>... Pourquoi dis−tu ça ?<1>Qu’est−ce que tu sais ?<2,2>
+DMG200:24 16: <7>Junior<7>... Teddy cherche<1>quelque chose au Centre<1>administratif ?<2,2>
+DMG200:24 17: <7>Junior<7>... Hé, <8,1><5,1>.<1>Allons chercher Teddy.<2,2><3>Je dois lui demander<1>un truc. Ça ne peut<1>pas attendre.<2,2>
+DMG200:26 1: <7>Junior<7>... Quelle galère.<1>Impossible d’entrer.<2,2>
+DMG200:26 3: <7>Junior<7>... Attendre ici ne<1>changera rien.<2,2><3>Séparons−nous pour voir<1>ce qu’on trouve.<2,2><3>Renseigne−toi en ville.<2,2>
+DMG200:27 1: <7>Junior<7>Alors, comment on va se<1>faire passer pour des<1>Digimons ?<2,2>
+DMG200:27 3: <7>Junior<7>Parfait. Ça fera très<1>bien l’affaire.<2,2><3>On met ces tenues<1>d’Agumon et on cherche<1>Teddy à l’intérieur.<2,2>
+DMG200:28 2: <7>Junior<7>Silence ! Pas un mot.<2,2><3>S’ils découvrent qu’on<1>n’est pas des Digimons,<1>c’est fini.<2,2>
+DMG200:28 4: <7>Junior<7>... J’ai une piste à<1>vérifier, alors je<1>passe devant.<2,2><3><8,1><5,1>, continue<1>de chercher Teddy.<2,2><3>Dès que j’ai fini,<1>je te rejoins.<2,2>
+DMG200:28 6: <7>Junior<7>Ne t’inquiète pas. Je<1>ne suis pas comme toi.<2,2>
+DMG200:28 7: <7><9><7>Qu’est−ce qu’a Junior ?<1>Quel comportement<1>bizarre depuis peu...<2,2><3>Pas le temps. Teddy<1>d’abord.<2,2>
+DMG200:32 2: <7>Junior<7>Pardon. Un truc vient<1>de me revenir.<1>Je dois y aller...<2,2>
+DMG200:32 3: <7><9><7>... Junior ? Mais que<1>lui prend−il soudain ?<2,2><3>Bon... J’ai toujours<1>mes partenaires !<2,2><3>Fonce, l’équipe ! Cap<1>sur le Secteur Ouest !<2,2>
+DMG200:41 3: <7><9><7>... Junior !<2,2>
+DMG200:41 4: <7>Teddy<7>Junior !<2,2>
+DMG200:41 5: >hero <7><9><7>Pourquoi Kurt ne<1>redevient−il pas<1>normal ?!<2,2><3>Kurt... réveille−toi !<2,2>
+DMG200:41 7: >hero <7><9><7>Kurt... Ils vont tous<1>rester comme ça<1>pour toujours ?<2,2>
+DMG200:41 11: <7>Junior<7>... Hé, <8,1><5,1>.<1>Teddy...<2,2>
+DMG200:41 12: <7>Junior<7>On a battu l’AoA.<2,2><3>... Pas vrai ?<2,2>
+DMG300:3 1: <7>Junior<7>Te voilà enfin,<1><8,1><5,1>. En retard !<2,2>
+DMG300:3 2: <7><9><7>Junior ? Tu as déjà<1>fini ?<2,2>
+DMG300:3 3: <7>Junior<7>Euh... oui. Fini.<2,2><3>Des nouvelles<1>de Teddy ?<2,2>
+DMG300:3 5: <7>Junior<7>... Moi non plus.<1>J’ai cherché partout.<2,2><3>Il avait dit qu’il<1>irait au Centre<1>administratif...<2,2>
+DMG300:3 7: <7>Junior<7>.....<2,2>
+DMG300:3 8: <7>Junior<7>... Tu ne sens pas ?<1>Qu’il est là−dedans<1>quelque part ?<2,2>
+DMG300:3 10: <7>Junior<7>Super, merci. Quelle<1>aide précieuse.<2,2><3>Bon. On entre.<2,2>
+DMG300:22 1: <7>Junior<7><8,1><5,1> !<1>Dieu merci.<1>Tu vas bien.<2,2>
+DMG300:22 2: <7><9><7>... Junior !<1>Que s’est−il passé ?<2,2><3>Pourquoi tous sont<1>devenus Oinkmon ?<2,2>
+DMG300:22 3: <7>Junior<7>C’est les Vemmon.<1>Ils ont fait ça.<2,2>
+DMG300:22 5: <7>Junior<7>Une nuée de Vemmon<1>d’Amaterasu a surgi du<1>Centre admin.<2,2><3>Ils ont tiré...<2,2><3>et tous sont devenus<1>Oinkmon.<2,2>
+DMG300:22 7: <7>Junior<7>Je ne sais pas...<2,2><3>J’ai couru au sous−sol<1>avec les autres.<2,2><3>Il n’y a que moi qui<1>ai échappé au rayon.<2,2><3>Teddy et Lisa...<1>Sont en Oinkmon.<2,2>
+DMG300:22 10: <7>Junior<7>Ils ont tous filé vers<1>la Salle du Maître.<2,2>
+DMG300:22 11: <7><9><7>La Salle du Maître<1>cache donc un secret.<2,2><3>C’est pour ça que j’y<1>vais.<2,2><3>Junior, trouve un<1>endroit sûr où te<1>cacher.<2,2>
+DMG300:22 12: <7>Junior<7>Quoi ?<1>Mais... <8,1><5,1>...<2,2>
+DMG300:22 14: <7>Junior<7>... D’accord.<1>Je crois en toi,<1><8,1><5,1>.<2,2><3>Mais reviens en vie.<1>Ce n’est pas un voeu.<2,2>
+DMG300:22 16: <7>Junior<7>Fais attention...<1><8,1><5,1>...<2,2>
+DMG300:22 17: <7>Junior<7>... Mais l’AoA n’en a<1>pas encore fini...<2,2>
+DMG300:22 19: <7>Junior<7>Oui... Teddy, Lisa et<1>les autres sont tous<1>en Oinkmon.<2,2>
+DMG300:22 20: <7><9><7>Hé. Junior ?<2,2>
+DMG300:22 23: >hero <7><9><7>Kurt est toujours<1>comme ça...<2,2><3>Je me demande ce qui<1>se passe dans le Monde<1>Réel...<2,2><3>J’ai peur de savoir.<2,2>
+DMG305:0 1: <7>Junior<7>C’est le Maître de<1>jeu ! Baisse−toi !<2,2>
+DMG305:1 8: <7>Junior<7>.........<2,2>
+DMG305:4 22: <7>Junior<7>... J’espère bien.<2,2>
+DMG305:4 30: <7>Junior<7>Je me demande ce qui<1>se passe dans le Monde<1>Réel.<2,2>
+DMG500:3 1: <7>Junior<7>... Hé, <8,1><5,1>.<1>Juste à temps.<2,2><3>On est dehors depuis<1>un bail. On ne devrait<1>pas rentrer ?<2,2>
+DMG500:3 3: <7>Junior<7>Teddy va bien. Il est<1>au Centre admin., à<1>Asuka City.<2,2><3>La dernière fois, il a<1>dit qu’il allait<1>là−bas.<2,2>
+DMG600:15 13: <7>Lucky Mouse<7>... Junior ?!<2,2>
+DMG600:15 14: <7><9><7>... Junior !<2,2>
+DMG600:15 15: <7>Junior<7><8,1><5,1> !<1>... C’est Kurt !<2,2>
+DMG600:15 16: <7><9><7>Quoi ?! Alors Lucky<1>Mouse, c’est...<2,2><3>... mon frère ?!<2,2>
+DMG600:15 17: <7>Lucky Mouse<7>... Oui. Mon vrai nom<1>est Kurt. Je suis ton<1>grand frère.<2,2><3>Mais comment l’AoA<1>a−t−elle trouvé cet<1>endroit ?<2,2><3>Et pourquoi vous deux<1>êtes ici... ?<2,2>
+DMG600:15 18: <7>Général<7>On a suivi la piste<1>depuis Asuka City.<2,2><3>Junior suivait la même<1>trace, droit dans<1>notre filet.<2,2>
+DMG600:15 19: <7>Lucky Mouse<7>Lâche Junior.<1>Tout de suite.<2,2>
+DMG600:15 20: <7>Général<7>Ha ha ha ha ! Calme−<1>toi. Ce n’est pas si<1>simple.<2,2><3>Rends ce que tu as<1>volé et je relâche<1>Junior.<2,2>
+DMG600:15 23: <7>Attaquant<7>Chose promise, chose<1>due. Vas−y.<1>Prends Junior.<2,2>
+DMG600:15 24: <7>Junior<7>Kurt... ! <8,1><5,1> !<2,2>
+DMG600:15 28: >hero <7><9><7>Kurt !<2,2>
+DMG600:16 3: >hero <7><9><7>Mais Kurt... !<2,2><3>Dire que je venais<1>enfin de retrouver<1>Kurt...<2,2><3>... et voilà ce qui<1>arrive.<2,2>
+DMG600:16 6: <7>Junior<7>Compte sur moi. On va<1>faire tomber l’AoA.<2,2><3>Et rendre à Kurt sa<1>forme normale.<2,2>
+DMG600:16 9: <7><9><7>Bon, Junior. J’y vais.<2,2>
+DMG600:16 10: <7>Junior<7>Ecoute. Si tu perds,<1>je ne te pardonnerai<1>jamais. Pigé ?<2,2>
+DMG600:22 1: <7>Junior<7>... Hé, <8,1><5,1>.<1>Qu’est−ce qui se<1>passe ?<2,2>
+DMG600:22 3: <7>Junior<7>Un Passe Employé ?<2,2>
+DMG600:22 5: >hero <7><9><7>Qu’est−ce que tu veux<1>dire, Kurt ?<2,2>
+DMG600:22 6: <7><9><7>Kurt en a peut−être<1>un.<2,2>
+DMG600:22 7: <7>Junior<7>C’est ça ! Kurt<1>travaillait ici.<2,2>
+DMG600:22 9: <7>Lisa<7>Comme tu vois, cette<1>pièce est un vrai<1>bazar.<2,2><3>Alors je range tout<1>avec Junior.<2,2>
+DMG600:22 10: <7>Junior<7>Hé, Lisa. Tu as trouvé<1>un Passe Employé ?<2,2>
+DMG600:22 13: <7>Junior<7>Que fait−on ? Je sais<1>qu’il est ici.<2,2>
+DMG600:23 6: <7>Junior<7>Euh... Lisa.<1>Qui sont ces deux−là ?<2,2>
+DMG600:23 8: <7>Junior<7>Ah. Je vois...<2,2>
+DMG600:23 9: <7>Junior<7>Juste des amis.<1>Vraiment ?<2,2>
+DMG600:24 15: <7><9><7>Junior, Lisa.<1>J’y vais.<1>Veillez sur Kurt.<2,2>
+DMG600:24 17: <7>Junior<7>Fais attention, hein ?<1>... Je ne rigole pas.<2,2>
+DMG700:0 2: <7>Ivy<7>Je ne voulais pas de<1>Junior avec nous.<2,2><3>Teddy, avec sa grande<1>bouche, a tout lâché.<2,2><3>Ils auraient dû<1>prendre un Passe Login<1>à l’avance.<2,2><3>Maintenant on fait la<1>queue comme tout le<1>monde.<2,2><3>Personne ne m’écoute.<2,2>
+DMG700:36 4: <7><9><7>Mon frère a vraiment<1>réussi.<2,2><3>Kurt a monté une<1>nouvelle boîte de<1>zéro.<2,2><3>Et Digimon Online<1>reprend du service<1>à la place de MAGAMI.<2,2>
+DMG900:4 5: <7><9><7>Pareil pour moi.<2,2><3>Qui voudrais−je en<1>face de moi, sinon<1>mon frère ?<2,2>
+DMG900:5 1: <7><9><7>J’ai réussi.<1>J’ai battu Kurt. Mon<1>propre frère.<2,2>
+TALK00 77: <7>Junior<7><8,1><5,1>, du neuf ?<1>Rien de mon côté.<2,2><3>Continuons à chercher<1>des infos.<2,2>
+TALK00 78: <7>Junior<7><8,1><5,1>, tu as<1>trouvé quelque chose ?<2,2><3>... Quoi ? Le Centre<1>laisse entrer les<1>Digimons perdus ?<2,2><3>Il y a un vieux couple<1>qui veut devenir<1>Digimon.<2,2><3>Allons leur parler.<1>Ils savent peut−être<1>quelque chose.<2,2>
+TALK00 79: <7>Junior<7>... Quoi ? Un homme<1>à la place d’Etemon ?<2,2><3>Regarde mieux. C’est<1>Etemon. Avec une<1>Tenue Etemon.<2,2><3>Demande−lui. Il sait<1>tout sur ces Tenues.<2,2><3>Bonne chance. Je<1>t’attends dans la Voie<1>souterraine.<2,2>
+TALK00 676: <7>Junior<7>Je vais faire un tour<1>à Asuka City pour<1>l’instant.<2,2><3>Prends de l’avance.<2,2>
+TALK00 1160: <7>Junior<7>... Pourquoi ce<1>demi−tour ?<2,2><3>Va demander pour les<1>tenues Digimon.<2,2>
+TALK00 1163: <7>Junior<7>S’il te plaît,<1><8,1><5,1>. Pas que pour<1>ton frère, pour tous.<2,2><3>Et pour la paix du<1>Monde Réel, arrête<1>l’AoA.<2,2>
+TALK02 765: <7>Lisa<7>Ton frère est un ami<1>très cher pour moi.<2,2><3>On devait combattre<1>l’AoA ensemble.<1>S’il te plaît, <8,1><5,1>.<2,2><3>Combats l’AoA aussi<1>pour Kurt.<2,2>
+TALK02 766: >hero <7><9><7>Kurt ne rentrait plus<1>à la maison depuis un<1>moment.<2,2><3>J’ai cru qu’il était<1>dans le Digimonde.<2,2><3>Alors j’ai accompagné<1>Junior.<2,2><3>Comment c’est possible<1>tout ça ?<2,2>
+TALK02 769: <7>Junior<7>S’il te plaît, <8,1><5,1>.<1>Bats l’AoA.<2,2><3>Et fais redevenir ton<1>frère comme avant.<2,2>
+TALK02 774: <7>Junior<7>Bonne chance, <8,1><5,1>.<1>Pour ton frère aussi.<2,2>
+TALK03 506: >hero <7><9><7>On a vaincu l’AoA.<2,2><3>Alors pourquoi mon<1>frère n’est−il pas<1>redevenu normal ?<2,2>
+TALK03 513: <7>Kurt<7>Merci pour tout,<1><8,1><5,1>.<2,2><3>Je sais ce que ça<1>t’a coûté.<2,2><3>Je vérifie la Chambre<1>Matrix en ce moment.<2,2><3>Quelque chose affecte<1>le système de<1>l’extérieur.<2,2>
+TALK03 520: <7>Junior<7><8,1><5,1>, tu as<1>réussi.<2,2><3>Ton frère est redevenu<1>normal.<2,2><3>Il va réparer le<1>programme maintenant.<2,2><3>On pourra bientôt<1>rentrer dans le<1>Monde Réel.<2,2>
+TALK04 838: <7>Junior<7>Vemmon est allé dans<1>la Salle du Maître.<2,2><3>Mais je crois que ça<1>nous a sauvés.<2,2><3>Alors ne t’inquiète<1>pas.<2,2>
+TALK04 922: <7>Junior<7>Vemmon est allé dans<1>la Salle du Maître.<2,2><3>Mais je crois que ça<1>nous a sauvés.<2,2><3>Alors ne t’inquiète<1>pas.<2,2>
+TALK05 88: <7>Junior<7>... <8,1><5,1>. Par ici.<2,2>
+TALK05 1166: <7>Lisa<7>Ton frère n’est pas<1>là.<2,2><3>Tu es notre meilleure<1>chance, <8,1><5,1>.<2,2><3>Aide−nous. On peut<1>encore sauver le<1>monde.<2,2>
+TALK06 816: <7>Junior<7><8,1><5,1>,<1>tu as vu Kurt ?<2,2><3>... Non, oublie.<1>C’est ton frère. Tu<1>me l’aurais dit.<2,2>
+TALK06 817: <7>Junior<7><8,1><5,1>, écoute.<2,2><3>Un Digimon au visage<1>inoubliable a filé<1>au Secteur Est.<2,2><3>Je crois que c’était<1>Baronmon.<2,2>
+TALK08 11: <7>Junior<7><8,1><5,1>, ton frère est<1>impressionnant.<2,2><3>Il a reconstruit une<1>bonne partie de<1>Digimon Online.<2,2><3>Tu apprendrais rien<1>qu’en le regardant.<2,2>
+TALK08 63: <7>Nick<7>Ah, oui. Ton frère<1>m’a laissé ceci pour<1>toi.<2,2><3>Tiens, ta Sacoche.<1>Tu ne l’avais pas<1>encore eue, non ?<2,2><3>Cartes, Jeux... tout<1>le kit de dressage.<2,2>
+TALK08 64: <7>Nick<7>Ton frère m’a invité<1>à jouer aujourd’hui.<2,2><3>Où est passé tout le<1>monde ?<2,2>
+TALK08 106: <7>Kurt<7><8,1><5,1>. Te voilà.<2,2><3>Je suis fier de toi,<1>ma soeur.<2,2><3>Digimon Online<1>rouvre grâce à toi.<2,2><3>Maintenant, amuse−toi.<2,2>
+TALK08 107: <7>Kurt<7>Ton niveau a vraiment<1>grimpé, ma soeur.<2,2><3>Va jeter un oeil à<1>l’Arène.<2,2>
+TALK08 108: <7>Kurt<7>Tu n’arrêtes pas de<1>me surprendre.<2,2><3>Tu seras la prochaine<1>championne du monde.<2,2><3>J’en fais le pari.<2,2>
