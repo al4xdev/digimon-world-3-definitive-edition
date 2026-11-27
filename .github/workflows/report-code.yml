@@ -1,4 +1,4 @@
-# A bug report in the runtime areas (the game, the launcher, the AppImage) must carry the code SEND LOGS showed: the
+# A bug report in the runtime areas (the game, the launcher and each package) must carry the code SEND LOGS showed: the
 # launcher uploads the logs and the player's save, and the code is how the developer opens them. Without it the issue
 # is closed with a comment; editing the issue to add the code reopens it. The template asks for the code; this is what
 # makes it a rule (a form cannot check a pattern).
@@ -12,6 +12,20 @@ permissions:
   issues: write
 
 jobs:
+  # An issue opened without a form (the API, the CLI, a link that skips the chooser) has no label: it is closed with
+  # the forms' link. The maintainers' own issues are left alone.
+  form:
+    if: github.event.action == 'opened' && github.event.issue.labels[0] == null && !contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close an issue that skipped the forms
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          NUM: ${{ github.event.issue.number }}
+        run: |
+          gh issue close "$NUM" --reason "not planned" --comment "Please open issues with one of the forms: https://github.com/${GH_REPO}/issues/new/choose. A bug report needs the launcher's SEND LOGS code (DEBUG, set LOGS to HEAVY, reproduce the problem, then DEBUG > SEND LOGS)."
+
   check:
     if: contains(github.event.issue.labels.*.name, 'bug')
     runs-on: ubuntu-latest
@@ -24,14 +38,14 @@ jobs:
           BODY: ${{ github.event.issue.body }}
           STATE: ${{ github.event.issue.state }}
         run: |
-          # The form's Area answer decides: the three runtime areas need a code, the build and tools ones may say N/A.
+          # The form's Area answer decides: the runtime areas need a code, the build and tools ones may say N/A.
           area=$(printf '%s\n' "$BODY" | awk '/^### Area/{f=1;next} f&&NF{print;exit}')
           # The code as typed, in any case; or a picture attached (a photo or screenshot of the screen: a bot cannot read it,
           # the maintainer does). The template says both are fine.
           code=$(printf '%s\n' "$BODY" | tr 'a-z' 'A-Z' | grep -oE '[A-HJKMNP-Z2-9]{5}-[A-HJKMNP-Z2-9]{5}' | head -1 || true)
           if [ -z "$code" ] && printf '%s\n' "$BODY" | grep -qE '!\[|user-attachments|<img '; then code=image; fi
           case "$area" in
-            "The game (PC port), in play"|"The launcher"|"The AppImage"*) need=1 ;;
+            "The game (PC port), in play"|"The launcher"|"The Windows zip"|"The Android app"|"PortMaster / handheld"|"The AppImage"*) need=1 ;;
             *) need=0 ;;
           esac
           if [ "$need" = 0 ] || [ -n "$code" ]; then

@@ -20,6 +20,9 @@ body:
       options:
         - The game (PC port), in play
         - The launcher
+        - The Windows zip
+        - The Android app
+        - PortMaster / handheld
         - The AppImage (download, start, packaging)
         - Building the matching game / decompilation
         - Building the PC port or launcher from source
@@ -39,14 +42,14 @@ body:
     id: version
     attributes:
       label: Version
-      description: The AppImage's file name (e.g. dw2003-0.1.0-x86_64.AppImage) or the commit you built (`git rev-parse --short HEAD`).
+      description: The file you downloaded (e.g. dw2003-0.9.2-x86_64.AppImage, dw2003-0.9.2-windows-x86_64.zip, the APK, dw3.zip) or the commit you built (`git rev-parse --short HEAD`).
     validations:
       required: true
   - type: input
     id: system
     attributes:
       label: System
-      description: Distribution and version, desktop (Wayland/X11), GPU and driver, gamepad if relevant.
+      description: OS and version (Windows, Linux distribution, Android, the handheld and its CFW), GPU and driver, gamepad if relevant.
       placeholder: Fedora 44, KDE Wayland, NVIDIA 580, DualSense over USB
     validations:
       required: true
