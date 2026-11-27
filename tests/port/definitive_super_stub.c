@@ -57,6 +57,11 @@ void def_time_reset(void) {
 }
 
 #include "definitive_expansion.h"
+/* The extended bestiary's hooks (definitive_bestiary_ext.c): nothing recorded. */
+void def_bestiary_ext_record_enemy(int species_id, int element_mask) {
+    (void)species_id;
+    (void)element_mask;
+}
 static void bext_reset(void) {}
 static void bext_load(const struct cJSON *s) { (void)s; }
 static void bext_save(struct cJSON *s) { (void)s; }

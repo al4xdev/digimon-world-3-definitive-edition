@@ -23,6 +23,7 @@ def main():
     cc = ["gcc", "-std=gnu99", "-Wall", "-Wextra", "-Werror", "-I", str(ROOT / "include"), "-I", str(ROOT / "psxstack/include"),
           "-I", str(ROOT / "port/game"), str(ROOT / "port/game/definitive_bestiary.c"), str(ROOT / "tests/port/definitive_super_stub.c"),
           str(ROOT / "tests/port/definitive_expansion_stub.c"),
+          str(ROOT / "port/game/definitive_story_save.c"), str(ROOT / "port/third_party/cjson/cJSON.c"),
           str(ROOT / "tests/port/definitive_bestiary_driver.c"), "-o", str(exe)]
     if subprocess.run(cc).returncode != 0:
         print("definitive_bestiary: FAIL: does not compile")

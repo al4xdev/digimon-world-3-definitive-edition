@@ -55,6 +55,7 @@ def main():
           "-I", str(ROOT / "psxstack/include"), "-I", str(ROOT / "port/game"),
           str(ROOT / "port/game/definitive_dri.c"), str(ROOT / "port/game/definitive_bestiary.c"), str(ROOT / "tests/port/definitive_super_stub.c"),
           str(ROOT / "tests/port/definitive_expansion_stub.c"),
+          str(ROOT / "port/game/definitive_story_save.c"), str(ROOT / "port/third_party/cjson/cJSON.c"),
           str(ROOT / "port/game/definitive_glyph.c"), str(ROOT / "port/game/definitive_text.c"),
           str(ROOT / "tests/port/definitive_dri_driver.c"), "-o", str(exe)]
     if subprocess.run(cc).returncode != 0:
