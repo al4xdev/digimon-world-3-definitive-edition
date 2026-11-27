@@ -2430,6 +2430,19 @@ static int settings_dir_for(const char *exe, char *out, size_t n) {
 }
 
 #ifdef __linux__
+/* A program: the launcher, the game or the updater by name, or any ELF file. Told by content, not the execute bit:
+ * on exFAT or NTFS (an SD card, a shared data drive) every file shows 0777. */
+static int is_program(const char *path, const char *name) {
+    static const char *const names[] = {"dw2003", "dw2003-launcher", "dw2003-updater", "AppRun"};
+    for (size_t i = 0; i < sizeof(names) / sizeof(names[0]); i++)
+        if (!strcmp(name, names[i])) return 1;
+    unsigned char m[4];
+    FILE *f = fopen(path, "rb");
+    size_t r = f ? fread(m, 1, sizeof(m), f) : 0;
+    if (f) fclose(f);
+    return r == 4 && !memcmp(m, "\x7f" "ELF", 4);
+}
+
 /* Copies what `from` holds into `to`, never over a file `to` has. Skips links, programs, files over 64 MB (a disc
  * image), portable.txt, and in the program's own folder its mods/ (the release's). */
 static void copy_tree(const char *from, const char *to, int program_dir) {
@@ -2447,7 +2460,8 @@ static void copy_tree(const char *from, const char *to, int program_dir) {
             if (!(program_dir && !strcmp(e->d_name, "mods"))) copy_tree(src, dst, 0);
             continue;
         }
-        if (!S_ISREG(st.st_mode) || (st.st_mode & 0111) || st.st_size > 64L * 1024 * 1024 || access(dst, F_OK) == 0)
+        if (!S_ISREG(st.st_mode) || st.st_size > 64L * 1024 * 1024 || access(dst, F_OK) == 0 ||
+            is_program(src, e->d_name))
             continue;
         FILE *in = fopen(src, "rb"), *out = in ? fopen(dst, "wb") : NULL;
         char buf[1 << 15];
@@ -2600,6 +2614,33 @@ static int self_test(const char *root) {
         check(t && !strcmp(t, "old card") && access(q, F_OK) == 0,
               "data folder: a later start copies nothing over it, and the old card stays");
         free(t);
+        /* exFAT or NTFS shows every file 0777: the card still comes, programs (by content or name) do not */
+        snprintf(data, sizeof(data), "%s/recompdata-exfat", root);
+        setenv("RECOMPLAUNCHER_DATA", data, 1);
+        static const char *const fresh[] = {"card1.mcd", "a.elf", "dw2003-launcher"};
+        for (size_t i = 0; i < sizeof(fresh) / sizeof(fresh[0]); i++) {
+            snprintf(cp, sizeof(cp), "%s/%s", data, fresh[i]);
+            remove(cp); /* an earlier run's */
+        }
+        snprintf(cp, sizeof(cp), "%s/card1.mcd", exe);
+        write_text(cp, "exfat card");
+        chmod(cp, 0755);
+        snprintf(cp, sizeof(cp), "%s/a.elf", exe);
+        write_text(cp, "\x7f" "ELF not a save");
+        snprintf(cp, sizeof(cp), "%s/dw2003-launcher", exe);
+        write_text(cp, "#!/bin/sh\n");
+        recomp_data_adopt(exe, data);
+        snprintf(cp, sizeof(cp), "%s/card1.mcd", data);
+        t = read_text(cp);
+        snprintf(q, sizeof(q), "%s/a.elf", data);
+        snprintf(what, sizeof(what), "%s/dw2003-launcher", data);
+        check(t && !strcmp(t, "exfat card") && access(q, F_OK) != 0 && access(what, F_OK) != 0,
+              "data folder: a card with the execute bit (exFAT/NTFS) is copied; an ELF file and the launcher are not");
+        free(t);
+        snprintf(cp, sizeof(cp), "%s/a.elf", exe);
+        remove(cp);
+        snprintf(cp, sizeof(cp), "%s/dw2003-launcher", exe);
+        remove(cp);
         if (rl_saved) setenv("RECOMPLAUNCHER_DATA", rl_keep, 1);
         else unsetenv("RECOMPLAUNCHER_DATA");
     }
