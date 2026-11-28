@@ -888,11 +888,6 @@ void fieldmenu_update(Fieldmenu *obj, FieldmenuWindows *data) {
 #endif
         break;
     case OBJECT_STATE_DONE:
-#ifdef PC_PORT
-        if (def_on() && obj->base.step < 6) {
-            obj->base.step = 6;
-        }
-#endif
         switch (obj->base.step) {
         default:
             obj->base.set_state(obj, OBJECT_STATE_DONE);
@@ -900,6 +895,19 @@ void fieldmenu_update(Fieldmenu *obj, FieldmenuWindows *data) {
         case 0:
         case 1:
         case 2:
+#ifdef PC_PORT
+            if (def_on()) {
+                obj->anim_palette += 4;
+                if (obj->anim_palette >= 8) {
+                    if (++obj->base.step == 3) {
+                        obj->anim_palette = 8;
+                    } else {
+                        obj->anim_palette = 0;
+                    }
+                }
+                break;
+            }
+#endif
             if (gfx_module.funcs.get_time() - obj->anim_time >= 2) {
                 obj->anim_time = gfx_module.funcs.get_time();
                 if (++obj->anim_palette >= 8) {
@@ -914,6 +922,19 @@ void fieldmenu_update(Fieldmenu *obj, FieldmenuWindows *data) {
         case 3:
         case 4:
         case 5:
+#ifdef PC_PORT
+            if (def_on()) {
+                obj->anim_palette += 4;
+                if (obj->anim_palette >= 16) {
+                    if (++obj->base.step == 6) {
+                        obj->anim_palette = 15;
+                    } else {
+                        obj->anim_palette = 8;
+                    }
+                }
+                break;
+            }
+#endif
             if (gfx_module.funcs.get_time() - obj->anim_time >= 2) {
                 obj->anim_time = gfx_module.funcs.get_time();
                 if (++obj->anim_palette >= 16) {
@@ -944,11 +965,6 @@ void fieldmenu_update(Fieldmenu *obj, FieldmenuWindows *data) {
         case 7:
             break;
         }
-#ifdef PC_PORT
-        if (def_on()) {
-            break;
-        }
-#endif
         sprite_init(&gfx2);
         gfx2.set_vram_pos(0x140, 0);
         gfx2.set_layer_id(obj->layer_id, obj->ot_depth);

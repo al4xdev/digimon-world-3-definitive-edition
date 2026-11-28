@@ -52,11 +52,25 @@ static void sd_start(struct PortMod *mod) {
  * also sets every vsync: both ask through sd_frame below, and the button asks itself when it is tapped (for a player
  * with skip_dialogues off, whose sd_frame does not run). */
 int dw3_touch_fast_forward;
+static int dw3_loading_ff;
+static int dw3_sd_ff;
+
+static void dw3_ff_sync(void) {
+    port_fast_forward_request(dw3_loading_ff ? 2 : (dw3_touch_fast_forward || dw3_sd_ff));
+}
 
 void dw3_touch_fast_forward_set(int on) {
     dw3_touch_fast_forward = on != 0;
     port_log("touch pad: fast-forward %s at frame %ld", on ? "on" : "off", port_frames);
-    port_fast_forward_request(dw3_touch_fast_forward);
+    dw3_ff_sync();
+}
+
+void dw3_loading_fast_forward_set(int on) {
+    int v = on != 0;
+    if (v != dw3_loading_ff) {
+        dw3_loading_ff = v;
+        dw3_ff_sync();
+    }
 }
 
 static void sd_frame(struct PortMod *mod) {
@@ -71,9 +85,9 @@ static void sd_frame(struct PortMod *mod) {
         port_log("skip dialogues: %s at frame %ld", on ? "on" : "off", port_frames);
     }
     /* fieldstg_stage is FIELDSTG's: valid only while FIELDSTG is the tier-1 overlay */
-    port_fast_forward_request(dw3_touch_fast_forward ||
-                              (on && mod->values[SD_FF_WAITS].number != 0 && field != NULL &&
-                               strcmp(field->name, "FIELDSTG") == 0 && fieldstg_stage.event_running != 0));
+    dw3_sd_ff = on && mod->values[SD_FF_WAITS].number != 0 && field != NULL &&
+                strcmp(field->name, "FIELDSTG") == 0 && fieldstg_stage.event_running != 0;
+    dw3_ff_sync();
 }
 
 /* The window's title while it is on. */

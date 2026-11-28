@@ -658,6 +658,35 @@ void fieldstg_background_draw(FieldstgBackground *obj, FieldstgBackgroundData *d
         }
     }
     if (data->unpacker->base.step == 0) {
+#ifdef PC_PORT
+        if (def_on() && fieldstg_bg_ready == 0) {
+            for (i = 0; i < count; i++) {
+                if (cells[i].loaded != 0 && cells[i].slot == -1 && cells[i].tile->is_loaded(cells[i].tile) != 0) {
+                    best = 0;
+                    oldest = gfx_module.funcs.get_time();
+                    for (j = 0; j < FIELDSTG_BG_SLOTS; j++) {
+                        if (FIELDSTG_BG_SLOT(obj, j).last_used < oldest) {
+                            oldest = FIELDSTG_BG_SLOT(obj, j).last_used;
+                            best = j;
+                        }
+                    }
+                    cells[i].tile->data = data->unpacker->unpack_now(data->unpacker, cells[i].tile->buffer);
+                    cells[i].tile->upload_slot = best;
+                    fieldstg_tile_upload(cells[i].tile);
+                    if (FIELDSTG_BG_SLOT(obj, best).tile != -1) {
+                        tile = fieldstg_background_find_tile(data, FIELDSTG_BG_SLOT(obj, best).tile);
+                        if (tile != NULL) {
+                            tile->free_slot(tile);
+                        }
+                    }
+                    FIELDSTG_BG_SLOT(obj, best).tile = cells[i].number;
+                    FIELDSTG_BG_SLOT(obj, best).last_used = gfx_module.funcs.get_time();
+                    FIELDSTG_BG_SLOT(obj, best).fade = 0;
+                }
+            }
+            return;
+        }
+#endif
         for (i = 0; i < count; i++) {
                 if (cells[i].loaded != 0 && cells[i].slot == -1 && cells[i].tile->is_loaded(cells[i].tile) != 0) {
                 best = 0;
@@ -1205,6 +1234,11 @@ void fieldstg_map_title_update(FieldstgMapTitle *obj, FieldstgMapTitleData *data
     case OBJECT_STATE_INIT:
     default:
         if (obj->base.key1 == 0) {
+#ifdef PC_PORT
+            if (def_on()) {
+                dw3_loading_fast_forward_set(1);
+            }
+#endif
             obj->base.set_state(obj, OBJECT_STATE_DONE);
             break;
         }
@@ -1267,8 +1301,9 @@ void fieldstg_map_title_update(FieldstgMapTitle *obj, FieldstgMapTitleData *data
                     obj->base.substep += gfx_module.funcs.get_frame_ticks();
                     break;
                 }
-                obj->base.next_step(obj);
-                obj->base.next_step(obj);
+                dw3_loading_fast_forward_set(0);
+                layer->set_bg_color(layer, 0, 0, 0);
+                obj->base.set_step(obj, 3);
                 goto title_reveal;
             }
 #endif
@@ -1289,22 +1324,54 @@ void fieldstg_map_title_update(FieldstgMapTitle *obj, FieldstgMapTitleData *data
 #ifdef PC_PORT
         title_reveal:
             if (def_on() && obj->base.key1 == 0) {
-                obj->clip.w = 0x140;
-                obj->clip.x = 0;
-                if (obj->clip.h == 0 || obj->clip.h > 0xF0) {
-                    obj->clip.y = 0;
-                    obj->clip.h = 0xF0;
-                }
-                obj->clip.y += 40;
-                obj->clip.h -= 80;
-                layer->set_clip_pos(layer, obj->clip.x, obj->clip.y);
-                layer->set_clip_size(layer, obj->clip.w, obj->clip.h);
-                if (obj->clip.h <= 0) {
-                    fieldstg_stage.title_shown = 0;
-                    obj->base.set_state(obj, OBJECT_STATE_END);
-                    if (gamestate_data.map_is_new != 0) {
-                        def_map_banner_open(gamestate_data.funcs.get_map());
+                s32 t = obj->base.substep;
+                s32 n = 9;
+                if (t < n) {
+                    GfxLayer *layer2 = gfx_module.funcs.get_layer(0x1002);
+                    FieldstgActor *player = (FieldstgActor *)heap_objects.find(5, -1, 0);
+                    u32 *ot = layer->get_ot_entry(layer, 0);
+                    s32 pos[2] = { 0, 0 };
+                    s32 cx = 160, cy = 120;
+                    s32 p = 256 - (n - t) * (n - t) * 256 / (n * n);
+                    s32 hw = ((320 + port_field_wide) * p) >> 8;
+                    s32 hh = (240 * p) >> 8;
+                    s32 xmin = -port_field_wide;
+                    s32 xmax = 320 + port_field_wide;
+                    s32 x0, y0, x1, y1;
+                    RECT rs[4];
+                    s32 k;
+
+                    if (layer2 != NULL) {
+                        layer2->get_scroll(layer2, pos);
                     }
+                    if (player != NULL && player->pixel_pos.x != 0) {
+                        cx = player->pixel_pos.x - pos[0];
+                        cy = player->pixel_pos.y - pos[1] - 12;
+                    }
+                    x0 = cx - hw;
+                    x1 = cx + hw;
+                    y0 = cy - hh;
+                    y1 = cy + hh;
+                    if (x0 < xmin) x0 = xmin;
+                    if (x1 > xmax) x1 = xmax;
+                    if (y0 < 0) y0 = 0;
+                    if (y1 > 240) y1 = 240;
+                    rs[0] = (RECT){ xmin, 0, xmax - xmin, y0 };
+                    rs[1] = (RECT){ xmin, y1, xmax - xmin, 240 - y1 };
+                    rs[2] = (RECT){ xmin, y0, x0 - xmin, y1 - y0 };
+                    rs[3] = (RECT){ x1, y0, xmax - x1, y1 - y0 };
+                    for (k = 0; k < 4; k++) {
+                        if (rs[k].w > 0 && rs[k].h > 0) {
+                            fieldstg_map_title_draw_rect(&obj->base, ot, rs[k], 0);
+                        }
+                    }
+                    obj->base.substep++;
+                    break;
+                }
+                fieldstg_stage.title_shown = 0;
+                obj->base.set_state(obj, OBJECT_STATE_END);
+                if (gamestate_data.map_is_new != 0) {
+                    def_map_banner_open(gamestate_data.funcs.get_map());
                 }
                 break;
             }
@@ -1320,6 +1387,9 @@ void fieldstg_map_title_update(FieldstgMapTitle *obj, FieldstgMapTitleData *data
         }
         break;
     case OBJECT_STATE_END:
+#ifdef PC_PORT
+        dw3_loading_fast_forward_set(0);
+#endif
         fieldstg_stage.title_shown = 0;
         break;
     }

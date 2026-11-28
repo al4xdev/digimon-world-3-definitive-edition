@@ -597,7 +597,7 @@ void stgmcard_frame_close(StgmcardFrame *obj) {
 /* Starts opening it (`mode`) over `frames` frames. */
 void stgmcard_frame_open(StgmcardFrame *obj, s32 mode, s32 frames) {
 #ifdef PC_PORT
-    if (def_on()) {
+    if (def_on() && mode == 2) {
         frames = 1;
     }
 #endif

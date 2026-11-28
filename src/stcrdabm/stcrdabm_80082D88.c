@@ -77,7 +77,7 @@ void stcrdabm_album_update(StcrdabmAlbum *obj, StcrdabmAlbumData *data);
 void stcrdabm_fade_start(Fade *obj, s32 dir, s32 frames) {
 #ifdef PC_PORT
     if (def_on()) {
-        frames = 1;
+        frames = 5;
     }
 #endif
     obj->base.set_state(obj, OBJECT_STATE_RUN);

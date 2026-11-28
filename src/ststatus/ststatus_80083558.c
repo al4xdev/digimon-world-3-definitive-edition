@@ -457,7 +457,7 @@ StstatusPartyPage *ststatus_create_party_page(s32 arg0) {
 void ststatus_fade_start(Fade *obj, s32 dir, s32 frames) {
 #ifdef PC_PORT
     if (def_on()) {
-        frames = 1;
+        frames = 5;
     }
 #endif
     obj->base.set_state(obj, OBJECT_STATE_RUN);

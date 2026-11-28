@@ -98,7 +98,7 @@ Object *stcrdshp_create_booster(StcrdshpMain *main);
 void stcrdshp_start_fade(Fade *obj, s32 out, s32 frames) {
 #ifdef PC_PORT
     if (def_on()) {
-        frames = 1;
+        frames = 5;
     }
 #endif
     obj->base.set_state(obj, OBJECT_STATE_RUN);
