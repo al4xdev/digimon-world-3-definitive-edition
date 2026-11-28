@@ -4,7 +4,7 @@
  * savestate; what goes in it are sections, one named object per slot each, that consumers register in
  * definitive_expansion_sections.c. The core never knows what a section holds.
  *
- *   {"version": 2, "slots": [{"gen": 7, "personas": {...}, "<another section>": {...}}, ...]}
+ *   {"version": 3, "slots": [{"gen": 7, "personas": {...}, "<another section>": {...}}, ...]}
  *
  * The pairing: a generation per slot, in the slot's entry and in the card's first record (DEF_EXPANSION_CARD_BYTES:
  * the magic "EXP1", the generation, 4 bytes low first, the rest spare). Every save that keeps anything takes a new one,
@@ -47,7 +47,7 @@ typedef struct DefExpansionSection {
 extern const DefExpansionSection *const def_expansion_sections[];
 
 #define DEF_EXPANSION_CARD_BYTES 18
-#define DEF_EXPANSION_VERSION 2 /* 2: the "respec" section; a version 1 file reads as it is */
+#define DEF_EXPANSION_VERSION 3 /* 3: 0.9.1+ ("bestiary", "story") */
 
 /* ---- The card's side (definitive_bestiary.c's first record). */
 void def_expansion_reset(void);                       /* a new game: every section empty, no generation */

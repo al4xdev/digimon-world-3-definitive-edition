@@ -38,8 +38,7 @@ static int android_pick_disc_files(void) { return -1; }
 enum {
     S_SPLASH, S_HOME, S_GAME, S_VIDEO, S_HUD, S_CONTROLS, S_SAVES, S_BACKUPS, S_BACKUP_CONFIRM,
     S_DEBUG, S_BROWSE, S_RESET, S_CLEAN, S_LOADING, S_ERROR, S_DISC,
-    S_CLOUD, S_PAIR_HOST, S_PAIR_ENTER, S_DEVICES, S_REVOKE_CONFIRM, S_RENEW_CONFIRM, S_CONFLICT, S_CONFLICT_CONFIRM,
-    S_SAVE_NOTICE, S_SAVE_NOTICE_CONFIRM
+    S_CLOUD, S_PAIR_HOST, S_PAIR_ENTER, S_DEVICES, S_REVOKE_CONFIRM, S_RENEW_CONFIRM, S_CONFLICT, S_CONFLICT_CONFIRM
 };
 enum { DISC_OK, DISC_BAD_IMAGE, DISC_BAD_FILE };
 enum { HI_PLAY, HI_GAME, HI_VIDEO, HI_HUD, HI_CONTROLS, HI_SAVES, HI_DEBUG, HI_RESET, HI_COUNT };
@@ -121,9 +120,6 @@ static long trans_t0;
 static uint32_t *trans_from, *trans_to;
 #define TRANS_MS 180
 
-static int notice_step;
-static long notice_tap_ms;
-
 static const char *S(const char *en) {
     return ui_tr_lookup(en, c.lang);
 }
@@ -200,7 +196,6 @@ static int row_target_y(int s, int idx) {
     case S_DEBUG: return 86 + idx * 54;
     case S_CLOUD: return CLOUD_ROW_Y + idx * CLOUD_ROW_STEP;
     case S_DEVICES: return 114 + (idx - dev_scroll) * 44;
-    case S_SAVE_NOTICE: return 226 + idx * 54;
     }
     return -1;
 }
@@ -676,66 +671,6 @@ static void draw_video(void) {
     }
     text(36, 384, S(desc[sel < VIDEO_N ? sel : 0]), 13, C_NOTE);
     footer_touch(1, 1, "CHANGE");
-}
-
-static int has_existing_save(void) {
-    char p[1024];
-    snprintf(p, sizeof(p), "%s/card1.mcd", game_dir);
-    return save_is_valid_mc(p, NULL);
-}
-
-static void fresh_save_reset(void) {
-    char card_p[1024], ext_p[1024];
-    save_backup_rotate(game_dir, "card1.mcd", c.backup_max);
-    snprintf(card_p, sizeof(card_p), "%s/card1.mcd", game_dir);
-    snprintf(ext_p, sizeof(ext_p), "%s/card1.def.json", game_dir);
-    unlink(card_p);
-    unlink(ext_p);
-    c.v091_save_ok = 1;
-    cfg_save(&c);
-}
-
-static void leave_splash(void) {
-    if (!c.v091_save_ok) {
-        if (has_existing_save()) {
-            go(S_SAVE_NOTICE, 0, +1);
-            return;
-        }
-        c.v091_save_ok = 1;
-        cfg_save(&c);
-    }
-    go(S_HOME, 0, +1);
-}
-
-static void draw_save_notice(void) {
-    header_touch("NEW IN v0.9.1", 0);
-    rrect(36, 74, W - 72, 134, 12, C_PANEL, 256);
-    rrect_line(36, 74, W - 72, 134, 12, C_GOLD);
-    text(56, 88, S("START FRESH RECOMMENDED"), 20, C_GOLD);
-    text(56, 120, S("v0.9.1 overhauls the story, NPC mini-arcs, and bonds."), 14, C_TEXT);
-    text(56, 144, S("Continuing an old save can negatively affect your experience."), 14, C_TEXT);
-    text(56, 170, S("Your current save is safely backed up in saves_backup/ first."), 13, C_GREEN);
-
-    int gy = (int)(cur_y >= 0 && cur_screen == S_SAVE_NOTICE ? cur_y : row_target_y(S_SAVE_NOTICE, sel));
-    draw_focus(32, gy, W - 64, 46, 10, sel == 1);
-    row_touch(226, 46, "START FRESH (RECOMMENDED)", "BACKUP + NEW SAVE", sel == 0, 0, 1, 0, 0);
-    row_touch(280, 46, "KEEP OLD SAVE", "NOT RECOMMENDED", sel == 1, 1, 0, 0, 0);
-    footer_touch(0, 0, "SELECT");
-}
-
-static void draw_save_notice_confirm(void) {
-    draw_save_notice();
-    rrect(56, 108, W - 112, 256, 14, C_PANEL, 256);
-    rrect_line(56, 108, W - 112, 256, 14, C_RED);
-    text_c(W / 2, 128, S("KEEP OLD SAVE ANYWAY?"), 22, C_RED);
-    text_c(W / 2, 170, S("Continuing an old save in v0.9.1 may miss new"), 14, C_TEXT);
-    text_c(W / 2, 192, S("story choices, NPC mini-arcs, and ally bonds,"), 14, C_TEXT);
-    text_c(W / 2, 214, S("negatively affecting your experience."), 14, C_GOLD);
-    char pill[64];
-    int step = notice_step < 3 ? notice_step + 1 : 3;
-    snprintf(pill, sizeof(pill), "%s (%d/3)", S("CONFIRM"), step);
-    draw_touch_pill(86, 294, 214, 44, pill, RGB(88, 22, 28), C_RED);
-    draw_touch_pill(340, 294, 214, 44, S("BACK"), RGB(18, 52, 42), C_GREEN);
 }
 
 static void draw_game(void) {
@@ -1230,8 +1165,6 @@ static void draw_screen(void) {
         }
         break;
     }
-    case S_SAVE_NOTICE: draw_save_notice(); break;
-    case S_SAVE_NOTICE_CONFIRM: draw_save_notice_confirm(); break;
     default: draw_home(); break;
     }
 }
@@ -1285,18 +1218,6 @@ static void activate_video_row(int row, int dir) {
     case VIDEO_SUBPIXEL: if (!c.renderer_pc && c.iscale > 1) c.subpixel = (c.subpixel + dir + 3) % 3; break;
     }
     cfg_save(&c);
-}
-
-static void notice_confirm_tap(void) {
-    long now = plat_now_ms();
-    if (notice_step > 0 && now - notice_tap_ms < 220) return;
-    notice_tap_ms = now;
-    notice_step++;
-    if (notice_step >= 3) {
-        c.v091_save_ok = 1;
-        cfg_save(&c);
-        go(S_HOME, 0, +1);
-    }
 }
 
 static void activate_home_row(int row) {
@@ -1631,7 +1552,7 @@ static void on_touch(int code, int x, int y) {
     if (screen == S_SPLASH) {
         if (code == K_TOUCH_DOWN) {
             touch_drag_scrolled = 1;
-            leave_splash();
+            go(S_HOME, 0, +1);
         }
         return;
     }
@@ -1692,27 +1613,6 @@ static void on_touch(int code, int x, int y) {
             else conflict_confirm_tap();
         } else if (in_rect(x, y, 340, 294, 210, 44) || in_rect(x, y, 520, 14, 98, 36) || in_rect(x, y, 28, H - 46, 126, 36)) {
             on_back();
-        }
-        return;
-    }
-
-    if (screen == S_SAVE_NOTICE_CONFIRM) {
-        if (in_rect(x, y, 86, 294, 214, 44)) {
-            notice_confirm_tap();
-        } else if (in_rect(x, y, 340, 294, 214, 44)) {
-            notice_step = 0;
-            go(S_SAVE_NOTICE, 0, -1);
-        }
-        return;
-    }
-    if (screen == S_SAVE_NOTICE) {
-        if (in_rect(x, y, 32, 226, W - 64, 46) || (in_rect(x, y, 240, H - 46, 160, 36) && sel == 0)) {
-            fresh_save_reset();
-            go(S_HOME, 0, +1);
-        } else if (in_rect(x, y, 32, 280, W - 64, 46) || (in_rect(x, y, 240, H - 46, 160, 36) && sel == 1)) {
-            sel = 1;
-            notice_step = 0;
-            go(S_SAVE_NOTICE_CONFIRM, 0, +1);
         }
         return;
     }
@@ -1911,8 +1811,7 @@ static void on_touch(int code, int x, int y) {
 static void on_back(void) {
     if (capture) { capture = 0; return; }
     switch (screen) {
-    case S_SPLASH: case S_HOME: case S_LOADING: case S_SAVE_NOTICE: return;
-    case S_SAVE_NOTICE_CONFIRM: notice_step = 0; go(S_SAVE_NOTICE, 0, -1); return;
+    case S_SPLASH: case S_HOME: case S_LOADING: return;
     case S_RESET: go(S_HOME, HI_RESET, -1); return;
     case S_BACKUP_CONFIRM: go(S_BACKUPS, sel, -1); return;
     case S_CLEAN: go(S_DEBUG, DEBUG_CLEAN_LOGS, -1); return;
@@ -1943,7 +1842,7 @@ static void on_back(void) {
 
 static void on_key(int code) {
     if (code == K_BACK) { on_back(); return; }
-    if (screen == S_SPLASH) { leave_splash(); return; }
+    if (screen == S_SPLASH) { go(S_HOME, 0, +1); return; }
     if (screen == S_LOADING) { load_press(code); return; }
     if (capture) {
         /* As the desktop launcher's (main.c, on_press): a face button, a shoulder, Start or Select binds, the d-pad
@@ -1992,14 +1891,14 @@ static void on_key(int code) {
     if (code == K_UP || code == K_DOWN) {
         if (screen == S_BACKUP_CONFIRM || screen == S_REVOKE_CONFIRM || screen == S_RESET ||
             screen == S_CLEAN || screen == S_RENEW_CONFIRM || screen == S_CONFLICT_CONFIRM ||
-            screen == S_SAVE_NOTICE_CONFIRM || screen == S_ERROR || screen == S_DISC) {
+            screen == S_ERROR || screen == S_DISC) {
             return;
         }
         int dir = code == K_UP ? -1 : +1;
         int n = screen == S_HOME ? HI_COUNT : screen == S_GAME ? GAME_N : screen == S_VIDEO ? VIDEO_N :
                 screen == S_HUD ? HUD_ROWS : screen == S_CONTROLS ? (A_COUNT + 1) : screen == S_SAVES ? SAVES_N :
                 screen == S_DEBUG ? debug_n() : screen == S_BROWSE ? b_count : screen == S_BACKUPS ? bk_count :
-                screen == S_CLOUD ? cloud_n() : screen == S_DEVICES ? dev_count : screen == S_SAVE_NOTICE ? 2 : 1;
+                screen == S_CLOUD ? cloud_n() : screen == S_DEVICES ? dev_count : 1;
         if (n > 0) sel = (sel + dir + n) % n;
         if (screen == S_BROWSE) clamp_scroll(&b_scroll, BROWSE_VIS);
         if (screen == S_BACKUPS) clamp_scroll(&bk_scroll, LIST_VIS);
@@ -2031,11 +1930,6 @@ static void on_key(int code) {
                 capture = 1;
             }
         }
-        else if (screen == S_SAVE_NOTICE) {
-            if (sel == 0) { fresh_save_reset(); go(S_HOME, 0, +1); }
-            else { notice_step = 0; go(S_SAVE_NOTICE_CONFIRM, 0, +1); }
-        }
-        else if (screen == S_SAVE_NOTICE_CONFIRM) notice_confirm_tap();
         else if (screen == S_SAVES) activate_saves_row(sel, +1);
         else if (screen == S_CLOUD) activate_cloud_row(sel);
         else if (screen == S_PAIR_HOST && !pair_done && !strcmp(pair_st.status, "awaiting_approval")) pair_host_answer(1);
@@ -2089,7 +1983,7 @@ int dw3_android_launcher_run(int kind, const char *script, int *out_touch_pad, i
 
     while (!android_done) {
         if (screen == S_SPLASH && splash_t0 >= 0 && plat_now_ms() - splash_t0 >= SPLASH_MS) {
-            leave_splash();
+            go(S_HOME, 0, +1);
         }
         if (screen == S_LOADING) {
             long now = plat_now_ms();
@@ -2169,15 +2063,11 @@ static int android_self_test(const char *tmp) {
     snprintf(game_dir, sizeof(game_dir), "%s", tmp);
     if (plat_open(PLAT_NULL, "") != 0) { fprintf(stderr, "plat_open failed\n"); return 1; }
 
-    /* 1. Fresh boot without card1.mcd must mark v091_save_ok = 1 and go to S_HOME */
+    /* 1. Reset settings restores defaults and opens S_HOME */
     cfg_defaults(&c);
-    screen = S_SPLASH;
-    leave_splash();
-    acheck(screen == S_HOME && c.v091_save_ok == 1, "fresh boot without save sets v091_save_ok=1 and opens S_HOME");
-
-    /* 2. Reset settings preserves v091_save_ok */
+    c.hz = 50;
     do_reset_confirm();
-    acheck(c.v091_save_ok == 1, "S_RESET preserves v091_save_ok=1");
+    acheck(screen == S_HOME && c.hz == 60, "S_RESET restores default settings and opens S_HOME");
 
     /* 3. S_CONFLICT: DECIDE LATER / Back must not launch the game */
     conflict_ret = S_HOME; conflict_ret_sel = HI_PLAY; conflict_then_play = 1;
@@ -2199,8 +2089,7 @@ static int android_self_test(const char *tmp) {
     static const int screens[] = {
         S_SPLASH, S_HOME, S_GAME, S_VIDEO, S_HUD, S_CONTROLS, S_SAVES, S_BACKUPS, S_BACKUP_CONFIRM,
         S_DEBUG, S_BROWSE, S_RESET, S_CLEAN, S_LOADING, S_ERROR, S_DISC, S_CLOUD, S_PAIR_HOST, S_PAIR_ENTER,
-        S_DEVICES, S_REVOKE_CONFIRM, S_RENEW_CONFIRM, S_CONFLICT, S_CONFLICT_CONFIRM,
-        S_SAVE_NOTICE, S_SAVE_NOTICE_CONFIRM
+        S_DEVICES, S_REVOKE_CONFIRM, S_RENEW_CONFIRM, S_CONFLICT, S_CONFLICT_CONFIRM
     };
     for (int lang = 0; lang < 6; lang++) {
         c.lang = lang;
@@ -2210,13 +2099,11 @@ static int android_self_test(const char *tmp) {
             draw();
         }
     }
-    acheck(1, "all 26 Android screens drawn across all 6 languages");
+    acheck(1, "all 24 Android screens drawn across all 6 languages");
 
     /* 5. Key i18n strings used by Android screens must resolve to non-English in PT-BR */
     c.lang = 1;
     static const char *const must_tr[] = {
-        "NEW IN v0.9.1", "START FRESH RECOMMENDED", "START FRESH (RECOMMENDED)",
-        "KEEP OLD SAVE", "KEEP OLD SAVE ANYWAY?",
         "Scales full PS1 VRAM (1024x512, 1536x512 in 16:9), not just 320x240.",
         "On-screen floating touch controls during gameplay.",
         "SEND LOGS uploads the logs and your save (RPG data) to the developer.",

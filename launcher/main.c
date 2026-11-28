@@ -33,7 +33,6 @@
 enum {
     S_SPLASH, S_HOME, S_GAME, S_VIDEO, S_HUD, S_CONTROLS, S_SAVES, S_BACKUPS, S_BACKUP_CONFIRM,
     S_CLOUD, S_PAIR_HOST, S_PAIR_ENTER, S_DEVICES, S_REVOKE_CONFIRM, S_CONFLICT, S_CONFLICT_CONFIRM,
-    S_SAVE_NOTICE, S_SAVE_NOTICE_CONFIRM,
     S_DEBUG, S_BROWSE, S_LED, S_LED1, S_LED2, S_RESET, S_CLEAN, S_LOADING, S_DISC, S_ERROR, S_UPDATING, S_UPDATE_ASK
 };
 enum { HI_PLAY, HI_GAME, HI_VIDEO, HI_HUD, HI_CONTROLS, HI_SAVES, HI_LED, HI_DEBUG, HI_RESET, HI_COUNT };
@@ -85,7 +84,6 @@ enum { CA_CLOUD, CA_LOCAL, CA_RECOMP, CA_CANCEL };
 static char conflict_msg[160], conflict_cloud_info[96], conflict_local_info[96], conflict_recomp_info[96], conflict_recomp_sha[9];
 static int conflict_acts[4] = {CA_CLOUD, CA_LOCAL, CA_CANCEL, CA_CANCEL}, conflict_n = 3, conflict_has_cloud = 1;
 static int conflict_return_screen = S_SAVES, conflict_choice, conflict_step;
-static int save_notice_step;
 static float confirm_pos = 0.0f;
 
 /* Built-in D-Pad file browser state (PC / Android / non-PortMaster) */
@@ -209,7 +207,6 @@ static int row_target_y(int s, int idx) {
     case S_SAVES: return 86 + idx * 46 - 4;
     case S_CLOUD: return 206 + idx * 44 - 4;
     case S_CONFLICT: return (conflict_n > 3 ? 186 + idx * 44 : 194 + idx * 52) - 4;
-    case S_SAVE_NOTICE: return 212 + idx * 52 - 4;
     case S_BACKUPS: return 114 + (idx - bk_scroll) * 38 - 4;
     case S_DEVICES: return 114 + (idx - dev_scroll) * 38 - 4;
     case S_BROWSE: return 114 + (idx - b_scroll) * 36 - 4;
@@ -965,93 +962,6 @@ static void draw_conflict_confirm(void) {
     text(bx, ty + 9, "CANCEL", 16, C_TEXT);
 }
 
-static void draw_save_notice(void) {
-    header("DIGIMON WORLD 3", "NEW IN v0.9.1");
-    rrect(40, 82, W - 80, 108, 12, C_PANEL, 256);
-    rrect_line(40, 82, W - 80, 108, 12, C_GOLD);
-    circle(72, 114, 13, C_GOLD, 256);
-    text_c(72, 101, "!", 22, C_BG0);
-    text(96, 98, "START FRESH RECOMMENDED", 20, C_GOLD);
-    text(58, 130, "v0.9.1 overhauls the story, NPC mini-arcs, and bonds.", 15, C_TEXT);
-    text(58, 150, "Continuing an old save can negatively affect your experience.", 15, C_NOTE);
-    text(58, 170, "Your current save is safely backed up in saves_backup/ first.", 13, C_NOTE);
-
-    int gy = (int)(cur_y >= 0 && cur_screen == S_SAVE_NOTICE ? cur_y : row_target_y(S_SAVE_NOTICE, sel));
-    draw_focus(36, gy, W - 72, 46, 8, sel == 1);
-
-    row(212, "START FRESH (RECOMMENDED)", "BACKUP + NEW SAVE", sel == 0, 0, 0, 0);
-    row(264, "KEEP OLD SAVE", "NOT RECOMMENDED", sel == 1, 0, 0, 0);
-
-    const char *hint = sel == 0
-        ? "Backs up your old save and starts clean for the full v0.9.1 experience."
-        : "Keeps your old save (requires 3x confirmation). Some new arcs may be skipped.";
-    rect(40, 368, W - 80, 1, C_EDGE, 256);
-    text(44, 380, hint, 15, C_NOTE);
-    foot_2("CHOOSE", "BACK");
-}
-
-static void draw_save_notice_confirm(void) {
-    draw_save_notice();
-    uint32_t accent = C_ORANGE;
-    char ok_lbl[32];
-
-    rect(0, 0, W, H, C_BG0, 195);
-    rrect(70, 108, W - 140, 266, 14, C_PANEL, 256);
-    rrect_line(70, 108, W - 140, 266, 14, accent);
-    circle(110, 146, 14, accent, 256);
-    text_c(110, 132, "!", 24, C_BG0);
-    text(138, 130, "KEEP OLD SAVE ANYWAY?", 23, C_TEXT);
-    text(102, 176, "Continuing an old save in v0.9.1 may miss new", 16, C_NOTE);
-    text(102, 198, "story choices, NPC mini-arcs, and ally bonds,", 16, C_NOTE);
-    text(102, 220, "negatively affecting your experience.", 16, C_NOTE);
-
-    float pos = confirm_pos < 0.0f ? 0.0f : confirm_pos > 2.0f ? 2.0f : confirm_pos;
-    uint32_t step_col = pos > 1.4f ? accent : C_GOLD;
-
-    int cx = W / 2, dy = 264;
-    rect(cx - 72, dy - 2, 144, 4, C_EDGE, 256);
-    int fill_w = (int)(pos * 72.0f + 0.5f);
-    if (fill_w > 0) rect(cx - 72, dy - 2, fill_w, 4, step_col, 256);
-    for (int i = 0; i < 3; i++) {
-        int dx = cx + (i - 1) * 72;
-        int lit = pos >= (float)i - 0.15f;
-        uint32_t col = lit ? (i == 2 ? accent : C_GOLD) : C_BG1;
-        circle(dx, dy, 12, col, 256);
-        ring(dx, dy, 12, 2, lit ? (i == 2 ? accent : C_GOLD) : C_EDGE);
-        char num[2] = {(char)('1' + i), 0};
-        text_c(dx, dy - 8, num, 14, lit ? C_BG0 : C_OFF);
-    }
-
-    if (save_notice_step < 3) {
-        snprintf(ok_lbl, sizeof(ok_lbl), TR("CONFIRM (%d/3)"), save_notice_step);
-    } else {
-        snprintf(ok_lbl, sizeof(ok_lbl), "%s", TR("KEEP OLD (3/3)"));
-    }
-
-    int tx = 92, tw = 344, ty = 304, th = 36;
-    rrect(tx, ty, tw, th, 18, C_BG1, 256);
-    int ax = tx + 14 + (int)(pos * 74.0f + 0.5f);
-    uint32_t track_col = mix(C_GREEN, accent, (int)(pos * 128.0f));
-    int trail_w = (ax - tx) + 22;
-    if (trail_w > tw) trail_w = tw;
-    rrect(tx, ty, trail_w, th, 18, mix(C_BG1, track_col, 72), 256);
-    rrect_line(tx, ty, tw, th, 18, save_notice_step == 3 ? accent : C_EDGE);
-
-    char ga[16], gb[16];
-    glyph(btn_ok(), ga); glyph(btn_back(), gb);
-    if (save_notice_step == 3) {
-        int wave = (int)(plat_now_ms() % 800);
-        int pulse = wave < 400 ? wave : 800 - wave;
-        ring(ax + 12, ty + th / 2, 16 + pulse * 3 / 400, 2, accent);
-    }
-    int kx = ax + keycap(ax, ty + th / 2, ga, track_col) + 8;
-    text(kx, ty + 9, ok_lbl, 16, C_TEXT);
-
-    int bx = 452;
-    bx += keycap(bx, ty + th / 2, gb, C_RED) + 8;
-    text(bx, ty + 9, "CANCEL", 16, C_TEXT);
-}
-
 /* SEND LOGS: the full zip is saved beside the game as ever, then the capped one goes to the server and is dropped. */
 static void send_logs(void) {
     /* A report without the game's log cannot be reproduced: the player turns logs on and plays the bug again first. */
@@ -1263,8 +1173,6 @@ static void draw_screen(void) {
               "It will have to re-register or pair again.", "YES, REVOKE", "CANCEL", C_RED); break;
     case S_CONFLICT: draw_conflict(); break;
     case S_CONFLICT_CONFIRM: draw_conflict_confirm(); break;
-    case S_SAVE_NOTICE: draw_save_notice(); break;
-    case S_SAVE_NOTICE_CONFIRM: draw_save_notice_confirm(); break;
     case S_DEBUG: draw_debug(); break;
     case S_BROWSE: draw_browse(); break;
     case S_LED: draw_led(); break;
@@ -1674,16 +1582,6 @@ static void start_game(void) {
         screen = S_ERROR;
         return;
     }
-    if (!c.v091_save_ok) {
-        char card_chk[1024];
-        snprintf(card_chk, sizeof(card_chk), "%s/card1.mcd", game_dir);
-        if (save_is_valid_mc(card_chk, NULL)) {
-            go(S_SAVE_NOTICE, 0, 1, H / 2);
-            return;
-        }
-        c.v091_save_ok = 1;
-        cfg_save(&c);
-    }
     last_err[0] = 0;
     disc_bad = DISC_OK;
     fatal_seen = 0;
@@ -1704,7 +1602,7 @@ static void start_game(void) {
             }
             synced = src == 0;
         }
-        /* After the sync: a v1 file the pull just brought takes the current schema too, and the sync state follows the
+        /* After the sync: a v2 file the pull just brought takes the current schema too, and the sync state follows the
          * migrated bytes (cloud_migrate_saves), so the migration is not a local change to the cloud. */
         cloud_migrate_saves(&cloud, game_dir);
         /* RecompLauncher's mirror (cloud.h): a changed one asks first; else it follows card1.mcd */
@@ -2325,46 +2223,6 @@ static void on_press(int code) {
             }
         }
         break;
-    case S_SAVE_NOTICE:
-        if (back) {
-            go(S_HOME, 0, -1, H / 2);
-        } else if (code == K_UP || code == K_DOWN) {
-            sel = (sel + (code == K_UP ? 1 : 1)) % 2;
-        } else if (ok) {
-            if (sel == 0) {
-                char card_p[1024], def_p[1024];
-                snprintf(card_p, sizeof(card_p), "%s/card1.mcd", game_dir);
-                snprintf(def_p, sizeof(def_p), "%s/card1.def.json", game_dir);
-                if (save_is_valid_mc(card_p, NULL)) {
-                    save_backup_rotate(game_dir, "card1.mcd", c.backup_max);
-                }
-                remove(card_p);
-                remove(def_p);
-                c.v091_save_ok = 1;
-                cfg_save(&c);
-                start_game();
-            } else {
-                save_notice_step = 1;
-                confirm_pos = 0.0f;
-                start_trans(1, row_target_y(S_SAVE_NOTICE, 1) + 14);
-                screen = S_SAVE_NOTICE_CONFIRM;
-            }
-        }
-        break;
-    case S_SAVE_NOTICE_CONFIRM:
-        if (back) {
-            start_trans(-1, row_target_y(S_SAVE_NOTICE, 1) + 14);
-            screen = S_SAVE_NOTICE;
-        } else if (ok) {
-            if (save_notice_step < 3) {
-                save_notice_step++;
-            } else {
-                c.v091_save_ok = 1;
-                cfg_save(&c);
-                start_game();
-            }
-        }
-        break;
     case S_BROWSE:
         if (back) {
             if (!path_is_root(b_dir) && b_count > 0 && strcmp(b_items[0].name, "..") == 0) {
@@ -2636,7 +2494,7 @@ static int self_test(const char *root) {
         cfg_load(&g);
         check(g.hud[H_FIGHT] == K_WEST && g.hud[H_RUN] == K_EAST, "fight button: a layout of the player's own is kept");
         /* Schema migrations (migrate.h): tui.state's old defaults take the new ones once, a file on the current schema
-         * keeps what the player chose, and the expansion save steps from version 1 to 2 with its old copy kept. */
+         * keeps what the player chose, and the expansion save steps from version 2 (0.9.1+) to 3 with its old copy kept. */
         write_text(tp, "hz=50\nbm_fight=east\nbm_tag=south\nbm_v=1\nff=1\n");
         cfg_load(&g);
         check(g.hz == 60 && cfg_fight_place(&g) == 0, "schema: an old tui.state takes 60 Hz and Fight at the bottom");
@@ -2703,42 +2561,63 @@ static int self_test(const char *root) {
             free(a1); free(a2); free(a3);
         }
         {
-            char *j = strdup("{\"version\":1,\"slots\":[{\"gen\":3}]}"), *n = strdup("{\"version\":3,\"slots\":[]}"), *o2 = strdup("[1]");
+            char *v1 = strdup("{\"version\":1,\"slots\":[{\"gen\":3}]}"),
+                 *v2_090 = strdup("{\"version\":2,\"slots\":[{\"gen\":3}]}"),
+                 *j = strdup("{\"version\":2,\"slots\":[{\"gen\":3,\"story\":{}}]}"),
+                 *n = strdup("{\"version\":4,\"slots\":[]}"), *o2 = strdup("[1]");
             int from = 0;
-            check(migrate_save_text(&j, &from) == MIGRATE_DONE && from == 1 && !strcmp(j, "{\"version\":2,\"slots\":[{\"gen\":3}]}"),
-                  "schema: the expansion save steps 1 -> 2 and nothing else changes");
-            check(migrate_save_text(&j, &from) == MIGRATE_NONE, "schema: version 2 is current");
-            check(migrate_save_text(&n, &from) == MIGRATE_NEWER && strstr(n, "\"version\":3"), "schema: a newer expansion save is left alone");
+            check(migrate_save_text(&v1, &from) == MIGRATE_NONE && !strcmp(v1, "{\"version\":1,\"slots\":[{\"gen\":3}]}"),
+                  "schema: pre-0.9.1 version 1 save is not migrated");
+            check(migrate_save_text(&v2_090, &from) == MIGRATE_NONE && !strcmp(v2_090, "{\"version\":2,\"slots\":[{\"gen\":3}]}"),
+                  "schema: 0.9.0 version 2 save without story is not migrated");
+            check(migrate_save_text(&j, &from) == MIGRATE_DONE && from == 2 &&
+                      !strcmp(j, "{\"version\":3,\"slots\":[{\"gen\":3,\"story\":{}}]}"),
+                  "schema: 0.9.1+ expansion save steps 2 -> 3 and nothing else changes");
+            check(migrate_save_text(&j, &from) == MIGRATE_NONE, "schema: version 3 is current");
+            check(migrate_save_text(&n, &from) == MIGRATE_NEWER && strstr(n, "\"version\":4"), "schema: a newer expansion save is left alone");
             check(migrate_save_text(&o2, &from) == MIGRATE_NONE && !strcmp(o2, "[1]"), "schema: a file that is not the game's is left alone");
-            free(j); free(n); free(o2);
+            free(v1); free(v2_090); free(j); free(n); free(o2);
         }
         snprintf(tp, sizeof(tp), "%s/card1.def.json", game_dir);
-        write_text(tp, "{\"version\": 1, \"slots\": []}");
+        write_text(tp, "{\"version\": 1, \"slots\": [{\"gen\": 3}]}");
+        check(migrate_saves() == 0, "schema: pre-0.9.1 card1.def.json v1 is not migrated");
+        write_text(tp, "{\"version\": 2, \"slots\": [{\"gen\": 3}]}");
+        check(migrate_saves() == 0, "schema: 0.9.0 card1.def.json v2 without story is not migrated");
+        write_text(tp, "{\"version\": 2, \"slots\": [{\"gen\": 3, \"story\": {}}]}");
         check(migrate_saves() == 1, "schema: card1.def.json migrated");
         {
             char *t = slurp(tp);
-            check(t && strstr(t, "\"version\": 2"), "schema: card1.def.json is on version 2");
+            check(t && strstr(t, "\"version\": 3"), "schema: card1.def.json is on version 3");
             free(t);
-            snprintf(tp, sizeof(tp), "%s/card1.def.json.v1.bak", game_dir);
+            snprintf(tp, sizeof(tp), "%s/card1.def.json.v2.bak", game_dir);
             t = slurp(tp);
-            check(t && strstr(t, "\"version\": 1"), "schema: the old expansion save kept as .v1.bak");
+            check(t && strstr(t, "\"version\": 2"), "schema: the old expansion save kept as .v2.bak");
             free(t);
             check(migrate_saves() == 0, "schema: nothing left to migrate");
             /* a later old file (a restored backup, a pull) gets its own copy: no .bak is ever replaced */
             snprintf(tp, sizeof(tp), "%s/card1.def.json", game_dir);
-            write_text(tp, "{\"version\": 1, \"slots\": [{\"gen\": 8}]}");
+            write_text(tp, "{\"version\": 2, \"slots\": [{\"gen\": 8, \"story\": {}}]}");
             check(migrate_saves() == 1, "schema: a second old file migrates too");
-            snprintf(tp, sizeof(tp), "%s/card1.def.json.v1.2.bak", game_dir);
+            snprintf(tp, sizeof(tp), "%s/card1.def.json.v2.2.bak", game_dir);
             t = slurp(tp);
-            check(t && strstr(t, "\"gen\": 8"), "schema: ... with its own copy, .v1.2.bak");
+            check(t && strstr(t, "\"gen\": 8"), "schema: ... with its own copy, .v2.2.bak");
             free(t);
             unlink(tp);
-            snprintf(tp, sizeof(tp), "%s/card1.def.json.v1.bak", game_dir);
+            snprintf(tp, sizeof(tp), "%s/card1.def.json.v2.bak", game_dir);
             unlink(tp);
             snprintf(tp, sizeof(tp), "%s/card1.def.json", game_dir);
             unlink(tp);
             snprintf(tp, sizeof(tp), "%s/tui.state.v0.bak", game_dir);
             unlink(tp);
+        }
+        snprintf(tp, sizeof(tp), "%s/tui.state", game_dir);
+        write_text(tp, "schema=2\nhz=60\nv091_save_ok=1\n");
+        cfg_load(&g);
+        cfg_save(&g);
+        {
+            char *t = slurp(tp);
+            check(g.hz == 60 && t && !strstr(t, "v091_save_ok"), "schema: old v091_save_ok key in tui.state is ignored and dropped");
+            free(t);
         }
         cfg_save(&a);
         disc_path[0] = 0;
@@ -2786,7 +2665,7 @@ static int self_test(const char *root) {
             SaveBackup bks[8];
             snprintf(ep, sizeof(ep), "%s/card1.def.json", game_dir);
             save_is_valid_mc(cp, sha_card);
-            write_text(ep, "{\"version\":1,\"slots\":[{\"gen\":3}]}");
+            write_text(ep, "{\"version\":2,\"slots\":[{\"gen\":3,\"story\":{}}]}");
             check(save_is_valid_mc(cp, sha_pair) && strcmp(sha_card, sha_pair) != 0,
                   "expansion: its JSON changes the save's sha; with none the card's own sha is kept");
             {
@@ -2798,8 +2677,8 @@ static int self_test(const char *root) {
                 check(cloud_migrate_saves(&cs, game_dir) == 1 && save_is_valid_mc(cp, after) && strcmp(after, sha_pair) != 0 &&
                           !strcmp(cs.last_sha256, after),
                       "schema: migrating a synced save moves the cloud state's sha with it (no false conflict)");
-                write_text(ep, "{\"version\":1,\"slots\":[{\"gen\":3}]}"); /* the checks below use the version 1 file */
-                snprintf(ep, sizeof(ep), "%s/card1.def.json.v1.bak", game_dir);
+                write_text(ep, "{\"version\":2,\"slots\":[{\"gen\":3,\"story\":{}}]}"); /* the checks below use this file */
+                snprintf(ep, sizeof(ep), "%s/card1.def.json.v2.bak", game_dir);
                 unlink(ep);
                 snprintf(ep, sizeof(ep), "%s/cloud_sync.json", game_dir); /* cloud_state_save's file, from the check above */
                 unlink(ep);
@@ -2807,13 +2686,19 @@ static int self_test(const char *root) {
             }
             check(recomp_mirror_write(game_dir, "dev1", "TEST", 4, 1) == 0, "expansion: the mirror is written as a pair");
             int nb = save_backup_list(game_dir, bks, 8);
+            char old_bk[sizeof(bks[0].name)] = "", new_bk[sizeof(bks[0].name)] = "";
+            if (nb > 0) snprintf(old_bk, sizeof(old_bk), "%.95s", bks[0].name);
             save_backup_rotate(game_dir, "card1.mcd", 5);
-            check(save_backup_list(game_dir, bks, 8) == nb + 1, "expansion: a JSON change alone is a new backup");
-            char bj[1300];
-            snprintf(bj, sizeof(bj), "%s/saves_backup/%.*s.def.json", game_dir, (int)strlen(bks[0].name) - 4, bks[0].name);
-            check(access(bj, F_OK) == 0, "expansion: the backup carries the JSON beside the card");
-            write_text(ep, "{\"version\":1,\"slots\":[{\"gen\":9}]}");
-            check(save_backup_restore(game_dir, bks[0].name, 5, err, sizeof(err)) == 0, "expansion: a pair restored");
+            int nb2 = save_backup_list(game_dir, bks, 8);
+            check(nb2 == nb + 1, "expansion: a JSON change alone is a new backup");
+            for (int i = 0; i < nb2; i++) {
+                if (strcmp(bks[i].name, old_bk) != 0) { snprintf(new_bk, sizeof(new_bk), "%.95s", bks[i].name); break; }
+            }
+            char bj[1400];
+            snprintf(bj, sizeof(bj), "%s/saves_backup/%.*s.def.json", game_dir, (int)strlen(new_bk) - 4, new_bk);
+            check(new_bk[0] && access(bj, F_OK) == 0, "expansion: the backup carries the JSON beside the card");
+            write_text(ep, "{\"version\":2,\"slots\":[{\"gen\":9,\"story\":{}}]}");
+            check(save_backup_restore(game_dir, new_bk, 5, err, sizeof(err)) == 0, "expansion: a pair restored");
             cf = fopen(ep, "rb");
             if (cf) { got[fread(got, 1, sizeof(got) - 1, cf)] = 0; fclose(cf); }
             check(strstr(got, "\"gen\":3") != NULL, "expansion: restore brings the backup's JSON back with its card");
@@ -2825,7 +2710,7 @@ static int self_test(const char *root) {
                   "expansion: a format 2 mirror adopted writes the card and its JSON");
             char epv[1300];
             snprintf(epv, sizeof(epv), "%s.prev", ep);
-            check(save_backup_restore(game_dir, bks[nb].name, 5, err, sizeof(err)) == 0 && access(ep, F_OK) != 0 &&
+            check(old_bk[0] && save_backup_restore(game_dir, old_bk, 5, err, sizeof(err)) == 0 && access(ep, F_OK) != 0 &&
                       access(epv, F_OK) == 0,
                   "expansion: a backup from before the JSON leaves none beside the card (the old one moved aside)");
             remove(epv);
@@ -3251,7 +3136,7 @@ int main(int argc, char **argv) {
     for (;;) {
         int ty = row_target_y(screen, sel);
         int cursor_moving = ty >= 0 && cur_screen == screen && (cur_y - ty > 0.5f || ty - cur_y > 0.5f);
-        int animating = trans_active || cursor_moving || screen == S_SPLASH || screen == S_LOADING || screen == S_UPDATING || screen == S_CONFLICT_CONFIRM || screen == S_SAVE_NOTICE_CONFIRM;
+        int animating = trans_active || cursor_moving || screen == S_SPLASH || screen == S_LOADING || screen == S_UPDATING || screen == S_CONFLICT_CONFIRM;
         Ev ev = {0};
         int r = plat_poll(&ev, animating ? 16 : 33);
         if (r < 0) break;
@@ -3268,9 +3153,8 @@ int main(int argc, char **argv) {
             draw();
             go(S_HOME, 0, 1, H / 2);
         }
-        if (screen == S_CONFLICT_CONFIRM || screen == S_SAVE_NOTICE_CONFIRM) {
-            int step = screen == S_CONFLICT_CONFIRM ? conflict_step : save_notice_step;
-            float target = (float)(step - 1);
+        if (screen == S_CONFLICT_CONFIRM) {
+            float target = (float)(conflict_step - 1);
             float diff = target - confirm_pos;
             if (diff > -0.01f && diff < 0.01f) confirm_pos = target;
             else confirm_pos += diff * (dt >= 32 ? 0.45f : 0.25f);

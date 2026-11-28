@@ -143,7 +143,7 @@ int main(int argc, char **argv) {
     root = cJSON_Parse(slurp(path));
     e = slot_json(root, 0);
     p = cJSON_GetObjectItem(cJSON_GetObjectItem(e, "personas"), "3");
-    check("file: version 2, the slot's gen, a persona by its KEEP id with known [a, b] and solved",
+    check("file: version 3, the slot's gen, a persona by its KEEP id with known [a, b] and solved",
           cJSON_GetObjectItem(root, "version")->valueint == DEF_EXPANSION_VERSION && cJSON_GetObjectItem(e, "gen")->valueint == 1 &&
               cJSON_GetArrayItem(cJSON_GetObjectItem(p, "known"), 0)->valueint == 5 &&
               cJSON_GetArrayItem(cJSON_GetObjectItem(p, "known"), 1)->valueint == 8 &&
@@ -259,7 +259,7 @@ int main(int argc, char **argv) {
 
     /* A newer version's file: read as empty, never overwritten. A file that is not JSON: moved aside. */
     {
-        const char *newer = "{\"version\": 3, \"slots\": [{\"gen\": 6, \"personas\": {\"1\": {\"solved\": true}}}]}";
+        const char *newer = "{\"version\": 4, \"slots\": [{\"gen\": 6, \"personas\": {\"1\": {\"solved\": true}}}]}";
 
         spit(path, newer);
         check("a newer version: not taken", load(0) == 0 && !def_persona_record_solved(1));

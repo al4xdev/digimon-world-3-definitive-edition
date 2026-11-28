@@ -128,9 +128,11 @@ Dispositivos probados, detalles de instalación y problemas conocidos: [`.ci-cd/
    **resolución** interna (3X por defecto), el renderizador por **GPU** o por software y los **filtros** de pantalla. El
    launcher se actualiza solo cuando sale una versión nueva.
 
-**¿Vienes de una versión anterior?** Tu partida guardada se abre y se juega. Para darle las nuevas tablas de MP y TP,
-ejecuta una vez `tools/convert_save_mp.py card1.mcd` (guarda una copia de seguridad). El launcher pone al día por sí solo sus ajustes y el guardado de expansión junto
-a la tarjeta (`card1.def.json`), y conserva el archivo anterior como copia.
+**¿Vienes de una versión anterior?** Las partidas de la **0.9.1 o posterior** se abren y se juegan: el launcher pone
+al día por sí solo sus ajustes y el guardado de expansión junto a la tarjeta (`card1.def.json`), guardando una copia
+de seguridad. Las partidas **anteriores a la 0.9.1** no se migran (empieza una partida nueva). Las partidas originales
+de PS1 también se abren y se juegan — ejecuta una vez `tools/convert_save_mp.py card1.mcd` para las nuevas tablas de
+MP y TP (guarda una copia de seguridad).
 
 ---
 

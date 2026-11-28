@@ -128,9 +128,11 @@ Getestete Geräte, Installationsdetails und bekannte Probleme: [`.ci-cd/portmast
    `INTEGER`**, die interne **Auflösung** (standardmäßig 3X), den **GPU**- oder Software-Renderer und die
    Bildschirm-**Filter**. Der Launcher aktualisiert sich selbst, sobald eine neue Version erscheint.
 
-**Du kommst von einer älteren Version?** Dein Spielstand lässt sich öffnen und spielen. Um ihm die neuen MP- und
-TP-Tabellen zu geben, führe einmal `tools/convert_save_mp.py card1.mcd` aus (es legt ein Backup an). Der Launcher bringt seine Einstellungen und den Erweiterungsspielstand neben der
-Karte (`card1.def.json`) selbst auf den neuesten Stand und behält die alte Datei als Backup.
+**Du kommst von einer älteren Version?** Spielstände ab **0.9.1** lassen sich öffnen und spielen: Der Launcher bringt
+seine Einstellungen und den Erweiterungsspielstand neben der Karte (`card1.def.json`) selbst auf den neuesten Stand
+und behält ein Backup. Spielstände **vor 0.9.1** werden nicht migriert (starte einen neuen Spielstand). Originale
+PS1-Spielstände lassen sich ebenfalls öffnen und spielen — führe einmal `tools/convert_save_mp.py card1.mcd` für die
+neuen MP- und TP-Tabellen aus (es legt ein Backup an).
 
 ---
 

@@ -128,9 +128,10 @@ Dispositivos testados, detalhes de instalação e problemas conhecidos: [`.ci-cd
    ou `INTEGER`**, a **resolução** interna (3X por padrão), o renderizador por **GPU** ou por software e os **filtros**
    de tela. O launcher se atualiza sozinho quando sai uma versão nova.
 
-**Vindo de uma versão antiga?** O seu save abre e funciona. Para dar a ele as novas tabelas de MP e TP, rode uma vez
-`tools/convert_save_mp.py card1.mcd` (ele guarda um backup). O launcher atualiza sozinho as suas configurações e o
-save de expansão ao lado do cartão (`card1.def.json`), guardando o arquivo antigo como backup.
+**Vindo de uma versão antiga?** Saves da **0.9.1 ou mais recente** abrem e funcionam: o launcher atualiza sozinho as
+suas configurações e o save de expansão ao lado do cartão (`card1.def.json`), guardando um backup. Saves **anteriores à
+0.9.1** não são migrados (comece um save novo). Saves originais de PS1 também abrem e funcionam — rode uma vez
+`tools/convert_save_mp.py card1.mcd` para as novas tabelas de MP e TP (ele guarda um backup).
 
 ---
 
