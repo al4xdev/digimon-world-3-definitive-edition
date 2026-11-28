@@ -16,6 +16,7 @@
 #include "fieldstg.h"
 
 #ifdef PC_PORT
+extern s32 fieldmenu_anim_pictures[6];
 extern void fieldstg_rush_reset(void);
 extern s32 fieldstg_rush_asking(void); /* the Overlevel Rush's question is up: the player walks, nothing else may start */
 #endif
@@ -1400,6 +1401,13 @@ void fieldstg_manager_leave_map(FieldstgManager *obj, FieldstgManagerData *data)
     default:
 #ifdef PC_PORT
         if (def_on()) {
+            s32 hi = obj->next_map & 0xFF00;
+            if (hi != 0x200 && hi != 0x300 && hi != 0xE00 && obj->next_map != 0x500 && obj->next_map != 0x600 &&
+                cdload_module.get_subfile_by_id(0x2860000) != NULL) {
+                obj->fade = 0;
+                obj->base.set_step(obj, 4);
+                goto menu_wipe;
+            }
             cdload_module.mark_loaded();
             gamestate_data.funcs.set_next_map(obj->next_map, obj->map_entry);
             gamestate_data.field_map = gamestate_data.funcs.get_map();
@@ -1467,6 +1475,49 @@ void fieldstg_manager_leave_map(FieldstgManager *obj, FieldstgManagerData *data)
         break;
     case 3:
         break;
+#ifdef PC_PORT
+    case 4:
+    menu_wipe: {
+        Sprite gfx2;
+        s32 wide_pad = port_video_widescreen_pad();
+        s32 j;
+
+        if (obj->base.substep < 3) {
+            obj->fade += 4;
+            if (obj->fade >= 8) {
+                obj->fade = (++obj->base.substep == 3) ? 8 : 0;
+            }
+        } else if (obj->base.substep < 6) {
+            obj->fade += 4;
+            if (obj->fade >= 16) {
+                obj->fade = (++obj->base.substep == 6) ? 15 : 8;
+            }
+        }
+        sprite_init(&gfx2);
+        gfx2.set_vram_pos(0x140, 0);
+        gfx2.set_layer_id(0x1002, 0);
+        gfx2.set_follow_scroll(0);
+        if (wide_pad > 0) {
+            gfx2.set_scale((0x1000 * (320 + 2 * wide_pad) + 160) / 320, 0x1000, 0x1000);
+            gfx2.set_pivot(-wide_pad, 0);
+        }
+        for (j = 0; j <= obj->base.substep && j < 6; j++) {
+            gfx2.set_palette(j == obj->base.substep ? obj->fade : (j < 3 ? 7 : 15));
+            gfx2.draw(cdload_module.get_subfile_by_id(0x2860000), fieldmenu_anim_pictures[j], -wide_pad, 0);
+        }
+        if (obj->base.substep == 6) {
+            cdload_module.mark_loaded();
+            gamestate_data.funcs.set_next_map(obj->next_map, obj->map_entry);
+            gamestate_data.field_map = gamestate_data.funcs.get_map();
+            if (data->party[0] != NULL) {
+                gamestate_data.player_pos = data->party[0]->pos;
+                gamestate_data.player_dir = data->party[0]->dir;
+            }
+            obj->base.substep = 7;
+        }
+        break;
+    }
+#endif
     case 2:
         layer = gfx_module.funcs.get_layer(0x1001);
         switch (obj->base.substep) {

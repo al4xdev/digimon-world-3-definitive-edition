@@ -924,6 +924,11 @@ void stgtrain_main_update(StgtrainMain *obj, StgtrainMainData *data) {
         switch (obj->base.step) {
         case 0:
         default:
+#ifdef PC_PORT
+            if (def_on()) {
+                dw3_loading_fast_forward_set(1);
+            }
+#endif
             stgtrain_module.funcs.load();
             cdload_module.queue_file(records_language + 0x10B);
             sound_module.load_extra_bank(0x21);
@@ -956,6 +961,9 @@ void stgtrain_main_update(StgtrainMain *obj, StgtrainMainData *data) {
         break;
     case OBJECT_STATE_DONE:
         if (sound_module.is_loading() == 0) {
+#ifdef PC_PORT
+            dw3_loading_fast_forward_set(0);
+#endif
             sound_module.play(0x60840002);
             obj->base.set_state(obj, OBJECT_STATE_RUN);
         }
@@ -1026,6 +1034,11 @@ void stgtrain_fade_start(Fade *obj, s32 dir, s32 frames) {
 }
 
 void stgtrain_fade_draw(Fade *obj) {
+#ifdef PC_PORT
+    if (def_on()) {
+        return;
+    }
+#endif
     GfxLayer *layer;
     u32 *ot;
     POLY_F4 *poly;

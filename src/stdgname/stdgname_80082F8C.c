@@ -175,6 +175,11 @@ void stdgname_fade_start(Fade *obj, s32 dir, s32 frames) {
 }
 
 void stdgname_fade_draw(Fade *obj) {
+#ifdef PC_PORT
+    if (def_on()) {
+        return;
+    }
+#endif
     GfxLayer *layer;
     u32 *ot;
     POLY_F4 *poly;

@@ -161,6 +161,11 @@ void stcrddek_start_fade(Fade *obj, s32 out, s32 frames) {
 
 /* Draws a full-screen (320x256) quad with subtractive blending (abr 2), each channel level >> 8. */
 void stcrddek_draw_fade(Fade *obj) {
+#ifdef PC_PORT
+    if (def_on()) {
+        return;
+    }
+#endif
     GfxLayer *layer;
     u32 *ot;
     POLY_F4 *poly;

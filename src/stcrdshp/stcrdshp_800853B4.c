@@ -115,6 +115,11 @@ void stcrdshp_start_fade(Fade *obj, s32 out, s32 frames) {
 
 /* Draws a full-screen (320x256) quad with subtractive blending (abr 2), each channel level >> 8. */
 void stcrdshp_draw_fade(Fade *obj) {
+#ifdef PC_PORT
+    if (def_on()) {
+        return;
+    }
+#endif
     GfxLayer *layer;
     u32 *ot;
     POLY_F4 *poly;
@@ -1127,11 +1132,19 @@ void stcrdshp_update_main(StcrdshpMain *obj, StcrdshpMainData *data) {
         switch (obj->base.step) {
         case 0:
         default:
+#ifdef PC_PORT
+            if (def_on()) {
+                dw3_loading_fast_forward_set(1);
+            }
+#endif
             stcrdshp_util.load_files();
             obj->base.step++;
             break;
         case 1:
             if (stcrdshp_util.is_loading() == 0) {
+#ifdef PC_PORT
+                dw3_loading_fast_forward_set(0);
+#endif
                 stcrdshp_create_main_windows(obj, data);
                 obj->anims[0].duration = 10;
                 obj->anims[1].duration = 10;

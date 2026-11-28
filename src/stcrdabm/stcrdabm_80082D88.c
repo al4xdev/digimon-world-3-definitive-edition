@@ -93,6 +93,11 @@ void stcrdabm_fade_start(Fade *obj, s32 dir, s32 frames) {
 }
 
 void stcrdabm_fade_draw(Fade *obj) {
+#ifdef PC_PORT
+    if (def_on()) {
+        return;
+    }
+#endif
     GfxLayer *layer;
     u32 *ot;
     POLY_F4 *poly;
@@ -844,11 +849,19 @@ void stcrdabm_album_update(StcrdabmAlbum *obj, StcrdabmAlbumData *data) {
         switch (obj->base.step) {
         case 0:
         default:
+#ifdef PC_PORT
+            if (def_on()) {
+                dw3_loading_fast_forward_set(1);
+            }
+#endif
             stcrdabm_funcs.load_files();
             obj->base.step++;
             break;
         case 1:
             if (stcrdabm_funcs.is_loading() == 0) {
+#ifdef PC_PORT
+                dw3_loading_fast_forward_set(0);
+#endif
                 stcrdabm_album_create_windows(obj, data);
                 obj->frame_anim.duration = 8;
                 obj->details_anim.duration = 8;
