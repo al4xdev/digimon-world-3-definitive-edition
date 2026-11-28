@@ -839,11 +839,15 @@ static void choice_frame(void) {
                 choice.answered = choice.sel + 1;
                 choice_close();
             }
+            return;
         }
-        return;
+        if (!(PAD_PRESSED(4) || PAD_PRESSED(6) || PAD_REPEAT(4) || PAD_REPEAT(6))) {
+            return;
+        }
+        choice.pending = 0;
     }
-    if (PAD_PRESSED(4) || PAD_PRESSED(6)) {
-        choice.sel = (choice.sel + (PAD_PRESSED(6) ? 1 : choice.count - 1)) % choice.count;
+    if (PAD_PRESSED(4) || PAD_PRESSED(6) || PAD_REPEAT(4) || PAD_REPEAT(6)) {
+        choice.sel = (choice.sel + ((PAD_PRESSED(6) || PAD_REPEAT(6)) ? 1 : choice.count - 1)) % choice.count;
         sound_module.play(DR_SND_MOVE);
         choice.wins[old]->set_palette(choice.wins[old], DR_PAL_TEXT);
         choice.wins[choice.sel]->set_palette(choice.wins[choice.sel], DR_PAL_HOT);
