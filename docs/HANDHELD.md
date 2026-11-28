@@ -32,10 +32,11 @@ hardware, the framebuffer present under 1 ms).
   See [`PERFORMANCE.md`](PERFORMANCE.md).
 
 The launcher selects `gles` by default only when `/proc/cpuinfo` reports CPU part `0xd04` (the Cortex-A35): it exports
-`DW3_DEFAULT_RENDERER=gles`. On any other CPU the default is software. The handheld menu has no video screen (its VIDEO
-screen is PC-only): it keeps the `video.renderer` already in `ports/dw3/settings.json` and writes that default only
-when the file has none. To switch, set `video.renderer` in `settings.json` (`gles` or `software`) or
-`DW3_FORCE_RENDERER`, which always wins. The shell launcher passes `--renderer gles` itself only when it starts the
+`DW3_DEFAULT_RENDERER=gles`. On any other CPU the default is software. The handheld menu has a VIDEO screen with
+three rows: REFRESH RATE, RENDERER (AUTO = that CPU default, SOFTWARE, GLES; written to `video.renderer`) and VIDEO PATH
+(AUTO = the shell script's choice, FBDEV, SDL2; the launcher exports `DW3_VIDEO` for the game only, the menu keeps the path
+it opened with). Every value is offered whether the device runs it or not: a choice that does not work is changed back in
+the menu. `DW3_FORCE_RENDERER` still always wins. The shell launcher passes `--renderer gles` itself only when it starts the
 game without the menu and there is no `settings.json` yet.
 
 The VRAM of the `gles` renderer differs from the software one in 0.2-0.7% of its texels (edges and 5-bit rounding). At
@@ -223,9 +224,8 @@ Measurement switches (off in the launcher, where they are commented out; see [`P
   `gles` renderer.
 - **The heaviest battles are over budget**: about 24 ms of work against 20 with `gles` (41.85 fps) and about 27 ms with
   software (37.70 fps). Light battles fit.
-- **`gles` is slower than software in light 2D scenes** (43.5 against 57.7 fps on the scripted boot). The handheld
-  menu has no video screen: set `video.renderer` in `ports/dw3/settings.json` (`gles` or `software`) or
-  `DW3_FORCE_RENDERER`.
+- **`gles` is slower than software in light 2D scenes** (43.5 against 57.7 fps on the scripted boot). Choose the renderer in
+  the menu's VIDEO screen (or `video.renderer` in `ports/dw3/settings.json`, or `DW3_FORCE_RENDERER`).
 - **The VRAM of `gles` differs** from the software one in 0.2-0.7% of its texels. The picture compared at the frames
   tested is identical, which is not a proof for every scene.
 - **Widescreen needs the hardware renderer**; it is off on software.

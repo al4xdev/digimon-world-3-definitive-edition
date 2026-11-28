@@ -466,6 +466,8 @@ void cfg_load(Cfg *c) {
         else if (!strcmp(line, "fullscreen")) c->fullscreen = n != 0;
         else if (!strcmp(line, "touch_pad")) c->touch_pad = n != 0;
         else if (!strcmp(line, "fill")) c->fill = n != 0;
+        else if (!strcmp(line, "hh_renderer")) c->hh_renderer = n < 0 ? 0 : n > 2 ? 2 : n;
+        else if (!strcmp(line, "hh_video")) c->hh_video = n < 0 ? 0 : n > 2 ? 2 : n;
         else if (!strcmp(line, "fmv_autocrop")) c->fmv_autocrop = n != 0;
         else if (!strcmp(line, "scale")) c->scale = n < 0 ? 0 : n > 8 ? 8 : n;
         else if (!strcmp(line, "renderer_pc")) c->renderer_pc = n != 0;
@@ -549,15 +551,11 @@ static int write_settings(const Cfg *c) {
     if (is_pc || is_android) {
         snprintf(renderer, sizeof(renderer), "%s", c->renderer_pc ? "software" : "gpu");
     } else {
-        char *old = slurp(path);
-        if (old) {
-            json_str(old, "\"video\"", "renderer", renderer, sizeof(renderer));
-            free(old);
-        }
-        if (strcmp(renderer, "gles") && strcmp(renderer, "software") && strcmp(renderer, "gpu")) {
-            const char *d = getenv("DW3_DEFAULT_RENDERER");
-            snprintf(renderer, sizeof(renderer), "%s", d && (!strcmp(d, "gles") || !strcmp(d, "gpu")) ? d : "software");
-        }
+        /* A handheld: the VIDEO screen's choice, or (AUTO) the launcher's default for the CPU (gles on the A35). */
+        const char *d = getenv("DW3_DEFAULT_RENDERER");
+        const char *r = c->hh_renderer == 1 ? "software" : c->hh_renderer == 2 ? "gles"
+                      : d && !strcmp(d, "gles") ? "gles" : "software";
+        snprintf(renderer, sizeof(renderer), "%s", r);
     }
     char pads[512] = "{ ";
     for (int i = 0; i < A_COUNT; i++) {
@@ -659,9 +657,9 @@ int cfg_save(const Cfg *c) {
     if (c->ff_n == 1) snprintf(ff_pad_str, sizeof(ff_pad_str), "%s", code_name(c->ff_btns[0]));
     else if (c->ff_n == 2) snprintf(ff_pad_str, sizeof(ff_pad_str), "%s+%s", code_name(c->ff_btns[0]), code_name(c->ff_btns[1]));
     snprintf(text, sizeof(text), "hz=%d\nff=%d\nff_speed=%s\nff_pad=%s\nload=%d\nskip=%d\nbattles=%d\nhit=%d\nbtext=%d\nsaveany=1\nbmenu=1\nschema=%d\n"
-             "bmem=%d\nbbuf=%d\nwidescreen=%d\nfullscreen=%d\ntouch_pad=%d\nfill=%d\nfmv_autocrop=%d\nscale=%d\nrenderer_pc=%d\nfilter=%d\niscale=%d\nsubpixel=%d\n",
+             "bmem=%d\nbbuf=%d\nwidescreen=%d\nfullscreen=%d\ntouch_pad=%d\nfill=%d\nhh_renderer=%d\nhh_video=%d\nfmv_autocrop=%d\nscale=%d\nrenderer_pc=%d\nfilter=%d\niscale=%d\nsubpixel=%d\n",
              c->hz, c->ff ? 1 : 0, ff_names[c->ff ? c->ff : 3], ff_pad_str, c->load, c->skip, c->battles, c->hit, c->btext, SCHEMA_TUI_STATE,
-             c->bmem, c->bbuf, c->widescreen, c->fullscreen, c->touch_pad, c->fill, c->fmv_autocrop, c->scale, c->renderer_pc, c->filter, c->iscale, c->subpixel);
+             c->bmem, c->bbuf, c->widescreen, c->fullscreen, c->touch_pad, c->fill, c->hh_renderer, c->hh_video, c->fmv_autocrop, c->scale, c->renderer_pc, c->filter, c->iscale, c->subpixel);
     if (disc_path[0]) {
         snprintf(line, sizeof(line), "disc=%s\n", disc_path);
         strcat(text, line);

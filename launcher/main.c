@@ -110,7 +110,7 @@ static void build_home_list(void) {
     home_n = 0;
     home_items[home_n++] = HI_PLAY;
     home_items[home_n++] = HI_GAME;
-    if (is_pc) home_items[home_n++] = HI_VIDEO;
+    home_items[home_n++] = HI_VIDEO; /* the PC's full screen, the handheld's three rows */
     home_items[home_n++] = HI_HUD;
     home_items[home_n++] = HI_CONTROLS;
     home_items[home_n++] = HI_SAVES;
@@ -120,7 +120,7 @@ static void build_home_list(void) {
 }
 
 static int home_step(void) {
-    return home_n > 7 ? 38 : 44;
+    return home_n > 8 ? 34 : home_n > 7 ? 38 : 44;
 }
 
 static int game_n(void) { return is_portmaster ? 7 : 8; }
@@ -204,7 +204,7 @@ static int row_target_y(int s, int idx) {
     switch (s) {
     case S_HOME: return 92 + idx * home_step() - 4;
     case S_GAME: return 90 + idx * game_step() - 4;
-    case S_VIDEO: return 90 + idx * VIDEO_STEP - 4;
+    case S_VIDEO: return is_pc ? 90 + idx * VIDEO_STEP - 4 : 100 + idx * 44 - 4;
     case S_DEBUG: return 92 + idx * 48 - 4;
     case S_SAVES: return 86 + idx * 46 - 4;
     case S_CLOUD: return 206 + idx * 44 - 4;
@@ -425,6 +425,26 @@ static void draw_video(void) {
     text(44, 358, desc[sel], 15, C_NOTE);
     snprintf(mon, sizeof(mon), "MONITOR %dx%d", dw, dh);
     text_r(W - 44, 386, mon, 14, C_CYAN);
+    foot_std("CHANGE");
+}
+
+/* A handheld's VIDEO: the refresh rate, the renderer and the game's video path. Every value is offered, whether the
+ * device runs it or not: a choice that does not work is changed back here (the menu keeps its own path). */
+static void draw_video_hh(void) {
+    header("DIGIMON WORLD 3", "VIDEO");
+    static const char *const rend[] = {"AUTO", "SOFTWARE", "GLES"}, *const path[] = {"AUTO", "FBDEV", "SDL2"};
+    const char *v[3] = {c.hz == 60 ? "60 HZ" : "50 HZ", rend[c.hh_renderer], path[c.hh_video]};
+    const char *lab[3] = {"REFRESH RATE", "RENDERER", "VIDEO PATH"};
+    static const char *desc[3] = {
+        "60 HZ is the game's own NTSC mode (smoother). 50 HZ is the original PAL speed.",
+        "AUTO: GLES on the Cortex-A35 (RK3326), SOFTWARE elsewhere. SOFTWARE is exact PS1.",
+        "How the game reaches the screen. AUTO follows the system. The menu keeps its own path.",
+    };
+    int gy = (int)(cur_y >= 0 && cur_screen == S_VIDEO ? cur_y : row_target_y(S_VIDEO, sel));
+    draw_focus(40, gy, W - 80, 36, 8, 0);
+    for (int i = 0; i < 3; i++) row(100 + i * 44, lab[i], v[i], i == sel, 0, i == 0 ? c.hz == 60 : i == 1 ? c.hh_renderer > 0 : c.hh_video > 0, 0);
+    rect(40, 346, W - 80, 1, C_EDGE, 256);
+    text(44, 358, desc[sel], 15, C_NOTE);
     foot_std("CHANGE");
 }
 
@@ -1169,7 +1189,7 @@ static void draw_screen(void) {
     case S_SPLASH: draw_splash(); break;
     case S_HOME: draw_home(); break;
     case S_GAME: draw_game(); break;
-    case S_VIDEO: draw_video(); break;
+    case S_VIDEO: if (is_pc) draw_video(); else draw_video_hh(); break;
     case S_HUD: draw_hud(); break;
     case S_CONTROLS: draw_controls(); break;
     case S_SAVES: draw_saves(); break;
@@ -1632,6 +1652,8 @@ static void start_game(void) {
      * is the DEBUG screen's choice (the game gets "off" unless it was asked for more). */
     if (is_portmaster) setenv("DW3_PAD_REMAP", "1", 1);
     plat_close_pad(); /* the game opens the same pad in its own process */
+    /* A handheld's VIDEO PATH: the game's own, the menu keeps the one it opened with. AUTO leaves the script's choice. */
+    if (is_portmaster && c.hh_video) setenv("DW3_VIDEO", c.hh_video == 1 ? "fbdev" : "sdl2", 1);
     setenv("DW3_LOG", c.logs == 2 ? "heavy" : c.logs == 1 ? "soft" : "off", 1);
     if (getenv("DW3_NOEXEC")) { /* test hook: the loading screen without a game */
         launch_pid = -2;
@@ -1895,7 +1917,7 @@ static void on_press(int code) {
     switch (screen) {
     case S_HOME: n = home_n; break;
     case S_GAME: n = game_n(); break;
-    case S_VIDEO: n = VIDEO_N; break;
+    case S_VIDEO: n = is_pc ? VIDEO_N : 3; break;
     case S_HUD: n = HUD_ROWS; break;
     case S_CONTROLS: n = 1 + A_COUNT + 1; break;
     case S_SAVES: n = 6; break;
@@ -1951,6 +1973,14 @@ static void on_press(int code) {
     case S_VIDEO:
         if (is_start) start_game();
         if (back) leave_edit(HI_VIDEO);
+        if (!is_pc) {
+            if (ok || d) {
+                if (sel == 0) c.hz = c.hz == 60 ? 50 : 60;
+                else if (sel == 1) c.hh_renderer = (c.hh_renderer + s + 3) % 3;
+                else c.hh_video = (c.hh_video + s + 3) % 3;
+            }
+            break;
+        }
         if (ok || d) {
             switch (sel) {
             case 0: c.widescreen = !c.widescreen; if (c.widescreen) c.renderer_pc = 0; break;

@@ -22,6 +22,8 @@ typedef struct Cfg {
     int fmv_autocrop;        /* trim the black bars off FMVs at runtime (video.fmv_autocrop) */
     int ff_n;                /* how many buttons it takes: 0 none (off), 1 or 2 (a chord) */
     int ff_btns[2];          /* those buttons, as places (K_*) */
+    int hh_renderer;         /* handhelds: the renderer 0 auto (the CPU's default), 1 software, 2 gles */
+    int hh_video;            /* handhelds: the game's video path 0 auto (the script's), 1 fbdev, 2 sdl2 */
     int btext;               /* battle text: 1 skip, 2 async (0 from an old file reads as skip) */
     int bmem, bbuf;          /* remember cursor; buffer input 0 off 1 short 2 long */
     int logs;                /* 0 off 1 soft 2 heavy */
