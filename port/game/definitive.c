@@ -2669,6 +2669,7 @@ void def_rush_results(void) {
 
     for (i = 2; i >= 0; i--) {
         id = gamestate_data.funcs.get_party_member(i);
+        port_party_xp_knocked_out(i, 0);
         if (id >= 0 && gamestate_data.digimon[id].record.stats.values[2] > 0) {
             lead = i;
         }

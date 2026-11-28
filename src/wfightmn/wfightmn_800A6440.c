@@ -676,6 +676,9 @@ void wfightmn_switch_member(WfightmnMain *obj, WfightmnMainData *data) {
                     break;
                 }
             }
+#ifdef PC_PORT
+            wfightmn_end_blast();
+#endif
             obj->msg_args[0] = member;
             obj->msg_args[1] = fightstg_battle.state.current[0];
             fightstg_battle.state.current[0] = obj->msg_args[0];
