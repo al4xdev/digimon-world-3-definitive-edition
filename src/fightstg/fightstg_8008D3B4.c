@@ -10773,7 +10773,7 @@ static void fightstg_message_to_toast(FightstgMessage *obj, FightstgMessageData 
     }
     for (i = 0; i < 2; i++) {
         if (data->windows[i] != NULL) {
-            heap_objects.stop(data->windows[i]);
+            heap_objects.stop((Object *)data->windows[i]);
             data->windows[i] = NULL;
         }
     }
