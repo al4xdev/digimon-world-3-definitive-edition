@@ -8,6 +8,9 @@
 #include "records.h"
 #include "message.h"
 #include "overlay_common.h"
+#ifdef PC_PORT
+#include "port/game/definitive.h"
+#endif
 
 /* STCRDABM.PRO: the card album. Cards 1-314, 12 per page (6 x 2), 27 pages; a card the player owns
  * (gamestate_data.cards_obtained[card]) shows its picture, the others a blank frame. */
@@ -72,6 +75,11 @@ void stcrdabm_album_run(StcrdabmAlbum *obj, StcrdabmAlbumData *data);
 void stcrdabm_album_update(StcrdabmAlbum *obj, StcrdabmAlbumData *data);
 
 void stcrdabm_fade_start(Fade *obj, s32 dir, s32 frames) {
+#ifdef PC_PORT
+    if (def_on()) {
+        frames = 1;
+    }
+#endif
     obj->base.set_state(obj, OBJECT_STATE_RUN);
     obj->base.step = 1;
     obj->from_black = dir;

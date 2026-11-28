@@ -498,6 +498,9 @@ int def_guide_frame(void);
 void def_notice_frame(void);
 void def_notice_reset(void);
 void def_rush_panel_reset(void);
+void def_map_banner_open(short map);
+void def_map_banner_frame(void);
+void def_map_banner_reset(void);
 /* The regional hunt (port/game/definitive_hunt.c): a map loaded (a new region resets the chain); a random
  * encounter starting (returns the battle to fight: the region's Rare Target in place of `battle` once the chain allows);
  * after fieldstg_start_battle, the Rare Target's enemies raised to its level; 1 while a Rare Target is being fought (the

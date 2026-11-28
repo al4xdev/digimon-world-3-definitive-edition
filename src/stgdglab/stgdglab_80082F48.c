@@ -8,6 +8,9 @@
 #include "records.h"
 #include "message.h"
 #include "stgdglab.h"
+#ifdef PC_PORT
+#include "port/game/definitive.h"
+#endif
 
 /* STGDGLAB.PRO: the root object (sets up the display and creates the main object), the fade, and the lab's
  * chart (stgdglab_menu's entry 2): one of stgdglab_funcs.charts's charts of requirements, checked against a
@@ -89,6 +92,11 @@ Object *stgdglab_start(void) {
 }
 
 void stgdglab_fade_start(Fade *obj, s32 dir, s32 frames) {
+#ifdef PC_PORT
+    if (def_on()) {
+        frames = 1;
+    }
+#endif
     obj->base.set_state(obj, OBJECT_STATE_RUN);
     obj->base.step = 1;
     obj->from_black = dir;

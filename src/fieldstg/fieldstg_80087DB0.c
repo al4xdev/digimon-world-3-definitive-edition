@@ -1398,6 +1398,19 @@ void fieldstg_manager_leave_map(FieldstgManager *obj, FieldstgManagerData *data)
     switch (obj->base.step) {
     case 0:
     default:
+#ifdef PC_PORT
+        if (def_on()) {
+            cdload_module.mark_loaded();
+            gamestate_data.funcs.set_next_map(obj->next_map, obj->map_entry);
+            gamestate_data.field_map = gamestate_data.funcs.get_map();
+            if (data->party[0] != NULL) {
+                gamestate_data.player_pos = data->party[0]->pos;
+                gamestate_data.player_dir = data->party[0]->dir;
+            }
+            obj->base.set_step(obj, 3);
+            return;
+        }
+#endif
         cdload_module.mark_loaded();
         actor = (FieldstgActor *)heap_objects.find(5, -1, 0);
         if (actor != NULL && actor->pixel_pos.x != 0) {
@@ -1725,6 +1738,7 @@ static inline void fieldstg_manager_start(FieldstgManager *obj, FieldstgManagerD
     def_variants_hook(); /* the equipment variants, before a loaded save's first shop or status screen */
     def_hard_party_fix(); /* Hard Mode: a party of two, whatever set it */
     def_rush_panel_reset(); /* a floating Rush's panel went with the last stage's heap */
+    def_map_banner_reset();
     fieldstg_rush_reset();
     def_notice_reset(); /* and so did a Guide's notice's windows */
 #endif
@@ -1735,7 +1749,11 @@ static inline void fieldstg_manager_start(FieldstgManager *obj, FieldstgManagerD
         fieldstg_stage.return_pos = gamestate_data.player_pos;
         fieldstg_stage.return_dir = gamestate_data.player_dir;
     }
+#ifdef PC_PORT
+    data->map_title = fieldstg_map_title_create(def_on() ? 0 : 1);
+#else
     data->map_title = fieldstg_map_title_create(1);
+#endif
     obj->base.next_step(obj);
 }
 
@@ -5260,6 +5278,7 @@ void fieldstg_rush_frame(void) {
         fieldstg_rush_update(&fieldstg_rush);
     }
     def_rush_panel_frame(); /* the floating results, while they are up */
+    def_map_banner_frame();
     def_notice_frame(); /* the Guide's notices: a new objective, an auction that opened */
 }
 #endif

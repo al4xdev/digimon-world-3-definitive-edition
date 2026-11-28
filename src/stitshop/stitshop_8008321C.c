@@ -9,6 +9,9 @@
 #include "message.h"
 #include "psyq/libgpu.h"
 #include "stitshop.h"
+#ifdef PC_PORT
+#include "port/game/definitive.h"
+#endif
 
 #ifdef PC_PORT
 /* The prices through the definitive table (port/game/definitive_economy.c); a price may pass 65535 */
@@ -70,6 +73,11 @@ Object *stitshop_start(void) {
 }
 
 void stitshop_fade_start(Fade *obj, s32 dir, s32 frames) {
+#ifdef PC_PORT
+    if (def_on()) {
+        frames = 1;
+    }
+#endif
     obj->base.set_state(obj, OBJECT_STATE_RUN);
     obj->base.step = 1;
     obj->from_black = dir;

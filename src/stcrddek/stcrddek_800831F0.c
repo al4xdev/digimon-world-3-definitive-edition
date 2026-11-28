@@ -10,6 +10,9 @@
 #include "message.h"
 #include "psyq/libgpu.h"
 #include "stcrddek.h"
+#ifdef PC_PORT
+#include "port/game/definitive.h"
+#endif
 
 /* STCRDDEK.PRO's first file: the root object and the deck editor (the card list on the left, the deck's
  * cards in a grid). */
@@ -139,6 +142,11 @@ Object *stcrddek_start(void) {
 
 /* Starts a fade in (out == 0) or out over `frames` frames. */
 void stcrddek_start_fade(Fade *obj, s32 out, s32 frames) {
+#ifdef PC_PORT
+    if (def_on()) {
+        frames = 1;
+    }
+#endif
     obj->base.set_state(obj, OBJECT_STATE_RUN);
     obj->base.step = 1;
     obj->from_black = out;

@@ -641,7 +641,7 @@ void def_notice_frame(void) {
     layer = gfx_module.funcs.get_layer(NC_LAYER);
     if (fieldstg_stage.menu_open != 0 || fieldstg_stage.title_shown != 0 || fieldstg_stage.event_running != 0 ||
         fieldstg_stage.battle_starting != 0 || mgr == NULL || mgr->state != OBJECT_STATE_RUN || layer == NULL ||
-        def_rush_panel_up()) {
+        def_rush_panel_up() || def_map_banner_up()) {
         return; /* the field is held, or the Rush's results have the top of the screen: the notice waits, and its clock */
     }
     if (nc.left <= 0) {

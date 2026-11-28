@@ -13,6 +13,7 @@
 #ifdef PC_PORT
 #include "fightstg.h"
 #include "psyq/libgpu.h"
+#include "port/game/definitive.h"
 
 /* The bestiary screen (definitive combat; port/game/definitive_bestiary.c): a last entry of the field's menu that
  * lists the species of SDIGIEDT with what the player learned of their elements. It reuses the menu's own windows: the
@@ -887,6 +888,11 @@ void fieldmenu_update(Fieldmenu *obj, FieldmenuWindows *data) {
 #endif
         break;
     case OBJECT_STATE_DONE:
+#ifdef PC_PORT
+        if (def_on() && obj->base.step < 6) {
+            obj->base.step = 6;
+        }
+#endif
         switch (obj->base.step) {
         default:
             obj->base.set_state(obj, OBJECT_STATE_DONE);
@@ -938,6 +944,11 @@ void fieldmenu_update(Fieldmenu *obj, FieldmenuWindows *data) {
         case 7:
             break;
         }
+#ifdef PC_PORT
+        if (def_on()) {
+            break;
+        }
+#endif
         sprite_init(&gfx2);
         gfx2.set_vram_pos(0x140, 0);
         gfx2.set_layer_id(obj->layer_id, obj->ot_depth);

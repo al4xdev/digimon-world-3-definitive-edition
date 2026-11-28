@@ -1,5 +1,8 @@
 #include "stgtrain.h"
 #include "psyq/libgpu.h"
+#ifdef PC_PORT
+#include "port/game/definitive.h"
+#endif
 
 /* STGTRAIN.PRO (training at a gym): an animated sprite, the overlay's first object, the training screen (a party
  * member's stats and the trainer) and the fade. */
@@ -1005,6 +1008,11 @@ StgtrainMain *stgtrain_main_create(void) {
 }
 
 void stgtrain_fade_start(Fade *obj, s32 dir, s32 frames) {
+#ifdef PC_PORT
+    if (def_on()) {
+        frames = 1;
+    }
+#endif
     obj->base.set_state(obj, OBJECT_STATE_RUN);
     obj->base.step = 1;
     obj->from_black = dir;

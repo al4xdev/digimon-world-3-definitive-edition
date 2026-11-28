@@ -2,6 +2,9 @@
 #include "object.h"
 #include "gfx.h"
 #include "cardgame.h"
+#ifdef PC_PORT
+#include "port/game/definitive.h"
+#endif
 
 /* A full-screen colour fade (CardgameFade): created by the game flow (cardgame_8009D6E0.c). */
 
@@ -62,6 +65,11 @@ void cardgame_fade_set_color(CardgameFade *obj, u8 r, u8 g, u8 b) {
 void cardgame_fade_start(CardgameFade *obj, u8 r, u8 g, u8 b, s32 ticks, s32 close) {
     s32 i;
 
+#ifdef PC_PORT
+    if (def_on() && ticks >= 50) {
+        ticks = 1;
+    }
+#endif
     for (i = 0; i < 3; i++) {
         obj->from[i] = obj->color[i];
     }

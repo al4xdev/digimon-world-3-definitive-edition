@@ -10,6 +10,9 @@
 #include "message.h"
 #include "psyq/libgpu.h"
 #include "stcrdshp.h"
+#ifdef PC_PORT
+#include "port/game/definitive.h"
+#endif
 
 /* STCRDSHP.PRO's second file: a fade, the card pack (six cards turned over one by one), the purchase
  * screen, the root object and the shop's main object. */
@@ -93,6 +96,11 @@ Object *stcrdshp_create_booster(StcrdshpMain *main);
 
 /* Starts a fade in (out == 0) or out over `frames` frames. */
 void stcrdshp_start_fade(Fade *obj, s32 out, s32 frames) {
+#ifdef PC_PORT
+    if (def_on()) {
+        frames = 1;
+    }
+#endif
     obj->base.set_state(obj, OBJECT_STATE_RUN);
     obj->base.step = 1;
     obj->from_black = out;

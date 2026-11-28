@@ -878,6 +878,11 @@ void def_rush_ask_frame(int waited, int total);
 void def_rush_ask_close(void);
 struct PortState;
 void def_rush_savestate(struct PortState *s);
+void def_map_banner_open(short map);
+void def_map_banner_frame(void);
+void def_map_banner_reset(void);
+int def_map_banner_up(void);
+void def_map_banner_savestate(struct PortState *s);
 /* The battle's escape asks first (definitive_flee_ask.c): on (not in a replay script), one frame of the question (0
  * open, 1 run, -1 back to the menu; it closes itself on an answer), close, a new battle's reset, the save state. */
 int def_flee_ask_on(void);

@@ -13,6 +13,9 @@
 #include "psyq/libgte.h"
 #include "psyq/libc2.h"
 #include "psyq/libmcrd.h"
+#ifdef PC_PORT
+#include "port/game/definitive.h"
+#endif
 #include "stgmcard.h"
 
 /* Data block of the root object (stgmcard_root_update). */
@@ -299,6 +302,11 @@ OBJECT_V0(Object *) stgmcard_create_root(void) {
 
 /* Starts the fade. */
 void stgmcard_fade_start(Fade *obj, s32 from_black, s32 frames) {
+#ifdef PC_PORT
+    if (def_on()) {
+        frames = 1;
+    }
+#endif
     obj->base.set_state(obj, OBJECT_STATE_RUN);
     obj->base.step = 1;
     obj->from_black = from_black;
@@ -588,6 +596,11 @@ void stgmcard_frame_close(StgmcardFrame *obj) {
 
 /* Starts opening it (`mode`) over `frames` frames. */
 void stgmcard_frame_open(StgmcardFrame *obj, s32 mode, s32 frames) {
+#ifdef PC_PORT
+    if (def_on()) {
+        frames = 1;
+    }
+#endif
     obj->base.step = mode;
     obj->frames = frames;
     obj->step = 0;

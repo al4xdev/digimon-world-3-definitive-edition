@@ -9,6 +9,9 @@
 #include "message.h"
 #include "records.h"
 #include "fieldstg.h"
+#ifdef PC_PORT
+#include "port/game/definitive.h"
+#endif
 
 void fieldstg_warp_picture_update();
 void fieldstg_warp_effect_update();
@@ -561,6 +564,12 @@ void fieldstg_background_draw_blank(GfxLayer *layer, s32 x, s32 y, s32 alpha) {
     gfx_module.funcs.set_packet(sprt);
 }
 
+#ifdef PC_PORT
+/* 1 once every tile the view shows is unpacked into a VRAM slot (the instant map change holds its black cover for it) */
+s32 fieldstg_bg_ready;
+extern s32 fieldstg_map_has_no_tiles(void);
+#endif
+
 FieldstgTile *fieldstg_background_find_tile(FieldstgBackgroundData *data, s32 tile_no) {
     s32 i;
     FieldstgTile *tile;
@@ -590,6 +599,9 @@ void fieldstg_background_draw(FieldstgBackground *obj, FieldstgBackgroundData *d
     s32 i;
     s32 j;
 
+#ifdef PC_PORT
+    fieldstg_bg_ready = 1;
+#endif
     origin[0] = FIELDSTG_BG_LEFT(obj) < 0x20 ? 0 : (FIELDSTG_BG_LEFT(obj) - 0x20) / 128;
     origin[1] = obj->y < 8 ? 0 : (obj->y - 8) / 128;
     for (row = 0; row < 3; row++) {
@@ -617,6 +629,13 @@ void fieldstg_background_draw(FieldstgBackground *obj, FieldstgBackgroundData *d
             count++;
         }
     }
+#ifdef PC_PORT
+    for (i = 0; i < count; i++) {
+        if (cells[i].exists != 0 && (cells[i].loaded == 0 || cells[i].slot == -1)) {
+            fieldstg_bg_ready = 0;
+        }
+    }
+#endif
     for (i = 0; i < count; i++) {
         if (cells[i].loaded != 0 && cells[i].slot != -1) {
             fade = FIELDSTG_BG_SLOT(obj, cells[i].slot).fade;
@@ -658,7 +677,11 @@ void fieldstg_background_draw(FieldstgBackground *obj, FieldstgBackgroundData *d
                 }
                 FIELDSTG_BG_SLOT(obj, best).tile = cells[i].number;
                 FIELDSTG_BG_SLOT(obj, best).last_used = gfx_module.funcs.get_time();
+#ifdef PC_PORT
+                FIELDSTG_BG_SLOT(obj, best).fade = def_on() ? 0 : 0xFFFF;
+#else
                 FIELDSTG_BG_SLOT(obj, best).fade = 0xFFFF;
+#endif
                 break;
             }
         }
@@ -808,6 +831,9 @@ s32 *fieldstg_background_get_size(FieldstgBackground *obj) {
 FieldstgBackground *fieldstg_background_create(s32 file) {
     FieldstgBackground *obj = object_create(fieldstg_background_update, sizeof(FieldstgBackground), sizeof(FieldstgBackgroundData), 4);
 
+#ifdef PC_PORT
+    fieldstg_bg_ready = 0;
+#endif
     obj->file = file;
     obj->get_size = fieldstg_background_get_size;
     return obj;
@@ -1235,6 +1261,17 @@ void fieldstg_map_title_update(FieldstgMapTitle *obj, FieldstgMapTitleData *data
         case 0:
             break;
         case 1:
+#ifdef PC_PORT
+            if (def_on() && obj->base.key1 == 0) {
+                if (fieldstg_map_has_no_tiles() == 0 && fieldstg_bg_ready == 0 && obj->base.substep < 600) {
+                    obj->base.substep += gfx_module.funcs.get_frame_ticks();
+                    break;
+                }
+                obj->base.next_step(obj);
+                obj->base.next_step(obj);
+                goto title_reveal;
+            }
+#endif
             obj->base.substep += gfx_module.funcs.get_frame_ticks();
             if (obj->base.substep < 60) {
                 break;
@@ -1249,6 +1286,29 @@ void fieldstg_map_title_update(FieldstgMapTitle *obj, FieldstgMapTitleData *data
             obj->base.next_step(obj);
             /* fallthrough */
         case 3:
+#ifdef PC_PORT
+        title_reveal:
+            if (def_on() && obj->base.key1 == 0) {
+                obj->clip.w = 0x140;
+                obj->clip.x = 0;
+                if (obj->clip.h == 0 || obj->clip.h > 0xF0) {
+                    obj->clip.y = 0;
+                    obj->clip.h = 0xF0;
+                }
+                obj->clip.y += 40;
+                obj->clip.h -= 80;
+                layer->set_clip_pos(layer, obj->clip.x, obj->clip.y);
+                layer->set_clip_size(layer, obj->clip.w, obj->clip.h);
+                if (obj->clip.h <= 0) {
+                    fieldstg_stage.title_shown = 0;
+                    obj->base.set_state(obj, OBJECT_STATE_END);
+                    if (gamestate_data.map_is_new != 0) {
+                        def_map_banner_open(gamestate_data.funcs.get_map());
+                    }
+                }
+                break;
+            }
+#endif
             obj->clip.y += 8;
             obj->clip.h -= 16;
             layer->set_clip_pos(layer, obj->clip.x, obj->clip.y);

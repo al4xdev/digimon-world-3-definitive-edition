@@ -8,6 +8,9 @@
 #include "records.h"
 #include "message.h"
 #include "ststatus.h"
+#ifdef PC_PORT
+#include "port/game/definitive.h"
+#endif
 
 /* The overlay's entry point and first object, then the party page (ststatus_create_party_page) and its fade. */
 
@@ -452,6 +455,11 @@ StstatusPartyPage *ststatus_create_party_page(s32 arg0) {
 }
 
 void ststatus_fade_start(Fade *obj, s32 dir, s32 frames) {
+#ifdef PC_PORT
+    if (def_on()) {
+        frames = 1;
+    }
+#endif
     obj->base.set_state(obj, OBJECT_STATE_RUN);
     obj->base.step = 1;
     obj->from_black = dir;
