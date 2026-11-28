@@ -122,8 +122,8 @@ static int home_step(void) {
     return home_n > 7 ? 38 : 44;
 }
 
-static int game_n(void) { return is_portmaster ? 7 : 8; }
-static int game_step(void) { return is_portmaster ? 36 : 30; }
+static int game_n(void) { return is_portmaster ? 8 : 9; }
+static int game_step(void) { return is_portmaster ? 31 : 27; }
 
 static int home_index(int id) {
     for (int i = 0; i < home_n; i++) {
@@ -429,16 +429,16 @@ static void draw_game(void) {
         const char *b = path_last_sep(disc_path);
         disc_lbl = b ? b + 1 : disc_path;
     }
-    const char *v[8] = {lang_label[c.lang < 0 || c.lang > 6 ? 0 : c.lang], ff_label[c.ff], load_label[c.load],
+    const char *v[9] = {lang_label[c.lang < 0 || c.lang > 6 ? 0 : c.lang], ff_label[c.ff], load_label[c.load],
                         c.hz == 60 ? "60 HZ" : "50 HZ", c.skip ? "ON" : "OFF", c.battles ? "ON" : "OFF", c.battles ? (c.hit ? "ON" : "OFF") : "-",
-                        disc_lbl};
-    const char *lab[8] = {"LANGUAGE", "FAST-FORWARD", "FAST LOAD", "REFRESH RATE", "SKIP DIALOGUES", "SKIP BATTLE ANIMS",
-                          "   HIT REACTION", "DISC IMAGE"};
+                        bt_label[c.btext < 0 || c.btext > 2 ? 1 : c.btext], disc_lbl};
+    const char *lab[9] = {"LANGUAGE", "FAST-FORWARD", "FAST LOAD", "REFRESH RATE", "SKIP DIALOGUES", "SKIP BATTLE ANIMS",
+                          "   HIT REACTION", "BATTLE TEXT", "DISC IMAGE"};
     int n = game_n(), st = game_step();
     int gy = (int)(cur_y >= 0 && cur_screen == S_GAME ? cur_y : row_target_y(S_GAME, sel));
-    draw_focus(40, gy, W - 80, 34, 8, 0);
+    draw_focus(40, gy, W - 80, st < 30 ? 28 : 34, 8, 0);
     for (int i = 0; i < n; i++) {
-        int on = (i == 7) ? (disc_path[0] != 0) : (i == 3 ? c.hz == 60 : (strcmp(v[i], "OFF") && strcmp(v[i], "-")));
+        int on = (i == 8) ? (disc_path[0] != 0) : (i == 3 ? c.hz == 60 : (strcmp(v[i], "OFF") && strcmp(v[i], "-")));
         row(90 + i * st, lab[i], v[i], i == sel, 0, on, 0);
     }
     static const char *desc[9] = {"Game text language (English, Portuguese BR, French, German, Italian, Spanish).",
@@ -447,7 +447,7 @@ static void draw_game(void) {
         "60 HZ is the game's own NTSC mode (smoother). 50 HZ is the original PAL speed.",
         "Dialogue boxes close on their own.",
         "Battle moves play without their animation.", "Keep the hit flinch while animations are skipped.",
-        "SKIP closes battle message boxes so combat flows.", "Pick or change your .cue / .bin disc file."};
+        "OFF: original boxes. SKIP: hidden. ASYNC: queued in the HUD without pausing.", "Pick or change your .cue / .bin disc file."};
     /* The chord that turns fast-forward on and off in the game (cfg.c writes it as the runtime's toggle binding), in the
      * player's buttons and glyphs; the PC also holds TAB. */
     char ff_desc[160], gsel[16], gr1[16];
@@ -1905,11 +1905,12 @@ static void on_press(int code) {
             case 4: c.skip = !c.skip; break;
             case 5: c.battles = !c.battles; if (!c.battles) c.hit = 0; break;
             case 6: if (c.battles) c.hit = !c.hit; break;
-            case 7:
+            case 7: c.btext = (c.btext + s + 3) % 3; break;
+            case 8:
                 if (ok) {
                     browse_start_dir(b_dir, sizeof(b_dir));
                     browse_load(b_dir);
-                    go(S_BROWSE, 0, 1, 90 + 7 * game_step() + 14);
+                    go(S_BROWSE, 0, 1, 90 + 8 * game_step() + 14);
                 }
                 break;
             }
@@ -2230,12 +2231,12 @@ static void on_press(int code) {
                 snprintf(next, sizeof(next), "%s/..", b_dir);
                 browse_load(next);
             } else {
-                go(S_GAME, 7, -1, 90 + 7 * game_step() + 14);
+                go(S_GAME, 8, -1, 90 + 8 * game_step() + 14);
             }
         } else if (code == c.pad[A_TRIANGLE].code && is_pc) {
             if (browse_disc() == 0) {
                 cfg_save(&c);
-                go(S_GAME, 7, -1, 90 + 7 * game_step() + 14);
+                go(S_GAME, 8, -1, 90 + 8 * game_step() + 14);
             }
         } else if (ok && b_count > 0) {
             char next[1500];
@@ -2245,7 +2246,7 @@ static void on_press(int code) {
             } else {
                 snprintf(disc_path, sizeof(disc_path), "%.1199s", next);
                 cfg_save(&c);
-                go(S_GAME, 7, -1, 90 + 7 * game_step() + 14);
+                go(S_GAME, 8, -1, 90 + 8 * game_step() + 14);
             }
         }
         break;

@@ -148,6 +148,7 @@ void cfg_defaults(Cfg *c) {
     c->hz = 60; /* the game's own NTSC mode */
     c->ff = 3;
     c->load = 3; /* faster loading on at 8x */
+    c->btext = 1; /* skip: default */
     c->bmem = 1;
     c->bbuf = 1;
     c->led = (!is_pc && !is_android);
@@ -361,6 +362,7 @@ static const char *ff_names[] = {"off", "2x", "4x", "8x", "unlimited"};
 static const char *load_names[] = {"off", "2x", "4x", "8x", "instant"};
 static const char *lang_names[] = {"english", "portuguese", "french", "german", "italian", "spanish", "japanese"};
 static const char *bbuf_names[] = {"off", "short", "long"};
+static const char *btext_names[] = {"off", "skip", "async"};
 static const char *log_names[] = {"off", "soft", "heavy"};
 static const char *filter_names[] = {"none", "sharp", "scanlines", "crt", "smooth"};
 static const char *subpixel_names[] = {"off", "on", "perspective"};
@@ -405,6 +407,8 @@ static void cfg_read_settings(Cfg *c, const char *j) {
     c->skip = j_bool(j, "mods/skip_dialogues/enabled", c->skip);
     c->battles = j_bool(j, "mods/battle_animations/enabled", c->battles);
     c->hit = c->battles && j_bool(j, "mods/battle_animations/hit_reaction", c->hit);
+    if (!j_bool(j, "mods/battle_text/enabled", 1)) c->btext = 0;
+    else if (j_str(j, "mods/battle_text/mode", s, sizeof(s))) c->btext = idx_of(btext_names, 3, s, c->btext);
     if (j_bool(j, "mods/preset_language/enabled", 1) && j_str(j, "mods/preset_language/language", s, sizeof(s)))
         c->lang = !strcmp(s, "usa") ? 0 : idx_of(lang_names, 7, s, c->lang);
     if (j_str(j, "debug/logs", s, sizeof(s))) c->logs = idx_of(log_names, 3, s, c->logs);
@@ -441,6 +445,7 @@ void cfg_load(Cfg *c) {
         else if (!strcmp(line, "skip")) c->skip = n != 0;
         else if (!strcmp(line, "battles")) c->battles = n != 0;
         else if (!strcmp(line, "hit")) c->hit = n != 0;
+        else if (!strcmp(line, "btext")) c->btext = n < 0 ? 0 : n > 2 ? 2 : n;
         else if (!strcmp(line, "bmem")) c->bmem = n != 0;
         else if (!strcmp(line, "bbuf")) c->bbuf = n < 0 ? 0 : n > 2 ? 2 : n;
         else if (!strcmp(line, "logs")) c->logs = n < 0 ? 0 : n > 2 ? 2 : n;
@@ -583,6 +588,7 @@ static int write_settings(const Cfg *c) {
         "    \"fast_loading\": { \"enabled\": %s, \"speed\": \"%s\" },\n"
         "    \"skip_dialogues\": { \"enabled\": %s, \"fast_forward_waits\": false },\n"
         "    \"battle_animations\": { \"enabled\": %s, \"hit_reaction\": %s },\n"
+        "    \"battle_text\": { \"enabled\": true, \"mode\": \"%s\" },\n"
         "    \"preset_language\": { \"enabled\": true, \"language\": \"%s\" },\n"
         "    \"widescreen\": { \"enabled\": %s },\n"
         "    \"battle_menu\": { \"enabled\": true, \"fight\": \"%s\", \"tech\": \"%s\", \"digivolve\": \"%s\", \"tag\": \"%s\", "
@@ -596,6 +602,7 @@ static int write_settings(const Cfg *c) {
         is_pc ? "Tab" : "", code_name(c->pad[A_SELECT].code), code_name(c->pad[A_R1].code),
         c->load ? "true" : "false", load_names[c->load ? c->load : 3],
         c->skip ? "true" : "false", c->battles ? "true" : "false", c->battles && c->hit ? "true" : "false",
+        btext_names[c->btext < 0 || c->btext > 2 ? 1 : c->btext],
         lang_names[c->lang < 0 || c->lang > 6 ? 0 : c->lang], vw ? "true" : "false",
         hud_name(c->hud[H_FIGHT]), hud_name(c->hud[H_TECH]), hud_name(c->hud[H_DV]),
         hud_name(c->hud[H_TAG]), hud_name(c->hud[H_ITEM]), hud_name(c->hud[H_RUN]), hud_name(c->hud[H_INSPECT]), hud_name(c->hud[H_BLAST]),
@@ -606,9 +613,9 @@ static int write_settings(const Cfg *c) {
 int cfg_save(const Cfg *c) {
     char path[600], text[3600] = "", line[1400];
     int rc = 0;
-    snprintf(text, sizeof(text), "hz=%d\nff=%d\nff_speed=%s\nload=%d\nskip=%d\nbattles=%d\nhit=%d\nsaveany=1\nbmenu=1\nschema=%d\n"
+    snprintf(text, sizeof(text), "hz=%d\nff=%d\nff_speed=%s\nload=%d\nskip=%d\nbattles=%d\nhit=%d\nbtext=%d\nsaveany=1\nbmenu=1\nschema=%d\n"
              "bmem=%d\nbbuf=%d\nwidescreen=%d\nfullscreen=%d\ntouch_pad=%d\nfill=%d\nscale=%d\nrenderer_pc=%d\nfilter=%d\niscale=%d\nsubpixel=%d\n",
-             c->hz, c->ff ? 1 : 0, ff_names[c->ff ? c->ff : 3], c->load, c->skip, c->battles, c->hit, SCHEMA_TUI_STATE,
+             c->hz, c->ff ? 1 : 0, ff_names[c->ff ? c->ff : 3], c->load, c->skip, c->battles, c->hit, c->btext, SCHEMA_TUI_STATE,
              c->bmem, c->bbuf, c->widescreen, c->fullscreen, c->touch_pad, c->fill, c->scale, c->renderer_pc, c->filter, c->iscale, c->subpixel);
     if (disc_path[0]) {
         snprintf(line, sizeof(line), "disc=%s\n", disc_path);

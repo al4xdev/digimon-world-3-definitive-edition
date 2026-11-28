@@ -1,5 +1,5 @@
 /* The game's built-in mods (docs/LAUNCHER.md "Built-in mods"; psxstack/game.h game_mods): skip_dialogues,
- * battle_animations, preset_language, widescreen, led_bar and battle_menu (the battle text is always skipped)
+ * battle_animations, preset_language, widescreen, led_bar, battle_menu and battle_text
  * (and, after them, the handheld's features and the player's pad.map), as PortMod records the
  * runtime's engine (psxstack/runtime/mods.c) reads the settings of, gives hotkeys to and runs every vsync. Each reaches the game's C through
  * the port_mod_* flags and functions of include/port.h, read inside `#ifdef PC_PORT` blocks. The runtime's own mod,
@@ -535,13 +535,63 @@ void port_bm_remember(s32 kind, s32 member, s32 value) {
     bm_memory[kind][member & 63] = value;
 }
 
-/* ---- battle text: always skipped. The battle's message box (FightstgMessage) never waits and never shows: every action goes on, and the
- * player reads the result rather than the box. The mode stays a code variable (BT_SKIP: 1) for the FIGHTSTG side. The toast's windows are arena objects held here (FIGHTSTG runs and draws them), so they are
- * part of the save state. */
-#define BT_SKIP 1
-int port_mod_battle_text = BT_SKIP;
-void *port_battle_text_windows[2];
-s32 port_battle_text_frames;
+/* ---- battle_text (docs/LAUNCHER.md "Battle text"): the battle's message box (FightstgMessage) is only presentation,
+ * and every action waits for it and for a confirm press. `mode` off leaves it, skip (the default) drops every message,
+ * async formats the message into the HUD notice queue (fightstg_notice_push) and ends it at once so combat flows. */
+static const char *const bt_modes[] = { "off", "skip", "async", NULL };
+enum { BT_MODE };
+static const PortModOption bt_options[] = {
+    { .id = "mode", .type = PORT_MOD_ENUM, .def = "\"skip\"", .values = bt_modes, .applies = "live" },
+};
+int port_mod_battle_text = 1;
+
+static void bt_frame(struct PortMod *mod) {
+    port_mod_battle_text = (int)mod->values[BT_MODE].number;
+}
+
+void port_battle_text_log(const u8 *text) {
+    char out[256];
+    size_t n = 0;
+    size_t i = 0;
+
+    if (text == NULL) {
+        return;
+    }
+    while (text[i] != 0 && n + 4 < sizeof(out)) {
+        u8 b = text[i++];
+        if (b == 1 && text[i] != 0) {
+            u8 e = text[i++];
+            char c = e == 1 ? ' ' : e == 4 ? ',' : e == 5 ? '.' : e == 7 ? ':' : e == 9 ? '?' : e == 10 ? '!' :
+                     e == 0x13 ? '\'' : e == 0x1A ? '-' : ' ';
+            out[n++] = c;
+        } else if (b == 2 && text[i] != 0) {
+            u8 c = text[i++];
+            if (c == 1) {
+                out[n++] = ' ';
+                out[n++] = '/';
+                out[n++] = ' ';
+            }
+        } else if (b >= 0x04 && b <= 0x0D) {
+            out[n++] = (char)('0' + (b - 0x04));
+        } else if (b >= 0x0E && b <= 0x27) {
+            out[n++] = (char)('A' + (b - 0x0E));
+        } else if (b >= 0x28 && b <= 0x41) {
+            out[n++] = (char)('a' + (b - 0x28));
+        } else if (b == 0xE5) {
+            out[n++] = '.';
+        } else if (b == 0xE6) {
+            out[n++] = '?';
+        } else if (b == 0xE7) {
+            out[n++] = '!';
+        } else if (b == 0xE8) {
+            out[n++] = '-';
+        } else if (b == 0xE9) {
+            out[n++] = '~';
+        }
+    }
+    out[n] = '\0';
+    port_log("battle text: frame %ld: %s", port_frames, out);
+}
 
 static PortMod game_mod_table[] = {
     { .id = "skip_dialogues", .version = "0.1", .options = sd_options,
@@ -556,6 +606,8 @@ static PortMod game_mod_table[] = {
     { .id = "led_bar", .version = "0.1", .start = led_bar_start, .frame = led_bar_frame,
       .status = led_bar_status },
     { .id = "battle_menu", .version = "0.1", .options = bm_options, .option_count = BM_OPTIONS, .start = bm_start },
+    { .id = "battle_text", .version = "0.1", .options = bt_options,
+      .option_count = (int)(sizeof(bt_options) / sizeof(bt_options[0])), .start = bt_frame, .frame = bt_frame },
 };
 
 int game_mod_count(void) {
@@ -571,8 +623,6 @@ PortMod *game_mods(void) {
  * and toggles are settings: the loading run's own. */
 void game_savestate(struct PortState *s) {
     PORT_STATE_VAR(s, px_ko);
-    PORT_STATE_VAR(s, port_battle_text_windows);
-    PORT_STATE_VAR(s, port_battle_text_frames);
     PORT_STATE_VAR(s, bmb);
     PORT_STATE_VAR(s, bmb_n);
     PORT_STATE_VAR(s, bm_memory);

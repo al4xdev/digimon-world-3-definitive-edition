@@ -44,8 +44,8 @@ enum { DISC_OK, DISC_BAD_IMAGE, DISC_BAD_FILE };
 enum { HI_PLAY, HI_GAME, HI_VIDEO, HI_HUD, HI_CONTROLS, HI_SAVES, HI_DEBUG, HI_RESET, HI_COUNT };
 #define HOME_ROW_Y 74
 #define HOME_ROW_STEP 43
-enum { GAME_LANG, GAME_FF, GAME_LOAD, GAME_SKIP, GAME_BATTLES, GAME_HIT, GAME_TOUCHPAD, GAME_DISC, GAME_N };
-#define GAME_ROW_STEP 40
+enum { GAME_LANG, GAME_FF, GAME_LOAD, GAME_SKIP, GAME_BATTLES, GAME_HIT, GAME_BTEXT, GAME_TOUCHPAD, GAME_DISC, GAME_N };
+#define GAME_ROW_STEP 35
 enum { VIDEO_WIDESCREEN, VIDEO_SCALING, VIDEO_HZ, VIDEO_RENDERER, VIDEO_FILTER, VIDEO_RESOLUTION, VIDEO_SUBPIXEL, VIDEO_N };
 #define VIDEO_ROW_Y 76
 #define VIDEO_ROW_STEP 42
@@ -684,7 +684,7 @@ static void draw_game(void) {
     }
     const char *lab[GAME_N] = {
         "LANGUAGE", "FAST-FORWARD", "FAST LOAD", "SKIP DIALOGUES", "SKIP BATTLE ANIMS",
-        "   HIT REACTION", "FLOATING PAD", "DISC IMAGE"
+        "   HIT REACTION", "BATTLE TEXT", "FLOATING PAD", "DISC IMAGE"
     };
     const char *val[GAME_N] = {
         lang_label[c.lang < 0 || c.lang > 6 ? 0 : c.lang],
@@ -693,6 +693,7 @@ static void draw_game(void) {
         c.skip ? "ON" : "OFF",
         c.battles ? "ON" : "OFF",
         c.battles ? (c.hit ? "ON" : "OFF") : "-",
+        bt_label[c.btext < 0 || c.btext > 2 ? 1 : c.btext],
         c.touch_pad ? "ON" : "OFF",
         disc_short
     };
@@ -703,11 +704,12 @@ static void draw_game(void) {
         "Dialogue boxes close on their own.",
         "Battle moves play without their animation.",
         "Keep the hit flinch while animations are skipped.",
+        "OFF: original boxes. SKIP: hidden. ASYNC: queued in the HUD without pausing.",
         "On-screen floating touch controls during gameplay.",
         "Pick or change your .cue / .bin disc file."
     };
     int gy = (int)(cur_y >= 0 && cur_screen == S_GAME ? cur_y : row_target_y(S_GAME, sel));
-    draw_focus(32, gy, W - 64, 38, 10, 0);
+    draw_focus(32, gy, W - 64, GAME_ROW_STEP - 2, 10, 0);
     for (int i = 0; i < GAME_N; i++) {
         int on = (i == GAME_DISC) ? (disc_path[0] != 0) : (strcmp(val[i], "OFF") != 0 && strcmp(val[i], "-") != 0);
         int arrows = (i != GAME_DISC);
@@ -1201,6 +1203,7 @@ static void activate_game_row(int row, int dir) {
     case GAME_SKIP: c.skip = !c.skip; break;
     case GAME_BATTLES: c.battles = !c.battles; if (!c.battles) c.hit = 0; break;
     case GAME_HIT: if (c.battles) c.hit = !c.hit; break;
+    case GAME_BTEXT: c.btext = (c.btext + dir + 3) % 3; break;
     case GAME_TOUCHPAD: c.touch_pad = !c.touch_pad; break;
     case GAME_DISC: pick_disc_android(); break;
     }
