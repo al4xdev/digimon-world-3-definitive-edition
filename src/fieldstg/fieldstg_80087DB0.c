@@ -16,6 +16,7 @@
 #include "fieldstg.h"
 
 #ifdef PC_PORT
+extern s32 fieldmenu_anim_pictures[6];
 extern void fieldstg_rush_reset(void);
 extern s32 fieldstg_rush_asking(void); /* the Overlevel Rush's question is up: the player walks, nothing else may start */
 #endif
@@ -1313,6 +1314,11 @@ void fieldstg_manager_shatter(FieldstgManager *obj, FieldstgManagerData *data) {
         layer = gfx_module.funcs.get_layer(0x1002);
         ot = layer->get_ot_entry(layer, 0);
         dt = gfx_module.funcs.get_frame_ticks() * 40;
+#ifdef PC_PORT
+        if (def_on()) {
+            dt *= 8; /* instant transitions: each tile's step ends within a frame, one frame a step (29 of them) */
+        }
+#endif
         /* Evidence (class A2, sched2 barrier; docs/MATCHING.md "LOOP_BLOCK and LOOP_BARRIER"): the original loads gfx_module.buffer only
          * after step, leaving two load-delay nops. */
         LOOP_BARRIER();
@@ -1327,7 +1333,11 @@ void fieldstg_manager_shatter(FieldstgManager *obj, FieldstgManagerData *data) {
                 }
             } else {
                 fieldstg_shatter_tiles[2][3].x = 0x200;
+#ifdef PC_PORT
+                if (++obj->base.substep >= (def_on() ? 2 : 16)) { /* instant transitions: the closing hold, 16 frames on the disc */
+#else
                 if (++obj->base.substep >= 16) {
+#endif
                     if (obj->base.substep < 0x1000) {
                         gamestate_data.funcs.set_next_map(obj->next_map, obj->map_entry);
                     }
@@ -1398,6 +1408,26 @@ void fieldstg_manager_leave_map(FieldstgManager *obj, FieldstgManagerData *data)
     switch (obj->base.step) {
     case 0:
     default:
+#ifdef PC_PORT
+        if (def_on()) {
+            s32 hi = obj->next_map & 0xFF00;
+            if (hi != 0x200 && hi != 0x300 && hi != 0xE00 && obj->next_map != 0x500 && obj->next_map != 0x600 &&
+                cdload_module.get_subfile_by_id(0x2860000) != NULL) {
+                obj->fade = 0;
+                obj->base.set_step(obj, 4);
+                goto menu_wipe;
+            }
+            cdload_module.mark_loaded();
+            gamestate_data.funcs.set_next_map(obj->next_map, obj->map_entry);
+            gamestate_data.field_map = gamestate_data.funcs.get_map();
+            if (data->party[0] != NULL) {
+                gamestate_data.player_pos = data->party[0]->pos;
+                gamestate_data.player_dir = data->party[0]->dir;
+            }
+            obj->base.set_step(obj, 3);
+            return;
+        }
+#endif
         cdload_module.mark_loaded();
         actor = (FieldstgActor *)heap_objects.find(5, -1, 0);
         if (actor != NULL && actor->pixel_pos.x != 0) {
@@ -1454,6 +1484,49 @@ void fieldstg_manager_leave_map(FieldstgManager *obj, FieldstgManagerData *data)
         break;
     case 3:
         break;
+#ifdef PC_PORT
+    case 4:
+    menu_wipe: {
+        Sprite gfx2;
+        s32 wide_pad = port_video_widescreen_pad();
+        s32 j;
+
+        if (obj->base.substep < 3) {
+            obj->fade += 4;
+            if (obj->fade >= 8) {
+                obj->fade = (++obj->base.substep == 3) ? 8 : 0;
+            }
+        } else if (obj->base.substep < 6) {
+            obj->fade += 4;
+            if (obj->fade >= 16) {
+                obj->fade = (++obj->base.substep == 6) ? 15 : 8;
+            }
+        }
+        sprite_init(&gfx2);
+        gfx2.set_vram_pos(0x140, 0);
+        gfx2.set_layer_id(0x1002, 0);
+        gfx2.set_follow_scroll(0);
+        if (wide_pad > 0) {
+            gfx2.set_scale((0x1000 * (320 + 2 * wide_pad) + 160) / 320, 0x1000, 0x1000);
+            gfx2.set_pivot(-wide_pad, 0);
+        }
+        for (j = 0; j <= obj->base.substep && j < 6; j++) {
+            gfx2.set_palette(j == obj->base.substep ? obj->fade : (j < 3 ? 7 : 15));
+            gfx2.draw(cdload_module.get_subfile_by_id(0x2860000), fieldmenu_anim_pictures[j], -wide_pad, 0);
+        }
+        if (obj->base.substep == 6) {
+            cdload_module.mark_loaded();
+            gamestate_data.funcs.set_next_map(obj->next_map, obj->map_entry);
+            gamestate_data.field_map = gamestate_data.funcs.get_map();
+            if (data->party[0] != NULL) {
+                gamestate_data.player_pos = data->party[0]->pos;
+                gamestate_data.player_dir = data->party[0]->dir;
+            }
+            obj->base.substep = 7;
+        }
+        break;
+    }
+#endif
     case 2:
         layer = gfx_module.funcs.get_layer(0x1001);
         switch (obj->base.substep) {
@@ -1725,6 +1798,7 @@ static inline void fieldstg_manager_start(FieldstgManager *obj, FieldstgManagerD
     def_variants_hook(); /* the equipment variants, before a loaded save's first shop or status screen */
     def_hard_party_fix(); /* Hard Mode: a party of two, whatever set it */
     def_rush_panel_reset(); /* a floating Rush's panel went with the last stage's heap */
+    def_map_banner_reset();
     fieldstg_rush_reset();
     def_notice_reset(); /* and so did a Guide's notice's windows */
 #endif
@@ -1735,7 +1809,11 @@ static inline void fieldstg_manager_start(FieldstgManager *obj, FieldstgManagerD
         fieldstg_stage.return_pos = gamestate_data.player_pos;
         fieldstg_stage.return_dir = gamestate_data.player_dir;
     }
+#ifdef PC_PORT
+    data->map_title = fieldstg_map_title_create(def_on() ? 0 : 1);
+#else
     data->map_title = fieldstg_map_title_create(1);
+#endif
     obj->base.next_step(obj);
 }
 
@@ -5260,6 +5338,7 @@ void fieldstg_rush_frame(void) {
         fieldstg_rush_update(&fieldstg_rush);
     }
     def_rush_panel_frame(); /* the floating results, while they are up */
+    def_map_banner_frame();
     def_notice_frame(); /* the Guide's notices: a new objective, an auction that opened */
 }
 #endif

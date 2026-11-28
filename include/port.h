@@ -147,11 +147,11 @@ extern int port_mod_skip_dialogues;
  * its child command would have started, results[3] + 1); *sound_id and *sound_arg: the hit sound it would have played
  * (0: none), for fightstg_sound_play. The rules ran before the script started. */
 extern int port_mod_battle_animations;
-/* port_mod_battle_text: the battle text's mode, fixed at 1 (skip): the battle
- * never waits for its message box, and the launcher has no option for it. 0 as the disc, 1 skip,
- * 2 async exist for FIGHTSTG's message box (src/fightstg/fightstg_8008D3B4.c); the async toast's state (arena
- * windows, frames left) is game_mods.c's, named in its save state. */
+/* port_mod_battle_text: the battle text's mode (1 skip, 2 async; default 1 skip): the battle
+ * never waits for its message box; async pushes its formatted lines into the HUD notice queue
+ * (src/fightstg/fightstg_8008D3B4.c). */
 extern int port_mod_battle_text;
+void port_battle_text_log(const u8 *text);
 s32 port_battle_cut(const s16 *stream, s32 stage, const s32 *results, s32 hit_sound, s32 *sound_id, s32 *sound_arg);
 /* The inn's save screen (STGMCARD's 0xC.. map) for a field map, or 0 off an inn (port/game/game_mods.c). */
 s32 port_inn_save_screen(s32 map);
@@ -498,6 +498,10 @@ int def_guide_frame(void);
 void def_notice_frame(void);
 void def_notice_reset(void);
 void def_rush_panel_reset(void);
+void def_map_banner_open(short map);
+void def_map_banner_frame(void);
+void def_map_banner_reset(void);
+void dw3_loading_fast_forward_set(int on);
 /* The regional hunt (port/game/definitive_hunt.c): a map loaded (a new region resets the chain); a random
  * encounter starting (returns the battle to fight: the region's Rare Target in place of `battle` once the chain allows);
  * after fieldstg_start_battle, the Rare Target's enemies raised to its level; 1 while a Rare Target is being fought (the

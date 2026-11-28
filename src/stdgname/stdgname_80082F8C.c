@@ -10,6 +10,9 @@
 #include "message.h"
 #include "psyq/libc2.h"
 #include "stdgname.h"
+#ifdef PC_PORT
+#include "port/game/definitive.h"
+#endif
 
 /* STDGNAME.PRO: renaming a party Digimon. The overlay's first object sets up the display; the party member
  * choice (stdgname_party_create) and the name entry (stdgname_entry_create) are run by the main object
@@ -154,6 +157,11 @@ Object *stdgname_start(void) {
 }
 
 void stdgname_fade_start(Fade *obj, s32 dir, s32 frames) {
+#ifdef PC_PORT
+    if (def_on()) {
+        frames = 5;
+    }
+#endif
     obj->base.set_state(obj, OBJECT_STATE_RUN);
     obj->base.step = 1;
     obj->from_black = dir;
@@ -167,6 +175,11 @@ void stdgname_fade_start(Fade *obj, s32 dir, s32 frames) {
 }
 
 void stdgname_fade_draw(Fade *obj) {
+#ifdef PC_PORT
+    if (def_on()) {
+        return;
+    }
+#endif
     GfxLayer *layer;
     u32 *ot;
     POLY_F4 *poly;

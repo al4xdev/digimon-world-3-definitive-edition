@@ -1118,6 +1118,7 @@ void def_savestate(struct PortState *s) {
     def_bestiary_savestate(s);
     def_hunt_savestate(s);
     def_rush_savestate(s); /* the floating Rush's panel and the field's heap it points into */
+    def_map_banner_savestate(s);
     def_flee_ask_savestate(s); /* the escape's question and the battle's heap it points into */
     def_battle_prompt_savestate(s);
     PORT_STATE_VAR(s, hit_class);

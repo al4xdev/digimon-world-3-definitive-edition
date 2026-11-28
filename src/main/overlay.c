@@ -107,6 +107,10 @@ void overlay_load_stage(void) {
     s32 stage = gamestate_data.funcs.get_map() >> 8;
     u8 *src;
 
+#ifdef PC_PORT
+    dw3_loading_fast_forward_set(0);
+#endif
+
     if (overlay_module.stage != stage) {
         overlay_module.stage = stage;
         overlay_module.file = -1;

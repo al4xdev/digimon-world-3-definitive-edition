@@ -15,6 +15,7 @@ int plat_open(int kind, const char *script);   /* 0 on success; PLAT_NULL runs a
 int plat_poll(Ev *ev, int timeout_ms);         /* 1 when an event was filled in, 0 on timeout; -1 when the window closed */
 void plat_present(void);
 void plat_release(void);                       /* stop using the screen and the pad, leaving the last picture up */
+void plat_close_pad(void);                     /* let go of the gamepad so the game process can open it (SDL3 HIDAPI is exclusive) */
 void plat_quit(void);                          /* plat_release, and give the screen back as the menu found it */
 long plat_now_ms(void);                        /* monotonic; virtual (33 ms a poll) under PLAT_NULL */
 void plat_desktop_size(int *w, int *h);        /* detected monitor size (1280x720 fallback if headless) */
@@ -34,6 +35,8 @@ void plat_shot(const char *name);              /* the canvas as <plat_shot_dir>/
 #define K_R2 313
 #define K_SELECT 314
 #define K_START 315
+#define K_L3 317 /* evdev BTN_THUMBL / BTN_THUMBR: the stick clicks */
+#define K_R3 318
 #define K_UP 544
 #define K_DOWN 545
 #define K_LEFT 546

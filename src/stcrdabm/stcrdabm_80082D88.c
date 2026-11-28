@@ -8,6 +8,9 @@
 #include "records.h"
 #include "message.h"
 #include "overlay_common.h"
+#ifdef PC_PORT
+#include "port/game/definitive.h"
+#endif
 
 /* STCRDABM.PRO: the card album. Cards 1-314, 12 per page (6 x 2), 27 pages; a card the player owns
  * (gamestate_data.cards_obtained[card]) shows its picture, the others a blank frame. */
@@ -72,6 +75,11 @@ void stcrdabm_album_run(StcrdabmAlbum *obj, StcrdabmAlbumData *data);
 void stcrdabm_album_update(StcrdabmAlbum *obj, StcrdabmAlbumData *data);
 
 void stcrdabm_fade_start(Fade *obj, s32 dir, s32 frames) {
+#ifdef PC_PORT
+    if (def_on()) {
+        frames = 5;
+    }
+#endif
     obj->base.set_state(obj, OBJECT_STATE_RUN);
     obj->base.step = 1;
     obj->from_black = dir;
@@ -85,6 +93,11 @@ void stcrdabm_fade_start(Fade *obj, s32 dir, s32 frames) {
 }
 
 void stcrdabm_fade_draw(Fade *obj) {
+#ifdef PC_PORT
+    if (def_on()) {
+        return;
+    }
+#endif
     GfxLayer *layer;
     u32 *ot;
     POLY_F4 *poly;
@@ -836,11 +849,19 @@ void stcrdabm_album_update(StcrdabmAlbum *obj, StcrdabmAlbumData *data) {
         switch (obj->base.step) {
         case 0:
         default:
+#ifdef PC_PORT
+            if (def_on()) {
+                dw3_loading_fast_forward_set(1);
+            }
+#endif
             stcrdabm_funcs.load_files();
             obj->base.step++;
             break;
         case 1:
             if (stcrdabm_funcs.is_loading() == 0) {
+#ifdef PC_PORT
+                dw3_loading_fast_forward_set(0);
+#endif
                 stcrdabm_album_create_windows(obj, data);
                 obj->frame_anim.duration = 8;
                 obj->details_anim.duration = 8;

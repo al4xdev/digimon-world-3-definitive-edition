@@ -10,6 +10,9 @@
 #include "psyq/libgpu.h"
 #include "psyq/libgte.h"
 #include "stplnmet.h"
+#ifdef PC_PORT
+#include "port/game/definitive.h"
+#endif
 
 /* The main object: after an opening message, the player enters a name (stplnmet_80083D70.c), chooses one of three
  * partner Digimon and confirms; the choice is saved and the game goes on. Three tabs at the top show the step. */
@@ -281,6 +284,12 @@ void stplnmet_confirm_run(StplnmetConfirm *obj, StplnmetConfirmData *data) {
         if (PAD_PRESSED(0xD)) {
             sound_module.play(0x8004503C);
             if (obj->cursor == 0) {
+#ifdef PC_PORT
+                if (def_on()) {
+                    obj->base.step = 100;
+                    break;
+                }
+#endif
                 obj->base.step = 1;
                 obj->bar = 0;
                 data->yes->set_visible(data->yes, 0);

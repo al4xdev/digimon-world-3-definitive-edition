@@ -84,11 +84,19 @@ void stdgname_main_update(StdgnameMain *obj, StdgnameMainData *data) {
         switch (obj->base.step) {
         case 0:
         default:
+#ifdef PC_PORT
+            if (def_on()) {
+                dw3_loading_fast_forward_set(1);
+            }
+#endif
             stdgname_funcs.load();
             obj->base.step++;
             break;
         case 1:
             if (stdgname_funcs.is_loading() == 0) {
+#ifdef PC_PORT
+                dw3_loading_fast_forward_set(0);
+#endif
                 obj->base.next_state(obj);
             }
             break;

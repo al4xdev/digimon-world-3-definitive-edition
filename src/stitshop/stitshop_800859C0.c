@@ -1977,11 +1977,19 @@ void stitshop_main_update(StitshopMain *obj, StitshopMainData *data) {
         switch (obj->base.step) {
         case 0:
         default:
+#ifdef PC_PORT
+            if (def_on()) {
+                dw3_loading_fast_forward_set(1);
+            }
+#endif
             stitshop_funcs.load();
             obj->base.step++;
             break;
         case 1:
             if (stitshop_funcs.is_loading() == 0) {
+#ifdef PC_PORT
+                dw3_loading_fast_forward_set(0);
+#endif
                 stitshop_main_create_windows(obj, data);
                 obj->shopkeeper_anim.duration = 10;
                 obj->money_anim.duration = 10;

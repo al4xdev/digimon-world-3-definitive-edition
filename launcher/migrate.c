@@ -154,13 +154,22 @@ static int save_set_version(char **text, int version) {
     return 0;
 }
 
-/* 1 -> 2: the "respec" section is new; a slot without it reads as no swaps, so nothing in the data changes. */
-static int save_1_to_2(char **text) {
+static int save_has_story(const char *text) {
+    for (const char *p = text; (p = strstr(p, "\"story\"")) != NULL; p += 7) {
+        const char *q = p + 7;
+        while (*q == ' ' || *q == '\t' || *q == '\n' || *q == '\r') q++;
+        if (*q == ':') return 1;
+    }
+    return 0;
+}
+
+/* 2 -> 3: 0.9.1+ files carry "story" and step to 3 unchanged; saves from before 0.9.1 are not migrated. */
+static int save_2_to_3(char **text) {
     (void)text;
     return 0;
 }
 
-static const MigrateStep save_steps[] = {NULL, save_1_to_2}; /* save_steps[N] takes version N to N + 1 */
+static const MigrateStep save_steps[] = {NULL, NULL, save_2_to_3}; /* save_steps[N] takes version N to N + 1 */
 
 int migrate_save_text(char **text, int *from_out) {
     size_t at, len;
@@ -169,11 +178,11 @@ int migrate_save_text(char **text, int *from_out) {
     if (from_out) *from_out = v;
     if (v == SCHEMA_SAVE) return MIGRATE_NONE;
     if (v > SCHEMA_SAVE || v < 0) return MIGRATE_NEWER; /* the game leaves it as it is too */
-    if (v < 1) return MIGRATE_NONE;
+    if (v < 2 || (v == 2 && !save_has_story(*text))) return MIGRATE_NONE;
     char *t = strdup(*text);
     if (!t) return MIGRATE_FAILED;
     for (; v < SCHEMA_SAVE; v++) {
-        if (save_steps[v](&t) || save_set_version(&t, v + 1)) { free(t); return MIGRATE_FAILED; }
+        if (!save_steps[v] || save_steps[v](&t) || save_set_version(&t, v + 1)) { free(t); return MIGRATE_FAILED; }
     }
     free(*text);
     *text = t;

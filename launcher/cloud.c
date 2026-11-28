@@ -226,12 +226,14 @@ int save_is_valid_mc(const char *path, char sha_out[65]) {
 typedef struct {
     SaveBackup bk;
     time_t mtime;
+    long mtime_ns;
 } BackupEntry;
 
 static int cmp_desc_backup(const void *a, const void *b) {
     const BackupEntry *sa = (const BackupEntry *)a;
     const BackupEntry *sb = (const BackupEntry *)b;
     if (sb->mtime != sa->mtime) return sb->mtime > sa->mtime ? 1 : -1;
+    if (sb->mtime_ns != sa->mtime_ns) return sb->mtime_ns > sa->mtime_ns ? 1 : -1;
     return strcmp(sb->bk.name, sa->bk.name);
 }
 
@@ -276,10 +278,22 @@ int save_backup_list(const char *game_dir, SaveBackup *out, int max_items) {
         char full[1200];
         struct stat st;
         snprintf(full, sizeof(full), "%s/%s", bdir, e->d_name);
-        time_t mt = (stat(full, &st) == 0) ? st.st_mtime : 0;
+        time_t mt = 0;
+        long ns = 0;
+        if (stat(full, &st) == 0) {
+            mt = st.st_mtime;
+#if !defined(_WIN32)
+#if defined(__APPLE__)
+            ns = st.st_mtimespec.tv_nsec;
+#else
+            ns = st.st_mtim.tv_nsec;
+#endif
+#endif
+        }
         snprintf(arr[cnt].bk.name, sizeof(arr[cnt].bk.name), "%s", e->d_name);
         format_backup_label(e->d_name, arr[cnt].bk.label, sizeof(arr[cnt].bk.label), arr[cnt].bk.sha_short);
         arr[cnt].mtime = mt;
+        arr[cnt].mtime_ns = ns;
         cnt++;
     }
     closedir(d);

@@ -13,6 +13,7 @@
 #ifdef PC_PORT
 #include "fightstg.h"
 #include "psyq/libgpu.h"
+#include "port/game/definitive.h"
 
 /* The bestiary screen (definitive combat; port/game/definitive_bestiary.c): a last entry of the field's menu that
  * lists the species of SDIGIEDT with what the player learned of their elements. It reuses the menu's own windows: the
@@ -894,6 +895,19 @@ void fieldmenu_update(Fieldmenu *obj, FieldmenuWindows *data) {
         case 0:
         case 1:
         case 2:
+#ifdef PC_PORT
+            if (def_on()) {
+                obj->anim_palette += 4;
+                if (obj->anim_palette >= 8) {
+                    if (++obj->base.step == 3) {
+                        obj->anim_palette = 8;
+                    } else {
+                        obj->anim_palette = 0;
+                    }
+                }
+                break;
+            }
+#endif
             if (gfx_module.funcs.get_time() - obj->anim_time >= 2) {
                 obj->anim_time = gfx_module.funcs.get_time();
                 if (++obj->anim_palette >= 8) {
@@ -908,6 +922,19 @@ void fieldmenu_update(Fieldmenu *obj, FieldmenuWindows *data) {
         case 3:
         case 4:
         case 5:
+#ifdef PC_PORT
+            if (def_on()) {
+                obj->anim_palette += 4;
+                if (obj->anim_palette >= 16) {
+                    if (++obj->base.step == 6) {
+                        obj->anim_palette = 15;
+                    } else {
+                        obj->anim_palette = 8;
+                    }
+                }
+                break;
+            }
+#endif
             if (gfx_module.funcs.get_time() - obj->anim_time >= 2) {
                 obj->anim_time = gfx_module.funcs.get_time();
                 if (++obj->anim_palette >= 16) {

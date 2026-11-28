@@ -10,6 +10,9 @@
 #include "message.h"
 #include "psyq/libgpu.h"
 #include "stcrdshp.h"
+#ifdef PC_PORT
+#include "port/game/definitive.h"
+#endif
 
 /* STCRDSHP.PRO's second file: a fade, the card pack (six cards turned over one by one), the purchase
  * screen, the root object and the shop's main object. */
@@ -93,6 +96,11 @@ Object *stcrdshp_create_booster(StcrdshpMain *main);
 
 /* Starts a fade in (out == 0) or out over `frames` frames. */
 void stcrdshp_start_fade(Fade *obj, s32 out, s32 frames) {
+#ifdef PC_PORT
+    if (def_on()) {
+        frames = 5;
+    }
+#endif
     obj->base.set_state(obj, OBJECT_STATE_RUN);
     obj->base.step = 1;
     obj->from_black = out;
@@ -107,6 +115,11 @@ void stcrdshp_start_fade(Fade *obj, s32 out, s32 frames) {
 
 /* Draws a full-screen (320x256) quad with subtractive blending (abr 2), each channel level >> 8. */
 void stcrdshp_draw_fade(Fade *obj) {
+#ifdef PC_PORT
+    if (def_on()) {
+        return;
+    }
+#endif
     GfxLayer *layer;
     u32 *ot;
     POLY_F4 *poly;
@@ -1119,11 +1132,19 @@ void stcrdshp_update_main(StcrdshpMain *obj, StcrdshpMainData *data) {
         switch (obj->base.step) {
         case 0:
         default:
+#ifdef PC_PORT
+            if (def_on()) {
+                dw3_loading_fast_forward_set(1);
+            }
+#endif
             stcrdshp_util.load_files();
             obj->base.step++;
             break;
         case 1:
             if (stcrdshp_util.is_loading() == 0) {
+#ifdef PC_PORT
+                dw3_loading_fast_forward_set(0);
+#endif
                 stcrdshp_create_main_windows(obj, data);
                 obj->anims[0].duration = 10;
                 obj->anims[1].duration = 10;

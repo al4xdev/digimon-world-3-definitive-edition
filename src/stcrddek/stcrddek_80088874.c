@@ -434,11 +434,19 @@ void stcrddek_update_main(StcrddekMain *obj, StcrddekMainData *data) {
         switch (obj->base.step) {
         case 0:
         default:
+#ifdef PC_PORT
+            if (def_on()) {
+                dw3_loading_fast_forward_set(1);
+            }
+#endif
             stcrddek_util.load_files();
             obj->base.step++;
             break;
         case 1:
             if (stcrddek_util.is_loading() == 0) {
+#ifdef PC_PORT
+                dw3_loading_fast_forward_set(0);
+#endif
                 stcrddek_create_main_windows(obj, data);
                 obj->title_anim.duration = 10;
                 obj->decks_anim[0].duration = 10;

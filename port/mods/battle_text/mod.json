@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "id": "battle_text",
+  "name": "Battle text",
+  "version": "0.1",
+  "kind": "builtin",
+  "requires_port": 1,
+  "description": "The battle's message box no longer stops the fight. Skip (default): no message boxes at all. Async: the action goes on while the formatted text is pushed to the HUD notice queue, dropping notes the animation already shows (a plain Attack, Evade, stance and gauge notes). Damage, results and the rules are unchanged; the victory and defeat texts stay as they are.",
+  "options": [
+    { "id": "mode", "name": "Mode", "description": "Skip: none. Async: shown in the HUD notice queue without waiting.",
+      "type": "enum", "default": "skip", "applies": "live",
+      "values": [
+        { "id": "skip", "label": "Skip" }, { "id": "async", "label": "Async" }
+      ] }
+  ]
+}

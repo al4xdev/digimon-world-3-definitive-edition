@@ -1083,12 +1083,20 @@ void ststatus_update_root(StstatusRoot *obj, StstatusRootData *data) {
         switch (obj->base.step) {
         case 0:
         default:
+#ifdef PC_PORT
+            if (def_on()) {
+                dw3_loading_fast_forward_set(1);
+            }
+#endif
             ststatus_module.load_files();
             obj->base.step++;
             break;
         case 1:
             if (!ststatus_module.is_loading() && !cdload_module.is_loading(obj->files) &&
                 !cdload_module.is_loading(obj->map_file)) {
+#ifdef PC_PORT
+                dw3_loading_fast_forward_set(0);
+#endif
                 tim_init(&tim);
                 tim.set_image_pos(0x380, 0x100);
                 tim.load_all(cdload_module.get_subfile_by_id(obj->images_1));

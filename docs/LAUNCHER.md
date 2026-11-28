@@ -135,9 +135,9 @@ checks the scanner against every script on the disc; `tests/port/mods.py` runs t
 
 ### Battle text
 
-The battle text is always skipped: the launcher has no option for it and the settings file carries none.
-`port_mod_battle_text` is a code constant (`BT_SKIP`, 1, in `port/game/game_mods.c`) for the FIGHTSTG side; 0 (as the
-disc) and 2 (async) are in the flag's vocabulary, unused.
+`battle_text`. Option: `mode` (enum `skip async`, default `skip`, `applies: live`), controlled by the launcher's
+`GAME > BATTLE TEXT` row (`SKIP / ASYNC`, written to `settings.json`). `port_mod_battle_text` (`port/game/game_mods.c`)
+holds the active mode (1 skip, 2 async; the game's own box no longer exists; defaults to 1 when the mod is absent from `settings.json`).
 
 The battle's message box (`FightstgMessage`, `src/fightstg/fightstg_8008D3B4.c`) is presentation only: the rules ran
 before it is shown, but on the disc every action waits for it to be dismissed with a confirm press. The hook sits in
@@ -148,15 +148,15 @@ set by `fightstg_message_show` from its type and text ID (`ESMFIGHT`):
   victory text after 100 frames), so they run as on the disc in every mode.
 - **drop:** what the animation already says: a plain "Attack" (8), "Evade" (0x1D), "Focus on attack/guard" (0x3C, 0x3D),
   "Special effect up" (0x3E), "Blast gauge up" (0x3F), "Excited" (0x40). Ended at once in `skip` and `async`.
-- **normal** (technique and item names, damage, healing, statuses, switches...): `skip` ends it at once; `async` hands
-  its two windows to a **toast** and ends it, so the action goes on. A chain (a queued follow-up: regeneration, the
-  counter's damage) shows only its last page. The toast stays 90 frames unless a newer text replaces it.
+- **normal** (technique and item names, damage, healing, statuses, switches...): `skip` ends it at once; `async` reads
+  its already-formatted `MessageWindow` lines (`<5,n>` substituted), joins them into a single text, pushes it to the
+  HUD notice queue (`fightstg_notice_push(text, 90)`), stops the message's windows, and ends the message at once, so
+  the action goes on with the exact same timing as `skip`. A chain (a queued follow-up: regeneration, the counter's
+  damage) shows only its last page.
 
-The toast is owned by no object: the battle's slots object (`fightstg_slots_update`) runs and draws the windows each
-frame, and `fightstg_slots_create` clears it for a new battle. Its state (`port_battle_text_windows`,
-`port_battle_text_frames`, in `port/game/game_mods.c`) is named in the save state. No random number is drawn and no
-rule changes, but the frame count of a battle does, so the scripted replays of the disc's own battles are compared on
-the game state, not on frames (`tests/port/mods.py`'s `battle_menu` runs the first battle this way).
+No random number is drawn and no rule changes, and `skip` and `async` take the same frames, so the scripted replays of the disc's own battles are compared on the game
+state (`tests/port/mods.py`'s `battle_text` checks both modes, verifies `async` matches `skip`'s frame count, and checks that a damage message
+reaches the notice queue with its number).
 
 ### Preset language
 
@@ -393,13 +393,13 @@ first copy is never overwritten).
 | File | Number | Current | Migrated |
 |---|---|---|---|
 | `tui.state` | `schema=N` (none: 0) | 1 | by `cfg_load`, before it reads the file. 0 -> 1: Fight at the bottom (was `bm_v=2`) and 60 Hz, for a file still on the old defaults |
-| `card1.def.json`, `card2.def.json` | `"version": N` | 2 | by `migrate_saves`, before the game starts (PC and Android). 1 -> 2: the `"respec"` section |
+| `card1.def.json`, `card2.def.json` | `"version": N` | 3 | by `migrate_saves`, before the game starts (PC and Android). 2 (0.9.1+, with `"story"`) -> 3; pre-0.9.1 files are not migrated |
 | `settings.json` | `"schema": N` (the game's contract) | 1 | rewritten whole on every save: no step |
 
 A newer file than the launcher knows is left alone (the game does the same with the save); a newer `tui.state` is not
 rewritten by a save either, so a downgrade and back loses none of its keys. Files that come from outside (a restored
 backup, a cloud pull, the RecompLauncher mirror) keep their old number until the next game start, where `migrate_saves`
-runs after the cloud sync (so a pulled v1 file is migrated too). The pair's sha changes with the JSON's bytes, so
+runs after the cloud sync (so a pulled 0.9.1+ v2 file is migrated too). The pair's sha changes with the JSON's bytes, so
 `cloud_migrate_saves` moves the cloud state's `last_sha256` along when the local pair was the synced one: the migration is
 not a local change and cannot make a false conflict with a newer cloud save. A migrated file's old copy is
 `<file>.v<N>.bak`, or `.v<N>.2.bak` and so on when that name is taken: no copy is replaced. A version is a whole number

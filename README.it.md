@@ -128,9 +128,11 @@ Dispositivi testati, dettagli di installazione e problemi noti: [`.ci-cd/portmas
    `INTEGER`**, la **risoluzione** interna (3X di default), il renderer **GPU** o software e i **filtri** dello schermo. Il
    launcher si aggiorna da solo quando esce una nuova versione.
 
-**Vieni da una versione precedente?** Il tuo salvataggio si apre e funziona. Per dargli le nuove tabelle di MP e TP,
-esegui una volta `tools/convert_save_mp.py card1.mcd` (ne conserva un backup). Il launcher aggiorna da solo le sue impostazioni e il salvataggio di
-espansione accanto alla card (`card1.def.json`), tenendo il file vecchio come backup.
+**Vieni da una versione precedente?** I salvataggi dalla **0.9.1 in poi** si aprono e funzionano: il launcher aggiorna
+da solo le sue impostazioni e il salvataggio di espansione accanto alla card (`card1.def.json`), conservando un backup.
+I salvataggi **precedenti alla 0.9.1** non vengono migrati (inizia una nuova partita). Anche i salvataggi PS1
+originali si aprono e funzionano — esegui una volta `tools/convert_save_mp.py card1.mcd` per le nuove tabelle di MP e
+TP (conserva un backup).
 
 ---
 

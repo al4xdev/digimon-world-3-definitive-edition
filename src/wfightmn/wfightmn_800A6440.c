@@ -347,7 +347,12 @@ void wfightmn_main_update(WfightmnMain *obj, WfightmnMainData *data) {
             default:
                 data->command = fightstg_command_create();
                 data->camera = fightstg_camera_create(0x1001);
+#ifdef PC_PORT
+                /* instant transitions: the battle opens from black in 15 frames, not 60 */
+                data->stage = fightstg_stage_create(records_state.stage, def_on() ? 15 : 60);
+#else
                 data->stage = fightstg_stage_create(records_state.stage, 60);
+#endif
                 data->slots = fightstg_slots_create();
                 data->lighting = fightstg_lights_create(0x1001);
                 obj->base.next_substep(obj);
