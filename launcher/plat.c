@@ -365,6 +365,8 @@ static int btn_code(int b) {
     case SDL_CONTROLLER_BUTTON_RIGHTSHOULDER: return K_R1;
     case SDL_CONTROLLER_BUTTON_BACK: return K_SELECT;
     case SDL_CONTROLLER_BUTTON_START: return K_START;
+    case SDL_CONTROLLER_BUTTON_LEFTSTICK: return K_L3;
+    case SDL_CONTROLLER_BUTTON_RIGHTSTICK: return K_R3;
     case SDL_CONTROLLER_BUTTON_DPAD_UP: return K_UP;
     case SDL_CONTROLLER_BUTTON_DPAD_DOWN: return K_DOWN;
     case SDL_CONTROLLER_BUTTON_DPAD_LEFT: return K_LEFT;
@@ -473,6 +475,8 @@ static int btn_code(int b) {
     case SDL_GAMEPAD_BUTTON_RIGHT_SHOULDER: return K_R1;
     case SDL_GAMEPAD_BUTTON_BACK: return K_SELECT;
     case SDL_GAMEPAD_BUTTON_START: return K_START;
+    case SDL_GAMEPAD_BUTTON_LEFT_STICK: return K_L3;
+    case SDL_GAMEPAD_BUTTON_RIGHT_STICK: return K_R3;
     case SDL_GAMEPAD_BUTTON_DPAD_UP: return K_UP;
     case SDL_GAMEPAD_BUTTON_DPAD_DOWN: return K_DOWN;
     case SDL_GAMEPAD_BUTTON_DPAD_LEFT: return K_LEFT;
@@ -489,6 +493,7 @@ static int code_of(const char *t) {
     static const struct { const char *n; int c; } names[] = {
         {"south", K_SOUTH}, {"a", K_SOUTH}, {"east", K_EAST}, {"b", K_EAST}, {"west", K_WEST}, {"north", K_NORTH},
         {"l1", K_L1}, {"r1", K_R1}, {"l2", K_L2}, {"r2", K_R2}, {"select", K_SELECT}, {"start", K_START},
+        {"l3", K_L3}, {"r3", K_R3},
         {"up", K_UP}, {"down", K_DOWN}, {"left", K_LEFT}, {"right", K_RIGHT},
     };
     for (unsigned i = 0; i < sizeof(names) / sizeof(names[0]); i++) {
@@ -989,4 +994,12 @@ void plat_release(void) {
     }
 #endif
     kind_open = -1;
+}
+
+void plat_close_pad(void) {
+#ifdef HAVE_SDL2
+    if (kind_open == PLAT_SDL && pad) { SDL_GameControllerClose(pad); pad = NULL; }
+#elif defined(HAVE_SDL3)
+    if (kind_open == PLAT_SDL && pad) { SDL_CloseGamepad(pad); pad = NULL; }
+#endif
 }

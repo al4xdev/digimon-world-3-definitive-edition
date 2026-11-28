@@ -46,9 +46,10 @@ enum { HI_PLAY, HI_GAME, HI_VIDEO, HI_HUD, HI_CONTROLS, HI_SAVES, HI_DEBUG, HI_R
 #define HOME_ROW_STEP 43
 enum { GAME_LANG, GAME_FF, GAME_LOAD, GAME_SKIP, GAME_BATTLES, GAME_HIT, GAME_BTEXT, GAME_TOUCHPAD, GAME_DISC, GAME_N };
 #define GAME_ROW_STEP 35
-enum { VIDEO_WIDESCREEN, VIDEO_SCALING, VIDEO_HZ, VIDEO_RENDERER, VIDEO_FILTER, VIDEO_RESOLUTION, VIDEO_SUBPIXEL, VIDEO_N };
+enum { VIDEO_WIDESCREEN, VIDEO_SCALING, VIDEO_HZ, VIDEO_RENDERER, VIDEO_FILTER, VIDEO_RESOLUTION, VIDEO_SUBPIXEL, VIDEO_FMV_CROP, VIDEO_N };
+#define CTRL_ROW_STEP 31 /* glyphs, eight buttons, TURBO and its mode */
 #define VIDEO_ROW_Y 76
-#define VIDEO_ROW_STEP 42
+#define VIDEO_ROW_STEP 38
 enum { SAVES_SYNC, SAVES_INTERVAL, SAVES_BACKUPS, SAVES_NOW, SAVES_RESTORE, SAVES_ACCOUNT, SAVES_N };
 /* CLOUD ACCOUNT rows: the first two when this device has no live key, all four once it has one. */
 enum { CLOUD_REGISTER_OR_ADD, CLOUD_LINK, CLOUD_DEVICES, CLOUD_RENEW };
@@ -189,7 +190,7 @@ static int row_target_y(int s, int idx) {
     case S_GAME: return 76 + idx * GAME_ROW_STEP;
     case S_VIDEO: return VIDEO_ROW_Y + idx * VIDEO_ROW_STEP;
     case S_HUD: return 174 + idx * 23; /* 23, not 25: the eleventh row (Fight button) clears the footer */
-    case S_CONTROLS: return idx == 0 ? 74 : 122 + (idx - 1) * 37;
+    case S_CONTROLS: return idx == 0 ? 74 : 116 + (idx - 1) * CTRL_ROW_STEP;
     case S_SAVES: return 86 + idx * 52;
     case S_BACKUPS: return 114 + (idx - bk_scroll) * 44;
     case S_BROWSE: return 116 + (idx - b_scroll) * 44;
@@ -639,7 +640,7 @@ static void draw_video(void) {
     char res_val[48];
     app_fmt_vram(&c, res_val, sizeof(res_val));
     const char *lab[VIDEO_N] = {
-        "WIDESCREEN", "SCALING", "REFRESH RATE", "RENDERER", "FILTER", "RESOLUTION", "3D VERTICES"
+        "WIDESCREEN", "SCALING", "REFRESH RATE", "RENDERER", "FILTER", "RESOLUTION", "3D VERTICES", "FMV AUTOCROP"
     };
     const char *val[VIDEO_N] = {
         (c.widescreen && c.renderer_pc == 0) ? "AUTO" : "OFF",
@@ -648,7 +649,8 @@ static void draw_video(void) {
         c.renderer_pc ? "SOFTWARE" : "GPU",
         c.renderer_pc ? "-" : filt_label[c.filter],
         c.renderer_pc ? "-" : res_val,
-        (c.renderer_pc || c.iscale == 1) ? "-" : vert_label[c.subpixel]
+        (c.renderer_pc || c.iscale == 1) ? "-" : vert_label[c.subpixel],
+        c.fmv_autocrop ? "ON" : "OFF"
     };
     static const char *const desc[VIDEO_N] = {
         "Battles and field follow the screen's shape, up to 16:9 (auto-selects GPU). Menus stay 4:3.",
@@ -657,7 +659,8 @@ static void draw_video(void) {
         "GPU enables widescreen and shaders; SOFTWARE is exact PS1.",
         "GPU screen filter (SHARP keeps crisp pixels).",
         "Scales full PS1 VRAM (1024x512, 1536x512 in 16:9), not just 320x240.",
-        "Above 1X: PS1 wobbles; SMOOTH steadies 3D; + TEXTURES fixes warping."
+        "Above 1X: PS1 wobbles; SMOOTH steadies 3D; + TEXTURES fixes warping.",
+        "Trims the black bars off videos while they play (off by default)."
     };
     int gy = (int)(cur_y >= 0 && cur_screen == S_VIDEO ? cur_y : row_target_y(S_VIDEO, sel));
     draw_focus(32, gy, W - 64, 38, 10, 0);
@@ -665,6 +668,7 @@ static void draw_video(void) {
         int on = i == VIDEO_HZ ? c.hz == 60
                : i == VIDEO_RESOLUTION ? c.iscale > 1
                : i == VIDEO_SUBPIXEL ? c.subpixel > 0
+               : i == VIDEO_FMV_CROP ? c.fmv_autocrop
                : (strcmp(val[i], "OFF") != 0 && strcmp(val[i], "-") != 0);
         int arrows = strcmp(val[i], "-") != 0;
         row_touch(VIDEO_ROW_Y + i * VIDEO_ROW_STEP, 38, lab[i], val[i], i == sel, 0, on && arrows, 0, arrows);
@@ -704,7 +708,7 @@ static void draw_game(void) {
         "Dialogue boxes close on their own.",
         "Battle moves play without their animation.",
         "Keep the hit flinch while animations are skipped.",
-        "OFF: original boxes. SKIP: hidden. ASYNC: queued in the HUD without pausing.",
+        "SKIP: battle text hidden. ASYNC: queued in the HUD without pausing.",
         "On-screen floating touch controls during gameplay.",
         "Pick or change your .cue / .bin disc file."
     };
@@ -775,18 +779,23 @@ static void draw_controls(void) {
     (void)dup_actions(&c, &dm);
     char v[48];
     int gy = (int)(cur_y >= 0 && cur_screen == S_CONTROLS ? cur_y : row_target_y(S_CONTROLS, sel));
-    int sbd = sel > 0 && ((dm >> act_order[sel - 1]) & 1);
-    draw_focus(32, gy, W - 64, 34, 8, sbd);
+    int sbd = sel > 0 && sel <= A_COUNT && ((dm >> act_order[sel - 1]) & 1);
+    draw_focus(32, gy, W - 64, CTRL_ROW_STEP - 2, 8, sbd);
     snprintf(v, sizeof(v), "%s", lay_label[cfg_layout(&c)]);
-    row_touch(74, 34, "BUTTON GLYPHS", v, sel == 0, 0, 0, 0, 1);
+    row_touch(74, 30, "BUTTON GLYPHS", v, sel == 0, 0, 0, 0, 1);
     for (int i = 0; i < A_COUNT; i++) {
-        int a = act_order[i], y = 122 + i * 37, isel = sel == i + 1, bd = (dm >> a) & 1;
+        int a = act_order[i], y = 116 + i * CTRL_ROW_STEP, isel = sel == i + 1, bd = (dm >> a) & 1;
         char g[16];
         glyph(c.pad[a].code, g);
         if (capture && isel) snprintf(v, sizeof(v), "%s", S("PRESS A BUTTON..."));
         else snprintf(v, sizeof(v), "%s [%s]", place_display(c.pad[a].code), g);
-        row_touch(y, 34, act_label[a], v, isel, bd, 0, 0, 0);
+        row_touch(y, 30, act_label[a], v, isel, bd, 0, 0, 0);
     }
+    /* TURBO: the preset buttons for fast-forward (a pad's chord can be captured on the desktop launcher only). */
+    char tb[48];
+    cfg_fmt_ff(&c, tb, sizeof(tb));
+    row_touch(116 + A_COUNT * CTRL_ROW_STEP, 30, "TURBO", tb, sel == A_COUNT + 1, 0, c.ff_n > 0, 0, 1);
+    row_touch(116 + (A_COUNT + 1) * CTRL_ROW_STEP, 30, "TURBO MODE", c.ff_mode ? "HOLD" : "TOGGLE", sel == A_COUNT + 2, 0, 0, 0, 1);
     if (msg[0]) text_c(W / 2, H - 72, S(msg), 13, C_RED);
     footer_touch(0, 1, "RESET");
 }
@@ -1203,7 +1212,7 @@ static void activate_game_row(int row, int dir) {
     case GAME_SKIP: c.skip = !c.skip; break;
     case GAME_BATTLES: c.battles = !c.battles; if (!c.battles) c.hit = 0; break;
     case GAME_HIT: if (c.battles) c.hit = !c.hit; break;
-    case GAME_BTEXT: c.btext = (c.btext + dir + 3) % 3; break;
+    case GAME_BTEXT: c.btext = c.btext == 2 ? 1 : 2; (void)dir; break;
     case GAME_TOUCHPAD: c.touch_pad = !c.touch_pad; break;
     case GAME_DISC: pick_disc_android(); break;
     }
@@ -1219,6 +1228,7 @@ static void activate_video_row(int row, int dir) {
     case VIDEO_FILTER: if (!c.renderer_pc) c.filter = (c.filter + dir + 5) % 5; break;
     case VIDEO_RESOLUTION: if (!c.renderer_pc) c.iscale = (c.iscale - 1 + dir + 8) % 8 + 1; break;
     case VIDEO_SUBPIXEL: if (!c.renderer_pc && c.iscale > 1) c.subpixel = (c.subpixel + dir + 3) % 3; break;
+    case VIDEO_FMV_CROP: c.fmv_autocrop = !c.fmv_autocrop; break;
     }
     cfg_save(&c);
 }
@@ -1700,7 +1710,7 @@ static void on_touch(int code, int x, int y) {
             cfg_save(&c);
             return;
         }
-        if (in_rect(x, y, 32, 74, W - 64, 38)) {
+        if (in_rect(x, y, 32, 74, W - 64, 32)) {
             sel = 0;
             int dir = touch_dir(x);
             int l = cfg_layout(&c);
@@ -1711,9 +1721,19 @@ static void on_touch(int code, int x, int y) {
             return;
         }
         for (int i = 0; i < A_COUNT; i++) {
-            if (in_rect(x, y, 32, 122 + i * 37, W - 64, 35)) {
+            if (in_rect(x, y, 32, 116 + i * CTRL_ROW_STEP, W - 64, CTRL_ROW_STEP - 1)) {
                 sel = i + 1;
                 capture = !capture;
+                return;
+            }
+        }
+        for (int i = A_COUNT; i < A_COUNT + 2; i++) {
+            if (in_rect(x, y, 32, 116 + i * CTRL_ROW_STEP, W - 64, CTRL_ROW_STEP - 1)) {
+                sel = i + 1;
+                capture = 0;
+                if (i == A_COUNT) cfg_ff_cycle(&c, touch_dir(x));
+                else c.ff_mode = !c.ff_mode;
+                cfg_save(&c);
                 return;
             }
         }
@@ -1899,7 +1919,7 @@ static void on_key(int code) {
         }
         int dir = code == K_UP ? -1 : +1;
         int n = screen == S_HOME ? HI_COUNT : screen == S_GAME ? GAME_N : screen == S_VIDEO ? VIDEO_N :
-                screen == S_HUD ? HUD_ROWS : screen == S_CONTROLS ? (A_COUNT + 1) : screen == S_SAVES ? SAVES_N :
+                screen == S_HUD ? HUD_ROWS : screen == S_CONTROLS ? (A_COUNT + 3) : screen == S_SAVES ? SAVES_N :
                 screen == S_DEBUG ? debug_n() : screen == S_BROWSE ? b_count : screen == S_BACKUPS ? bk_count :
                 screen == S_CLOUD ? cloud_n() : screen == S_DEVICES ? dev_count : 1;
         if (n > 0) sel = (sel + dir + n) % n;
@@ -1914,6 +1934,11 @@ static void on_key(int code) {
         else if (screen == S_VIDEO) activate_video_row(sel, dir);
         else if (screen == S_SAVES && (sel == SAVES_INTERVAL || sel == SAVES_BACKUPS)) activate_saves_row(sel, dir);
         else if (screen == S_HUD) do_hud_step(sel, dir);
+        else if (screen == S_CONTROLS && sel > A_COUNT) {
+            if (sel == A_COUNT + 1) cfg_ff_cycle(&c, dir);
+            else c.ff_mode = !c.ff_mode;
+            cfg_save(&c);
+        }
         else if (screen == S_CONTROLS && sel == 0) {
             int l = cfg_layout(&c);
             cfg_set_layout(&c, l == LAYOUT_CUSTOM ? LAYOUT_PS1 : (l + dir + 3) % 3);
@@ -1928,6 +1953,12 @@ static void on_key(int code) {
             if (sel == 0) {
                 int l = cfg_layout(&c);
                 cfg_set_layout(&c, l == LAYOUT_CUSTOM ? LAYOUT_PS1 : (l + 1) % 3);
+                cfg_save(&c);
+            } else if (sel == A_COUNT + 1) {
+                cfg_ff_cycle(&c, +1);
+                cfg_save(&c);
+            } else if (sel == A_COUNT + 2) {
+                c.ff_mode = !c.ff_mode;
                 cfg_save(&c);
             } else {
                 capture = 1;

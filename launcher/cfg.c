@@ -31,6 +31,7 @@ static const struct { int code; const char *name; const char *display; } places[
     {K_SOUTH, "south", "SOUTH"}, {K_EAST, "east", "EAST"}, {K_WEST, "west", "WEST"}, {K_NORTH, "north", "NORTH"},
     {K_L1, "leftshoulder", "L1"}, {K_R1, "rightshoulder", "R1"}, {K_L2, "lefttrigger", "L2"},
     {K_R2, "righttrigger", "R2"}, {K_SELECT, "back", "SELECT"}, {K_START, "start", "START"},
+    {K_L3, "leftstick", "L3"}, {K_R3, "rightstick", "R3"},
 };
 #define NPLACES ((int)(sizeof(places) / sizeof(places[0])))
 
@@ -149,6 +150,9 @@ void cfg_defaults(Cfg *c) {
     c->ff = 3;
     c->load = 3; /* faster loading on at 8x */
     c->btext = 1; /* skip: default */
+    c->ff_n = 2; /* turbo: SELECT + R1, toggled */
+    c->ff_btns[0] = K_SELECT;
+    c->ff_btns[1] = K_R1;
     c->bmem = 1;
     c->bbuf = 1;
     c->led = (!is_pc && !is_android);
@@ -391,6 +395,7 @@ static void cfg_read_settings(Cfg *c, const char *j) {
     char s[1200];
     c->fullscreen = j_bool(j, "video/fullscreen", c->fullscreen);
     c->fill = j_bool(j, "video/fill", c->fill);
+    c->fmv_autocrop = j_bool(j, "video/fmv_autocrop", c->fmv_autocrop);
     if (j_str(j, "video/renderer", s, sizeof(s))) c->renderer_pc = !strcmp(s, "software");
     if (j_str(j, "video/filter", s, sizeof(s))) c->filter = idx_of(filter_names, 5, s, c->filter);
     c->iscale = j_int(j, "video/internal_scale", c->iscale);
@@ -407,8 +412,7 @@ static void cfg_read_settings(Cfg *c, const char *j) {
     c->skip = j_bool(j, "mods/skip_dialogues/enabled", c->skip);
     c->battles = j_bool(j, "mods/battle_animations/enabled", c->battles);
     c->hit = c->battles && j_bool(j, "mods/battle_animations/hit_reaction", c->hit);
-    if (!j_bool(j, "mods/battle_text/enabled", 1)) c->btext = 0;
-    else if (j_str(j, "mods/battle_text/mode", s, sizeof(s))) c->btext = idx_of(btext_names, 3, s, c->btext);
+    if (j_str(j, "mods/battle_text/mode", s, sizeof(s))) c->btext = idx_of(btext_names, 3, s, c->btext) == 2 ? 2 : 1; /* "off" reads as skip */
     if (j_bool(j, "mods/preset_language/enabled", 1) && j_str(j, "mods/preset_language/language", s, sizeof(s)))
         c->lang = !strcmp(s, "usa") ? 0 : idx_of(lang_names, 7, s, c->lang);
     if (j_str(j, "debug/logs", s, sizeof(s))) c->logs = idx_of(log_names, 3, s, c->logs);
@@ -440,12 +444,22 @@ void cfg_load(Cfg *c) {
         if (!strcmp(line, "hz")) c->hz = n == 60 ? 60 : 50;
         else if (!strcmp(line, "lang")) c->lang = n < 0 ? 0 : n > 6 ? 6 : n;
         else if (!strcmp(line, "ff")) ffon = n;
+        else if (!strcmp(line, "ff_mode")) c->ff_mode = n != 0;
+        else if (!strcmp(line, "ff_pad")) {
+            /* "none", or one or two place names joined by '+' */
+            c->ff_n = 0;
+            char *save = NULL;
+            for (char *t = strtok_r(v, "+", &save); t && c->ff_n < 2; t = strtok_r(NULL, "+", &save)) {
+                int code = code_by_name(t);
+                if (code) c->ff_btns[c->ff_n++] = code;
+            }
+        }
         else if (!strcmp(line, "ff_speed")) snprintf(ffspeed, sizeof(ffspeed), "%s", v);
         else if (!strcmp(line, "load")) c->load = n < 0 ? 0 : n > 4 ? 4 : n;
         else if (!strcmp(line, "skip")) c->skip = n != 0;
         else if (!strcmp(line, "battles")) c->battles = n != 0;
         else if (!strcmp(line, "hit")) c->hit = n != 0;
-        else if (!strcmp(line, "btext")) c->btext = n < 0 ? 0 : n > 2 ? 2 : n;
+        else if (!strcmp(line, "btext")) c->btext = n == 2 ? 2 : 1;
         else if (!strcmp(line, "bmem")) c->bmem = n != 0;
         else if (!strcmp(line, "bbuf")) c->bbuf = n < 0 ? 0 : n > 2 ? 2 : n;
         else if (!strcmp(line, "logs")) c->logs = n < 0 ? 0 : n > 2 ? 2 : n;
@@ -453,6 +467,7 @@ void cfg_load(Cfg *c) {
         else if (!strcmp(line, "fullscreen")) c->fullscreen = n != 0;
         else if (!strcmp(line, "touch_pad")) c->touch_pad = n != 0;
         else if (!strcmp(line, "fill")) c->fill = n != 0;
+        else if (!strcmp(line, "fmv_autocrop")) c->fmv_autocrop = n != 0;
         else if (!strcmp(line, "scale")) c->scale = n < 0 ? 0 : n > 8 ? 8 : n;
         else if (!strcmp(line, "renderer_pc")) c->renderer_pc = n != 0;
         else if (!strcmp(line, "filter")) c->filter = n < 0 ? 0 : n > 4 ? 4 : n;
@@ -577,14 +592,21 @@ static int write_settings(const Cfg *c) {
     char vres[64] = "";
     if ((is_pc || is_android) && c->renderer_pc == 0)
         snprintf(vres, sizeof(vres), ", \"internal_scale\": %d, \"subpixel\": \"%s\"", c->iscale, subpixel_names[c->subpixel]);
+    char ff_pads[96] = "", ff_hold[160], ff_toggle[160] = "";
+    if (c->ff_n == 1) snprintf(ff_pads, sizeof(ff_pads), "\"pad:%s\"", code_name(c->ff_btns[0]));
+    else if (c->ff_n == 2)
+        snprintf(ff_pads, sizeof(ff_pads), "[\"pad:%s\", \"pad:%s\"]", code_name(c->ff_btns[0]), code_name(c->ff_btns[1]));
+    snprintf(ff_hold, sizeof(ff_hold), "%s%s%s", is_pc ? "\"Tab\"" : "", is_pc && c->ff_mode == 1 && ff_pads[0] ? ", " : "",
+             c->ff_mode == 1 ? ff_pads : "");
+    if (c->ff_mode == 0) snprintf(ff_toggle, sizeof(ff_toggle), "%s", ff_pads);
     char text[6400];
     snprintf(text, sizeof(text),
         "{\n  \"schema\": 1,\n  \"disc\": { \"path\": \"%s\" },\n"
-        "  \"video\": { \"window\": true, \"scale\": %d, \"fullscreen\": %s, \"fill\": %s, \"refresh\": %d, \"renderer\": \"%s\", \"filter\": \"%s\"%s },\n"
+        "  \"video\": { \"window\": true, \"scale\": %d, \"fullscreen\": %s, \"fill\": %s,%s \"refresh\": %d, \"renderer\": \"%s\", \"filter\": \"%s\"%s },\n"
         "  \"audio\": { \"mute\": false },\n  \"memcard1\": \"card1.mcd\",\n  \"memcard2\": \"card2.mcd\",\n"
         "  \"watchdog\": 0,\n  \"debug\": { \"logs\": \"%s\" },\n  \"mods\": {\n"
-        "    \"fast_forward\": { \"enabled\": %s, \"speed\": \"%s\", \"mute\": true, \"hold\": \"%s\", "
-        "\"toggle\": [[\"pad:%s\", \"pad:%s\"]] },\n"
+        "    \"fast_forward\": { \"enabled\": %s, \"speed\": \"%s\", \"mute\": true, \"hold\": [%s], "
+        "\"toggle\": [%s] },\n"
         "    \"fast_loading\": { \"enabled\": %s, \"speed\": \"%s\" },\n"
         "    \"skip_dialogues\": { \"enabled\": %s, \"fast_forward_waits\": false },\n"
         "    \"battle_animations\": { \"enabled\": %s, \"hit_reaction\": %s },\n"
@@ -594,15 +616,15 @@ static int write_settings(const Cfg *c) {
         "    \"battle_menu\": { \"enabled\": true, \"fight\": \"%s\", \"tech\": \"%s\", \"digivolve\": \"%s\", \"tag\": \"%s\", "
         "\"item\": \"%s\", \"run\": \"%s\", \"inspect\": \"%s\", \"blast\": \"%s\", \"remember_cursor\": %s, \"buffer_input\": \"%s\" },\n"
         "    \"led_bar\": { \"enabled\": %s }\n  },\n  \"input\": { \"gamepad\": %s }\n}\n",
-        disc_esc, vscale, vfull ? "true" : "false", vfill ? "true" : "false", c->hz, renderer, vfilt, vres,
+        disc_esc, vscale, vfull ? "true" : "false", vfill ? "true" : "false",
+        (is_pc || is_android) && c->fmv_autocrop ? " \"fmv_autocrop\": true," : "", c->hz, renderer, vfilt, vres,
         log_names[c->logs], c->ff ? "true" : "false", ff_names[c->ff ? c->ff : 3],
-        /* Hold Tab on a PC keyboard; SELECT + R1 (the player's buttons for them) turns it on and off on
-         * every build: the runtime's toggle binding, a chord, so neither button reaches the game once both are down.
-         * Select first: the game has no use for it, while R1 alone pages its menus. */
-        is_pc ? "Tab" : "", code_name(c->pad[A_SELECT].code), code_name(c->pad[A_R1].code),
+        /* Hold Tab on a PC keyboard; the pad's turbo buttons (CONTROLS) toggle it, or hold it, on every build. Both are
+         * the runtime's bindings: a chord of two buttons, so neither reaches the game once both are down. */
+        ff_hold, ff_toggle,
         c->load ? "true" : "false", load_names[c->load ? c->load : 3],
         c->skip ? "true" : "false", c->battles ? "true" : "false", c->battles && c->hit ? "true" : "false",
-        btext_names[c->btext < 0 || c->btext > 2 ? 1 : c->btext],
+        btext_names[c->btext == 2 ? 2 : 1],
         lang_names[c->lang < 0 || c->lang > 6 ? 0 : c->lang], vw ? "true" : "false",
         hud_name(c->hud[H_FIGHT]), hud_name(c->hud[H_TECH]), hud_name(c->hud[H_DV]),
         hud_name(c->hud[H_TAG]), hud_name(c->hud[H_ITEM]), hud_name(c->hud[H_RUN]), hud_name(c->hud[H_INSPECT]), hud_name(c->hud[H_BLAST]),
@@ -610,13 +632,38 @@ static int write_settings(const Cfg *c) {
     return write_atomic(path, text);
 }
 
+int cfg_fmt_ff(const Cfg *c, char *out, size_t n) {
+    if (c->ff_n == 1) snprintf(out, n, "%s", place_display(c->ff_btns[0]));
+    else if (c->ff_n == 2) snprintf(out, n, "%s+%s", place_display(c->ff_btns[0]), place_display(c->ff_btns[1]));
+    else snprintf(out, n, "OFF");
+    return c->ff_n > 0;
+}
+
+void cfg_ff_cycle(Cfg *c, int dir) {
+    static const int presets[][3] = {
+        {2, K_SELECT, K_R1}, {1, K_L3, 0}, {1, K_R3, 0}, {1, K_L2, 0}, {1, K_R2, 0}, {0, 0, 0},
+    };
+    enum { NP = 6 };
+    int cur = NP - 1; /* a custom pair cycles on from the first preset */
+    for (int i = 0; i < NP; i++)
+        if (presets[i][0] == c->ff_n && (c->ff_n == 0 || (presets[i][1] == c->ff_btns[0] && (c->ff_n == 1 || presets[i][2] == c->ff_btns[1]))))
+            cur = i;
+    const int *p = presets[(cur + (dir < 0 ? -1 : 1) + NP) % NP];
+    c->ff_n = p[0];
+    c->ff_btns[0] = p[1] ? p[1] : c->ff_btns[0];
+    c->ff_btns[1] = p[2] ? p[2] : c->ff_btns[1];
+}
+
 int cfg_save(const Cfg *c) {
     char path[600], text[3600] = "", line[1400];
     int rc = 0;
-    snprintf(text, sizeof(text), "hz=%d\nff=%d\nff_speed=%s\nload=%d\nskip=%d\nbattles=%d\nhit=%d\nbtext=%d\nsaveany=1\nbmenu=1\nschema=%d\n"
-             "bmem=%d\nbbuf=%d\nwidescreen=%d\nfullscreen=%d\ntouch_pad=%d\nfill=%d\nscale=%d\nrenderer_pc=%d\nfilter=%d\niscale=%d\nsubpixel=%d\n",
-             c->hz, c->ff ? 1 : 0, ff_names[c->ff ? c->ff : 3], c->load, c->skip, c->battles, c->hit, c->btext, SCHEMA_TUI_STATE,
-             c->bmem, c->bbuf, c->widescreen, c->fullscreen, c->touch_pad, c->fill, c->scale, c->renderer_pc, c->filter, c->iscale, c->subpixel);
+    char ff_pad_str[64] = "none";
+    if (c->ff_n == 1) snprintf(ff_pad_str, sizeof(ff_pad_str), "%s", code_name(c->ff_btns[0]));
+    else if (c->ff_n == 2) snprintf(ff_pad_str, sizeof(ff_pad_str), "%s+%s", code_name(c->ff_btns[0]), code_name(c->ff_btns[1]));
+    snprintf(text, sizeof(text), "hz=%d\nff=%d\nff_speed=%s\nff_mode=%d\nff_pad=%s\nload=%d\nskip=%d\nbattles=%d\nhit=%d\nbtext=%d\nsaveany=1\nbmenu=1\nschema=%d\n"
+             "bmem=%d\nbbuf=%d\nwidescreen=%d\nfullscreen=%d\ntouch_pad=%d\nfill=%d\nfmv_autocrop=%d\nscale=%d\nrenderer_pc=%d\nfilter=%d\niscale=%d\nsubpixel=%d\n",
+             c->hz, c->ff ? 1 : 0, ff_names[c->ff ? c->ff : 3], c->ff_mode, ff_pad_str, c->load, c->skip, c->battles, c->hit, c->btext, SCHEMA_TUI_STATE,
+             c->bmem, c->bbuf, c->widescreen, c->fullscreen, c->touch_pad, c->fill, c->fmv_autocrop, c->scale, c->renderer_pc, c->filter, c->iscale, c->subpixel);
     if (disc_path[0]) {
         snprintf(line, sizeof(line), "disc=%s\n", disc_path);
         strcat(text, line);

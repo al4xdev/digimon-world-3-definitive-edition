@@ -19,7 +19,11 @@ typedef struct Cfg {
     int ff;                  /* 0 off, 1 2x, 2 4x, 3 8x, 4 unlimited */
     int load;                /* fast_loading: 0 off, 1 2x, 2 4x, 3 8x, 4 instant */
     int skip, battles, hit;  /* skip dialogues, skip battle animations, hit reaction */
-    int btext;               /* battle text: 0 off, 1 skip, 2 async */
+    int fmv_autocrop;        /* trim the black bars off FMVs at runtime (video.fmv_autocrop) */
+    int ff_mode;             /* the fast-forward key: 0 toggle, 1 hold */
+    int ff_n;                /* how many buttons it takes: 0 none (off), 1 or 2 (a chord) */
+    int ff_btns[2];          /* those buttons, as places (K_*) */
+    int btext;               /* battle text: 1 skip, 2 async (0 from an old file reads as skip) */
     int bmem, bbuf;          /* remember cursor; buffer input 0 off 1 short 2 long */
     int logs;                /* 0 off 1 soft 2 heavy */
     int led;                 /* the led_bar mod's switch in settings.json */
@@ -64,6 +68,8 @@ void browse_start_dir(char *out, size_t n);
 void cfg_set_layout(Cfg *c, int layout);
 int cfg_layout(const Cfg *c);
 char layout_letter(int layout, int code);
+int cfg_fmt_ff(const Cfg *c, char *out, size_t n); /* "SELECT+R1", "R3", "OFF": the turbo buttons as printed; 1 when set */
+void cfg_ff_cycle(Cfg *c, int dir);  /* the preset buttons: SELECT+R1, L3, R3, L2, R2, OFF */
 const char *place_display(int code);  /* "SOUTH", "EAST", ... as the handheld's pad is printed */
 /* The "Fight button" row: Fight and Tag on the face buttons, Fight at the bottom (the default) or on
  * the right (the layout before). cfg_fight_place: 0 bottom (Fight south, Tag east), 1 right (Fight east, Tag south),
