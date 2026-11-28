@@ -393,13 +393,13 @@ first copy is never overwritten).
 | File | Number | Current | Migrated |
 |---|---|---|---|
 | `tui.state` | `schema=N` (none: 0) | 1 | by `cfg_load`, before it reads the file. 0 -> 1: Fight at the bottom (was `bm_v=2`) and 60 Hz, for a file still on the old defaults |
-| `card1.def.json`, `card2.def.json` | `"version": N` | 2 | by `migrate_saves`, before the game starts (PC and Android). 1 -> 2: the `"respec"` section |
+| `card1.def.json`, `card2.def.json` | `"version": N` | 3 | by `migrate_saves`, before the game starts (PC and Android). 2 (0.9.1+, with `"story"`) -> 3; pre-0.9.1 files are not migrated |
 | `settings.json` | `"schema": N` (the game's contract) | 1 | rewritten whole on every save: no step |
 
 A newer file than the launcher knows is left alone (the game does the same with the save); a newer `tui.state` is not
 rewritten by a save either, so a downgrade and back loses none of its keys. Files that come from outside (a restored
 backup, a cloud pull, the RecompLauncher mirror) keep their old number until the next game start, where `migrate_saves`
-runs after the cloud sync (so a pulled v1 file is migrated too). The pair's sha changes with the JSON's bytes, so
+runs after the cloud sync (so a pulled 0.9.1+ v2 file is migrated too). The pair's sha changes with the JSON's bytes, so
 `cloud_migrate_saves` moves the cloud state's `last_sha256` along when the local pair was the synced one: the migration is
 not a local change and cannot make a false conflict with a newer cloud save. A migrated file's old copy is
 `<file>.v<N>.bak`, or `.v<N>.2.bak` and so on when that name is taken: no copy is replaced. A version is a whole number

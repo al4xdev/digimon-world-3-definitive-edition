@@ -127,9 +127,10 @@ Tested devices, install details and known issues: [`.ci-cd/portmaster/README.md`
    `INTEGER`** scaling, the internal **resolution** (3X by default), the **GPU** or software renderer and the screen
    **filters**. The launcher updates itself when a new release is out.
 
-**Coming from an older version?** Your save opens and plays. To give it the new MP and TP tables, run
-`tools/convert_save_mp.py card1.mcd` once (it keeps a backup). The launcher brings its settings and the expansion
-save beside the card (`card1.def.json`) up to date by itself, keeping the old file as a backup.
+**Coming from an older version?** Saves from **0.9.1 or newer** open and play: the launcher brings its settings and
+the expansion save beside the card (`card1.def.json`) up to date by itself, keeping a backup. Saves from **before
+0.9.1** are not migrated (start a fresh save). Original PS1 saves open and play too — run
+`tools/convert_save_mp.py card1.mcd` once for the new MP and TP tables (it keeps a backup).
 
 ---
 

@@ -48,9 +48,7 @@ static inline void app_fmt_epoch(long ts, const char *unknown_lbl, char *out, si
 }
 
 static inline void app_reset_cfg(Cfg *c) {
-    int ok91 = c->v091_save_ok;
     cfg_defaults(c);
-    c->v091_save_ok = ok91;
     cfg_save(c);
 }
 

@@ -129,9 +129,11 @@ Appareils testés, détails d'installation et problèmes connus : [`.ci-cd/portm
    l'échelle **`FILL` ou `INTEGER`**, la **résolution** interne (3X par défaut), le rendu **GPU** ou logiciel et les
    **filtres** d'écran. Le launcher se met à jour tout seul quand une nouvelle version sort.
 
-**Vous venez d'une ancienne version ?** Votre sauvegarde s'ouvre et se joue. Pour lui donner les nouvelles tables de MP
-et de TP, lancez une fois `tools/convert_save_mp.py card1.mcd` (une copie de secours est conservée). Le launcher met à jour tout seul ses réglages et la sauvegarde
-d'extension à côté de la carte (`card1.def.json`), en gardant l'ancien fichier en copie de secours.
+**Vous venez d'une ancienne version ?** Les sauvegardes de la **0.9.1 ou plus récente** s'ouvrent et se jouent : le
+launcher met à jour tout seul ses réglages et la sauvegarde d'extension à côté de la carte (`card1.def.json`), en
+gardant une copie de secours. Les sauvegardes **antérieures à la 0.9.1** ne sont pas migrées (commencez une nouvelle
+partie). Les sauvegardes PS1 d'origine s'ouvrent et se jouent aussi — lancez une fois `tools/convert_save_mp.py card1.mcd`
+pour les nouvelles tables de MP et de TP (une copie de secours est conservée).
 
 ---
 
