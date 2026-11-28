@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="340" viewBox="0 0 900 340" role="img" aria-labelledby="title desc">
+<title id="title">Digimon World 3: Definitive Edition v0.9.3-rc1, part 1 of 2</title>
+<desc id="desc">Warning banner: do not install if you do not know what this is. Digimon World 3: Definitive Edition, release candidate 0.9.3-rc1, part 1 of 2: the new loading screens, here to be calibrated. Part 2 brings the HUD glyph improvements and support for more symbols.</desc>
+<defs>
+<style>text{font-family:-apple-system,BlinkMacSystemFont,&quot;Segoe UI&quot;,Roboto,&quot;Helvetica Neue&quot;,Arial,&quot;Noto Sans&quot;,&quot;Liberation Sans&quot;,sans-serif}
+.an{animation-duration:9s;animation-iteration-count:infinite;animation-timing-function:cubic-bezier(.45,0,.25,1)}
+.sweep{animation-name:sweep;animation-timing-function:linear}
+.pulse{animation-name:pulse;animation-duration:2.4s;animation-iteration-count:infinite;animation-timing-function:ease-in-out}
+.hz{animation-name:hz;animation-duration:1.6s;animation-iteration-count:infinite;animation-timing-function:linear}
+.bar{animation-name:bar;animation-duration:3.2s;animation-iteration-count:infinite;animation-timing-function:steps(14,end)}
+@keyframes sweep{0%{transform:translateX(-420px)}100%{transform:translateX(980px)}}
+@keyframes pulse{0%,100%{opacity:.55}50%{opacity:1}}
+@keyframes hz{0%{transform:translateX(0)}100%{transform:translateX(34px)}}
+@keyframes bar{0%{width:0}100%{width:196px}}
+@media (prefers-reduced-motion: reduce){*{animation:none!important}.bar{width:120px}}</style>
+<linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#11141d"/><stop offset=".55" stop-color="#191e2b"/><stop offset="1" stop-color="#242b3f"/></linearGradient>
+<pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse" x="6" y="10"><path d="M28,0 H0 V28" fill="none" stroke="#5a6688" stroke-width="1"/></pattern>
+<radialGradient id="fade" cx="690" cy="200" r="430" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset=".6" stop-color="#fff" stop-opacity=".16"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+<mask id="gm"><rect width="900" height="340" fill="url(#fade)"/></mask>
+<linearGradient id="band" x1="0" x2="1"><stop offset="0" stop-color="#9085e9" stop-opacity="0"/><stop offset=".5" stop-color="#b3aaff" stop-opacity=".55"/><stop offset="1" stop-color="#9085e9" stop-opacity="0"/></linearGradient>
+<pattern id="hazard" width="34" height="34" patternUnits="userSpaceOnUse" patternTransform="skewX(-35)"><rect width="17" height="34" fill="#14161c"/><rect x="17" width="17" height="34" fill="#f2c230"/></pattern>
+<clipPath id="card"><rect width="900" height="340" rx="16"/></clipPath>
+<clipPath id="strip"><rect x="0" y="0" width="900" height="14"/></clipPath>
+</defs>
+
+<rect width="900" height="340" rx="16" fill="url(#bg)"/>
+<g clip-path="url(#card)">
+<g mask="url(#gm)"><rect width="900" height="340" fill="url(#grid)" opacity=".8"/><g class="an sweep"><rect x="0" y="-60" width="260" height="480" fill="url(#band)" opacity=".5" transform="skewX(-24)"/></g></g>
+
+<!-- warning header -->
+<rect width="900" height="96" fill="#2a1710"/>
+<rect y="94" width="900" height="2" fill="#ef6a3a"/>
+<g clip-path="url(#strip)"><g class="hz"><rect x="-34" width="1000" height="14" fill="url(#hazard)"/></g></g>
+<g transform="translate(46,56)">
+<path d="M0,-26 L28,22 H-28 Z" fill="#f2c230" stroke="#f2c230" stroke-width="4" stroke-linejoin="round"/>
+<rect x="-3" y="-11" width="6" height="19" rx="2" fill="#14161c"/><circle cy="14.5" r="3.3" fill="#14161c"/>
+</g>
+<text x="92" y="52" font-size="36" font-weight="800" fill="#ffd04a" letter-spacing=".5" class="pulse">DO NOT INSTALL IF YOU DON'T</text>
+<text x="92" y="82" font-size="26" font-weight="800" fill="#ffd04a" letter-spacing=".5" class="pulse">KNOW WHAT THIS IS</text>
+<g transform="translate(838,56)">
+<path d="M0,-26 L28,22 H-28 Z" fill="#f2c230" stroke="#f2c230" stroke-width="4" stroke-linejoin="round"/>
+<rect x="-3" y="-11" width="6" height="19" rx="2" fill="#14161c"/><circle cy="14.5" r="3.3" fill="#14161c"/>
+</g>
+</g>
+
+<text x="48" y="168" font-size="46" fill="#f0efec" font-weight="800" letter-spacing="-.5">Digimon World 3</text>
+<text x="51" y="202" font-size="18" fill="#9085e9" font-weight="800" letter-spacing="7">DEFINITIVE EDITION</text>
+<rect x="51" y="220" width="44" height="3" rx="1.5" fill="#9085e9" opacity=".7"/>
+<text x="50" y="258" font-size="17.5" font-weight="600" fill="#c3c2b7">Release candidate · loading screens</text>
+<text x="50" y="288" font-size="15" fill="#9a9a94">Part 2 brings the HUD glyph fixes and more symbols</text>
+
+<!-- right card: v0.9.3-rc1 + part 1/2 + loading bar -->
+<g transform="translate(560,128)">
+<rect x="5" y="5" width="300" height="176" rx="14" fill="#07080c" fill-opacity=".55"/>
+<rect width="300" height="176" rx="14" fill="#1d2232" stroke="#3a4257" stroke-width="1.5"/>
+<text x="24" y="40" font-size="13" font-weight="800" fill="#9a9a94" letter-spacing="3">RELEASE CANDIDATE</text>
+<text x="24" y="82" font-size="38" font-weight="800" fill="#f0efec">v0.9.3-rc1</text>
+<rect x="24" y="100" width="108" height="30" rx="15" fill="#9085e9"/>
+<text x="78" y="120.5" font-size="15" font-weight="800" fill="#14161c" text-anchor="middle" letter-spacing="1">PART 1 / 2</text>
+<text x="146" y="120.5" font-size="13" fill="#9a9a94">loading screens</text>
+<rect x="24" y="146" width="196" height="8" rx="4" fill="#0f121a" stroke="#3a4257"/>
+<rect class="bar" x="24" y="146" width="120" height="8" rx="4" fill="#3fcf98"/>
+<text x="232" y="154" font-size="12" fill="#9a9a94">too fast?</text>
+</g>
+</svg>
