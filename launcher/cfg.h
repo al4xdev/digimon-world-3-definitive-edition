@@ -22,7 +22,6 @@ typedef struct Cfg {
     int fmv_autocrop;        /* trim the black bars off FMVs at runtime (video.fmv_autocrop) */
     int ff_n;                /* how many buttons it takes: 0 none (off), 1 or 2 (a chord) */
     int ff_btns[2];          /* those buttons, as places (K_*) */
-    int hh_renderer;         /* handhelds: the renderer 0 auto (the CPU's default), 1 software, 2 gles */
     int hh_video;            /* handhelds: the game's video path 0 auto (the script's), 1 fbdev, 2 sdl2 */
     int btext;               /* battle text: 1 skip, 2 async (0 from an old file reads as skip) */
     int bmem, bbuf;          /* remember cursor; buffer input 0 off 1 short 2 long */
@@ -33,7 +32,7 @@ typedef struct Cfg {
     int touch_pad;           /* 1 show floating virtual gamepad on Android, 0 hide */
     int fill;                /* 1 fill screen preserving aspect, 0 exact integer scale (PC) */
     int scale;               /* PC window scale: 0 = auto from monitor, 2..6 manual */
-    int renderer_pc;         /* 0 gpu, 1 software (PC only) */
+    int renderer_pc;         /* 0 gpu (a handheld: auto, the CPU's default), 1 software, 2 gles (handhelds only) */
     int filter;              /* 0 none, 1 sharp, 2 scanlines, 3 crt, 4 smooth (PC GPU) */
     int iscale;              /* video.internal_scale: 1..8 times the PS1's resolution (PC GPU) */
     int subpixel;            /* video.subpixel: 0 off, 1 on, 2 perspective (PC GPU, above iscale 1) */

@@ -198,13 +198,14 @@ static void foot_back(const char *lb) {
     footer(k, w, 1);
 }
 
-#define VIDEO_STEP 25 /* ten rows */
+#define VIDEO_STEP 25 /* the PC's ten rows */
+static int video_step(void) { return is_pc ? VIDEO_STEP : 44; } /* a handheld has three */
 #define CTRL_STEP 31 /* the glyph row, eight buttons and TURBO: ten rows above the footer */
 static int row_target_y(int s, int idx) {
     switch (s) {
     case S_HOME: return 92 + idx * home_step() - 4;
     case S_GAME: return 90 + idx * game_step() - 4;
-    case S_VIDEO: return is_pc ? 90 + idx * VIDEO_STEP - 4 : 100 + idx * 44 - 4;
+    case S_VIDEO: return 90 + idx * video_step() - 4;
     case S_DEBUG: return 92 + idx * 48 - 4;
     case S_SAVES: return 86 + idx * 46 - 4;
     case S_CLOUD: return 206 + idx * 44 - 4;
@@ -376,7 +377,17 @@ static void draw_home(void) {
     footer(k, w, 3);
 }
 
-#define VIDEO_N 10
+/* The VIDEO rows, in the order of the PC's screen; the last one is the handheld's. A handheld shows three of them. */
+enum { V_WIDE, V_FULL, V_SCALING, V_WSCALE, V_HZ, V_REND, V_FILTER, V_RES, V_VERT, V_FMV, V_PATH, VIDEO_N };
+static int video_rows(int *out) {
+    static const int pc[] = {V_WIDE, V_FULL, V_SCALING, V_WSCALE, V_HZ, V_REND, V_FILTER, V_RES, V_VERT, V_FMV};
+    static const int hh[] = {V_HZ, V_REND, V_PATH};
+    const int *r = is_pc ? pc : hh;
+    int n = is_pc ? (int)(sizeof(pc) / sizeof(pc[0])) : (int)(sizeof(hh) / sizeof(hh[0]));
+    if (out) for (int i = 0; i < n; i++) out[i] = r[i];
+    return n;
+}
+
 static void draw_video(void) {
     header("DIGIMON WORLD 3", "VIDEO");
     int dw = 1280, dh = 720;
@@ -388,26 +399,31 @@ static void draw_video(void) {
     else snprintf(sc_val, sizeof(sc_val), "%dX (%dx%d)", c.scale, gw, gh);
     char res_val[48];
     app_fmt_vram(&c, res_val, sizeof(res_val));
+    /* renderer_pc: 0 gpu (a handheld: auto), 1 software, 2 gles (handhelds only) */
+    static const char *const hh_rend[] = {"AUTO", "SOFTWARE", "GLES"}, *const hh_path[] = {"AUTO", "FBDEV", "SDL2"};
     const char *v[VIDEO_N] = {
         (c.widescreen && c.renderer_pc == 0) ? "AUTO" : "OFF",
         c.fullscreen ? "ON" : "OFF",
         c.fill ? "FILL" : "INTEGER",
         sc_val,
         c.hz == 60 ? "60 HZ" : "50 HZ",
-        c.renderer_pc ? "SOFTWARE" : "GPU",
+        is_pc ? (c.renderer_pc ? "SOFTWARE" : "GPU") : hh_rend[c.renderer_pc],
         c.renderer_pc ? "-" : filt_label[c.filter],
         c.renderer_pc ? "-" : res_val,
         (c.renderer_pc || c.iscale == 1) ? "-" : vert_label[c.subpixel],
         c.fmv_autocrop ? "ON" : "OFF",
+        hh_path[c.hh_video],
     };
     const char *lab[VIDEO_N] = {"WIDESCREEN", "FULLSCREEN", "SCALING", "WINDOW SCALE", "REFRESH RATE", "RENDERER", "FILTER",
-                                "RESOLUTION", "3D VERTICES", "FMV AUTOCROP"};
+                                "RESOLUTION", "3D VERTICES", "FMV AUTOCROP", "VIDEO PATH"};
+    int rows[VIDEO_N], n = video_rows(rows), st = video_step();
     int gy = (int)(cur_y >= 0 && cur_screen == S_VIDEO ? cur_y : row_target_y(S_VIDEO, sel));
-    draw_focus(40, gy, W - 80, VIDEO_STEP + 1, 8, 0);
-    for (int i = 0; i < VIDEO_N; i++) {
+    draw_focus(40, gy, W - 80, st < 30 ? st + 1 : 34, 8, 0);
+    for (int k = 0; k < n; k++) {
+        int i = rows[k];
         /* Green means "changed from the PS1's picture": 1X and the PS1 vertices are the console's own. */
-        int on = i == 4 ? c.hz == 60 : i == 7 ? c.iscale > 1 : i == 8 ? c.subpixel > 0 : (strcmp(v[i], "OFF") && strcmp(v[i], "-"));
-        row(90 + i * VIDEO_STEP, lab[i], v[i], i == sel, 0, on && strcmp(v[i], "-"), 0);
+        int on = i == V_HZ ? c.hz == 60 : i == V_RES ? c.iscale > 1 : i == V_VERT ? c.subpixel > 0 : (strcmp(v[i], "OFF") && strcmp(v[i], "-"));
+        row(90 + k * st, lab[i], v[i], k == sel, 0, on && strcmp(v[i], "-"), 0);
     }
     static const char *desc[VIDEO_N] = {
         "Battles and field follow the screen's shape, up to 16:9 (auto-selects GPU). Menus stay 4:3.",
@@ -419,32 +435,16 @@ static void draw_video(void) {
         "GPU screen filter (SHARP keeps crisp pixels).",
         "Scales full PS1 VRAM (1024x512, 1536x512 in 16:9), not just 320x240.",
         "Above 1X: PS1 wobbles; SMOOTH steadies 3D; + TEXTURES fixes warping.",
-        "Trims the black bars off videos while they play (off by default)."
-    };
-    rect(40, 346, W - 80, 1, C_EDGE, 256);
-    text(44, 358, desc[sel], 15, C_NOTE);
-    snprintf(mon, sizeof(mon), "MONITOR %dx%d", dw, dh);
-    text_r(W - 44, 386, mon, 14, C_CYAN);
-    foot_std("CHANGE");
-}
-
-/* A handheld's VIDEO: the refresh rate, the renderer and the game's video path. Every value is offered, whether the
- * device runs it or not: a choice that does not work is changed back here (the menu keeps its own path). */
-static void draw_video_hh(void) {
-    header("DIGIMON WORLD 3", "VIDEO");
-    static const char *const rend[] = {"AUTO", "SOFTWARE", "GLES"}, *const path[] = {"AUTO", "FBDEV", "SDL2"};
-    const char *v[3] = {c.hz == 60 ? "60 HZ" : "50 HZ", rend[c.hh_renderer], path[c.hh_video]};
-    const char *lab[3] = {"REFRESH RATE", "RENDERER", "VIDEO PATH"};
-    static const char *desc[3] = {
-        "60 HZ is the game's own NTSC mode (smoother). 50 HZ is the original PAL speed.",
-        "AUTO: GLES on the Cortex-A35 (RK3326), SOFTWARE elsewhere. SOFTWARE is exact PS1.",
+        "Trims the black bars off videos while they play (off by default).",
         "How the game reaches the screen. AUTO follows the system. The menu keeps its own path.",
     };
-    int gy = (int)(cur_y >= 0 && cur_screen == S_VIDEO ? cur_y : row_target_y(S_VIDEO, sel));
-    draw_focus(40, gy, W - 80, 36, 8, 0);
-    for (int i = 0; i < 3; i++) row(100 + i * 44, lab[i], v[i], i == sel, 0, i == 0 ? c.hz == 60 : i == 1 ? c.hh_renderer > 0 : c.hh_video > 0, 0);
     rect(40, 346, W - 80, 1, C_EDGE, 256);
-    text(44, 358, desc[sel], 15, C_NOTE);
+    text(44, 358, !is_pc && rows[sel] == V_REND ? "AUTO: GLES on the Cortex-A35 (RK3326), SOFTWARE elsewhere. SOFTWARE is exact PS1."
+                                                : desc[rows[sel]], 15, C_NOTE);
+    if (is_pc) {
+        snprintf(mon, sizeof(mon), "MONITOR %dx%d", dw, dh);
+        text_r(W - 44, 386, mon, 14, C_CYAN);
+    }
     foot_std("CHANGE");
 }
 
@@ -1189,7 +1189,7 @@ static void draw_screen(void) {
     case S_SPLASH: draw_splash(); break;
     case S_HOME: draw_home(); break;
     case S_GAME: draw_game(); break;
-    case S_VIDEO: if (is_pc) draw_video(); else draw_video_hh(); break;
+    case S_VIDEO: draw_video(); break;
     case S_HUD: draw_hud(); break;
     case S_CONTROLS: draw_controls(); break;
     case S_SAVES: draw_saves(); break;
@@ -1917,7 +1917,7 @@ static void on_press(int code) {
     switch (screen) {
     case S_HOME: n = home_n; break;
     case S_GAME: n = game_n(); break;
-    case S_VIDEO: n = is_pc ? VIDEO_N : 3; break;
+    case S_VIDEO: n = video_rows(NULL); break;
     case S_HUD: n = HUD_ROWS; break;
     case S_CONTROLS: n = 1 + A_COUNT + 1; break;
     case S_SAVES: n = 6; break;
@@ -1973,32 +1973,30 @@ static void on_press(int code) {
     case S_VIDEO:
         if (is_start) start_game();
         if (back) leave_edit(HI_VIDEO);
-        if (!is_pc) {
-            if (ok || d) {
-                if (sel == 0) c.hz = c.hz == 60 ? 50 : 60;
-                else if (sel == 1) c.hh_renderer = (c.hh_renderer + s + 3) % 3;
-                else c.hh_video = (c.hh_video + s + 3) % 3;
-            }
-            break;
-        }
         if (ok || d) {
-            switch (sel) {
-            case 0: c.widescreen = !c.widescreen; if (c.widescreen) c.renderer_pc = 0; break;
-            case 1: c.fullscreen = !c.fullscreen; break;
-            case 2: c.fill = !c.fill; break;
-            case 3: {
+            int rows[VIDEO_N];
+            video_rows(rows);
+            switch (rows[sel]) {
+            case V_WIDE: c.widescreen = !c.widescreen; if (c.widescreen) c.renderer_pc = 0; break;
+            case V_FULL: c.fullscreen = !c.fullscreen; break;
+            case V_SCALING: c.fill = !c.fill; break;
+            case V_WSCALE: {
                 static const int scales[] = {0, 2, 3, 4, 5, 6};
                 int idx = 0;
                 for (; idx < 6; idx++) if (scales[idx] == c.scale) break;
                 c.scale = scales[((idx < 6 ? idx : 0) + s + 6) % 6];
                 break;
             }
-            case 4: c.hz = c.hz == 60 ? 50 : 60; break;
-            case 5: c.renderer_pc = !c.renderer_pc; if (c.renderer_pc) c.widescreen = 0; break;
-            case 6: if (!c.renderer_pc) c.filter = (c.filter + s + 5) % 5; break;
-            case 7: if (!c.renderer_pc) c.iscale = (c.iscale - 1 + s + 8) % 8 + 1; break;
-            case 8: if (!c.renderer_pc && c.iscale > 1) c.subpixel = (c.subpixel + s + 3) % 3; break;
-            case 9: c.fmv_autocrop = !c.fmv_autocrop; break;
+            case V_HZ: c.hz = c.hz == 60 ? 50 : 60; break;
+            case V_REND:
+                if (is_pc) { c.renderer_pc = !c.renderer_pc; if (c.renderer_pc) c.widescreen = 0; }
+                else c.renderer_pc = (c.renderer_pc + s + 3) % 3;
+                break;
+            case V_FILTER: if (!c.renderer_pc) c.filter = (c.filter + s + 5) % 5; break;
+            case V_RES: if (!c.renderer_pc) c.iscale = (c.iscale - 1 + s + 8) % 8 + 1; break;
+            case V_VERT: if (!c.renderer_pc && c.iscale > 1) c.subpixel = (c.subpixel + s + 3) % 3; break;
+            case V_FMV: c.fmv_autocrop = !c.fmv_autocrop; break;
+            case V_PATH: c.hh_video = (c.hh_video + s + 3) % 3; break;
             }
         }
         break;
