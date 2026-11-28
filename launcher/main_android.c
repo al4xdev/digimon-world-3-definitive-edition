@@ -47,7 +47,7 @@ enum { HI_PLAY, HI_GAME, HI_VIDEO, HI_HUD, HI_CONTROLS, HI_SAVES, HI_DEBUG, HI_R
 enum { GAME_LANG, GAME_FF, GAME_LOAD, GAME_SKIP, GAME_BATTLES, GAME_HIT, GAME_BTEXT, GAME_TOUCHPAD, GAME_DISC, GAME_N };
 #define GAME_ROW_STEP 35
 enum { VIDEO_WIDESCREEN, VIDEO_SCALING, VIDEO_HZ, VIDEO_RENDERER, VIDEO_FILTER, VIDEO_RESOLUTION, VIDEO_SUBPIXEL, VIDEO_FMV_CROP, VIDEO_N };
-#define CTRL_ROW_STEP 31 /* glyphs, eight buttons, TURBO and its mode */
+#define CTRL_ROW_STEP 33 /* glyphs, eight buttons and TURBO */
 #define VIDEO_ROW_Y 76
 #define VIDEO_ROW_STEP 38
 enum { SAVES_SYNC, SAVES_INTERVAL, SAVES_BACKUPS, SAVES_NOW, SAVES_RESTORE, SAVES_ACCOUNT, SAVES_N };
@@ -795,7 +795,6 @@ static void draw_controls(void) {
     char tb[48];
     cfg_fmt_ff(&c, tb, sizeof(tb));
     row_touch(116 + A_COUNT * CTRL_ROW_STEP, 30, "TURBO", tb, sel == A_COUNT + 1, 0, c.ff_n > 0, 0, 1);
-    row_touch(116 + (A_COUNT + 1) * CTRL_ROW_STEP, 30, "TURBO MODE", c.ff_mode ? "HOLD" : "TOGGLE", sel == A_COUNT + 2, 0, 0, 0, 1);
     if (msg[0]) text_c(W / 2, H - 72, S(msg), 13, C_RED);
     footer_touch(0, 1, "RESET");
 }
@@ -1727,15 +1726,12 @@ static void on_touch(int code, int x, int y) {
                 return;
             }
         }
-        for (int i = A_COUNT; i < A_COUNT + 2; i++) {
-            if (in_rect(x, y, 32, 116 + i * CTRL_ROW_STEP, W - 64, CTRL_ROW_STEP - 1)) {
-                sel = i + 1;
-                capture = 0;
-                if (i == A_COUNT) cfg_ff_cycle(&c, touch_dir(x));
-                else c.ff_mode = !c.ff_mode;
-                cfg_save(&c);
-                return;
-            }
+        if (in_rect(x, y, 32, 116 + A_COUNT * CTRL_ROW_STEP, W - 64, CTRL_ROW_STEP - 1)) {
+            sel = A_COUNT + 1;
+            capture = 0;
+            cfg_ff_cycle(&c, touch_dir(x));
+            cfg_save(&c);
+            return;
         }
     } else if (screen == S_SAVES) {
         for (int i = 0; i < SAVES_N; i++) {
@@ -1919,7 +1915,7 @@ static void on_key(int code) {
         }
         int dir = code == K_UP ? -1 : +1;
         int n = screen == S_HOME ? HI_COUNT : screen == S_GAME ? GAME_N : screen == S_VIDEO ? VIDEO_N :
-                screen == S_HUD ? HUD_ROWS : screen == S_CONTROLS ? (A_COUNT + 3) : screen == S_SAVES ? SAVES_N :
+                screen == S_HUD ? HUD_ROWS : screen == S_CONTROLS ? (A_COUNT + 2) : screen == S_SAVES ? SAVES_N :
                 screen == S_DEBUG ? debug_n() : screen == S_BROWSE ? b_count : screen == S_BACKUPS ? bk_count :
                 screen == S_CLOUD ? cloud_n() : screen == S_DEVICES ? dev_count : 1;
         if (n > 0) sel = (sel + dir + n) % n;
@@ -1934,9 +1930,8 @@ static void on_key(int code) {
         else if (screen == S_VIDEO) activate_video_row(sel, dir);
         else if (screen == S_SAVES && (sel == SAVES_INTERVAL || sel == SAVES_BACKUPS)) activate_saves_row(sel, dir);
         else if (screen == S_HUD) do_hud_step(sel, dir);
-        else if (screen == S_CONTROLS && sel > A_COUNT) {
-            if (sel == A_COUNT + 1) cfg_ff_cycle(&c, dir);
-            else c.ff_mode = !c.ff_mode;
+        else if (screen == S_CONTROLS && sel == A_COUNT + 1) {
+            cfg_ff_cycle(&c, dir);
             cfg_save(&c);
         }
         else if (screen == S_CONTROLS && sel == 0) {
@@ -1956,9 +1951,6 @@ static void on_key(int code) {
                 cfg_save(&c);
             } else if (sel == A_COUNT + 1) {
                 cfg_ff_cycle(&c, +1);
-                cfg_save(&c);
-            } else if (sel == A_COUNT + 2) {
-                c.ff_mode = !c.ff_mode;
                 cfg_save(&c);
             } else {
                 capture = 1;

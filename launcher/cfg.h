@@ -20,7 +20,6 @@ typedef struct Cfg {
     int load;                /* fast_loading: 0 off, 1 2x, 2 4x, 3 8x, 4 instant */
     int skip, battles, hit;  /* skip dialogues, skip battle animations, hit reaction */
     int fmv_autocrop;        /* trim the black bars off FMVs at runtime (video.fmv_autocrop) */
-    int ff_mode;             /* the fast-forward key: 0 toggle, 1 hold */
     int ff_n;                /* how many buttons it takes: 0 none (off), 1 or 2 (a chord) */
     int ff_btns[2];          /* those buttons, as places (K_*) */
     int btext;               /* battle text: 1 skip, 2 async (0 from an old file reads as skip) */

@@ -444,7 +444,6 @@ void cfg_load(Cfg *c) {
         if (!strcmp(line, "hz")) c->hz = n == 60 ? 60 : 50;
         else if (!strcmp(line, "lang")) c->lang = n < 0 ? 0 : n > 6 ? 6 : n;
         else if (!strcmp(line, "ff")) ffon = n;
-        else if (!strcmp(line, "ff_mode")) c->ff_mode = n != 0;
         else if (!strcmp(line, "ff_pad")) {
             /* "none", or one or two place names joined by '+' */
             c->ff_n = 0;
@@ -592,20 +591,19 @@ static int write_settings(const Cfg *c) {
     char vres[64] = "";
     if ((is_pc || is_android) && c->renderer_pc == 0)
         snprintf(vres, sizeof(vres), ", \"internal_scale\": %d, \"subpixel\": \"%s\"", c->iscale, subpixel_names[c->subpixel]);
-    char ff_pads[96] = "", ff_hold[160], ff_toggle[160] = "";
+    char ff_pads[96] = "", ff_toggle[160] = "";
     if (c->ff_n == 1) snprintf(ff_pads, sizeof(ff_pads), "\"pad:%s\"", code_name(c->ff_btns[0]));
     else if (c->ff_n == 2)
         snprintf(ff_pads, sizeof(ff_pads), "[\"pad:%s\", \"pad:%s\"]", code_name(c->ff_btns[0]), code_name(c->ff_btns[1]));
-    snprintf(ff_hold, sizeof(ff_hold), "%s%s%s", is_pc ? "\"Tab\"" : "", is_pc && c->ff_mode == 1 && ff_pads[0] ? ", " : "",
-             c->ff_mode == 1 ? ff_pads : "");
-    if (c->ff_mode == 0) snprintf(ff_toggle, sizeof(ff_toggle), "%s", ff_pads);
+    /* TAB on a PC keyboard and the pad's turbo buttons both toggle fast-forward; nothing is a hold. */
+    snprintf(ff_toggle, sizeof(ff_toggle), "%s%s%s", is_pc ? "\"Tab\"" : "", is_pc && ff_pads[0] ? ", " : "", ff_pads);
     char text[6400];
     snprintf(text, sizeof(text),
         "{\n  \"schema\": 1,\n  \"disc\": { \"path\": \"%s\" },\n"
         "  \"video\": { \"window\": true, \"scale\": %d, \"fullscreen\": %s, \"fill\": %s,%s \"refresh\": %d, \"renderer\": \"%s\", \"filter\": \"%s\"%s },\n"
         "  \"audio\": { \"mute\": false },\n  \"memcard1\": \"card1.mcd\",\n  \"memcard2\": \"card2.mcd\",\n"
         "  \"watchdog\": 0,\n  \"debug\": { \"logs\": \"%s\" },\n  \"mods\": {\n"
-        "    \"fast_forward\": { \"enabled\": %s, \"speed\": \"%s\", \"mute\": true, \"hold\": [%s], "
+        "    \"fast_forward\": { \"enabled\": %s, \"speed\": \"%s\", \"mute\": true, \"hold\": \"\", "
         "\"toggle\": [%s] },\n"
         "    \"fast_loading\": { \"enabled\": %s, \"speed\": \"%s\" },\n"
         "    \"skip_dialogues\": { \"enabled\": %s, \"fast_forward_waits\": false },\n"
@@ -621,7 +619,7 @@ static int write_settings(const Cfg *c) {
         log_names[c->logs], c->ff ? "true" : "false", ff_names[c->ff ? c->ff : 3],
         /* Hold Tab on a PC keyboard; the pad's turbo buttons (CONTROLS) toggle it, or hold it, on every build. Both are
          * the runtime's bindings: a chord of two buttons, so neither reaches the game once both are down. */
-        ff_hold, ff_toggle,
+        ff_toggle,
         c->load ? "true" : "false", load_names[c->load ? c->load : 3],
         c->skip ? "true" : "false", c->battles ? "true" : "false", c->battles && c->hit ? "true" : "false",
         btext_names[c->btext == 2 ? 2 : 1],
@@ -660,9 +658,9 @@ int cfg_save(const Cfg *c) {
     char ff_pad_str[64] = "none";
     if (c->ff_n == 1) snprintf(ff_pad_str, sizeof(ff_pad_str), "%s", code_name(c->ff_btns[0]));
     else if (c->ff_n == 2) snprintf(ff_pad_str, sizeof(ff_pad_str), "%s+%s", code_name(c->ff_btns[0]), code_name(c->ff_btns[1]));
-    snprintf(text, sizeof(text), "hz=%d\nff=%d\nff_speed=%s\nff_mode=%d\nff_pad=%s\nload=%d\nskip=%d\nbattles=%d\nhit=%d\nbtext=%d\nsaveany=1\nbmenu=1\nschema=%d\n"
+    snprintf(text, sizeof(text), "hz=%d\nff=%d\nff_speed=%s\nff_pad=%s\nload=%d\nskip=%d\nbattles=%d\nhit=%d\nbtext=%d\nsaveany=1\nbmenu=1\nschema=%d\n"
              "bmem=%d\nbbuf=%d\nwidescreen=%d\nfullscreen=%d\ntouch_pad=%d\nfill=%d\nfmv_autocrop=%d\nscale=%d\nrenderer_pc=%d\nfilter=%d\niscale=%d\nsubpixel=%d\n",
-             c->hz, c->ff ? 1 : 0, ff_names[c->ff ? c->ff : 3], c->ff_mode, ff_pad_str, c->load, c->skip, c->battles, c->hit, c->btext, SCHEMA_TUI_STATE,
+             c->hz, c->ff ? 1 : 0, ff_names[c->ff ? c->ff : 3], ff_pad_str, c->load, c->skip, c->battles, c->hit, c->btext, SCHEMA_TUI_STATE,
              c->bmem, c->bbuf, c->widescreen, c->fullscreen, c->touch_pad, c->fill, c->fmv_autocrop, c->scale, c->renderer_pc, c->filter, c->iscale, c->subpixel);
     if (disc_path[0]) {
         snprintf(line, sizeof(line), "disc=%s\n", disc_path);

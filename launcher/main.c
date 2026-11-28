@@ -123,7 +123,7 @@ static int home_step(void) {
     return home_n > 7 ? 38 : 44;
 }
 
-static int game_n(void) { return is_portmaster ? 8 : 9; }
+static int game_n(void) { return is_portmaster ? 7 : 8; }
 static int game_step(void) { return is_portmaster ? 31 : 27; }
 
 static int home_index(int id) {
@@ -198,8 +198,8 @@ static void foot_back(const char *lb) {
     footer(k, w, 1);
 }
 
-#define VIDEO_STEP 27 /* nine rows */
-#define CTRL_STEP 29 /* the glyph row, eight buttons, TURBO and its mode: eleven rows above the footer */
+#define VIDEO_STEP 25 /* ten rows */
+#define CTRL_STEP 31 /* the glyph row, eight buttons and TURBO: ten rows above the footer */
 static int row_target_y(int s, int idx) {
     switch (s) {
     case S_HOME: return 92 + idx * home_step() - 4;
@@ -376,7 +376,7 @@ static void draw_home(void) {
     footer(k, w, 3);
 }
 
-#define VIDEO_N 9
+#define VIDEO_N 10
 static void draw_video(void) {
     header("DIGIMON WORLD 3", "VIDEO");
     int dw = 1280, dh = 720;
@@ -393,19 +393,20 @@ static void draw_video(void) {
         c.fullscreen ? "ON" : "OFF",
         c.fill ? "FILL" : "INTEGER",
         sc_val,
+        c.hz == 60 ? "60 HZ" : "50 HZ",
         c.renderer_pc ? "SOFTWARE" : "GPU",
         c.renderer_pc ? "-" : filt_label[c.filter],
         c.renderer_pc ? "-" : res_val,
         (c.renderer_pc || c.iscale == 1) ? "-" : vert_label[c.subpixel],
         c.fmv_autocrop ? "ON" : "OFF",
     };
-    const char *lab[VIDEO_N] = {"WIDESCREEN", "FULLSCREEN", "SCALING", "WINDOW SCALE", "RENDERER", "FILTER",
+    const char *lab[VIDEO_N] = {"WIDESCREEN", "FULLSCREEN", "SCALING", "WINDOW SCALE", "REFRESH RATE", "RENDERER", "FILTER",
                                 "RESOLUTION", "3D VERTICES", "FMV AUTOCROP"};
     int gy = (int)(cur_y >= 0 && cur_screen == S_VIDEO ? cur_y : row_target_y(S_VIDEO, sel));
-    draw_focus(40, gy, W - 80, 34, 8, 0);
+    draw_focus(40, gy, W - 80, VIDEO_STEP + 1, 8, 0);
     for (int i = 0; i < VIDEO_N; i++) {
         /* Green means "changed from the PS1's picture": 1X and the PS1 vertices are the console's own. */
-        int on = i == 6 ? c.iscale > 1 : i == 7 ? c.subpixel > 0 : (strcmp(v[i], "OFF") && strcmp(v[i], "-"));
+        int on = i == 4 ? c.hz == 60 : i == 7 ? c.iscale > 1 : i == 8 ? c.subpixel > 0 : (strcmp(v[i], "OFF") && strcmp(v[i], "-"));
         row(90 + i * VIDEO_STEP, lab[i], v[i], i == sel, 0, on && strcmp(v[i], "-"), 0);
     }
     static const char *desc[VIDEO_N] = {
@@ -413,6 +414,7 @@ static void draw_video(void) {
         "Open the game in fullscreen (F11 also toggles).",
         "FILL stretches cleanly to screen height; INTEGER uses exact multiples.",
         "Window resolution scale (AUTO fits the detected monitor).",
+        "60 HZ is the game's own NTSC mode (smoother). 50 HZ is the original PAL speed.",
         "GPU enables widescreen and shaders; SOFTWARE is exact PS1.",
         "GPU screen filter (SHARP keeps crisp pixels).",
         "Scales full PS1 VRAM (1024x512, 1536x512 in 16:9), not just 320x240.",
@@ -433,36 +435,33 @@ static void draw_game(void) {
         const char *b = path_last_sep(disc_path);
         disc_lbl = b ? b + 1 : disc_path;
     }
-    const char *v[9] = {lang_label[c.lang < 0 || c.lang > 6 ? 0 : c.lang], ff_label[c.ff], load_label[c.load],
-                        c.hz == 60 ? "60 HZ" : "50 HZ", c.skip ? "ON" : "OFF", c.battles ? "ON" : "OFF", c.battles ? (c.hit ? "ON" : "OFF") : "-",
+    const char *v[8] = {lang_label[c.lang < 0 || c.lang > 6 ? 0 : c.lang], ff_label[c.ff], load_label[c.load],
+                        c.skip ? "ON" : "OFF", c.battles ? "ON" : "OFF", c.battles ? (c.hit ? "ON" : "OFF") : "-",
                         bt_label[c.btext < 0 || c.btext > 2 ? 1 : c.btext], disc_lbl};
-    const char *lab[9] = {"LANGUAGE", "FAST-FORWARD", "FAST LOAD", "REFRESH RATE", "SKIP DIALOGUES", "SKIP BATTLE ANIMS",
+    const char *lab[8] = {"LANGUAGE", "FAST-FORWARD", "FAST LOAD", "SKIP DIALOGUES", "SKIP BATTLE ANIMS",
                           "   HIT REACTION", "BATTLE TEXT", "DISC IMAGE"};
     int n = game_n(), st = game_step();
     int gy = (int)(cur_y >= 0 && cur_screen == S_GAME ? cur_y : row_target_y(S_GAME, sel));
     draw_focus(40, gy, W - 80, st < 30 ? 28 : 34, 8, 0);
     for (int i = 0; i < n; i++) {
-        int on = (i == 8) ? (disc_path[0] != 0) : (i == 3 ? c.hz == 60 : (strcmp(v[i], "OFF") && strcmp(v[i], "-")));
+        int on = (i == 7) ? (disc_path[0] != 0) : (strcmp(v[i], "OFF") && strcmp(v[i], "-"));
         row(90 + i * st, lab[i], v[i], i == sel, 0, on, 0);
     }
-    static const char *desc[9] = {"Game text language (English, Portuguese BR, French, German, Italian, Spanish).",
+    static const char *desc[8] = {"Game text language (English, Portuguese BR, French, German, Italian, Spanish).",
         NULL, /* the fast-forward row: its chord, below */
         "Reads the game's files faster. Movies keep normal speed. OFF, 2X, 4X, 8X or INSTANT.",
-        "60 HZ is the game's own NTSC mode (smoother). 50 HZ is the original PAL speed.",
         "Dialogue boxes close on their own.",
         "Battle moves play without their animation.", "Keep the hit flinch while animations are skipped.",
         "SKIP: battle text hidden. ASYNC: queued in the HUD without pausing.", "Pick or change your .cue / .bin disc file."};
     /* The chord that turns fast-forward on and off in the game (cfg.c writes it as the runtime's toggle binding), in the
-     * player's buttons and glyphs; the PC also holds TAB. */
+     * player's buttons and glyphs; the PC's TAB toggles it too. */
     char ff_desc[160], ffb[48];
     cfg_fmt_ff(&c, ffb, sizeof(ffb));
     if (c.ff_n == 0)
-        snprintf(ff_desc, sizeof(ff_desc), "%s", TR(is_pc ? "The speed. No pad button: set TURBO in CONTROLS (or hold TAB)."
+        snprintf(ff_desc, sizeof(ff_desc), "%s", TR(is_pc ? "The speed. No pad button: set TURBO in CONTROLS (TAB still works)."
                                                            : "The speed. No pad button: set TURBO in CONTROLS."));
-    else if (c.ff_mode)
-        snprintf(ff_desc, sizeof(ff_desc), TR(is_pc ? "The speed. In the game, hold %s (or TAB)." : "The speed. In the game, hold %s."), ffb);
     else
-        snprintf(ff_desc, sizeof(ff_desc), TR(is_pc ? "The speed. In the game, %s turns it on and off (or hold TAB)."
+        snprintf(ff_desc, sizeof(ff_desc), TR(is_pc ? "The speed. In the game, %s or TAB turns it on and off."
                                                     : "The speed. In the game, %s turns it on and off."), ffb);
     rect(40, 346, W - 80, 1, C_EDGE, 256);
     text(44, 358, sel == 1 ? ff_desc : desc[sel], 16, C_NOTE);
@@ -545,13 +544,12 @@ static void draw_controls(void) {
         row(y, act_label[a], v, isel, bd, 0, 0);
     }
     {
-        /* TURBO: the fast-forward key, one button or a chord of two (the runtime's binding), toggled or held. */
+        /* TURBO: the fast-forward key, one button or a chord of two (the runtime's toggle binding). */
         char tb[48];
         int tsel = sel == A_COUNT + 1, on = c.ff_n > 0;
         if (capture && tsel) snprintf(tb, sizeof(tb), "%s", cap_n ? "PRESS A 2ND OR LET GO" : "PRESS 1 OR 2 BUTTONS...");
         else cfg_fmt_ff(&c, tb, sizeof(tb));
         row(128 + A_COUNT * CTRL_STEP, "TURBO", tb, tsel, 0, on && !(capture && tsel), 0);
-        row(128 + (A_COUNT + 1) * CTRL_STEP, "TURBO MODE", c.ff_mode ? "HOLD" : "TOGGLE", sel == A_COUNT + 2, 0, 0, 0);
     }
     dup_note(bad);
     char gst[16], gsel[16], gb[16];
@@ -1899,7 +1897,7 @@ static void on_press(int code) {
     case S_GAME: n = game_n(); break;
     case S_VIDEO: n = VIDEO_N; break;
     case S_HUD: n = HUD_ROWS; break;
-    case S_CONTROLS: n = 1 + A_COUNT + 2; break;
+    case S_CONTROLS: n = 1 + A_COUNT + 1; break;
     case S_SAVES: n = 6; break;
     case S_BACKUPS: n = bk_count; break;
     case S_CLOUD: n = cloud_n(); break;
@@ -1936,16 +1934,15 @@ static void on_press(int code) {
             case 0: c.lang = (c.lang + s + 7) % 7; break;
             case 1: c.ff = (c.ff + s + 5) % 5; break;
             case 2: c.load = (c.load + s + 5) % 5; break;
-            case 3: c.hz = c.hz == 60 ? 50 : 60; break;
-            case 4: c.skip = !c.skip; break;
-            case 5: c.battles = !c.battles; if (!c.battles) c.hit = 0; break;
-            case 6: if (c.battles) c.hit = !c.hit; break;
-            case 7: c.btext = c.btext == 2 ? 1 : 2; break; /* SKIP <-> ASYNC: the original boxes are gone */
-            case 8:
+            case 3: c.skip = !c.skip; break;
+            case 4: c.battles = !c.battles; if (!c.battles) c.hit = 0; break;
+            case 5: if (c.battles) c.hit = !c.hit; break;
+            case 6: c.btext = c.btext == 2 ? 1 : 2; break; /* SKIP <-> ASYNC: the original boxes are gone */
+            case 7:
                 if (ok) {
                     browse_start_dir(b_dir, sizeof(b_dir));
                     browse_load(b_dir);
-                    go(S_BROWSE, 0, 1, 90 + 8 * game_step() + 14);
+                    go(S_BROWSE, 0, 1, 90 + 7 * game_step() + 14);
                 }
                 break;
             }
@@ -1966,11 +1963,12 @@ static void on_press(int code) {
                 c.scale = scales[((idx < 6 ? idx : 0) + s + 6) % 6];
                 break;
             }
-            case 4: c.renderer_pc = !c.renderer_pc; if (c.renderer_pc) c.widescreen = 0; break;
-            case 5: if (!c.renderer_pc) c.filter = (c.filter + s + 5) % 5; break;
-            case 6: if (!c.renderer_pc) c.iscale = (c.iscale - 1 + s + 8) % 8 + 1; break;
-            case 7: if (!c.renderer_pc && c.iscale > 1) c.subpixel = (c.subpixel + s + 3) % 3; break;
-            case 8: c.fmv_autocrop = !c.fmv_autocrop; break;
+            case 4: c.hz = c.hz == 60 ? 50 : 60; break;
+            case 5: c.renderer_pc = !c.renderer_pc; if (c.renderer_pc) c.widescreen = 0; break;
+            case 6: if (!c.renderer_pc) c.filter = (c.filter + s + 5) % 5; break;
+            case 7: if (!c.renderer_pc) c.iscale = (c.iscale - 1 + s + 8) % 8 + 1; break;
+            case 8: if (!c.renderer_pc && c.iscale > 1) c.subpixel = (c.subpixel + s + 3) % 3; break;
+            case 9: c.fmv_autocrop = !c.fmv_autocrop; break;
             }
         }
         break;
@@ -1996,7 +1994,6 @@ static void on_press(int code) {
             Cfg def;
             cfg_defaults(&def);
             memcpy(c.pad, def.pad, sizeof(c.pad));
-            c.ff_mode = def.ff_mode;
             c.ff_n = def.ff_n;
             memcpy(c.ff_btns, def.ff_btns, sizeof(c.ff_btns));
             return;
@@ -2004,8 +2001,6 @@ static void on_press(int code) {
         if (sel == A_COUNT + 1) {
             if (is_start) { capture = 1; cap_n = 0; }
             else if (ok || d) cfg_ff_cycle(&c, d ? s : 1);
-        } else if (sel == A_COUNT + 2) {
-            if (ok || d) c.ff_mode = !c.ff_mode;
         } else if (sel == 0 && (ok || d)) {
             static const int cyc[] = {LAYOUT_XBOX, LAYOUT_NINTENDO, LAYOUT_PS1};
             int cur = cfg_layout(&c), i = 0;
@@ -2275,12 +2270,12 @@ static void on_press(int code) {
                 snprintf(next, sizeof(next), "%s/..", b_dir);
                 browse_load(next);
             } else {
-                go(S_GAME, 8, -1, 90 + 8 * game_step() + 14);
+                go(S_GAME, 7, -1, 90 + 7 * game_step() + 14);
             }
         } else if (code == c.pad[A_TRIANGLE].code && is_pc) {
             if (browse_disc() == 0) {
                 cfg_save(&c);
-                go(S_GAME, 8, -1, 90 + 8 * game_step() + 14);
+                go(S_GAME, 7, -1, 90 + 7 * game_step() + 14);
             }
         } else if (ok && b_count > 0) {
             char next[1500];
@@ -2290,7 +2285,7 @@ static void on_press(int code) {
             } else {
                 snprintf(disc_path, sizeof(disc_path), "%.1199s", next);
                 cfg_save(&c);
-                go(S_GAME, 8, -1, 90 + 8 * game_step() + 14);
+                go(S_GAME, 7, -1, 90 + 7 * game_step() + 14);
             }
         }
         break;
