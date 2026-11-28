@@ -135,9 +135,9 @@ checks the scanner against every script on the disc; `tests/port/mods.py` runs t
 
 ### Battle text
 
-`battle_text`. Option: `mode` (enum `off skip async`, default `skip`, `applies: live`), controlled by the launcher's
-`GAME > BATTLE TEXT` row (`OFF / SKIP / ASYNC`, written to `settings.json`). `port_mod_battle_text` (`port/game/game_mods.c`)
-holds the active mode (0 off, 1 skip, 2 async; defaults to 1 when the mod is absent from `settings.json`).
+`battle_text`. Option: `mode` (enum `skip async`, default `skip`, `applies: live`), controlled by the launcher's
+`GAME > BATTLE TEXT` row (`SKIP / ASYNC`, written to `settings.json`). `port_mod_battle_text` (`port/game/game_mods.c`)
+holds the active mode (1 skip, 2 async; the game's own box no longer exists; defaults to 1 when the mod is absent from `settings.json`).
 
 The battle's message box (`FightstgMessage`, `src/fightstg/fightstg_8008D3B4.c`) is presentation only: the rules ran
 before it is shown, but on the disc every action waits for it to be dismissed with a confirm press. The hook sits in
@@ -154,9 +154,8 @@ set by `fightstg_message_show` from its type and text ID (`ESMFIGHT`):
   the action goes on with the exact same timing as `skip`. A chain (a queued follow-up: regeneration, the counter's
   damage) shows only its last page.
 
-No random number is drawn and no rule changes, but the frame count of a battle differs between `off` and `skip`/`async`,
-so the scripted replays of the disc's own battles are compared on the game state, not on frames (`tests/port/mods.py`'s
-`battle_text` checks all three modes, verifies `async` matches `skip`'s frame count, and checks that a damage message
+No random number is drawn and no rule changes, and `skip` and `async` take the same frames, so the scripted replays of the disc's own battles are compared on the game
+state (`tests/port/mods.py`'s `battle_text` checks both modes, verifies `async` matches `skip`'s frame count, and checks that a damage message
 reaches the notice queue with its number).
 
 ### Preset language

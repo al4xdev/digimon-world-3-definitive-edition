@@ -208,15 +208,14 @@ def battle_animations(binary, out):
 
 
 def battle_text(binary, out):
-    """battle_text: first_battle_save's battle with each mode (off, skip, async). The message box is presentation, so
-    the battle's outcome (gamestate_sha1_stable at battle_won and battle_end) must match in all three modes, async must
-    take the exact same frames as skip (both faster than off), and in async a damage message with its number must reach
-    the HUD notice queue."""
+    """battle_text: first_battle_save's battle with each mode (skip, async). The message box is presentation, so the
+    battle's outcome (gamestate_sha1_stable at battle_won and battle_end) must match in both modes, async must take the
+    exact same frames as skip, and in async a damage message with its number must reach the HUD notice queue."""
     import re
-    print("mods: battle_text (first_battle_save to battle_end, the three modes)")
+    print("mods: battle_text (first_battle_save to battle_end, skip and async)")
     seen = {}
     bt_logs = {}
-    for mode in ("off", "skip", "async"):
+    for mode in ("skip", "async"):
         cfg = out / f"bt_{mode}.settings.json"
         cfg.write_text(json.dumps({"schema": 1, "disc": {"path": str(DISC)}, "video": {"window": False},
                                    "memcard1": f"bt_{mode}_1.mcd", "memcard2": f"bt_{mode}_2.mcd",
@@ -232,15 +231,12 @@ def battle_text(binary, out):
             seen[mode] = (cps["battle_won"]["gamestate_sha1_stable"], cps["battle_end"]["gamestate_sha1_stable"],
                           cps["battle_won"]["frame"] - cps["battle_start"]["frame"])
             print(f"    mode {mode}: {seen[mode][2]} frames, {len(bt_logs[mode])} notice(s)")
-    if len(seen) == 3:
-        check(seen["skip"][:2] == seen["off"][:2] == seen["async"][:2],
-              "the game state at battle_won and battle_end is the same in all three modes")
+    if len(seen) == 2:
+        check(seen["skip"][:2] == seen["async"][:2],
+              "the game state at battle_won and battle_end is the same in both modes")
         check(seen["async"][2] == seen["skip"][2],
               f"async ({seen['async'][2]}) has the same battle timing as skip ({seen['skip'][2]})")
-        check(seen["skip"][2] < seen["off"][2],
-              f"skip/async ({seen['skip'][2]}) take fewer frames than off ({seen['off'][2]})")
-        check(not bt_logs["off"] and not bt_logs["skip"],
-              f"off ({len(bt_logs['off'])}) and skip ({len(bt_logs['skip'])}) push no async notices")
+        check(not bt_logs["skip"], f"skip ({len(bt_logs['skip'])}) pushes no async notices")
         dmg = [l for l in bt_logs["async"] if re.search(r"\b\d+\b.*(?:damage|HP)", l, re.I)]
         check(bool(dmg), f"async: a damage message with its number reaches the notice queue ({bt_logs['async'][:3]})")
 

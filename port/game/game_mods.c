@@ -536,9 +536,9 @@ void port_bm_remember(s32 kind, s32 member, s32 value) {
 }
 
 /* ---- battle_text (docs/LAUNCHER.md "Battle text"): the battle's message box (FightstgMessage) is only presentation,
- * and every action waits for it and for a confirm press. `mode` off leaves it, skip (the default) drops every message,
- * async formats the message into the HUD notice queue (fightstg_notice_push) and ends it at once so combat flows. */
-static const char *const bt_modes[] = { "off", "skip", "async", NULL };
+ * and every action waits for it and for a confirm press. The game's own box is gone: `mode` skip (the default) drops
+ * every message, async formats the message into the HUD notice queue (fightstg_notice_push) and ends it at once so combat flows. */
+static const char *const bt_modes[] = { "skip", "async", NULL };
 enum { BT_MODE };
 static const PortModOption bt_options[] = {
     { .id = "mode", .type = PORT_MOD_ENUM, .def = "\"skip\"", .values = bt_modes, .applies = "live" },
@@ -546,7 +546,7 @@ static const PortModOption bt_options[] = {
 int port_mod_battle_text = 1;
 
 static void bt_frame(struct PortMod *mod) {
-    port_mod_battle_text = (int)mod->values[BT_MODE].number;
+    port_mod_battle_text = (int)mod->values[BT_MODE].number + 1; /* 1 skip, 2 async */
 }
 
 void port_battle_text_log(const u8 *text) {

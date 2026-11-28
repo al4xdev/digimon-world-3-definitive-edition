@@ -147,8 +147,8 @@ extern int port_mod_skip_dialogues;
  * its child command would have started, results[3] + 1); *sound_id and *sound_arg: the hit sound it would have played
  * (0: none), for fightstg_sound_play. The rules ran before the script started. */
 extern int port_mod_battle_animations;
-/* port_mod_battle_text: the battle text's mode (0 off, 1 skip, 2 async; default 1 skip): the battle
- * never waits for its message box in skip or async; async pushes its formatted lines into the HUD notice queue
+/* port_mod_battle_text: the battle text's mode (1 skip, 2 async; default 1 skip): the battle
+ * never waits for its message box; async pushes its formatted lines into the HUD notice queue
  * (src/fightstg/fightstg_8008D3B4.c). */
 extern int port_mod_battle_text;
 void port_battle_text_log(const u8 *text);

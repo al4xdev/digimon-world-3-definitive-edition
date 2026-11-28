@@ -234,7 +234,6 @@
       "group": "Game",
       "help": "Skip closes battle message boxes so combat flows.",
       "choices": [
-        { "label": "Off", "set": { "mods/battle_text/enabled": "true", "mods/battle_text/mode": "\"off\"" } },
         { "label": "Skip", "set": { "mods/battle_text/enabled": "true", "mods/battle_text/mode": "\"skip\"" } },
         { "label": "Async", "set": { "mods/battle_text/enabled": "true", "mods/battle_text/mode": "\"async\"" } }
       ],
