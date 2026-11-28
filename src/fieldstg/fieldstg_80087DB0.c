@@ -1314,6 +1314,11 @@ void fieldstg_manager_shatter(FieldstgManager *obj, FieldstgManagerData *data) {
         layer = gfx_module.funcs.get_layer(0x1002);
         ot = layer->get_ot_entry(layer, 0);
         dt = gfx_module.funcs.get_frame_ticks() * 40;
+#ifdef PC_PORT
+        if (def_on()) {
+            dt *= 8; /* instant transitions: each tile's step ends within a frame, one frame a step (29 of them) */
+        }
+#endif
         /* Evidence (class A2, sched2 barrier; docs/MATCHING.md "LOOP_BLOCK and LOOP_BARRIER"): the original loads gfx_module.buffer only
          * after step, leaving two load-delay nops. */
         LOOP_BARRIER();
@@ -1328,7 +1333,11 @@ void fieldstg_manager_shatter(FieldstgManager *obj, FieldstgManagerData *data) {
                 }
             } else {
                 fieldstg_shatter_tiles[2][3].x = 0x200;
+#ifdef PC_PORT
+                if (++obj->base.substep >= (def_on() ? 2 : 16)) { /* instant transitions: the closing hold, 16 frames on the disc */
+#else
                 if (++obj->base.substep >= 16) {
+#endif
                     if (obj->base.substep < 0x1000) {
                         gamestate_data.funcs.set_next_map(obj->next_map, obj->map_entry);
                     }
