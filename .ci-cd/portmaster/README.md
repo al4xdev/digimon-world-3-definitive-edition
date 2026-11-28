@@ -58,7 +58,7 @@ battle's experience, form experience 14x) are the Definitive Edition's own, with
 | main row | what it holds |
 |---|---|
 | `PLAY` | start the game |
-| `GAME` | `LANGUAGE`, `FAST-FORWARD` (off or a speed), `FAST LOAD`, `SKIP DIALOGUES`, `SKIP BATTLE ANIMS` and `HIT REACTION` |
+| `GAME` | `LANGUAGE`, `FAST-FORWARD` (off or a speed), `FAST LOAD`, `SKIP DIALOGUES`, `SKIP BATTLE ANIMS`, `HIT REACTION` and `BATTLE TEXT` (`OFF`, `SKIP` or `ASYNC`) |
 | `BATTLE HUD` | where each battle action sits on the pad (Fight, Tech, Digivolve, Tag, Item, Run, Inspect, Blast), `REMEMBER CURSOR`, `BUFFER INPUT` |
 | `CONTROLS` | `BUTTON GLYPHS` (`PS1`, `XBOX`, `NINTENDO`) and per-action button remapping |
 | `SAVES & CLOUD` | `CLOUD SYNC`, `SYNC INTERVAL`, `LOCAL BACKUPS` (how many copies of the card to keep, 1-100), `SYNC NOW`, `RESTORE BACKUP`, `CLOUD ACCOUNT` |

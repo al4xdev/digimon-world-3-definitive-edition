@@ -203,9 +203,8 @@ void fightstg_main_update(Object *obj, Object **data);
 void fightstg_idle_camera_update(FightstgIdleCamera *obj);
 void fightstg_slots_update();
 #ifdef PC_PORT
-void fightstg_toast_run(void);   /* fightstg_8008D3B4: battle_text's text kept up after its message is over */
-void fightstg_toast_reset(void);
 void fightstg_bm_record(void);
+void fightstg_bm_reset(void);
 #endif
 s32 fightstg_slots_find(FightstgSlots *obj, s32 id);
 void fightstg_slots_remove(FightstgSlots *obj, s32 id);
@@ -680,7 +679,6 @@ void fightstg_slots_update(FightstgSlots *obj) {
     case OBJECT_STATE_RUN:
 #ifdef PC_PORT
         fightstg_bm_record(); /* battle_menu's buffer_input */
-        fightstg_toast_run(); /* battle_text: the slots object lives for the whole battle, so it carries the toast */
 #endif
         break;
     case OBJECT_STATE_DONE:
@@ -823,7 +821,7 @@ FightstgSlots *fightstg_slots_create(void) {
         obj->slots[i].in_use = 0;
     }
 #ifdef PC_PORT
-    fightstg_toast_reset();
+    fightstg_bm_reset();
 #endif
     obj->add = fightstg_slots_add;
     obj->get_model_id = fightstg_slots_get_model_id;

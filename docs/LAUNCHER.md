@@ -135,9 +135,9 @@ checks the scanner against every script on the disc; `tests/port/mods.py` runs t
 
 ### Battle text
 
-The battle text is always skipped: the launcher has no option for it and the settings file carries none.
-`port_mod_battle_text` is a code constant (`BT_SKIP`, 1, in `port/game/game_mods.c`) for the FIGHTSTG side; 0 (as the
-disc) and 2 (async) are in the flag's vocabulary, unused.
+`battle_text`. Option: `mode` (enum `off skip async`, default `skip`, `applies: live`), controlled by the launcher's
+`GAME > BATTLE TEXT` row (`OFF / SKIP / ASYNC`, written to `settings.json`). `port_mod_battle_text` (`port/game/game_mods.c`)
+holds the active mode (0 off, 1 skip, 2 async; defaults to 1 when the mod is absent from `settings.json`).
 
 The battle's message box (`FightstgMessage`, `src/fightstg/fightstg_8008D3B4.c`) is presentation only: the rules ran
 before it is shown, but on the disc every action waits for it to be dismissed with a confirm press. The hook sits in
@@ -148,15 +148,16 @@ set by `fightstg_message_show` from its type and text ID (`ESMFIGHT`):
   victory text after 100 frames), so they run as on the disc in every mode.
 - **drop:** what the animation already says: a plain "Attack" (8), "Evade" (0x1D), "Focus on attack/guard" (0x3C, 0x3D),
   "Special effect up" (0x3E), "Blast gauge up" (0x3F), "Excited" (0x40). Ended at once in `skip` and `async`.
-- **normal** (technique and item names, damage, healing, statuses, switches...): `skip` ends it at once; `async` hands
-  its two windows to a **toast** and ends it, so the action goes on. A chain (a queued follow-up: regeneration, the
-  counter's damage) shows only its last page. The toast stays 90 frames unless a newer text replaces it.
+- **normal** (technique and item names, damage, healing, statuses, switches...): `skip` ends it at once; `async` reads
+  its already-formatted `MessageWindow` lines (`<5,n>` substituted), joins them into a single text, pushes it to the
+  HUD notice queue (`fightstg_notice_push(text, 90)`), stops the message's windows, and ends the message at once, so
+  the action goes on with the exact same timing as `skip`. A chain (a queued follow-up: regeneration, the counter's
+  damage) shows only its last page.
 
-The toast is owned by no object: the battle's slots object (`fightstg_slots_update`) runs and draws the windows each
-frame, and `fightstg_slots_create` clears it for a new battle. Its state (`port_battle_text_windows`,
-`port_battle_text_frames`, in `port/game/game_mods.c`) is named in the save state. No random number is drawn and no
-rule changes, but the frame count of a battle does, so the scripted replays of the disc's own battles are compared on
-the game state, not on frames (`tests/port/mods.py`'s `battle_menu` runs the first battle this way).
+No random number is drawn and no rule changes, but the frame count of a battle differs between `off` and `skip`/`async`,
+so the scripted replays of the disc's own battles are compared on the game state, not on frames (`tests/port/mods.py`'s
+`battle_text` checks all three modes, verifies `async` matches `skip`'s frame count, and checks that a damage message
+reaches the notice queue with its number).
 
 ### Preset language
 

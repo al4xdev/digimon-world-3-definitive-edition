@@ -17,6 +17,7 @@ static const char *const lang_label[7] = {
     "ENGLISH", "PORTUGUÊS (BR)", "FRANÇAIS", "DEUTSCH", "ITALIANO", "ESPAÑOL", "JAPANESE"
 };
 static const char *const buf_label[3] = {"OFF", "SHORT", "LONG"};
+static const char *const bt_label[3] = {"OFF", "SKIP", "ASYNC"};
 static const char *const fight_label[3] = {"CUSTOM", "BOTTOM", "RIGHT"};
 #define HUD_FIGHT_ROW (H_COUNT + 2)
 #define HUD_ROWS (H_COUNT + 3)

@@ -207,6 +207,44 @@ def battle_animations(binary, out):
                   f"(emulator, the mod off: {e['battle_won']['frame'] - e['battle_start']['frame']})")
 
 
+def battle_text(binary, out):
+    """battle_text: first_battle_save's battle with each mode (off, skip, async). The message box is presentation, so
+    the battle's outcome (gamestate_sha1_stable at battle_won and battle_end) must match in all three modes, async must
+    take the exact same frames as skip (both faster than off), and in async a damage message with its number must reach
+    the HUD notice queue."""
+    import re
+    print("mods: battle_text (first_battle_save to battle_end, the three modes)")
+    seen = {}
+    bt_logs = {}
+    for mode in ("off", "skip", "async"):
+        cfg = out / f"bt_{mode}.settings.json"
+        cfg.write_text(json.dumps({"schema": 1, "disc": {"path": str(DISC)}, "video": {"window": False},
+                                   "memcard1": f"bt_{mode}_1.mcd", "memcard2": f"bt_{mode}_2.mcd",
+                                   "mods": {"battle_text": {"enabled": True, "mode": mode}}}))
+        for card in (out / f"bt_{mode}_1.mcd", out / f"bt_{mode}_2.mcd"):
+            card.unlink(missing_ok=True)
+        _, _, rec, err = run_port(binary, out, f"bt_{mode}", SCRIPTS / "first_battle_save.json", cfg, True)
+        cps = {c["name"]: c for c in rec["checkpoints"]} if rec else {}
+        check(all(n in cps for n in ("battle_start", "battle_won", "battle_end")),
+              f"mode {mode}: the battle is won and ends")
+        bt_logs[mode] = [l for l in err.splitlines() if "battle text:" in l]
+        if "battle_end" in cps:
+            seen[mode] = (cps["battle_won"]["gamestate_sha1_stable"], cps["battle_end"]["gamestate_sha1_stable"],
+                          cps["battle_won"]["frame"] - cps["battle_start"]["frame"])
+            print(f"    mode {mode}: {seen[mode][2]} frames, {len(bt_logs[mode])} notice(s)")
+    if len(seen) == 3:
+        check(seen["skip"][:2] == seen["off"][:2] == seen["async"][:2],
+              "the game state at battle_won and battle_end is the same in all three modes")
+        check(seen["async"][2] == seen["skip"][2],
+              f"async ({seen['async'][2]}) has the same battle timing as skip ({seen['skip'][2]})")
+        check(seen["skip"][2] < seen["off"][2],
+              f"skip/async ({seen['skip'][2]}) take fewer frames than off ({seen['off'][2]})")
+        check(not bt_logs["off"] and not bt_logs["skip"],
+              f"off ({len(bt_logs['off'])}) and skip ({len(bt_logs['skip'])}) push no async notices")
+        dmg = [l for l in bt_logs["async"] if re.search(r"\b\d+\b.*(?:damage|HP)", l, re.I)]
+        check(bool(dmg), f"async: a damage message with its number reaches the notice queue ({bt_logs['async'][:3]})")
+
+
 def widescreen(binary, out):
     """widescreen: the battle and the field with the mod on in the headless build: the game's frame log unchanged,
     the software picture's 4:3 logged once."""
@@ -523,6 +561,7 @@ MODS_TESTS = {
     "skip_dialogues": skip_dialogues,
     "definitive_xp": lambda binary, out, record: definitive_xp(binary, out),
     "battle_animations": lambda binary, out, record: battle_animations(binary, out),
+    "battle_text": lambda binary, out, record: battle_text(binary, out),
     "widescreen": lambda binary, out, record: widescreen(binary, out),
     "battle_menu": lambda binary, out, record: battle_menu(binary, out),
     "led_bar": lambda binary, out, record: led_bar(binary, out),
